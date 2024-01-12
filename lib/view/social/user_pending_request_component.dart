@@ -4,10 +4,8 @@ import 'package:animation_wrappers/animations/faded_slide_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/custom_button.dart';
 import '../../components/custom_user_avatar.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
-import '../../viewmodel/follower_following_viewmodel.dart';
 
 class AmityPendingScreen extends StatefulWidget {
   const AmityPendingScreen({
@@ -39,7 +37,7 @@ class _AmityPendingScreenState extends State<AmityPendingScreen> {
           title: Text(
             "Follow Request",
             style:
-                Theme.of(context).textTheme.headline6!.copyWith(fontSize: 24),
+                Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
           ),
         ),
         body: FadedSlideAnimation(

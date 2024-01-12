@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:amity_uikit_beta_service/components/custom_dialog.dart';
 import 'package:amity_uikit_beta_service/view/social/select_user_page.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
@@ -47,7 +48,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         appBar: AppBar(
           actions: [
             IconButton(
-              icon: Icon(Icons.add, color: Colors.black),
+              icon: const Icon(Icons.add, color: Colors.black),
               onPressed: () async {
                 var userList =
                     Provider.of<MemberManagementVM>(context, listen: false)
@@ -76,7 +77,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                               );
                               Navigator.of(context).pop();
                             } else {
-                              print('Failed to add members');
+                              log('Failed to add members');
                             }
                           },
                         )));
@@ -84,7 +85,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
             ),
           ],
           elevation: 0.0,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           backgroundColor: Colors.white,
           title: const Text("Community", style: TextStyle(color: Colors.black)),
           bottom: const PreferredSize(
@@ -93,6 +94,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
             child: Row(
               children: [
                 TabBar(
+                  tabAlignment: TabAlignment.start,
                   isScrollable: true, // Ensure that the TabBar is scrollable
 
                   labelColor: Color(0xFF1054DE), // #1054DE color
@@ -113,7 +115,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
             ),
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             MemberList(), // You need to create a MemberList widget
             ModeratorList(), // You need to create a ModeratorList widget
@@ -126,6 +128,8 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
 // Import statements remain the same
 
 class MemberList extends StatelessWidget {
+  const MemberList({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MemberManagementVM>(
@@ -144,7 +148,7 @@ class MemberList extends StatelessWidget {
                         ))));
               },
               leading: CircleAvatar(
-                backgroundColor: Color(0xFFD9E5FC),
+                backgroundColor: const Color(0xFFD9E5FC),
                 backgroundImage: viewModel.userList[index].user?.avatarUrl ==
                         null
                     ? null
@@ -155,7 +159,8 @@ class MemberList extends StatelessWidget {
               ),
               title: Text(
                 viewModel.userList[index].user?.displayName ?? '',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
               ),
               trailing: IconButton(
                 icon: const Icon(
@@ -212,7 +217,8 @@ class ModeratorList extends StatelessWidget {
               ),
               title: Text(
                 viewModel.moderatorList[index].user?.displayName ?? '',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
               ),
               trailing: IconButton(
                 icon: const Icon(
@@ -255,7 +261,7 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
                 ? [
                     member.roles!.contains('community-moderator') &
                             !showDemoteButton
-                        ? SizedBox()
+                        ? const SizedBox()
                         : ListTile(
                             title: Text(
                               member.roles!.contains('community-moderator')
@@ -284,7 +290,7 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
                     ListTile(
                       title: Text(
                         member.user!.isFlaggedByMe ? "Undo Report" : "Report",
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       onTap: () async {
                         if (member.user!.isFlaggedByMe) {

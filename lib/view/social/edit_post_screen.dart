@@ -40,8 +40,8 @@ class EditPostScreenState extends State<EditPostScreen> {
       backgroundColor: Colors.white,
       elevation: 0,
       title: Text("Edit",
-          style:
-              theme.textTheme.headline6!.copyWith(fontWeight: FontWeight.w500)),
+          style: theme.textTheme.titleLarge!
+              .copyWith(fontWeight: FontWeight.w500)),
       leading: IconButton(
         icon: Icon(
           Icons.chevron_left,
@@ -98,7 +98,7 @@ class EditPostScreenState extends State<EditPostScreen> {
                           child: Text(
                             widget.post!.postedUser?.displayName ??
                                 "Display name",
-                            style: theme.textTheme.bodyText1!
+                            style: theme.textTheme.bodyLarge!
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -131,7 +131,7 @@ class EditPostScreenState extends State<EditPostScreen> {
                                           .targetCommunity!
                                           .displayName ??
                                       "Community name",
-                                  style: theme.textTheme.bodyText1!
+                                  style: theme.textTheme.bodyLarge!
                                       .copyWith(fontWeight: FontWeight.bold),
                                 ),
                               )
@@ -288,7 +288,7 @@ class EditPostScreenState extends State<EditPostScreen> {
                       ),
                       child: Text(
                         "Edit",
-                        style: theme.textTheme.button,
+                        style: theme.textTheme.labelLarge,
                       ),
                     ),
                   ),

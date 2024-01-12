@@ -5,11 +5,11 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/custom_user_avatar.dart';
 import '../../viewmodel/channel_list_viewmodel.dart';
 import '../../viewmodel/channel_viewmodel.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/user_viewmodel.dart';
-import '../../components/custom_user_avatar.dart';
 import 'chat_screen.dart';
 import 'create_group_chat_screen.dart';
 
@@ -200,7 +200,7 @@ class UserWidget extends StatelessWidget {
               leading: FadeAnimation(child: getAvatarImage(user.avatarUrl!)),
               title: Text(
                 user.displayName ?? "Category",
-                style: theme.textTheme.bodyText1!
+                style: theme.textTheme.bodyLarge!
                     .copyWith(fontWeight: FontWeight.bold),
               ),
               trailing: Provider.of<UserVM>(context, listen: true)

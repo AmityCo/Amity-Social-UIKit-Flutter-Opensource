@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:video_player/video_player.dart';
 
 class LocalVideoPlayer extends StatefulWidget {
@@ -67,9 +67,9 @@ class _LocalVideoPlayerState extends State<LocalVideoPlayer> {
               ? Chewie(
                   controller: chewieController!,
                 )
-              : Column(
+              : const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 20),
                     Text('Loading',
@@ -110,7 +110,6 @@ class _MyVideoPlayer2State extends State<MyVideoPlayer2> {
     var postData = widget.post.data as VideoData;
     if (postData.thumbnail != null) {
       thumbnailURL = postData.thumbnail!.fileUrl;
-      log(thumbnailURL.toString());
     }
     if (!widget.isInFeed) {
       initializePlayer();
@@ -140,7 +139,6 @@ class _MyVideoPlayer2State extends State<MyVideoPlayer2> {
       if (mounted) {
         setState(() {
           videoUrl = video.fileUrl!;
-          log(">>>>>>>>>>>>>>>>>>>>>>>>$videoUrl");
         });
       }
     });
@@ -207,42 +205,25 @@ class _MyVideoPlayer2State extends State<MyVideoPlayer2> {
                                   controller: chewieController!,
                                 ),
                               )
-                            : Column(
+                            : const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   // CircularProgressIndicator(
                                   //   color: Theme.of(context).primaryColor,
                                   // )
                                 ],
                               )
-                        : OptimizedCacheImage(
-                            imageBuilder: (context, imageProvider) => Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Image(
-                                        image: imageProvider,
-                                        fit: BoxFit.fitHeight,
-                                      ),
-                                    ),
-                                  ],
-                                ))
-                              ],
-                            ),
-                            imageUrl: thumbnailURL ?? "",
-                            fit: BoxFit.fill,
-                            placeholder: (context, url) => Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                //  CircularProgressIndicator()
-                              ],
-                            ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          )),
+                        : Expanded(
+                            child: Row(
+                            children: [
+                              Expanded(
+                                child: Image(
+                                  image: getImageProvider(thumbnailURL),
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ),
+                            ],
+                          ))),
               ),
             ),
             widget.isInFeed
@@ -271,7 +252,7 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _currentIndex = 0;
   List<VideoPlayerController>? _controllers; // Changed from late to nullable
 
@@ -320,7 +301,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         backgroundColor: Colors.black,
         title: Text('${_currentIndex + 1}/${widget.files.length}'),
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -367,7 +348,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 );
               },
             )
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -375,7 +356,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 class FullScreenVideoPlayerWidget extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
 
-  FullScreenVideoPlayerWidget({Key? key, required this.videoPlayerController})
+  const FullScreenVideoPlayerWidget(
+      {Key? key, required this.videoPlayerController})
       : super(key: key);
 
   @override

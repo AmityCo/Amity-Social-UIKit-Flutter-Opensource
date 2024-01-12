@@ -78,7 +78,8 @@ class _PostToPageState extends State<PostToPage> {
                 child: Text(
                   "My community",
                   style: TextStyle(
-                      fontSize: 15, color: Color(0xff292B32).withOpacity(0.4)),
+                      fontSize: 15,
+                      color: const Color(0xff292B32).withOpacity(0.4)),
                 ),
               ),
               ...viewModel.amityCommunities.map((community) {

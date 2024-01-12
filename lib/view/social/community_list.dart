@@ -107,7 +107,7 @@ class CommunityListState extends State<CommunityList> {
               child: FadedSlideAnimation(
                 // ignore: sort_child_properties_last
                 child: getLength() < 1
-                    ? Center()
+                    ? const Center()
                     // Center(
                     //     child: CircularProgressIndicator(
                     //       color: Provider.of<AmityUIConfiguration>(context)
@@ -206,16 +206,17 @@ class CommunityWidget extends StatelessWidget {
                                 (NetworkImage(community.avatarImage!.fileUrl!)))
                         : const CircleAvatar(
                             backgroundImage: AssetImage(
-                                "assets/images/user_placeholder.png")),
+                                "assets/images/user_placeholder.png",
+                                package: "amity_uikit_beta_service")),
                   ),
                   title: Text(
                     community.displayName ?? "Community",
-                    style: theme.textTheme.bodyText1!
+                    style: theme.textTheme.bodyLarge!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
                     " ${community.membersCount} members",
-                    style: theme.textTheme.bodyText1!
+                    style: theme.textTheme.bodyLarge!
                         .copyWith(color: Colors.grey, fontSize: 11),
                   ),
                   trailing: ElevatedButton(

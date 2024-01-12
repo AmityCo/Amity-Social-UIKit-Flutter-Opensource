@@ -14,6 +14,7 @@ class CommunityTabbar extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: TabBar(
+          tabAlignment: TabAlignment.start,
           physics: const BouncingScrollPhysics(),
           isScrollable: true,
           indicatorColor:

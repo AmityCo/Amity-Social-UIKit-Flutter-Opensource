@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:amity_uikit_beta_service/model/amity_channel_model.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -68,8 +68,8 @@ class CreatePostVMV2 with ChangeNotifier {
 
     // Then, update the isPostValid status
 
-    print("textEditingController: ${textEditingController.text.isNotEmpty}");
-    print("isUploadComplete: ${isUploadComplete}");
+    log("textEditingController: ${textEditingController.text.isNotEmpty}");
+    log("isUploadComplete: $isUploadComplete");
 
     notifyListeners();
   }
@@ -137,7 +137,7 @@ class CreatePostVMV2 with ChangeNotifier {
 
     // Determine the MIME type of the file
     final mimeType = lookupMimeType(uploadingFile.path);
-    print("uploading...${mimeType}");
+    log("uploading...$mimeType");
     if (mimeType != null) {
       try {
         if (mimeType.startsWith('image')) {
@@ -151,7 +151,7 @@ class CreatePostVMV2 with ChangeNotifier {
             uikitFile,
           );
         } else {
-          print("_performUpload file");
+          log("_performUpload file");
           await _performUpload(
             AmityCoreClient.newFileRepository().uploadFile(uploadingFile),
             uikitFile,
@@ -211,7 +211,7 @@ class CreatePostVMV2 with ChangeNotifier {
         selectFiles([pickedImage], MyFileType.image);
       }
     } catch (e) {
-      print("Error picking images: $e");
+      log("Error picking images: $e");
       // Handle the error as appropriate for your app
     }
   }
@@ -220,11 +220,11 @@ class CreatePostVMV2 with ChangeNotifier {
     try {
       List<XFile>? pickedImages = await _picker.pickMultiImage();
 
-      if (pickedImages != null && pickedImages.isNotEmpty) {
+      if (pickedImages.isNotEmpty) {
         selectFiles(pickedImages, MyFileType.image);
       }
     } catch (e) {
-      print("Error picking images: $e");
+      log("Error picking images: $e");
       // Handle the error as appropriate for your app
     }
   }
@@ -236,7 +236,7 @@ class CreatePostVMV2 with ChangeNotifier {
         selectFiles([video], MyFileType.video);
       }
     } catch (e) {
-      print("Error picking video: $e");
+      log("Error picking video: $e");
       // Handle the error as appropriate for your app
     }
   }
@@ -251,7 +251,7 @@ class CreatePostVMV2 with ChangeNotifier {
         }
       } else if (action == PickerAction.galleryImage) {
         List<XFile>? pickedImages = await _picker.pickMultiImage();
-        if (pickedImages != null && pickedImages.isNotEmpty) {
+        if (pickedImages.isNotEmpty) {
           selectFiles(pickedImages, MyFileType.image);
         }
       } else if (action == PickerAction.galleryVideo) {
@@ -279,7 +279,7 @@ class CreatePostVMV2 with ChangeNotifier {
         }
       }
     } catch (e) {
-      print("Error during file picking: $e");
+      log("Error during file picking: $e");
       // Handle the error as appropriate for your app
     }
   }
@@ -310,23 +310,20 @@ class CreatePostVMV2 with ChangeNotifier {
       {String? communityId,
       required Function(bool success, String? error) callback}) async {
     if (isUploadComplete) {
-      print("creating Post...");
+      log("creating Post...");
       bool isCommunity = communityId != null;
 
       var targetBuilder = AmitySocialClient.newPostRepository().createPost();
 
       AmityPostCreateDataTypeSelector? postBuilder;
       if (isCommunity) {
-        print("set target as commu...");
+        log("set target as commu...");
         postBuilder = targetBuilder.targetCommunity(communityId);
       } else {
-        print("set target as user...");
+        log("set target as user...");
         postBuilder = targetBuilder.targetMe();
       }
 
-      for (var file in files) {
-        print(file.fileType);
-      }
       // Check for file types and add them to the post
       var images =
           files.where((file) => file.fileType == MyFileType.image).toList();
@@ -336,22 +333,20 @@ class CreatePostVMV2 with ChangeNotifier {
           files.where((file) => file.fileType == MyFileType.file).toList();
 
       if (images.isNotEmpty) {
-        print("image was selected");
+        log("image was selected");
         List<AmityImage> images = [];
-        print("files length : ${files.length}");
+        log("files length : ${files.length}");
         for (var amityImage in files) {
-          print(amityImage.fileInfo);
-
           images.add(AmityImage(amityImage.fileInfo!.getFileProperties!));
         }
-        print("images length: ${images.length}");
+        log("images length: ${images.length}");
         var readyBuilder = postBuilder.image(images);
         if (textEditingController.text.isNotEmpty) {
           readyBuilder.text(textEditingController.text);
         }
         await readyBuilder.post().then((post) async {
           ///add post to feedx
-          print("success");
+          log("success");
           callback(true, null);
           if (isCommunity) {
             var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
@@ -371,21 +366,21 @@ class CreatePostVMV2 with ChangeNotifier {
               .showAlertErrorDialog(title: "Error!", message: error.toString());
         });
       } else if (videos.isNotEmpty) {
-        print("video was selected");
+        log("video was selected");
         List<AmityVideo> videos = [];
 
         for (var amityVideo in files) {
           AmityVideo video =
               AmityVideo(amityVideo.fileInfo!.getFileProperties!);
           videos.add(video);
-          print("add file to videos ${video.fileId}");
+          log("add file to videos ${video.fileId}");
         }
         var readyBuilder = postBuilder.video(videos);
         if (textEditingController.text.isNotEmpty) {
           readyBuilder.text(textEditingController.text);
         }
         await readyBuilder.post().then((post) async {
-          print("success...");
+          log("success...");
           // Add post to feed logic goes here...
           // Notify listeners or update UI accordingly
           if (isCommunity) {
@@ -404,13 +399,13 @@ class CreatePostVMV2 with ChangeNotifier {
           callback(true, null);
           notifyListeners();
         }).onError((error, stackTrace) async {
-          print(error);
+          log(error.toString());
           await AmityDialog()
               .showAlertErrorDialog(title: "Error!", message: error.toString());
         });
       } else if (otherFiles.isNotEmpty) {
-        print("file was selected");
-        print(otherFiles[0].fileType);
+        log("file was selected");
+
         var readyBuilder = postBuilder.file(otherFiles
             .map((f) => AmityFile(f.fileInfo!.getFileProperties!))
             .toList());
@@ -467,15 +462,15 @@ class CreatePostVMV2 with ChangeNotifier {
   Map<String, Uint8List> thumbnailCache = {};
   Future<ImageProvider> getImageProvider(String path) async {
     if (path.endsWith('.mp4') || path.endsWith('.MOV')) {
-      print("Checking for thumbnail...");
+      log("Checking for thumbnail...");
 
       // Check if the thumbnail data for this path is already available in the map
       if (thumbnailCache.containsKey(path)) {
-        print("found in cache");
+        log("found in cache");
         return MemoryImage(thumbnailCache[path]!);
       }
 
-      print("Generating thumbnail...");
+      log("Generating thumbnail...");
       final uint8list = await VideoThumbnail.thumbnailData(
         video: path,
         imageFormat: ImageFormat.PNG,

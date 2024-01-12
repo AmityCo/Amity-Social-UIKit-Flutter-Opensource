@@ -1,6 +1,6 @@
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:amity_sdk/amity_sdk.dart';
 import 'package:provider/provider.dart';
 
 enum ReactPostNotificationSetting { everyone, onlyModerator, off }
@@ -30,7 +30,7 @@ class _PostNotificationSettingPageState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Posts',
           style: TextStyle(
             color: Colors.black,
@@ -40,7 +40,7 @@ class _PostNotificationSettingPageState
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: ListView(
         children: [
@@ -98,8 +98,8 @@ class _PostNotificationSettingPageState
               });
             },
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
+          const Padding(
+            padding: EdgeInsets.only(left: 16, right: 16),
             child: Divider(
               thickness: 1,
             ),
@@ -157,7 +157,7 @@ class _PostNotificationSettingPageState
               });
             },
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     );
@@ -168,7 +168,7 @@ class _PostNotificationSettingPageState
       padding: const EdgeInsets.all(16.0),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 16,
           color: Color(0xff292B32),
@@ -185,7 +185,7 @@ class _PostNotificationSettingPageState
     return ListTile(
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           color: Color(0xff292B32),
         ),

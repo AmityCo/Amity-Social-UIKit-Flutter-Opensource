@@ -7,20 +7,37 @@ import 'package:provider/provider.dart';
 
 import '../../components/alert_dialog.dart';
 import 'amity_viewmodel.dart';
-import 'follower_following_viewmodel.dart';
+
+enum MediaType { photos, videos }
 
 class UserFeedVM extends ChangeNotifier {
+  MediaType _selectedMediaType = MediaType.photos;
+  void doSelectMedieType(MediaType mediaType) {
+    _selectedMediaType = mediaType;
+    log(_selectedMediaType.toString());
+    notifyListeners();
+  }
+
+  MediaType getMediaType() => _selectedMediaType;
+
   late AmityUser? amityUser;
   late AmityUserFollowInfo amityMyFollowInfo = AmityUserFollowInfo();
   late PagingController<AmityPost> _controller;
   final amityPosts = <AmityPost>[];
-
+  late PagingController<AmityPost> _imagePostController;
+  final amityImagePosts = <AmityPost>[];
+  late PagingController<AmityPost> _videoPostController;
+  final amityVideoPosts = <AmityPost>[];
   final scrollcontroller = ScrollController();
+  final imageScrollcontroller = ScrollController();
+  final videoScrollcontroller = ScrollController();
   bool loading = false;
 
   void initUserFeed(AmityUser user) async {
     getUser(user);
     listenForUserFeed(user.userId!);
+    listenForImageFeed(user.userId!);
+    listenForVideoFeed(user.userId!);
   }
 
   void getUser(AmityUser user) {
@@ -71,14 +88,83 @@ class UserFeedVM extends ChangeNotifier {
       _controller.fetchNextPage();
     });
 
-    scrollcontroller.addListener(loadnextpage);
+    videoScrollcontroller.addListener(() {
+      loadnextpage(scrollcontroller, _controller);
+    });
   }
 
-  void loadnextpage() {
-    if ((scrollcontroller.position.pixels ==
-            scrollcontroller.position.maxScrollExtent) &&
-        _controller.hasMoreItems) {
-      _controller.fetchNextPage();
+  void listenForImageFeed(String userId) {
+    _imagePostController = PagingController(
+      pageFuture: (token) => AmitySocialClient.newPostRepository()
+          .getPosts()
+          .targetUser(userId)
+          .types([AmityDataType.IMAGE])
+          .includeDeleted(false)
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () {
+          if (_imagePostController.error == null) {
+            amityImagePosts.clear();
+            amityImagePosts.addAll(_imagePostController.loadedItems);
+
+            notifyListeners();
+          } else {
+            //Error on pagination controller
+            log("Error: listenForUserFeed... with userId = $userId");
+            log("ERROR::${_imagePostController.error.toString()}");
+          }
+        },
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _imagePostController.fetchNextPage();
+    });
+
+    videoScrollcontroller.addListener(() {
+      loadnextpage(imageScrollcontroller, _imagePostController);
+    });
+  }
+
+  void listenForVideoFeed(String userId) {
+    _videoPostController = PagingController(
+      pageFuture: (token) => AmitySocialClient.newPostRepository()
+          .getPosts()
+          .targetUser(userId)
+          .types([AmityDataType.VIDEO])
+          .includeDeleted(false)
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () {
+          if (_videoPostController.error == null) {
+            amityVideoPosts.clear();
+            amityVideoPosts.addAll(_videoPostController.loadedItems);
+
+            notifyListeners();
+          } else {
+            //Error on pagination controller
+            log("Error: listenForUserFeed... with userId = $userId");
+            log("ERROR::${_videoPostController.error.toString()}");
+          }
+        },
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _videoPostController.fetchNextPage();
+    });
+
+    videoScrollcontroller.addListener(() {
+      loadnextpage(videoScrollcontroller, _videoPostController);
+    });
+  }
+
+  void loadnextpage(ScrollController scrollController,
+      PagingController<AmityPost> pagingController) {
+    if ((scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) &&
+        pagingController.hasMoreItems) {
+      pagingController.fetchNextPage();
     }
   }
 
@@ -116,12 +202,13 @@ class UserFeedVM extends ChangeNotifier {
   }
 
   void followButtonAction(AmityUser user, AmityFollowStatus amityFollowStatus) {
+    log(amityFollowStatus.toString());
     if (amityFollowStatus == AmityFollowStatus.NONE) {
       sendFollowRequest(user: user);
     } else if (amityFollowStatus == AmityFollowStatus.PENDING) {
       withdrawFollowRequest(user);
     } else if (amityFollowStatus == AmityFollowStatus.ACCEPTED) {
-      withdrawFollowRequest(user);
+      unfollowUser(user);
     } else {
       AmityDialog().showAlertErrorDialog(
           title: "Error!",
@@ -152,6 +239,19 @@ class UserFeedVM extends ChangeNotifier {
         .unfollow(user.userId!)
         .then((value) {
       log("withdrawFollowRequest: Success");
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
+  void unfollowUser(AmityUser user) {
+    AmityCoreClient.newUserRepository()
+        .relationship()
+        .unfollow(user.userId!)
+        .then((value) {
+      log("unfollowUser: Success");
       notifyListeners();
     }).onError((error, stackTrace) {
       AmityDialog()

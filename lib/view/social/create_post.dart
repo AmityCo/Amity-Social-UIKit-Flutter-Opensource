@@ -22,8 +22,8 @@ class CreatePostScreenState extends State<CreatePostScreen> {
       backgroundColor: Colors.white,
       elevation: 0,
       title: Text("create Post",
-          style:
-              theme.textTheme.headline6!.copyWith(fontWeight: FontWeight.w500)),
+          style: theme.textTheme.titleLarge!
+              .copyWith(fontWeight: FontWeight.w500)),
       leading: IconButton(
         onPressed: () {
           Navigator.of(context).pop();
@@ -88,7 +88,7 @@ class CreatePostScreenState extends State<CreatePostScreen> {
                   ),
                   child: Text(
                     "Submit Post",
-                    style: theme.textTheme.button,
+                    style: theme.textTheme.labelLarge,
                   ),
                 ),
               ),

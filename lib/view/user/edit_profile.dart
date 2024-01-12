@@ -100,7 +100,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     final myAppBar = AppBar(
       title: Text(
         "Edit Profile",
-        style: theme.textTheme.headline6,
+        style: theme.textTheme.titleLarge,
       ),
       backgroundColor: Colors.white,
       leading: IconButton(
@@ -155,7 +155,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           },
           child: Text(
             "Save",
-            style: theme.textTheme.button!.copyWith(
+            style: theme.textTheme.labelLarge!.copyWith(
                 color: Provider.of<ImagePickerVM>(
                           context,
                         ).imageState ==
@@ -229,7 +229,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         width: double.infinity,
                         child: Text(
                           "Profile Info",
-                          style: theme.textTheme.headline6!.copyWith(
+                          style: theme.textTheme.titleLarge!.copyWith(
                             color: Colors.grey,
                             fontSize: 16,
                           ),

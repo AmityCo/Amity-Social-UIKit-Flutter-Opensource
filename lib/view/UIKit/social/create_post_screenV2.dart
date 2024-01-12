@@ -1,15 +1,12 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/post_cpmponent.dart';
-
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 // import 'package:amity_uikit_beta_service/viewmodel/create_post_viewmodel.dart';
 // import 'package:amity_uikit_beta_service/viewmodel/media_viewmodel.dart';
 
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 class AmityCreatePostV2Screen extends StatefulWidget {
@@ -52,7 +49,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
             style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
           ),
           leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.chevron_left,
               color: Colors.black,
             ),
@@ -77,7 +74,6 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
             TextButton(
               onPressed: hasContent
                   ? () async {
-                      print(vm.isUploadComplete);
                       if (vm.isUploadComplete) {
                         if (widget.community == null) {
                           //creat post in user Timeline
@@ -139,7 +135,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                   ),
                 ),
               ),
-              Divider(),
+              const Divider(),
               Padding(
                 padding: const EdgeInsets.only(top: 16, bottom: 16),
                 child: Row(
@@ -209,7 +205,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
       String? debugingText}) {
     return Column(
       children: [
-        debugingText == null ? SizedBox() : Text(debugingText),
+        debugingText == null ? const SizedBox() : Text(debugingText),
         CircleAvatar(
           radius: 16,
           backgroundColor: Colors.grey[200],
@@ -247,13 +243,13 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
           ),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.only(top: 16.0), // Space at the top
+              padding: const EdgeInsets.only(top: 16.0), // Space at the top
               child: Wrap(
                 children: <Widget>[
                   ListTile(
                     leading: _iconButton(Icons.camera_alt_outlined,
                         isEnable: true, label: "Camera", onTap: () {}),
-                    title: Text('Camera'),
+                    title: const Text('Camera'),
                     onTap: () {
                       _handleCameraTap(context);
                       Navigator.pop(context);
@@ -262,7 +258,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                   ListTile(
                     leading: _iconButton(Icons.image_outlined,
                         isEnable: true, label: "Photo", onTap: () {}),
-                    title: Text('Photo'),
+                    title: const Text('Photo'),
                     onTap: () {
                       _handleImageTap(context);
                       Navigator.pop(context);
@@ -271,7 +267,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                   ListTile(
                     leading: _iconButton(Icons.attach_file_rounded,
                         isEnable: true, label: "Attachment", onTap: () {}),
-                    title: Text('Attachment'),
+                    title: const Text('Attachment'),
                     onTap: () {
                       _handleFileTap(context);
                       Navigator.pop(context);
@@ -280,7 +276,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                   ListTile(
                     leading: _iconButton(Icons.play_circle_outline_outlined,
                         isEnable: true, label: "Video", onTap: () {}),
-                    title: Text('Video'),
+                    title: const Text('Video'),
                     onTap: () {
                       _handleVideoTap(context);
                       Navigator.pop(context);
@@ -299,19 +295,19 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Discard Post?'),
-        content: Text('Do you want to discard your post?'),
+        title: const Text('Discard Post?'),
+        content: const Text('Do you want to discard your post?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
               Navigator.of(context).pop();
             },
-            child: Text('Discard'),
+            child: const Text('Discard'),
           ),
         ],
       ),

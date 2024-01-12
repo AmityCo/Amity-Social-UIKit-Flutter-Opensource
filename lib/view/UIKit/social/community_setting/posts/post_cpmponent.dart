@@ -1,15 +1,10 @@
-import 'dart:io';
+import 'dart:developer';
 
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/media_viewmodel.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class PostMedia extends StatelessWidget {
   final List<UIKitFileSystem> files;
@@ -17,10 +12,10 @@ class PostMedia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildMediaGrid(List<UIKitFileSystem> files) {
+    Widget buildMediaGrid(List<UIKitFileSystem> files) {
       if (files.isEmpty) return Container();
 
-      Widget _backgroundImage(UIKitFileSystem file, int index) {
+      Widget backgroundImage(UIKitFileSystem file, int index) {
         // var file = files[index];
         int rawprogress =
             Provider.of<CreatePostVMV2>(context).files[0].progress;
@@ -41,7 +36,7 @@ class PostMedia extends StatelessWidget {
                 ),
               ),
               progress == 1
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Align(
@@ -51,7 +46,7 @@ class PostMedia extends StatelessWidget {
                           minHeight: 4.0,
                           backgroundColor: Colors.black38,
                           valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                              const AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       ),
                     ),
@@ -59,10 +54,10 @@ class PostMedia extends StatelessWidget {
                 top: 0,
                 right: 0,
                 child: IconButton(
-                  icon: Icon(Icons.close, color: Colors.white),
+                  icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () {
-                    print("delete file...");
-                    print("delete file...");
+                    log("delete file...");
+                    log("delete file...");
                     Provider.of<CreatePostVMV2>(context, listen: false)
                         .deselectFile(
                             Provider.of<CreatePostVMV2>(context, listen: false)
@@ -79,15 +74,15 @@ class PostMedia extends StatelessWidget {
         case 1:
           return AspectRatio(
             aspectRatio: 1,
-            child: _backgroundImage(files[0], 0),
+            child: backgroundImage(files[0], 0),
           );
 
         case 2:
           return AspectRatio(
             aspectRatio: 1,
             child: Row(children: [
-              Expanded(child: _backgroundImage(files[0], 0)),
-              Expanded(child: _backgroundImage(files[1], 1))
+              Expanded(child: backgroundImage(files[0], 0)),
+              Expanded(child: backgroundImage(files[1], 1))
             ]),
           );
 
@@ -96,12 +91,12 @@ class PostMedia extends StatelessWidget {
             aspectRatio: 1,
             child: Column(
               children: [
-                Expanded(child: _backgroundImage(files[0], 0)),
+                Expanded(child: backgroundImage(files[0], 0)),
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(child: _backgroundImage(files[1], 0)),
-                      Expanded(child: _backgroundImage(files[2], 0)),
+                      Expanded(child: backgroundImage(files[1], 0)),
+                      Expanded(child: backgroundImage(files[2], 0)),
                     ],
                   ),
                 ),
@@ -114,26 +109,26 @@ class PostMedia extends StatelessWidget {
             aspectRatio: 1,
             child: Column(
               children: [
-                Expanded(child: _backgroundImage(files[0], 0)),
+                Expanded(child: backgroundImage(files[0], 0)),
                 Expanded(
                   child: Row(
                     children: [
                       Expanded(
                         child: AspectRatio(
                           aspectRatio: 1,
-                          child: _backgroundImage(files[1], 1),
+                          child: backgroundImage(files[1], 1),
                         ),
                       ),
                       Expanded(
                         child: AspectRatio(
                           aspectRatio: 1,
-                          child: _backgroundImage(files[2], 2),
+                          child: backgroundImage(files[2], 2),
                         ),
                       ),
                       Expanded(
                         child: AspectRatio(
                           aspectRatio: 1,
-                          child: _backgroundImage(files[3], 3),
+                          child: backgroundImage(files[3], 3),
                         ),
                       ),
                     ],
@@ -146,18 +141,18 @@ class PostMedia extends StatelessWidget {
         default:
           return GridView.count(
             crossAxisCount: 3,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             children: files.asMap().entries.map((entry) {
               int index = entry.key;
               var file = entry.value;
-              return _backgroundImage(file, index);
+              return backgroundImage(file, index);
             }).toList(),
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
           );
       }
     }
 
-    String _getFileImage(String filePath) {
+    String getFileImage(String filePath) {
       String extension = filePath.split('.').last;
       switch (extension) {
         case 'audio':
@@ -197,7 +192,7 @@ class PostMedia extends StatelessWidget {
       }
     }
 
-    Widget _listMediaGrid(List<UIKitFileSystem> files) {
+    Widget listMediaGrid(List<UIKitFileSystem> files) {
       return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: files.length,
@@ -208,18 +203,18 @@ class PostMedia extends StatelessWidget {
               Provider.of<CreatePostVMV2>(context).files[index].progress;
           var progress = rawprogress / 100.0;
 
-          String fileImage = _getFileImage(file.file.path);
+          String fileImage = getFileImage(file.file.path);
 
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(4.0),
               border: Border.all(
-                color: Color(0xffEBECEF),
+                color: const Color(0xffEBECEF),
                 width: 1.0,
               ),
             ),
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             child: Stack(
               children: [
                 // Progress indicator
@@ -238,10 +233,10 @@ class PostMedia extends StatelessWidget {
                           Icons.warning,
                           color: Colors.grey,
                         )))
-                    : SizedBox(),
+                    : const SizedBox(),
                 ListTile(
                   onTap: () {},
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                       vertical: 8, horizontal: 14), // Reduced padding
                   tileColor: Colors.white.withOpacity(0.0),
                   leading: Container(
@@ -260,14 +255,14 @@ class PostMedia extends StatelessWidget {
                     children: [
                       Text(
                         file.file.path.split('/').last,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black,
                         ),
                       ),
                       Text(
                         '${(file.file.lengthSync() / 1024).toStringAsFixed(2)} KB',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
                         ),
@@ -276,13 +271,13 @@ class PostMedia extends StatelessWidget {
                   ),
                   trailing: GestureDetector(
                     onTap: () {
-                      print("delete file...");
+                      log("delete file...");
                       Provider.of<CreatePostVMV2>(context, listen: false)
                           .deselectFile(Provider.of<CreatePostVMV2>(context,
                                   listen: false)
                               .files[index]);
                     },
-                    child: Icon(Icons.close),
+                    child: const Icon(Icons.close),
                   ),
                 )
               ],
@@ -311,7 +306,7 @@ class PostMedia extends StatelessWidget {
       return Container(); // No non-image, non-video, non-audio files to display.
     }
     return isNotImageVideoOrAudio(files[0])
-        ? _listMediaGrid(files)
-        : _buildMediaGrid(files);
+        ? listMediaGrid(files)
+        : buildMediaGrid(files);
   }
 }

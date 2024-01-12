@@ -22,7 +22,6 @@ dependencies:
   modal_bottom_sheet: ^2.1.0
   amity_sdk: ^0.30.0
   provider: ^6.0.3
-  optimized_cached_image: ^3.0.1
   carousel_slider: ^4.1.1
   chewie: ^1.3.4
   video_player: ^2.4.5
@@ -91,7 +90,8 @@ flutter:
     - assets/images/IMG_5637.JPG
     - assets/images/fileType/
     - assets/Icons/
-
+    - assets/images/Icon name.png
+    - assets/images/user_placeholder.png
 
 
 

@@ -33,12 +33,12 @@ class _SingleChatRoomState extends State<SingleChatRoom> {
   @override
   Widget build(BuildContext context) {
     return Provider.of<ChannelVM>(context).amitySingleChannel == null
-        ? Scaffold(
+        ? const Scaffold(
             body: Row(
               children: [
                 Expanded(
                     child: Column(
-                  children: const [CircularProgressIndicator()],
+                  children: [CircularProgressIndicator()],
                 ))
               ],
             ),

@@ -1,26 +1,35 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:amity_uikit_beta_service/amity_sle_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-
-import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
-
-import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
+import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
+import 'package:amity_uikit_beta_service_example/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
   ///Step 1: Initialize amity SDK with the following function
   WidgetsFlutterBinding.ensureInitialized();
-
-  runApp(MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Flutter Demo',
       home: MyHomePage(),
     );
@@ -28,6 +37,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -46,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _apiKey.text = prefs.getString('apiKey') ?? "";
-      print(_apiKey);
+
       String? selectedRegionString = prefs.getString('selectedRegion');
       if (selectedRegionString != null) {
         _selectedRegion = AmityRegion.values.firstWhere(
@@ -64,22 +75,22 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('API Configuration'),
+        title: const Text('API Configuration'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextFormField(
               controller: _apiKey,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'API Key',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
-            Text('Select Region:'),
+            const SizedBox(height: 20),
+            const Text('Select Region:'),
             ...AmityRegion.values.map((region) {
               return RadioListTile<AmityRegion>(
                 title: Text(region.toString().split('.').last.toUpperCase()),
@@ -96,33 +107,30 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             }).toList(),
             if (_selectedRegion == AmityRegion.custom) ...[
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Custom URL',
                   border: OutlineInputBorder(),
                 ),
                 controller: _customUrl,
               ),
             ],
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             ElevatedButton(
-                child: Text('Initialize'),
+                child: const Text('Initialize'),
                 onPressed: () async {
-                  if (_apiKey != null &&
-                      _selectedRegion != null &&
-                      (_selectedRegion != AmityRegion.custom ||
-                          _customUrl != null)) {
+                  if (_selectedRegion != null &&
+                      (_selectedRegion != AmityRegion.custom)) {
                     final prefs = await SharedPreferences.getInstance();
-                    print(_apiKey);
+
                     await prefs.setString('apiKey', _apiKey.text);
                     await prefs.setString(
                         'selectedRegion', _selectedRegion.toString());
-                    if (_selectedRegion == AmityRegion.custom &&
-                        _customUrl != null) {
+                    if (_selectedRegion == AmityRegion.custom) {
                       await prefs.setString('customUrl', _customUrl.text);
                     }
-                    print("save pref");
+                    log("save pref");
 
                     await AmitySLEUIKit().initUIKit(
                         apikey: _apiKey.text,
@@ -131,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     // Navigate to the nextx page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AmityApp()),
+                      MaterialPageRoute(builder: (context) => const AmityApp()),
                     );
                   }
                 }),
@@ -148,20 +156,22 @@ class AmityApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AmitySLEProvider(
       child: Builder(builder: (context2) {
-        return UserListPage();
+        return const UserListPage();
       }),
     );
   }
 }
 
 class UserListPage extends StatefulWidget {
+  const UserListPage({super.key});
+
   @override
   _UserListPageState createState() => _UserListPageState();
 }
 
 class _UserListPageState extends State<UserListPage> {
   List<String> _usernames = [];
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -190,7 +200,7 @@ class _UserListPageState extends State<UserListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User List'),
+        title: const Text('User List'),
       ),
       body: Column(
         children: [
@@ -198,7 +208,7 @@ class _UserListPageState extends State<UserListPage> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _controller,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Username',
                 border: OutlineInputBorder(),
               ),
@@ -206,7 +216,7 @@ class _UserListPageState extends State<UserListPage> {
           ),
           ElevatedButton(
             onPressed: _addUsername,
-            child: Text('Add Username'),
+            child: const Text('Add Username'),
           ),
           Expanded(
             child: ListView.builder(
@@ -215,16 +225,16 @@ class _UserListPageState extends State<UserListPage> {
                 return ListTile(
                   title: Text(_usernames[index]),
                   onTap: () async {
-                    print("login");
+                    log("login");
 
                     ///Step 3: login with Amity
                     await AmitySLEUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
                       callback: (isSuccess, error) {
-                        print("callback:${isSuccess}");
+                        log("callback:$isSuccess");
                         if (isSuccess) {
-                          print("success");
+                          log("success");
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
@@ -232,7 +242,6 @@ class _UserListPageState extends State<UserListPage> {
                             ),
                           );
                         } else {
-                          print(error);
                           AmityDialog().showAlertErrorDialog(
                               title: "Error", message: error.toString());
                         }
@@ -270,14 +279,14 @@ class SecondPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Social'),
+              child: const Text('Social'),
             ),
             ElevatedButton(
               onPressed: () {
                 // Navigator.of(context).pushNamed('/third',
                 //     arguments: {'username': username, 'feature': 'Chat'});
               },
-              child: Text('Chat'),
+              child: const Text('Chat'),
             ),
           ],
         ),
@@ -290,34 +299,144 @@ class ThirdPage extends StatelessWidget {
   const ThirdPage({super.key, required this.username});
   final String username;
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Social'),
+        title: const Text('Social'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ListTile(
-              title: Text('Register push notification'),
-              onTap: () {
-                // Navigate or perform action based on 'Global Feed' tap
-                AmitySLEUIKit().registerNotification("asdasdasdasd",
-                    (isSuccess, error) {
-                  return;
-                });
+              title: const Text('Register push notification'),
+              onTap: () async {
+                FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+                NotificationSettings settings =
+                    await messaging.requestPermission();
+
+                if (settings.authorizationStatus ==
+                        AuthorizationStatus.authorized ||
+                    settings.authorizationStatus ==
+                        AuthorizationStatus.provisional) {
+                  String? token;
+                  String tokenType = Platform.isIOS ? "APNS" : "FCM";
+
+                  if (Platform.isIOS) {
+                    log("getting token");
+                    token =
+                        await messaging.getAPNSToken().catchError((e) async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Error'),
+                            content: Text(e),
+                          );
+                        },
+                      );
+                      return e;
+                    });
+                    log("apns Token : $token");
+                  } else {
+                    token = await messaging.getToken();
+                    log("getting 3token");
+                    token =
+                        await messaging.getAPNSToken().catchError((e) async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Error'),
+                            content: Text(e),
+                          );
+                        },
+                      );
+                      return e;
+                    });
+                    log("android token Token : $token");
+                  }
+
+                  if (token != null) {
+                    log('Firebase Push Token ($tokenType): $token');
+                    await AmitySLEUIKit().registerNotification(token,
+                        (isSuccess, error) async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: isSuccess
+                                ? const Text('Success')
+                                : const Text('Error'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text(isSuccess
+                                      ? 'Push notification registered successfully.\nToken Type: $tokenType\nToken: $token'
+                                      : 'Failed to register push notification.\nError: $error'),
+                                  if (isSuccess)
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Clipboard.setData(ClipboardData(
+                                            text: token ?? "no token"));
+                                      },
+                                      child: const Text('Copy Token'),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                  child: const Text('Close'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }),
+                            ],
+                          );
+                        },
+                      );
+                    });
+                  } else {
+                    log('Failed to get the Firebase token');
+                    // ignore: use_build_context_synchronously
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const AlertDialog(
+                          title: Text('Error'),
+                          content: Text('Failed to get the Firebase token'),
+                        );
+                      },
+                    );
+                  }
+                } else {
+                  log('Push notification permission was declined');
+
+                  // ignore: use_build_context_synchronously
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        title: Text('Error'),
+                        content:
+                            Text('Push notification permission was declined'),
+                      );
+                    },
+                  );
+                }
               },
             ),
             ListTile(
-              title: Text('unregister'),
+              title: const Text('unregister'),
               onTap: () {
                 // Navigate or perform action based on 'Global Feed' tap
                 AmitySLEUIKit().unRegisterDevice();
               },
             ),
             ListTile(
-              title: Text('Global Feed'),
+              title: const Text('Global Feed'),
               onTap: () {
                 // Navigate or perform action based on 'Global Feed' tap
                 Navigator.of(context).push(MaterialPageRoute(
@@ -327,50 +446,51 @@ class ThirdPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: Text('User Profile'),
+              title: const Text('User Profile'),
               onTap: () {
                 // Navigate or perform action based on 'User Profile' tap
               },
             ),
             ListTile(
-              title: Text('Newsfeed'),
+              title: const Text('Newsfeed'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
               },
             ),
             ListTile(
-              title: Text('Create Community'),
+              title: const Text('Create Community'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Scaffold(body: CreateCommunityPage()),
+                  builder: (context) =>
+                      const Scaffold(body: CreateCommunityPage()),
                 ));
               },
             ),
             ListTile(
-              title: Text('Create Post'),
+              title: const Text('Create Post'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Scaffold(body: PostToPage()),
+                  builder: (context) => const Scaffold(body: PostToPage()),
                 ));
               },
             ),
             ListTile(
-              title: Text('My Community'),
+              title: const Text('My Community'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Scaffold(body: MyCommunityPage()),
+                  builder: (context) => const Scaffold(body: MyCommunityPage()),
                 ));
               },
             ),
             ListTile(
-              title: Text('Explore'),
+              title: const Text('Explore'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Scaffold(body: CommunityPage()),
+                  builder: (context) => const Scaffold(body: CommunityPage()),
                 ));
               },
             ),

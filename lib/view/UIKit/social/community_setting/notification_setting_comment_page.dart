@@ -1,6 +1,6 @@
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:amity_sdk/amity_sdk.dart';
 import 'package:provider/provider.dart';
 
 enum NotificationSetting { everyone, onlyModerator, off }
@@ -27,7 +27,7 @@ class _CommentsNotificationSettingPageState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Comments',
           style: TextStyle(
             color: Colors.black,
@@ -37,7 +37,7 @@ class _CommentsNotificationSettingPageState
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: ListView(
         children: [
@@ -75,7 +75,7 @@ class _CommentsNotificationSettingPageState
               });
             },
           ),
-          Divider(),
+          const Divider(),
 
           // Section 2: New Comments
           _buildSectionHeader('New Comments'),
@@ -111,7 +111,7 @@ class _CommentsNotificationSettingPageState
               });
             },
           ),
-          Divider(),
+          const Divider(),
 
           // Section 3: Replies
           _buildSectionHeader('Replies'),
@@ -147,7 +147,7 @@ class _CommentsNotificationSettingPageState
               });
             },
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     );
@@ -158,7 +158,7 @@ class _CommentsNotificationSettingPageState
       padding: const EdgeInsets.all(16.0),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 16,
           color: Color(0xff292B32),
@@ -172,7 +172,7 @@ class _CommentsNotificationSettingPageState
       padding: const EdgeInsets.only(left: 16.0, bottom: 16, right: 16),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           color: Color(0xff636878),
         ),
@@ -188,7 +188,7 @@ class _CommentsNotificationSettingPageState
     return ListTile(
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           color: Color(0xff292B32),
         ),

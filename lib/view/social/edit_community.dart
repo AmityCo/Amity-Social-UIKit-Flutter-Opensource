@@ -1,7 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
@@ -45,7 +44,7 @@ class EditCommunityScreenState extends State<EditCommunityScreen> {
     final myAppBar = AppBar(
       title: Text(
         "Edit Community",
-        style: theme.textTheme.headline6,
+        style: theme.textTheme.titleLarge,
       ),
       backgroundColor: Colors.white,
       leading: IconButton(
@@ -70,7 +69,7 @@ class EditCommunityScreenState extends State<EditCommunityScreen> {
           },
           child: Text(
             "Save",
-            style: theme.textTheme.button!.copyWith(
+            style: theme.textTheme.labelLarge!.copyWith(
                 color: Provider.of<AmityUIConfiguration>(context).primaryColor,
                 fontWeight: FontWeight.bold),
           ),
@@ -138,7 +137,7 @@ class EditCommunityScreenState extends State<EditCommunityScreen> {
                         width: double.infinity,
                         child: Text(
                           "Community Info",
-                          style: theme.textTheme.headline6!.copyWith(
+                          style: theme.textTheme.titleLarge!.copyWith(
                             color: Colors.grey,
                             fontSize: 16,
                           ),

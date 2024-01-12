@@ -33,7 +33,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
           backgroundColor: Colors.black,
           title: Text('${_currentIndex + 1}/${widget.files.length}'),
           leading: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),

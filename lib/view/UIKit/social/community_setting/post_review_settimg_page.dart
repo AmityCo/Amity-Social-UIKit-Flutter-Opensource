@@ -28,7 +28,7 @@ class _PostReviewPageState extends State<PostReviewPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Post Review',
           style: TextStyle(
             color: Colors.black,
@@ -38,7 +38,7 @@ class _PostReviewPageState extends State<PostReviewPage> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: ListView(
         children: [
@@ -80,7 +80,7 @@ class _PostReviewPageState extends State<PostReviewPage> {
               // inactiveTrackColor: Color(0xffEBECEF),
             ),
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     );

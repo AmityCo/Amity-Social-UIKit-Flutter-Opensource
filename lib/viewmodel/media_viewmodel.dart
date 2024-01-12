@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_post_viewmodel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -61,7 +62,7 @@ class MediaPickerVM with ChangeNotifier {
     try {
       List<XFile>? pickedImages = await _picker.pickMultiImage();
 
-      if (pickedImages != null && pickedImages.isNotEmpty) {
+      if (pickedImages.isNotEmpty) {
         for (var image in pickedImages) {
           _selectedFiles.add(File(image.path));
         }

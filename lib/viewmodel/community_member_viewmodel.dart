@@ -193,7 +193,7 @@ class MemberManagementVM extends ChangeNotifier {
 
       notifyListeners();
     }).onError((error, stackTrace) {
-      print("${error},${stackTrace}");
+      print("$error,$stackTrace");
       // AmityDialog()
       //     .showAlertErrorDialog(title: "Error!", message: error.toString());
     });

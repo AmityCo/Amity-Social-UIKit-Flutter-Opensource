@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../viewmodel/configuration_viewmodel.dart';
 import '../utils/env_manager.dart';
+import '../viewmodel/configuration_viewmodel.dart';
 
-Widget getAvatarImage(String? url, {double? radius, String? fileId}) {
+Widget getAvatarImage(String? url, {double? radius = 20, String? fileId}) {
   return CircleAvatar(
-    radius: radius,
-    backgroundColor: Colors.transparent,
-    backgroundImage: url != null
-        ? NetworkImage("$url?size=medium")
-        : (fileId != null
-            ? NetworkImage(
-                "https://api.${env!.region}.amity.co/api/v3/files/$fileId/download?size=medium")
-            : const AssetImage("assets/images/user_placeholder.png",
-                package: "amity_uikit_beta_service") as ImageProvider),
-  );
+      radius: radius,
+      backgroundColor: const Color(0xFFD9E5FC),
+      backgroundImage: url != null ? NetworkImage("$url?size=medium") : null,
+      child: url != null
+          ? const SizedBox()
+          : Icon(
+              Icons.person,
+              color: Colors.white,
+              size: radius! * 1.5,
+            ));
 }
 
 Widget getNotificationAvatarImage(String? url,

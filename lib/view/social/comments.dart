@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/post_content_widget.dart';
+import 'package:amity_uikit_beta_service/view/user/edit_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
@@ -785,7 +786,16 @@ class _CommentComponentState extends State<CommentComponent> {
                                 onTap: () {
                                   // Navigate to user profile
                                 },
-                                child: getAvatarImage(comments.user!.avatarUrl),
+                                child: GestureDetector(
+                                    onTap: () async {
+                                      await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfileScreen(
+                                                      user: comments.user!)));
+                                    },
+                                    child: getAvatarImage(
+                                        comments.user!.avatarUrl)),
                               ),
                               title: Text(
                                 comments.user!.displayName!,

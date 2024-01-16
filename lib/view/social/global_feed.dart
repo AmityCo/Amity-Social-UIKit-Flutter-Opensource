@@ -507,8 +507,7 @@ class _PostWidgetState extends State<PostWidget>
                                 widget.post.myReactions!.contains("like")
                                     ? GestureDetector(
                                         onTap: () {
-                                          log(widget.post.myReactions
-                                              .toString());
+                                          print(widget.post.myReactions);
                                           HapticFeedback.heavyImpact();
                                           Provider.of<PostVM>(context,
                                                   listen: false)
@@ -545,8 +544,7 @@ class _PostWidgetState extends State<PostWidget>
                                         ))
                                     : GestureDetector(
                                         onTap: () {
-                                          log(widget.post.myReactions
-                                              .toString());
+                                          print(widget.post.myReactions);
                                           HapticFeedback.heavyImpact();
                                           Provider.of<PostVM>(context,
                                                   listen: false)
@@ -581,12 +579,14 @@ class _PostWidgetState extends State<PostWidget>
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => CommentScreen(
-                                        amityPost: widget.post,
-                                        theme: widget.theme,
-                                        isFromFeed: true,
-                                      )));
+                              if (widget.isFromFeed) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => CommentScreen(
+                                          amityPost: widget.post,
+                                          theme: widget.theme,
+                                          isFromFeed: true,
+                                        )));
+                              }
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -728,8 +728,10 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         shrinkWrap: true,
         itemCount: widget.comments.length,
         itemBuilder: (context, index) {
-          log("latestComments objec index $index: ${widget.comments[index].data}");
-          log("latestComments user object index $index: ${widget.comments[index].user}");
+          print(
+              "latestComments objec index $index: ${widget.comments[index].data}");
+          print(
+              "latestComments user object index $index: ${widget.comments[index].user}");
           return StreamBuilder<AmityComment>(
             // key: Key(widget.comments[index].commentId!),
             stream: widget.comments[index].listen.stream,

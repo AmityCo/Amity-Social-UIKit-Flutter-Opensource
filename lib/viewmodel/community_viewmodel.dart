@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/viewmodel/create_post_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -232,18 +230,18 @@ class CommunityVM extends ChangeNotifier {
       AmityLoadingDialog.showLoadingDialog();
       //log(xFile.path);
 
-      await AmityCoreClient.newFileRepository()
+      AmityCoreClient.newFileRepository()
           .uploadImage(pickedFile!)
           .stream
           .listen((amityUploadResult) {
         amityUploadResult.when(
           progress: (uploadInfo, cancelToken) {
             int progress = uploadInfo.getProgressPercentage();
-            print(progress);
+            log(progress.toString());
           },
           complete: (file) {
             //check if the upload result is complete
-            print("complete");
+            log("complete");
             AmityLoadingDialog.hideLoadingDialog();
             final AmityImage uploadedImage = file;
             amityImages = uploadedImage;
@@ -265,7 +263,7 @@ class CommunityVM extends ChangeNotifier {
 
   XFile? _seletedFIle;
   Future selectFile() async {
-    _seletedFIle = await ImagePicker().pickImage(source: ImageSource.gallery)!;
+    _seletedFIle = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (_seletedFIle != null) {
       pickedFile = File(_seletedFIle!.path);
       notifyListeners();
@@ -285,11 +283,11 @@ class CommunityVM extends ChangeNotifier {
           amityUploadResult.when(
             progress: (uploadInfo, cancelToken) {
               int progress = uploadInfo.getProgressPercentage();
-              print(progress);
+              log(progress.toString());
             },
             complete: (file) {
               //check if the upload result is complete
-              print("complete");
+              log("complete");
               final AmityImage uploadedImage = file;
               amityImages = uploadedImage;
               //proceed result with uploadedImage
@@ -329,16 +327,12 @@ class CommunityVM extends ChangeNotifier {
       AmitySuccessDialog.showTimedDialog("Community deleted");
       notifyListeners(); // To update the UI after removing the community
 
-      if (callback != null) {
-        callback(true); // Success status
-      }
+      callback(true); // Success status
     }).onError((error, stackTrace) async {
       //handle error
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
-      if (callback != null) {
-        callback(false); // Failure status
-      }
+      callback(false); // Failure status
     });
   }
 
@@ -354,7 +348,7 @@ class CommunityVM extends ChangeNotifier {
         .update()
         .then((value) {
       //handle result
-      print("success");
+      log("success");
     }).onError((error, stackTrace) async {
       //handle error
       await AmityDialog()

@@ -1,26 +1,21 @@
-import 'dart:io';
+import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/utils/download_manager.dart';
 import 'package:amity_uikit_beta_service/view/social/imag_viewer.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
+import 'package:http/http.dart' as http;
 import 'package:linkify/linkify.dart';
 import 'package:linkwell/linkwell.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+
 import '../../components/video_player.dart';
-import 'package:http/http.dart' as http;
 import 'comments.dart';
 import 'image_viewer.dart';
-import 'package:file_picker/file_picker.dart';
 
 class AmityPostWidget extends StatefulWidget {
   final List<AmityPost> posts;
@@ -103,7 +98,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
 
   bool urlValidation(AmityPost post) {
     final url = extractLink(post); //urlExtraction(post);
-    log("checking url validation ${url}");
+    log("checking url validation $url");
     return AnyLinkPreview.isValidLink(url);
   }
 
@@ -263,7 +258,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
   //     var video = await data.getVideo(AmityVideoQuality.MEDIUM);
   //     var videoURL = video.fileUrl;
   //     // Logic to play the video, e.g., navigate to a video player widget
-  //     print(videoURL);
+  //     log(videoURL);
   //     Navigator.of(context).push(MaterialPageRoute(
   //       builder: (_) => MyVideoPlayer2(
   //         url: videoURL!,
@@ -474,7 +469,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                           Center(
                             child: Text(
                               "${files.length - 3}+",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 24, // Adjust the font size as needed
                                 fontWeight: FontWeight.bold,
@@ -496,7 +491,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
   Widget _buildMediaGrid(List<AmityPost> files) {
     if (files.isEmpty) return Container();
 
-    Widget _backgroundImage(String fileUrl, int index,
+    Widget backgroundImage(String fileUrl, int index,
         {BorderRadius? borderRadius}) {
       return GestureDetector(
         onTap: () {
@@ -514,7 +509,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
             decoration: BoxDecoration(
               borderRadius: borderRadius,
               image: DecorationImage(
-                image: NetworkImage("${fileUrl}"),
+                image: NetworkImage(fileUrl),
                 fit: BoxFit.cover,
               ),
             ),
@@ -539,7 +534,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
       case 1:
         return AspectRatio(
           aspectRatio: 1,
-          child: _backgroundImage(getURL(files[0].data!), 0,
+          child: backgroundImage(getURL(files[0].data!), 0,
               borderRadius: BorderRadius.circular(8)),
         );
 
@@ -548,12 +543,12 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           aspectRatio: 1,
           child: Row(children: [
             Expanded(
-                child: _backgroundImage(getURL(files[0].data!), 0,
+                child: backgroundImage(getURL(files[0].data!), 0,
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(8),
                         bottomLeft: Radius.circular(8)))),
             Expanded(
-                child: _backgroundImage(getURL(files[1].data!), 1,
+                child: backgroundImage(getURL(files[1].data!), 1,
                     borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomRight: Radius.circular(8))))
@@ -566,7 +561,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           child: Column(
             children: [
               Expanded(
-                  child: _backgroundImage(getURL(files[0].data!), 0,
+                  child: backgroundImage(getURL(files[0].data!), 0,
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8),
                           topRight: Radius.circular(8)))),
@@ -574,11 +569,11 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                 child: Row(
                   children: [
                     Expanded(
-                        child: _backgroundImage(getURL(files[1].data!), 1,
+                        child: backgroundImage(getURL(files[1].data!), 1,
                             borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(8)))),
                     Expanded(
-                        child: _backgroundImage(getURL(files[2].data!), 2,
+                        child: backgroundImage(getURL(files[2].data!), 2,
                             borderRadius: const BorderRadius.only(
                                 bottomRight: Radius.circular(8)))),
                   ],
@@ -594,7 +589,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           child: Column(
             children: [
               Expanded(
-                  child: _backgroundImage(getURL(files[0].data!), 0,
+                  child: backgroundImage(getURL(files[0].data!), 0,
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8),
                           topRight: Radius.circular(8)))),
@@ -603,7 +598,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                   Expanded(
                     child: AspectRatio(
                       aspectRatio: 1,
-                      child: _backgroundImage(getURL(files[1].data!), 1,
+                      child: backgroundImage(getURL(files[1].data!), 1,
                           borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(8))),
                     ),
@@ -611,13 +606,13 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                   Expanded(
                     child: AspectRatio(
                       aspectRatio: 1,
-                      child: _backgroundImage(getURL(files[2].data!), 2),
+                      child: backgroundImage(getURL(files[2].data!), 2),
                     ),
                   ),
                   Expanded(
                     child: AspectRatio(
                       aspectRatio: 1,
-                      child: _backgroundImage(getURL(files[3].data!), 3,
+                      child: backgroundImage(getURL(files[3].data!), 3,
                           borderRadius: const BorderRadius.only(
                               bottomRight: Radius.circular(8))),
                     ),
@@ -641,7 +636,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
             child: Column(
               children: [
                 Expanded(
-                    child: _backgroundImage(getURL(files[0].data!), 0,
+                    child: backgroundImage(getURL(files[0].data!), 0,
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(8),
                             topRight: Radius.circular(8)))),
@@ -650,7 +645,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                     Expanded(
                       child: AspectRatio(
                         aspectRatio: 1,
-                        child: _backgroundImage(getURL(files[1].data!), 1,
+                        child: backgroundImage(getURL(files[1].data!), 1,
                             borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(8),
                             )),
@@ -659,7 +654,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                     Expanded(
                       child: AspectRatio(
                         aspectRatio: 1,
-                        child: _backgroundImage(getURL(files[2].data!), 2),
+                        child: backgroundImage(getURL(files[2].data!), 2),
                       ),
                     ),
                     Expanded(
@@ -667,7 +662,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                         aspectRatio: 1,
                         child: Stack(
                           children: [
-                            _backgroundImage(getURL(files[3].data!), 3,
+                            backgroundImage(getURL(files[3].data!), 3,
                                 borderRadius: const BorderRadius.only(
                                     bottomRight: Radius.circular(8))),
                             // Black filter overlay
@@ -756,11 +751,11 @@ Widget _listMediaGrid(List<AmityPost> files) {
           color: Colors.white,
           borderRadius: BorderRadius.circular(4.0),
           border: Border.all(
-            color: Color(0xffEBECEF),
+            color: const Color(0xffEBECEF),
             width: 1.0,
           ),
         ),
-        margin: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
         child: Stack(
           children: [
             ListTile(
@@ -769,7 +764,7 @@ Widget _listMediaGrid(List<AmityPost> files) {
                   files[index].data!.fileInfo.fileUrl!,
                 );
               },
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                   vertical: 8, horizontal: 14), // Reduced padding
               tileColor: Colors.white.withOpacity(0.0),
               leading: Container(
@@ -788,14 +783,14 @@ Widget _listMediaGrid(List<AmityPost> files) {
                 children: [
                   Text(
                     "${files[index].data!.fileInfo.fileName}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black,
                     ),
                   ),
                   Text(
                     '${(files[index].data!.fileInfo.fileSize)} KB',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
                     ),
@@ -900,18 +895,14 @@ class ImagePost extends StatelessWidget {
                     horizontal: imageURLs.length > 1 ? 5.0 : 0.0),
                 decoration: const BoxDecoration(color: Colors.transparent),
                 child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(isCornerRadiusEnabled ? 10 : 0),
-                  child: OptimizedCacheImage(
-                    imageUrl: url,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey,
-                    ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
-                ),
+                    borderRadius:
+                        BorderRadius.circular(isCornerRadiusEnabled ? 10 : 0),
+                    child: FadeInImage(
+                      image: NetworkImage(url),
+                      fit: BoxFit.cover,
+                      placeholder: const AssetImage(
+                          'assets/images/placeholder.png'), // Local asset for placeholder
+                    )),
               ),
             );
           },
@@ -947,11 +938,11 @@ Future<Uint8List?> downloadFile(String url) async {
     if (response.statusCode == 200) {
       return response.bodyBytes;
     } else {
-      print('Failed to download file: ${response.statusCode}');
+      log('Failed to download file: ${response.statusCode}');
       return null;
     }
   } catch (e) {
-    print('Error occurred while downloading file: $e');
+    log('Error occurred while downloading file: $e');
     return null;
   }
 }

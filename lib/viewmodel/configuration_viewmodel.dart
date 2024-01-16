@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityUIConfiguration extends ChangeNotifier {
-  Color primaryColor = Color(0xFF1054DE);
+  Color primaryColor = const Color(0xFF1054DE);
   IconData placeHolderIcon = Icons.chat;
   Color displaynameColor = Colors.black;
   AmityIconConfig iconConfig = AmityIconConfig();

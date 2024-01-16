@@ -4,7 +4,6 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
@@ -15,7 +14,6 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 import 'viewmodel/amity_viewmodel.dart';
@@ -28,7 +26,6 @@ import 'viewmodel/feed_viewmodel.dart';
 import 'viewmodel/post_viewmodel.dart';
 import 'viewmodel/user_feed_viewmodel.dart';
 import 'viewmodel/user_viewmodel.dart';
-import 'utils/env_manager.dart';
 
 enum AmityRegion {
   sg,
@@ -49,7 +46,7 @@ class AmitySLEUIKit {
         if (customEndpoint != null) {
           amityEndpoint = AmityRegionalHttpEndpoint.custom(customEndpoint);
         } else {
-          print("please provide custom Endpoint");
+          log("please provide custom Endpoint");
         }
 
         break;
@@ -61,13 +58,13 @@ class AmitySLEUIKit {
         break;
       case AmityRegion.eu:
         {
-          amityEndpoint = AmityRegionalHttpEndpoint.US;
+          amityEndpoint = AmityRegionalHttpEndpoint.EU;
         }
 
         break;
       case AmityRegion.us:
         {
-          amityEndpoint = AmityRegionalHttpEndpoint.EU;
+          amityEndpoint = AmityRegionalHttpEndpoint.US;
         }
     }
 
@@ -86,11 +83,11 @@ class AmitySLEUIKit {
     await Provider.of<AmityVM>(context, listen: false)
         .login(userID: userId, displayName: displayName, authToken: authToken)
         .then((value) async {
-      print("login success");
+      log("login success");
       await Provider.of<UserVM>(context, listen: false)
           .initAccessToken()
           .then((value) {
-        print("initAccessToken success");
+        log("initAccessToken success");
         if (Provider.of<UserVM>(context, listen: false).accessToken != null ||
             Provider.of<UserVM>(context, listen: false).accessToken != "") {
           if (callback != null) {
@@ -102,8 +99,8 @@ class AmitySLEUIKit {
           }
         }
       }).onError((error, stackTrace) {
-        print("initAccessToken fail...");
-        print(error);
+        log("initAccessToken fail...");
+        log(error.toString());
         if (callback != null) {
           callback(true, error.toString());
         }
@@ -124,7 +121,7 @@ class AmitySLEUIKit {
     // await AmityCoreClient.unregisterDeviceNotification();
     // log("unregisterDeviceNotification");
     await AmityCoreClient.registerDeviceNotification(fcmToken).then((value) {
-      print("registerNotification succesfully ✅");
+      log("registerNotification succesfully ✅");
       callback(true, null);
     }).onError((error, stackTrace) {
       callback(false, "Initialize push notification fail...❌");

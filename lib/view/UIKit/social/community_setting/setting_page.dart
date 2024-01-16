@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
@@ -14,7 +16,8 @@ import 'package:provider/provider.dart';
 class CommunitySettingPage extends StatelessWidget {
   final AmityCommunity community;
 
-  CommunitySettingPage({Key? key, required this.community}) : super(key: key);
+  const CommunitySettingPage({Key? key, required this.community})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,32 +33,33 @@ class CommunitySettingPage extends StatelessWidget {
                   style: Provider.of<AmityUIConfiguration>(context)
                       .titleTextStyle),
               backgroundColor: Colors.white,
-              iconTheme: IconThemeData(color: Colors.black),
+              iconTheme: const IconThemeData(color: Colors.black),
             ),
             body: ListView(
               children: [
                 // Section 1: Basic Info
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Text("Basic Info",
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
                 ),
                 !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-                    ? SizedBox()
+                    ? const SizedBox()
                     : ListTile(
                         leading: Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
                                   4), // Adjust radius to your need
                               color: const Color(
                                   0xfff1f1f1), // Choose the color to fit your design
                             ),
-                            child: Icon(Icons.edit, color: Color(0xff292B32))),
-                        title: Text("Edit Profile"),
-                        trailing:
-                            Icon(Icons.chevron_right, color: Color(0xff292B32)),
+                            child: const Icon(Icons.edit,
+                                color: Color(0xff292B32))),
+                        title: const Text("Edit Profile"),
+                        trailing: const Icon(Icons.chevron_right,
+                            color: Color(0xff292B32)),
                         onTap: () {
                           // Navigate to Edit Profile Page or perform an action
                           Navigator.of(context).push(MaterialPageRoute(
@@ -65,17 +69,18 @@ class CommunitySettingPage extends StatelessWidget {
                       ),
                 ListTile(
                     leading: Container(
-                        padding: EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                               4), // Adjust radius to your need
                           color: const Color(
                               0xfff1f1f1), // Choose the color to fit your design
                         ),
-                        child: Icon(Icons.people, color: Color(0xff292B32))),
-                    title: Text("Members"),
-                    trailing:
-                        Icon(Icons.chevron_right, color: Color(0xff292B32)),
+                        child:
+                            const Icon(Icons.people, color: Color(0xff292B32))),
+                    title: const Text("Members"),
+                    trailing: const Icon(Icons.chevron_right,
+                        color: Color(0xff292B32)),
                     onTap: () {
                       // Navigate to Members Page or perform an action
                       Navigator.of(context).push(MaterialPageRoute(
@@ -84,17 +89,17 @@ class CommunitySettingPage extends StatelessWidget {
                     }),
                 ListTile(
                   leading: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
                             4), // Adjust radius to your need
                         color: const Color(
                             0xfff1f1f1), // Choose the color to fit your design
                       ),
-                      child:
-                          Icon(Icons.notifications, color: Color(0xff292B32))),
-                  title: Text("Notifications"),
-                  trailing: Row(
+                      child: const Icon(Icons.notifications,
+                          color: Color(0xff292B32))),
+                  title: const Text("Notifications"),
+                  trailing: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("On"), // Replace with dynamic text
@@ -109,7 +114,7 @@ class CommunitySettingPage extends StatelessWidget {
                   },
                 ),
                 !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-                    ? SizedBox()
+                    ? const SizedBox()
                     : const Padding(
                         padding: EdgeInsets.only(left: 16, right: 16),
                         child: Divider(
@@ -151,7 +156,7 @@ class CommunitySettingPage extends StatelessWidget {
                 //         },
                 //       ),
                 ListTile(
-                  title: Text(
+                  title: const Text(
                     "Leave Community",
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -166,9 +171,8 @@ class CommunitySettingPage extends StatelessWidget {
                             "You won't no longer be able to post and interact in this community after leaving.",
                         onConfirm: () async {
                           // Perform Leave Community action
-                          final communityVm = await Provider.of<CommunityVM>(
-                              context,
-                              listen: false);
+                          final communityVm =
+                              Provider.of<CommunityVM>(context, listen: false);
                           communityVm.leaveCommunity(community.communityId!,
                               callback: (bool isSuccess) {
                             if (isSuccess) {
@@ -191,7 +195,7 @@ class CommunitySettingPage extends StatelessWidget {
 
                 // Section 3: Close Community
                 !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-                    ? SizedBox()
+                    ? const SizedBox()
                     : ListTile(
                         title: const Text(
                           "Close Community",
@@ -201,8 +205,8 @@ class CommunitySettingPage extends StatelessWidget {
                             color: Colors.red,
                           ),
                         ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
+                        subtitle: const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
                           child: Text(
                             "Closing this community will remove the community page and all its content and comments.",
                             style: TextStyle(
@@ -229,7 +233,7 @@ class CommunitySettingPage extends StatelessWidget {
                               communityVm
                                   .deleteCommunity(community.communityId!,
                                       callback: (bool isSuccess) {
-                                print("onConfirm");
+                                log("onConfirm");
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                                 Provider.of<MyCommunityVM>(context,
@@ -242,9 +246,9 @@ class CommunitySettingPage extends StatelessWidget {
                       ),
 
                 !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-                    ? SizedBox()
-                    : Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
+                    ? const SizedBox()
+                    : const Padding(
+                        padding: EdgeInsets.only(left: 16, right: 16),
                         child: Divider(
                           color: Color(0xffEBECEF),
                           thickness: 1,

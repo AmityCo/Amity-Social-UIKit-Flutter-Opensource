@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
@@ -5,13 +7,11 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/set
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:provider/provider.dart';
 
 import '../../viewmodel/community_feed_viewmodel.dart';
 import '../../viewmodel/community_viewmodel.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
-import 'create_post_screen.dart';
 import 'edit_community.dart';
 import 'global_feed.dart';
 
@@ -44,7 +44,8 @@ class CommunityScreenState extends State<CommunityScreen> {
     if (url != null) {
       return NetworkImage(url);
     } else {
-      return const AssetImage("assets/images/user_placeholder.png");
+      return const AssetImage("assets/images/user_placeholder.png",
+          package: "amity_uikit_beta_service");
     }
   }
 
@@ -57,7 +58,7 @@ class CommunityScreenState extends State<CommunityScreen> {
         ),
         Text(
           community.description ?? "",
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
         ),
       ],
     );
@@ -89,25 +90,25 @@ class CommunityScreenState extends State<CommunityScreen> {
             Column(
               children: [
                 Text(community.postsCount.toString(),
-                    style: TextStyle(fontSize: 16)),
-                Text('posts',
+                    style: const TextStyle(fontSize: 16)),
+                const Text('posts',
                     style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
               ],
             ),
             Container(
-              color: Color(0xffE5E5E5), // Divider color
+              color: const Color(0xffE5E5E5), // Divider color
               height: 20,
               width: 1,
 
-              margin: EdgeInsets.symmetric(horizontal: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
             ),
             Column(
               children: [
                 Text(
                   community.membersCount.toString(),
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
-                Text('members',
+                const Text('members',
                     style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
               ],
             ),
@@ -153,18 +154,19 @@ class CommunityScreenState extends State<CommunityScreen> {
               ],
             ),
             Container(
-              padding: EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.only(left: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.lock,
                         color: Colors.white,
                         size: 16,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 7,
                       ),
                       Text(
@@ -178,7 +180,7 @@ class CommunityScreenState extends State<CommunityScreen> {
                     ],
                   ),
                   community.categories == null
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Text(
                           community.displayName != null
                               ? community.categories!.isEmpty
@@ -186,8 +188,10 @@ class CommunityScreenState extends State<CommunityScreen> {
                                   : community.categories![0]?.name ?? ""
                               : "",
                           style: const TextStyle(
-                              fontSize: 16, color: Colors.white)),
-                  SizedBox(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16,
+                              color: Colors.white)),
+                  const SizedBox(
                     height: 16,
                   )
                 ],
@@ -201,11 +205,11 @@ class CommunityScreenState extends State<CommunityScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               communityInfo(community),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               communityDescription(community),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Row(
@@ -220,7 +224,7 @@ class CommunityScreenState extends State<CommunityScreen> {
             ],
           ),
         ),
-        Divider()
+        const Divider()
       ],
     );
   }
@@ -261,6 +265,7 @@ class CommunityScreenState extends State<CommunityScreen> {
               appBar: myAppBar,
               floatingActionButton: (community.isJoined!)
                   ? FloatingActionButton(
+                      shape: const CircleBorder(),
                       onPressed: () async {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context2) => AmityCreatePostV2Screen(
@@ -357,7 +362,7 @@ class _EditProfileButtonState extends State<EditProfileButton> {
   Widget build(BuildContext context) {
     return !widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY)
         ? widget.community.isJoined!
-            ? SizedBox()
+            ? const SizedBox()
             : InkWell(
                 onTap: () {
                   // Navigate to Edit Profile Page or perform an action
@@ -389,8 +394,8 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                   }
                 },
                 child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
                   decoration: BoxDecoration(
                     color:
                         Provider.of<AmityUIConfiguration>(context).primaryColor,
@@ -399,7 +404,7 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                             .primaryColor), // Grey border color
                     borderRadius: BorderRadius.circular(4), // Rounded corners
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize:
                         MainAxisSize.min, // To wrap the content of the row
@@ -427,11 +432,12 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                       AmityEditCommunityScreen(widget.community)));
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(
-                  color: Color(0xffA5A9B5),
+                  color: const Color(0xffA5A9B5),
                 ), // Grey border color
                 borderRadius: BorderRadius.circular(4), // Rounded corners
               ),
@@ -443,8 +449,8 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                   Provider.of<AmityUIConfiguration>(context)
                       .iconConfig
                       .editIcon(color: Colors.black),
-                  SizedBox(width: 8.0), // Space between icon and text
-                  Text(
+                  const SizedBox(width: 8.0), // Space between icon and text
+                  const Text(
                     "Edit Profile",
                     style: TextStyle(
                       color: Colors.black, // Text color

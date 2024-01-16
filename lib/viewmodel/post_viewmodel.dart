@@ -94,7 +94,7 @@ class PostVM extends ChangeNotifier {
   Future<void> deleteComment(AmityComment comment) async {
     print("delete commet...");
     comment.delete().then((value) {
-      print("delete commet success: ${value}");
+      print("delete commet success: $value");
       amityComments
           .removeWhere((element) => element.commentId == comment.commentId);
       listenForComments(amityPost.postId!);

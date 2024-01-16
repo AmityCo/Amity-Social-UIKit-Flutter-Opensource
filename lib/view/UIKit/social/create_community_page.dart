@@ -6,9 +6,6 @@ import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 enum CommunityListType { my, recommend, trending }
@@ -295,8 +292,6 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                         .selectedCommunityUsers) {
                       userIds.add(user.userId!);
                     }
-                    print(categoryId);
-                    print(userIds);
 
                     // Call the createCommunity method from your ViewModel
                     await Provider.of<CommunityVM>(context, listen: false)
@@ -420,7 +415,7 @@ class MemberSection extends StatelessWidget {
           Chip(
             backgroundColor: Colors.grey[280],
             avatar: CircleAvatar(
-              backgroundColor: Color(0xFFD9E5FC),
+              backgroundColor: const Color(0xFFD9E5FC),
               backgroundImage:
                   user.avatarUrl == null ? null : NetworkImage(user.avatarUrl!),
               child: user.avatarUrl != null
@@ -438,7 +433,7 @@ class MemberSection extends StatelessWidget {
               Provider.of<UserVM>(context, listen: false)
                   .toggleUserSelection(user);
             },
-            deleteIcon: Icon(Icons.close),
+            deleteIcon: const Icon(Icons.close),
             deleteIconColor: Colors.black54,
           ),
         GestureDetector(

@@ -32,13 +32,13 @@ class _CommunityPageState extends State<CommunityPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Color(0xFFEBECEF),
+        backgroundColor: const Color(0xFFEBECEF),
         appBar: AppBar(
           elevation: 0.05, // Add this line to remove the shadow
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.blue),
+          iconTheme: const IconThemeData(color: Colors.blue),
           leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.close,
               color: Colors.black,
             ),
@@ -50,7 +50,7 @@ class _CommunityPageState extends State<CommunityPage> {
             "Community",
             style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
           ),
-          actions: [
+          actions: const [
             // IconButton(
             //   icon: Icon(
             //     Icons.search,
@@ -69,6 +69,7 @@ class _CommunityPageState extends State<CommunityPage> {
                 Row(
                   children: [
                     TabBar(
+                      tabAlignment: TabAlignment.start,
                       isScrollable:
                           true, // Ensure that the TabBar is scrollable
 
@@ -101,6 +102,7 @@ class _CommunityPageState extends State<CommunityPage> {
           children: [
             Scaffold(
               floatingActionButton: FloatingActionButton(
+                shape: const CircleBorder(),
                 onPressed: () {
                   // Navigate or perform action based on 'Newsfeed' tap
                   Navigator.of(context).push(MaterialPageRoute(
@@ -159,7 +161,7 @@ class RecommendationSection extends StatelessWidget {
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               SizedBox(
@@ -186,17 +188,18 @@ class RecommendationSection extends StatelessWidget {
                           child: Container(
                             width: 131,
                             height: 194,
-                            margin: EdgeInsets.all(12),
+                            margin: const EdgeInsets.all(12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 community.avatarImage == null
-                                    ? CircleAvatar(
+                                    ? const CircleAvatar(
                                         backgroundColor: Color(0xFFD9E5FC),
                                         child: Icon(Icons.people,
                                             color: Color(0xff292B32)))
                                     : CircleAvatar(
-                                        backgroundColor: Color(0xFFD9E5FC),
+                                        backgroundColor:
+                                            const Color(0xFFD9E5FC),
                                         backgroundImage: NetworkImage(
                                             community.avatarImage!.fileUrl!),
                                         radius:
@@ -215,9 +218,9 @@ class RecommendationSection extends StatelessWidget {
                                   height: 4,
                                 ),
                                 community.categories!.isEmpty
-                                    ? Text(
+                                    ? const Text(
                                         '',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             color: Colors.black, fontSize: 13),
                                         overflow: TextOverflow
                                             .ellipsis, // Handle text overflow
@@ -316,7 +319,7 @@ class TrendingSection extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         Text("${index + 1}",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 20,
                                 color: Color(0xff1054DE),
                                 fontWeight: FontWeight.bold)), // Ranking number
@@ -353,12 +356,12 @@ class CategorySection extends StatelessWidget {
     return Consumer<ExplorePageVM>(
       builder: (context, vm, _) {
         return Container(
-          padding: EdgeInsets.only(left: 16, top: 20, bottom: 25),
+          padding: const EdgeInsets.only(left: 16, top: 20, bottom: 25),
           color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Row(
@@ -369,7 +372,7 @@ class CategorySection extends StatelessWidget {
                     style: Provider.of<AmityUIConfiguration>(context)
                         .titleTextStyle,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   GestureDetector(
@@ -377,7 +380,7 @@ class CategorySection extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CategoryListPage()),
+                            builder: (context) => const CategoryListPage()),
                       );
                     },
                     child: const Padding(
@@ -423,7 +426,6 @@ class CategorySection extends StatelessWidget {
                         children: [
                           Container(
                             height: 40,
-                            width: 40,
                             decoration: const BoxDecoration(
                                 color: Color(0xFFD9E5FC),
                                 shape: BoxShape.circle),
@@ -433,7 +435,10 @@ class CategorySection extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text(category.name ?? ''),
+                          Text(
+                            category.name ?? '',
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
@@ -461,7 +466,7 @@ class CategoryListPage extends StatelessWidget {
           "Category",
           style: TextStyle(color: Colors.black),
         ),
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Consumer<ExplorePageVM>(
         builder: (context, vm, _) {
@@ -482,11 +487,11 @@ class CategoryListPage extends StatelessWidget {
                 leading: Container(
                   height: 40,
                   width: 40,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xFFD9E5FC),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.category,
                     color: Colors.white,
                   ),
@@ -528,9 +533,9 @@ class _CommunityListPageState extends State<CommunityListPage> {
         elevation: 0.0, // Remove shadow
         title: Text(
           widget.category.name ?? "Community",
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
         ),
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Consumer<ExplorePageVM>(
         builder: (context, vm, _) {
@@ -542,7 +547,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                 leading: Container(
                   height: 40,
                   width: 40,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xFFD9E5FC),
                     shape: BoxShape.circle,
                   ),
@@ -551,7 +556,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                           backgroundImage: NetworkImage(
                               community.avatarImage?.fileUrl ?? ''),
                         )
-                      : Icon(
+                      : const Icon(
                           Icons.people,
                           color: Colors.white,
                         ),

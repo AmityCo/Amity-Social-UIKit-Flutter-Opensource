@@ -1,14 +1,13 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
-
 import 'package:provider/provider.dart';
 
+import '../../components/custom_user_avatar.dart';
 import '../../viewmodel/channel_list_viewmodel.dart';
 import '../../viewmodel/channel_viewmodel.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/user_viewmodel.dart';
-import '../../components/custom_user_avatar.dart';
 import 'chat_screen.dart';
 
 class ChatItems {
@@ -144,7 +143,7 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                                                   .getChannelList()[index]
                                                   .unreadCount
                                                   .toString(),
-                                              style: theme.textTheme.bodyText1!
+                                              style: theme.textTheme.bodyLarge!
                                                   .copyWith(
                                                       color: Colors.white,
                                                       fontSize: 8),
@@ -170,7 +169,7 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                             ),
                             subtitle: Text(
                               vm.getChannelList()[index].latestMessage,
-                              style: theme.textTheme.subtitle2!.copyWith(
+                              style: theme.textTheme.titleSmall!.copyWith(
                                 color:
                                     Provider.of<AmityUIConfiguration>(context)
                                         .channelListConfig
@@ -183,7 +182,7 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                                   ? ""
                                   : getDateTime(
                                       vm.getChannelList()[index].lastActivity!),
-                              style: theme.textTheme.bodyText1!.copyWith(
+                              style: theme.textTheme.bodyLarge!.copyWith(
                                   color:
                                       Provider.of<AmityUIConfiguration>(context)
                                           .channelListConfig

@@ -1,7 +1,5 @@
-import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +34,8 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
       backgroundColor: Colors.white,
       elevation: 0,
       title: Text("Create Post",
-          style:
-              theme.textTheme.headline6!.copyWith(fontWeight: FontWeight.w500)),
+          style: theme.textTheme.titleLarge!
+              .copyWith(fontWeight: FontWeight.w500)),
       leading: IconButton(
         icon: Icon(
           Icons.chevron_left,
@@ -247,7 +245,7 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                             ),
                             child: Text(
                               "Submit Post",
-                              style: theme.textTheme.button,
+                              style: theme.textTheme.labelLarge,
                             ),
                           ),
                         ),

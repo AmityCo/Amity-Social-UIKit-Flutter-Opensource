@@ -1,16 +1,10 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/category_list.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/custom_image_picker.dart';
-import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-
 import 'package:provider/provider.dart'; // For using File class
 
 enum CommunityType { public, private }
@@ -66,7 +60,8 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
               backgroundColor: Colors.white,
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: Icon(Icons.chevron_left, color: Colors.black, size: 30),
+                icon: const Icon(Icons.chevron_left,
+                    color: Colors.black, size: 30),
               ),
               actions: [
                 TextButton(
@@ -267,7 +262,6 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
   }
 
   getCustomImageProvider(String? url) {
-    print(url);
     var imageProvider = Provider.of<CommunityVM>(context, listen: true);
 
     if ((imageProvider.pickedFile != null)) {

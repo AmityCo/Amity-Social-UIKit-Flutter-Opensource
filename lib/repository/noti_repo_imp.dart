@@ -1,8 +1,6 @@
 import 'package:amity_uikit_beta_service/model/amity_notification_model.dart';
 import 'package:dio/dio.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
-import '../utils/env_manager.dart';
 import 'noti_repo.dart';
 
 class AmityNotificationRepoImp implements AmityNotificationRepo {

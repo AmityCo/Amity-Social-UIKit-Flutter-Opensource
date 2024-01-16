@@ -9,13 +9,9 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
-
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
-
 import '../../viewmodel/community_feed_viewmodel.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/edit_post_viewmodel.dart';
@@ -94,7 +90,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                             return Column(
                               children: [
                                 index != 0
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : widget.isShowMyCommunity
                                         ? CommunityIconList(
                                             amityCommunites:
@@ -102,7 +98,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                                                         context)
                                                     .amityCommunities,
                                           )
-                                        : SizedBox(),
+                                        : const SizedBox(),
                                 PostWidget(
                                   showCommunity: true,
                                   showlatestComment: true,
@@ -258,7 +254,7 @@ class _PostWidgetState extends State<PostWidget>
               }
             },
             child: Container(
-              margin: EdgeInsets.only(bottom: 0),
+              margin: const EdgeInsets.only(bottom: 0),
               color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -309,7 +305,7 @@ class _PostWidgetState extends State<PostWidget>
                                             .currentamityUser!
                                             .displayName ??
                                         "",
-                                style: widget.theme.textTheme.bodyText1!
+                                style: widget.theme.textTheme.bodyLarge!
                                     .copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
@@ -348,7 +344,7 @@ class _PostWidgetState extends State<PostWidget>
                                               .targetCommunity!
                                               .displayName ??
                                           "Community name",
-                                      style: widget.theme.textTheme.bodyText1!
+                                      style: widget.theme.textTheme.bodyLarge!
                                           .copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
@@ -465,7 +461,7 @@ class _PostWidgetState extends State<PostWidget>
                       height: 8,
                     ),
                     Container(
-                      padding: EdgeInsets.only(bottom: 5),
+                      padding: const EdgeInsets.only(bottom: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -517,7 +513,7 @@ class _PostWidgetState extends State<PostWidget>
                                                   listen: false)
                                               .removePostReaction(widget.post);
                                         },
-                                        child: Container(
+                                        child: SizedBox(
                                           height: 40,
                                           child: Row(
                                             mainAxisAlignment:
@@ -554,7 +550,7 @@ class _PostWidgetState extends State<PostWidget>
                                                   listen: false)
                                               .addPostReaction(widget.post);
                                         },
-                                        child: Container(
+                                        child: SizedBox(
                                           height: 40,
                                           child: Row(
                                             mainAxisAlignment:
@@ -578,7 +574,7 @@ class _PostWidgetState extends State<PostWidget>
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 12,
                           ),
                           GestureDetector(
@@ -609,7 +605,7 @@ class _PostWidgetState extends State<PostWidget>
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 12,
                           ),
                           GestureDetector(
@@ -647,24 +643,24 @@ class _PostWidgetState extends State<PostWidget>
             ? const SizedBox()
             : Container(
                 color: Colors.white,
-                child: Divider(
+                child: const Divider(
                   color: Colors.grey,
                   height: 1,
                 )),
         widget.isFromFeed
-            ? SizedBox()
+            ? const SizedBox()
             : Container(
                 color: Colors.white,
-                child: Divider(
+                child: const Divider(
                   color: Colors.grey,
                   height: 1,
                 )),
         !widget.showlatestComment
-            ? SizedBox()
+            ? const SizedBox()
             : widget.post.latestComments == null
                 ? const SizedBox()
                 : widget.post.latestComments!.isEmpty
-                    ? SizedBox()
+                    ? const SizedBox()
                     : Container(
                         color: Colors.white,
                         child: LatestCommentComponent(
@@ -733,9 +729,9 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         itemCount: widget.comments.length,
         itemBuilder: (context, index) {
           print(
-              "latestComments objec index ${index}: ${widget.comments[index].data}");
+              "latestComments objec index $index: ${widget.comments[index].data}");
           print(
-              "latestComments user object index ${index}: ${widget.comments[index].user}");
+              "latestComments user object index $index: ${widget.comments[index].user}");
           return StreamBuilder<AmityComment>(
             // key: Key(widget.comments[index].commentId!),
             stream: widget.comments[index].listen.stream,
@@ -744,7 +740,7 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
               var commentData = widget.comments[index].data as CommentTextData;
 
               return index > 1
-                  ? SizedBox()
+                  ? const SizedBox()
                   : comments.isDeleted!
                       ? Container(
                           child: const Column(
@@ -815,7 +811,7 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                     ),
                                     child: Text(
                                       commentData.text!,
-                                      style: TextStyle(fontSize: 15),
+                                      style: const TextStyle(fontSize: 15),
                                     ),
                                   ),
                                   Padding(
@@ -831,7 +827,7 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                                           context)
                                                       .iconConfig
                                                       .likeIcon(),
-                                                  Text(" Like"),
+                                                  const Text(" Like"),
                                                 ],
                                               )
                                             : comments.myReactions!.isEmpty
@@ -867,7 +863,7 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                                                 context)
                                                             .iconConfig
                                                             .likeIcon(),
-                                                        Text(" Like"),
+                                                        const Text(" Like"),
                                                       ],
                                                     )),
 
@@ -918,7 +914,7 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                                       AmityCoreClient
                                                               .getCurrentUser()
                                                           .userId
-                                                  ? SizedBox()
+                                                  ? const SizedBox()
                                                   : ListTile(
                                                       title: const Text(
                                                         'Edit Comment',

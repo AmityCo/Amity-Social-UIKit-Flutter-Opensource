@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/view/social/user_pending_request_component.dart';
@@ -7,11 +9,9 @@ import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dar
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:provider/provider.dart';
 
 import '../../viewmodel/configuration_viewmodel.dart';
-import '../../viewmodel/user_viewmodel.dart';
 
 class NotificationAllTabScreen extends StatefulWidget {
   const NotificationAllTabScreen({super.key});
@@ -135,7 +135,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                         // ),
                                         title: RichText(
                                           text: TextSpan(
-                                            style: theme.textTheme.subtitle1!
+                                            style: theme.textTheme.titleMedium!
                                                 .copyWith(
                                               letterSpacing: 0.5,
                                             ),
@@ -143,7 +143,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                               TextSpan(
                                                   text: "Follow Request",
                                                   style: theme
-                                                      .textTheme.subtitle2!
+                                                      .textTheme.titleSmall!
                                                       .copyWith(fontSize: 12)),
                                             ],
                                           ),
@@ -153,7 +153,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                               Provider.of<PendingVM>(context,
                                                       listen: true)
                                                   .pendingRequestList),
-                                          style: theme.textTheme.subtitle2!
+                                          style: theme.textTheme.titleSmall!
                                               .copyWith(
                                             fontSize: 9,
                                             color: theme.hintColor,
@@ -170,7 +170,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                   vm.notificationsObject?.data?.isEmpty ?? false
                                       ? ""
                                       : "This month",
-                                  style: theme.textTheme.headline6,
+                                  style: theme.textTheme.titleLarge,
                                 )),
                             vm.notificationsObject?.data?.isEmpty ?? false
                                 ? const Center(
@@ -211,7 +211,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                             title: RichText(
                                               text: TextSpan(
                                                 style: theme
-                                                    .textTheme.subtitle1!
+                                                    .textTheme.titleMedium!
                                                     .copyWith(
                                                   letterSpacing: 0.5,
                                                 ),
@@ -223,7 +223,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                                       .actors ??
                                                                   []),
                                                       style: theme
-                                                          .textTheme.subtitle2!
+                                                          .textTheme.titleSmall!
                                                           .copyWith(
                                                               fontSize: 12)),
                                                   TextSpan(
@@ -242,7 +242,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                           notificationItem
                                                               .targetDisplayName),
                                                       style: theme
-                                                          .textTheme.subtitle2!
+                                                          .textTheme.titleSmall!
                                                           .copyWith(
                                                         fontSize: 12,
                                                       )),
@@ -254,7 +254,7 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                   .notificationsObject!
                                                   .data![index]
                                                   .lastUpdate!),
-                                              style: theme.textTheme.subtitle2!
+                                              style: theme.textTheme.titleSmall!
                                                   .copyWith(
                                                 fontSize: 9,
                                                 color: theme.hintColor,
@@ -273,21 +273,15 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(7),
-                                                        child:
-                                                            OptimizedCacheImage(
-                                                          imageUrl: notificationItem
-                                                                  .targetImageUrl ??
-                                                              "",
-                                                          fit: BoxFit.cover,
-                                                          placeholder:
-                                                              (context, url) =>
-                                                                  Container(
-                                                            color: Colors.grey,
+                                                        child: FadeInImage(
+                                                          image: NetworkImage(
+                                                            notificationItem
+                                                                    .targetImageUrl ??
+                                                                "",
                                                           ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              const Icon(
-                                                                  Icons.error),
+                                                          placeholder:
+                                                              const AssetImage(
+                                                                  "assets/images/placeholder_image.png"), // Update with your local asset
                                                         ),
                                                       ),
                                                     ),

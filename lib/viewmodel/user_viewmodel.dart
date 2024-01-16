@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
 import '../../components/alert_dialog.dart';
-import '../repository/chat_repo_imp.dart';
 import '../utils/env_manager.dart';
 
 class UserVM extends ChangeNotifier {
@@ -37,7 +37,7 @@ class UserVM extends ChangeNotifier {
       ),
     )
         .then((value) {
-      print("success");
+      log("success");
       if (value.statusCode == 200) {
         accessToken = value.data["accessToken"];
       }
@@ -73,7 +73,7 @@ class UserVM extends ChangeNotifier {
   }
 
   Future<void> getUsers() async {
-    print("get user");
+    log("get user");
     AmityCoreClient.newUserRepository()
         .getUsers()
         .sortBy(AmityUserSortOption.DISPLAY)
@@ -125,7 +125,7 @@ class UserVM extends ChangeNotifier {
   void loadnextpage() async {
     if ((scrollcontroller.position.pixels >
         scrollcontroller.position.maxScrollExtent - 800)) {
-      print("hasmore: ${_amityUsersController.hasMoreItems}");
+      log("hasmore: ${_amityUsersController.hasMoreItems}");
     }
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&
@@ -142,14 +142,14 @@ class UserVM extends ChangeNotifier {
     }
   }
 
-  List<AmityUser> _amityUsers = [];
+  final List<AmityUser> _amityUsers = [];
   List<AmityUser> selectedUsers = [];
   late PagingController<AmityUser> _amityUsersController;
 
   List<AmityUser> get amityUsers => _amityUsers;
 
   void getUsersForCommunity(AmityUserSortOption amityUserSortOption) {
-    print("getUsersForCommunity");
+    log("getUsersForCommunity");
     _amityUsersController = PagingController(
       pageFuture: (token) => AmityCoreClient.newUserRepository()
           .getUsers()
@@ -164,7 +164,7 @@ class UserVM extends ChangeNotifier {
             notifyListeners();
           } else {
             // handle error
-            print(_amityUsersController.error);
+            log(_amityUsersController.error.toString());
           }
         },
       );
@@ -178,7 +178,7 @@ class UserVM extends ChangeNotifier {
   List<Map<String, List<AmityUser>>> listWithHeaders = [];
 
   void sortedUserListWithHeaders() {
-    print("sorted");
+    log("sorted");
     List<AmityUser> users = _userList;
 
     // Step 1: Sort the users list by display name (case insensitive)
@@ -228,9 +228,9 @@ class UserVM extends ChangeNotifier {
 
     // Print for debugging
     // for (var item in listWithHeaders) {
-    //   print(item.keys.first);
+    //   log(item.keys.first);
     //   for (var user in item.values.first) {
-    //     print(user.displayName);
+    //     log(user.displayName);
     //   }
     // }
   }
@@ -256,6 +256,24 @@ class UserVM extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void reportOrUnReportUser(AmityUser user) {
+    if (user.isFlaggedByMe) {
+      user.report().unflag().then((value) {
+        AmitySuccessDialog.showTimedDialog("Unreport sent");
+      }).onError((error, stackTrace) {
+        AmityDialog()
+            .showAlertErrorDialog(title: "Error", message: error.toString());
+      });
+    } else {
+      user.report().flag().then((value) {
+        AmitySuccessDialog.showTimedDialog("Report sent");
+      }).onError((error, stackTrace) {
+        AmityDialog()
+            .showAlertErrorDialog(title: "Error", message: error.toString());
+      });
+    }
   }
 
   void setSelectedUsersList(List<AmityUser> users) {

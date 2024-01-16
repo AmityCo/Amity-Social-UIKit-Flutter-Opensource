@@ -14,7 +14,8 @@ class NotificationPage extends StatelessWidget {
       length: 1,
       child: Scaffold(
         appBar: TabBar(
-          physics: BouncingScrollPhysics(),
+          tabAlignment: TabAlignment.start,
+          physics: const BouncingScrollPhysics(),
           isScrollable: true,
           indicatorColor: theme.primaryColor,
           labelColor: theme.primaryColor,

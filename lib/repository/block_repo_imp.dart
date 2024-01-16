@@ -51,10 +51,7 @@ class AmityBlockRepoInp implements AmityBlockRepo {
   }
 
   @override
-  Future<void> getBlockList(Function(List, String? p2) callback) async {
-    var dio = Dio();
-    final response = await dio.post('/test', data: {'id': 12, 'name': 'wendu'});
-  }
+  Future<void> getBlockList(Function(List, String? p2) callback) async {}
 
   @override
   Future<void> unblockUser(

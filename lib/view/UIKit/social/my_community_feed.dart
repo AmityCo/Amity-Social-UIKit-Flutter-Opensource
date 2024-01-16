@@ -48,7 +48,7 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.add, color: Colors.black),
+              icon: const Icon(Icons.add, color: Colors.black),
               onPressed: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
@@ -76,7 +76,7 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
                     ),
                     hintText: 'Search',
                     filled: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
                     fillColor: Colors.grey[3],
                     focusColor: Colors.white,
                     enabledBorder: OutlineInputBorder(
@@ -173,7 +173,7 @@ class CommunityIconList extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'My Community',
                   style: TextStyle(
                     fontSize: 17.0,
@@ -183,10 +183,11 @@ class CommunityIconList extends StatelessWidget {
                 GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Scaffold(body: MyCommunityPage()),
+                        builder: (context) =>
+                            const Scaffold(body: MyCommunityPage()),
                       ));
                     },
-                    child: Container(child: Icon(Icons.chevron_right))),
+                    child: Container(child: const Icon(Icons.chevron_right))),
               ],
             ),
           ),
@@ -205,7 +206,7 @@ class CommunityIconList extends StatelessWidget {
               },
             ),
           ),
-          Divider(
+          const Divider(
             color: Color(0xffEBECEF),
           )
         ],
@@ -260,14 +261,15 @@ class CommunityIconWidget extends StatelessWidget {
                   Row(
                     children: [
                       !amityCommunity.isPublic!
-                          ? Icon(
+                          ? const Icon(
                               Icons.lock,
                               size: 12,
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       Expanded(
                         child: Text(amityCommunity.displayName ?? "",
-                            style: TextStyle(overflow: TextOverflow.ellipsis)),
+                            style: const TextStyle(
+                                overflow: TextOverflow.ellipsis)),
                       ),
                     ],
                   ),

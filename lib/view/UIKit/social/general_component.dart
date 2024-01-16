@@ -1,6 +1,4 @@
-import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class AmityGeneralCompomemt {
   static void showOptionsBottomSheet(
@@ -30,13 +28,13 @@ class AmityGeneralCompomemt {
 class TimeAgoWidget extends StatelessWidget {
   final DateTime createdAt; // Assuming createdAt is a DateTime object
 
-  TimeAgoWidget({Key? key, required this.createdAt}) : super(key: key);
+  const TimeAgoWidget({Key? key, required this.createdAt}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       _formatDate(createdAt),
-      style: TextStyle(
+      style: const TextStyle(
           // Add your text style here
           ),
     );

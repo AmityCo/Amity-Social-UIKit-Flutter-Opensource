@@ -26,7 +26,7 @@ class _UserListPageState extends State<UserListPage> {
   @override
   void initState() {
     if (widget.preSelectMember != null) {
-      print(widget.preSelectMember);
+      log(widget.preSelectMember.toString());
       Provider.of<UserVM>(context, listen: false)
           .setSelectedUsersList(widget.preSelectMember!);
       Provider.of<UserVM>(context, listen: false).initUserList("");
@@ -95,7 +95,8 @@ class _UserListPageState extends State<UserListPage> {
                           ),
                           hintText: 'Search',
                           filled: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 0),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 0),
                           fillColor: Colors.grey[3],
                           focusColor: Colors.white, // Removes focus highlight
                           enabledBorder: OutlineInputBorder(
@@ -118,7 +119,7 @@ class _UserListPageState extends State<UserListPage> {
                       ),
                     ),
                     Provider.of<UserVM>(context).selectedCommunityUsers.isEmpty
-                        ? SizedBox()
+                        ? const SizedBox()
                         : SizedBox(
                             height: 80, // Adjust height as needed
                             child: ListView.builder(
@@ -145,7 +146,7 @@ class _UserListPageState extends State<UserListPage> {
                                           children: [
                                             CircleAvatar(
                                               backgroundColor:
-                                                  Color(0xFFD9E5FC),
+                                                  const Color(0xFFD9E5FC),
                                               backgroundImage:
                                                   user.avatarUrl == null
                                                       ? null
@@ -153,7 +154,7 @@ class _UserListPageState extends State<UserListPage> {
                                                           user.avatarUrl!),
                                               child: user.avatarUrl != null
                                                   ? null
-                                                  : Icon(Icons.person,
+                                                  : const Icon(Icons.person,
                                                       size: 25,
                                                       color: Colors
                                                           .white), // Adjust to use the correct attribute for avatar URL
@@ -187,7 +188,7 @@ class _UserListPageState extends State<UserListPage> {
                                       const SizedBox(
                                           height:
                                               5), // Space between avatar and name
-                                      Container(
+                                      SizedBox(
                                         width: 70,
                                         child: Center(
                                           child: Text(
@@ -209,7 +210,7 @@ class _UserListPageState extends State<UserListPage> {
                           .map<Widget>((item) {
                         return SliverStickyHeader(
                           header: Container(
-                            padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                            padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
                             color: Colors.grey[300],
                             child: Text(
                               item.keys.first,
@@ -228,16 +229,18 @@ class _UserListPageState extends State<UserListPage> {
                                   children: [
                                     ListTile(
                                       dense: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 4.0, horizontal: 16.0),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 4.0, horizontal: 16.0),
                                       leading: CircleAvatar(
-                                        backgroundColor: Color(0xFFD9E5FC),
+                                        backgroundColor:
+                                            const Color(0xFFD9E5FC),
                                         backgroundImage: user.avatarUrl == null
                                             ? null
                                             : NetworkImage(user.avatarUrl!),
                                         child: user.avatarUrl != null
                                             ? null
-                                            : Icon(Icons.person,
+                                            : const Icon(Icons.person,
                                                 size: 25,
                                                 color: Colors
                                                     .white), // Adjust to use the correct attribute for avatar URL
@@ -251,7 +254,7 @@ class _UserListPageState extends State<UserListPage> {
                                                 context,
                                                 listen: false)
                                             .primaryColor, // Set the active color to primary color
-                                        shape: CircleBorder(),
+                                        shape: const CircleBorder(),
                                         value: Provider.of<UserVM>(context)
                                             .selectedCommunityUsers
                                             .any((selectedUser) =>
@@ -268,7 +271,7 @@ class _UserListPageState extends State<UserListPage> {
                                             .toggleUserSelection(user);
                                       },
                                     ),
-                                    Divider()
+                                    const Divider()
                                   ],
                                 );
                               },

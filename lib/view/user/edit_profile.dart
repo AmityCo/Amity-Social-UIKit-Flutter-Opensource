@@ -38,7 +38,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       case ImageState.loading:
         widget = CircleAvatar(
             radius: radius,
-            backgroundColor: AmityUIConfiguration().primaryColor,
+            backgroundColor: Colors.grey,
             child: const CircularProgressIndicator(
               color: Colors.white,
             ));
@@ -46,7 +46,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       case ImageState.noImage:
         widget = CircleAvatar(
           radius: radius,
-          backgroundColor: AmityUIConfiguration().primaryColor,
+          backgroundColor: Colors.grey[400],
           child: Icon(
             Icons.person,
             color: Colors.white,
@@ -100,7 +100,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     final myAppBar = AppBar(
       title: Text(
         "Edit Profile",
-        style: theme.textTheme.headline6,
+        style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
       ),
       backgroundColor: Colors.white,
       leading: IconButton(
@@ -108,7 +108,10 @@ class ProfileScreenState extends State<ProfileScreen> {
         onPressed: () {
           Navigator.of(context).pop();
         },
-        icon: const Icon(Icons.chevron_left),
+        icon: const Icon(
+          Icons.chevron_left,
+          color: Colors.black,
+        ),
       ),
       elevation: 0,
       actions: [
@@ -155,7 +158,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           },
           child: Text(
             "Save",
-            style: theme.textTheme.button!.copyWith(
+            style: theme.textTheme.labelLarge!.copyWith(
                 color: Provider.of<ImagePickerVM>(
                           context,
                         ).imageState ==
@@ -203,13 +206,20 @@ class ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Positioned(
                           right: 0,
-                          top: 7,
+                          bottom: 7,
                           child: Container(
                             padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Provider.of<AmityUIConfiguration>(context)
-                                  .primaryColor,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey, // Shadow color
+                                  blurRadius: 4.0, // Blur radius
+                                  offset: Offset(
+                                      0, 2), // Changes position of shadow
+                                ),
+                              ],
                             ),
                             child: const Icon(
                               Icons.camera_alt,
@@ -229,7 +239,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         width: double.infinity,
                         child: Text(
                           "Profile Info",
-                          style: theme.textTheme.headline6!.copyWith(
+                          style: theme.textTheme.titleLarge!.copyWith(
                             color: Colors.grey,
                             fontSize: 16,
                           ),

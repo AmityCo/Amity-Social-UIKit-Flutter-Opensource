@@ -31,20 +31,20 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Color(0xff292B32)),
+        iconTheme: const IconThemeData(color: Color(0xff292B32)),
       ),
       body: ListView(
         children: [
           // Section 1: Allow Notification
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Text(
               'Allow Notification',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           ListTile(
-            title: Text(
+            title: const Text(
               'Turn on to receive push notification from this community',
             ),
             trailing: Switch(
@@ -56,30 +56,30 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
               },
             ),
           ),
-          Divider(),
+          const Divider(),
 
           // Section 2: Post and Comment
 
           !isNotificationEnabled
-              ? SizedBox()
+              ? const SizedBox()
               : Column(
                   children: [
                     ListTile(
                       leading: Container(
-                        padding:
-                            EdgeInsets.all(8), // Adjust padding to your need
+                        padding: const EdgeInsets.all(
+                            8), // Adjust padding to your need
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                               8), // Adjust radius to your need
                           color: Colors
                               .grey[200], // Choose the color to fit your design
                         ),
-                        child: Icon(Icons.newspaper_outlined,
+                        child: const Icon(Icons.newspaper_outlined,
                             color: Color(0xff292B32)),
                       ), // You may want to replace with your icon
-                      title: Text('Posts'),
-                      trailing:
-                          Icon(Icons.chevron_right, color: Color(0xff292B32)),
+                      title: const Text('Posts'),
+                      trailing: const Icon(Icons.chevron_right,
+                          color: Color(0xff292B32)),
                       onTap: () {
                         // Navigate to post settings page
                         Navigator.of(context).push(MaterialPageRoute(
@@ -89,22 +89,22 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                     ),
                     ListTile(
                       leading: Container(
-                        padding:
-                            EdgeInsets.all(8), // Adjust padding to your need
+                        padding: const EdgeInsets.all(
+                            8), // Adjust padding to your need
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                               4), // Adjust radius to your need
                           color: const Color(
                               0xfff1f1f1), // Choose the color to fit your design
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.chat_bubble_outlined,
                           color: Color(0xff292B32),
                         ),
                       ), // You may want to replace with your icon
-                      title: Text('Comments'),
-                      trailing:
-                          Icon(Icons.chevron_right, color: Color(0xff292B32)),
+                      title: const Text('Comments'),
+                      trailing: const Icon(Icons.chevron_right,
+                          color: Color(0xff292B32)),
                       onTap: () {
                         // Navigate to comment settings page
                         Navigator.of(context).push(MaterialPageRoute(

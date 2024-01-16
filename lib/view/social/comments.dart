@@ -1,25 +1,21 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/post_content_widget.dart';
+import 'package:amity_uikit_beta_service/view/user/edit_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
-import 'package:linkwell/linkwell.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/post_viewmodel.dart';
-import '../../viewmodel/user_feed_viewmodel.dart';
-import '../user/user_profile.dart';
 
 class CommentScreen extends StatefulWidget {
   final AmityPost amityPost;
@@ -138,7 +134,7 @@ class CommentScreenState extends State<CommentScreen> {
                                           "assets/Icons/like.svg",
                                           package: 'amity_uikit_beta_service',
                                         ),
-                                        Text(
+                                        const Text(
                                           "Like",
                                           style: TextStyle(color: Colors.grey),
                                         ),
@@ -153,9 +149,9 @@ class CommentScreenState extends State<CommentScreen> {
                                               listen: false)
                                           .addPostReaction(widget.amityPost);
                                     },
-                                    child: Row(
+                                    child: const Row(
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.thumb_up_off_alt,
                                           color: Colors.grey,
                                           size: 16,
@@ -178,11 +174,10 @@ class CommentScreenState extends State<CommentScreen> {
                         onTap: () {
                           // Logic to navigate to comments section
                         },
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const Icon(Icons.chat_bubble_outline,
-                                color: Colors.grey),
-                            const SizedBox(width: 4),
+                            Icon(Icons.chat_bubble_outline, color: Colors.grey),
+                            SizedBox(width: 4),
                             Text(
                               "Comment",
                               // snapshot.data!.commentCount.toString(),
@@ -196,11 +191,10 @@ class CommentScreenState extends State<CommentScreen> {
                       // Share Button
                       GestureDetector(
                         onTap: () {},
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const Icon(Icons.ios_share_outlined,
-                                color: Colors.grey),
-                            const SizedBox(width: 4),
+                            Icon(Icons.ios_share_outlined, color: Colors.grey),
+                            SizedBox(width: 4),
                             Text(
                               "Share",
                               style: TextStyle(color: Colors.grey),
@@ -490,7 +484,7 @@ class CommentScreenState extends State<CommentScreen> {
                                             // ),
                                           ),
                                           child: Container(
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
 
                                                 // borderRadius:
                                                 //     const BorderRadius.only(
@@ -500,7 +494,7 @@ class CommentScreenState extends State<CommentScreen> {
                                                 ),
                                             padding: const EdgeInsets.fromLTRB(
                                                 10, 0, 10, 0),
-                                            child: Column(
+                                            child: const Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.stretch,
                                               children: [
@@ -578,11 +572,11 @@ class CommentTextField extends StatelessWidget {
         ),
       ]),
       child: ListTile(
-        contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+        contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         leading: getAvatarImage(
             Provider.of<AmityVM>(context).currentamityUser?.avatarUrl),
         title: ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxHeight: 200.0, // Maximum height for the text field
           ),
           child: TextField(
@@ -792,11 +786,21 @@ class _CommentComponentState extends State<CommentComponent> {
                                 onTap: () {
                                   // Navigate to user profile
                                 },
-                                child: getAvatarImage(comments.user!.avatarUrl),
+                                child: GestureDetector(
+                                    onTap: () async {
+                                      await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfileScreen(
+                                                      user: comments.user!)));
+                                    },
+                                    child: getAvatarImage(
+                                        comments.user!.avatarUrl)),
                               ),
                               title: Text(
                                 comments.user!.displayName!,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               subtitle: TimeAgoWidget(
                                 createdAt: vm.amityPost.createdAt!,
@@ -815,7 +819,7 @@ class _CommentComponentState extends State<CommentComponent> {
                               ),
                               child: Text(
                                 commentData.text!,
-                                style: widget.theme.textTheme.bodyText2,
+                                style: widget.theme.textTheme.bodyMedium,
                               ),
                             ),
                             Padding(
@@ -854,7 +858,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                                       context)
                                                   .iconConfig
                                                   .likeIcon(iconSize: 16),
-                                              Text(" Like"),
+                                              const Text(" Like"),
                                             ],
                                           )),
 
@@ -900,7 +904,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                         comments.user?.userId! !=
                                                 AmityCoreClient.getCurrentUser()
                                                     .userId
-                                            ? SizedBox()
+                                            ? const SizedBox()
                                             : ListTile(
                                                 title: const Text(
                                                   'Edit Comment',

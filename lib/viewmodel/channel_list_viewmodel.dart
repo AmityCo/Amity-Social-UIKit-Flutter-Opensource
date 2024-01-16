@@ -5,12 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/alert_dialog.dart';
-
 import '../model/amity_channel_model.dart';
 import '../repository/chat_repo_imp.dart';
 import '../utils/navigation_key.dart';
-import '../view/chat/chat_screen.dart';
-import 'channel_viewmodel.dart';
 import 'user_viewmodel.dart';
 
 class ChannelVM extends ChangeNotifier {

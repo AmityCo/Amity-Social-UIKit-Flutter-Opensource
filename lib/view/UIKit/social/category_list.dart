@@ -11,7 +11,8 @@ class CategoryList extends StatefulWidget {
   AmityCommunity? community;
   TextEditingController categoryTextController;
 
-  CategoryList({this.community, required this.categoryTextController});
+  CategoryList(
+      {super.key, this.community, required this.categoryTextController});
   @override
   CategoryListState createState() => CategoryListState();
 }
@@ -93,7 +94,9 @@ class CategoryListState extends State<CategoryList> {
           ),
           title: Text(
             'Select category',
-            style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+            style: Provider.of<AmityUIConfiguration>(context)
+                .titleTextStyle
+                .copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         body: SafeArea(

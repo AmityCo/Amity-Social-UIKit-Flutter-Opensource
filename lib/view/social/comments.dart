@@ -250,6 +250,7 @@ class CommentScreenState extends State<CommentScreen> {
                                       children: [
                                         // Text("${snapshot.data!.targetType!}"),
                                         PostWidget(
+                                          feedType: FeedType.community,
                                           showCommunity: snapshot
                                                       .data?.targetType ==
                                                   AmityPostTargetType.COMMUNITY

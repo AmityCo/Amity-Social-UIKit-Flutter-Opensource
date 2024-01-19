@@ -145,6 +145,7 @@ class MemberList extends StatelessWidget {
                         create: (context) => UserFeedVM(),
                         child: UserProfileScreen(
                           amityUser: viewModel.userList[index].user!,
+                          amityUserId: viewModel.userList[index].user!.userId!,
                         ))));
               },
               leading: CircleAvatar(
@@ -199,6 +200,7 @@ class ModeratorList extends StatelessWidget {
                         create: (context) => UserFeedVM(),
                         child: UserProfileScreen(
                           amityUser: viewModel.moderatorList[index].user!,
+                          amityUserId: viewModel.userList[index].user!.userId!,
                         ))));
               },
               leading: CircleAvatar(

@@ -80,6 +80,8 @@ class EditPostScreenState extends State<EditPostScreen> {
                                       create: (context) => UserFeedVM(),
                                       child: UserProfileScreen(
                                         amityUser: widget.post!.postedUser!,
+                                        amityUserId:
+                                            widget.post!.postedUser!.userId!,
                                       ))));
                             },
                             child: getAvatarImage(
@@ -93,6 +95,8 @@ class EditPostScreenState extends State<EditPostScreen> {
                                     create: (context) => UserFeedVM(),
                                     child: UserProfileScreen(
                                       amityUser: widget.post!.postedUser!,
+                                      amityUserId:
+                                          widget.post!.postedUser!.userId!,
                                     ))));
                           },
                           child: Text(

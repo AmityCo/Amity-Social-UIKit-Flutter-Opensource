@@ -330,7 +330,7 @@ class CommunityScreenState extends State<CommunityScreen> {
                                           post: snapshot.data!,
                                           theme: theme,
                                           postIndex: index,
-                                          isCommunity: true,
+                                          feedType: FeedType.community,
                                         );
                                       });
                                 },

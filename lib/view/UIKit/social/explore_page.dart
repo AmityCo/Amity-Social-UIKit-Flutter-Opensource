@@ -461,10 +461,10 @@ class CategoryListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0.0, // Add this line to remove the shadow
-        title: const Text(
+        elevation: 0.0, // Remove shadow
+        title: Text(
           "Category",
-          style: TextStyle(color: Colors.black),
+          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -531,9 +531,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0, // Remove shadow
+
         title: Text(
           widget.category.name ?? "Community",
-          style: const TextStyle(color: Colors.black),
+          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
         iconTheme: const IconThemeData(color: Colors.black),
       ),

@@ -39,6 +39,7 @@ class _FollowScreenState extends State<FollowScreen> {
               children: [
                 TabBar(
                   tabAlignment: TabAlignment.start,
+                  isScrollable: true, // Make the tab bar scrollable
                   controller: _tabController,
                   indicatorColor:
                       Provider.of<AmityUIConfiguration>(context).primaryColor,

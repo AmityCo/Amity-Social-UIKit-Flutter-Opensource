@@ -71,8 +71,9 @@ class UserSettingPage extends StatelessWidget {
                         },
                       )
                     : const SizedBox(),
-                amityUser.userId == AmityCoreClient.getCurrentUser().userId
-                    ? const SizedBox()
+                amityUser.userId == AmityCoreClient.getUserId()
+                    ? Text(amityUser.userId! +
+                        AmityCoreClient.getCurrentUser().userId!)
                     : snapshot.data!.status == AmityFollowStatus.NONE
                         ? ListTile(
                             leading: Container(

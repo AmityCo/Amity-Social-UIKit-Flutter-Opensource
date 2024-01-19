@@ -100,6 +100,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                                           )
                                         : const SizedBox(),
                                 PostWidget(
+                                  feedType: FeedType.global,
                                   showCommunity: true,
                                   showlatestComment: true,
                                   post: snapshot.data!,
@@ -122,6 +123,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
   }
 }
 
+enum FeedType { user, community, global }
+
 class PostWidget extends StatefulWidget {
   const PostWidget(
       {Key? key,
@@ -130,10 +133,10 @@ class PostWidget extends StatefulWidget {
       required this.postIndex,
       this.isFromFeed = false,
       required this.showlatestComment,
-      this.isCommunity,
+      required this.feedType,
       required this.showCommunity})
       : super(key: key);
-  final bool? isCommunity;
+  final FeedType feedType;
   final AmityPost post;
   final ThemeData theme;
   final int postIndex;
@@ -198,12 +201,17 @@ class _PostWidgetState extends State<PostWidget>
                     child: EditPostScreen(post: widget.post))));
             break;
           case 'Delete Post':
-            if (widget.isCommunity == null || widget.isCommunity == false) {
+            if (widget.feedType == FeedType.global) {
               Provider.of<FeedVM>(context, listen: false)
                   .deletePost(widget.post, widget.postIndex);
-            } else {
+            } else if (widget.feedType == FeedType.community) {
               Provider.of<CommuFeedVM>(context, listen: false)
                   .deletePost(widget.post, widget.postIndex);
+            } else if (widget.feedType == FeedType.user) {
+              Provider.of<UserFeedVM>(context, listen: false)
+                  .deletePost(widget.post, widget.postIndex);
+            } else {
+              print("unhandle postType");
             }
             break;
           default:
@@ -274,6 +282,8 @@ class _PostWidgetState extends State<PostWidget>
                                               child: UserProfileScreen(
                                                 amityUser:
                                                     widget.post.postedUser!,
+                                                amityUserId: widget
+                                                    .post.postedUser!.userId!,
                                               ))));
                                 },
                                 child: getAvatarImage(widget
@@ -294,6 +304,8 @@ class _PostWidgetState extends State<PostWidget>
                                             child: UserProfileScreen(
                                               amityUser:
                                                   widget.post.postedUser!,
+                                              amityUserId: widget
+                                                  .post.postedUser!.userId!,
                                             ))));
                               },
                               child: Text(

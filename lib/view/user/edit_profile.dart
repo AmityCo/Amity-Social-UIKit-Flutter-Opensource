@@ -76,8 +76,6 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    Provider.of<UserFeedVM>(context, listen: false)
-        .getUser(AmityCoreClient.getCurrentUser());
     Provider.of<ImagePickerVM>(context, listen: false).init(
         Provider.of<AmityVM>(context, listen: false)
             .currentamityUser

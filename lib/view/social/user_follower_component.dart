@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/bottom_sheet.dart';
 import 'package:animation_wrappers/animations/faded_slide_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -71,9 +72,14 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                         stream: vm.getFollowerList[index].listen.stream,
                         initialData: vm.getFollowerList[index],
                         builder: (context, snapshot) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
+                          return ListTile(
+                            trailing: GestureDetector(
+                                onTap: () {
+                                  showOptionsBottomSheet(context,
+                                      vm.getFollowerList[index].targetUser!);
+                                },
+                                child: const Icon(Icons.more_horiz)),
+                            title: Row(
                               children: [
                                 getAvatarImage(vm.getFollowerList[index]
                                     .sourceUser!.avatarUrl),
@@ -88,12 +94,6 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                                                 .displayName ??
                                             "displayname not found",
                                         style: theme.textTheme.bodyMedium,
-                                      ),
-                                      Text(
-                                        vm.getFollowerList[index].sourceUser!
-                                                .userId ??
-                                            "displayname not found",
-                                        style: theme.textTheme.bodySmall,
                                       ),
                                     ],
                                   ),

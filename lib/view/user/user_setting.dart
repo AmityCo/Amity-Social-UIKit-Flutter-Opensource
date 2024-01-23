@@ -25,7 +25,11 @@ class UserSettingPage extends StatelessWidget {
             backgroundColor: Colors.white,
             appBar: AppBar(
               leading: IconButton(
-                icon: const Icon(Icons.chevron_left, color: Colors.black),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: Colors.black,
+                  size: 30,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               elevation: 0.0,
@@ -39,7 +43,7 @@ class UserSettingPage extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Text("Manage",
+                  child: Text("Basic info",
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
                 ),
@@ -72,8 +76,7 @@ class UserSettingPage extends StatelessWidget {
                       )
                     : const SizedBox(),
                 amityUser.userId == AmityCoreClient.getUserId()
-                    ? Text(amityUser.userId! +
-                        AmityCoreClient.getCurrentUser().userId!)
+                    ? const SizedBox()
                     : snapshot.data!.status == AmityFollowStatus.NONE
                         ? ListTile(
                             leading: Container(

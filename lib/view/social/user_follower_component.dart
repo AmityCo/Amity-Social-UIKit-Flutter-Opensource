@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/bottom_sheet.dart';
+import 'package:amity_uikit_beta_service/view/user/edit_profile.dart';
 import 'package:animation_wrappers/animations/faded_slide_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -75,14 +76,25 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                           return ListTile(
                             trailing: GestureDetector(
                                 onTap: () {
-                                  showOptionsBottomSheet(context,
-                                      vm.getFollowerList[index].targetUser!);
+                                  showOptionsBottomSheet(
+                                      context, snapshot.data!.targetUser!);
                                 },
                                 child: const Icon(Icons.more_horiz)),
                             title: Row(
                               children: [
-                                getAvatarImage(vm.getFollowerList[index]
-                                    .sourceUser!.avatarUrl),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => ProfileScreen(
+                                                user: snapshot
+                                                    .data!.targetUser!)));
+                                  },
+                                  child: getAvatarImage(vm
+                                      .getFollowerList[index]
+                                      .sourceUser!
+                                      .avatarUrl),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(

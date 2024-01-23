@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/social/user_follow_screen.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/view/user/user_setting.dart';
@@ -122,27 +123,34 @@ class UserProfileScreenState extends State<UserProfileScreen>
     return Consumer<UserFeedVM>(builder: (context, vm, _) {
       if (vm.amityUser != null) {
         Widget buildPrivateAccountWidget(double bheight) {
-          return Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: bheight * 0.3,
-                      child: const Center(
-                        child: Text(
-                          "This account is Private",
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xffA5A9B5)),
-                        ),
-                      ),
-                    ),
-                  ],
+          return Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            height: bheight - 300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/privateIcon.png",
+                  package: "amity_uikit_beta_service",
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                const Text(
+                  "This account is private",
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff292B32)),
+                ),
+                const Text(
+                  "Follow this user to see all posts",
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xffA5A9B5)),
+                ),
+              ],
+            ),
           );
         }
 
@@ -155,7 +163,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  "assets/images/Icon name.png",
+                  "assets/images/noPostYet.png",
                   package: "amity_uikit_beta_service",
                 ),
                 const SizedBox(height: 12),
@@ -188,6 +196,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                       feedType: FeedType.user,
                       showCommunity: false,
                       showlatestComment: true,
+                      isFromFeed: true,
                       post: snapshot.data!,
                       theme: theme,
                       postIndex: index,
@@ -224,6 +233,25 @@ class UserProfileScreenState extends State<UserProfileScreen>
           //     onPressed: () => Navigator.of(context).pop(),
           //   ),
           // ),
+          floatingActionButton: widget.amityUserId !=
+                  AmityCoreClient.getCurrentUser().userId
+              ? null
+              : FloatingActionButton(
+                  shape: const CircleBorder(),
+                  onPressed: () async {
+                    // Navigate or perform action based on 'Newsfeed' tap
+                    await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const Scaffold(body: PostToPage()),
+                    ));
+
+                    Provider.of<UserFeedVM>(context, listen: false)
+                        .initUserFeed(userId: widget.amityUserId);
+                  },
+                  backgroundColor: AmityUIConfiguration().primaryColor,
+                  child: Provider.of<AmityUIConfiguration>(context)
+                      .iconConfig
+                      .postIcon(iconSize: 28, color: Colors.white),
+                ),
           backgroundColor: Colors.white,
           body: DefaultTabController(
             length: 2,
@@ -372,7 +400,11 @@ class UserProfileScreenState extends State<UserProfileScreen>
                     floating: false,
                     pinned: true,
                     leading: IconButton(
-                      icon: const Icon(Icons.chevron_left, color: Colors.black),
+                      icon: const Icon(
+                        Icons.chevron_left,
+                        color: Color(0xff292B32),
+                        size: 30,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                     flexibleSpace: Column(
@@ -407,6 +439,8 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
+                                            // Text(vm.amityMyFollowInfo.status
+                                            //     .toString()),
                                             Text(
                                               getAmityUser().displayName ?? "",
                                               style: const TextStyle(
@@ -436,7 +470,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                                     ))));
                                                   },
                                                   child: Text(
-                                                      '${vm.amityMyFollowInfo.followingCount.toString()} Following  '),
+                                                      '${vm.amityMyFollowInfo.followingCount.toString()} following  '),
                                                 ),
                                                 GestureDetector(
                                                   onTap: () {
@@ -450,13 +484,12 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                                         FollowScreen(
                                                                       key:
                                                                           UniqueKey(),
-                                                                      user: Provider.of<UserFeedVM>(
-                                                                              context)
+                                                                      user: vm
                                                                           .amityUser!,
                                                                     ))));
                                                   },
                                                   child: Text(
-                                                      '${vm.amityMyFollowInfo.followerCount.toString()} Followers'),
+                                                      '${vm.amityMyFollowInfo.followerCount.toString()} followers'),
                                                 ),
                                               ],
                                             )
@@ -536,7 +569,8 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                   : followWidget,
                             ],
                           ),
-                        )
+                        ),
+                        const SizedBox(height: 10),
                       ],
                     ),
                     actions: [
@@ -563,7 +597,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                               }),
                     ],
                     bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(0),
+                      preferredSize: const Size.fromHeight(20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -575,7 +609,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                 controller: _tabController,
                                 isScrollable: true,
                                 labelColor: const Color(0xFF1054DE),
-                                unselectedLabelColor: Colors.grey,
+                                unselectedLabelColor: Colors.black,
                                 indicatorColor: const Color(0xFF1054DE),
                                 labelStyle: const TextStyle(
                                   fontSize: 17,

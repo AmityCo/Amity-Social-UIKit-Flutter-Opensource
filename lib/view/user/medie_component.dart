@@ -64,8 +64,52 @@ class MediaGalleryPage extends StatelessWidget {
     );
   }
 
+  Widget buildPrivateAccountWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          "assets/images/privateIcon.png",
+          package: "amity_uikit_beta_service",
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          "This account is private",
+          style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Color(0xff292B32)),
+        ),
+        const Text(
+          "Follow this user to see all posts",
+          style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: Color(0xffA5A9B5)),
+        ),
+      ],
+    );
+  }
+
   Widget _buildMediaGrid(List<AmityPost> amityPosts) {
-    return GridView.builder(
+    Widget noPostWidget = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          "assets/images/Icon name.png",
+          package: "amity_uikit_beta_service",
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          "No photos yet",
+          style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Color(0xffA5A9B5)),
+        ),
+      ],
+    );
+    Widget gridView = GridView.builder(
       padding: EdgeInsets.zero,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -85,10 +129,40 @@ class MediaGalleryPage extends StatelessWidget {
         );
       },
     );
+
+    return Consumer<UserFeedVM>(
+      builder: (context, vm, child) {
+        if (vm.amityMyFollowInfo.status != AmityFollowStatus.ACCEPTED &&
+            vm.amityUser!.userId != AmityCoreClient.getUserId()) {
+          return buildPrivateAccountWidget();
+        } else if (vm.amityImagePosts.isEmpty) {
+          return noPostWidget;
+        } else {
+          return gridView; // Placeholder for tab bar can be integrated here
+        }
+      },
+    );
   }
 
   Widget _buildVideoGrid(List<AmityPost> amityPosts) {
-    return GridView.builder(
+    var column = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          "assets/images/noVideo.png",
+          package: "amity_uikit_beta_service",
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          "No videos yet",
+          style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Color(0xffA5A9B5)),
+        ),
+      ],
+    );
+    var gridView = GridView.builder(
       padding: EdgeInsets.zero,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -131,6 +205,18 @@ class MediaGalleryPage extends StatelessWidget {
             ],
           ),
         );
+      },
+    );
+    return Consumer<UserFeedVM>(
+      builder: (context, vm, child) {
+        if (vm.amityMyFollowInfo.status != AmityFollowStatus.ACCEPTED &&
+            vm.amityUser!.userId != AmityCoreClient.getUserId()) {
+          return buildPrivateAccountWidget();
+        } else if (vm.amityVideoPosts.isEmpty) {
+          return column;
+        } else {
+          return gridView; // Placeholder for tab bar can be integrated here
+        }
       },
     );
   }

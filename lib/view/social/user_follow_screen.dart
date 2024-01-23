@@ -24,7 +24,7 @@ class _FollowScreenState extends State<FollowScreen> {
       appBar: AppBar(
         title: Text(
           widget.user.displayName ?? "displayname is null",
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
+          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
       ),
       backgroundColor: Provider.of<AmityUIConfiguration>(context)

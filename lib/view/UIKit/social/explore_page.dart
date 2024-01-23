@@ -196,7 +196,7 @@ class RecommendationSection extends StatelessWidget {
                                     ? const CircleAvatar(
                                         backgroundColor: Color(0xFFD9E5FC),
                                         child: Icon(Icons.people,
-                                            color: Color(0xff292B32)))
+                                            color: Colors.white))
                                     : CircleAvatar(
                                         backgroundColor:
                                             const Color(0xFFD9E5FC),
@@ -313,9 +313,19 @@ class TrendingSection extends StatelessWidget {
                     leading: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              community.avatarImage?.fileUrl ?? ''),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFD9E5FC),
+                            shape: BoxShape.circle,
+                          ),
+                          child: community.avatarImage != null
+                              ? CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      community.avatarImage?.fileUrl ?? ''),
+                                )
+                              : const Icon(Icons.people, color: Colors.white),
                         ),
                         const SizedBox(width: 15),
                         Text("${index + 1}",
@@ -426,6 +436,7 @@ class CategorySection extends StatelessWidget {
                         children: [
                           Container(
                             height: 40,
+                            width: 40,
                             decoration: const BoxDecoration(
                                 color: Color(0xFFD9E5FC),
                                 shape: BoxShape.circle),
@@ -435,9 +446,11 @@ class CategorySection extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            category.name ?? '',
-                            overflow: TextOverflow.ellipsis,
+                          Expanded(
+                            child: Text(
+                              category.name ?? '',
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
@@ -541,10 +554,12 @@ class _CommunityListPageState extends State<CommunityListPage> {
       body: Consumer<ExplorePageVM>(
         builder: (context, vm, _) {
           return ListView.builder(
+            padding: EdgeInsets.zero,
             itemCount: vm.communities.length,
             itemBuilder: (context, index) {
               final community = vm.communities[index];
               return ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: Container(
                   height: 40,
                   width: 40,

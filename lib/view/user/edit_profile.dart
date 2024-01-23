@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/components/custom_textfield.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  double radius = 60;
+  double radius = 32;
   final TextEditingController _displayNameController = TextEditingController();
 
   final TextEditingController _descriptionController = TextEditingController();
@@ -33,10 +34,10 @@ class ProfileScreenState extends State<ProfileScreen> {
     log("AmityVM:${Provider.of<AmityVM>(
       context,
     ).currentamityUser?.avatarUrl}");
-    var widget = const CircleAvatar();
+    var avatarWidget = const CircleAvatar();
     switch (imageState) {
       case ImageState.loading:
-        widget = CircleAvatar(
+        avatarWidget = CircleAvatar(
             radius: radius,
             backgroundColor: Colors.grey,
             child: const CircularProgressIndicator(
@@ -44,7 +45,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             ));
         break;
       case ImageState.noImage:
-        widget = CircleAvatar(
+        avatarWidget = CircleAvatar(
           radius: radius,
           backgroundColor: Colors.grey[400],
           child: Icon(
@@ -55,7 +56,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         );
         break;
       case ImageState.hasImage:
-        widget = CircleAvatar(
+        avatarWidget = CircleAvatar(
           radius: radius,
           backgroundImage:
               Provider.of<ImagePickerVM>(context, listen: true).amityImage !=
@@ -71,7 +72,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         );
         break;
     }
-    return widget;
+    return avatarWidget;
   }
 
   @override
@@ -204,23 +205,23 @@ class ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Positioned(
                           right: 0,
-                          bottom: 7,
+                          bottom: 0,
                           child: Container(
                             padding: const EdgeInsets.all(5),
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey, // Shadow color
-                                  blurRadius: 4.0, // Blur radius
-                                  offset: Offset(
-                                      0, 2), // Changes position of shadow
-                                ),
-                              ],
+                              color: Color(0xffEBECEF),
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: Colors.grey, // Shadow color
+                              //     blurRadius: 4.0, // Blur radius
+                              //     offset: Offset(
+                              //         0, 2), // Changes position of shadow
+                              //   ),
+                              // ],
                             ),
                             child: const Icon(
-                              Icons.camera_alt,
+                              Icons.camera_alt_outlined,
                               size: 18,
                             ),
                           ),
@@ -228,128 +229,115 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-                        alignment: Alignment.centerLeft,
-                        color: Colors.grey[200],
-                        width: double.infinity,
-                        child: Text(
-                          "Profile Info",
-                          style: theme.textTheme.titleLarge!.copyWith(
-                            color: Colors.grey,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        color: Colors.white,
-                        width: double.infinity,
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                        child: TextField(
-                          enabled: false,
-                          controller:
-                              TextEditingController(text: vm.amityUser!.userId),
-                          decoration: const InputDecoration(
-                            labelText: "User Id",
-                            labelStyle: TextStyle(height: 1),
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.grey[200],
-                        thickness: 3,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: TextField(
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        // Container(
+                        //   padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
+                        //   alignment: Alignment.centerLeft,
+                        //   color: Colors.grey[200],
+                        //   width: double.infinity,
+                        //   child: Text(
+                        //     "Profile Info",
+                        //     style: theme.textTheme.titleLarge!.copyWith(
+                        //       color: Colors.grey,
+                        //       fontSize: 16,
+                        //     ),
+                        //   ),
+                        // ),
+                        // Container(
+                        //   color: Colors.white,
+                        //   width: double.infinity,
+                        //   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        //   child: TextField(
+                        //     enabled: false,
+                        //     controller:
+                        //         TextEditingController(text: vm.amityUser!.userId),
+                        //     decoration: const InputDecoration(
+                        //       labelText: "User Id",
+                        //       labelStyle: TextStyle(height: 1),
+                        //       border: InputBorder.none,
+                        //     ),
+                        //   ),
+                        // ),
+                        // Divider(
+                        //   color: Colors.grey[200],
+                        //   thickness: 3,
+                        // ),
+                        TextFieldWithCounter(
                           controller: _displayNameController,
-                          decoration: const InputDecoration(
-                            labelText: "Display Name",
-                            alignLabelWithHint: false,
-                            border: InputBorder.none,
-                            labelStyle: TextStyle(height: 1),
-                          ),
+                          title: 'Display name',
+                          hintText: 'Display name',
+                          maxCharacters: 180,
                         ),
-                      ),
-                      Divider(
-                        color: Colors.grey[200],
-                        thickness: 3,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: TextField(
-                          controller: _descriptionController,
-                          decoration: const InputDecoration(
-                            labelText: "Description",
-                            alignLabelWithHint: false,
-                            border: InputBorder.none,
-                            labelStyle: TextStyle(height: 1),
-                          ),
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.grey[200],
-                        thickness: 3,
-                      ),
 
-                      // Container(
-                      //   color: Colors.white,
-                      //   width: double.infinity,
-                      //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      //   child: TextField(
-                      //     controller:
-                      //         TextEditingController(text: '+1 9876543210'),
-                      //     decoration: InputDecoration(
-                      //       labelText: S.of(context).phoneNumber,
-                      //       labelStyle: TextStyle(height: 1),
-                      //       border: InputBorder.none,
-                      //     ),
-                      //   ),
-                      // ),
-                      // Divider(
-                      //   color: ApplicationColors.lightGrey,
-                      //   thickness: 3,
-                      // ),
-                      // Container(
-                      //   color: Colors.white,
-                      //   width: double.infinity,
-                      //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      //   child: TextField(
-                      //     controller: TextEditingController(
-                      //         text: S.of(context).samanthasmithmailcom),
-                      //     decoration: InputDecoration(
-                      //       labelText: S.of(context).emailAddress,
-                      //       labelStyle: TextStyle(height: 1),
-                      //       border: InputBorder.none,
-                      //     ),
-                      //   ),
-                      // ),
-                      // Divider(
-                      //   color: ApplicationColors.lightGrey,
-                      //   thickness: 3,
-                      // ),
-                      // Container(
-                      //   color: Colors.white,
-                      //   width: double.infinity,
-                      //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      //   child: TextField(
-                      //     controller:
-                      //         TextEditingController(text: S.of(context).female),
-                      //     decoration: InputDecoration(
-                      //       labelText: S.of(context).gender,
-                      //       labelStyle: TextStyle(height: 1),
-                      //       border: InputBorder.none,
-                      //     ),
-                      //   ),
-                      // ),
-                      // Divider(
-                      //   color: ApplicationColors.lightGrey,
-                      //   thickness: 3,
-                      // ),
-                    ],
+                        TextFieldWithCounter(
+                          isRequired: false,
+                          controller: _descriptionController,
+                          title: 'About',
+                          hintText: 'Enter description',
+                          maxCharacters: 180,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                        ),
+
+                        // Container(
+                        //   color: Colors.white,
+                        //   width: double.infinity,
+                        //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        //   child: TextField(
+                        //     controller:
+                        //         TextEditingController(text: '+1 9876543210'),
+                        //     decoration: InputDecoration(
+                        //       labelText: S.of(context).phoneNumber,
+                        //       labelStyle: TextStyle(height: 1),
+                        //       border: InputBorder.none,
+                        //     ),
+                        //   ),
+                        // ),
+                        // Divider(
+                        //   color: ApplicationColors.lightGrey,
+                        //   thickness: 3,
+                        // ),
+                        // Container(
+                        //   color: Colors.white,
+                        //   width: double.infinity,
+                        //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        //   child: TextField(
+                        //     controller: TextEditingController(
+                        //         text: S.of(context).samanthasmithmailcom),
+                        //     decoration: InputDecoration(
+                        //       labelText: S.of(context).emailAddress,
+                        //       labelStyle: TextStyle(height: 1),
+                        //       border: InputBorder.none,
+                        //     ),
+                        //   ),
+                        // ),
+                        // Divider(
+                        //   color: ApplicationColors.lightGrey,
+                        //   thickness: 3,
+                        // ),
+                        // Container(
+                        //   color: Colors.white,
+                        //   width: double.infinity,
+                        //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        //   child: TextField(
+                        //     controller:
+                        //         TextEditingController(text: S.of(context).female),
+                        //     decoration: InputDecoration(
+                        //       labelText: S.of(context).gender,
+                        //       labelStyle: TextStyle(height: 1),
+                        //       border: InputBorder.none,
+                        //     ),
+                        //   ),
+                        // ),
+                        // Divider(
+                        //   color: ApplicationColors.lightGrey,
+                        //   thickness: 3,
+                        // ),
+                      ],
+                    ),
                   ),
                 ],
               ),

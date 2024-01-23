@@ -1,6 +1,5 @@
 import 'package:amity_uikit_beta_service/components/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/navigation_key.dart';
@@ -46,7 +45,7 @@ class AmityLoadingDialog {
   static Future<void> showLoadingDialog() {
     print("show AmityLoadingDialog");
     _isDialogShowing = true;
-    print("set _isDialogShowing: ${_isDialogShowing}");
+    print("set _isDialogShowing: $_isDialogShowing");
     return showDialog<void>(
       context: NavigationService.navigatorKey.currentContext!,
       barrierColor: Colors.transparent,
@@ -124,7 +123,7 @@ class AmitySuccessDialog {
 
     showCupertinoDialog<void>(
       context: context ?? NavigationService.navigatorKey.currentContext!,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return TimedDialog(
           text: text,
@@ -147,7 +146,7 @@ class ConfirmationDialog {
       context: context,
       builder: (BuildContext context) {
         return CupertinoTheme(
-          data: CupertinoThemeData(brightness: Brightness.dark),
+          data: const CupertinoThemeData(brightness: Brightness.dark),
           child: CupertinoAlertDialog(
             title: Text(title),
             content: Text(detailText),
@@ -159,13 +158,13 @@ class ConfirmationDialog {
                 },
               ),
               CupertinoDialogAction(
-                textStyle: TextStyle(color: Colors.red),
-                child: Text(rightButtonText),
+                textStyle: const TextStyle(color: Colors.red),
                 onPressed: () {
                   Navigator.of(context).pop();
                   onConfirm();
                 },
                 isDefaultAction: true,
+                child: Text(rightButtonText),
               ),
             ],
           ),

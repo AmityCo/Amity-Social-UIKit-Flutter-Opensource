@@ -214,14 +214,22 @@ class UserFeedVM extends ChangeNotifier {
     }
   }
 
-  void followButtonAction(AmityUser user, AmityFollowStatus amityFollowStatus) {
+  Future<void> followButtonAction(
+      AmityUser user, AmityFollowStatus amityFollowStatus) async {
     log(amityFollowStatus.toString());
     if (amityFollowStatus == AmityFollowStatus.NONE) {
-      sendFollowRequest(user: user);
+      await sendFollowRequest(user: user);
+      initUserFeed(userId: amityUser!.userId!);
+      notifyListeners();
     } else if (amityFollowStatus == AmityFollowStatus.PENDING) {
-      withdrawFollowRequest(user);
+      print("withDraw");
+      await withdrawFollowRequest(user);
+      initUserFeed(userId: amityUser!.userId!);
+      notifyListeners();
     } else if (amityFollowStatus == AmityFollowStatus.ACCEPTED) {
-      unfollowUser(user);
+      await unfollowUser(user);
+      print("clear post");
+      // initUserFeed(userId: amityUser!.userId!);
     } else {
       AmityDialog().showAlertErrorDialog(
           title: "Error!",
@@ -258,8 +266,8 @@ class UserFeedVM extends ChangeNotifier {
     });
   }
 
-  void withdrawFollowRequest(AmityUser user) {
-    AmityCoreClient.newUserRepository()
+  Future<void> withdrawFollowRequest(AmityUser user) async {
+    await AmityCoreClient.newUserRepository()
         .relationship()
         .me()
         .unfollow(user.userId!)
@@ -272,12 +280,16 @@ class UserFeedVM extends ChangeNotifier {
     });
   }
 
-  void unfollowUser(AmityUser user) {
-    AmityCoreClient.newUserRepository()
+  Future<void> unfollowUser(AmityUser user) async {
+    await AmityCoreClient.newUserRepository()
         .relationship()
         .unfollow(user.userId!)
         .then((value) {
       log("unfollowUser: Success");
+      amityImagePosts.clear();
+      amityPosts.clear();
+      amityVideoPosts.clear();
+      log("clear post: $amityImagePosts, $amityPosts, $amityVideoPosts");
       notifyListeners();
     }).onError((error, stackTrace) {
       AmityDialog()

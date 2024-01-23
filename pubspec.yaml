@@ -92,6 +92,10 @@ flutter:
     - assets/Icons/
     - assets/images/Icon name.png
     - assets/images/user_placeholder.png
+    - assets/images/noPostYet.png
+    - assets/images/privateIcon.png
+    - assets/images/noVideo.png
+    - assets/
 
 
 

@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/components/custom_textfield.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/category_list.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
@@ -159,15 +160,15 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
                       children: [
-                        buildTextFieldWithCounter(
+                        TextFieldWithCounter(
                           controller: _displayNameController,
                           title: 'Community name',
                           hintText: 'Name your community',
                           maxCharacters: 30,
                         ),
                         const SizedBox(height: 16.0),
-                        buildTextFieldWithCounter(
-                          isRequred: false,
+                        TextFieldWithCounter(
+                          isRequired: false,
                           controller: _descriptionController,
                           title: 'About',
                           hintText: 'Enter description',
@@ -176,7 +177,7 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                           maxLines: null,
                         ),
                         const SizedBox(height: 16.0),
-                        buildTextFieldWithCounter(
+                        TextFieldWithCounter(
                           controller: _categoryController,
                           title: 'Category',
                           hintText: 'Select category',
@@ -273,74 +274,5 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
       return const AssetImage("assets/images/IMG_5637.JPG",
           package: 'amity_uikit_beta_service');
     }
-  }
-
-  Widget buildTextFieldWithCounter({
-    required TextEditingController controller,
-    required String title,
-    required String hintText,
-    required int maxCharacters,
-    bool showCount = true,
-    bool isRequred = true,
-    TextInputType keyboardType = TextInputType.text,
-    int? maxLines,
-    void Function()? onTap,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            RichText(
-              text: TextSpan(
-                text: title,
-                style: Provider.of<AmityUIConfiguration>(context, listen: false)
-                    .titleTextStyle,
-                children: [
-                  TextSpan(
-                    text: isRequred ? ' *' : "",
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ],
-              ),
-            ),
-            showCount
-                ? Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0), // Adding vertical padding for symmetry
-                    child: Text(
-                      '${controller.text.length}/$maxCharacters',
-                      style: const TextStyle(
-                          fontSize: 13.4), // Setting font size to 13.4
-                    ),
-                  )
-                : Container(), // Updated here to show the current character count
-          ],
-        ),
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            border: InputBorder.none, // This line removes the underline
-            hintText: hintText,
-            counterText:
-                "", // Added this line to remove the counter below the TextField
-          ),
-          maxLength: maxCharacters,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          onTap: onTap,
-          readOnly: onTap != null,
-          onChanged: (text) {
-            // Added onChanged to update the UI whenever the text changes
-            setState(() {});
-          },
-        ),
-        Divider(
-          color: Colors.grey[200],
-          thickness: 1,
-        ),
-      ],
-    );
   }
 }

@@ -740,6 +740,7 @@ String _getFileImage(String filePath) {
 
 Widget _listMediaGrid(List<AmityPost> files) {
   return ListView.builder(
+    padding: EdgeInsets.zero,
     physics: const NeverScrollableScrollPhysics(),
     itemCount: files.length,
     shrinkWrap: true,
@@ -748,7 +749,7 @@ Widget _listMediaGrid(List<AmityPost> files) {
 
       return Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(4.0),
           border: Border.all(
             color: const Color(0xffEBECEF),

@@ -43,7 +43,7 @@ class PostVM extends ChangeNotifier {
           if (_controller.error == null) {
             amityComments.clear();
             amityComments.addAll(_controller.loadedItems);
-
+            amityComments[0].attachments![0].getFileId;
             notifyListeners();
           } else {
             //Error on pagination controller
@@ -71,24 +71,30 @@ class PostVM extends ChangeNotifier {
   }
 
   Future<void> createComment(String postId, String text) async {
+    //1.upload file first
+    // amity upload method will return object with File Id
+
+//create comment with attachement
     await AmitySocialClient.newCommentRepository()
         .createComment()
         .post(postId)
         .create()
-        .text(text)
+        //put file Id here
+        .attachments([CommentImageAttachment(fileId: "fileId")])
         .send()
         .then((comment) async {
-      _controller.add(comment);
-      amityComments.clear();
-      amityComments.addAll(_controller.loadedItems);
-      Future.delayed(const Duration(milliseconds: 300)).then((value) {
-        scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
-      });
-    }).onError((error, stackTrace) async {
-      log(error.toString());
-      await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
-    });
+          _controller.add(comment);
+          amityComments.clear();
+          amityComments.addAll(_controller.loadedItems);
+          Future.delayed(const Duration(milliseconds: 300)).then((value) {
+            scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
+          });
+        })
+        .onError((error, stackTrace) async {
+          log(error.toString());
+          await AmityDialog()
+              .showAlertErrorDialog(title: "Error!", message: error.toString());
+        });
   }
 
   Future<void> deleteComment(AmityComment comment) async {

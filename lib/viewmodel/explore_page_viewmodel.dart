@@ -1,7 +1,7 @@
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:amity_sdk/amity_sdk.dart';
 
 class ExplorePageVM with ChangeNotifier {
   List<AmityCommunity> _recommendedCommunities = [];
@@ -13,6 +13,7 @@ class ExplorePageVM with ChangeNotifier {
   List<AmityCommunityCategory> get amityCategories => _categories;
 
   void getRecommendedCommunities() async {
+    print("getRecommendedCommunities...");
     await AmitySocialClient.newCommunityRepository()
         .getRecommendedCommunities()
         .then((List<AmityCommunity> communities) {
@@ -25,6 +26,7 @@ class ExplorePageVM with ChangeNotifier {
   }
 
   void getTrendingCommunities() {
+    print("getTrendingCommunities...");
     AmitySocialClient.newCommunityRepository()
         .getTrendingCommunities()
         .then((List<AmityCommunity> communities) => {

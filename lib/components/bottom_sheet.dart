@@ -22,14 +22,23 @@ void showOptionsBottomSheet(
           ),
           child: Wrap(
             children: [
-              ListTile(
-                title: const Text('Report'),
-                onTap: () {
-                  Provider.of<UserVM>(context, listen: false)
-                      .reportOrUnReportUser(user);
-                  Navigator.pop(context);
-                },
-              ),
+              user.isFlaggedByMe
+                  ? ListTile(
+                      title: const Text('Unreport'),
+                      onTap: () {
+                        Provider.of<UserVM>(context, listen: false)
+                            .reportOrUnReportUser(user);
+                        Navigator.pop(context);
+                      },
+                    )
+                  : ListTile(
+                      title: const Text('Report'),
+                      onTap: () {
+                        Provider.of<UserVM>(context, listen: false)
+                            .reportOrUnReportUser(user);
+                        Navigator.pop(context);
+                      },
+                    ),
             ],
           ),
         );

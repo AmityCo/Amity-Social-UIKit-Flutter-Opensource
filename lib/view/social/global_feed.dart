@@ -89,7 +89,6 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
                             return Column(
                               children: [
-                                Text(latestComments![0].userId!),
                                 index != 0
                                     ? const SizedBox()
                                     : widget.isShowMyCommunity

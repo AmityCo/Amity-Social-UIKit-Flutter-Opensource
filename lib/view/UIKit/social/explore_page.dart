@@ -342,11 +342,17 @@ class TrendingSection extends StatelessWidget {
                           color: Color(0xff292B32),
                           fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(
-                      '${community.categories?[0]?.name} • ${community.membersCount} members',
-                      style: const TextStyle(
-                          fontSize: 13, color: Color(0xff636878)),
-                    ),
+                    subtitle: community.categories!.isEmpty
+                        ? Text(
+                            'no category • ${community.membersCount} members',
+                            style: const TextStyle(
+                                fontSize: 13, color: Color(0xff636878)),
+                          )
+                        : Text(
+                            '${community.categories?[0]?.name ?? ""} • ${community.membersCount} members',
+                            style: const TextStyle(
+                                fontSize: 13, color: Color(0xff636878)),
+                          ),
                   );
                 },
               )

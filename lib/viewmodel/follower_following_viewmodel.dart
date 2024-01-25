@@ -11,7 +11,9 @@ class FollowerVM extends ChangeNotifier {
   var _followingList = <AmityFollowRelationship>[];
   List<AmityFollowRelationship> get getFollowingList => _followingList;
 
-  ScrollController? scrollController;
+  ScrollController? followingScrollController;
+
+  ScrollController? followerScrollController;
 
   late PagingController<AmityFollowRelationship> _followerController;
 
@@ -44,10 +46,10 @@ class FollowerVM extends ChangeNotifier {
       _followingController.fetchNextPage();
     });
 
-    if (scrollController != null) {
+    if (followingScrollController != null) {
       _followingController.addListener((() {
-        if ((scrollController!.position.pixels ==
-                scrollController!.position.maxScrollExtent) &&
+        if ((followingScrollController!.position.pixels ==
+                followingScrollController!.position.maxScrollExtent) &&
             _followingController.hasMoreItems) {
           _followingController.fetchNextPage();
         }
@@ -78,7 +80,7 @@ class FollowerVM extends ChangeNotifier {
           .getPagingData()
           .then((value) {
         log("getFollowerListOf....Successs");
-        scrollController = ScrollController();
+        followingScrollController = ScrollController();
         _followingList = value.data;
       }).onError((error, stackTrace) {
         AmityDialog()
@@ -117,10 +119,10 @@ class FollowerVM extends ChangeNotifier {
       _followerController.fetchNextPage();
     });
 
-    if (scrollController != null) {
+    if (followerScrollController != null) {
       _followerController.addListener((() {
-        if ((scrollController!.position.pixels ==
-                scrollController!.position.maxScrollExtent) &&
+        if ((followerScrollController!.position.pixels ==
+                followerScrollController!.position.maxScrollExtent) &&
             _followerController.hasMoreItems) {
           _followerController.fetchNextPage();
         }
@@ -151,7 +153,7 @@ class FollowerVM extends ChangeNotifier {
           .getPagingData()
           .then((value) {
         log("getFollowerListOf....Successs");
-        scrollController = ScrollController();
+        followerScrollController = ScrollController();
         _followerList = value.data;
       }).onError((error, stackTrace) {
         AmityDialog()

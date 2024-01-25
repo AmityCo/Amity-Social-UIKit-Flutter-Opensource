@@ -1,6 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/bottom_sheet.dart';
-import 'package:amity_uikit_beta_service/view/user/edit_profile.dart';
+import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:animation_wrappers/animations/faded_slide_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +46,7 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
             await vm.getFollowingListof(userId: widget.userId);
           },
           child: ListView.builder(
-            controller: vm.scrollController,
+            controller: vm.followingScrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             itemCount: vm.getFollowingList.length,
             itemBuilder: (context, index) {
@@ -69,10 +69,14 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => ProfileScreen(
-                                          user: snapshot.data!.targetUser!)));
+                              await Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (context) => UserProfileScreen(
+                                            amityUser:
+                                                snapshot.data!.targetUser!,
+                                            amityUserId: snapshot
+                                                .data!.targetUser!.userId!,
+                                          )));
                             },
                             child: getAvatarImage(vm
                                 .getFollowingList[index].targetUser!.avatarUrl),
@@ -86,7 +90,8 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                                   vm.getFollowingList[index].targetUser!
                                           .displayName ??
                                       "displayname not found",
-                                  style: theme.textTheme.bodyMedium,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ],
                             ),

@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
+import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +34,10 @@ class CommunityScreenState extends State<CommunityScreen> {
   void initState() {
     Provider.of<CommuFeedVM>(context, listen: false)
         .initAmityCommunityFeed(widget.community.communityId!);
+    Provider.of<CommuFeedVM>(context, listen: false)
+        .initAmityCommunityImageFeed(widget.community.communityId!);
+    Provider.of<CommuFeedVM>(context, listen: false)
+        .initAmityCommunityVideoFeed(widget.community.communityId!);
     super.initState();
   }
 
@@ -118,232 +124,270 @@ class CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
-  Widget communityDetailSection(AmityCommunity community) {
-    return Column(
-      children: [
-        Stack(
-          alignment: AlignmentDirectional.bottomStart,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.width * 0.7,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFD9E5FC),
-                      image: widget.community.avatarImage != null
-                          ? DecorationImage(
-                              image: NetworkImage(widget.community.avatarImage!
-                                  .getUrl(AmityImageSize.LARGE)),
-                              fit: BoxFit.cover,
-                            )
-                          : const DecorationImage(
-                              image: AssetImage("assets/images/IMG_5637.JPG",
-                                  package: 'amity_uikit_beta_service'),
-                              fit: BoxFit.cover),
-                    ),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(
-                            0.4), // Applying a 40% dark filter to the entire container
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.lock,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Text(
-                          community.displayName != null
-                              ? community.displayName!
-                              : "Community",
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white)),
-                    ],
-                  ),
-                  community.categories == null
-                      ? const SizedBox()
-                      : Text(
-                          community.displayName != null
-                              ? community.categories!.isEmpty
-                                  ? "no category"
-                                  : community.categories![0]?.name ?? ""
-                              : "",
-                          style: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: 16,
-                              color: Colors.white)),
-                  const SizedBox(
-                    height: 16,
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-        Container(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              communityInfo(community),
-              const SizedBox(
-                height: 16,
-              ),
-              communityDescription(community),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: EditProfileButton(
-                    community: community,
-                  )),
-                ],
-              )
-            ],
-          ),
-        ),
-        const Divider()
-      ],
-    );
-  }
+  TabController? _tabController;
 
   @override
   Widget build(BuildContext context) {
-    final myAppBar = AppBar(
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        color: Provider.of<AmityUIConfiguration>(context).primaryColor,
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        icon: const Icon(Icons.chevron_left),
-      ),
-      actions: [
-        IconButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context2) => CommunitySettingPage(
-                        community: widget.community,
-                      )));
-            },
-            icon: const Icon(Icons.more_horiz_rounded, color: Colors.black))
-      ],
-      elevation: 0,
-    );
     final theme = Theme.of(context);
     //final mediaQuery = MediaQuery.of(context);
     //final bHeight = mediaQuery.size.height - mediaQuery.padding.top;
+    Widget communityDetailSection(AmityCommunity community) {
+      return Column(
+        children: [
+          Stack(
+            alignment: AlignmentDirectional.bottomStart,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.width * 0.7,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFD9E5FC),
+                        image: widget.community.avatarImage != null
+                            ? DecorationImage(
+                                image: NetworkImage(widget
+                                    .community.avatarImage!
+                                    .getUrl(AmityImageSize.LARGE)),
+                                fit: BoxFit.cover,
+                              )
+                            : const DecorationImage(
+                                image: AssetImage("assets/images/IMG_5637.JPG",
+                                    package: 'amity_uikit_beta_service'),
+                                fit: BoxFit.cover),
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(
+                              0.4), // Applying a 40% dark filter to the entire container
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.lock,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        const SizedBox(
+                          width: 7,
+                        ),
+                        Text(
+                            community.displayName != null
+                                ? community.displayName!
+                                : "Community",
+                            style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white)),
+                      ],
+                    ),
+                    community.categories == null
+                        ? const SizedBox()
+                        : Text(
+                            community.displayName != null
+                                ? community.categories!.isEmpty
+                                    ? "no category"
+                                    : community.categories![0]?.name ?? ""
+                                : "",
+                            style: const TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 16,
+                                color: Colors.white)),
+                    const SizedBox(
+                      height: 16,
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                communityInfo(community),
+                const SizedBox(
+                  height: 16,
+                ),
+                communityDescription(community),
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: EditProfileButton(
+                      community: community,
+                    )),
+                  ],
+                )
+              ],
+            ),
+          ),
+          const Divider()
+        ],
+      );
+    }
 
     return Consumer<CommuFeedVM>(builder: (__, vm, _) {
       return StreamBuilder<AmityCommunity>(
           stream: widget.community.listen.stream,
           builder: (context, snapshot) {
             var community = snapshot.data ?? widget.community;
-            return Scaffold(
-              appBar: myAppBar,
-              floatingActionButton: (community.isJoined!)
-                  ? FloatingActionButton(
-                      shape: const CircleBorder(),
-                      onPressed: () async {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context2) => AmityCreatePostV2Screen(
-                                  community: community,
-                                )));
-                      },
-                      backgroundColor:
-                          Provider.of<AmityUIConfiguration>(context)
-                              .primaryColor,
-                      child: Provider.of<AmityUIConfiguration>(context)
-                          .iconConfig
-                          .postIcon(iconSize: 28, color: Colors.white),
-                    )
-                  : null,
-              backgroundColor: Colors.white,
-              body: RefreshIndicator(
-                color: Provider.of<AmityUIConfiguration>(context).primaryColor,
-                onRefresh: () async {
-                  Provider.of<CommuFeedVM>(context, listen: false)
-                      .initAmityCommunityFeed(community.communityId!);
-                },
-                child: FadedSlideAnimation(
-                  beginOffset: const Offset(0, 0.3),
-                  endOffset: const Offset(0, 0),
-                  slideCurve: Curves.linearToEaseOut,
-                  child: SafeArea(
-                    child: SingleChildScrollView(
-                      controller: vm.scrollcontroller,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                              width: double.infinity,
-                              // height: (bHeight - 120) * 0.4,
-                              child: communityDetailSection(
-                                  community ?? community)),
-                          FadedSlideAnimation(
-                            beginOffset: const Offset(0, 0.3),
-                            endOffset: const Offset(0, 0),
-                            slideCurve: Curves.linearToEaseOut,
-                            child: Container(
-                              color: Colors.grey[200],
-                              child: ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: vm.getCommunityPosts().length,
-                                itemBuilder: (context, index) {
-                                  return StreamBuilder<AmityPost>(
-                                      key: Key(vm
-                                          .getCommunityPosts()[index]
-                                          .postId!),
-                                      stream: vm
-                                          .getCommunityPosts()[index]
-                                          .listen
-                                          .stream,
-                                      initialData:
-                                          vm.getCommunityPosts()[index],
-                                      builder: (context, snapshot) {
-                                        return PostWidget(
-                                          showCommunity: false,
-                                          showlatestComment: true,
-                                          isFromFeed: true,
-                                          post: snapshot.data!,
-                                          theme: theme,
-                                          postIndex: index,
-                                          feedType: FeedType.community,
-                                        );
-                                      });
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+
+            var feedWidget = FadedSlideAnimation(
+              beginOffset: const Offset(0, 0.3),
+              endOffset: const Offset(0, 0),
+              slideCurve: Curves.linearToEaseOut,
+              child: Container(
+                color: Colors.grey[200],
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(top: 0),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: vm.getCommunityPosts().length,
+                  itemBuilder: (context, index) {
+                    return StreamBuilder<AmityPost>(
+                        key: Key(vm.getCommunityPosts()[index].postId!),
+                        stream: vm.getCommunityPosts()[index].listen.stream,
+                        initialData: vm.getCommunityPosts()[index],
+                        builder: (context, snapshot) {
+                          return PostWidget(
+                            showCommunity: false,
+                            showlatestComment: true,
+                            isFromFeed: true,
+                            post: snapshot.data!,
+                            theme: theme,
+                            postIndex: index,
+                            feedType: FeedType.community,
+                          );
+                        });
+                  },
                 ),
               ),
             );
+
+            var tablist = [
+              feedWidget,
+              const MediaGalleryPage(
+                galleryFeed: GalleryFeed.community,
+              )
+            ];
+            return Scaffold(
+                floatingActionButton: (community.isJoined!)
+                    ? FloatingActionButton(
+                        shape: const CircleBorder(),
+                        onPressed: () async {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context2) => AmityCreatePostV2Screen(
+                                    community: community,
+                                  )));
+                        },
+                        backgroundColor:
+                            Provider.of<AmityUIConfiguration>(context)
+                                .primaryColor,
+                        child: Provider.of<AmityUIConfiguration>(context)
+                            .iconConfig
+                            .postIcon(iconSize: 28, color: Colors.white),
+                      )
+                    : null,
+                backgroundColor: Colors.white,
+                body: DefaultTabController(
+                  length: 2,
+                  child: NestedScrollView(
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      var followWidget = const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [],
+                      );
+                      return <Widget>[
+                        DynamicSliverAppBar(
+                          shadowColor: Colors.white,
+                          elevation: 0,
+                          surfaceTintColor: Colors.transparent,
+                          backgroundColor: Colors.white,
+                          floating: false,
+                          pinned: true,
+                          leading: IconButton(
+                            icon: const Icon(
+                              Icons.chevron_left,
+                              color: Color(0xff292B32),
+                              size: 30,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          flexibleSpace: Column(
+                            children: [
+                              SizedBox(
+                                  width: double.infinity,
+                                  // height: (bHeight - 120) * 0.4,
+                                  child: communityDetailSection(community))
+                            ],
+                          ),
+                          actions: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context2) =>
+                                          CommunitySettingPage(
+                                            community: widget.community,
+                                          )));
+                                },
+                                icon: const Icon(Icons.more_horiz_rounded,
+                                    color: Colors.black))
+                          ],
+                          bottom: PreferredSize(
+                            preferredSize: const Size.fromHeight(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    color: Colors.white,
+                                    child: TabBar(
+                                      tabAlignment: TabAlignment.start,
+                                      controller: _tabController,
+                                      isScrollable: true,
+                                      labelColor: const Color(0xFF1054DE),
+                                      unselectedLabelColor: Colors.black,
+                                      indicatorColor: const Color(0xFF1054DE),
+                                      labelStyle: const TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'SF Pro Text',
+                                      ),
+                                      tabs: const [
+                                        Tab(text: "Timeline"),
+                                        Tab(text: "Gallery"),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ];
+                    },
+                    body: TabBarView(
+                        controller: _tabController, children: tablist),
+                  ),
+                ));
           });
     });
   }

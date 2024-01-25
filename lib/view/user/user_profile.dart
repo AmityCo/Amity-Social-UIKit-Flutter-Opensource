@@ -222,7 +222,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
 
         var tablist = [
           buildContent(context, bheight),
-          const MediaGalleryPage()
+          const MediaGalleryPage(
+            galleryFeed: GalleryFeed.user,
+          )
         ];
         return Scaffold(
           // appBar: AppBar(
@@ -454,39 +456,36 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                 //     .toString()} Posts  '),
                                                 GestureDetector(
                                                   onTap: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                ChangeNotifierProvider(
-                                                                    create: (context) =>
-                                                                        FollowerVM(),
-                                                                    child:
-                                                                        FollowScreen(
-                                                                      key:
-                                                                          UniqueKey(),
-                                                                      user: Provider.of<UserFeedVM>(
-                                                                              context)
-                                                                          .amityUser!,
-                                                                    ))));
+                                                    Navigator.of(context).push(MaterialPageRoute(
+                                                        builder: (context) => ChangeNotifierProvider(
+                                                            create: (context) =>
+                                                                FollowerVM(),
+                                                            child: FollowScreen(
+                                                                key:
+                                                                    UniqueKey(),
+                                                                userId: widget
+                                                                    .amityUserId,
+                                                                displayName:
+                                                                    getAmityUser()
+                                                                        .displayName))));
                                                   },
                                                   child: Text(
                                                       '${vm.amityMyFollowInfo.followingCount.toString()} following  '),
                                                 ),
                                                 GestureDetector(
                                                   onTap: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                ChangeNotifierProvider(
-                                                                    create: (context) =>
-                                                                        FollowerVM(),
-                                                                    child:
-                                                                        FollowScreen(
-                                                                      key:
-                                                                          UniqueKey(),
-                                                                      user: vm
-                                                                          .amityUser!,
-                                                                    ))));
+                                                    Navigator.of(context).push(MaterialPageRoute(
+                                                        builder: (context) => ChangeNotifierProvider(
+                                                            create: (context) =>
+                                                                FollowerVM(),
+                                                            child: FollowScreen(
+                                                                key:
+                                                                    UniqueKey(),
+                                                                userId: widget
+                                                                    .amityUserId,
+                                                                displayName:
+                                                                    getAmityUser()
+                                                                        .displayName))));
                                                   },
                                                   child: Text(
                                                       '${vm.amityMyFollowInfo.followerCount.toString()} followers'),

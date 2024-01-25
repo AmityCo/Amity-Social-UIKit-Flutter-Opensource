@@ -35,7 +35,7 @@ class AmityVM extends ChangeNotifier {
           await AmityCoreClient.login(userID).submit().then((value) async {
             log("success");
             isProcessing = false;
-            getUserByID(userID);
+
             currentamityUser = value;
             notifyListeners();
           }).catchError((error, stackTrace) async {
@@ -53,7 +53,7 @@ class AmityVM extends ChangeNotifier {
               .then((value) async {
             log("success");
             isProcessing = false;
-            getUserByID(userID);
+
             currentamityUser = value;
             notifyListeners();
           }).catchError((error, stackTrace) async {

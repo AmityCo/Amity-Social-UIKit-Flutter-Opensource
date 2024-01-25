@@ -1,21 +1,46 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/alert_dialog.dart';
 
 class CommuFeedVM extends ChangeNotifier {
+  MediaType _selectedMediaType = MediaType.photos;
+  void doSelectMedieType(MediaType mediaType) {
+    _selectedMediaType = mediaType;
+    log(_selectedMediaType.toString());
+    notifyListeners();
+  }
+
+  MediaType getMediaType() => _selectedMediaType;
   bool isCurrentUserIsAdmin = false;
   var _amityCommunityFeedPosts = <AmityPost>[];
 
   late PagingController<AmityPost> _controllerCommu;
+
+  var _amityCommunityImageFeedPosts = <AmityPost>[];
+
+  late PagingController<AmityPost> _controllerImageCommu;
+
+  var _amityCommunityVideoFeedPosts = <AmityPost>[];
+
+  late PagingController<AmityPost> _controllerVideoCommu;
 
   final scrollcontroller = ScrollController();
 
   AmityCommunity? community;
   List<AmityPost> getCommunityPosts() {
     return _amityCommunityFeedPosts;
+  }
+
+  List<AmityPost> getCommunityImagePosts() {
+    return _amityCommunityImageFeedPosts;
+  }
+
+  List<AmityPost> getCommunityVideoPosts() {
+    return _amityCommunityVideoFeedPosts;
   }
 
   void addPostToFeed(AmityPost post) {
@@ -73,11 +98,119 @@ class CommuFeedVM extends ChangeNotifier {
     await checkIsCurrentUserIsAdmin(communityId);
   }
 
+  Future<void> initAmityCommunityVideoFeed(String communityId) async {
+    isCurrentUserIsAdmin = false;
+
+    //inititate the PagingController
+    _controllerVideoCommu = PagingController(
+      pageFuture: (token) => AmitySocialClient.newFeedRepository()
+          .getCommunityFeed(communityId)
+          .types([AmityDataType.VIDEO])
+          //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
+          .feedType(AmityFeedType.PUBLISHED)
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () async {
+          log("communityListener");
+          if (_controllerVideoCommu.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+            print(">>> video ${_controllerVideoCommu.loadedItems.length}");
+            _amityCommunityVideoFeedPosts.clear();
+            _amityCommunityVideoFeedPosts
+                .addAll(_controllerVideoCommu.loadedItems);
+
+            //update widgets
+            notifyListeners();
+          } else {
+            //error on pagination controller
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controllerCommu.error.toString());
+            //update widgets
+          }
+        },
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _controllerVideoCommu.fetchNextPage();
+    });
+
+    scrollcontroller.addListener(loadnextpage);
+
+    //inititate the PagingController
+    await AmitySocialClient.newFeedRepository()
+        .getCommunityFeed(communityId)
+        .includeDeleted(false)
+        .types([AmityDataType.VIDEO])
+        .getPagingData()
+        .then((value) {
+          _amityCommunityVideoFeedPosts = value.data;
+        });
+    notifyListeners();
+    await checkIsCurrentUserIsAdmin(communityId);
+  }
+
+  Future<void> initAmityCommunityImageFeed(String communityId) async {
+    isCurrentUserIsAdmin = false;
+
+    //inititate the PagingController
+    _controllerImageCommu = PagingController(
+      pageFuture: (token) => AmitySocialClient.newFeedRepository()
+          .getCommunityFeed(communityId)
+          .types([AmityDataType.IMAGE])
+          .feedType(AmityFeedType.PUBLISHED)
+          .includeDeleted(false)
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () async {
+          log("communityListener");
+          if (_controllerImageCommu.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+
+            print(
+                ">>>>>${_controllerImageCommu.loadedItems[0].data!.fileInfo.fileUrl}");
+            _amityCommunityImageFeedPosts.clear();
+            _amityCommunityImageFeedPosts
+                .addAll(_controllerImageCommu.loadedItems);
+
+            //update widgets
+            notifyListeners();
+          } else {
+            //error on pagination controller
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controllerImageCommu.error.toString());
+            //update widgets
+          }
+        },
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _controllerImageCommu.fetchNextPage();
+    });
+
+    scrollcontroller.addListener(loadnextpage);
+
+    //inititate the PagingController
+    await AmitySocialClient.newFeedRepository()
+        .getCommunityFeed(communityId)
+        .includeDeleted(false)
+        .types([AmityDataType.IMAGE])
+        .getPagingData()
+        .then((value) {
+          _amityCommunityImageFeedPosts = value.data;
+        });
+    notifyListeners();
+    await checkIsCurrentUserIsAdmin(communityId);
+  }
+
   void loadnextpage() {
     if ((scrollcontroller.position.pixels ==
             scrollcontroller.position.maxScrollExtent) &&
-        _controllerCommu.hasMoreItems) {
-      _controllerCommu.fetchNextPage();
+        _controllerImageCommu.hasMoreItems) {
+      _controllerImageCommu.fetchNextPage();
     }
   }
 
@@ -101,8 +234,8 @@ class CommuFeedVM extends ChangeNotifier {
     await AmitySocialClient.newCommunityRepository()
         .getCurentUserRoles(communityId)
         .then((value) {
-      log("LOG1" + value.toString());
-      for (var role in value) {
+      log("LOG1$value");
+      for (var role in value!) {
         if (role == "community-moderator") {
           isCurrentUserIsAdmin = true;
         }

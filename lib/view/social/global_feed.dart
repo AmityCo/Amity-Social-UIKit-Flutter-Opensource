@@ -89,6 +89,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
                             return Column(
                               children: [
+                                Text(latestComments![0].userId!),
                                 index != 0
                                     ? const SizedBox()
                                     : widget.isShowMyCommunity
@@ -669,6 +670,7 @@ class _PostWidgetState extends State<PostWidget>
         //           color: Colors.grey,
         //           height: 0,
         //         )),
+
         !widget.showlatestComment
             ? const SizedBox()
             : widget.post.latestComments == null
@@ -679,7 +681,6 @@ class _PostWidgetState extends State<PostWidget>
                         color: Colors.white,
                         child: LatestCommentComponent(
                             postId: widget.post.data!.postId,
-                            theme: widget.theme,
                             comments: widget.post.latestComments!),
                       ),
         const SizedBox(
@@ -709,12 +710,11 @@ class LatestCommentComponent extends StatefulWidget {
   const LatestCommentComponent({
     Key? key,
     required this.postId,
-    required this.theme,
     required this.comments,
   }) : super(key: key);
 
   final String postId;
-  final ThemeData theme;
+
   final List<AmityComment> comments;
 
   @override
@@ -743,13 +743,10 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         shrinkWrap: true,
         itemCount: widget.comments.length,
         itemBuilder: (context, index) {
-          print(
-              "latestComments objec index $index: ${widget.comments[index].data}");
-          print(
-              "latestComments user object index $index: ${widget.comments[index].user}");
           return StreamBuilder<AmityComment>(
             // key: Key(widget.comments[index].commentId!),
             stream: widget.comments[index].listen.stream,
+            initialData: widget.comments[index],
             builder: (context, snapshot) {
               var comments = widget.comments[index];
               var commentData = widget.comments[index].data as CommentTextData;
@@ -807,8 +804,8 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                       child: getAvatarImage(
                                           comments.user?.avatarUrl),
                                     ),
-                                    title: Text(comments.user?.displayName ??
-                                        "displayName"),
+                                    title:
+                                        Text(comments.user?.displayName ?? ""),
                                     subtitle: TimeAgoWidget(
                                       createdAt: comments.createdAt!,
                                     ),

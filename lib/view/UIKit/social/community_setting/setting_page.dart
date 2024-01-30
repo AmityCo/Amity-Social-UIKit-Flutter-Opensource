@@ -6,7 +6,6 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/com
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/notification_setting_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/post_review_settimg_page.dart';
-import 'package:amity_uikit_beta_service/view/social/edit_community.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
@@ -123,38 +122,38 @@ class CommunitySettingPage extends StatelessWidget {
                         ),
                       ),
 
-                // // Section 2: Community Permission
-                // !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-                //     ? SizedBox()
-                //     : const Padding(
-                //         padding: EdgeInsets.all(16.0),
-                //         child: Text("Community Permission",
-                //             style: TextStyle(
-                //                 fontWeight: FontWeight.w600, fontSize: 17)),
-                //       ),
-                // !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-                //     ? SizedBox()
-                //     : ListTile(
-                //         leading: Container(
-                //             padding: EdgeInsets.all(5),
-                //             decoration: BoxDecoration(
-                //               borderRadius: BorderRadius.circular(
-                //                   4), // Adjust radius to your need
-                //               color: const Color(
-                //                   0xfff1f1f1), // Choose the color to fit your design
-                //             ),
-                //             child: Icon(Icons.fact_check,
-                //                 color: Color(0xff292B32))),
-                //         title: Text("Post Review"),
-                //         trailing:
-                //             Icon(Icons.chevron_right, color: Color(0xff292B32)),
-                //         onTap: () {
-                //           // Navigate to Post Review Page or perform an action
-                //           Navigator.of(context).push(MaterialPageRoute(
-                //               builder: (context) =>
-                //                   PostReviewPage(community: livecommunity)));
-                //         },
-                //       ),
+                // Section 2: Community Permission
+                !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                    ? const SizedBox()
+                    : const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text("Community Permission",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 17)),
+                      ),
+                !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                    ? const SizedBox()
+                    : ListTile(
+                        leading: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  4), // Adjust radius to your need
+                              color: const Color(
+                                  0xfff1f1f1), // Choose the color to fit your design
+                            ),
+                            child: const Icon(Icons.fact_check,
+                                color: Color(0xff292B32))),
+                        title: const Text("Post Review"),
+                        trailing: const Icon(Icons.chevron_right,
+                            color: Color(0xff292B32)),
+                        onTap: () {
+                          // Navigate to Post Review Page or perform an action
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  PostReviewPage(community: livecommunity)));
+                        },
+                      ),
                 ListTile(
                   title: const Text(
                     "Leave Community",

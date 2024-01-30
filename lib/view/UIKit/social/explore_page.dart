@@ -565,7 +565,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
             itemBuilder: (context, index) {
               final community = vm.communities[index];
               return ListTile(
-                contentPadding: EdgeInsets.zero,
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          CommunityScreen(community: community)));
+                },
                 leading: Container(
                   height: 40,
                   width: 40,

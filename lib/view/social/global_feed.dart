@@ -123,7 +123,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
   }
 }
 
-enum FeedType { user, community, global }
+enum FeedType { user, community, global, pending }
 
 class PostWidget extends StatefulWidget {
   const PostWidget(
@@ -134,7 +134,8 @@ class PostWidget extends StatefulWidget {
       this.isFromFeed = false,
       required this.showlatestComment,
       required this.feedType,
-      required this.showCommunity})
+      required this.showCommunity,
+      this.showAcceptOrRejectButton = false})
       : super(key: key);
   final FeedType feedType;
   final AmityPost post;
@@ -143,6 +144,7 @@ class PostWidget extends StatefulWidget {
   final bool isFromFeed;
   final bool showlatestComment;
   final bool showCommunity;
+  final bool showAcceptOrRejectButton;
   @override
   State<PostWidget> createState() => _PostWidgetState();
 }
@@ -368,279 +370,301 @@ class _PostWidgetState extends State<PostWidget>
                         subtitle: TimeAgoWidget(
                           createdAt: widget.post.createdAt!,
                         ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            // Image.asset(
-                            //   'assets/Icons/ic_share.png',
-                            //   scale: 3,
-                            // ),
-                            // SizedBox(width: iconSize.feedIconSize),
-                            // Icon(
-                            //   Icons.bookmark_border,
-                            //   size: iconSize.feedIconSize,
-                            //   color: ApplicationColors.grey,
-                            // ),
-                            // SizedBox(width: iconSize.feedIconSize),
-                            postOptions(context),
-                          ],
-                        ),
+                        trailing: widget.feedType == FeedType.pending &&
+                                widget.post.postedUser!.userId !=
+                                    AmityCoreClient.getCurrentUser().userId
+                            ? null
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  // Image.asset(
+                                  //   'assets/Icons/ic_share.png',
+                                  //   scale: 3,
+                                  // ),
+                                  // SizedBox(width: iconSize.feedIconSize),
+                                  // Icon(
+                                  //   Icons.bookmark_border,
+                                  //   size: iconSize.feedIconSize,
+                                  //   color: ApplicationColors.grey,
+                                  // ),
+                                  // SizedBox(width: iconSize.feedIconSize),
+                                  postOptions(context),
+                                ],
+                              ),
                       ),
                     ),
                     postWidgets(),
-                    Container(
-                      child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 16, bottom: 16, left: 0, right: 0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Builder(builder: (context) {
-                                return widget.post.reactionCount! > 0
-                                    ? Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 10,
-                                            backgroundColor: Provider.of<
-                                                        AmityUIConfiguration>(
-                                                    context)
-                                                .primaryColor,
-                                            child: const Icon(
-                                              Icons.thumb_up,
-                                              color: Colors.white,
-                                              size: 13,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                              widget.post.reactionCount
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize:
-                                                      feedReactionCountSize,
-                                                  letterSpacing: 1)),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                              widget.post.reactionCount! > 1
-                                                  ? "likes"
-                                                  : "like",
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize:
-                                                      feedReactionCountSize,
-                                                  letterSpacing: 1)),
-                                        ],
-                                      )
-                                    : const SizedBox(
-                                        width: 0,
-                                      );
-                              }),
-                              Builder(builder: (context) {
-                                // any logic needed...
-                                if (widget.post.commentCount! > 1) {
-                                  return Text(
-                                    '${widget.post.commentCount} comments',
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: feedReactionCountSize,
-                                        letterSpacing: 0.5),
-                                  );
-                                } else if (widget.post.commentCount! == 0) {
-                                  return const SizedBox(
-                                    width: 0,
-                                  );
-                                } else {
-                                  return Text(
-                                    '${widget.post.commentCount} comment',
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: feedReactionCountSize,
-                                        letterSpacing: 0.5),
-                                  );
-                                }
-                              })
-                            ],
-                          )),
-                    ),
+                    widget.feedType == FeedType.pending
+                        ? const SizedBox()
+                        : Container(
+                            child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 16, bottom: 16, left: 0, right: 0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Builder(builder: (context) {
+                                      return widget.post.reactionCount! > 0
+                                          ? Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 10,
+                                                  backgroundColor: Provider.of<
+                                                              AmityUIConfiguration>(
+                                                          context)
+                                                      .primaryColor,
+                                                  child: const Icon(
+                                                    Icons.thumb_up,
+                                                    color: Colors.white,
+                                                    size: 13,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                    widget.post.reactionCount
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize:
+                                                            feedReactionCountSize,
+                                                        letterSpacing: 1)),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                    widget.post.reactionCount! >
+                                                            1
+                                                        ? "likes"
+                                                        : "like",
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize:
+                                                            feedReactionCountSize,
+                                                        letterSpacing: 1)),
+                                              ],
+                                            )
+                                          : const SizedBox(
+                                              width: 0,
+                                            );
+                                    }),
+                                    Builder(builder: (context) {
+                                      // any logic needed...
+                                      if (widget.post.commentCount! > 1) {
+                                        return Text(
+                                          '${widget.post.commentCount} comments',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: feedReactionCountSize,
+                                              letterSpacing: 0.5),
+                                        );
+                                      } else if (widget.post.commentCount! ==
+                                          0) {
+                                        return const SizedBox(
+                                          width: 0,
+                                        );
+                                      } else {
+                                        return Text(
+                                          '${widget.post.commentCount} comment',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: feedReactionCountSize,
+                                              letterSpacing: 0.5),
+                                        );
+                                      }
+                                    })
+                                  ],
+                                )),
+                          ),
                     const Divider(
                       color: Colors.grey,
                       height: 8,
                     ),
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          // Row(
-                          //   children: [
-                          //     Icon(
-                          //       Icons.remove_red_eye,
-                          //       size: iconSize.feedIconSize,
-                          //       color: ApplicationColors.grey,
-                          //     ),
-                          //     SizedBox(width: 8.5),
-                          //     Text(
-                          //       S.of(context).onepointtwok,
-                          //       style: TextStyle(
-                          //           color: ApplicationColors.grey,
-                          //           fontSize: 12,
-                          //           letterSpacing: 1),
-                          //     ),
-                          //   ],
-                          // ),
-                          // Row(
-                          //   children: [
-                          //     FaIcon(
-                          //       Icons.repeat_rounded,
-                          //       color: ApplicationColors.grey,
-                          //       size: iconSize.feedIconSize,
-                          //     ),
-                          //     SizedBox(width: 8.5),
-                          //     Text(
-                          //       '287',
-                          //       style: TextStyle(
-                          //           color: ApplicationColors.grey,
-                          //           fontSize: 12,
-                          //           letterSpacing: 0.5),
-                          //     ),
-                          //   ],
-                          // ),
 
-                          Container(
+                    widget.feedType == FeedType.pending
+                        ? widget.showAcceptOrRejectButton
+                            ? PendingSectionButton(
+                                postId: widget.post.postId!,
+                              )
+                            : const SizedBox()
+                        : Container(
+                            padding: const EdgeInsets.only(bottom: 5),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                widget.post.myReactions!.contains("like")
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          print(widget.post.myReactions);
-                                          HapticFeedback.heavyImpact();
-                                          Provider.of<PostVM>(context,
-                                                  listen: false)
-                                              .removePostReaction(widget.post);
-                                        },
-                                        child: SizedBox(
-                                          height: 40,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Provider.of<AmityUIConfiguration>(
-                                                      context)
-                                                  .iconConfig
-                                                  .likedIcon(
-                                                      color: Provider.of<
-                                                                  AmityUIConfiguration>(
-                                                              context)
-                                                          .primaryColor),
-                                              Text(
-                                                ' Liked',
-                                                style: TextStyle(
-                                                  color: Provider.of<
-                                                              AmityUIConfiguration>(
-                                                          context)
-                                                      .primaryColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize:
-                                                      feedReactionCountSize,
+                                // Row(
+                                //   children: [
+                                //     Icon(
+                                //       Icons.remove_red_eye,
+                                //       size: iconSize.feedIconSize,
+                                //       color: ApplicationColors.grey,
+                                //     ),
+                                //     SizedBox(width: 8.5),
+                                //     Text(
+                                //       S.of(context).onepointtwok,
+                                //       style: TextStyle(
+                                //           color: ApplicationColors.grey,
+                                //           fontSize: 12,
+                                //           letterSpacing: 1),
+                                //     ),
+                                //   ],
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     FaIcon(
+                                //       Icons.repeat_rounded,
+                                //       color: ApplicationColors.grey,
+                                //       size: iconSize.feedIconSize,
+                                //     ),
+                                //     SizedBox(width: 8.5),
+                                //     Text(
+                                //       '287',
+                                //       style: TextStyle(
+                                //           color: ApplicationColors.grey,
+                                //           fontSize: 12,
+                                //           letterSpacing: 0.5),
+                                //     ),
+                                //   ],
+                                // ),
+
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      widget.post.myReactions!.contains("like")
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                print(widget.post.myReactions);
+                                                HapticFeedback.heavyImpact();
+                                                Provider.of<PostVM>(context,
+                                                        listen: false)
+                                                    .removePostReaction(
+                                                        widget.post);
+                                              },
+                                              child: SizedBox(
+                                                height: 40,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Provider.of<AmityUIConfiguration>(
+                                                            context)
+                                                        .iconConfig
+                                                        .likedIcon(
+                                                            color: Provider.of<
+                                                                        AmityUIConfiguration>(
+                                                                    context)
+                                                                .primaryColor),
+                                                    Text(
+                                                      ' Liked',
+                                                      style: TextStyle(
+                                                        color: Provider.of<
+                                                                    AmityUIConfiguration>(
+                                                                context)
+                                                            .primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize:
+                                                            feedReactionCountSize,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ))
-                                    : GestureDetector(
-                                        onTap: () {
-                                          print(widget.post.myReactions);
-                                          HapticFeedback.heavyImpact();
-                                          Provider.of<PostVM>(context,
-                                                  listen: false)
-                                              .addPostReaction(widget.post);
-                                        },
-                                        child: SizedBox(
-                                          height: 40,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Provider.of<AmityUIConfiguration>(
-                                                      context)
-                                                  .iconConfig
-                                                  .likeIcon(),
-                                              Text(
-                                                ' Like',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize:
-                                                        feedReactionCountSize,
-                                                    letterSpacing: 1),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 12,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              if (widget.isFromFeed) {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => CommentScreen(
-                                          amityPost: widget.post,
-                                          theme: widget.theme,
-                                          isFromFeed: true,
-                                        )));
-                              }
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Provider.of<AmityUIConfiguration>(context)
-                                    .iconConfig
-                                    .commentIcon(),
-                                const SizedBox(width: 5.5),
-                                Text(
-                                  'Comment',
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: feedReactionCountSize,
-                                      letterSpacing: 0.5),
+                                              ))
+                                          : GestureDetector(
+                                              onTap: () {
+                                                print(widget.post.myReactions);
+                                                HapticFeedback.heavyImpact();
+                                                Provider.of<PostVM>(context,
+                                                        listen: false)
+                                                    .addPostReaction(
+                                                        widget.post);
+                                              },
+                                              child: SizedBox(
+                                                height: 40,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Provider.of<AmityUIConfiguration>(
+                                                            context)
+                                                        .iconConfig
+                                                        .likeIcon(),
+                                                    Text(
+                                                      ' Like',
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize:
+                                                              feedReactionCountSize,
+                                                          letterSpacing: 1),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 12,
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Row(
-                              children: [
-                                Provider.of<AmityUIConfiguration>(context)
-                                    .iconConfig
-                                    .shareIcon(iconSize: 16),
-                                const SizedBox(width: 4),
-                                Text(
-                                  "Share",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: feedReactionCountSize,
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (widget.isFromFeed) {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CommentScreen(
+                                                    amityPost: widget.post,
+                                                    theme: widget.theme,
+                                                    isFromFeed: true,
+                                                  )));
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .iconConfig
+                                          .commentIcon(),
+                                      const SizedBox(width: 5.5),
+                                      Text(
+                                        'Comment',
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: feedReactionCountSize,
+                                            letterSpacing: 0.5),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Row(
+                                    children: [
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .iconConfig
+                                          .shareIcon(iconSize: 16),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        "Share",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: feedReactionCountSize,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
 
                     // Divider(),
                     // CommentComponent(
@@ -703,6 +727,75 @@ class _PostWidgetState extends State<PostWidget>
   //     return false;
   //   }
   // }
+}
+
+class PendingSectionButton extends StatelessWidget {
+  final String postId;
+  const PendingSectionButton({super.key, required this.postId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 11,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Provider.of<CommuFeedVM>(context, listen: false).acceptPost(
+                    postId: postId,
+                    callback: (isSuccess) {},
+                  );
+                },
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color:
+                        Provider.of<AmityUIConfiguration>(context).primaryColor,
+                    borderRadius: BorderRadius.circular(4), // Set border radius
+                  ),
+                  child: const Center(
+                      child: Text("Accept",
+                          style: TextStyle(
+                              color: Colors.white))), // Text color set to white
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Provider.of<CommuFeedVM>(context, listen: false).declinePost(
+                    postId: postId,
+                    callback: (isSuccess) {},
+                  );
+                },
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white, // Decline button background color
+                    borderRadius: BorderRadius.circular(4), // Set border radius
+                    border: Border.all(color: Colors.grey), // Border color
+                  ),
+                  child: const Center(
+                      child: Text("Decline")), // Text with default color
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+      ],
+    );
+  }
 }
 
 class LatestCommentComponent extends StatefulWidget {

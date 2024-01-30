@@ -349,17 +349,17 @@ class CreatePostVMV2 with ChangeNotifier {
           log("success");
           callback(true, null);
           if (isCommunity) {
-            var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
+            // var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
+            // viewModel.addPostToFeed(post);
+            // if (viewModel.scrollcontroller.hasClients) {
+            //   viewModel.scrollcontroller.jumpTo(0);
+            // }
           } else {
-            var viewModel = Provider.of<FeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
+            // var viewModel = Provider.of<FeedVM>(context, listen: false);
+            // viewModel.addPostToFeed(post);
+            // if (viewModel.scrollcontroller.hasClients) {
+            //   viewModel.scrollcontroller.jumpTo(0);
+            // }
           }
         }).onError((error, stackTrace) async {
           await AmityDialog()
@@ -412,15 +412,17 @@ class CreatePostVMV2 with ChangeNotifier {
         if (textEditingController.text.isNotEmpty) {
           readyBuilder.text(textEditingController.text);
         }
+
         await readyBuilder.post().then((AmityPost post) {
           // Add post to feed logic goes here...
           // Notify listeners or update UI accordingly
+
           if (isCommunity) {
-            var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
+            // var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
+            // viewModel.addPostToFeed(post);
+            // if (viewModel.scrollcontroller.hasClients) {
+            //   viewModel.scrollcontroller.jumpTo(0);
+            // }
           } else {
             var viewModel = Provider.of<FeedVM>(context, listen: false);
             viewModel.addPostToFeed(post);
@@ -438,12 +440,17 @@ class CreatePostVMV2 with ChangeNotifier {
         await readyBuilder.createTextPost().then((AmityPost post) {
           // Add post to feed logic goes here...
           // Notify listeners or update UI accordingly
+
           if (isCommunity) {
-            var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
+            Provider.of<CommuFeedVM>(context, listen: false)
+                .getCommunityPosts();
+            Provider.of<CommuFeedVM>(context, listen: false)
+                .getCommunityPendingPosts();
+            // var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
+            // viewModel.addPostToFeed(post);
+            // if (viewModel.scrollcontroller.hasClients) {
+            //   viewModel.scrollcontroller.jumpTo(0);
+            // }
           } else {
             var viewModel = Provider.of<FeedVM>(context, listen: false);
             viewModel.addPostToFeed(post);

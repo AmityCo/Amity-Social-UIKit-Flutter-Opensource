@@ -15,44 +15,47 @@ class MediaGalleryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 12,
-        ),
-        Row(
-          children: [
-            const SizedBox(
-              width: 12,
-            ),
-            _mediaButton(context, "Photos", MediaType.photos),
-            const SizedBox(
-              width: 6,
-            ),
-            _mediaButton(context, "Videos", MediaType.videos),
-          ],
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        Expanded(
-          child: galleryFeed == GalleryFeed.community
-              ? Consumer<CommuFeedVM>(
-                  builder: (context, vm, child) {
-                    return vm.getMediaType() == MediaType.photos
-                        ? _buildMediaGrid(vm.getCommunityImagePosts())
-                        : _buildVideoGrid(vm.getCommunityVideoPosts());
-                  },
-                )
-              : Consumer<UserFeedVM>(
-                  builder: (context, vm, child) {
-                    return vm.getMediaType() == MediaType.photos
-                        ? _buildMediaGrid(vm.amityImagePosts)
-                        : _buildVideoGrid(vm.amityVideoPosts);
-                  },
-                ),
-        ),
-      ],
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 12,
+          ),
+          Row(
+            children: [
+              const SizedBox(
+                width: 12,
+              ),
+              _mediaButton(context, "Photos", MediaType.photos),
+              const SizedBox(
+                width: 6,
+              ),
+              _mediaButton(context, "Videos", MediaType.videos),
+            ],
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Expanded(
+            child: galleryFeed == GalleryFeed.community
+                ? Consumer<CommuFeedVM>(
+                    builder: (context, vm, child) {
+                      return vm.getMediaType() == MediaType.photos
+                          ? _buildMediaGrid(vm.getCommunityImagePosts())
+                          : _buildVideoGrid(vm.getCommunityVideoPosts());
+                    },
+                  )
+                : Consumer<UserFeedVM>(
+                    builder: (context, vm, child) {
+                      return vm.getMediaType() == MediaType.photos
+                          ? _buildMediaGrid(vm.amityImagePosts)
+                          : _buildVideoGrid(vm.amityVideoPosts);
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -120,22 +123,27 @@ class MediaGalleryPage extends StatelessWidget {
   }
 
   Widget _buildMediaGrid(List<AmityPost> amityPosts) {
-    Widget noPostWidget = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          "assets/images/Icon name.png",
-          package: "amity_uikit_beta_service",
+    Widget noPostWidget = SingleChildScrollView(
+      child: SizedBox(
+        height: 300,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/images/Icon name.png",
+              package: "amity_uikit_beta_service",
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              "No photos yet",
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xffA5A9B5)),
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
-        const Text(
-          "No photos yet",
-          style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: Color(0xffA5A9B5)),
-        ),
-      ],
+      ),
     );
     Widget gridView = GridView.builder(
       padding: EdgeInsets.zero,
@@ -191,22 +199,27 @@ class MediaGalleryPage extends StatelessWidget {
   }
 
   Widget _buildVideoGrid(List<AmityPost> amityPosts) {
-    var noPostWidget = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          "assets/images/noVideo.png",
-          package: "amity_uikit_beta_service",
+    var noPostWidget = SingleChildScrollView(
+      child: SizedBox(
+        height: 300,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/images/noVideo.png",
+              package: "amity_uikit_beta_service",
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              "No videos yet",
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xffA5A9B5)),
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
-        const Text(
-          "No videos yet",
-          style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: Color(0xffA5A9B5)),
-        ),
-      ],
+      ),
     );
     var gridView = GridView.builder(
       padding: EdgeInsets.zero,

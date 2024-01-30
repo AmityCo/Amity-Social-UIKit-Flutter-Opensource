@@ -20,6 +20,7 @@ class DynamicSliverAppBar extends StatefulWidget {
   final IconThemeData? iconTheme;
   final IconThemeData? actionsIconTheme;
   final bool primary;
+  final double? expandedHeight;
   final bool? centerTitle;
   final bool excludeHeaderSemantics;
   final double? titleSpacing;
@@ -78,6 +79,7 @@ class DynamicSliverAppBar extends StatefulWidget {
     this.systemOverlayStyle,
     this.forceMaterialTransparency = false,
     this.clipBehavior,
+    this.expandedHeight,
   }) : super(key: key);
 
   @override
@@ -90,6 +92,9 @@ class _DynamicSliverAppBarState extends State<DynamicSliverAppBar> {
   @override
   void initState() {
     super.initState();
+    if (widget.expandedHeight != null) {
+      _height = widget.expandedHeight!;
+    }
     _updateHeight();
   }
 

@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/media_viewmodel.dart';
@@ -164,6 +165,8 @@ class AmitySLEProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<CompoentSizeVM>(
+            create: ((context) => CompoentSizeVM())),
         ChangeNotifierProvider<UserVM>(create: ((context) => UserVM())),
         ChangeNotifierProvider<AmityVM>(create: ((context) => AmityVM())),
         ChangeNotifierProvider<FeedVM>(create: ((context) => FeedVM())),

@@ -30,6 +30,12 @@ class CommuFeedVM extends ChangeNotifier {
 
   final scrollcontroller = ScrollController();
 
+  var _amityCommunityPendingFeedPosts = <AmityPost>[];
+
+  late PagingController<AmityPost> _controllerPendingPost;
+
+  final pendingScrollcontroller = ScrollController();
+
   AmityCommunity? community;
   List<AmityPost> getCommunityPosts() {
     return _amityCommunityFeedPosts;
@@ -41,6 +47,10 @@ class CommuFeedVM extends ChangeNotifier {
 
   List<AmityPost> getCommunityVideoPosts() {
     return _amityCommunityVideoFeedPosts;
+  }
+
+  List<AmityPost> getCommunityPendingPosts() {
+    return _amityCommunityPendingFeedPosts;
   }
 
   void addPostToFeed(AmityPost post) {
@@ -98,6 +108,59 @@ class CommuFeedVM extends ChangeNotifier {
     await checkIsCurrentUserIsAdmin(communityId);
   }
 
+  Future<void> initAmityPendingCommunityFeed(
+      String communityId, AmityFeedType amityFeedType) async {
+    isCurrentUserIsAdmin = false;
+
+    //inititate the PagingController
+    _controllerPendingPost = PagingController(
+      pageFuture: (token) => AmitySocialClient.newFeedRepository()
+          .getCommunityFeed(communityId)
+          //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
+          .feedType(amityFeedType)
+          .includeDeleted(false)
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () async {
+          log(">>>PENDINGListener");
+          if (_controllerPendingPost.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+            _amityCommunityPendingFeedPosts.clear();
+            _amityCommunityPendingFeedPosts
+                .addAll(_controllerPendingPost.loadedItems);
+
+            //update widgets
+            notifyListeners();
+          } else {
+            //error on pagination controller
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controllerPendingPost.error.toString());
+            //update widgets
+          }
+        },
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _controllerPendingPost.fetchNextPage();
+    });
+
+    pendingScrollcontroller.addListener(loadnextpage);
+
+    //inititate the PagingController
+    await AmitySocialClient.newFeedRepository()
+        .getCommunityFeed(communityId)
+        .includeDeleted(false)
+        .feedType(amityFeedType)
+        .getPagingData()
+        .then((value) {
+      _amityCommunityPendingFeedPosts = value.data;
+    });
+    notifyListeners();
+    await checkIsCurrentUserIsAdmin(communityId);
+  }
+
   Future<void> initAmityCommunityVideoFeed(String communityId) async {
     isCurrentUserIsAdmin = false;
 
@@ -126,7 +189,7 @@ class CommuFeedVM extends ChangeNotifier {
           } else {
             //error on pagination controller
             // await AmityDialog().showAlertErrorDialog(
-            //     title: "Error!", message: _controllerCommu.error.toString());
+            //     title: "Error!", message: _controllerPendingPost.error.toString());
             //update widgets
           }
         },
@@ -207,10 +270,11 @@ class CommuFeedVM extends ChangeNotifier {
   }
 
   void loadnextpage() {
+    print("load next page");
     if ((scrollcontroller.position.pixels ==
             scrollcontroller.position.maxScrollExtent) &&
-        _controllerImageCommu.hasMoreItems) {
-      _controllerImageCommu.fetchNextPage();
+        _controllerCommu.hasMoreItems) {
+      _controllerCommu.fetchNextPage();
     }
   }
 
@@ -235,7 +299,7 @@ class CommuFeedVM extends ChangeNotifier {
         .getCurentUserRoles(communityId)
         .then((value) {
       log("LOG1$value");
-      for (var role in value!) {
+      for (var role in value) {
         if (role == "community-moderator") {
           isCurrentUserIsAdmin = true;
         }
@@ -243,6 +307,40 @@ class CommuFeedVM extends ChangeNotifier {
       notifyListeners();
     }).onError((error, stackTrace) {
       log("LOG1:$error");
+    });
+  }
+
+  void acceptPost({required String postId, required Function(bool) callback}) {
+    AmitySocialClient.newPostRepository()
+        .reviewPost(postId: postId)
+        .approve()
+        .then((value) {
+      //success
+      //optional: to remove the approved post from the current post collection
+      //you will need manually remove the approved post from the collection
+      //for example :
+      _controllerPendingPost.removeWhere((element) => element.postId == postId);
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      print(error);
+      //handle error
+    });
+  }
+
+  void declinePost({required String postId, required Function(bool) callback}) {
+    AmitySocialClient.newPostRepository()
+        .reviewPost(postId: postId)
+        .decline()
+        .then((value) {
+      //success
+      //optional: to remove the approved post from the current post collection
+      //you will need manually remove the approved post from the collection
+      //for example :
+      _controllerPendingPost.removeWhere((element) => element.postId == postId);
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      print(error);
+      //handle error
     });
   }
 }

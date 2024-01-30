@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
 
@@ -64,6 +65,8 @@ class _PostReviewPageState extends State<PostReviewPage> {
               ),
             ),
             trailing: Switch(
+              activeColor:
+                  Provider.of<AmityUIConfiguration>(context).primaryColor,
               value: isPostReviewEnabled,
               onChanged: (value) {
                 setState(() {

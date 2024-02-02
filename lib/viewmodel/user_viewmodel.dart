@@ -283,13 +283,14 @@ class UserVM extends ChangeNotifier {
     }
   }
 
-  void blockUser(String userId) {
+  void blockUser(String userId, Function onCallBack) {
     AmityCoreClient.newUserRepository()
         .relationship()
         .blockUser(userId)
         .then((value) {
       print(value);
       AmitySuccessDialog.showTimedDialog("Blocked user");
+      onCallBack();
     }).onError((error, stackTrace) {
       AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());

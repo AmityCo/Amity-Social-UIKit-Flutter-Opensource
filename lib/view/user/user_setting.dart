@@ -184,6 +184,32 @@ class UserSettingPage extends StatelessWidget {
                                 amityUser,
                               );
                             }),
+                amityUser.userId == AmityCoreClient.getCurrentUser().userId
+                    ? const SizedBox()
+                    : ListTile(
+                        leading: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  4), // Adjust radius to your need
+                              color: const Color(
+                                  0xfff1f1f1), // Choose the color to fit your design
+                            ),
+                            child: const Icon(Icons.person_off,
+                                color: Color(0xff292B32))),
+                        title: const Text(
+                          "Block User",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        onTap: () {
+                          // Navigate to Members Page or perform an action
+                          Provider.of<UserVM>(context, listen: false)
+                              .blockUser(amityUser.userId!, () {});
+                        }),
                 const Divider()
               ],
             ),

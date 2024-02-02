@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dar
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -174,15 +175,15 @@ class _PostWidgetState extends State<PostWidget>
   Widget postOptions(BuildContext context) {
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
-    List<String> postOwnerMenu = [
-      //TODO: waiting for SDK edit post then uncomment this
-      // 'Edit Post',
+    List<String> postOwnerMenu = ['Delete Post'];
 
-      'Delete Post'
-    ];
+    List<String> otherPostMenu = ['Report', 'Block User'];
 
     final isFlaggedByMe = widget.post.isFlaggedByMe ?? false;
+
     return PopupMenuButton(
+      color: Colors.white,
+      surfaceTintColor: Colors.white,
       onSelected: (value) {
         switch (value) {
           case 'Report Post':
@@ -219,6 +220,13 @@ class _PostWidgetState extends State<PostWidget>
               print("unhandle postType");
             }
             break;
+          case 'Block User':
+            Provider.of<UserVM>(context, listen: false)
+                .blockUser(widget.post.postedUserId!, () {
+              Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed();
+            });
+
+            break;
           default:
         }
       },
@@ -228,24 +236,31 @@ class _PostWidgetState extends State<PostWidget>
         color: Colors.grey,
       ),
       itemBuilder: (context) {
-        return List.generate(
-            //TODO: waiting for SDK edit post then uncomment this
-            //   isPostOwner ? 2
+        List<PopupMenuEntry<String>> menuItems = [];
+        // Add post owner options
+        if (isPostOwner) {
+          menuItems.addAll(postOwnerMenu.map((option) => PopupMenuItem(
+                value: option,
+                child: Text(option),
+              )));
+        }
 
-            // :
-            1, (index) {
-          return PopupMenuItem(
-              value: isPostOwner
-                  ? postOwnerMenu[index]
-                  : isFlaggedByMe
-                      ? 'Unreport Post'
-                      : 'Report Post',
-              child: Text(isPostOwner
-                  ? postOwnerMenu[index]
-                  : isFlaggedByMe
-                      ? 'Unreport Post'
-                      : 'Report Post'));
-        });
+        // Add report/unreport option
+        if (!isPostOwner) {
+          menuItems.add(PopupMenuItem(
+            value: isFlaggedByMe ? 'Unreport Post' : 'Report Post',
+            child: Text(isFlaggedByMe ? 'Unreport Post' : 'Report Post'),
+          ));
+        }
+        // Add block user option
+        if (!isPostOwner) {
+          menuItems.add(const PopupMenuItem(
+            value: 'Block User',
+            child: Text('Block User'),
+          ));
+        }
+
+        return menuItems;
       },
     );
   }

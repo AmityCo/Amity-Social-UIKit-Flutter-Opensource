@@ -426,11 +426,11 @@ class CreatePostVM extends ChangeNotifier {
           .post()
           .then((AmityPost post) {
         ///add post to feed
-        var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-        viewModel.addPostToFeed(post);
-        if (viewModel.scrollcontroller.hasClients) {
-          viewModel.scrollcontroller.jumpTo(0);
-        }
+        // var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
+        // viewModel.addPostToFeed(post);
+        // if (viewModel.scrollcontroller.hasClients) {
+        //   viewModel.scrollcontroller.jumpTo(0);
+        // }
       }).onError((error, stackTrace) async {
         log(error.toString());
         await AmityDialog()

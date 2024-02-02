@@ -200,6 +200,9 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                               amityUser:
                                                                   AmityCoreClient
                                                                       .getCurrentUser(),
+                                                              amityUserId:
+                                                                  AmityCoreClient
+                                                                      .getUserId(),
                                                             )));
                                               },
                                               child: FadedScaleAnimation(

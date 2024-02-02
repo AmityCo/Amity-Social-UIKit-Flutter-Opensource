@@ -1,4 +1,3 @@
-import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/view/social/user_follower_component.dart';
 import 'package:amity_uikit_beta_service/view/social/user_following_component.dart';
 import 'package:amity_uikit_beta_service/viewmodel/follower_following_viewmodel.dart';
@@ -8,8 +7,9 @@ import 'package:provider/provider.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 
 class FollowScreen extends StatefulWidget {
-  final AmityUser user;
-  const FollowScreen({super.key, required this.user});
+  final String userId;
+  final String? displayName;
+  const FollowScreen({super.key, required this.userId, this.displayName});
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();
@@ -23,8 +23,8 @@ class _FollowScreenState extends State<FollowScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.user.displayName ?? "displayname is null",
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
+          widget.displayName ?? "",
+          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
       ),
       backgroundColor: Provider.of<AmityUIConfiguration>(context)
@@ -40,19 +40,24 @@ class _FollowScreenState extends State<FollowScreen> {
                 TabBar(
                   tabAlignment: TabAlignment.start,
                   controller: _tabController,
-                  indicatorColor:
-                      Provider.of<AmityUIConfiguration>(context).primaryColor,
-                  tabs: [
+                  isScrollable: true,
+                  labelColor: const Color(0xFF1054DE),
+                  unselectedLabelColor: Colors.black,
+                  indicatorColor: const Color(0xFF1054DE),
+                  labelStyle: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'SF Pro Text',
+                  ),
+                  tabs: const [
                     Tab(
                       child: Text(
-                        "Follower",
-                        style: theme.textTheme.bodyLarge,
+                        "Following",
                       ),
                     ),
                     Tab(
                       child: Text(
-                        "Following",
-                        style: theme.textTheme.bodyLarge,
+                        "Followers",
                       ),
                     ),
                   ],
@@ -62,11 +67,11 @@ class _FollowScreenState extends State<FollowScreen> {
                     return TabBarView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       children: [
-                        AmityFollowerScreen(
-                          userId: widget.user.userId!,
-                        ),
                         AmityFollowingScreen(
-                          userId: widget.user.userId!,
+                          userId: widget.userId,
+                        ),
+                        AmityFollowerScreen(
+                          userId: widget.userId,
                         ),
                       ],
                     );

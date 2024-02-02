@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
+import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 // import 'package:amity_uikit_beta_service_example/firebase_options.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
@@ -433,6 +434,11 @@ class ThirdPage extends StatelessWidget {
               title: const Text('User Profile'),
               onTap: () {
                 // Navigate or perform action based on 'User Profile' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UserProfileScreen(
+                          amityUserId: username,
+                          amityUser: null,
+                        )));
               },
             ),
             ListTile(

@@ -55,25 +55,40 @@ class ImagePickerVM extends ChangeNotifier {
                       final XFile? image =
                           await _picker.pickImage(source: ImageSource.gallery);
                       if (image != null) {
-                        log("Image was selected");
-                        imageState = ImageState.loading;
-                        notifyListeners();
-                        await AmityCoreClient.newFileRepository()
+                        AmityCoreClient.newFileRepository()
                             .uploadImage(File(image.path))
-                            .done
-                            .then((value) {
-                          var fileInfo = value as AmityUploadComplete;
+                            .stream
+                            .listen((amityUploadResult) {
+                          amityUploadResult.when(
+                            progress: (uploadInfo, cancelToken) {
+                              imageState = ImageState.loading;
+                              notifyListeners();
+                              int progress = uploadInfo.getProgressPercentage();
+                              log(progress.toString());
+                            },
+                            complete: (file) {
+                              //check if the upload result is complete
+                              log("complete");
+                              AmityLoadingDialog.hideLoadingDialog();
+                              final AmityImage uploadedImage = file;
+                              amityImage = uploadedImage;
+                              //proceed result with uploadedImage
 
-                          amityImage = fileInfo.getFile;
-                          log("check amity image ${amityImage!.fileId}");
-                          imageState = ImageState.hasImage;
-                          notifyListeners();
-                        }).onError((error, stackTrace) async {
-                          log("error: $error");
-                          await AmityDialog().showAlertErrorDialog(
-                              title: "Error!", message: error.toString());
-                          imageState = ImageState.hasImage;
-                          notifyListeners();
+                              log("check amity image ${amityImage!.fileId}");
+                              imageState = ImageState.hasImage;
+                              notifyListeners();
+                            },
+                            error: (error) async {
+                              log("error: $error");
+                              await AmityDialog().showAlertErrorDialog(
+                                  title: "Error!", message: error.toString());
+                              imageState = ImageState.hasImage;
+                              notifyListeners();
+                            },
+                            cancel: () {
+                              //upload is cancelled
+                            },
+                          );
                         });
                       }
                     }),

@@ -2,13 +2,12 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/alert_dialog.dart';
 import 'amity_viewmodel.dart';
-
-enum MediaType { photos, videos }
 
 class UserFeedVM extends ChangeNotifier {
   MediaType _selectedMediaType = MediaType.photos;
@@ -20,7 +19,7 @@ class UserFeedVM extends ChangeNotifier {
 
   MediaType getMediaType() => _selectedMediaType;
 
-  late AmityUser? amityUser;
+  AmityUser? amityUser;
   late AmityUserFollowInfo amityMyFollowInfo = AmityUserFollowInfo();
   late PagingController<AmityPost> _controller;
   final amityPosts = <AmityPost>[];
@@ -33,27 +32,40 @@ class UserFeedVM extends ChangeNotifier {
   final videoScrollcontroller = ScrollController();
   bool loading = false;
 
-  void initUserFeed(AmityUser user) async {
-    getUser(user);
-    listenForUserFeed(user.userId!);
-    listenForImageFeed(user.userId!);
-    listenForVideoFeed(user.userId!);
+  void initUserFeed({AmityUser? amityUser, required String userId}) async {
+    _getUser(userId: userId, otherUser: amityUser);
+    listenForUserFeed(userId);
+    listenForImageFeed(userId);
+    listenForVideoFeed(userId);
   }
 
-  void getUser(AmityUser user) {
-    log("getUser=> ${user.userId}");
-    if (user.id == AmityCoreClient.getUserId()) {
-      log("isCurrentUser:${user.id}");
+  Future<void> _getUser({required String userId, AmityUser? otherUser}) async {
+    log("getUser=> $userId");
+    if (userId == AmityCoreClient.getUserId()) {
+      log("isCurrentUser:$userId");
       amityUser = Provider.of<AmityVM>(
               NavigationService.navigatorKey.currentContext!,
               listen: false)
           .currentamityUser;
     } else {
-      log("isNotCurrentUser:${user.id}");
-      amityUser = user;
+      log("isNotCurrentUser:$userId");
+      if (otherUser != null) {
+        print("set instant user object");
+        amityUser = otherUser;
+      } else {
+        print("get new user object");
+        await AmityCoreClient.newUserRepository()
+            .getUser(userId)
+            .then((AmityUser user) {
+          print("get user success");
+          amityUser = user;
+        }).onError<AmityException>((error, stackTrace) {
+          print("fail getting user Data");
+        });
+      }
     }
-
-    amityUser!.relationship().getFollowInfo(user.userId!).then((value) {
+    print("get following info");
+    amityUser!.relationship().getFollowInfo(amityUser!.userId!).then((value) {
       amityMyFollowInfo = value;
       notifyListeners();
     }).onError((error, stackTrace) {
@@ -201,19 +213,40 @@ class UserFeedVM extends ChangeNotifier {
     }
   }
 
-  void followButtonAction(AmityUser user, AmityFollowStatus amityFollowStatus) {
+  Future<void> followButtonAction(
+      AmityUser user, AmityFollowStatus amityFollowStatus) async {
     log(amityFollowStatus.toString());
     if (amityFollowStatus == AmityFollowStatus.NONE) {
-      sendFollowRequest(user: user);
+      await sendFollowRequest(user: user);
+      initUserFeed(userId: amityUser!.userId!);
+      notifyListeners();
     } else if (amityFollowStatus == AmityFollowStatus.PENDING) {
-      withdrawFollowRequest(user);
+      print("withDraw");
+      await withdrawFollowRequest(user);
+      initUserFeed(userId: amityUser!.userId!);
+      notifyListeners();
     } else if (amityFollowStatus == AmityFollowStatus.ACCEPTED) {
-      unfollowUser(user);
+      await unfollowUser(user);
+      print("clear post");
+      // initUserFeed(userId: amityUser!.userId!);
     } else {
       AmityDialog().showAlertErrorDialog(
           title: "Error!",
           message: "followButtonAction: cant handle amityFollowStatus");
     }
+  }
+
+  void deletePost(AmityPost post, int postIndex) async {
+    log("deleting post....");
+    AmitySocialClient.newPostRepository()
+        .deletePost(postId: post.postId!)
+        .then((value) {
+      amityPosts.removeAt(postIndex);
+      notifyListeners();
+    }).onError((error, stackTrace) async {
+      await AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
   }
 
   Future<void> sendFollowRequest({required AmityUser user}) async {
@@ -232,8 +265,8 @@ class UserFeedVM extends ChangeNotifier {
     });
   }
 
-  void withdrawFollowRequest(AmityUser user) {
-    AmityCoreClient.newUserRepository()
+  Future<void> withdrawFollowRequest(AmityUser user) async {
+    await AmityCoreClient.newUserRepository()
         .relationship()
         .me()
         .unfollow(user.userId!)
@@ -246,12 +279,16 @@ class UserFeedVM extends ChangeNotifier {
     });
   }
 
-  void unfollowUser(AmityUser user) {
-    AmityCoreClient.newUserRepository()
+  Future<void> unfollowUser(AmityUser user) async {
+    await AmityCoreClient.newUserRepository()
         .relationship()
         .unfollow(user.userId!)
         .then((value) {
       log("unfollowUser: Success");
+      amityImagePosts.clear();
+      amityPosts.clear();
+      amityVideoPosts.clear();
+      log("clear post: $amityImagePosts, $amityPosts, $amityVideoPosts");
       notifyListeners();
     }).onError((error, stackTrace) {
       AmityDialog()

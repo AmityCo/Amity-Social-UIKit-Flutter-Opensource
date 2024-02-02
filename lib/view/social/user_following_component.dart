@@ -1,4 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/bottom_sheet.dart';
+import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:animation_wrappers/animations/faded_slide_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +46,7 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
             await vm.getFollowingListof(userId: widget.userId);
           },
           child: ListView.builder(
-            controller: vm.scrollController,
+            controller: vm.followingScrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             itemCount: vm.getFollowingList.length,
             itemBuilder: (context, index) {
@@ -54,12 +56,31 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                   stream: vm.getFollowingList[index].listen.stream,
                   initialData: vm.getFollowingList[index],
                   builder: (context, snapshot) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
+                    return ListTile(
+                      trailing: GestureDetector(
+                          onTap: () {
+                            showOptionsBottomSheet(
+                                context, snapshot.data!.targetUser!);
+                            Provider.of<FollowerVM>(context, listen: false)
+                                .getFollowingListof(userId: widget.userId);
+                          },
+                          child: const Icon(Icons.more_horiz)),
+                      title: Row(
                         children: [
-                          getAvatarImage(
-                              vm.getFollowingList[index].targetUser!.avatarUrl),
+                          GestureDetector(
+                            onTap: () async {
+                              await Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (context) => UserProfileScreen(
+                                            amityUser:
+                                                snapshot.data!.targetUser!,
+                                            amityUserId: snapshot
+                                                .data!.targetUser!.userId!,
+                                          )));
+                            },
+                            child: getAvatarImage(vm
+                                .getFollowingList[index].targetUser!.avatarUrl),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -69,13 +90,8 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                                   vm.getFollowingList[index].targetUser!
                                           .displayName ??
                                       "displayname not found",
-                                  style: theme.textTheme.bodyMedium,
-                                ),
-                                Text(
-                                  vm.getFollowingList[index].targetUser!
-                                          .userId ??
-                                      "displayname not found",
-                                  style: theme.textTheme.bodySmall,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ],
                             ),

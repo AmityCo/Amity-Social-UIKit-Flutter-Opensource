@@ -127,38 +127,51 @@ class PendingFeddScreenState extends State<PendingFeddScreen> {
               beginOffset: const Offset(0, 0.3),
               endOffset: const Offset(0, 0),
               slideCurve: Curves.linearToEaseOut,
-              child: SingleChildScrollView(
-                child: Container(
-                  color: Colors.grey[200],
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(top: 0),
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: vm.getCommunityPendingPosts().length,
-                    itemBuilder: (context, index) {
-                      return StreamBuilder<AmityPost>(
-                          key:
-                              Key(vm.getCommunityPendingPosts()[index].postId!),
-                          stream: vm
-                              .getCommunityPendingPosts()[index]
-                              .listen
-                              .stream,
-                          initialData: vm.getCommunityPendingPosts()[index],
-                          builder: (context, snapshot) {
-                            return PostWidget(
-                                showCommunity: false,
-                                showlatestComment: true,
-                                isFromFeed: false,
-                                post: snapshot.data!,
-                                theme: theme,
-                                postIndex: index,
-                                feedType: FeedType.pending,
-                                showAcceptOrRejectButton:
-                                    community.hasPermission(
-                                  AmityPermission.REVIEW_COMMUNITY_POST,
-                                ));
-                          });
-                    },
+              child: RefreshIndicator(
+                color: Provider.of<AmityUIConfiguration>(context).primaryColor,
+                onRefresh: () async {
+                  // Call your method to refresh the list here.
+                  // For example, you might want to refresh the community feed.
+                  await Provider.of<CommuFeedVM>(context, listen: false)
+                      .initAmityCommunityFeed(widget.community.communityId!);
+                  await Provider.of<CommuFeedVM>(context, listen: false)
+                      .initAmityPendingCommunityFeed(
+                          widget.community.communityId!,
+                          AmityFeedType.REVIEWING);
+                },
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(top: 0),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: vm.getCommunityPendingPosts().length,
+                      itemBuilder: (context, index) {
+                        return StreamBuilder<AmityPost>(
+                            key: Key(
+                                vm.getCommunityPendingPosts()[index].postId!),
+                            stream: vm
+                                .getCommunityPendingPosts()[index]
+                                .listen
+                                .stream,
+                            initialData: vm.getCommunityPendingPosts()[index],
+                            builder: (context, snapshot) {
+                              return PostWidget(
+                                  showCommunity: false,
+                                  showlatestComment: true,
+                                  isFromFeed: false,
+                                  post: snapshot.data!,
+                                  theme: theme,
+                                  postIndex: index,
+                                  feedType: FeedType.pending,
+                                  showAcceptOrRejectButton:
+                                      community.hasPermission(
+                                    AmityPermission.REVIEW_COMMUNITY_POST,
+                                  ));
+                            });
+                      },
+                    ),
                   ),
                 ),
               ),

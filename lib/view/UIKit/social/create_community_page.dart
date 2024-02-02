@@ -315,9 +315,15 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                     mainAxisAlignment: MainAxisAlignment
                         .center, // Center the icon and text in the row
                     children: [
-                      Icon(Icons.add), // Plus icon
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ), // Plus icon
                       SizedBox(width: 10), // Space between icon and text
-                      Text('Create Community'),
+                      Text(
+                        'Create Community',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ],
                   ),
                 ),

@@ -113,15 +113,18 @@ class CommunityScreenState extends State<CommunityScreen> {
 
               margin: const EdgeInsets.symmetric(horizontal: 8),
             ),
-            Column(
-              children: [
-                Text(
-                  community.membersCount.toString(),
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const Text('members',
-                    style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
-              ],
+            GestureDetector(
+              onTap: () {},
+              child: Column(
+                children: [
+                  Text(
+                    community.membersCount.toString(),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const Text('members',
+                      style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
+                ],
+              ),
             ),
           ],
         ),
@@ -148,28 +151,42 @@ class CommunityScreenState extends State<CommunityScreen> {
               slideCurve: Curves.linearToEaseOut,
               child: Container(
                 color: Colors.grey[200],
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(top: 0),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: vm.getCommunityPosts().length,
-                  itemBuilder: (context, index) {
-                    return StreamBuilder<AmityPost>(
-                        key: Key(vm.getCommunityPosts()[index].postId!),
-                        stream: vm.getCommunityPosts()[index].listen.stream,
-                        initialData: vm.getCommunityPosts()[index],
-                        builder: (context, snapshot) {
-                          return PostWidget(
-                            showCommunity: false,
-                            showlatestComment: true,
-                            isFromFeed: true,
-                            post: snapshot.data!,
-                            theme: theme,
-                            postIndex: index,
-                            feedType: FeedType.community,
-                          );
-                        });
+                child: RefreshIndicator(
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).primaryColor,
+                  onRefresh: () async {
+                    // Call your method to refresh the list here.
+                    // For example, you might want to refresh the community feed.
+                    await Provider.of<CommuFeedVM>(context, listen: false)
+                        .initAmityCommunityFeed(widget.community.communityId!);
+                    await Provider.of<CommuFeedVM>(context, listen: false)
+                        .initAmityPendingCommunityFeed(
+                            widget.community.communityId!,
+                            AmityFeedType.REVIEWING);
                   },
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(top: 0),
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: vm.getCommunityPosts().length,
+                    itemBuilder: (context, index) {
+                      return StreamBuilder<AmityPost>(
+                          key: Key(vm.getCommunityPosts()[index].postId!),
+                          stream: vm.getCommunityPosts()[index].listen.stream,
+                          initialData: vm.getCommunityPosts()[index],
+                          builder: (context, snapshot) {
+                            return PostWidget(
+                              showCommunity: false,
+                              showlatestComment: true,
+                              isFromFeed: true,
+                              post: snapshot.data!,
+                              theme: theme,
+                              postIndex: index,
+                              feedType: FeedType.community,
+                            );
+                          });
+                    },
+                  ),
                 ),
               ),
             );
@@ -546,15 +563,23 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
 
               margin: const EdgeInsets.symmetric(horizontal: 8),
             ),
-            Column(
-              children: [
-                Text(
-                  community.membersCount.toString(),
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const Text('members',
-                    style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
-              ],
+            GestureDetector(
+              onTap: () {
+                // Navigate to Members Page or perform an action
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MemberManagementPage(
+                        communityId: widget.community.communityId!)));
+              },
+              child: Column(
+                children: [
+                  Text(
+                    community.membersCount.toString(),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const Text('members',
+                      style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
+                ],
+              ),
             ),
           ],
         ),

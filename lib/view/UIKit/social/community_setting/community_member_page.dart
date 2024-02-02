@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/view/social/select_user_page.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -87,7 +88,8 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
           elevation: 0.0,
           iconTheme: const IconThemeData(color: Colors.black),
           backgroundColor: Colors.white,
-          title: const Text("Community", style: TextStyle(color: Colors.black)),
+          title: Text("Community",
+              style: Provider.of<AmityUIConfiguration>(context).titleTextStyle),
           bottom: const PreferredSize(
             preferredSize: Size.fromHeight(
                 48.0), // Provide a height for the AppBar's bottom

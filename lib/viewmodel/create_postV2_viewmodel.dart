@@ -345,22 +345,11 @@ class CreatePostVMV2 with ChangeNotifier {
           readyBuilder.text(textEditingController.text);
         }
         await readyBuilder.post().then((post) async {
-          ///add post to feedx
-          log("success");
-          callback(true, null);
-          if (isCommunity) {
-            // var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-            // viewModel.addPostToFeed(post);
-            // if (viewModel.scrollcontroller.hasClients) {
-            //   viewModel.scrollcontroller.jumpTo(0);
-            // }
-          } else {
-            // var viewModel = Provider.of<FeedVM>(context, listen: false);
-            // viewModel.addPostToFeed(post);
-            // if (viewModel.scrollcontroller.hasClients) {
-            //   viewModel.scrollcontroller.jumpTo(0);
-            // }
-          }
+          handleCreatePost(
+              post: post,
+              isCommunity: isCommunity,
+              context: context,
+              callback: callback);
         }).onError((error, stackTrace) async {
           await AmityDialog()
               .showAlertErrorDialog(title: "Error!", message: error.toString());
@@ -380,23 +369,11 @@ class CreatePostVMV2 with ChangeNotifier {
           readyBuilder.text(textEditingController.text);
         }
         await readyBuilder.post().then((post) async {
-          log("success...");
-          // Add post to feed logic goes here...
-          // Notify listeners or update UI accordingly
-          if (isCommunity) {
-            var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
-          } else {
-            var viewModel = Provider.of<FeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
-          }
-          callback(true, null);
+          handleCreatePost(
+              post: post,
+              isCommunity: isCommunity,
+              context: context,
+              callback: callback);
           notifyListeners();
         }).onError((error, stackTrace) async {
           log(error.toString());
@@ -414,55 +391,50 @@ class CreatePostVMV2 with ChangeNotifier {
         }
 
         await readyBuilder.post().then((AmityPost post) {
-          // Add post to feed logic goes here...
-          // Notify listeners or update UI accordingly
-
-          if (isCommunity) {
-            // var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-            // viewModel.addPostToFeed(post);
-            // if (viewModel.scrollcontroller.hasClients) {
-            //   viewModel.scrollcontroller.jumpTo(0);
-            // }
-          } else {
-            var viewModel = Provider.of<FeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
-          }
-          callback(true, null);
-          notifyListeners();
+          handleCreatePost(
+              post: post,
+              isCommunity: isCommunity,
+              context: context,
+              callback: callback);
         }).onError((error, stackTrace) {
           callback(false, error.toString());
         });
       } else {
+        print("creating.. text post");
         var readyBuilder = postBuilder.text(textEditingController.text);
         await readyBuilder.createTextPost().then((AmityPost post) {
-          // Add post to feed logic goes here...
-          // Notify listeners or update UI accordingly
-
-          if (isCommunity) {
-            Provider.of<CommuFeedVM>(context, listen: false)
-                .getCommunityPosts();
-            Provider.of<CommuFeedVM>(context, listen: false)
-                .getCommunityPendingPosts();
-            // var viewModel = Provider.of<CommuFeedVM>(context, listen: false);
-            // viewModel.addPostToFeed(post);
-            // if (viewModel.scrollcontroller.hasClients) {
-            //   viewModel.scrollcontroller.jumpTo(0);
-            // }
-          } else {
-            var viewModel = Provider.of<FeedVM>(context, listen: false);
-            viewModel.addPostToFeed(post);
-            if (viewModel.scrollcontroller.hasClients) {
-              viewModel.scrollcontroller.jumpTo(0);
-            }
-          }
-          callback(true, null);
-          notifyListeners();
+          handleCreatePost(
+              post: post,
+              isCommunity: isCommunity,
+              context: context,
+              callback: callback);
         });
       }
     }
+  }
+
+  void handleCreatePost(
+      {required AmityPost post,
+      required bool isCommunity,
+      required BuildContext context,
+      required Function callback}) {
+    if (isCommunity) {
+      print("refreshing commu feed");
+      Provider.of<CommuFeedVM>(context, listen: false).initAmityCommunityFeed(
+          (post.target as CommunityTarget).targetCommunityId!);
+      Provider.of<CommuFeedVM>(context, listen: false)
+          .initAmityPendingCommunityFeed(
+              (post.target as CommunityTarget).targetCommunityId!,
+              AmityFeedType.REVIEWING);
+    } else {
+      var viewModel = Provider.of<FeedVM>(context, listen: false);
+      viewModel.addPostToFeed(post);
+      if (viewModel.scrollcontroller.hasClients) {
+        viewModel.scrollcontroller.jumpTo(0);
+      }
+    }
+    callback(true, null);
+    notifyListeners();
   }
 
 // Declare the map outside the function

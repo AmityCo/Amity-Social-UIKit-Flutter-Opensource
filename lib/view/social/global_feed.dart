@@ -212,6 +212,9 @@ class _PostWidgetState extends State<PostWidget>
             } else if (widget.feedType == FeedType.user) {
               Provider.of<UserFeedVM>(context, listen: false)
                   .deletePost(widget.post, widget.postIndex);
+            } else if (widget.feedType == FeedType.pending) {
+              Provider.of<CommuFeedVM>(context, listen: false)
+                  .deletePendingPost(widget.post, widget.postIndex);
             } else {
               print("unhandle postType");
             }
@@ -488,6 +491,9 @@ class _PostWidgetState extends State<PostWidget>
                         ? widget.showAcceptOrRejectButton
                             ? PendingSectionButton(
                                 postId: widget.post.postId!,
+                                communityId:
+                                    (widget.post.target as CommunityTarget)
+                                        .targetCommunityId!,
                               )
                             : const SizedBox()
                         : Container(
@@ -731,7 +737,9 @@ class _PostWidgetState extends State<PostWidget>
 
 class PendingSectionButton extends StatelessWidget {
   final String postId;
-  const PendingSectionButton({super.key, required this.postId});
+  final String communityId;
+  const PendingSectionButton(
+      {super.key, required this.postId, required this.communityId});
 
   @override
   Widget build(BuildContext context) {
@@ -748,6 +756,7 @@ class PendingSectionButton extends StatelessWidget {
                 onTap: () {
                   Provider.of<CommuFeedVM>(context, listen: false).acceptPost(
                     postId: postId,
+                    communityId: communityId,
                     callback: (isSuccess) {},
                   );
                 },
@@ -773,6 +782,7 @@ class PendingSectionButton extends StatelessWidget {
                 onTap: () {
                   Provider.of<CommuFeedVM>(context, listen: false).declinePost(
                     postId: postId,
+                    communityId: communityId,
                     callback: (isSuccess) {},
                   );
                 },

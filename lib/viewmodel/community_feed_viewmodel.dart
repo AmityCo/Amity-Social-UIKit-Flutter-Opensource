@@ -72,7 +72,7 @@ class CommuFeedVM extends ChangeNotifier {
       pageSize: 20,
     )..addListener(
         () async {
-          log("communityListener");
+          log("initAmityCommunityFeed ID: $communityId");
           if (_controllerCommu.error == null) {
             //handle results, we suggest to clear the previous items
             //and add with the latest _controller.loadedItems
@@ -293,6 +293,19 @@ class CommuFeedVM extends ChangeNotifier {
     });
   }
 
+  void deletePendingPost(AmityPost post, int postIndex) async {
+    log("deleting post....");
+    AmitySocialClient.newPostRepository()
+        .deletePost(postId: post.postId!)
+        .then((value) {
+      _amityCommunityPendingFeedPosts.removeAt(postIndex);
+      notifyListeners();
+    }).onError((error, stackTrace) async {
+      await AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
   Future<void> checkIsCurrentUserIsAdmin(String communityId) async {
     log("LOG1 :checkIsCurrentUserIsAdmin");
     await AmitySocialClient.newCommunityRepository()
@@ -310,7 +323,10 @@ class CommuFeedVM extends ChangeNotifier {
     });
   }
 
-  void acceptPost({required String postId, required Function(bool) callback}) {
+  void acceptPost(
+      {required String postId,
+      required String communityId,
+      required Function(bool) callback}) {
     AmitySocialClient.newPostRepository()
         .reviewPost(postId: postId)
         .approve()
@@ -321,13 +337,17 @@ class CommuFeedVM extends ChangeNotifier {
       //for example :
       _controllerPendingPost.removeWhere((element) => element.postId == postId);
       notifyListeners();
+      initAmityCommunityFeed(communityId);
     }).onError((error, stackTrace) {
       print(error);
       //handle error
     });
   }
 
-  void declinePost({required String postId, required Function(bool) callback}) {
+  void declinePost(
+      {required String postId,
+      required String communityId,
+      required Function(bool) callback}) {
     AmitySocialClient.newPostRepository()
         .reviewPost(postId: postId)
         .decline()
@@ -338,6 +358,7 @@ class CommuFeedVM extends ChangeNotifier {
       //for example :
       _controllerPendingPost.removeWhere((element) => element.postId == postId);
       notifyListeners();
+      initAmityCommunityFeed(communityId);
     }).onError((error, stackTrace) {
       print(error);
       //handle error

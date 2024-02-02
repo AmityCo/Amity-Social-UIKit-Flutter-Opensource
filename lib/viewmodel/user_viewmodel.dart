@@ -282,4 +282,84 @@ class UserVM extends ChangeNotifier {
       _selectedCommunityUsers.add(user);
     }
   }
+
+  void blockUser(String userId) {
+    AmityCoreClient.newUserRepository()
+        .relationship()
+        .blockUser(userId)
+        .then((value) {
+      print(value);
+      AmitySuccessDialog.showTimedDialog("Blocked user");
+    }).onError((error, stackTrace) {
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
+  void unBlockUser(String userId) {
+    AmityCoreClient.newUserRepository()
+        .relationship()
+        .unblockUser(userId)
+        .then((value) {
+      print(value);
+      AmitySuccessDialog.showTimedDialog("Unblock user");
+    }).onError((error, stackTrace) {
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
+  final _amityBlockedUsers = <AmityUser>[];
+  late PagingController<AmityUser> _amityBlockedUsersController;
+  final blockedUserscrollcontroller = ScrollController();
+
+  void getBlockedUsers() {
+    _amityUsersController = PagingController(
+      pageFuture: (token) => AmityCoreClient.newUserRepository()
+          .getBlockedUsers()
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () async {
+          if (_amityBlockedUsersController.error == null) {
+            _amityBlockedUsers.clear();
+            _amityBlockedUsers.addAll(_amityBlockedUsersController.loadedItems);
+            sortedUserListWithHeaders();
+            notifyListeners();
+          } else {
+            log("error");
+            await AmityDialog().showAlertErrorDialog(
+                title: "Error!",
+                message: _amityBlockedUsersController.error.toString());
+          }
+        },
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _amityBlockedUsersController.fetchNextPage();
+    });
+
+    blockedUserscrollcontroller.removeListener(() {});
+    blockedUserscrollcontroller.addListener(blockedUserloadnextpage);
+  }
+
+  void blockedUserloadnextpage() async {
+    if ((blockedUserscrollcontroller.position.pixels >
+        blockedUserscrollcontroller.position.maxScrollExtent - 800)) {
+      log("hasmore: ${_amityBlockedUsersController.hasMoreItems}");
+    }
+    if ((blockedUserscrollcontroller.position.pixels >
+            blockedUserscrollcontroller.position.maxScrollExtent - 800) &&
+        _amityBlockedUsersController.hasMoreItems &&
+        !loadingNexPage) {
+      loadingNexPage = true;
+      notifyListeners();
+      log("loading Next Page...");
+      sortedUserListWithHeaders();
+      await _amityBlockedUsersController.fetchNextPage().then((value) {
+        loadingNexPage = false;
+        notifyListeners();
+      });
+    }
+  }
 }

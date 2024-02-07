@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/edit_post_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
@@ -22,7 +23,6 @@ import '../../viewmodel/user_feed_viewmodel.dart';
 import '../user/user_profile.dart';
 import 'comments.dart';
 import 'community_feed.dart';
-import 'edit_post_screen.dart';
 import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
@@ -175,7 +175,7 @@ class _PostWidgetState extends State<PostWidget>
   Widget postOptions(BuildContext context) {
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
-    List<String> postOwnerMenu = ['Delete Post'];
+    List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
 
     List<String> otherPostMenu = ['Report', 'Block User'];
 
@@ -201,7 +201,9 @@ class _PostWidgetState extends State<PostWidget>
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ChangeNotifierProvider<EditPostVM>(
                     create: (context) => EditPostVM(),
-                    child: EditPostScreen(post: widget.post))));
+                    child: AmityEditPostScreen(
+                      amityPost: widget.post,
+                    ))));
             break;
           case 'Delete Post':
             if (widget.feedType == FeedType.global) {
@@ -223,7 +225,15 @@ class _PostWidgetState extends State<PostWidget>
           case 'Block User':
             Provider.of<UserVM>(context, listen: false)
                 .blockUser(widget.post.postedUserId!, () {
-              Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed();
+              if (widget.feedType == FeedType.global) {
+                Provider.of<FeedVM>(context, listen: false)
+                    .initAmityGlobalfeed();
+              } else if (widget.feedType == FeedType.community) {
+                Provider.of<CommuFeedVM>(context, listen: false)
+                    .initAmityCommunityFeed(
+                        (widget.post.target as CommunityTarget)
+                            .targetCommunityId!);
+              }
             });
 
             break;
@@ -253,12 +263,12 @@ class _PostWidgetState extends State<PostWidget>
           ));
         }
         // Add block user option
-        if (!isPostOwner) {
-          menuItems.add(const PopupMenuItem(
-            value: 'Block User',
-            child: Text('Block User'),
-          ));
-        }
+        // if (!isPostOwner) {
+        //   menuItems.add(const PopupMenuItem(
+        //     value: 'Block User',
+        //     child: Text('Block User'),
+        //   ));
+        // }
 
         return menuItems;
       },
@@ -385,8 +395,29 @@ class _PostWidgetState extends State<PostWidget>
                                 : Container()
                           ],
                         ),
-                        subtitle: TimeAgoWidget(
-                          createdAt: widget.post.createdAt!,
+                        subtitle: Row(
+                          children: [
+                            TimeAgoWidget(
+                              createdAt: widget.post.createdAt!,
+                            ),
+                            widget.post.editedAt != widget.post.createdAt
+                                ? const Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Icon(
+                                        Icons.circle,
+                                        size: 4,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text("Edited"),
+                                    ],
+                                  )
+                                : const SizedBox()
+                          ],
                         ),
                         trailing: widget.feedType == FeedType.pending &&
                                 widget.post.postedUser!.userId !=
@@ -727,9 +758,11 @@ class _PostWidgetState extends State<PostWidget>
                             postId: widget.post.data!.postId,
                             comments: widget.post.latestComments!),
                       ),
-        const SizedBox(
-          height: 8,
-        )
+        !widget.isFromFeed
+            ? const SizedBox()
+            : const SizedBox(
+                height: 8,
+              )
       ],
     );
   }
@@ -929,7 +962,8 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                   ),
                                   Container(
                                     padding: const EdgeInsets.all(10.0),
-                                    margin: const EdgeInsets.only(left: 70.0),
+                                    margin: const EdgeInsets.only(
+                                        left: 70.0, right: 18),
                                     decoration: BoxDecoration(
                                       color: Colors.grey[200],
                                       borderRadius: const BorderRadius.only(

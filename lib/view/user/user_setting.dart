@@ -77,60 +77,64 @@ class UserSettingPage extends StatelessWidget {
                     : const SizedBox(),
                 amityUser.userId == AmityCoreClient.getUserId()
                     ? const SizedBox()
-                    : snapshot.data!.status == AmityFollowStatus.NONE
-                        ? ListTile(
-                            leading: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      4), // Adjust radius to your need
-                                  color: const Color(
-                                      0xfff1f1f1), // Choose the color to fit your design
+                    : snapshot.data!.status == AmityFollowStatus.BLOCKED
+                        ? const SizedBox()
+                        : snapshot.data!.status == AmityFollowStatus.NONE
+                            ? ListTile(
+                                leading: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          4), // Adjust radius to your need
+                                      color: const Color(
+                                          0xfff1f1f1), // Choose the color to fit your design
+                                    ),
+                                    child: const Icon(Icons.person_remove,
+                                        color: Color(0xff292B32))),
+                                title: const Text(
+                                  "Follow",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                                child: const Icon(Icons.person_remove,
-                                    color: Color(0xff292B32))),
-                            title: const Text(
-                              "Follow",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                            onTap: () {
-                              Provider.of<UserFeedVM>(context, listen: false)
-                                  .followButtonAction(
-                                      amityUser,
-                                      Provider.of<UserFeedVM>(context,
-                                              listen: false)
-                                          .amityMyFollowInfo
-                                          .status);
-                            })
-                        : ListTile(
-                            leading: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      4), // Adjust radius to your need
-                                  color: const Color(
-                                      0xfff1f1f1), // Choose the color to fit your design
+                                onTap: () {
+                                  Provider.of<UserFeedVM>(context,
+                                          listen: false)
+                                      .followButtonAction(
+                                          amityUser,
+                                          Provider.of<UserFeedVM>(context,
+                                                  listen: false)
+                                              .amityMyFollowInfo
+                                              .status);
+                                })
+                            : ListTile(
+                                leading: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          4), // Adjust radius to your need
+                                      color: const Color(
+                                          0xfff1f1f1), // Choose the color to fit your design
+                                    ),
+                                    child: const Icon(Icons.person_remove,
+                                        color: Color(0xff292B32))),
+                                title: const Text(
+                                  "Unfollow",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                                child: const Icon(Icons.person_remove,
-                                    color: Color(0xff292B32))),
-                            title: const Text(
-                              "Unfollow",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                            onTap: () {
-                              Provider.of<UserFeedVM>(context, listen: false)
-                                  .unfollowUser(
-                                amityUser,
-                              );
-                            }),
+                                onTap: () {
+                                  Provider.of<UserFeedVM>(context,
+                                          listen: false)
+                                      .unfollowUser(
+                                    amityUser,
+                                  );
+                                }),
                 amityUser.userId == AmityCoreClient.getCurrentUser().userId
                     ? const SizedBox()
                     : amityUser.isFlaggedByMe
@@ -197,9 +201,11 @@ class UserSettingPage extends StatelessWidget {
                             ),
                             child: const Icon(Icons.person_off,
                                 color: Color(0xff292B32))),
-                        title: const Text(
-                          "Block User",
-                          style: TextStyle(
+                        title: Text(
+                          snapshot.data!.status == AmityFollowStatus.BLOCKED
+                              ? "Unblock"
+                              : "Block User",
+                          style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
@@ -207,8 +213,19 @@ class UserSettingPage extends StatelessWidget {
                         ),
                         onTap: () {
                           // Navigate to Members Page or perform an action
-                          Provider.of<UserVM>(context, listen: false)
-                              .blockUser(amityUser.userId!, () {});
+                          if (snapshot.data!.status !=
+                              AmityFollowStatus.BLOCKED) {
+                            Provider.of<UserFeedVM>(context, listen: false)
+                                .blockUser(amityUser.userId!, () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            });
+                          } else {
+                            Provider.of<UserFeedVM>(context, listen: false)
+                                .unBlockUser(
+                              amityUser.userId!,
+                            );
+                          }
                         }),
                 const Divider()
               ],

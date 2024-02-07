@@ -14,6 +14,7 @@ import 'package:amity_uikit_beta_service/viewmodel/media_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -165,6 +166,9 @@ class AmitySLEProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ReplyVM>(create: ((context) => ReplyVM())),
+        ChangeNotifierProvider<SearchCommunityVM>(
+            create: ((context) => SearchCommunityVM())),
         ChangeNotifierProvider<CompoentSizeVM>(
             create: ((context) => CompoentSizeVM())),
         ChangeNotifierProvider<UserVM>(create: ((context) => UserVM())),

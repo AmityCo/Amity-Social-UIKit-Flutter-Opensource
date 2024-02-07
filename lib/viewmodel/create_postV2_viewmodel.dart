@@ -21,6 +21,7 @@ enum PickerAction { cameraImage, galleryImage, galleryVideo, filePicker }
 enum MyFileType { image, video, file }
 
 class UIKitFileSystem {
+  AmityPostData? postDataForEditMedie;
   AmityFileInfo? fileInfo;
   dynamic amityFile;
   FileStatus status;
@@ -30,6 +31,7 @@ class UIKitFileSystem {
 
   UIKitFileSystem({
     this.fileInfo,
+    this.postDataForEditMedie,
     required this.status,
     required this.fileType,
     required this.file,

@@ -18,6 +18,7 @@ class MyCommunityVM with ChangeNotifier {
   // Getter for _amityCommunities for external classes to use.
   List<AmityCommunity> get amityCommunities => _amityCommunities;
   final textEditingController = TextEditingController();
+
   Future<void> initMyCommunity([String? keyword]) async {
     _communityController = PagingController(
       pageFuture: (token) {
@@ -69,6 +70,79 @@ class MyCommunityVM with ChangeNotifier {
       log("loading Next Page...");
       // Call any additional methods like sortedUserListWithHeaders here if needed.
       await _communityController.fetchNextPage().then((value) {
+        loadingNextPage = false;
+        notifyListeners();
+      });
+    }
+  }
+}
+
+class SearchCommunityVM with ChangeNotifier {
+  // Existing members...
+
+  final scrollcontroller = ScrollController();
+  bool loadingNextPage = false;
+  // The list of communities.
+  final List<AmityCommunity> _amityCommunities = [];
+  // Getter for _amityCommunities for external classes to use.
+  List<AmityCommunity> get amityCommunities => _amityCommunities;
+  final textEditingController = TextEditingController();
+  // The controller for handling pagination.
+  late PagingController<AmityCommunity> communityController;
+  void clearSearch() {
+    amityCommunities.clear();
+  }
+
+  Future<void> initSearchCommunity([String? keyword]) async {
+    communityController = PagingController(
+      pageFuture: (token) {
+        final repository = AmitySocialClient.newCommunityRepository()
+            .getCommunities()
+            .filter(AmityCommunityFilter.ALL);
+        if (keyword != null && keyword.isNotEmpty) {
+          repository.withKeyword(
+              keyword); // Add keyword filtering only if keyword is provided and not empty
+        }
+        return repository.getPagingData(token: token, limit: 20);
+      },
+      pageSize: 20,
+    )..addListener(
+        () async {
+          if (communityController.error == null) {
+            amityCommunities.clear();
+            amityCommunities.addAll(communityController.loadedItems);
+            // Call any additional methods like sortedUserListWithHeaders here if needed.
+            notifyListeners();
+          } else {
+            log("error");
+            await AmityDialog().showAlertErrorDialog(
+                title: "Error!", message: communityController.error.toString());
+          }
+        },
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      communityController.fetchNextPage();
+    });
+
+    scrollcontroller.removeListener(() {});
+    scrollcontroller.addListener(loadNextPage);
+  }
+
+  void loadNextPage() async {
+    if ((scrollcontroller.position.pixels >
+        scrollcontroller.position.maxScrollExtent - 800)) {
+      print("hasMore: ${communityController.hasMoreItems}");
+    }
+    if ((scrollcontroller.position.pixels >
+            scrollcontroller.position.maxScrollExtent - 800) &&
+        communityController.hasMoreItems &&
+        !loadingNextPage) {
+      loadingNextPage = true;
+      notifyListeners();
+      log("loading Next Page...");
+      // Call any additional methods like sortedUserListWithHeaders here if needed.
+      await communityController.fetchNextPage().then((value) {
         loadingNextPage = false;
         notifyListeners();
       });

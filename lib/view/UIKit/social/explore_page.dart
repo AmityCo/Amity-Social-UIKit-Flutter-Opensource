@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/search_communities.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
@@ -50,16 +51,18 @@ class _CommunityPageState extends State<CommunityPage> {
             "Community",
             style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
           ),
-          actions: const [
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.search,
-            //     color: Colors.black,
-            //   ),
-            //   onPressed: () {
-            //     // Implement search functionality
-            //   },
-            // )
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                // Implement search functionality
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SearchCommunitiesScreen()));
+              },
+            )
           ],
           bottom: const PreferredSize(
             preferredSize: Size.fromHeight(

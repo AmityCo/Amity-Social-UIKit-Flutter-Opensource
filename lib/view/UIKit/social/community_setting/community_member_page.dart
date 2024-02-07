@@ -312,6 +312,16 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
                     ),
                     ListTile(
                       title: const Text(
+                        'Block User',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      onTap: () {
+                        viewModel.blockUser(member.user!);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text(
                         'Remove from community',
                         style: TextStyle(
                             color: Colors.red, fontWeight: FontWeight.w500),
@@ -338,7 +348,20 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
                   ]
                 : [
                     ListTile(
-                      title: const Text('Report'),
+                      title: const Text(
+                        'Block User',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      onTap: () {
+                        viewModel.blockUser(member.user!);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text(
+                        'Report',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
                       onTap: () {
                         viewModel.reportUser(member.user!);
                         Navigator.pop(context);

@@ -290,6 +290,7 @@ class UserVM extends ChangeNotifier {
         .then((value) {
       print(value);
       AmitySuccessDialog.showTimedDialog("Blocked user");
+      notifyListeners();
       onCallBack();
     }).onError((error, stackTrace) {
       AmityDialog()
@@ -304,6 +305,7 @@ class UserVM extends ChangeNotifier {
         .then((value) {
       print(value);
       AmitySuccessDialog.showTimedDialog("Unblock user");
+      notifyListeners();
     }).onError((error, stackTrace) {
       AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());

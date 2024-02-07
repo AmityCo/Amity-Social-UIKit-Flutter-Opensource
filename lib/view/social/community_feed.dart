@@ -274,7 +274,7 @@ class CommunityScreenState extends State<CommunityScreen> {
                                         color: Colors.black))
                               ],
                               bottom: PreferredSize(
-                                preferredSize: const Size.fromHeight(20),
+                                preferredSize: const Size.fromHeight(25),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [

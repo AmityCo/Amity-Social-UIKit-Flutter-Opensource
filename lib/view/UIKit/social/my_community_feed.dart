@@ -118,6 +118,7 @@ class CommunityWidget extends StatelessWidget {
         builder: (context, snapshot) {
           var communityStream = snapshot.data ?? community;
           return Card(
+            color: Colors.white,
             elevation: 0,
             child: ListTile(
               leading: (communityStream.avatarFileId != null)
@@ -140,7 +141,12 @@ class CommunityWidget extends StatelessWidget {
                 children: [
                   if (!community.isPublic!) const Icon(Icons.lock, size: 16.0),
                   const SizedBox(width: 4.0),
-                  Text(communityStream.displayName ?? "Community"),
+                  Expanded(
+                    child: Text(
+                      communityStream.displayName ?? "Community",
+                      style: const TextStyle(overflow: TextOverflow.ellipsis),
+                    ),
+                  ),
                 ],
               ),
               onTap: () {
@@ -199,6 +205,7 @@ class CommunityIconList extends StatelessWidget {
               itemCount: amityCommunites.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
+                  color: Colors.white,
                   padding: EdgeInsets.only(left: index != 0 ? 0 : 16),
                   child: CommunityIconWidget(
                       amityCommunity: amityCommunites[index]),
@@ -233,6 +240,7 @@ class CommunityIconWidget extends StatelessWidget {
                       CommunityScreen(community: communityStream)));
             },
             child: Container(
+              color: Colors.white,
               width: 62,
               margin: const EdgeInsets.only(right: 4, bottom: 10),
               child: Column(

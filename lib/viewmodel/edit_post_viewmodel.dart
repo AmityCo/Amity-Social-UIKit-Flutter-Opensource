@@ -1,64 +1,68 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
+import 'package:flutter/material.dart';
 
-import '../utils/env_manager.dart';
-import 'create_post_viewmodel.dart';
-
-class EditPostVM extends CreatePostVM {
-  List<String> imageUrlList = [];
-  String? videoUrl;
-
+class EditPostVM extends CreatePostVMV2 {
+  List<UIKitFileSystem> editPostMedie = [];
+  AmityPost? amityPost;
   void initForEditPost(AmityPost post) {
+    amityPost = post;
     textEditingController.clear();
-    imageUrlList.clear();
-    videoUrl = null;
+    editPostMedie.clear();
 
     var textdata = post.data as TextData;
     textEditingController.text = textdata.text!;
     var children = post.children;
     if (children != null) {
-      if (children[0].data is ImageData) {
-        imageUrlList = [];
+      print(children.length);
+      print(children[0].type);
+      if (children[0].type == AmityDataType.IMAGE) {
+        print(children[0].data!.fileId);
         for (var child in children) {
-          var imageData = child.data as ImageData;
-          imageUrlList.add(imageData.fileInfo.fileUrl!);
+          var uikitFile = UIKitFileSystem(
+              postDataForEditMedie: child.data,
+              status: FileStatus.complete,
+              fileType: MyFileType.image,
+              file: File(""));
+          editPostMedie.add(uikitFile);
         }
 
-        log("ImageData: $imageUrlList");
-      } else if (children[0].data is VideoData) {
+        log("ImageData: $editPostMedie");
+      } else if (children[0].type == AmityDataType.VIDEO) {
         var videoData = children[0].data as VideoData;
 
-        videoUrl =
-            "https://api.${env!.region}.amity.co/api/v3/files/${videoData.fileId}/download?size=full";
-        log("VideoPost: $videoUrl");
+        editPostMedie = [];
+        for (var child in children) {
+          var uikitFile = UIKitFileSystem(
+              postDataForEditMedie: child.data,
+              status: FileStatus.complete,
+              fileType: MyFileType.image,
+              file: File(""));
+          editPostMedie.add(uikitFile);
+        }
       }
     }
+    print((post.data as TextData).text!);
+    textEditingController.text = (post.data as TextData).text!;
   }
 
-  @override
-  void deleteImageAt({required int index}) {
-    imageUrlList.removeAt(index);
-    notifyListeners();
+  Future<void> editPost(
+      {required BuildContext context, Function? callback}) async {
+    amityPost!
+        .edit()
+        .text(textEditingController.text)
+        .build()
+        .update()
+        .then((value) {
+      notifyListeners();
+      callback!();
+    }).onError((error, stackTrace) async {
+      await AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
   }
-
-  @override
-  bool isNotSelectedImageYet() {
-    if (imageUrlList.isEmpty) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  bool isNotSelectVideoYet() {
-    if (amityVideo == null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  Future<void> editPost() async {}
 }

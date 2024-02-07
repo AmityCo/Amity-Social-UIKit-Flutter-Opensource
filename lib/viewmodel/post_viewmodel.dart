@@ -29,7 +29,7 @@ class PostVM extends ChangeNotifier {
     });
   }
 
-  void listenForComments(String postID) {
+  void listenForComments({required String postID, Function? successCalback}) {
     _controller = PagingController(
       pageFuture: (token) => AmitySocialClient.newCommentRepository()
           .getComments()
@@ -43,12 +43,13 @@ class PostVM extends ChangeNotifier {
           if (_controller.error == null) {
             amityComments.clear();
             amityComments.addAll(_controller.loadedItems);
-
+            print("parent comments: ${amityComments.length}");
+            successCalback!();
             notifyListeners();
           } else {
             //Error on pagination controller
 
-            log("error");
+            log("error from Comment");
             await AmityDialog().showAlertErrorDialog(
                 title: "Error!", message: _controller.error.toString());
           }
@@ -79,13 +80,30 @@ class PostVM extends ChangeNotifier {
         .send()
         .then((comment) async {
       _controller.add(comment);
-      amityComments.clear();
-      amityComments.addAll(_controller.loadedItems);
-      Future.delayed(const Duration(milliseconds: 300)).then((value) {
+      amityComments.add(comment);
+      Future.delayed(const Duration(milliseconds: 500)).then((value) {
         scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
       });
     }).onError((error, stackTrace) async {
       log(error.toString());
+      await AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
+  void flagComment(AmityComment comment, BuildContext context) {
+    comment.report().flag().then((value) {
+      AmitySuccessDialog.showTimedDialog("Success", context: context);
+    }).onError((error, stackTrace) async {
+      await AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
+  void unFlagComment(AmityComment comment, BuildContext context) {
+    comment.report().unflag().then((value) {
+      AmitySuccessDialog.showTimedDialog("Success", context: context);
+    }).onError((error, stackTrace) async {
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -97,7 +115,7 @@ class PostVM extends ChangeNotifier {
       print("delete commet success: $value");
       amityComments
           .removeWhere((element) => element.commentId == comment.commentId);
-      listenForComments(amityPost.postId!);
+      listenForComments(postID: amityPost.postId!);
 
       notifyListeners();
     }).onError((error, stackTrace) async {

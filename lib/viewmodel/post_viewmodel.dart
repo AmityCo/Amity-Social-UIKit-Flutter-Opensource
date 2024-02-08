@@ -14,7 +14,7 @@ class PostVM extends ChangeNotifier {
   final scrollcontroller = ScrollController();
 
   final AmityCommentSortOption _sortOption =
-      AmityCommentSortOption.FIRST_CREATED;
+      AmityCommentSortOption.LAST_CREATED;
 
   void getPost(String postId, AmityPost initialPostData) {
     amityPost = initialPostData;
@@ -93,10 +93,9 @@ class PostVM extends ChangeNotifier {
         .text(text)
         .send()
         .then((comment) async {
-      _controller.add(comment);
-      // amityComments.add(comment);
+      amityComments.insert(0, comment);
       Future.delayed(const Duration(milliseconds: 500)).then((value) {
-        scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
+        scrollcontroller.jumpTo(0);
       });
     }).onError((error, stackTrace) async {
       log(error.toString());

@@ -160,7 +160,9 @@ class ReplyVM extends PostVM {
         .then((comment) async {
       // _controller.add(comment);
       // Clear existing comments and add newly loaded items.
-
+      if (amityReplyCommentsMap[commentId] == null) {
+        amityReplyCommentsMap[commentId] = [];
+      }
       // Update the map of reply comments and notify listeners to update the UI.
       amityReplyCommentsMap[commentId]!.add(comment);
       notifyListeners();

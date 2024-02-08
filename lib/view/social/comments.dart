@@ -673,9 +673,10 @@ class CommentTextField extends StatelessWidget {
                         ?.replyToComment
                         .commentId;
                 HapticFeedback.heavyImpact();
+                print(replyingComment!);
                 Provider.of<ReplyVM>(context, listen: false).createReplyComment(
                     postId: postId,
-                    commentId: replyingComment!,
+                    commentId: replyingComment,
                     text: commentTextEditController.text);
               }
 
@@ -750,13 +751,13 @@ class FullCommentPage extends StatelessWidget {
 class EditCommentPage extends StatefulWidget {
   final AmityComment comment;
   final VoidCallback postCallback;
+  final String initailText;
   const EditCommentPage({
     super.key,
     required this.initailText,
     required this.comment,
     required this.postCallback,
   });
-  final String initailText;
 
   @override
   State<EditCommentPage> createState() => _EditCommentPageState();
@@ -1080,29 +1081,12 @@ class _CommentComponentState extends State<CommentComponent> {
                                                           builder: (context) =>
                                                               EditCommentPage(
                                                                 initailText:
-                                                                    _editcommentTextEditController
-                                                                        .text,
+                                                                    commentData
+                                                                        .text!,
                                                                 comment:
                                                                     comments,
                                                                 postCallback:
-                                                                    () async {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                  HapticFeedback
-                                                                      .heavyImpact();
-                                                                  Provider.of<PostVM>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .updateComment(
-                                                                          comments,
-                                                                          _editcommentTextEditController
-                                                                              .text);
-
-                                                                  _editcommentTextEditController
-                                                                      .clear();
-                                                                },
+                                                                    () async {},
                                                               )));
                                                 },
                                               ),

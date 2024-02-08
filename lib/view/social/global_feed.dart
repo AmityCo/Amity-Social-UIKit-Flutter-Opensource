@@ -874,8 +874,6 @@ class LatestCommentComponent extends StatefulWidget {
 class _LatestCommentComponentState extends State<LatestCommentComponent> {
   @override
   void initState() {
-    // Provider.of<PostVM>(context, listen: false)
-    //     .listenForComments(widget.postId);
     super.initState();
   }
 

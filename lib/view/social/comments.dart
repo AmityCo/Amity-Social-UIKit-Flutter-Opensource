@@ -43,6 +43,7 @@ class Comments {
 
 class CommentScreenState extends State<CommentScreen> {
   final _commentTextEditController = TextEditingController();
+
   @override
   void initState() {
     //query comment here
@@ -224,21 +225,21 @@ class CommentScreenState extends State<CommentScreen> {
                 child: SafeArea(
                   child: Column(
                     children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: const Icon(Icons.chevron_left,
+                              color: Colors.black, size: 35),
+                        ),
+                      ),
                       Expanded(
                         child: SingleChildScrollView(
                           controller: vm.scrollcontroller,
                           child: Column(
                             children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  icon: const Icon(Icons.chevron_left,
-                                      color: Colors.black, size: 35),
-                                ),
-                              ),
                               Stack(
                                 children: [
                                   Container(
@@ -680,7 +681,7 @@ class CommentTextField extends StatelessWidget {
 
               commentTextEditController.clear();
             },
-            child: Text("Post",
+            child: Text("Post  ",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Provider.of<AmityUIConfiguration>(context)
@@ -746,6 +747,80 @@ class FullCommentPage extends StatelessWidget {
   }
 }
 
+class EditCommentPage extends StatefulWidget {
+  final AmityComment comment;
+  final VoidCallback postCallback;
+  const EditCommentPage({
+    super.key,
+    required this.initailText,
+    required this.comment,
+    required this.postCallback,
+  });
+  final String initailText;
+
+  @override
+  State<EditCommentPage> createState() => _EditCommentPageState();
+}
+
+class _EditCommentPageState extends State<EditCommentPage> {
+  TextEditingController textEditingController = TextEditingController();
+  @override
+  void initState() {
+    textEditingController.text = widget.initailText;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        shadowColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.close,
+            color: Colors.black,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          "Edit Comment",
+          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () async {
+              print(textEditingController.text);
+              HapticFeedback.heavyImpact();
+              Provider.of<PostVM>(context, listen: false)
+                  .updateComment(widget.comment, textEditingController.text);
+              Navigator.of(context).pop();
+              widget.postCallback();
+            },
+            child: Text(
+              'Save',
+              style: TextStyle(
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).primaryColor),
+            ),
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          controller: textEditingController,
+          keyboardType: TextInputType.multiline,
+          maxLines: null, // Allows for any number of lines
+          decoration: InputDecoration(
+              hintText: widget.initailText, border: InputBorder.none),
+        ),
+      ),
+    );
+  }
+}
+
 class CommentComponent extends StatefulWidget {
   const CommentComponent({
     Key? key,
@@ -765,8 +840,8 @@ class _CommentComponentState extends State<CommentComponent> {
   void initState() {
     Provider.of<PostVM>(context, listen: false).listenForComments(
         postID: widget.postId,
-        successCalback: () {
-          print("listenForComments success");
+        refresh: true,
+        successCallback: () {
           Provider.of<ReplyVM>(context, listen: false)
               .initReplyComment(widget.postId, context);
         });
@@ -779,6 +854,7 @@ class _CommentComponentState extends State<CommentComponent> {
     return comments.myReactions?.isNotEmpty ?? false;
   }
 
+  final _editcommentTextEditController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Consumer<PostVM>(builder: (context, vm, _) {
@@ -999,7 +1075,35 @@ class _CommentComponentState extends State<CommentComponent> {
                                                           FontWeight.w500),
                                                 ),
                                                 onTap: () async {
-                                                  Navigator.pop(context);
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              EditCommentPage(
+                                                                initailText:
+                                                                    _editcommentTextEditController
+                                                                        .text,
+                                                                comment:
+                                                                    comments,
+                                                                postCallback:
+                                                                    () async {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  HapticFeedback
+                                                                      .heavyImpact();
+                                                                  Provider.of<PostVM>(
+                                                                          context,
+                                                                          listen:
+                                                                              false)
+                                                                      .updateComment(
+                                                                          comments,
+                                                                          _editcommentTextEditController
+                                                                              .text);
+
+                                                                  _editcommentTextEditController
+                                                                      .clear();
+                                                                },
+                                                              )));
                                                 },
                                               ),
                                         comments.user?.userId! !=
@@ -1038,28 +1142,95 @@ class _CommentComponentState extends State<CommentComponent> {
                                 ],
                               ),
                             ),
-                            Provider.of<ReplyVM>(context).amityReplyCommentsMap[
-                                        comments.commentId] ==
-                                    null
-                                ? const SizedBox()
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: Provider.of<ReplyVM>(context)
-                                        .amityReplyCommentsMap[
-                                            comments.commentId]!
-                                        .length,
-                                    itemBuilder: (context, index) {
-                                      var replyComment =
-                                          Provider.of<ReplyVM>(context)
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(left: 60, right: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Provider.of<ReplyVM>(context)
                                                   .amityReplyCommentsMap[
-                                              comments.commentId]![index];
-                                      return ReplyCommentComponent(
-                                        comment: replyComment,
-                                      );
-                                    },
-                                  )
+                                              comments.commentId] ==
+                                          null
+                                      ? const SizedBox()
+                                      : Container(
+                                          child: Column(
+                                            children: [
+                                              ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemCount: Provider.of<ReplyVM>(
+                                                        context)
+                                                    .amityReplyCommentsMap[
+                                                        comments.commentId]!
+                                                    .length,
+                                                itemBuilder: (context, index) {
+                                                  var replyComment = Provider.of<
+                                                              ReplyVM>(context)
+                                                          .amityReplyCommentsMap[
+                                                      comments
+                                                          .commentId]![index];
+                                                  return ReplyCommentComponent(
+                                                    comment: replyComment,
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                  Provider.of<ReplyVM>(context)
+                                          .replyHaveNextPage(
+                                              comments.commentId!)
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            HapticFeedback.mediumImpact();
+                                            Provider.of<ReplyVM>(context,
+                                                    listen: false)
+                                                .loadReplynextpage(
+                                              comments.commentId!,
+                                            );
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.all(12),
+                                            decoration: const BoxDecoration(
+                                                color: Color(0xffEBECEF),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(4))),
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: const Wrap(
+                                              crossAxisAlignment:
+                                                  WrapCrossAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 14,
+                                                ),
+                                                Icon(
+                                                  Icons
+                                                      .subdirectory_arrow_right,
+                                                  size: 15,
+                                                  color: Color(0xff636878),
+                                                ),
+                                                SizedBox(
+                                                  width: 14,
+                                                ),
+                                                Text(
+                                                  "View more replies",
+                                                  style: TextStyle(
+                                                      color: Color(0xff636878),
+                                                      fontSize: 13),
+                                                ),
+                                                SizedBox(
+                                                  width: 14,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                         const Divider(
@@ -1215,13 +1386,19 @@ class ReplyCommentComponent extends StatelessWidget {
             var commentData = comments.data as CommentTextData;
             return comments.isDeleted!
                 ? Container(
-                    padding: const EdgeInsets.only(left: 30),
-                    child: const Column(
+                    padding: const EdgeInsets.only(left: 0),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Row(
+                        Container(
+                          margin: const EdgeInsets.all(12),
+                          decoration: const BoxDecoration(
+                              color: Color(0xffEBECEF),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4))),
+                          padding: const EdgeInsets.all(5.0),
+                          child: const Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               SizedBox(
                                 width: 14,
@@ -1235,21 +1412,21 @@ class ReplyCommentComponent extends StatelessWidget {
                                 width: 14,
                               ),
                               Text(
-                                "This comment  has been deleted",
+                                "This reply has been deleted",
                                 style: TextStyle(
                                     color: Color(0xff636878), fontSize: 13),
                               ),
+                              SizedBox(
+                                width: 14,
+                              )
                             ],
                           ),
                         ),
-                        Divider(
-                          height: 0,
-                        )
                       ],
                     ),
                   )
                 : Container(
-                    padding: const EdgeInsets.only(left: 50),
+                    padding: const EdgeInsets.only(left: 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1387,6 +1564,18 @@ class ReplyCommentComponent extends StatelessWidget {
                                             ),
                                             onTap: () async {
                                               Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          EditCommentPage(
+                                                            initailText: (comments
+                                                                        .data
+                                                                    as CommentTextData)
+                                                                .text!,
+                                                            comment: comments,
+                                                            postCallback:
+                                                                () async {},
+                                                          )));
                                             },
                                           ),
                                     comment.user?.userId! !=

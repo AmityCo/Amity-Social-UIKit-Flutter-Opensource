@@ -40,11 +40,18 @@ class ReplyVM extends PostVM {
   Future<void> initReplyComment(String postId, BuildContext context) async {
     print("initReplyComment");
     print(amityComments.length);
+    _controllersMap.clear();
+    amityReplyCommentsMap.clear();
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;
     for (var comment in comments) {
-      print("comment: ${comment.data}");
-      listenForReplyComments(postId, comment.commentId!);
+      if (comment.childrenNumber! > 0) {
+        print("comment: ${comment.data}");
+        await listenForReplyComments(
+            postID: postId, commentId: comment.commentId!);
+      }
     }
+    notifyListeners();
+    print("notifyListeners");
   }
 
   void selectReplyComment({required AmityComment comment}) {
@@ -58,12 +65,15 @@ class ReplyVM extends PostVM {
   }
 
 // Listens for reply comments asynchronously and updates the UI upon receiving new data or an error.
-  Future<void> listenForReplyComments(String postID, String commentId) async {
+  Future<void> listenForReplyComments({
+    required String postID,
+    required String commentId,
+  }) async {
     print("$postID:look reply: commentId:$commentId");
-    // Initialize an empty list to hold AmityComments.
-    final amityComments = <AmityComment>[];
 
-    // Set up a PagingController for managing pagination.
+    // Check if the comments for the given commentId already exist to append new comments instead of clearing the list.
+    final amityComments = amityReplyCommentsMap[commentId] ?? <AmityComment>[];
+
     _controllersMap[commentId] = PagingController(
       pageFuture: (token) => AmitySocialClient.newCommentRepository()
           .getComments()
@@ -71,20 +81,23 @@ class ReplyVM extends PostVM {
           .parentId(commentId)
           .sortBy(_sortOption)
           .includeDeleted(true)
-          .getPagingData(token: token, limit: 20),
-      pageSize: 20,
+          .getPagingData(token: token, limit: 5),
+      pageSize: 5,
     )..addListener(
         () async {
-          // Check for errors from the pagination controller.
           if (_controllersMap[commentId]!.error == null) {
-            // Clear existing comments and add newly loaded items.
-            amityComments.clear();
-            amityComments.addAll(_controllersMap[commentId]!.loadedItems);
-            // Update the map of reply comments and notify listeners to update the UI.
-            amityReplyCommentsMap[commentId] = amityComments;
-            notifyListeners();
+            var loadedItems = _controllersMap[commentId]!.loadedItems;
+            // Append only new comments by checking against existing ones.
+            var currentIds = amityComments.map((e) => e.commentId).toSet();
+            var newItems = loadedItems
+                .where((item) => !currentIds.contains(item.commentId))
+                .toList();
+            if (newItems.isNotEmpty) {
+              amityComments.addAll(newItems);
+              amityReplyCommentsMap[commentId] = amityComments;
+              notifyListeners();
+            }
           } else {
-            // Handle pagination controller error by logging and showing an alert dialog.
             log("error");
             await AmityDialog().showAlertErrorDialog(
                 title: "Error!",
@@ -93,19 +106,27 @@ class ReplyVM extends PostVM {
         },
       );
 
-    // Fetch the next page of comments after the frame is built to ensure the UI is updated.
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    // Immediately fetch the next page of comments to start populating the UI.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _controllersMap[commentId]!.fetchNextPage();
     });
   }
 
-  void loadReplynextpage(String commentId) {
+  bool replyHaveNextPage(String commentId) {
     if (_controllersMap[commentId] != null) {
-      if ((scrollcontroller.position.pixels ==
-              scrollcontroller.position.maxScrollExtent) &&
-          _controllersMap[commentId]!.hasMoreItems) {
-        _controllersMap[commentId]!.fetchNextPage();
-      }
+      print(_controllersMap[commentId]!.hasMoreItems);
+      return _controllersMap[commentId]!.hasMoreItems;
+    } else {
+      return false;
+    }
+  }
+
+  void loadReplynextpage(
+    String commentId,
+  ) {
+    if (_controllersMap[commentId] != null) {
+      _controllersMap[commentId]!.fetchNextPage();
+      notifyListeners();
     } else {
       print("Cannot find comment ID in map");
     }
@@ -116,9 +137,6 @@ class ReplyVM extends PostVM {
     print("delete commet...");
     comment.delete().then((value) {
       print("delete commet success: $value");
-      // amityReplyCommentsMap[comment.commentId]!
-      //     .removeWhere((element) => element.commentId == comment.commentId);
-      // listenForComments(postID: amityPost.postId!);
 
       notifyListeners();
     }).onError((error, stackTrace) async {
@@ -145,9 +163,8 @@ class ReplyVM extends PostVM {
 
       // Update the map of reply comments and notify listeners to update the UI.
       amityReplyCommentsMap[commentId]!.add(comment);
-      replyToObject = null;
       notifyListeners();
-
+      replyToObject = null;
       // Future.delayed(const Duration(milliseconds: 300)).then((value) {
       //   scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
       // });

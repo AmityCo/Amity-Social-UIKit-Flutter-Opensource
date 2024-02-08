@@ -29,7 +29,13 @@ class PostVM extends ChangeNotifier {
     });
   }
 
-  void listenForComments({required String postID, Function? successCalback}) {
+  void listenForComments(
+      {required String postID, Function? successCallback, bool? refresh}) {
+    if (refresh != null) {
+      if (refresh) {
+        amityComments.clear();
+      }
+    }
     _controller = PagingController(
       pageFuture: (token) => AmitySocialClient.newCommentRepository()
           .getComments()
@@ -41,14 +47,22 @@ class PostVM extends ChangeNotifier {
     )..addListener(
         () async {
           if (_controller.error == null) {
-            amityComments.clear();
-            amityComments.addAll(_controller.loadedItems);
-            print("parent comments: ${amityComments.length}");
-            successCalback!();
-            notifyListeners();
+            // Instead of clearing and re-adding all items, directly append new items
+            // This assumes `amityComments` is a List that can be compared with _controller.loadedItems for duplicates
+            var newComments = _controller.loadedItems;
+            // Append only new comments
+            var currentIds = amityComments.map((e) => e.commentId).toSet();
+            var newItems = newComments
+                .where((item) => !currentIds.contains(item.commentId))
+                .toList();
+            if (newItems.isNotEmpty) {
+              amityComments.addAll(newItems);
+              print("parent comments added: ${newItems.length}");
+              successCallback?.call();
+              // notifyListeners(); // Uncomment if you are using a listener-based state management
+            }
           } else {
-            //Error on pagination controller
-
+            // Error on pagination controller
             log("error from Comment");
             await AmityDialog().showAlertErrorDialog(
                 title: "Error!", message: _controller.error.toString());
@@ -80,7 +94,7 @@ class PostVM extends ChangeNotifier {
         .send()
         .then((comment) async {
       _controller.add(comment);
-      amityComments.add(comment);
+      // amityComments.add(comment);
       Future.delayed(const Duration(milliseconds: 500)).then((value) {
         scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
       });
@@ -115,7 +129,6 @@ class PostVM extends ChangeNotifier {
       print("delete commet success: $value");
       amityComments
           .removeWhere((element) => element.commentId == comment.commentId);
-      listenForComments(postID: amityPost.postId!);
 
       notifyListeners();
     }).onError((error, stackTrace) async {
@@ -182,5 +195,15 @@ class PostVM extends ChangeNotifier {
 
   bool isliked(AmityComment comment) {
     return comment.myReactions?.isNotEmpty ?? false;
+  }
+
+  void updateComment(AmityComment comment, String text) async {
+    comment.edit().text(text).build().update().then((value) {
+      //handle result
+    }).onError((error, stackTrace) async {
+      log("unflag error ${error.toString()}");
+      await AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
   }
 }

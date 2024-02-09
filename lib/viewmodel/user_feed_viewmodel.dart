@@ -295,4 +295,35 @@ class UserFeedVM extends ChangeNotifier {
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
   }
+
+  void blockUser(String userId, Function onCallBack) {
+    AmityCoreClient.newUserRepository()
+        .relationship()
+        .blockUser(userId)
+        .then((value) {
+      print(value);
+      AmitySuccessDialog.showTimedDialog("Blocked user");
+      _getUser(userId: userId);
+      notifyListeners();
+      // onCallBack();
+    }).onError((error, stackTrace) {
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
+  void unBlockUser(String userId) {
+    AmityCoreClient.newUserRepository()
+        .relationship()
+        .unblockUser(userId)
+        .then((value) {
+      print(value);
+      AmitySuccessDialog.showTimedDialog("Unblock user");
+      _getUser(userId: userId);
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
 }

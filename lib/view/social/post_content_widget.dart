@@ -14,7 +14,6 @@ import 'package:linkwell/linkwell.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/video_player.dart';
-import 'comments.dart';
 import 'image_viewer.dart';
 
 class AmityPostWidget extends StatefulWidget {
@@ -827,12 +826,13 @@ class TextPost extends StatelessWidget {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CommentScreen(
-                                  amityPost: post,
-                                  theme: Theme.of(context),
-                                  isFromFeed: true,
-                                )));
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) => CommentScreen(
+                        //           amityPost: post,
+                        //           theme: Theme.of(context),
+                        //           isFromFeed: true,
+                        //           onSharePost: (post) {},
+                        //         )));
                       },
                       child: post.type == AmityDataType.TEXT
                           ? textdata.text == null

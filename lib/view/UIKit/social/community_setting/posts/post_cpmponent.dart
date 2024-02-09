@@ -2,13 +2,16 @@ import 'dart:developer';
 
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 import 'package:provider/provider.dart';
 
 class PostMedia extends StatelessWidget {
   final List<UIKitFileSystem> files;
-  const PostMedia({super.key, required this.files});
+  final bool isEditPost;
+
+  const PostMedia({super.key, required this.files, this.isEditPost = false});
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +20,9 @@ class PostMedia extends StatelessWidget {
 
       Widget backgroundImage(UIKitFileSystem file, int index) {
         // var file = files[index];
-        int rawprogress =
-            Provider.of<CreatePostVMV2>(context).files[0].progress;
+        int rawprogress = isEditPost
+            ? 100
+            : Provider.of<CreatePostVMV2>(context).files[0].progress;
         var progress = rawprogress / 100.0;
 
         return Padding(
@@ -28,9 +32,15 @@ class PostMedia extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: file.fileType == MyFileType.video
-                        ? getImageProvider(file.file.path)
-                        : FileImage(file.file),
+                    image: isEditPost
+                        ? getImageProvider(Provider.of<EditPostVM>(context)
+                            .editPostMedie[index]
+                            .postDataForEditMedie!
+                            .fileInfo
+                            .fileUrl)
+                        : file.fileType == MyFileType.video
+                            ? getImageProvider(file.file.path)
+                            : FileImage(file.file),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -199,8 +209,9 @@ class PostMedia extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           var file = files[index];
-          int rawprogress =
-              Provider.of<CreatePostVMV2>(context).files[index].progress;
+          int rawprogress = isEditPost
+              ? Provider.of<EditPostVM>(context).editPostMedie[index].progress
+              : Provider.of<CreatePostVMV2>(context).files[index].progress;
           var progress = rawprogress / 100.0;
 
           String fileImage = getFileImage(file.file.path);
@@ -261,7 +272,9 @@ class PostMedia extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${(file.file.lengthSync() / 1024).toStringAsFixed(2)} KB',
+                        isEditPost
+                            ? ""
+                            : '${(file.file.lengthSync() / 1024).toStringAsFixed(2)} KB',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
@@ -288,17 +301,28 @@ class PostMedia extends StatelessWidget {
     }
 
     bool isNotImageVideoOrAudio(UIKitFileSystem file) {
-      final mimeType = lookupMimeType(file.file.path);
+      if (!isEditPost) {
+        final mimeType = lookupMimeType(file.file.path);
 
-      if (mimeType != null) {
-        final isImage = mimeType.startsWith('image/');
-        final isVideo = mimeType.startsWith('video/');
-        final isAudio = mimeType.startsWith('audio/');
+        if (mimeType != null) {
+          final isImage = mimeType.startsWith('image/');
+          final isVideo = mimeType.startsWith('video/');
+          final isAudio = mimeType.startsWith('audio/');
 
-        return !(isImage || isVideo || isAudio);
+          return !(isImage || isVideo || isAudio);
+        } else {
+          // If the MIME type is unknown, consider it as not an image, video, or audio.
+          return true;
+        }
       } else {
-        // If the MIME type is unknown, consider it as not an image, video, or audio.
-        return true;
+        if (file.postDataForEditMedie!.fileInfo.getFileProperties!.type ==
+                "image" ||
+            file.postDataForEditMedie!.fileInfo.getFileProperties!.type ==
+                "video") {
+          return false;
+        } else {
+          return true;
+        }
       }
     }
 

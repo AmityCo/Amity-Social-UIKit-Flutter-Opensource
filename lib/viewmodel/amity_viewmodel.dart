@@ -112,4 +112,8 @@ class AmityVM extends ChangeNotifier {
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
   }
+
+  late Function(AmityPost) onShareButtonPressed;
+  void setShareButtonFunction(
+      Function(AmityPost) onShareButtonPressed) {} // Callback function)
 }

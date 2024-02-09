@@ -57,6 +57,8 @@ class UserProfileScreenState extends State<UserProfileScreen>
       return "Pending";
     } else if (amityFollowStatus == AmityFollowStatus.ACCEPTED) {
       return "Following";
+    } else if (amityFollowStatus == AmityFollowStatus.BLOCKED) {
+      return "Blocked";
     } else {
       return "Miss Type";
     }

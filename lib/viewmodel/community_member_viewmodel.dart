@@ -180,6 +180,30 @@ class MemberManagementVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Method to block a user
+  Future<void> blockUser(AmityUser user) async {
+    await user.blockUser().then((value) {
+      print(value);
+      AmitySuccessDialog.showTimedDialog("Block user");
+    }).onError((error, stackTrace) {
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+    notifyListeners();
+  }
+
+  // Method to block a user
+  Future<void> unBlockUser(AmityUser user) async {
+    await user.unblockUser().then((value) {
+      print(value);
+      AmitySuccessDialog.showTimedDialog("Unblock user");
+    }).onError((error, stackTrace) {
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+    notifyListeners();
+  }
+
   List<String> currentUserRoles = [];
 
   Future<void> checkCurrentUserRole(String communityId) async {

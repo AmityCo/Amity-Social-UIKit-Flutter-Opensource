@@ -38,20 +38,19 @@ class ReplyVM extends PostVM {
   ReplyTo? replyToObject;
 
   Future<void> initReplyComment(String postId, BuildContext context) async {
-    print("initReplyComment");
+    print("initReplyComment>>>>>>>>>>>>>>>>>>>>>");
     print(amityComments.length);
-    _controllersMap.clear();
-    amityReplyCommentsMap.clear();
+
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;
     for (var comment in comments) {
-      if (comment.childrenNumber! > 0) {
+      // Check if the comment ID does not exist in the amityReplyCommentsMap
+      if (comment.childrenNumber! > 0 &&
+          !amityReplyCommentsMap.containsKey(comment.commentId)) {
         print("comment: ${comment.data}");
         await listenForReplyComments(
             postID: postId, commentId: comment.commentId!);
       }
     }
-    notifyListeners();
-    print("notifyListeners");
   }
 
   void selectReplyComment({required AmityComment comment}) {
@@ -75,13 +74,14 @@ class ReplyVM extends PostVM {
     final amityComments = amityReplyCommentsMap[commentId] ?? <AmityComment>[];
 
     _controllersMap[commentId] = PagingController(
-      pageFuture: (token) => AmitySocialClient.newCommentRepository()
-          .getComments()
-          .post(postID)
-          .parentId(commentId)
-          .sortBy(_sortOption)
-          .includeDeleted(true)
-          .getPagingData(token: token, limit: 5),
+      pageFuture: (token) async =>
+          await AmitySocialClient.newCommentRepository()
+              .getComments()
+              .post(postID)
+              .parentId(commentId)
+              .sortBy(_sortOption)
+              .includeDeleted(true)
+              .getPagingData(token: token, limit: 5),
       pageSize: 5,
     )..addListener(
         () async {
@@ -114,7 +114,6 @@ class ReplyVM extends PostVM {
 
   bool replyHaveNextPage(String commentId) {
     if (_controllersMap[commentId] != null) {
-      print(_controllersMap[commentId]!.hasMoreItems);
       return _controllersMap[commentId]!.hasMoreItems;
     } else {
       return false;

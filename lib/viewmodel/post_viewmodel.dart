@@ -59,7 +59,7 @@ class PostVM extends ChangeNotifier {
               amityComments.addAll(newItems);
               print("parent comments added: ${newItems.length}");
               successCallback?.call();
-              // notifyListeners(); // Uncomment if you are using a listener-based state management
+              notifyListeners(); // Uncomment if you are using a listener-based state management
             }
           } else {
             // Error on pagination controller

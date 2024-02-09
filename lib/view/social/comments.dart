@@ -197,19 +197,19 @@ class CommentScreenState extends State<CommentScreen> {
                       const SizedBox(width: 20), // Spacing between buttons
 
                       // Share Button
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Row(
-                          children: [
-                            Icon(Icons.ios_share_outlined, color: Colors.grey),
-                            SizedBox(width: 4),
-                            Text(
-                              "Share",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () {},
+                      //   child: const Row(
+                      //     children: [
+                      //       Icon(Icons.ios_share_outlined, color: Colors.grey),
+                      //       SizedBox(width: 4),
+                      //       Text(
+                      //         "Share",
+                      //         style: TextStyle(color: Colors.grey),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -271,238 +271,6 @@ class CommentScreenState extends State<CommentScreen> {
                                           isFromFeed: false,
                                         ),
 
-                                        // ListTile(
-                                        //   leading: getAvatarImage(widget
-                                        //       .amityPost.postedUser!.avatarUrl),
-                                        //   title: Wrap(
-                                        //     children: [
-                                        //       GestureDetector(
-                                        //         onTap: () {
-                                        //           Navigator.of(context).push(
-                                        //               MaterialPageRoute(
-                                        //                   builder: (context) =>
-                                        //                       ChangeNotifierProvider(
-                                        //                           create: (context) =>
-                                        //                               UserFeedVM(),
-                                        //                           child:
-                                        //                               UserProfileScreen(
-                                        //                             amityUser: widget
-                                        //                                 .amityPost
-                                        //                                 .postedUser!,
-                                        //                           ))));
-                                        //         },
-                                        //         child: Text(
-                                        //           widget.amityPost.postedUser!
-                                        //                       .userId !=
-                                        //                   AmityCoreClient
-                                        //                           .getCurrentUser()
-                                        //                       .userId
-                                        //               ? widget
-                                        //                       .amityPost
-                                        //                       .postedUser
-                                        //                       ?.displayName ??
-                                        //                   "Display name"
-                                        //               : Provider.of<AmityVM>(
-                                        //                           context)
-                                        //                       .currentamityUser!
-                                        //                       .displayName ??
-                                        //                   "",
-                                        //           style: widget.theme.textTheme
-                                        //               .bodyText1!
-                                        //               .copyWith(
-                                        //                   fontWeight:
-                                        //                       FontWeight.bold,
-                                        //                   fontSize: 16),
-                                        //         ),
-                                        //       ),
-                                        //       widget.amityPost.targetType ==
-                                        //                   AmityPostTargetType
-                                        //                       .COMMUNITY &&
-                                        //               widget.isFromFeed
-                                        //           ? const Icon(
-                                        //               Icons.arrow_right_rounded,
-                                        //               color: Colors.black,
-                                        //             )
-                                        //           : Container(),
-                                        //       widget.amityPost.targetType ==
-                                        //                   AmityPostTargetType
-                                        //                       .COMMUNITY &&
-                                        //               widget.isFromFeed
-                                        //           ? GestureDetector(
-                                        //               onTap: () {
-                                        //                 Navigator.of(context).push(
-                                        //                     MaterialPageRoute(
-                                        //                         builder:
-                                        //                             (context) =>
-                                        //                                 ChangeNotifierProvider(
-                                        //                                   create: (context) =>
-                                        //                                       CommuFeedVM(),
-                                        //                                   child:
-                                        //                                       CommunityScreen(
-                                        //                                     isFromFeed:
-                                        //                                         true,
-                                        //                                     community:
-                                        //                                         (widget.amityPost.target as CommunityTarget).targetCommunity!,
-                                        //                                   ),
-                                        //                                 )));
-                                        //               },
-                                        //               child: Text(
-                                        //                 (widget.amityPost.target
-                                        //                             as CommunityTarget)
-                                        //                         .targetCommunity!
-                                        //                         .displayName ??
-                                        //                     "Community name",
-                                        //                 style: widget
-                                        //                     .theme
-                                        //                     .textTheme
-                                        //                     .bodyText1!
-                                        //                     .copyWith(
-                                        //                         fontWeight:
-                                        //                             FontWeight
-                                        //                                 .bold,
-                                        //                         fontSize: 16),
-                                        //               ),
-                                        //             )
-                                        //           : Container()
-                                        //     ],
-                                        //   ),
-                                        //   subtitle: TimeAgoWidget(
-                                        //     createdAt: vm.amityPost.createdAt!,
-                                        //   ),
-                                        // ),
-                                        // Padding(
-                                        //     padding: const EdgeInsets.fromLTRB(
-                                        //         10, 10, 0, 9),
-                                        //     child: postData.text == "" ||
-                                        //             postData.text == null
-                                        //         ? const SizedBox()
-                                        //         : LinkWell(
-                                        //             snapshotPostData.text ?? "",
-                                        //             textAlign: TextAlign.left,
-                                        //             style: theme
-                                        //                 .textTheme.headline6!
-                                        //                 .copyWith(
-                                        //                     fontWeight:
-                                        //                         FontWeight.w500,
-                                        //                     fontSize: 18),
-                                        //           )
-                                        //     // Text(
-                                        //     //     postData.text ?? "",
-                                        //     //     textAlign:
-                                        //     //         TextAlign.left,
-                                        //     //     style: theme.textTheme
-                                        //     //         .headline6!
-                                        //     //         .copyWith(
-                                        //     //             fontWeight:
-                                        //     //                 FontWeight
-                                        //     //                     .w500,
-                                        //     //             fontSize: 18),
-                                        //     //   ),
-                                        //     ),
-                                        // isMediaPosts()
-                                        //     ? SizedBox(
-                                        //         width: double.infinity,
-                                        //         child: mediaPostWidgets()
-                                        //         // Image.asset(
-                                        //         //   'assets/images/Layer709.png',
-                                        //         //   fit: BoxFit.fitWidth,
-                                        //         // ),
-                                        //         )
-                                        //     : Container(),
-                                        // Padding(
-                                        //     padding: const EdgeInsets.only(
-                                        //         top: 10,
-                                        //         bottom: 10,
-                                        //         left: 9,
-                                        //         right: 9),
-                                        //     child: Row(
-                                        //       mainAxisAlignment:
-                                        //           MainAxisAlignment
-                                        //               .spaceBetween,
-                                        //       children: [
-                                        //         Builder(builder: (context) {
-                                        //           return snapshot.data!
-                                        //                       .reactionCount! >
-                                        //                   0
-                                        //               ? Row(
-                                        //                   children: [
-                                        //                     CircleAvatar(
-                                        //                       radius: 12,
-                                        //                       backgroundColor: Provider
-                                        //                               .of<AmityUIConfiguration>(
-                                        //                                   context)
-                                        //                           .primaryColor,
-                                        //                       child: const Icon(
-                                        //                         Icons.thumb_up,
-                                        //                         color: Colors
-                                        //                             .white,
-                                        //                         size: 15,
-                                        //                       ),
-                                        //                     ),
-                                        //                     const SizedBox(
-                                        //                       width: 5,
-                                        //                     ),
-                                        //                     Text(
-                                        //                         snapshot.data!
-                                        //                             .reactionCount
-                                        //                             .toString(),
-                                        //                         style: TextStyle(
-                                        //                             color: Colors
-                                        //                                 .grey,
-                                        //                             letterSpacing:
-                                        //                                 1))
-                                        //                   ],
-                                        //                 )
-                                        //               : const SizedBox(
-                                        //                   width: 0,
-                                        //                 );
-                                        //         }),
-                                        //         Builder(builder: (context) {
-                                        //           // any logic needed...
-                                        //           if (snapshot
-                                        //                   .data!.commentCount! >
-                                        //               1) {
-                                        //             return Text(
-                                        //               '${snapshot.data?.commentCount} comments',
-                                        //               style: TextStyle(
-                                        //                   color: Colors.grey,
-                                        //                   letterSpacing: 0.5),
-                                        //             );
-                                        //           } else if (snapshot.data!
-                                        //                   .commentCount! ==
-                                        //               0) {
-                                        //             return const SizedBox(
-                                        //               width: 0,
-                                        //             );
-                                        //           } else {
-                                        //             return Text(
-                                        //               '${snapshot.data?.commentCount} comment',
-                                        //               style: TextStyle(
-                                        //                   color: Colors.grey,
-                                        //                   letterSpacing: 0.5),
-                                        //             );
-                                        //           }
-                                        //         })
-                                        //       ],
-                                        //     )),
-                                        // Container(
-                                        //   decoration: const BoxDecoration(
-                                        //     color: Colors.white,
-                                        //   ),
-                                        //   child: Container(
-                                        //     decoration: const BoxDecoration(),
-                                        //     padding: const EdgeInsets.fromLTRB(
-                                        //         10, 0, 10, 0),
-                                        //     child: const Column(
-                                        //       crossAxisAlignment:
-                                        //           CrossAxisAlignment.stretch,
-                                        //       children: [
-                                        //         // Divider(),
-                                        //         // actionSection,
-                                        //       ],
-                                        //     ),
-                                        //   ),
-                                        // ),
                                         const Divider(),
                                         CommentComponent(
                                             postId: widget.amityPost.postId!,
@@ -1076,6 +844,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                                           FontWeight.w500),
                                                 ),
                                                 onTap: () async {
+                                                  Navigator.of(context).pop();
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                           builder: (context) =>
@@ -1137,31 +906,24 @@ class _CommentComponentState extends State<CommentComponent> {
                                               comments.commentId] ==
                                           null
                                       ? const SizedBox()
-                                      : Container(
-                                          child: Column(
-                                            children: [
-                                              ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
-                                                itemCount: Provider.of<ReplyVM>(
-                                                        context)
-                                                    .amityReplyCommentsMap[
-                                                        comments.commentId]!
-                                                    .length,
-                                                itemBuilder: (context, index) {
-                                                  var replyComment = Provider.of<
-                                                              ReplyVM>(context)
-                                                          .amityReplyCommentsMap[
-                                                      comments
-                                                          .commentId]![index];
-                                                  return ReplyCommentComponent(
-                                                    comment: replyComment,
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          ),
+                                      : ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount:
+                                              Provider.of<ReplyVM>(context)
+                                                  .amityReplyCommentsMap[
+                                                      comments.commentId]!
+                                                  .length,
+                                          itemBuilder: (context, index) {
+                                            var replyComment =
+                                                Provider.of<ReplyVM>(context)
+                                                        .amityReplyCommentsMap[
+                                                    comments.commentId]![index];
+                                            return ReplyCommentComponent(
+                                              comment: replyComment,
+                                            );
+                                          },
                                         ),
                                   Provider.of<ReplyVM>(context)
                                           .replyHaveNextPage(

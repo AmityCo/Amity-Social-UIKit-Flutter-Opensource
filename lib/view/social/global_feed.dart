@@ -696,24 +696,24 @@ class _PostWidgetState extends State<PostWidget>
                                 const SizedBox(
                                   width: 12,
                                 ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Row(
-                                    children: [
-                                      Provider.of<AmityUIConfiguration>(context)
-                                          .iconConfig
-                                          .shareIcon(iconSize: 16),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        "Share",
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: feedReactionCountSize,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                // GestureDetector(
+                                //   onTap: () {},
+                                //   child: Row(
+                                //     children: [
+                                //       Provider.of<AmityUIConfiguration>(context)
+                                //           .iconConfig
+                                //           .shareIcon(iconSize: 16),
+                                //       const SizedBox(width: 4),
+                                //       Text(
+                                //         "Share",
+                                //         style: TextStyle(
+                                //           color: Colors.grey,
+                                //           fontSize: feedReactionCountSize,
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),

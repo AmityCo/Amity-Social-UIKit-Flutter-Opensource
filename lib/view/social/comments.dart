@@ -242,7 +242,10 @@ class CommentScreenState extends State<CommentScreen> {
                             children: [
                               Stack(
                                 children: [
-                                  Container(
+                                  GestureDetector(
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                    },
                                     // color: isMediaPosts()
                                     //     ? Colors.black
                                     //     : Colors.transparent,
@@ -257,18 +260,22 @@ class CommentScreenState extends State<CommentScreen> {
                                           CrossAxisAlignment.stretch,
                                       children: [
                                         // Text("${snapshot.data!.targetType!}"),
-                                        PostWidget(
-                                          feedType: FeedType.community,
-                                          showCommunity: snapshot
-                                                      .data?.targetType ==
-                                                  AmityPostTargetType.COMMUNITY
-                                              ? true
-                                              : false,
-                                          showlatestComment: false,
-                                          post: snapshot.data!,
-                                          theme: theme,
-                                          postIndex: 0,
-                                          isFromFeed: false,
+                                        Container(
+                                          color: Colors.red,
+                                          child: PostWidget(
+                                            feedType: FeedType.community,
+                                            showCommunity:
+                                                snapshot.data?.targetType ==
+                                                        AmityPostTargetType
+                                                            .COMMUNITY
+                                                    ? true
+                                                    : false,
+                                            showlatestComment: false,
+                                            post: snapshot.data!,
+                                            theme: theme,
+                                            postIndex: 0,
+                                            isFromFeed: false,
+                                          ),
                                         ),
 
                                         const Divider(),

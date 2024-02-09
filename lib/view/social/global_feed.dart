@@ -282,6 +282,7 @@ class _PostWidgetState extends State<PostWidget>
       children: [
         GestureDetector(
             onTap: () {
+              FocusScope.of(context).unfocus();
               if (widget.isFromFeed) {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CommentScreen(

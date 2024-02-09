@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -86,6 +87,8 @@ class PostVM extends ChangeNotifier {
   }
 
   Future<void> createComment(String postId, String text) async {
+    // Dismiss the keyboard by removing focus from the current text field
+    FocusScope.of(NavigationService.navigatorKey.currentContext!).unfocus();
     await AmitySocialClient.newCommentRepository()
         .createComment()
         .post(postId)

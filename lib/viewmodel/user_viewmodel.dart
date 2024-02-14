@@ -92,6 +92,12 @@ class UserVM extends ChangeNotifier {
 
   final scrollcontroller = ScrollController();
   bool loadingNexPage = false;
+
+  void clearUserList() {
+    _userList.clear();
+    notifyListeners();
+  }
+
   Future<void> initUserList(String keyworkd) async {
     _amityUsersController = PagingController(
       pageFuture: (token) => AmityCoreClient.newUserRepository()

@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +74,6 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                 padding: EdgeInsets.all(8.0),
                 child: Text(
                   "cancel",
-                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             )
@@ -277,8 +277,12 @@ class UserWidget extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        UserProfileScreen(amityUserId: userStream.userId!)));
+                    builder: (context) => ChangeNotifierProvider(
+                        create: (context) => UserFeedVM(),
+                        child: UserProfileScreen(
+                          amityUser: amityUser,
+                          amityUserId: amityUser.userId!,
+                        ))));
               },
             ),
           );

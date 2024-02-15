@@ -154,6 +154,7 @@ class PostVM extends ChangeNotifier {
   void flagPost(AmityPost post) {
     post.report().flag().then((value) {
       log("flag success $value");
+      AmitySuccessDialog.showTimedDialog("Report success");
       notifyListeners();
     }).onError((error, stackTrace) async {
       log("flag error ${error.toString()}");
@@ -166,6 +167,7 @@ class PostVM extends ChangeNotifier {
     post.report().unflag().then((value) {
       //success
       log("unflag success $value");
+      AmitySuccessDialog.showTimedDialog("Undo report success");
       notifyListeners();
     }).onError((error, stackTrace) async {
       log("unflag error ${error.toString()}");

@@ -49,7 +49,14 @@ class FeedVM extends ChangeNotifier {
           log("initAmityGlobalfeed listener...");
           if (_controllerGlobal?.error == null) {
             _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
-
+            for (var post in _amityGlobalFeedPosts) {
+              if (post.latestComments != null) {
+                for (var comment in post.latestComments!) {
+                  print(comment.userId);
+                  print(comment.myReactions);
+                }
+              }
+            }
             notifyListeners();
           } else {
             //Error on pagination controller

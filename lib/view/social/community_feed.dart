@@ -703,17 +703,19 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
               const SizedBox(
                 height: 12,
               ),
-              !widget.community.isPostReviewEnabled!
+              !widget.community.isJoined!
                   ? const SizedBox()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                            child: PedindingButton(
-                          community: widget.community,
-                        )),
-                      ],
-                    )
+                  : !widget.community.isPostReviewEnabled!
+                      ? const SizedBox()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                                child: PedindingButton(
+                              community: widget.community,
+                            )),
+                          ],
+                        )
             ],
           ),
         ),

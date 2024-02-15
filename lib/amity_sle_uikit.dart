@@ -207,7 +207,7 @@ class AmitySLEProvider extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           navigatorKey: NavigationService.navigatorKey,
           home: DefaultTextStyle(
-              style: const TextStyle(fontWeight: FontWeight.w400),
+              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 8),
               child: child),
         ),
       ),

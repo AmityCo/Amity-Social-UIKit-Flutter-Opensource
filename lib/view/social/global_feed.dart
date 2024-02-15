@@ -47,9 +47,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
     if (myCommunityList.amityCommunities.isEmpty) {
       myCommunityList.initMyCommunity();
     }
-    if (globalFeedProvider.getAmityPosts().isEmpty) {
-      globalFeedProvider.initAmityGlobalfeed();
-    }
+
+    globalFeedProvider.initAmityGlobalfeed();
   }
 
   @override
@@ -976,7 +975,8 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                       style: const TextStyle(fontSize: 15),
                                     ),
                                   ),
-                                  CommentActionComponent(comments: comments),
+                                  CommentActionComponent(
+                                      amityComment: comments),
                                 ],
                               ),
                             ),
@@ -996,139 +996,152 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
 class CommentActionComponent extends StatelessWidget {
   const CommentActionComponent({
     super.key,
-    required this.comments,
+    required this.amityComment,
   });
 
-  final AmityComment comments;
+  final AmityComment amityComment;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 70.0, top: 5.0),
-      child: Row(
-        children: [
-          // Like Button
-          comments.myReactions == null
-              ? Row(
-                  children: [
-                    Provider.of<AmityUIConfiguration>(context)
-                        .iconConfig
-                        .likeIcon(),
-                    const Text(" Like"),
-                  ],
-                )
-              : comments.myReactions!.isEmpty
-                  ? GestureDetector(
-                      onTap: () {
-                        Provider.of<PostVM>(context)
-                            .removeCommentReaction(comments);
-                      },
-                      child: Row(
-                        children: [
-                          Provider.of<AmityUIConfiguration>(context)
-                              .iconConfig
-                              .likeIcon(
-                                color:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .primaryColor,
+    return StreamBuilder<AmityComment>(
+        stream: amityComment.listen.stream,
+        initialData: amityComment,
+        builder: (context, snapshot) {
+          var comments = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.only(left: 70.0, top: 5.0),
+            child: Row(
+              children: [
+                // Like Button
+                comments.myReactions == null
+                    ? GestureDetector(
+                        onTap: () {
+                          Provider.of<PostVM>(context, listen: false)
+                              .addCommentReaction(comments);
+                        },
+                        child: Row(
+                          children: [
+                            Provider.of<AmityUIConfiguration>(context)
+                                .iconConfig
+                                .likeIcon(),
+                            const Text(" Like"),
+                          ],
+                        ),
+                      )
+                    : comments.myReactions!.isEmpty
+                        ? GestureDetector(
+                            onTap: () {
+                              Provider.of<PostVM>(context, listen: false)
+                                  .addCommentReaction(comments);
+                            },
+                            child: Row(
+                              children: [
+                                Provider.of<AmityUIConfiguration>(context)
+                                    .iconConfig
+                                    .likeIcon(),
+                                const Text(" Like"),
+                              ],
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              print("addCommentReaction");
+                              Provider.of<PostVM>(context, listen: false)
+                                  .removeCommentReaction(comments);
+                            },
+                            child: Row(
+                              children: [
+                                Provider.of<AmityUIConfiguration>(context)
+                                    .iconConfig
+                                    .likedIcon(
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .primaryColor),
+                                Text(" ${snapshot.data?.reactionCount ?? 0}"),
+                              ],
+                            )),
+
+                // const SizedBox(width: 10),
+                // // Reply Button
+                // Provider.of<AmityUIConfiguration>(
+                //         context)
+                //     .iconConfig
+                //     .replyIcon(),
+
+                // const Text(
+                //   "Reply",
+                //   style: TextStyle(
+                //     color: Color(0xff898E9E),
+                //   ),
+                // ),
+
+                // More Options Button
+                IconButton(
+                  icon: const Icon(
+                    Icons.more_horiz,
+                    color: Color(0xff898E9E),
+                  ),
+                  onPressed: () {
+                    AmityGeneralCompomemt.showOptionsBottomSheet(context, [
+                      comments.user?.userId! ==
+                              AmityCoreClient.getCurrentUser().userId
+                          ? const SizedBox()
+                          : ListTile(
+                              title: const Text(
+                                'Report',
+                                style: TextStyle(fontWeight: FontWeight.w500),
                               ),
-                          Text(" ${comments.reactionCount ?? 0}"),
-                        ],
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () {
-                        Provider.of<PostVM>(context)
-                            .addCommentReaction(comments);
-                      },
-                      child: Row(
-                        children: [
-                          Provider.of<AmityUIConfiguration>(context)
-                              .iconConfig
-                              .likeIcon(),
-                          const Text(" Like"),
-                        ],
-                      )),
-
-          // const SizedBox(width: 10),
-          // // Reply Button
-          // Provider.of<AmityUIConfiguration>(
-          //         context)
-          //     .iconConfig
-          //     .replyIcon(),
-
-          // const Text(
-          //   "Reply",
-          //   style: TextStyle(
-          //     color: Color(0xff898E9E),
-          //   ),
-          // ),
-
-          // More Options Button
-          IconButton(
-            icon: const Icon(
-              Icons.more_horiz,
-              color: Color(0xff898E9E),
-            ),
-            onPressed: () {
-              AmityGeneralCompomemt.showOptionsBottomSheet(context, [
-                comments.user?.userId! ==
-                        AmityCoreClient.getCurrentUser().userId
-                    ? const SizedBox()
-                    : ListTile(
-                        title: const Text(
-                          'Report',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        onTap: () async {
-                          Navigator.pop(context);
-                        },
-                      ),
-
-                ///check admin
-                comments.user?.userId! !=
-                        AmityCoreClient.getCurrentUser().userId
-                    ? const SizedBox()
-                    : ListTile(
-                        title: const Text(
-                          'Edit Comment',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        onTap: () async {
-                          Navigator.pop(context);
-                        },
-                      ),
-                comments.user?.userId! !=
-                        AmityCoreClient.getCurrentUser().userId
-                    ? const SizedBox()
-                    : ListTile(
-                        title: const Text(
-                          'Delete Comment',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        onTap: () async {
-                          ConfirmationDialog().show(
-                              context: context,
-                              title: "Delete this comment",
-                              detailText:
-                                  " This comment will be permanently deleted. You'll no longer to see and find this comment",
-                              onConfirm: () {
-                                Provider.of<PostVM>(context)
-                                    .deleteComment(comments);
-                                // AmitySuccessDialog
-                                //     .showTimedDialog(
-                                //         "Success",
-                                //         context:
-                                //             context);
+                              onTap: () async {
                                 Navigator.pop(context);
-                              });
-                        },
-                      ),
-              ]);
-            },
-          ),
-        ],
-      ),
-    );
+                              },
+                            ),
+
+                      ///check admin
+                      comments.user?.userId! !=
+                              AmityCoreClient.getCurrentUser().userId
+                          ? const SizedBox()
+                          : ListTile(
+                              title: const Text(
+                                'Edit Comment',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              onTap: () async {
+                                Navigator.pop(context);
+                              },
+                            ),
+                      comments.user?.userId! !=
+                              AmityCoreClient.getCurrentUser().userId
+                          ? const SizedBox()
+                          : ListTile(
+                              title: const Text(
+                                'Delete Comment',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              onTap: () async {
+                                ConfirmationDialog().show(
+                                    context: context,
+                                    title: "Delete this comment",
+                                    detailText:
+                                        " This comment will be permanently deleted. You'll no longer to see and find this comment",
+                                    onConfirm: () {
+                                      Provider.of<PostVM>(context)
+                                          .deleteComment(comments);
+                                      // AmitySuccessDialog
+                                      //     .showTimedDialog(
+                                      //         "Success",
+                                      //         context:
+                                      //             context);
+                                      Navigator.pop(context);
+                                    });
+                              },
+                            ),
+                    ]);
+                  },
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

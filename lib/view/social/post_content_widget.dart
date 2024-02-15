@@ -346,8 +346,8 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
             Expanded(
                 child: backgroundThumbnail(getURL(files[1].data!), 1,
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      bottomLeft: Radius.circular(8),
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
                     )))
           ]),
         );

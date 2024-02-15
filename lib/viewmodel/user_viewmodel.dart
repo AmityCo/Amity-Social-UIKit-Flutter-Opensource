@@ -95,7 +95,6 @@ class UserVM extends ChangeNotifier {
 
   void clearUserList() {
     _userList.clear();
-    notifyListeners();
   }
 
   Future<void> initUserList(String keyworkd) async {

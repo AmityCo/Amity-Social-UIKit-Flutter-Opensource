@@ -264,14 +264,9 @@ class CreatePostVMV2 with ChangeNotifier {
         }
       } else if (action == PickerAction.filePicker) {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
-            allowMultiple: true,
-            type: FileType.custom,
-            allowedExtensions: [
-              'pdf',
-              'doc',
-              'txt'
-            ] // Specify your desired file types here
-            );
+          allowMultiple: true,
+          type: FileType.any,
+        );
         if (result != null && result.files.isNotEmpty) {
           List<XFile> pickedFiles = result.files
               .where((file) => file.path != null)

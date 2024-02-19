@@ -98,6 +98,7 @@ class SearchCommunityVM with ChangeNotifier {
       pageFuture: (token) {
         final repository = AmitySocialClient.newCommunityRepository()
             .getCommunities()
+            .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
             .filter(AmityCommunityFilter.ALL);
         if (keyword != null && keyword.isNotEmpty) {
           repository.withKeyword(

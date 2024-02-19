@@ -714,28 +714,30 @@ class _CommentComponentState extends State<CommentComponent> {
                                 children: [
                                   TimeAgoWidget(
                                     createdAt:
-                                        comments.createdAt != comments.editedAt
+                                        comments.createdAt == comments.editedAt
                                             ? comments.editedAt!
                                             : comments.createdAt!,
                                   ),
-                                  Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      const Icon(
-                                        Icons.circle,
-                                        size: 5,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(comments.createdAt ==
-                                              comments.editedAt
-                                          ? ""
-                                          : "Edited"),
-                                    ],
-                                  )
+                                  comments.createdAt == comments.editedAt
+                                      ? const SizedBox()
+                                      : Row(
+                                          children: [
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            const Icon(
+                                              Icons.circle,
+                                              size: 5,
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(comments.createdAt ==
+                                                    comments.editedAt
+                                                ? ""
+                                                : "Edited"),
+                                          ],
+                                        )
                                 ],
                               ),
                             ),

@@ -640,14 +640,18 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      const Icon(
-                        Icons.lock,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
+                      widget.community.isPublic!
+                          ? const SizedBox()
+                          : const Icon(
+                              Icons.lock,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                      widget.community.isPublic!
+                          ? const SizedBox()
+                          : const SizedBox(
+                              width: 7,
+                            ),
                       Text(
                           widget.community.displayName != null
                               ? widget.community.displayName!

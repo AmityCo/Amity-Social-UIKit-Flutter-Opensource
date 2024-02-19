@@ -1,8 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/post_cpmponent.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
-import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 // import 'package:amity_uikit_beta_service/viewmodel/create_post_viewmodel.dart';
@@ -94,14 +92,14 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                             if (isSuccess) {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ChangeNotifierProvider(
-                                        create: (context) => CommuFeedVM(),
-                                        child: CommunityScreen(
-                                          isFromFeed: true,
-                                          community: widget.community!,
-                                        ),
-                                      )));
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (context) => ChangeNotifierProvider(
+                              //           create: (context) => CommuFeedVM(),
+                              //           child: CommunityScreen(
+                              //             isFromFeed: true,
+                              //             community: widget.community!,
+                              //           ),
+                              //         )));
                             }
                           });
                         }

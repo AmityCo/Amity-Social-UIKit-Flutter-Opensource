@@ -148,6 +148,20 @@ class CreatePostVMV2 with ChangeNotifier {
             uikitFile,
           );
         } else if (mimeType.startsWith('video')) {
+          log("Generating thumbnail...");
+          final Uint8List? uint8list = await VideoThumbnail.thumbnailData(
+            video: uploadingFile.path,
+            imageFormat: ImageFormat.PNG,
+            maxWidth: 1000,
+            maxHeight: 1000,
+            quality: 75, // Adjusted quality to a non-zero value
+          );
+
+          if (uint8list != null && uint8list.isNotEmpty) {
+            // Save the generated thumbnail data in the map
+            thumbnailCache[uploadingFile.path] = uint8list;
+            notifyListeners();
+          }
           await _performUpload(
             AmityCoreClient.newFileRepository().uploadVideo(uploadingFile),
             uikitFile,
@@ -436,7 +450,7 @@ class CreatePostVMV2 with ChangeNotifier {
 
 // Declare the map outside the function
   Map<String, Uint8List> thumbnailCache = {};
-  Future<ImageProvider> getImageProvider(String path) async {
+  ImageProvider getImageProvider(String path) {
     if (path.endsWith('.mp4') || path.endsWith('.MOV')) {
       log("Checking for thumbnail...");
 
@@ -444,23 +458,8 @@ class CreatePostVMV2 with ChangeNotifier {
       if (thumbnailCache.containsKey(path)) {
         log("found in cache");
         return MemoryImage(thumbnailCache[path]!);
-      }
-
-      log("Generating thumbnail...");
-      final uint8list = await VideoThumbnail.thumbnailData(
-        video: path,
-        imageFormat: ImageFormat.PNG,
-        maxWidth: 1000,
-        maxHeight: 1000,
-        quality: 0,
-      );
-
-      if (uint8list != null && uint8list.isNotEmpty) {
-        // Save the generated thumbnail data in the map
-        thumbnailCache[path] = uint8list;
-        return MemoryImage(uint8list);
       } else {
-        throw Exception('Failed to generate video thumbnail');
+        throw Exception('Failed to generate video thumbnail: $path');
       }
     } else {
       return FileImage(File(path));

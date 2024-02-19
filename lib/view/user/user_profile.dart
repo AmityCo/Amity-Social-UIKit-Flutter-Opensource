@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/social/user_follow_screen.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
@@ -244,10 +245,12 @@ class UserProfileScreenState extends State<UserProfileScreen>
                   shape: const CircleBorder(),
                   onPressed: () async {
                     // Navigate or perform action based on 'Newsfeed' tap
-                    await Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const Scaffold(body: PostToPage()),
                     ));
-
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const AmityCreatePostV2Screen(),
+                    ));
                     Provider.of<UserFeedVM>(context, listen: false)
                         .initUserFeed(userId: widget.amityUserId);
                   },

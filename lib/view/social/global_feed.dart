@@ -206,17 +206,53 @@ class _PostWidgetState extends State<PostWidget>
             break;
           case 'Delete Post':
             if (widget.feedType == FeedType.global) {
-              Provider.of<FeedVM>(context, listen: false)
-                  .deletePost(widget.post, widget.postIndex);
+              ConfirmationDialog().show(
+                context: context,
+                title: 'Delete Post?',
+                detailText: 'Do you want to Delete your post?',
+                leftButtonText: 'Cancel',
+                rightButtonText: 'Delete',
+                onConfirm: () {
+                  Provider.of<FeedVM>(context, listen: false)
+                      .deletePost(widget.post, widget.postIndex);
+                },
+              );
             } else if (widget.feedType == FeedType.community) {
-              Provider.of<CommuFeedVM>(context, listen: false)
-                  .deletePost(widget.post, widget.postIndex);
+              ConfirmationDialog().show(
+                context: context,
+                title: 'Delete Post?',
+                detailText: 'Do you want to Delete your post?',
+                leftButtonText: 'Cancel',
+                rightButtonText: 'Delete',
+                onConfirm: () {
+                  Provider.of<CommuFeedVM>(context, listen: false)
+                      .deletePost(widget.post, widget.postIndex);
+                },
+              );
             } else if (widget.feedType == FeedType.user) {
-              Provider.of<UserFeedVM>(context, listen: false)
-                  .deletePost(widget.post, widget.postIndex);
+              ConfirmationDialog().show(
+                context: context,
+                title: 'Delete Post?',
+                detailText: 'Do you want to Delete your post?',
+                leftButtonText: 'Cancel',
+                rightButtonText: 'Delete',
+                onConfirm: () {
+                  Provider.of<UserFeedVM>(context, listen: false)
+                      .deletePost(widget.post, widget.postIndex);
+                },
+              );
             } else if (widget.feedType == FeedType.pending) {
-              Provider.of<CommuFeedVM>(context, listen: false)
-                  .deletePendingPost(widget.post, widget.postIndex);
+              ConfirmationDialog().show(
+                context: context,
+                title: 'Delete Post?',
+                detailText: 'Do you want to Delete your post?',
+                leftButtonText: 'Cancel',
+                rightButtonText: 'Delete',
+                onConfirm: () {
+                  Provider.of<CommuFeedVM>(context, listen: false)
+                      .deletePendingPost(widget.post, widget.postIndex);
+                },
+              );
             } else {
               print("unhandle postType");
             }

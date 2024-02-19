@@ -710,8 +710,33 @@ class _CommentComponentState extends State<CommentComponent> {
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
-                              subtitle: TimeAgoWidget(
-                                createdAt: vm.amityPost.createdAt!,
+                              subtitle: Row(
+                                children: [
+                                  TimeAgoWidget(
+                                    createdAt:
+                                        comments.createdAt != comments.editedAt
+                                            ? comments.editedAt!
+                                            : comments.createdAt!,
+                                  ),
+                                  Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      const Icon(
+                                        Icons.circle,
+                                        size: 5,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(comments.createdAt ==
+                                              comments.editedAt
+                                          ? ""
+                                          : "Edited"),
+                                    ],
+                                  )
+                                ],
                               ),
                             ),
                             Container(

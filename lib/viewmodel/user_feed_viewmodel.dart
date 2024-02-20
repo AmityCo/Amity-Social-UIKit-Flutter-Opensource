@@ -241,7 +241,9 @@ class UserFeedVM extends ChangeNotifier {
     AmitySocialClient.newPostRepository()
         .deletePost(postId: post.postId!)
         .then((value) {
+      print("remove at index $postIndex");
       amityPosts.removeAt(postIndex);
+      listenForUserFeed(amityUser!.userId!);
       notifyListeners();
     }).onError((error, stackTrace) async {
       await AmityDialog()

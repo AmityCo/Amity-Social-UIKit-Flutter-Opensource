@@ -91,6 +91,15 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                               callback: (isSuccess, error) {
                             if (isSuccess) {
                               Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (context) => ChangeNotifierProvider(
+                              //           create: (context) => CommuFeedVM(),
+                              //           child: CommunityScreen(
+                              //             isFromFeed: true,
+                              //             community: widget.community!,
+                              //           ),
+                              //         )));
                             }
                           });
                         }

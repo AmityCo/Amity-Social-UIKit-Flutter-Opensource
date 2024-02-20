@@ -242,7 +242,10 @@ class CommentScreenState extends State<CommentScreen> {
                             children: [
                               Stack(
                                 children: [
-                                  Container(
+                                  GestureDetector(
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                    },
                                     // color: isMediaPosts()
                                     //     ? Colors.black
                                     //     : Colors.transparent,
@@ -257,18 +260,22 @@ class CommentScreenState extends State<CommentScreen> {
                                           CrossAxisAlignment.stretch,
                                       children: [
                                         // Text("${snapshot.data!.targetType!}"),
-                                        PostWidget(
-                                          feedType: FeedType.community,
-                                          showCommunity: snapshot
-                                                      .data?.targetType ==
-                                                  AmityPostTargetType.COMMUNITY
-                                              ? true
-                                              : false,
-                                          showlatestComment: false,
-                                          post: snapshot.data!,
-                                          theme: theme,
-                                          postIndex: 0,
-                                          isFromFeed: false,
+                                        Container(
+                                          color: Colors.red,
+                                          child: PostWidget(
+                                            feedType: FeedType.community,
+                                            showCommunity:
+                                                snapshot.data?.targetType ==
+                                                        AmityPostTargetType
+                                                            .COMMUNITY
+                                                    ? true
+                                                    : false,
+                                            showlatestComment: false,
+                                            post: snapshot.data!,
+                                            theme: theme,
+                                            postIndex: 0,
+                                            isFromFeed: false,
+                                          ),
                                         ),
 
                                         const Divider(),
@@ -703,8 +710,35 @@ class _CommentComponentState extends State<CommentComponent> {
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
-                              subtitle: TimeAgoWidget(
-                                createdAt: vm.amityPost.createdAt!,
+                              subtitle: Row(
+                                children: [
+                                  TimeAgoWidget(
+                                    createdAt:
+                                        comments.createdAt == comments.editedAt
+                                            ? comments.editedAt!
+                                            : comments.createdAt!,
+                                  ),
+                                  comments.createdAt == comments.editedAt
+                                      ? const SizedBox()
+                                      : Row(
+                                          children: [
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            const Icon(
+                                              Icons.circle,
+                                              size: 5,
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(comments.createdAt ==
+                                                    comments.editedAt
+                                                ? ""
+                                                : "Edited"),
+                                          ],
+                                        )
+                                ],
                               ),
                             ),
                             Container(

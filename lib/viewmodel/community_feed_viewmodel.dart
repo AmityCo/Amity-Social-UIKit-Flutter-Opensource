@@ -312,7 +312,7 @@ class CommuFeedVM extends ChangeNotifier {
         .getCurentUserRoles(communityId)
         .then((value) {
       log("LOG1$value");
-      for (var role in value) {
+      for (var role in value!) {
         if (role == "community-moderator") {
           isCurrentUserIsAdmin = true;
         }

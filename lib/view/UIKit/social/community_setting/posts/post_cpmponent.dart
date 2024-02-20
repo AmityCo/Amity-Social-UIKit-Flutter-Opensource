@@ -38,9 +38,8 @@ class PostMedia extends StatelessWidget {
                             .postDataForEditMedie!
                             .fileInfo
                             .fileUrl)
-                        : file.fileType == MyFileType.video
-                            ? getImageProvider(file.file.path)
-                            : FileImage(file.file),
+                        : Provider.of<CreatePostVMV2>(context, listen: false)
+                            .getImageProvider(file.file.path),
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -793,12 +793,16 @@ class _CommentComponentState extends State<CommentComponent> {
                                                       context)
                                                   .iconConfig
                                                   .likeIcon(iconSize: 16),
-                                              const Text(
-                                                " Like",
-                                                style: TextStyle(
-                                                    color: Color(0xff898E9E),
-                                                    fontSize: 15),
-                                              ),
+                                              snapshot.data!.reactionCount! > 0
+                                                  ? Text(
+                                                      " ${snapshot.data!.reactionCount!}")
+                                                  : const Text(
+                                                      " Like",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xff898E9E),
+                                                          fontSize: 15),
+                                                    ),
                                             ],
                                           )),
 
@@ -1284,13 +1288,15 @@ class ReplyCommentComponent extends StatelessWidget {
                                                   context)
                                               .iconConfig
                                               .likeIcon(iconSize: 16),
-                                          const Text(
-                                            " Like",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xff898E9E),
-                                                fontSize: 15),
-                                          ),
+                                          snapshot.data!.reactionCount! > 0
+                                              ? Text(
+                                                  " ${snapshot.data!.reactionCount!}")
+                                              : const Text(
+                                                  " Like",
+                                                  style: TextStyle(
+                                                      color: Color(0xff898E9E),
+                                                      fontSize: 15),
+                                                ),
                                         ],
                                       )),
 

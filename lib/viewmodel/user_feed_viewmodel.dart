@@ -229,6 +229,8 @@ class UserFeedVM extends ChangeNotifier {
       await unfollowUser(user);
       print("clear post");
       // initUserFeed(userId: amityUser!.userId!);
+    } else if (amityFollowStatus == AmityFollowStatus.BLOCKED) {
+      //do nothing
     } else {
       AmityDialog().showAlertErrorDialog(
           title: "Error!",

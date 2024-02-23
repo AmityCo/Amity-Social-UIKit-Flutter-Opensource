@@ -12,7 +12,12 @@ import 'package:provider/provider.dart';
 class AmityCreatePostV2Screen extends StatefulWidget {
   final AmityCommunity? community;
   final AmityUser? amityUser;
-  const AmityCreatePostV2Screen({super.key, this.community, this.amityUser});
+  final bool isFromPostToPage;
+  const AmityCreatePostV2Screen(
+      {super.key,
+      this.community,
+      this.amityUser,
+      this.isFromPostToPage = false});
 
   @override
   State<AmityCreatePostV2Screen> createState() =>
@@ -33,7 +38,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Consumer<CreatePostVMV2>(builder: (context, vm, _) {
+    return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -78,8 +83,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                               callback: (isSuccess, error) {
                             if (isSuccess) {
                               Navigator.of(context).pop();
-                              if (widget.community != null ||
-                                  widget.amityUser != null) {
+                              if (widget.isFromPostToPage) {
                                 Navigator.of(context).pop();
                               }
                             } else {}
@@ -91,10 +95,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                               callback: (isSuccess, error) {
                             if (isSuccess) {
                               Navigator.of(context).pop();
-                              if (widget.community != null ||
-                                  widget.amityUser != null) {
-                                Navigator.of(context).pop();
-                              }
+
                               // Navigator.of(context).push(MaterialPageRoute(
                               //     builder: (context) => ChangeNotifierProvider(
                               //           create: (context) => CommuFeedVM(),

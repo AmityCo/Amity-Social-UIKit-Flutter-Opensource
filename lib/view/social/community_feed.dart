@@ -202,10 +202,23 @@ class CommunityScreenState extends State<CommunityScreen> {
                     ? FloatingActionButton(
                         shape: const CircleBorder(),
                         onPressed: () async {
-                          Navigator.of(context).push(MaterialPageRoute(
+                          await Navigator.of(context).push(MaterialPageRoute(
                               builder: (context2) => AmityCreatePostV2Screen(
                                     community: snapshot.data!,
                                   )));
+                          Provider.of<CommuFeedVM>(context, listen: false)
+                              .initAmityCommunityFeed(
+                                  widget.community.communityId!);
+                          Provider.of<CommuFeedVM>(context, listen: false)
+                              .initAmityCommunityImageFeed(
+                                  widget.community.communityId!);
+                          Provider.of<CommuFeedVM>(context, listen: false)
+                              .initAmityCommunityVideoFeed(
+                                  widget.community.communityId!);
+                          Provider.of<CommuFeedVM>(context, listen: false)
+                              .initAmityPendingCommunityFeed(
+                                  widget.community.communityId!,
+                                  AmityFeedType.REVIEWING);
                         },
                         backgroundColor:
                             Provider.of<AmityUIConfiguration>(context)

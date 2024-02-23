@@ -4,14 +4,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
-import 'package:provider/provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 enum FileStatus { uploading, rejected, complete }
@@ -362,8 +358,7 @@ class CreatePostVMV2 with ChangeNotifier {
               context: context,
               callback: callback);
         }).onError((error, stackTrace) async {
-          await AmityDialog()
-              .showAlertErrorDialog(title: "Error!", message: error.toString());
+          callback(false, error.toString());
         });
       } else if (videos.isNotEmpty) {
         log("video was selected");
@@ -387,9 +382,7 @@ class CreatePostVMV2 with ChangeNotifier {
               callback: callback);
           notifyListeners();
         }).onError((error, stackTrace) async {
-          log(error.toString());
-          await AmityDialog()
-              .showAlertErrorDialog(title: "Error!", message: error.toString());
+          callback(false, error.toString());
         });
       } else if (otherFiles.isNotEmpty) {
         log("file was selected");
@@ -431,18 +424,20 @@ class CreatePostVMV2 with ChangeNotifier {
       required Function callback}) {
     if (isCommunity) {
       print("refreshing commu feed");
-      Provider.of<CommuFeedVM>(context, listen: false).initAmityCommunityFeed(
-          (post.target as CommunityTarget).targetCommunityId!);
-      Provider.of<CommuFeedVM>(context, listen: false)
-          .initAmityPendingCommunityFeed(
-              (post.target as CommunityTarget).targetCommunityId!,
-              AmityFeedType.REVIEWING);
+      // print((post.target as CommunityTarget).targetCommunityId!);
+      // Provider.of<CommuFeedVM>(context, listen: false).initAmityCommunityFeed(
+      //     (post.target as CommunityTarget).targetCommunityId!);
+      // Provider.of<CommuFeedVM>(context, listen: false)
+      //     .initAmityPendingCommunityFeed(
+      //         (post.target as CommunityTarget).targetCommunityId!,
+      //         AmityFeedType.REVIEWING);
+      notifyListeners();
     } else {
-      var viewModel = Provider.of<FeedVM>(context, listen: false);
-      viewModel.addPostToFeed(post);
-      if (viewModel.scrollcontroller.hasClients) {
-        viewModel.scrollcontroller.jumpTo(0);
-      }
+      // var viewModel = Provider.of<FeedVM>(context, listen: false);
+      // viewModel.addPostToFeed(post);
+      // if (viewModel.scrollcontroller.hasClients) {
+      //   viewModel.scrollcontroller.jumpTo(0);
+      // }
     }
     callback(true, null);
     notifyListeners();

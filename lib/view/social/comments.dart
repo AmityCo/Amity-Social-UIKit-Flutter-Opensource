@@ -1258,6 +1258,7 @@ class ReplyCommentComponent extends StatelessWidget {
                           child: Row(
                             children: [
                               // Like Button
+
                               isLiked(snapshot)
                                   ? GestureDetector(
                                       onTap: () {

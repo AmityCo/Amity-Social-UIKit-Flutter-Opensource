@@ -984,6 +984,18 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                     leading: GestureDetector(
                                       onTap: () {
                                         // Navigate to user profile
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChangeNotifierProvider(
+                                                        create:
+                                                            (context) =>
+                                                                UserFeedVM(),
+                                                        child: UserProfileScreen(
+                                                            amityUser:
+                                                                comments.user!,
+                                                            amityUserId: comments
+                                                                .userId!))));
                                       },
                                       child: getAvatarImage(
                                           comments.user?.avatarUrl),

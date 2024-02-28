@@ -276,9 +276,19 @@ class CommunityIconWidget extends StatelessWidget {
                           : const SizedBox(),
                       Expanded(
                         child: Text(amityCommunity.displayName ?? "",
+                            textAlign: TextAlign.center,
                             style: const TextStyle(
                                 overflow: TextOverflow.ellipsis)),
                       ),
+                      amityCommunity.isOfficial!
+                          ? Provider.of<AmityUIConfiguration>(context)
+                              .iconConfig
+                              .officialIcon(
+                                  iconSize: 12,
+                                  color:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .primaryColor)
+                          : const SizedBox(),
                     ],
                   ),
                 ],

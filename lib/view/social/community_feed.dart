@@ -121,8 +121,9 @@ class CommunityScreenState extends State<CommunityScreen> {
                     community.membersCount.toString(),
                     style: const TextStyle(fontSize: 16),
                   ),
-                  const Text('members',
-                      style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
+                  Text(community.membersCount == 1 ? 'member' : 'members',
+                      style: const TextStyle(
+                          fontSize: 16, color: Color(0xff898E9E)))
                 ],
               ),
             ),
@@ -145,6 +146,7 @@ class CommunityScreenState extends State<CommunityScreen> {
           stream: widget.community.listen.stream,
           initialData: widget.community,
           builder: (context, snapshot) {
+            var memberCount = snapshot.data!.membersCount!;
             var feedWidget = FadedSlideAnimation(
               beginOffset: const Offset(0, 0.3),
               endOffset: const Offset(0, 0),
@@ -589,8 +591,9 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                     community.membersCount.toString(),
                     style: const TextStyle(fontSize: 16),
                   ),
-                  const Text('members',
-                      style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
+                  Text(community.membersCount == 1 ? 'member' : 'members',
+                      style: const TextStyle(
+                          fontSize: 16, color: Color(0xff898E9E)))
                 ],
               ),
             ),
@@ -673,6 +676,14 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                               fontSize: 20,
                               fontWeight: FontWeight.w800,
                               color: Colors.white)),
+                      const SizedBox(
+                        width: 7,
+                      ),
+                      widget.community.isOfficial!
+                          ? Provider.of<AmityUIConfiguration>(context)
+                              .iconConfig
+                              .officialIcon(iconSize: 17, color: Colors.white)
+                          : const SizedBox(),
                     ],
                   ),
                   widget.community.categories == null

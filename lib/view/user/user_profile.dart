@@ -463,6 +463,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                             create: (context) =>
                                                                 FollowerVM(),
                                                             child: FollowScreen(
+                                                                followScreenType:
+                                                                    FollowScreenType
+                                                                        .following,
                                                                 key:
                                                                     UniqueKey(),
                                                                 userId: widget
@@ -481,6 +484,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                             create: (context) =>
                                                                 FollowerVM(),
                                                             child: FollowScreen(
+                                                                followScreenType:
+                                                                    FollowScreenType
+                                                                        .follower,
                                                                 key:
                                                                     UniqueKey(),
                                                                 userId: widget

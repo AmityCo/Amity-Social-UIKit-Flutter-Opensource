@@ -6,10 +6,17 @@ import 'package:provider/provider.dart';
 
 import '../../viewmodel/configuration_viewmodel.dart';
 
+enum FollowScreenType { following, follower }
+
 class FollowScreen extends StatefulWidget {
   final String userId;
   final String? displayName;
-  const FollowScreen({super.key, required this.userId, this.displayName});
+  final FollowScreenType followScreenType;
+  const FollowScreen(
+      {super.key,
+      required this.userId,
+      this.displayName,
+      required this.followScreenType});
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();
@@ -33,6 +40,8 @@ class _FollowScreenState extends State<FollowScreen> {
       body: SafeArea(
         bottom: false,
         child: DefaultTabController(
+          initialIndex:
+              widget.followScreenType == FollowScreenType.following ? 0 : 1,
           length: 2,
           child: Scaffold(
             body: Column(

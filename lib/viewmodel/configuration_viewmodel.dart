@@ -51,6 +51,18 @@ class AmityIconConfig {
     );
   }
 
+  Widget officialIcon(
+      {double iconSize = 16,
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
+    return SvgPicture.asset(
+      "assets/Icons/Checkmark.svg",
+      height: iconSize,
+      colorFilter: ColorFilter.mode(color, blendmode),
+      package: 'amity_uikit_beta_service',
+    );
+  }
+
   Widget shareIcon(
       {double iconSize = 16,
       Color color = Colors.grey,

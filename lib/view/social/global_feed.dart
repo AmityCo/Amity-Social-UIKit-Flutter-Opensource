@@ -44,9 +44,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
     super.initState();
     var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
     var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
-    if (myCommunityList.amityCommunities.isEmpty) {
-      myCommunityList.initMyCommunity();
-    }
+
+    myCommunityList.initMyCommunity();
 
     globalFeedProvider.initAmityGlobalfeed();
   }

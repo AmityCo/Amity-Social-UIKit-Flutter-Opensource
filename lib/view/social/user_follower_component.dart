@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
-import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/follower_following_viewmodel.dart';
 
 class AmityFollowerScreen extends StatefulWidget {
@@ -46,17 +45,17 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
             await vm.getFollowerListOf(userId: widget.userId);
           },
           child: vm.getFollowerList.isEmpty
-              ? Row(
+              ? const Row(
                   children: [
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(
-                            color: Provider.of<AmityUIConfiguration>(context)
-                                .primaryColor,
-                          )
+                          // CircularProgressIndicator(
+                          //   color: Provider.of<AmityUIConfiguration>(context)
+                          //       .primaryColor,
+                          // )
                         ],
                       ),
                     ),

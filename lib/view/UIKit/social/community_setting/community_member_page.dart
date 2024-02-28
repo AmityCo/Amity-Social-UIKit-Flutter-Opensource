@@ -48,42 +48,51 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           actions: [
-            IconButton(
-              icon: const Icon(Icons.add, color: Colors.black),
-              onPressed: () async {
-                var userList =
-                    Provider.of<MemberManagementVM>(context, listen: false)
-                        .userList;
-                List<AmityUser> userIdList =
-                    userList.map((user) => user.user!).toList();
-                Navigator.of(context).push<List<AmityUser>>(MaterialPageRoute(
-                    builder: (context) => UserListPage(
-                          preSelectMember: userIdList,
-                          onDonePressed: (users) async {
-                            List<String> userIds =
-                                users.map((user) => user.userId!).toList();
-                            if (users.isNotEmpty) {
-                              await Provider.of<CommunityVM>(context,
-                                      listen: false)
-                                  .addMembers(widget.communityId, userIds);
-                              await Provider.of<MemberManagementVM>(context,
-                                      listen: false)
-                                  .initMember(
-                                communityId: widget.communityId,
-                              );
-                              await Provider.of<MemberManagementVM>(context,
-                                      listen: false)
-                                  .initModerators(
-                                communityId: widget.communityId,
-                              );
-                              Navigator.of(context).pop();
-                            } else {
-                              log('Failed to add members');
-                            }
-                          },
-                        )));
-              },
-            ),
+            !Provider.of<MemberManagementVM>(context)
+                    .currentUserRoles
+                    .contains('community-moderator')
+                ? const SizedBox()
+                : IconButton(
+                    icon: const Icon(Icons.add, color: Colors.black),
+                    onPressed: () async {
+                      var userList = Provider.of<MemberManagementVM>(context,
+                              listen: false)
+                          .userList;
+                      List<AmityUser> userIdList =
+                          userList.map((user) => user.user!).toList();
+                      Navigator.of(context)
+                          .push<List<AmityUser>>(MaterialPageRoute(
+                              builder: (context) => UserListPage(
+                                    preSelectMember: userIdList,
+                                    onDonePressed: (users) async {
+                                      List<String> userIds = users
+                                          .map((user) => user.userId!)
+                                          .toList();
+                                      if (users.isNotEmpty) {
+                                        await Provider.of<CommunityVM>(context,
+                                                listen: false)
+                                            .addMembers(
+                                                widget.communityId, userIds);
+                                        await Provider.of<MemberManagementVM>(
+                                                context,
+                                                listen: false)
+                                            .initMember(
+                                          communityId: widget.communityId,
+                                        );
+                                        await Provider.of<MemberManagementVM>(
+                                                context,
+                                                listen: false)
+                                            .initModerators(
+                                          communityId: widget.communityId,
+                                        );
+                                        Navigator.of(context).pop();
+                                      } else {
+                                        log('Failed to add members');
+                                      }
+                                    },
+                                  )));
+                    },
+                  ),
           ],
           elevation: 0.0,
           iconTheme: const IconThemeData(color: Colors.black),

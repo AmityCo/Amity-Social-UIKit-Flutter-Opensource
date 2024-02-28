@@ -160,7 +160,7 @@ class RecommendationSection extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(left: 16, top: 20),
                 child: Text(
-                  'Recommendation for you',
+                  'Recommended for you',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
               ),

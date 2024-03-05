@@ -117,7 +117,11 @@ class ReplyVM extends PostVM {
 
   bool replyHaveNextPage(String commentId) {
     if (_controllersMap[commentId] != null) {
-      return _controllersMap[commentId]!.hasMoreItems;
+      if (_controllersMap[commentId]!.isFetching) {
+        return false;
+      } else {
+        return _controllersMap[commentId]!.hasMoreItems;
+      }
     } else {
       return false;
     }

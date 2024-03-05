@@ -538,13 +538,19 @@ class _PostWidgetState extends State<PostWidget>
                                     Builder(builder: (context) {
                                       // any logic needed...
                                       if (widget.post.commentCount! > 1) {
-                                        return Text(
-                                          '${widget.post.commentCount} comments',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: feedReactionCountSize,
-                                              letterSpacing: 0.5),
-                                        );
+                                        return StreamBuilder<AmityPost>(
+                                            stream: widget.post.listen.stream,
+                                            initialData: widget.post,
+                                            builder: (context, snapshot) {
+                                              return Text(
+                                                '${snapshot.data!.commentCount} ${snapshot.data!.commentCount == 1 ? 'comment' : 'comments'}',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize:
+                                                        feedReactionCountSize,
+                                                    letterSpacing: 0.5),
+                                              );
+                                            });
                                       } else if (widget.post.commentCount! ==
                                           0) {
                                         return const SizedBox(
@@ -1174,6 +1180,7 @@ class CommentActionComponent extends StatelessWidget {
                                     onConfirm: () {
                                       Provider.of<PostVM>(context)
                                           .deleteComment(comments);
+
                                       // AmitySuccessDialog
                                       //     .showTimedDialog(
                                       //         "Success",

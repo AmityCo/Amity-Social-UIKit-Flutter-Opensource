@@ -381,12 +381,12 @@ class TrendingSection extends StatelessWidget {
                     ),
                     subtitle: community.categories!.isEmpty
                         ? Text(
-                            'no category • ${community.membersCount} members',
+                            'no category • ${community.membersCount} ${community.membersCount == 1 ? "member" : "members"}',
                             style: const TextStyle(
                                 fontSize: 13, color: Color(0xff636878)),
                           )
                         : Text(
-                            '${community.categories?[0]?.name ?? ""} • ${community.membersCount} members',
+                            '${community.categories?[0]?.name ?? ""} • ${community.membersCount} ${community.membersCount == 1 ? "member" : "members"}',
                             style: const TextStyle(
                                 fontSize: 13, color: Color(0xff636878)),
                           ),

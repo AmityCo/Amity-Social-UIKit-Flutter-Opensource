@@ -92,12 +92,19 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                           //create post in Community
                           await vm.createPost(context,
                               communityId: widget.community?.communityId!,
-                              callback: (isSuccess, error) {
+                              callback: (isSuccess, error) async {
                             if (isSuccess) {
+                              if (widget.community!.isPostReviewEnabled!) {
+                                await AmityDialog().showAlertErrorDialog(
+                                    title: "Post submitted",
+                                    message:
+                                        "Your post has been submitted to the pending list. it will be reviewed by community moderator");
+                              }
                               Navigator.of(context).pop();
                               if (widget.isFromPostToPage) {
                                 Navigator.of(context).pop();
                               }
+
                               // Navigator.of(context).push(MaterialPageRoute(
                               //     builder: (context) => ChangeNotifierProvider(
                               //           create: (context) => CommuFeedVM(),

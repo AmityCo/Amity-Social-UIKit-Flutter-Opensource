@@ -146,7 +146,6 @@ class CommunityScreenState extends State<CommunityScreen> {
           stream: widget.community.listen.stream,
           initialData: widget.community,
           builder: (context, snapshot) {
-            var memberCount = snapshot.data!.membersCount!;
             var feedWidget = FadedSlideAnimation(
               beginOffset: const Offset(0, 0.3),
               endOffset: const Offset(0, 0),

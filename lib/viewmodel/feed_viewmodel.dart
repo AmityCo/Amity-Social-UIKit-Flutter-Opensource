@@ -38,35 +38,68 @@ class FeedVM extends ChangeNotifier {
     });
   }
 
-  Future<void> initAmityGlobalfeed() async {
-    _controllerGlobal = PagingController(
-      pageFuture: (token) => AmitySocialClient.newFeedRepository()
-          .getGlobalFeed()
-          .getPagingData(token: token, limit: 5),
-      pageSize: 5,
-    )..addListener(
-        () async {
-          log("initAmityGlobalfeed listener...");
-          if (_controllerGlobal?.error == null) {
-            _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
-            for (var post in _amityGlobalFeedPosts) {
-              if (post.latestComments != null) {
-                for (var comment in post.latestComments!) {
-                  print(comment.userId);
-                  print(comment.myReactions);
+  Future<void> initAmityGlobalfeed({bool isCustomPostRanking = false}) async {
+    if (isCustomPostRanking) {
+      _controllerGlobal = PagingController(
+        pageFuture: (token) => AmitySocialClient.newFeedRepository()
+            .getCustomRankingGlobalFeed()
+            .getPagingData(token: token, limit: 5),
+        pageSize: 5,
+      )..addListener(
+          () async {
+            log("initAmityGlobalfeed listener...");
+            if (_controllerGlobal?.error == null) {
+              _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
+              for (var post in _amityGlobalFeedPosts) {
+                if (post.latestComments != null) {
+                  for (var comment in post.latestComments!) {
+                    print(comment.userId);
+                    print(comment.myReactions);
+                  }
                 }
               }
-            }
-            notifyListeners();
-          } else {
-            //Error on pagination controller
+              notifyListeners();
+            } else {
+              //Error on pagination controller
 
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: _controllerGlobal!.error.toString());
-          }
-        },
-      );
+              log("error");
+              await AmityDialog().showAlertErrorDialog(
+                  title: "Error!",
+                  message: _controllerGlobal!.error.toString());
+            }
+          },
+        );
+    } else {
+      _controllerGlobal = PagingController(
+        pageFuture: (token) => AmitySocialClient.newFeedRepository()
+            .getCustomRankingGlobalFeed()
+            .getPagingData(token: token, limit: 5),
+        pageSize: 5,
+      )..addListener(
+          () async {
+            log("initAmityGlobalfeed listener...");
+            if (_controllerGlobal?.error == null) {
+              _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
+              for (var post in _amityGlobalFeedPosts) {
+                if (post.latestComments != null) {
+                  for (var comment in post.latestComments!) {
+                    print(comment.userId);
+                    print(comment.myReactions);
+                  }
+                }
+              }
+              notifyListeners();
+            } else {
+              //Error on pagination controller
+
+              log("error");
+              await AmityDialog().showAlertErrorDialog(
+                  title: "Error!",
+                  message: _controllerGlobal!.error.toString());
+            }
+          },
+        );
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controllerGlobal?.fetchNextPage();

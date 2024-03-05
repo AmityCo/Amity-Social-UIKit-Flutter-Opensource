@@ -239,7 +239,8 @@ class RecommendationSection extends StatelessWidget {
                                   height: 4,
                                 ),
                                 Text(
-                                  '${community.membersCount} Members',
+                                  '${community.membersCount} ${community.membersCount == 1 ? 'Member' : 'Members'}',
+
                                   style:
                                       const TextStyle(color: Color(0xff636878)),
                                   overflow: TextOverflow

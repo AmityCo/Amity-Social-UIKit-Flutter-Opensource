@@ -59,21 +59,23 @@ class PostMedia extends StatelessWidget {
                         ),
                       ),
                     ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () {
-                    log("delete file...");
-                    log("delete file...");
-                    Provider.of<CreatePostVMV2>(context, listen: false)
-                        .deselectFile(
-                            Provider.of<CreatePostVMV2>(context, listen: false)
-                                .files[index]);
-                  },
-                ),
-              ),
+              !isEditPost
+                  ? const SizedBox()
+                  : Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white),
+                        onPressed: () {
+                          log("delete file...");
+                          log("delete file...");
+                          Provider.of<CreatePostVMV2>(context, listen: false)
+                              .deselectFile(Provider.of<CreatePostVMV2>(context,
+                                      listen: false)
+                                  .files[index]);
+                        },
+                      ),
+                    ),
             ],
           ),
         );

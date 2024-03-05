@@ -111,6 +111,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                                         widget.community!.communityId!,
                                         AmityFeedType.REVIEWING);
                               }
+
                               // Navigator.of(context).push(MaterialPageRoute(
                               //     builder: (context) => ChangeNotifierProvider(
                               //           create: (context) => CommuFeedVM(),

@@ -141,7 +141,7 @@ class CommunityScreenState extends State<CommunityScreen> {
     //final mediaQuery = MediaQuery.of(context);
     //final bHeight = mediaQuery.size.height - mediaQuery.padding.top;
 
-    return Consumer<CommuFeedVM>(builder: (__, vm, _) {
+    return Consumer2<CommuFeedVM, CompoentSizeVM>(builder: (__, vm, sizeVM, _) {
       return StreamBuilder<AmityCommunity>(
           stream: widget.community.listen.stream,
           initialData: widget.community,
@@ -251,8 +251,7 @@ class CommunityScreenState extends State<CommunityScreen> {
                           return <Widget>[
                             SliverAppBar(
                               expandedHeight:
-                                  Provider.of<CompoentSizeVM>(context)
-                                      .getCommunityDetailSectionSize(),
+                                  sizeVM.getCommunityDetailSectionSize(),
                               shadowColor: Colors.white,
                               elevation: 0,
                               surfaceTintColor: Colors.transparent,
@@ -274,7 +273,7 @@ class CommunityScreenState extends State<CommunityScreen> {
                               ),
                               actions: [
                                 // Text(
-                                //     "${Provider.of<CompoentSizeVM>(context).getCommunityDetailSectionSize()}"),
+                                //     "${sizeVM.getCommunityDetailSectionSize()}"),
                                 IconButton(
                                     onPressed: () {
                                       Navigator.of(context).push(
@@ -733,11 +732,15 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
               !widget.community.isJoined!
                   ? const SizedBox()
                   : !widget.community.isPostReviewEnabled!
-                      ? const SizedBox()
+                      ? const SizedBox(
+                          height: 60,
+                        )
                       : Provider.of<CommuFeedVM>(context)
                               .getCommunityPendingPosts()
                               .isEmpty
-                          ? const SizedBox()
+                          ? const SizedBox(
+                              height: 60,
+                            )
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

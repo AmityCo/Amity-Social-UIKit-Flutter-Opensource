@@ -74,9 +74,9 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                                   builder: (context) => ChangeNotifierProvider(
                                       create: (context) => UserFeedVM(),
                                       child: UserProfileScreen(
-                                        amityUser: snapshot.data!.targetUser!,
+                                        amityUser: snapshot.data!.targetUser,
                                         amityUserId:
-                                            snapshot.data!.targetUser!.userId!,
+                                            snapshot.data!.targetUserId!,
                                       ))));
                             },
                             child: getAvatarImage(vm

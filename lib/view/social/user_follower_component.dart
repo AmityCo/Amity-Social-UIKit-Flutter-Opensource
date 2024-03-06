@@ -92,23 +92,18 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                                     children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ChangeNotifierProvider(
-                                                          create: (context) =>
-                                                              UserFeedVM(),
-                                                          child:
-                                                              UserProfileScreen(
-                                                            amityUser: snapshot
-                                                                .data!
-                                                                .targetUser!,
-                                                            amityUserId:
-                                                                snapshot
-                                                                    .data!
-                                                                    .targetUser!
-                                                                    .userId!,
-                                                          ))));
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ChangeNotifierProvider(
+                                                      create: (context) =>
+                                                          UserFeedVM(),
+                                                      child: UserProfileScreen(
+                                                          amityUser: snapshot
+                                                              .data!
+                                                              .sourceUser!,
+                                                          amityUserId: snapshot
+                                                              .data!
+                                                              .sourceUserId!))));
                                         },
                                         child: getAvatarImage(vm
                                             .getFollowerList[index]

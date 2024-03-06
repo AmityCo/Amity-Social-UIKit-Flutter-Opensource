@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/view/social/post_content_widget.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -693,14 +694,17 @@ class _CommentComponentState extends State<CommentComponent> {
                                 },
                                 child: GestureDetector(
                                     onTap: () async {
-                                      await Navigator.of(context).push(
+                                      Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  UserProfileScreen(
-                                                      amityUserId:
-                                                          comments.userId!,
-                                                      amityUser:
-                                                          comments.user!)));
+                                                  ChangeNotifierProvider(
+                                                      create: (context) =>
+                                                          UserFeedVM(),
+                                                      child: UserProfileScreen(
+                                                          amityUserId:
+                                                              comments.userId!,
+                                                          amityUser: comments
+                                                              .user!))));
                                     },
                                     child: getAvatarImage(
                                         comments.user!.avatarUrl)),
@@ -1221,12 +1225,13 @@ class ReplyCommentComponent extends StatelessWidget {
                             },
                             child: GestureDetector(
                                 onTap: () async {
-                                  await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              UserProfileScreen(
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          ChangeNotifierProvider(
+                                              create: (context) => UserFeedVM(),
+                                              child: UserProfileScreen(
                                                   amityUserId: comment.userId!,
-                                                  amityUser: comment.user!)));
+                                                  amityUser: comment.user!))));
                                 },
                                 child: getAvatarImage(comment.user!.avatarUrl)),
                           ),

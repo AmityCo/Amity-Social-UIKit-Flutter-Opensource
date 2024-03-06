@@ -9,8 +9,10 @@ import '../utils/navigation_key.dart';
 class AmityDialog {
   var isShowDialog = true;
 
-  Future<void> showAlertErrorDialog(
-      {required String title, required String message}) async {
+  Future<void> showAlertErrorDialog({
+    required String title,
+    required String message,
+  }) async {
     bool isBarrierDismissible() {
       return title.toLowerCase().contains("error");
     }
@@ -19,24 +21,47 @@ class AmityDialog {
       final BuildContext? context =
           NavigationService.navigatorKey.currentContext;
       if (context != null) {
-        await showCupertinoDialog(
-          barrierDismissible: isBarrierDismissible(),
-          context: context,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text(title),
-              content: Text(message),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        if (Platform.isIOS) {
+          // Use CupertinoAlertDialog for iOS
+          await showCupertinoDialog(
+            barrierDismissible: isBarrierDismissible(),
+            context: context,
+            builder: (BuildContext context) {
+              return CupertinoAlertDialog(
+                title: Text(title),
+                content: Text(message),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          // Use AlertDialog for Android and other platforms
+          await showDialog(
+            barrierDismissible: isBarrierDismissible(),
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(title),
+                content: Text(message),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
       }
     }
   }

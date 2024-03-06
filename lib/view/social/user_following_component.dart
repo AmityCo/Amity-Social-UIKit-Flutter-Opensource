@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/bottom_sheet.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
+import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:animation_wrappers/animations/faded_slide_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -69,14 +70,14 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                      builder: (context) => UserProfileScreen(
-                                            amityUser:
-                                                snapshot.data!.targetUser!,
-                                            amityUserId: snapshot
-                                                .data!.targetUser!.userId!,
-                                          )));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                      create: (context) => UserFeedVM(),
+                                      child: UserProfileScreen(
+                                        amityUser: snapshot.data!.targetUser!,
+                                        amityUserId:
+                                            snapshot.data!.targetUser!.userId!,
+                                      ))));
                             },
                             child: getAvatarImage(vm
                                 .getFollowingList[index].targetUser!.avatarUrl),

@@ -58,6 +58,15 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                   initialData: vm.getFollowingList[index],
                   builder: (context, snapshot) {
                     return ListTile(
+                      onTap: () async {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider(
+                                create: (context) => UserFeedVM(),
+                                child: UserProfileScreen(
+                                  amityUser: snapshot.data!.targetUser,
+                                  amityUserId: snapshot.data!.targetUserId!,
+                                ))));
+                      },
                       trailing: GestureDetector(
                           onTap: () {
                             showOptionsBottomSheet(
@@ -69,16 +78,6 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                       title: Row(
                         children: [
                           GestureDetector(
-                            onTap: () async {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ChangeNotifierProvider(
-                                      create: (context) => UserFeedVM(),
-                                      child: UserProfileScreen(
-                                        amityUser: snapshot.data!.targetUser,
-                                        amityUserId:
-                                            snapshot.data!.targetUserId!,
-                                      ))));
-                            },
                             child: getAvatarImage(vm
                                 .getFollowingList[index].targetUser!.avatarUrl),
                           ),

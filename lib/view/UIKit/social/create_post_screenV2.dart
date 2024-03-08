@@ -99,7 +99,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                                 await AmityDialog().showAlertErrorDialog(
                                     title: "Post submitted",
                                     message:
-                                        "Your post has been submitted to the pending list. it will be reviewed by community moderator");
+                                        "Your post has been submitted to the pending list. It will be reviewed by community moderator");
                               }
                               Navigator.of(context).pop();
                               if (widget.isFromPostToPage) {

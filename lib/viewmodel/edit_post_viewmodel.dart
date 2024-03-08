@@ -15,7 +15,7 @@ class EditPostVM extends CreatePostVMV2 {
     editPostMedie.clear();
 
     var textdata = post.data as TextData;
-    textEditingController.text = textdata.text!;
+    textEditingController.text = textdata.text ?? "";
     var children = post.children;
     if (children != null) {
       print(children.length);
@@ -46,8 +46,8 @@ class EditPostVM extends CreatePostVMV2 {
         }
       }
     }
-    print((post.data as TextData).text!);
-    textEditingController.text = (post.data as TextData).text!;
+
+    textEditingController.text = (post.data as TextData).text ?? "";
   }
 
   Future<void> editPost(

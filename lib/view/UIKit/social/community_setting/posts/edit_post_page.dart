@@ -103,7 +103,6 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                             border: InputBorder.none,
                             hintText: "Write something to post",
                           ),
-                          // style: t/1heme.textTheme.bodyText1.copyWith(color: Colors.grey),
                         ),
                         Consumer<EditPostVM>(
                           builder: (context, vm, _) => PostMedia(

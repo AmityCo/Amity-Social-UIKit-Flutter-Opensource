@@ -39,6 +39,7 @@ class FeedVM extends ChangeNotifier {
   }
 
   Future<void> initAmityGlobalfeed({bool isCustomPostRanking = false}) async {
+    print("isCustomPostRanking:$isCustomPostRanking");
     if (isCustomPostRanking) {
       _controllerGlobal = PagingController(
         pageFuture: (token) => AmitySocialClient.newFeedRepository()
@@ -47,7 +48,7 @@ class FeedVM extends ChangeNotifier {
         pageSize: 5,
       )..addListener(
           () async {
-            log("initAmityGlobalfeed listener...");
+            log("getCustomRankingGlobalFeed listener...");
             if (_controllerGlobal?.error == null) {
               _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
               for (var post in _amityGlobalFeedPosts) {
@@ -72,7 +73,7 @@ class FeedVM extends ChangeNotifier {
     } else {
       _controllerGlobal = PagingController(
         pageFuture: (token) => AmitySocialClient.newFeedRepository()
-            .getCustomRankingGlobalFeed()
+            .getGlobalFeed()
             .getPagingData(token: token, limit: 5),
         pageSize: 5,
       )..addListener(

@@ -26,8 +26,12 @@ import 'community_feed.dart';
 import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
-  final isShowMyCommunity;
-  const GlobalFeedScreen({super.key, this.isShowMyCommunity = true});
+  final bool isShowMyCommunity;
+  final bool isCustomPostRanking;
+  const GlobalFeedScreen(
+      {super.key,
+      this.isShowMyCommunity = true,
+      this.isCustomPostRanking = false});
 
   @override
   GlobalFeedScreenState createState() => GlobalFeedScreenState();
@@ -47,7 +51,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
     myCommunityList.initMyCommunity();
 
-    globalFeedProvider.initAmityGlobalfeed();
+    globalFeedProvider.initAmityGlobalfeed(
+        isCustomPostRanking: widget.isCustomPostRanking);
   }
 
   @override
@@ -62,7 +67,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
       return RefreshIndicator(
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onRefresh: () async {
-          await vm.initAmityGlobalfeed();
+          await vm.initAmityGlobalfeed(
+              isCustomPostRanking: widget.isCustomPostRanking);
         },
         child: Column(
           children: [
@@ -99,6 +105,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                                           )
                                         : const SizedBox(),
                                 PostWidget(
+                                  customPostRanking: widget.isCustomPostRanking,
                                   feedType: FeedType.global,
                                   showCommunity: true,
                                   showlatestComment: true,
@@ -134,8 +141,10 @@ class PostWidget extends StatefulWidget {
       required this.showlatestComment,
       required this.feedType,
       required this.showCommunity,
-      this.showAcceptOrRejectButton = false})
+      this.showAcceptOrRejectButton = false,
+      this.customPostRanking = false})
       : super(key: key);
+  final bool customPostRanking;
   final FeedType feedType;
   final AmityPost post;
   final ThemeData theme;
@@ -170,7 +179,7 @@ class _PostWidgetState extends State<PostWidget>
     );
   }
 
-  Widget postOptions(BuildContext context) {
+  Widget postOptions(BuildContext context, bool isCustomPostRanking) {
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
@@ -260,8 +269,8 @@ class _PostWidgetState extends State<PostWidget>
             Provider.of<UserVM>(context, listen: false)
                 .blockUser(widget.post.postedUserId!, () {
               if (widget.feedType == FeedType.global) {
-                Provider.of<FeedVM>(context, listen: false)
-                    .initAmityGlobalfeed();
+                Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed(
+                    isCustomPostRanking: isCustomPostRanking);
               } else if (widget.feedType == FeedType.community) {
                 Provider.of<CommuFeedVM>(context, listen: false)
                     .initAmityCommunityFeed(
@@ -473,7 +482,8 @@ class _PostWidgetState extends State<PostWidget>
                                   //   color: ApplicationColors.grey,
                                   // ),
                                   // SizedBox(width: iconSize.feedIconSize),
-                                  postOptions(context),
+                                  postOptions(
+                                      context, widget.customPostRanking),
                                 ],
                               ),
                       ),

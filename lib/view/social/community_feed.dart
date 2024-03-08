@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:intrinsic_dimension/intrinsic_dimension.dart';
@@ -356,6 +357,11 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                         setState(() {
                           widget.community.isJoined =
                               !(widget.community.isJoined!);
+                          var explorePageVM = Provider.of<ExplorePageVM>(
+                              context,
+                              listen: false);
+                          explorePageVM.getRecommendedCommunities();
+                          explorePageVM.getTrendingCommunities();
                         });
                       }).onError((error, stackTrace) {
                         //handle error
@@ -368,6 +374,11 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                         setState(() {
                           widget.community.isJoined =
                               !(widget.community.isJoined!);
+                          var explorePageVM = Provider.of<ExplorePageVM>(
+                              context,
+                              listen: false);
+                          explorePageVM.getRecommendedCommunities();
+                          explorePageVM.getTrendingCommunities();
                         });
                       }).onError((error, stackTrace) {
                         log(error.toString());

@@ -143,7 +143,7 @@ class CommunityWidget extends StatelessWidget {
                   const SizedBox(width: 4.0),
                   Expanded(
                     child: Text(
-                      communityStream.displayName ?? "Community",
+                      communityStream.displayName ?? "Community ",
                       style: const TextStyle(overflow: TextOverflow.ellipsis),
                     ),
                   ),

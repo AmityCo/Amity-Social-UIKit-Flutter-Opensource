@@ -147,6 +147,14 @@ class CommunityWidget extends StatelessWidget {
                       style: const TextStyle(overflow: TextOverflow.ellipsis),
                     ),
                   ),
+                  communityStream.isOfficial!
+                      ? Provider.of<AmityUIConfiguration>(context)
+                          .iconConfig
+                          .officialIcon(
+                              iconSize: 17,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .primaryColor)
+                      : const SizedBox(),
                 ],
               ),
               onTap: () {

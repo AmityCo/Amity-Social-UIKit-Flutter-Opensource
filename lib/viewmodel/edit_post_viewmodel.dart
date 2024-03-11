@@ -44,6 +44,19 @@ class EditPostVM extends CreatePostVMV2 {
               file: File(""));
           editPostMedie.add(uikitFile);
         }
+      } else if (children[0].type == AmityDataType.FILE) {
+        var fileData = children[0].data as FileData;
+        var fileName = fileData.fileInfo.fileName!;
+        editPostMedie = [];
+        for (var child in children) {
+          var uikitFile = UIKitFileSystem(
+              postDataForEditMedie: child.data,
+              status: FileStatus.complete,
+              progress: -1,
+              fileType: MyFileType.file,
+              file: File(fileName));
+          editPostMedie.add(uikitFile);
+        }
       }
     }
 

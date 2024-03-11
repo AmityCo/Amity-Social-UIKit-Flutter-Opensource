@@ -9,7 +9,6 @@ import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
-import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:intrinsic_dimension/intrinsic_dimension.dart';
 import 'package:provider/provider.dart';
@@ -147,48 +146,42 @@ class CommunityScreenState extends State<CommunityScreen> {
           stream: widget.community.listen.stream,
           initialData: widget.community,
           builder: (context, snapshot) {
-            var feedWidget = FadedSlideAnimation(
-              beginOffset: const Offset(0, 0.3),
-              endOffset: const Offset(0, 0),
-              slideCurve: Curves.linearToEaseOut,
-              child: Container(
-                color: Colors.grey[200],
-                child: RefreshIndicator(
-                  color:
-                      Provider.of<AmityUIConfiguration>(context).primaryColor,
-                  onRefresh: () async {
-                    // Call your method to refresh the list here.
-                    // For example, you might want to refresh the community feed.
-                    await Provider.of<CommuFeedVM>(context, listen: false)
-                        .initAmityCommunityFeed(widget.community.communityId!);
-                    await Provider.of<CommuFeedVM>(context, listen: false)
-                        .initAmityPendingCommunityFeed(
-                            widget.community.communityId!,
-                            AmityFeedType.REVIEWING);
+            var feedWidget = Container(
+              color: Colors.grey[200],
+              child: RefreshIndicator(
+                color: Provider.of<AmityUIConfiguration>(context).primaryColor,
+                onRefresh: () async {
+                  // Call your method to refresh the list here.
+                  // For example, you might want to refresh the community feed.
+                  await Provider.of<CommuFeedVM>(context, listen: false)
+                      .initAmityCommunityFeed(widget.community.communityId!);
+                  await Provider.of<CommuFeedVM>(context, listen: false)
+                      .initAmityPendingCommunityFeed(
+                          widget.community.communityId!,
+                          AmityFeedType.REVIEWING);
+                },
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(top: 0),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: vm.getCommunityPosts().length,
+                  itemBuilder: (context, index) {
+                    return StreamBuilder<AmityPost>(
+                        key: Key(vm.getCommunityPosts()[index].postId!),
+                        stream: vm.getCommunityPosts()[index].listen.stream,
+                        initialData: vm.getCommunityPosts()[index],
+                        builder: (context, snapshot) {
+                          return PostWidget(
+                            showCommunity: false,
+                            showlatestComment: true,
+                            isFromFeed: true,
+                            post: snapshot.data!,
+                            theme: theme,
+                            postIndex: index,
+                            feedType: FeedType.community,
+                          );
+                        });
                   },
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(top: 0),
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: vm.getCommunityPosts().length,
-                    itemBuilder: (context, index) {
-                      return StreamBuilder<AmityPost>(
-                          key: Key(vm.getCommunityPosts()[index].postId!),
-                          stream: vm.getCommunityPosts()[index].listen.stream,
-                          initialData: vm.getCommunityPosts()[index],
-                          builder: (context, snapshot) {
-                            return PostWidget(
-                              showCommunity: false,
-                              showlatestComment: true,
-                              isFromFeed: true,
-                              post: snapshot.data!,
-                              theme: theme,
-                              postIndex: index,
-                              feedType: FeedType.community,
-                            );
-                          });
-                    },
-                  ),
                 ),
               ),
             );

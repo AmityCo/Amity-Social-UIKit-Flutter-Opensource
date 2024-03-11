@@ -427,39 +427,47 @@ class _PostWidgetState extends State<PostWidget>
                                     },
                                     child: Row(
                                       children: [
-                                        Text(
-                                          (widget.post.target
-                                                      as CommunityTarget)
-                                                  .targetCommunity!
-                                                  .displayName ??
-                                              "Community name",
-                                          style: widget
-                                              .theme.textTheme.bodyLarge!
-                                              .copyWith(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                (widget.post.target
+                                                            as CommunityTarget)
+                                                        .targetCommunity!
+                                                        .displayName ??
+                                                    "Community name",
+                                                style: widget
+                                                    .theme.textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 16),
+                                              ),
+                                              (widget.post.target
+                                                          as CommunityTarget)
+                                                      .targetCommunity!
+                                                      .isOfficial!
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 7.0),
+                                                      child: Provider.of<
+                                                                  AmityUIConfiguration>(
+                                                              context)
+                                                          .iconConfig
+                                                          .officialIcon(
+                                                              iconSize: 17,
+                                                              color: Provider.of<
+                                                                          AmityUIConfiguration>(
+                                                                      context)
+                                                                  .primaryColor),
+                                                    )
+                                                  : const SizedBox(),
+                                            ],
+                                          ),
                                         ),
-                                        (widget.post.target as CommunityTarget)
-                                                .targetCommunity!
-                                                .isOfficial!
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 7.0),
-                                                child: Provider.of<
-                                                            AmityUIConfiguration>(
-                                                        context)
-                                                    .iconConfig
-                                                    .officialIcon(
-                                                        iconSize: 17,
-                                                        color: Provider.of<
-                                                                    AmityUIConfiguration>(
-                                                                context)
-                                                            .primaryColor),
-                                              )
-                                            : const SizedBox(),
-                                        const Expanded(child: SizedBox())
                                       ],
                                     ),
                                   )

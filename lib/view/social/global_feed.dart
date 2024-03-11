@@ -444,7 +444,7 @@ class _PostWidgetState extends State<PostWidget>
                                 ? (widget.post.target as CommunityTarget)
                                         .targetCommunity!
                                         .isOfficial!
-                                    ? Padding(
+                                    ? Container(
                                         padding:
                                             const EdgeInsets.only(left: 7.0),
                                         child: Provider.of<

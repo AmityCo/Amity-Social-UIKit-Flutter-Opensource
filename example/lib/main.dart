@@ -6,11 +6,9 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
+import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
-// import 'package:amity_uikit_beta_service_example/firebase_options.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,9 +26,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+          // textTheme: GoogleFonts.almendraDisplayTextTheme(),
+          ),
       title: 'Flutter Demo',
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
@@ -274,7 +275,7 @@ class SecondPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ThirdPage(username: username),
+                    builder: (context) => SocialPage(username: username),
                   ),
                 );
               },
@@ -282,8 +283,11 @@ class SecondPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.of(context).pushNamed('/third',
-                //     arguments: {'username': username, 'feature': 'Chat'});
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(username: username),
+                  ),
+                );
               },
               child: const Text('Chat'),
             ),
@@ -294,8 +298,8 @@ class SecondPage extends StatelessWidget {
   }
 }
 
-class ThirdPage extends StatelessWidget {
-  const ThirdPage({super.key, required this.username});
+class SocialPage extends StatelessWidget {
+  const SocialPage({super.key, required this.username});
   final String username;
 
   @override
@@ -310,108 +314,7 @@ class ThirdPage extends StatelessWidget {
           children: [
             ListTile(
               title: const Text('Register push notification'),
-              onTap: () async {
-                // FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-                // NotificationSettings settings =
-                //     await messaging.requestPermission();
-
-                // if (settings.authorizationStatus ==
-                //         AuthorizationStatus.authorized ||
-                //     settings.authorizationStatus ==
-                //         AuthorizationStatus.provisional) {
-                //   String? token;
-                //   String tokenType = Platform.isIOS ? "APNS" : "FCM";
-
-                //   if (Platform.isIOS) {
-                //     log("getting token");
-                //     token =
-                //         await messaging.getAPNSToken().catchError((e) async {
-                //       await showDialog(
-                //         context: context,
-                //         builder: (BuildContext context) {
-                //           return AlertDialog(
-                //             title: const Text('Error'),
-                //             content: Text(e),
-                //           );
-                //         },
-                //       );
-                //       return e;
-                //     });
-                //     log("apns Token : $token");
-                //   } else {
-                //     token = await messaging.getToken();
-                //     log("getting 3token");
-                //     token =
-                //         await messaging.getAPNSToken().catchError((e) async {
-                //       await showDialog(
-                //         context: context,
-                //         builder: (BuildContext context) {
-                //           return AlertDialog(
-                //             title: const Text('Error'),
-                //             content: Text(e),
-                //           );
-                //         },
-                //       );
-                //       return e;
-                //     });
-                //     log("android token Token : $token");
-                //   }
-
-                //   log('Firebase Push Token ($tokenType): $token');
-                //   await AmitySLEUIKit().registerNotification(token,
-                //       (isSuccess, error) async {
-                //     await showDialog(
-                //       context: context,
-                //       builder: (BuildContext context) {
-                //         return AlertDialog(
-                //           title: isSuccess
-                //               ? const Text('Success')
-                //               : const Text('Error'),
-                //           content: SingleChildScrollView(
-                //             child: ListBody(
-                //               children: <Widget>[
-                //                 Text(isSuccess
-                //                     ? 'Push notification registered successfully.\nToken Type: $tokenType\nToken: $token'
-                //                     : 'Failed to register push notification.\nError: $error'),
-                //                 if (isSuccess)
-                //                   ElevatedButton(
-                //                     onPressed: () {
-                //                       Clipboard.setData(ClipboardData(
-                //                           text: token ?? "no token"));
-                //                     },
-                //                     child: const Text('Copy Token'),
-                //                   ),
-                //               ],
-                //             ),
-                //           ),
-                //           actions: <Widget>[
-                //             TextButton(
-                //                 child: const Text('Close'),
-                //                 onPressed: () {
-                //                   Navigator.of(context).pop();
-                //                 }),
-                //           ],
-                //         );
-                //       },
-                //     );
-                //   });
-                // } else {
-                //   log('Push notification permission was declined');
-
-                //   // ignore: use_build_context_synchronously
-                //   showDialog(
-                //     context: context,
-                //     builder: (BuildContext context) {
-                //       return const AlertDialog(
-                //         title: Text('Error'),
-                //         content:
-                //             Text('Push notification permission was declined'),
-                //       );
-                //     },
-                //   );
-                // }
-              },
+              onTap: () async {},
             ),
             ListTile(
               title: const Text('unregister'),
@@ -430,6 +333,18 @@ class ThirdPage extends StatelessWidget {
                 ));
               },
             ),
+            // ListTile(
+            //   title: const Text('Custom Post Ranking Feed'),
+            //   onTap: () {
+            //     // Navigate or perform action based on 'Global Feed' tap
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //       builder: (context) => const Scaffold(
+            //           body: GlobalFeedScreen(
+            //         isCustomPostRanking: true,
+            //       )),
+            //     ));
+            //   },
+            // ),
             ListTile(
               title: const Text('User Profile'),
               onTap: () {
@@ -481,6 +396,39 @@ class ThirdPage extends StatelessWidget {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const Scaffold(body: CommunityPage()),
+                ));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ChatPage extends StatelessWidget {
+  const ChatPage({super.key, required this.username});
+  final String username;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chat'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListTile(
+              title: const Text('Single Chat Room'),
+              onTap: () async {
+                // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const Scaffold(
+                      body: ChatRoomPage(
+                    channelId: "65e6d0765b88b140f2e505ae",
+                  )),
                 ));
               },
             ),

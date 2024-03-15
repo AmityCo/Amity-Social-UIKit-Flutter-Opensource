@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:amity_uikit_beta_service/components/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,35 +7,62 @@ import 'package:flutter/material.dart';
 import '../utils/navigation_key.dart';
 
 class AmityDialog {
-  var isshowDialog = true;
+  var isShowDialog = true;
 
-  Future<void> showAlertErrorDialog(
-      {required String title, required String message}) async {
-    bool isbarrierDismissible() {
-      if (title.toLowerCase().contains("error")) {
-        return true;
-      } else {
-        return false;
-      }
+  Future<void> showAlertErrorDialog({
+    required String title,
+    required String message,
+  }) async {
+    bool isBarrierDismissible() {
+      return title.toLowerCase().contains("error");
     }
 
-    if (isshowDialog) {
-      await showDialog(
-        barrierDismissible: isbarrierDismissible(),
-        context: NavigationService.navigatorKey.currentContext!,
-        builder: (context) => AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ),
-      );
+    if (isShowDialog) {
+      final BuildContext? context =
+          NavigationService.navigatorKey.currentContext;
+      if (context != null) {
+        if (Platform.isIOS) {
+          // Use CupertinoAlertDialog for iOS
+          await showCupertinoDialog(
+            barrierDismissible: isBarrierDismissible(),
+            context: context,
+            builder: (BuildContext context) {
+              return CupertinoAlertDialog(
+                title: Text(title),
+                content: Text(message),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          // Use AlertDialog for Android and other platforms
+          await showDialog(
+            barrierDismissible: isBarrierDismissible(),
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(title),
+                content: Text(message),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
     }
   }
 }
@@ -142,34 +171,67 @@ class ConfirmationDialog {
     String rightButtonText = 'Confirm',
     required Function onConfirm,
   }) async {
-    return showCupertinoDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoTheme(
-          data: const CupertinoThemeData(brightness: Brightness.dark),
-          child: CupertinoAlertDialog(
+    // Check the platform
+    if (Platform.isAndroid) {
+      // Android-specific code
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
             title: Text(title),
             content: Text(detailText),
             actions: <Widget>[
-              CupertinoDialogAction(
+              TextButton(
                 child: Text(leftButtonText),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
               ),
-              CupertinoDialogAction(
-                textStyle: const TextStyle(color: Colors.red),
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   onConfirm();
                 },
-                isDefaultAction: true,
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.red, // Set the text color
+                ),
                 child: Text(rightButtonText),
               ),
             ],
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    } else if (Platform.isIOS) {
+      // iOS-specific code
+      return showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoTheme(
+            data: const CupertinoThemeData(brightness: Brightness.dark),
+            child: CupertinoAlertDialog(
+              title: Text(title),
+              content: Text(detailText),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text(leftButtonText),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                ),
+                CupertinoDialogAction(
+                  textStyle: const TextStyle(color: Colors.red),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onConfirm();
+                  },
+                  isDefaultAction: true,
+                  child: Text(rightButtonText),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 }

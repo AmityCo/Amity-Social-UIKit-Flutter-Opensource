@@ -1,7 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/social/user_follow_screen.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/view/user/user_setting.dart';
@@ -238,27 +237,25 @@ class UserProfileScreenState extends State<UserProfileScreen>
           //     onPressed: () => Navigator.of(context).pop(),
           //   ),
           // ),
-          floatingActionButton: widget.amityUserId !=
-                  AmityCoreClient.getCurrentUser().userId
-              ? null
-              : FloatingActionButton(
-                  shape: const CircleBorder(),
-                  onPressed: () async {
-                    // Navigate or perform action based on 'Newsfeed' tap
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const Scaffold(body: PostToPage()),
-                    ));
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AmityCreatePostV2Screen(),
-                    ));
-                    Provider.of<UserFeedVM>(context, listen: false)
-                        .initUserFeed(userId: widget.amityUserId);
-                  },
-                  backgroundColor: AmityUIConfiguration().primaryColor,
-                  child: Provider.of<AmityUIConfiguration>(context)
-                      .iconConfig
-                      .postIcon(iconSize: 28, color: Colors.white),
-                ),
+          floatingActionButton:
+              widget.amityUserId != AmityCoreClient.getCurrentUser().userId
+                  ? null
+                  : FloatingActionButton(
+                      shape: const CircleBorder(),
+                      onPressed: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AmityCreatePostV2Screen(
+                            amityUser: widget.amityUser,
+                          ),
+                        ));
+                        Provider.of<UserFeedVM>(context, listen: false)
+                            .initUserFeed(userId: widget.amityUserId);
+                      },
+                      backgroundColor: AmityUIConfiguration().primaryColor,
+                      child: Provider.of<AmityUIConfiguration>(context)
+                          .iconConfig
+                          .postIcon(iconSize: 28, color: Colors.white),
+                    ),
           backgroundColor: Colors.white,
           body: DefaultTabController(
             length: 2,
@@ -466,6 +463,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                             create: (context) =>
                                                                 FollowerVM(),
                                                             child: FollowScreen(
+                                                                followScreenType:
+                                                                    FollowScreenType
+                                                                        .following,
                                                                 key:
                                                                     UniqueKey(),
                                                                 userId: widget
@@ -484,6 +484,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                             create: (context) =>
                                                                 FollowerVM(),
                                                             child: FollowScreen(
+                                                                followScreenType:
+                                                                    FollowScreenType
+                                                                        .follower,
                                                                 key:
                                                                     UniqueKey(),
                                                                 userId: widget

@@ -33,11 +33,8 @@ class PostMedia extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: isEditPost
-                        ? getImageProvider(Provider.of<EditPostVM>(context)
-                            .editPostMedie[index]
-                            .postDataForEditMedie!
-                            .fileInfo
-                            .fileUrl)
+                        ? getImageProvider(
+                            "${Provider.of<EditPostVM>(context).editPostMedie[index].postDataForEditMedie!.fileInfo.fileUrl}?size=medium")
                         : Provider.of<CreatePostVMV2>(context, listen: false)
                             .getImageProvider(file.file.path),
                     fit: BoxFit.cover,
@@ -59,21 +56,23 @@ class PostMedia extends StatelessWidget {
                         ),
                       ),
                     ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () {
-                    log("delete file...");
-                    log("delete file...");
-                    Provider.of<CreatePostVMV2>(context, listen: false)
-                        .deselectFile(
-                            Provider.of<CreatePostVMV2>(context, listen: false)
-                                .files[index]);
-                  },
-                ),
-              ),
+              isEditPost
+                  ? const SizedBox()
+                  : Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white),
+                        onPressed: () {
+                          log("delete file...");
+                          log("delete file...");
+                          Provider.of<CreatePostVMV2>(context, listen: false)
+                              .deselectFile(Provider.of<CreatePostVMV2>(context,
+                                      listen: false)
+                                  .files[index]);
+                        },
+                      ),
+                    ),
             ],
           ),
         );
@@ -119,29 +118,27 @@ class PostMedia extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(child: backgroundImage(files[0], 0)),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: backgroundImage(files[1], 1),
-                        ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundImage(files[1], 1),
                       ),
-                      Expanded(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: backgroundImage(files[2], 2),
-                        ),
+                    ),
+                    Expanded(
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundImage(files[2], 2),
                       ),
-                      Expanded(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: backgroundImage(files[3], 3),
-                        ),
+                    ),
+                    Expanded(
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundImage(files[3], 3),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),

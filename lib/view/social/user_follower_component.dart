@@ -1,12 +1,12 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/bottom_sheet.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
+import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:animation_wrappers/animations/faded_slide_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
-import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/follower_following_viewmodel.dart';
 
 class AmityFollowerScreen extends StatefulWidget {
@@ -46,17 +46,17 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
             await vm.getFollowerListOf(userId: widget.userId);
           },
           child: vm.getFollowerList.isEmpty
-              ? Row(
+              ? const Row(
                   children: [
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(
-                            color: Provider.of<AmityUIConfiguration>(context)
-                                .primaryColor,
-                          )
+                          // CircularProgressIndicator(
+                          //   color: Provider.of<AmityUIConfiguration>(context)
+                          //       .primaryColor,
+                          // )
                         ],
                       ),
                     ),
@@ -78,6 +78,20 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                               initialData: vm.getFollowerList[index],
                               builder: (context, snapshot) {
                                 return ListTile(
+                                  onTap: () async {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ChangeNotifierProvider(
+                                                    create: (context) =>
+                                                        UserFeedVM(),
+                                                    child: UserProfileScreen(
+                                                        amityUser: snapshot
+                                                            .data!.sourceUser!,
+                                                        amityUserId: snapshot
+                                                            .data!
+                                                            .sourceUserId!))));
+                                  },
                                   trailing: GestureDetector(
                                       onTap: () {
                                         showOptionsBottomSheet(context,
@@ -91,22 +105,6 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                                   title: Row(
                                     children: [
                                       GestureDetector(
-                                        onTap: () async {
-                                          await Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      UserProfileScreen(
-                                                        amityUser: vm
-                                                            .getFollowerList[
-                                                                index]
-                                                            .sourceUser!,
-                                                        amityUserId: vm
-                                                            .getFollowerList[
-                                                                index]
-                                                            .sourceUser!
-                                                            .userId!,
-                                                      )));
-                                        },
                                         child: getAvatarImage(vm
                                             .getFollowerList[index]
                                             .sourceUser!

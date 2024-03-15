@@ -154,36 +154,41 @@ class CommunitySettingPage extends StatelessWidget {
                                   PostReviewPage(community: livecommunity)));
                         },
                       ),
-                ListTile(
-                  title: const Text(
-                    "Leave Community",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                        color: Colors.red),
-                  ),
-                  onTap: () async {
-                    await ConfirmationDialog().show(
-                        context: context,
-                        title: "Leave community",
-                        detailText:
-                            "You won't no longer be able to post and interact in this community after leaving.",
-                        onConfirm: () async {
-                          // Perform Leave Community action
-                          final communityVm =
-                              Provider.of<CommunityVM>(context, listen: false);
-                          communityVm.leaveCommunity(community.communityId!,
-                              callback: (bool isSuccess) {
-                            if (isSuccess) {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              Provider.of<MyCommunityVM>(context, listen: false)
-                                  .initMyCommunity();
-                            }
-                          });
-                        });
-                  },
-                ),
+                !community.isJoined!
+                    ? const SizedBox()
+                    : ListTile(
+                        title: const Text(
+                          "Leave Community",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: Colors.red),
+                        ),
+                        onTap: () async {
+                          await ConfirmationDialog().show(
+                              context: context,
+                              title: "Leave community",
+                              detailText:
+                                  "You won't no longer be able to post and interact in this community after leaving.",
+                              onConfirm: () async {
+                                // Perform Leave Community action
+                                final communityVm = Provider.of<CommunityVM>(
+                                    context,
+                                    listen: false);
+                                communityVm
+                                    .leaveCommunity(community.communityId!,
+                                        callback: (bool isSuccess) {
+                                  if (isSuccess) {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                    Provider.of<MyCommunityVM>(context,
+                                            listen: false)
+                                        .initMyCommunity();
+                                  }
+                                });
+                              });
+                        },
+                      ),
                 const Padding(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   child: Divider(

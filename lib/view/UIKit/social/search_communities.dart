@@ -3,6 +3,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dar
 import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
@@ -196,14 +197,24 @@ class CommunityWidget extends StatelessWidget {
                 children: [
                   if (!community.isPublic!) const Icon(Icons.lock, size: 16.0),
                   const SizedBox(width: 4.0),
-                  Expanded(
-                    child: Text(
-                      communityStream.displayName ?? "Community",
-                      style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.bold),
-                    ),
+                  Text(
+                    communityStream.displayName ?? "Community",
+                    style: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.bold),
                   ),
+                  community.isOfficial!
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 7.0),
+                          child: Provider.of<AmityUIConfiguration>(context)
+                              .iconConfig
+                              .officialIcon(
+                                  iconSize: 17,
+                                  color:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .primaryColor),
+                        )
+                      : const SizedBox(),
                 ],
               ),
               subtitle: Text(

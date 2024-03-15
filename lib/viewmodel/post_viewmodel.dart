@@ -20,10 +20,11 @@ class PostVM extends ChangeNotifier {
   void getPost(String postId, AmityPost initialPostData) {
     amityPost = initialPostData;
     AmitySocialClient.newPostRepository()
-        .getPost(postId)
-        .then((AmityPost post) {
-      amityPost = post;
-    }).onError<AmityException>((error, stackTrace) async {
+        .getPostStream(postId)
+        .stream
+        .listen((event) {
+      amityPost = event;
+    }).onError((error, stackTrace) async {
       log(error.toString());
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
@@ -131,7 +132,7 @@ class PostVM extends ChangeNotifier {
       print("delete commet success: $value");
       amityComments
           .removeWhere((element) => element.commentId == comment.commentId);
-
+      getPost(amityPost.postId!, amityPost);
       notifyListeners();
     }).onError((error, stackTrace) async {
       await AmityDialog()

@@ -44,12 +44,23 @@ class TimeAgoWidget extends StatelessWidget {
     DateTime localDate = date.toLocal();
     Duration difference = DateTime.now().difference(localDate);
 
-    if (difference.inDays > 0) {
-      return '${difference.inDays} days ago';
+    // Calculate the difference in weeks, months, and years
+    int weeks = (difference.inDays / 7).floor();
+    int months = (difference.inDays / 30).floor(); // Approximation
+    int years = (difference.inDays / 365).floor(); // Approximation
+
+    if (years > 0) {
+      return '$years year${years > 1 ? 's' : ''} ago';
+    } else if (months > 0) {
+      return '$months month${months > 1 ? 's' : ''} ago';
+    } else if (weeks > 0) {
+      return '$weeks week${weeks > 1 ? 's' : ''} ago';
+    } else if (difference.inDays > 0) {
+      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
     } else if (difference.inHours > 0) {
-      return '${difference.inHours} hours ago';
+      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minutes ago';
+      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
     } else {
       return 'Just now';
     }

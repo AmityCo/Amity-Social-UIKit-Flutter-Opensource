@@ -141,12 +141,19 @@ class CommunityWidget extends StatelessWidget {
                 children: [
                   if (!community.isPublic!) const Icon(Icons.lock, size: 16.0),
                   const SizedBox(width: 4.0),
-                  Expanded(
-                    child: Text(
-                      communityStream.displayName ?? "Community",
-                      style: const TextStyle(overflow: TextOverflow.ellipsis),
-                    ),
+                  Text(
+                    communityStream.displayName ?? "Community ",
+                    style: const TextStyle(overflow: TextOverflow.ellipsis),
                   ),
+                  const SizedBox(width: 4.0),
+                  communityStream.isOfficial!
+                      ? Provider.of<AmityUIConfiguration>(context)
+                          .iconConfig
+                          .officialIcon(
+                              iconSize: 17,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .primaryColor)
+                      : const SizedBox(),
                 ],
               ),
               onTap: () {
@@ -276,9 +283,19 @@ class CommunityIconWidget extends StatelessWidget {
                           : const SizedBox(),
                       Expanded(
                         child: Text(amityCommunity.displayName ?? "",
+                            textAlign: TextAlign.center,
                             style: const TextStyle(
                                 overflow: TextOverflow.ellipsis)),
                       ),
+                      amityCommunity.isOfficial!
+                          ? Provider.of<AmityUIConfiguration>(context)
+                              .iconConfig
+                              .officialIcon(
+                                  iconSize: 12,
+                                  color:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .primaryColor)
+                          : const SizedBox(),
                     ],
                   ),
                 ],

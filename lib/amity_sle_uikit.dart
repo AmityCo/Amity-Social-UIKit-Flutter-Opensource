@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
@@ -201,6 +202,7 @@ class AmitySLEProvider extends StatelessWidget {
             create: ((context) => MemberManagementVM())),
         ChangeNotifierProvider<MediaPickerVM>(
             create: ((context) => MediaPickerVM())),
+        ChangeNotifierProvider<ChatRoomVM>(create: ((context) => ChatRoomVM())),
       ],
       child: Builder(
         builder: (context) => MaterialApp(

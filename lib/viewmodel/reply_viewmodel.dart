@@ -44,12 +44,10 @@ class ReplyVM extends PostVM {
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;
     for (var comment in comments) {
       // Check if the comment ID does not exist in the amityReplyCommentsMap
-      if (comment.childrenNumber! > 0 &&
-          !amityReplyCommentsMap.containsKey(comment.commentId)) {
-        print("comment: ${comment.data}");
-        await listenForReplyComments(
-            postID: postId, commentId: comment.commentId!);
-      }
+
+      print("comment: ${comment.data}");
+      await listenForReplyComments(
+          postID: postId, commentId: comment.commentId!);
     }
   }
 
@@ -87,6 +85,11 @@ class ReplyVM extends PostVM {
         () async {
           if (_controllersMap[commentId]!.error == null) {
             var loadedItems = _controllersMap[commentId]!.loadedItems;
+            for (var item in loadedItems) {
+              print("XXXXXX: ${item.myReactions}");
+            }
+            print(
+                "XXXXXX-hasmore: ${_controllersMap[commentId]!.hasMoreItems}");
             // Append only new comments by checking against existing ones.
             var currentIds = amityComments.map((e) => e.commentId).toSet();
             var newItems = loadedItems
@@ -95,8 +98,8 @@ class ReplyVM extends PostVM {
             if (newItems.isNotEmpty) {
               amityComments.addAll(newItems);
               amityReplyCommentsMap[commentId] = amityComments;
-              notifyListeners();
             }
+            notifyListeners();
           } else {
             log("error");
             await AmityDialog().showAlertErrorDialog(
@@ -114,7 +117,11 @@ class ReplyVM extends PostVM {
 
   bool replyHaveNextPage(String commentId) {
     if (_controllersMap[commentId] != null) {
-      return _controllersMap[commentId]!.hasMoreItems;
+      if (_controllersMap[commentId]!.isFetching) {
+        return false;
+      } else {
+        return _controllersMap[commentId]!.hasMoreItems;
+      }
     } else {
       return false;
     }

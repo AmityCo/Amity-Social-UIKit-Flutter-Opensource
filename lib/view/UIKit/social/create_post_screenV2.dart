@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/post_cpmponent.dart';
+import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 // import 'package:amity_uikit_beta_service/viewmodel/create_post_viewmodel.dart';
@@ -11,11 +12,13 @@ import 'package:provider/provider.dart';
 
 class AmityCreatePostV2Screen extends StatefulWidget {
   final AmityCommunity? community;
-
-  const AmityCreatePostV2Screen({
-    super.key,
-    this.community,
-  });
+  final AmityUser? amityUser;
+  final bool isFromPostToPage;
+  const AmityCreatePostV2Screen(
+      {super.key,
+      this.community,
+      this.amityUser,
+      this.isFromPostToPage = false});
 
   @override
   State<AmityCreatePostV2Screen> createState() =>
@@ -36,7 +39,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Consumer<CreatePostVMV2>(builder: (context, vm, _) {
+    return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -81,17 +84,34 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                               callback: (isSuccess, error) {
                             if (isSuccess) {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pop();
+                              if (widget.isFromPostToPage) {
+                                Navigator.of(context).pop();
+                              }
                             } else {}
                           });
                         } else {
                           //create post in Community
                           await vm.createPost(context,
                               communityId: widget.community?.communityId!,
-                              callback: (isSuccess, error) {
+                              callback: (isSuccess, error) async {
                             if (isSuccess) {
+                              if (widget.community!.isPostReviewEnabled!) {
+                                await AmityDialog().showAlertErrorDialog(
+                                    title: "Post submitted",
+                                    message:
+                                        "Your post has been submitted to the pending list. It will be reviewed by community moderator");
+                              }
                               Navigator.of(context).pop();
-                              Navigator.of(context).pop();
+                              if (widget.isFromPostToPage) {
+                                Navigator.of(context).pop();
+                              }
+                              if (widget.community!.isPostReviewEnabled!) {
+                                Provider.of<CommuFeedVM>(context, listen: false)
+                                    .initAmityPendingCommunityFeed(
+                                        widget.community!.communityId!,
+                                        AmityFeedType.REVIEWING);
+                              }
+
                               // Navigator.of(context).push(MaterialPageRoute(
                               //     builder: (context) => ChangeNotifierProvider(
                               //           create: (context) => CommuFeedVM(),

@@ -233,8 +233,8 @@ class CommuFeedVM extends ChangeNotifier {
             //handle results, we suggest to clear the previous items
             //and add with the latest _controller.loadedItems
 
-            print(
-                ">>>>>${_controllerImageCommu.loadedItems[0].data!.fileInfo.fileUrl}");
+            // print(
+            //     ">>>>>${_controllerImageCommu.loadedItems[0].data!.fileInfo.fileUrl}");
             _amityCommunityImageFeedPosts.clear();
             _amityCommunityImageFeedPosts
                 .addAll(_controllerImageCommu.loadedItems);

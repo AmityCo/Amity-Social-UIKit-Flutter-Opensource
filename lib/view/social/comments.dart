@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/view/social/post_content_widget.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -693,14 +694,17 @@ class _CommentComponentState extends State<CommentComponent> {
                                 },
                                 child: GestureDetector(
                                     onTap: () async {
-                                      await Navigator.of(context).push(
+                                      Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  UserProfileScreen(
-                                                      amityUserId:
-                                                          comments.userId!,
-                                                      amityUser:
-                                                          comments.user!)));
+                                                  ChangeNotifierProvider(
+                                                      create: (context) =>
+                                                          UserFeedVM(),
+                                                      child: UserProfileScreen(
+                                                          amityUserId:
+                                                              comments.userId!,
+                                                          amityUser: comments
+                                                              .user!))));
                                     },
                                     child: getAvatarImage(
                                         comments.user!.avatarUrl)),
@@ -793,12 +797,16 @@ class _CommentComponentState extends State<CommentComponent> {
                                                       context)
                                                   .iconConfig
                                                   .likeIcon(iconSize: 16),
-                                              const Text(
-                                                " Like",
-                                                style: TextStyle(
-                                                    color: Color(0xff898E9E),
-                                                    fontSize: 15),
-                                              ),
+                                              snapshot.data!.reactionCount! > 0
+                                                  ? Text(
+                                                      " ${snapshot.data!.reactionCount!}")
+                                                  : const Text(
+                                                      " Like",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xff898E9E),
+                                                          fontSize: 15),
+                                                    ),
                                             ],
                                           )),
 
@@ -914,6 +922,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                                       onConfirm: () {
                                                         vm.deleteComment(
                                                             comments);
+
                                                         // AmitySuccessDialog
                                                         //     .showTimedDialog(
                                                         //         "Success",
@@ -1217,12 +1226,13 @@ class ReplyCommentComponent extends StatelessWidget {
                             },
                             child: GestureDetector(
                                 onTap: () async {
-                                  await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              UserProfileScreen(
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          ChangeNotifierProvider(
+                                              create: (context) => UserFeedVM(),
+                                              child: UserProfileScreen(
                                                   amityUserId: comment.userId!,
-                                                  amityUser: comment.user!)));
+                                                  amityUser: comment.user!))));
                                 },
                                 child: getAvatarImage(comment.user!.avatarUrl)),
                           ),
@@ -1254,6 +1264,7 @@ class ReplyCommentComponent extends StatelessWidget {
                           child: Row(
                             children: [
                               // Like Button
+
                               isLiked(snapshot)
                                   ? GestureDetector(
                                       onTap: () {
@@ -1284,13 +1295,15 @@ class ReplyCommentComponent extends StatelessWidget {
                                                   context)
                                               .iconConfig
                                               .likeIcon(iconSize: 16),
-                                          const Text(
-                                            " Like",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xff898E9E),
-                                                fontSize: 15),
-                                          ),
+                                          snapshot.data!.reactionCount! > 0
+                                              ? Text(
+                                                  " ${snapshot.data!.reactionCount!}")
+                                              : const Text(
+                                                  " Like",
+                                                  style: TextStyle(
+                                                      color: Color(0xff898E9E),
+                                                      fontSize: 15),
+                                                ),
                                         ],
                                       )),
 

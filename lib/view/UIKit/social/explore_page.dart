@@ -160,7 +160,7 @@ class RecommendationSection extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(left: 16, top: 20),
                 child: Text(
-                  'Recommendation for you',
+                  'Recommended for you',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -209,13 +209,30 @@ class RecommendationSection extends StatelessWidget {
                                             20, // Adjusted the radius to get 40x40 size
                                       ),
                                 const SizedBox(height: 8.0),
-                                Text(
-                                  community.displayName ?? '',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15),
-                                  overflow: TextOverflow
-                                      .ellipsis, // Handle text overflow
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "${community.displayName}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                        overflow: TextOverflow
+                                            .ellipsis, // Handle text overflow
+                                      ),
+                                    ),
+                                    community.isOfficial!
+                                        ? Provider.of<AmityUIConfiguration>(
+                                                context)
+                                            .iconConfig
+                                            .officialIcon(
+                                                iconSize: 17,
+                                                color: Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .primaryColor)
+                                        : const SizedBox(),
+                                  ],
                                 ),
                                 const SizedBox(
                                   height: 4,
@@ -239,7 +256,8 @@ class RecommendationSection extends StatelessWidget {
                                   height: 4,
                                 ),
                                 Text(
-                                  '${community.membersCount} Members',
+                                  '${community.membersCount} ${community.membersCount == 1 ? 'Member' : 'Members'}',
+
                                   style:
                                       const TextStyle(color: Color(0xff636878)),
                                   overflow: TextOverflow
@@ -339,20 +357,36 @@ class TrendingSection extends StatelessWidget {
                         // Spacing between rank and avatar
                       ],
                     ),
-                    title: Text(
-                      community.displayName ?? '',
-                      style: const TextStyle(
-                          color: Color(0xff292B32),
-                          fontWeight: FontWeight.bold),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "${community.displayName}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                            overflow:
+                                TextOverflow.ellipsis, // Handle text overflow
+                          ),
+                        ),
+                        community.isOfficial!
+                            ? Provider.of<AmityUIConfiguration>(context)
+                                .iconConfig
+                                .officialIcon(
+                                    iconSize: 17,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .primaryColor)
+                            : const SizedBox(),
+                      ],
                     ),
                     subtitle: community.categories!.isEmpty
                         ? Text(
-                            'no category • ${community.membersCount} members',
+                            'no category • ${community.membersCount} ${community.membersCount == 1 ? "member" : "members"}',
                             style: const TextStyle(
                                 fontSize: 13, color: Color(0xff636878)),
                           )
                         : Text(
-                            '${community.categories?[0]?.name ?? ""} • ${community.membersCount} members',
+                            '${community.categories?[0]?.name ?? ""} • ${community.membersCount} ${community.membersCount == 1 ? "member" : "members"}',
                             style: const TextStyle(
                                 fontSize: 13, color: Color(0xff636878)),
                           ),

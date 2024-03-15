@@ -238,11 +238,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                 borderRadius: BorderRadius.circular(8.0), // Add border radius
               ),
               child: _buildVideoGrid(widget.posts));
-        // return MyVideoPlayer2(
-        //     post: widget.posts[0],
-        //     url: videoUrl ?? "",
-        //     isInFeed: widget.isCornerRadiusEnabled,
-        //     isEnableVideoTools: false);
+
         case AmityDataType.FILE:
           return _listMediaGrid(widget.posts);
         default:
@@ -250,24 +246,6 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
       }
     }
   }
-
-  // Future<void> _playVideo(AmityPost post) async {
-  //   if (post.data is VideoData) {
-  //     var data = post.data as VideoData;
-  //     var video = await data.getVideo(AmityVideoQuality.MEDIUM);
-  //     var videoURL = video.fileUrl;
-  //     // Logic to play the video, e.g., navigate to a video player widget
-  //     log(videoURL);
-  //     Navigator.of(context).push(MaterialPageRoute(
-  //       builder: (_) => MyVideoPlayer2(
-  //         url: videoURL!,
-  //         post: post,
-  //         isInFeed: true, // set accordingly
-  //         isEnableVideoTools: true, // set accordingly
-  //       ),
-  //     ));
-  //   }
-  // }
 
   Widget _buildVideoGrid(List<AmityPost> files) {
     if (files.isEmpty) return Container();
@@ -279,7 +257,9 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VideoPlayerScreen(files: files),
+              builder: (context) => VideoPlayerScreen(
+                files: files,
+              ),
             ),
           );
         },

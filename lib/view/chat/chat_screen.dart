@@ -5,11 +5,12 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../viewmodel/channel_viewmodel.dart';
-import '../../viewmodel/configuration_viewmodel.dart';
+
 import '../../components/custom_user_avatar.dart';
 import '../../model/amity_channel_model.dart';
 import '../../model/amity_message_model.dart';
+import '../../viewmodel/channel_viewmodel.dart';
+import '../../viewmodel/configuration_viewmodel.dart';
 
 class ChatSingleScreen extends StatelessWidget {
   final Channels channel;
@@ -52,7 +53,7 @@ class ChatSingleScreen extends StatelessWidget {
             child: Text(
               channel.displayName ?? "N/A",
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.headline6!.copyWith(
+              style: theme.textTheme.titleLarge!.copyWith(
                 fontSize: 16.7,
                 fontWeight: FontWeight.w500,
               ),
@@ -298,7 +299,7 @@ class _MessageComponentState extends State<MessageComponent> {
                                     child: Text(
                                       vm.amityMessageList?[index].data!.text ??
                                           "N/A",
-                                      style: widget.theme.textTheme.bodyText1!
+                                      style: widget.theme.textTheme.bodyLarge!
                                           .copyWith(
                                               fontSize: 14.7,
                                               color: isSendbyCurrentUser

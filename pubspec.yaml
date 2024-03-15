@@ -46,7 +46,6 @@ dependencies:
   open_file: ^3.3.2
   flutter_svg: ^2.0.9
   permission_handler: ^11.0.1
-  http: ^0.13.6
   intrinsic_dimension: ^0.3.1
 
 

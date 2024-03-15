@@ -922,6 +922,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                                       onConfirm: () {
                                                         vm.deleteComment(
                                                             comments);
+
                                                         // AmitySuccessDialog
                                                         //     .showTimedDialog(
                                                         //         "Success",

@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
+import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -271,7 +272,7 @@ class SecondPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ThirdPage(username: username),
+                    builder: (context) => SocialPage(username: username),
                   ),
                 );
               },
@@ -279,8 +280,11 @@ class SecondPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.of(context).pushNamed('/third',
-                //     arguments: {'username': username, 'feature': 'Chat'});
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(username: username),
+                  ),
+                );
               },
               child: const Text('Chat'),
             ),
@@ -291,8 +295,8 @@ class SecondPage extends StatelessWidget {
   }
 }
 
-class ThirdPage extends StatelessWidget {
-  const ThirdPage({super.key, required this.username});
+class SocialPage extends StatelessWidget {
+  const SocialPage({super.key, required this.username});
   final String username;
 
   @override
@@ -389,6 +393,39 @@ class ThirdPage extends StatelessWidget {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const Scaffold(body: CommunityPage()),
+                ));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ChatPage extends StatelessWidget {
+  const ChatPage({super.key, required this.username});
+  final String username;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chat'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListTile(
+              title: const Text('Single Chat Room'),
+              onTap: () async {
+                // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const Scaffold(
+                      body: ChatRoomPage(
+                    channelId: "65e6d0765b88b140f2e505ae",
+                  )),
                 ));
               },
             ),

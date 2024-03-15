@@ -27,11 +27,12 @@ import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
   final bool isShowMyCommunity;
-  final bool isCustomPostRanking;
-  const GlobalFeedScreen(
-      {super.key,
-      this.isShowMyCommunity = true,
-      this.isCustomPostRanking = false});
+  // final bool isCustomPostRanking;
+  const GlobalFeedScreen({
+    super.key,
+    this.isShowMyCommunity = true,
+    // this.isCustomPostRanking = false
+  });
 
   @override
   GlobalFeedScreenState createState() => GlobalFeedScreenState();

@@ -336,18 +336,18 @@ class SocialPage extends StatelessWidget {
                 ));
               },
             ),
-            ListTile(
-              title: const Text('Custom Post Ranking Feed'),
-              onTap: () {
-                // Navigate or perform action based on 'Global Feed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(
-                      body: GlobalFeedScreen(
-                    isCustomPostRanking: true,
-                  )),
-                ));
-              },
-            ),
+            // ListTile(
+            //   title: const Text('Custom Post Ranking Feed'),
+            //   onTap: () {
+            //     // Navigate or perform action based on 'Global Feed' tap
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //       builder: (context) => const Scaffold(
+            //           body: GlobalFeedScreen(
+            //         isCustomPostRanking: true,
+            //       )),
+            //     ));
+            //   },
+            // ),
             ListTile(
               title: const Text('User Profile'),
               onTap: () {

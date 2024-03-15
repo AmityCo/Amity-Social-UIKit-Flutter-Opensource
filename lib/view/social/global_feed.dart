@@ -53,7 +53,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
     myCommunityList.initMyCommunity();
 
     globalFeedProvider.initAmityGlobalfeed(
-        isCustomPostRanking: widget.isCustomPostRanking);
+        // isCustomPostRanking: widget.isCustomPostRanking
+        isCustomPostRanking: false);
   }
 
   @override
@@ -69,7 +70,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onRefresh: () async {
           await vm.initAmityGlobalfeed(
-              isCustomPostRanking: widget.isCustomPostRanking);
+              // isCustomPostRanking: widget.isCustomPostRanking
+              isCustomPostRanking: false);
         },
         child: vm.isLoading
             ? Center(
@@ -112,8 +114,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                                                 )
                                               : const SizedBox(),
                                       PostWidget(
-                                        customPostRanking:
-                                            widget.isCustomPostRanking,
+                                        // customPostRanking:
+                                        //     widget.isCustomPostRanking,
                                         feedType: FeedType.global,
                                         showCommunity: true,
                                         showlatestComment: true,

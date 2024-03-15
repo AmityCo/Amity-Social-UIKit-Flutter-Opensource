@@ -73,67 +73,61 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
               // isCustomPostRanking: widget.isCustomPostRanking
               isCustomPostRanking: false);
         },
-        child: vm.isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                color: Provider.of<AmityUIConfiguration>(context).primaryColor,
-              ))
-            : Column(
-                children: [
-                  Expanded(
-                    child: Container(
-                      color: Colors.grey[200],
-                      child: FadedSlideAnimation(
-                        beginOffset: const Offset(0, 0.3),
-                        endOffset: const Offset(0, 0),
-                        slideCurve: Curves.linearToEaseOut,
-                        child: ListView.builder(
-                          // shrinkWrap: true,
-                          controller: vm.scrollcontroller,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: vm.getAmityPosts().length,
-                          itemBuilder: (context, index) {
-                            return StreamBuilder<AmityPost>(
-                                key: Key(vm.getAmityPosts()[index].postId!),
-                                stream: vm.getAmityPosts()[index].listen.stream,
-                                initialData: vm.getAmityPosts()[index],
-                                builder: (context, snapshot) {
-                                  var latestComments =
-                                      snapshot.data!.latestComments;
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                color: Colors.grey[200],
+                child: FadedSlideAnimation(
+                  beginOffset: const Offset(0, 0.3),
+                  endOffset: const Offset(0, 0),
+                  slideCurve: Curves.linearToEaseOut,
+                  child: ListView.builder(
+                    // shrinkWrap: true,
+                    controller: vm.scrollcontroller,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: vm.getAmityPosts().length,
+                    itemBuilder: (context, index) {
+                      return StreamBuilder<AmityPost>(
+                          key: Key(vm.getAmityPosts()[index].postId!),
+                          stream: vm.getAmityPosts()[index].listen.stream,
+                          initialData: vm.getAmityPosts()[index],
+                          builder: (context, snapshot) {
+                            var latestComments = snapshot.data!.latestComments;
 
-                                  return Column(
-                                    children: [
-                                      index != 0
-                                          ? const SizedBox()
-                                          : widget.isShowMyCommunity
-                                              ? CommunityIconList(
-                                                  amityCommunites: Provider.of<
-                                                              MyCommunityVM>(
-                                                          context)
-                                                      .amityCommunities,
-                                                )
-                                              : const SizedBox(),
-                                      PostWidget(
-                                        // customPostRanking:
-                                        //     widget.isCustomPostRanking,
-                                        feedType: FeedType.global,
-                                        showCommunity: true,
-                                        showlatestComment: true,
-                                        post: snapshot.data!,
-                                        theme: theme,
-                                        postIndex: index,
-                                        isFromFeed: true,
-                                      ),
-                                    ],
-                                  );
-                                });
-                          },
-                        ),
-                      ),
-                    ),
+                            return Column(
+                              children: [
+                                index != 0
+                                    ? const SizedBox()
+                                    : widget.isShowMyCommunity
+                                        ? CommunityIconList(
+                                            amityCommunites:
+                                                Provider.of<MyCommunityVM>(
+                                                        context)
+                                                    .amityCommunities,
+                                          )
+                                        : const SizedBox(),
+                                PostWidget(
+                                  // customPostRanking:
+                                  //     widget.isCustomPostRanking,
+                                  feedType: FeedType.global,
+                                  showCommunity: true,
+                                  showlatestComment: true,
+                                  post: snapshot.data!,
+                                  theme: theme,
+                                  postIndex: index,
+                                  isFromFeed: true,
+                                ),
+                              ],
+                            );
+                          });
+                    },
                   ),
-                ],
+                ),
               ),
+            ),
+          ],
+        ),
       );
     });
   }

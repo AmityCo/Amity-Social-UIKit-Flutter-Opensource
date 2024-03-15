@@ -11,7 +11,7 @@ class FeedVM extends ChangeNotifier {
   var _amityGlobalFeedPosts = <AmityPost>[];
 
   PagingController<AmityPost>? _controllerGlobal;
-
+  bool isLoading = true;
   final scrollcontroller = ScrollController();
 
   bool loadingNexPage = false;
@@ -39,6 +39,8 @@ class FeedVM extends ChangeNotifier {
   }
 
   Future<void> initAmityGlobalfeed({bool isCustomPostRanking = false}) async {
+    isLoading = true;
+    print("isloading1: $isLoading");
     print("isCustomPostRanking:$isCustomPostRanking");
     if (isCustomPostRanking) {
       _controllerGlobal = PagingController(
@@ -59,10 +61,13 @@ class FeedVM extends ChangeNotifier {
                   }
                 }
               }
+              isLoading = false;
               notifyListeners();
             } else {
               //Error on pagination controller
+              isLoading = false;
 
+              notifyListeners();
               log("error");
               await AmityDialog().showAlertErrorDialog(
                   title: "Error!",
@@ -89,14 +94,20 @@ class FeedVM extends ChangeNotifier {
                   }
                 }
               }
+
               notifyListeners();
             } else {
               //Error on pagination controller
 
+              notifyListeners();
               log("error");
               await AmityDialog().showAlertErrorDialog(
                   title: "Error!",
                   message: _controllerGlobal!.error.toString());
+            }
+            if (_controllerGlobal?.isFetching == false) {
+              isLoading = false;
+              print("isloading3: $isLoading");
             }
           },
         );
@@ -110,6 +121,8 @@ class FeedVM extends ChangeNotifier {
   }
 
   void loadnextpage() async {
+    isLoading = true;
+    print("isloading3: $isLoading");
     // log(scrollcontroller.offset);
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&

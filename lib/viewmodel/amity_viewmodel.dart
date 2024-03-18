@@ -7,85 +7,79 @@ import '../components/alert_dialog.dart';
 
 class AmityVM extends ChangeNotifier {
   AmityUser? currentamityUser;
-  bool isProcessing = false;
+
   Future<void> login(
       {required String userID, String? displayName, String? authToken}) async {
-    if (!isProcessing) {
-      isProcessing = true;
+    log("login with $userID");
+    if (authToken == null) {
+      log("authToken == null");
+      if (displayName != null) {
+        await AmityCoreClient.login(userID)
+            .displayName(displayName)
+            .submit()
+            .then((value) async {
+          log("success");
 
-      log("login with $userID");
-      if (authToken == null) {
-        if (displayName != null) {
-          await AmityCoreClient.login(userID)
-              .displayName(displayName)
-              .submit()
-              .then((value) async {
-            log("success");
-            isProcessing = false;
-            getUserByID(userID);
-            currentamityUser = value;
-            notifyListeners();
-          }).catchError((error, stackTrace) async {
-            isProcessing = false;
-            log(error.toString());
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: error.toString());
-          });
-        } else {
-          await AmityCoreClient.login(userID).submit().then((value) async {
-            log("success");
-            isProcessing = false;
+          getUserByID(userID);
+          currentamityUser = value;
+          notifyListeners();
+        }).catchError((error, stackTrace) async {
+          log("error");
 
-            currentamityUser = value;
-            notifyListeners();
-          }).catchError((error, stackTrace) async {
-            isProcessing = false;
-            log(error.toString());
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: error.toString());
-          });
-        }
+          log(error.toString());
+          await AmityDialog()
+              .showAlertErrorDialog(title: "Error!", message: error.toString());
+        });
       } else {
-        if (displayName != null) {
-          await AmityCoreClient.login(userID)
-              .displayName(displayName)
-              .submit()
-              .then((value) async {
-            log("success");
-            isProcessing = false;
+        await AmityCoreClient.login(userID).submit().then((value) async {
+          log("success");
 
-            currentamityUser = value;
-            notifyListeners();
-          }).catchError((error, stackTrace) async {
-            isProcessing = false;
-            log(error.toString());
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: error.toString());
-          });
-        } else {
-          await AmityCoreClient.login(userID).submit().then((value) async {
-            log("success");
-            isProcessing = false;
-            getUserByID(userID);
-            currentamityUser = value;
-            notifyListeners();
-          }).catchError((error, stackTrace) async {
-            isProcessing = false;
-            log(error.toString());
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: error.toString());
-          });
-        }
+          currentamityUser = value;
+          notifyListeners();
+        }).catchError((error, stackTrace) async {
+          log("error");
+
+          log(error.toString());
+          await AmityDialog()
+              .showAlertErrorDialog(title: "Error!", message: error.toString());
+        });
       }
     } else {
-      /// processing
-      log("processing login...");
-    }
-  }
+      log("authToken is provided");
+      if (displayName != null) {
+        log("displayName is provided");
+        await AmityCoreClient.login(userID)
+            .displayName(displayName)
+            .submit()
+            .then((value) async {
+          log("success");
 
-  void setProcessing(bool isProcessing) {
-    this.isProcessing = isProcessing;
-    notifyListeners();
+          currentamityUser = value;
+          notifyListeners();
+        }).catchError((error, stackTrace) async {
+          log("error");
+
+          log(error.toString());
+          await AmityDialog()
+              .showAlertErrorDialog(title: "Error!", message: error.toString());
+        });
+      } else {
+        log("displayName is not provided");
+        await AmityCoreClient.login(userID).submit().then((value) async {
+          log("success");
+
+          getUserByID(userID);
+          currentamityUser = value;
+          notifyListeners();
+        }).catchError((error, stackTrace) async {
+          print("error");
+
+          log(error.toString());
+          await AmityDialog()
+              .showAlertErrorDialog(title: "Error!", message: error.toString());
+        });
+      }
+    }
   }
 
   Future<void> refreshCurrentUserData() async {

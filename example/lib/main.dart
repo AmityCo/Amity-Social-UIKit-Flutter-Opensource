@@ -231,6 +231,7 @@ class _UserListPageState extends State<UserListPage> {
                     await AmitySLEUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
+                      authToken: "",
                       callback: (isSuccess, error) {
                         log("callback:$isSuccess");
                         if (isSuccess) {
@@ -242,6 +243,7 @@ class _UserListPageState extends State<UserListPage> {
                             ),
                           );
                         } else {
+                          log("fail");
                           AmityDialog().showAlertErrorDialog(
                               title: "Error", message: error.toString());
                         }

@@ -87,31 +87,32 @@ class AmitySLEUIKit {
         .login(userID: userId, displayName: displayName, authToken: authToken)
         .then((value) async {
       log("login success");
-      await Provider.of<UserVM>(context, listen: false)
-          .initAccessToken()
-          .then((value) {
-        log("initAccessToken success");
-        if (Provider.of<UserVM>(context, listen: false).accessToken != null ||
-            Provider.of<UserVM>(context, listen: false).accessToken != "") {
-          if (callback != null) {
-            callback(true, null);
-          }
-        } else {
-          if (callback != null) {
-            callback(false, "Initialize accesstoken fail...");
-          }
-        }
-      }).onError((error, stackTrace) {
-        log("initAccessToken fail...");
-        log(error.toString());
-        if (callback != null) {
-          callback(true, error.toString());
-        }
-      });
+
+      // await Provider.of<UserVM>(context, listen: false)
+      //     .initAccessToken()
+      //     .then((value) {
+      //   log("initAccessToken success");
+      //   if (Provider.of<UserVM>(context, listen: false).accessToken != null ||
+      //       Provider.of<UserVM>(context, listen: false).accessToken != "") {
+      if (callback != null) {
+        callback(true, null);
+      }
+      //   } else {
+      //     if (callback != null) {
+      //       callback(false, "Initialize accesstoken fail...");
+      //     }
+      //   }
+      // }).onError((error, stackTrace) {
+      //   log("initAccessToken fail...");
+      //   log(error.toString());
+      //   if (callback != null) {
+      //     callback(true, error.toString());
+      //   }
+      // });
     }).onError((error, stackTrace) {
       log("registerDevice...Error:$error");
       if (callback != null) {
-        callback(false, "Initialize accesstoken fail...");
+        callback(false, error.toString());
       }
     });
   }

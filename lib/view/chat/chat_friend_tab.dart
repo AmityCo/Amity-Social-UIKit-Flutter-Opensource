@@ -29,7 +29,7 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
   void initState() {
     Future.delayed(Duration.zero, () async {
       if (Provider.of<UserVM>(context, listen: false).accessToken == "") {
-        await Provider.of<UserVM>(context, listen: false).initAccessToken();
+        // await Provider.of<UserVM>(context, listen: false).initAccessToken();
       } else {
         Provider.of<UserVM>(context, listen: false).accessToken;
       }

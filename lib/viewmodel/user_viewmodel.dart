@@ -1,11 +1,9 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/alert_dialog.dart';
-import '../utils/env_manager.dart';
 
 class UserVM extends ChangeNotifier {
   ///testtt
@@ -21,31 +19,31 @@ class UserVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> initAccessToken({String? apikey}) async {
-    var dio = Dio();
-    await dio
-        .post(
-      "https://api.${env!.region}.amity.co/api/v3/sessions",
-      data: {
-        'userId': AmityCoreClient.getUserId(),
-        'deviceId': AmityCoreClient.getUserId()
-      },
-      options: Options(
-        headers: {
-          "x-api-key": env?.apikey // set content-length
-        },
-      ),
-    )
-        .then((value) {
-      log("success");
-      if (value.statusCode == 200) {
-        accessToken = value.data["accessToken"];
-      }
-    }).onError((error, stackTrace) async {
-      await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
-    });
-  }
+  // Future<void> initAccessToken({String? apikey}) async {
+  //   var dio = Dio();
+  //   await dio
+  //       .post(
+  //     "https://api.${env!.region}.amity.co/api/v3/sessions",
+  //     data: {
+  //       'userId': AmityCoreClient.getUserId(),
+  //       'deviceId': AmityCoreClient.getUserId()
+  //     },
+  //     options: Options(
+  //       headers: {
+  //         "x-api-key": env?.apikey // set content-length
+  //       },
+  //     ),
+  //   )
+  //       .then((value) {
+  //     log("success");
+  //     if (value.statusCode == 200) {
+  //       accessToken = value.data["accessToken"];
+  //     }
+  //   }).onError((error, stackTrace) async {
+  //     await AmityDialog()
+  //         .showAlertErrorDialog(title: "Error!", message: error.toString());
+  //   });
+  // }
 
   Future<AmityUser?> getUserByID(String id) async {
     AmityUser? amityUser;

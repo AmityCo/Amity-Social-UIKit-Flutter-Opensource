@@ -27,8 +27,8 @@ class AmityVM extends ChangeNotifier {
           log("error");
 
           log(error.toString());
-          await AmityDialog()
-              .showAlertErrorDialog(title: "Error!", message: error.toString());
+          //        await AmityDialog()
+          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
         });
       } else {
         await AmityCoreClient.login(userID).submit().then((value) async {
@@ -40,8 +40,8 @@ class AmityVM extends ChangeNotifier {
           log("error");
 
           log(error.toString());
-          await AmityDialog()
-              .showAlertErrorDialog(title: "Error!", message: error.toString());
+          //        await AmityDialog()
+          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
         });
       }
     } else {
@@ -60,8 +60,8 @@ class AmityVM extends ChangeNotifier {
           log("error");
 
           log(error.toString());
-          await AmityDialog()
-              .showAlertErrorDialog(title: "Error!", message: error.toString());
+          //        await AmityDialog()
+          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
         });
       } else {
         log("displayName is not provided");
@@ -75,8 +75,8 @@ class AmityVM extends ChangeNotifier {
           print("error");
 
           log(error.toString());
-          await AmityDialog()
-              .showAlertErrorDialog(title: "Error!", message: error.toString());
+          //        await AmityDialog()
+          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
         });
       }
     }

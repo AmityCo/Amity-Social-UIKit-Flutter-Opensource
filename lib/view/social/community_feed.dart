@@ -9,6 +9,7 @@ import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:intrinsic_dimension/intrinsic_dimension.dart';
 import 'package:provider/provider.dart';
@@ -372,6 +373,17 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                               listen: false);
                           explorePageVM.getRecommendedCommunities();
                           explorePageVM.getTrendingCommunities();
+                          print(">>>>>>>>>>>>>>>callback");
+
+                          var myCommunityList = Provider.of<MyCommunityVM>(
+                              context,
+                              listen: false);
+                          myCommunityList.initMyCommunity();
+
+                          for (var i in myCommunityList.amityCommunities) {
+                            print(">>>>>>>>>>>>>>>${i.displayName}");
+                          }
+                          print(myCommunityList.amityCommunities);
                         });
                       }).onError((error, stackTrace) {
                         log(error.toString());

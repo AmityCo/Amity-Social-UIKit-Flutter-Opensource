@@ -69,7 +69,13 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
       return RefreshIndicator(
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onRefresh: () async {
-          await vm.initAmityGlobalfeed(
+          var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
+          var myCommunityList =
+              Provider.of<MyCommunityVM>(context, listen: false);
+
+          myCommunityList.initMyCommunity();
+
+          globalFeedProvider.initAmityGlobalfeed(
               // isCustomPostRanking: widget.isCustomPostRanking
               isCustomPostRanking: false);
         },

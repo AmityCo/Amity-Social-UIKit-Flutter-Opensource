@@ -854,7 +854,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                             ? const SizedBox()
                                             : ListTile(
                                                 title: Text(
-                                                  !comments.isFlaggedByMe
+                                                  comments.isFlaggedByMe
                                                       ? 'Undo Report'
                                                       : 'Report',
                                                   style: const TextStyle(

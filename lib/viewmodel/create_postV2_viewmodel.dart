@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -202,6 +203,8 @@ class CreatePostVMV2 with ChangeNotifier {
             notifyListeners();
           },
           error: (error) {
+            AmityDialog().showAlertErrorDialog(
+                title: "Upload fail", message: error.toString());
             uikitFile.status = FileStatus.rejected;
             notifyListeners();
             // Handle the error as appropriate for your app

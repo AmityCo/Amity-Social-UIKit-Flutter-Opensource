@@ -73,6 +73,14 @@ class PostMedia extends StatelessWidget {
                         },
                       ),
                     ),
+              files[0].status == FileStatus.rejected
+                  ? const Center(
+                      child: Icon(
+                        Icons.warning,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const SizedBox(),
             ],
           ),
         );

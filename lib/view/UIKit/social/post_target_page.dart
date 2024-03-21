@@ -111,6 +111,17 @@ class _PostToPageState extends State<PostToPage> {
                                 ),
                           title: Row(
                             children: [
+                              !community.isPublic!
+                                  ? const Padding(
+                                      padding: EdgeInsets.only(left: 7.0),
+                                      child: Icon(
+                                        Icons.lock,
+                                        size: 17,
+                                      ))
+                                  : const SizedBox(),
+                              const SizedBox(
+                                width: 5,
+                              ),
                               Text(
                                 community.displayName ?? '',
                                 style: const TextStyle(

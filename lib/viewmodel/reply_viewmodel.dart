@@ -39,6 +39,7 @@ class ReplyVM extends PostVM {
 
   Future<void> initReplyComment(String postId, BuildContext context) async {
     print("initReplyComment>>>>>>>>>>>>>>>>>>>>>");
+
     print(amityComments.length);
 
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;

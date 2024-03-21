@@ -51,7 +51,7 @@ class CommentScreenState extends State<CommentScreen> {
 
     Provider.of<PostVM>(context, listen: false)
         .getPost(widget.amityPost.postId!, widget.amityPost);
-
+    Provider.of<ReplyVM>(context, listen: false).clearReply();
     super.initState();
   }
 
@@ -487,10 +487,25 @@ class FullCommentPage extends StatelessWidget {
         shadowColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
-            Icons.close,
+            Icons.chevron_left,
             color: Colors.black,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            if (true) {
+              ConfirmationDialog().show(
+                context: context,
+                title: 'Discard Post?',
+                detailText: 'Do you want to discard your post?',
+                leftButtonText: 'Cancel',
+                rightButtonText: 'Discard',
+                onConfirm: () {
+                  Navigator.of(context).pop();
+                },
+              );
+            } else {
+              Navigator.of(context).pop();
+            }
+          },
         ),
         title: Text(
           "Add Comment",
@@ -719,8 +734,8 @@ class _CommentComponentState extends State<CommentComponent> {
                                   TimeAgoWidget(
                                     createdAt:
                                         comments.createdAt == comments.editedAt
-                                            ? comments.editedAt!
-                                            : comments.createdAt!,
+                                            ? comments.createdAt!
+                                            : comments.editedAt!,
                                   ),
                                   comments.createdAt == comments.editedAt
                                       ? const SizedBox()
@@ -1240,8 +1255,35 @@ class ReplyCommentComponent extends StatelessWidget {
                             comment.user!.displayName!,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: TimeAgoWidget(
-                            createdAt: snapshot.data!.createdAt!,
+                          subtitle: Row(
+                            children: [
+                              TimeAgoWidget(
+                                createdAt:
+                                    comments.createdAt == comments.editedAt
+                                        ? comments.createdAt!
+                                        : comments.editedAt!,
+                              ),
+                              comments.createdAt == comments.editedAt
+                                  ? const SizedBox()
+                                  : Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        const Icon(
+                                          Icons.circle,
+                                          size: 5,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(comments.createdAt ==
+                                                comments.editedAt
+                                            ? ""
+                                            : "Edited"),
+                                      ],
+                                    )
+                            ],
                           ),
                         ),
                         Container(

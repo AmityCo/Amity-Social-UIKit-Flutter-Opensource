@@ -59,8 +59,6 @@ class CommuFeedVM extends ChangeNotifier {
   }
 
   Future<void> initAmityCommunityFeed(String communityId) async {
-    isCurrentUserIsAdmin = false;
-
     //inititate the PagingController
     _controllerCommu = PagingController(
       pageFuture: (token) => AmitySocialClient.newFeedRepository()
@@ -110,8 +108,6 @@ class CommuFeedVM extends ChangeNotifier {
 
   Future<void> initAmityPendingCommunityFeed(
       String communityId, AmityFeedType amityFeedType) async {
-    isCurrentUserIsAdmin = false;
-
     //inititate the PagingController
     _controllerPendingPost = PagingController(
       pageFuture: (token) => AmitySocialClient.newFeedRepository()
@@ -162,8 +158,6 @@ class CommuFeedVM extends ChangeNotifier {
   }
 
   Future<void> initAmityCommunityVideoFeed(String communityId) async {
-    isCurrentUserIsAdmin = false;
-
     //inititate the PagingController
     _controllerVideoCommu = PagingController(
       pageFuture: (token) => AmitySocialClient.newFeedRepository()

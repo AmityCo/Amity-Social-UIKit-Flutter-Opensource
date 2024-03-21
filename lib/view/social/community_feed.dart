@@ -189,8 +189,9 @@ class CommunityScreenState extends State<CommunityScreen> {
 
             var tablist = [
               feedWidget,
-              const MediaGalleryPage(
+              MediaGalleryPage(
                 galleryFeed: GalleryFeed.community,
+                onRefresh: () async {},
               )
             ];
             return Scaffold(

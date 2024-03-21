@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/not
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/post_review_settimg_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -184,6 +185,10 @@ class CommunitySettingPage extends StatelessWidget {
                                     Provider.of<MyCommunityVM>(context,
                                             listen: false)
                                         .initMyCommunity();
+
+                                    Provider.of<ExplorePageVM>(context,
+                                            listen: false)
+                                        .getRecommendedCommunities();
                                   }
                                 });
                               });

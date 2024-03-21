@@ -125,58 +125,62 @@ class UserProfileScreenState extends State<UserProfileScreen>
     return Consumer<UserFeedVM>(builder: (context, vm, _) {
       if (vm.amityUser != null) {
         Widget buildPrivateAccountWidget(double bheight) {
-          return Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            height: bheight - 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/privateIcon.png",
-                  package: "amity_uikit_beta_service",
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  "This account is private",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff292B32)),
-                ),
-                const Text(
-                  "Follow this user to see all posts",
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xffA5A9B5)),
-                ),
-              ],
+          return SingleChildScrollView(
+            child: Container(
+              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              height: bheight - 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/privateIcon.png",
+                    package: "amity_uikit_beta_service",
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "This account is private",
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff292B32)),
+                  ),
+                  const Text(
+                    "Follow this user to see all posts",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xffA5A9B5)),
+                  ),
+                ],
+              ),
             ),
           );
         }
 
         Widget buildNoPostsWidget(double bheight, BuildContext context) {
-          return Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            height: bheight - 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/noPostYet.png",
-                  package: "amity_uikit_beta_service",
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  "No post yet",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xffA5A9B5)),
-                ),
-              ],
+          return SingleChildScrollView(
+            child: Container(
+              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              height: bheight - 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/noPostYet.png",
+                    package: "amity_uikit_beta_service",
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "No post yet",
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xffA5A9B5)),
+                  ),
+                ],
+              ),
             ),
           );
         }
@@ -223,9 +227,33 @@ class UserProfileScreenState extends State<UserProfileScreen>
         }
 
         var tablist = [
-          buildContent(context, bheight),
-          const MediaGalleryPage(
+          RefreshIndicator(
+              color: Provider.of<AmityUIConfiguration>(context).primaryColor,
+              onRefresh: () async {
+                if (widget.amityUser != null) {
+                  await Provider.of<UserFeedVM>(context, listen: false)
+                      .initUserFeed(
+                          amityUser: widget.amityUser,
+                          userId: widget.amityUser!.userId!);
+                } else {
+                  await Provider.of<UserFeedVM>(context, listen: false)
+                      .initUserFeed(userId: widget.amityUserId);
+                }
+              },
+              child: buildContent(context, bheight)),
+          MediaGalleryPage(
             galleryFeed: GalleryFeed.user,
+            onRefresh: () async {
+              if (widget.amityUser != null) {
+                await Provider.of<UserFeedVM>(context, listen: false)
+                    .initUserFeed(
+                        amityUser: widget.amityUser,
+                        userId: widget.amityUser!.userId!);
+              } else {
+                await Provider.of<UserFeedVM>(context, listen: false)
+                    .initUserFeed(userId: widget.amityUserId);
+              }
+            },
           )
         ];
         return Scaffold(
@@ -452,54 +480,61 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                   fontWeight: FontWeight.w700,
                                                   letterSpacing: -0.4),
                                             ),
-                                            Row(
-                                              children: [
-                                                // Text('${  vm.amityMyFollowInfo.followerCount
-                                                //     .toString()} Posts  '),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.of(context).push(MaterialPageRoute(
-                                                        builder: (context) => ChangeNotifierProvider(
-                                                            create: (context) =>
-                                                                FollowerVM(),
-                                                            child: FollowScreen(
-                                                                followScreenType:
-                                                                    FollowScreenType
-                                                                        .following,
-                                                                key:
-                                                                    UniqueKey(),
-                                                                userId: widget
-                                                                    .amityUserId,
-                                                                displayName:
-                                                                    getAmityUser()
-                                                                        .displayName))));
-                                                  },
-                                                  child: Text(
-                                                      '${vm.amityMyFollowInfo.followingCount.toString()} following  '),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.of(context).push(MaterialPageRoute(
-                                                        builder: (context) => ChangeNotifierProvider(
-                                                            create: (context) =>
-                                                                FollowerVM(),
-                                                            child: FollowScreen(
-                                                                followScreenType:
-                                                                    FollowScreenType
-                                                                        .follower,
-                                                                key:
-                                                                    UniqueKey(),
-                                                                userId: widget
-                                                                    .amityUserId,
-                                                                displayName:
-                                                                    getAmityUser()
-                                                                        .displayName))));
-                                                  },
-                                                  child: Text(
-                                                      '${vm.amityMyFollowInfo.followerCount.toString()} followers'),
-                                                ),
-                                              ],
-                                            )
+                                            vm.amityMyFollowInfo.id == null
+                                                ? const SizedBox()
+                                                : StreamBuilder<
+                                                        AmityUserFollowInfo>(
+                                                    stream: vm.amityMyFollowInfo
+                                                        .listen.stream,
+                                                    initialData:
+                                                        vm.amityMyFollowInfo,
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      return Row(
+                                                        children: [
+                                                          // Text('${  vm.amityMyFollowInfo.followerCount
+                                                          //     .toString()} Posts  '),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.of(context).push(MaterialPageRoute(
+                                                                  builder: (context) => ChangeNotifierProvider(
+                                                                      create: (context) =>
+                                                                          FollowerVM(),
+                                                                      child: FollowScreen(
+                                                                          followScreenType: FollowScreenType
+                                                                              .following,
+                                                                          key:
+                                                                              UniqueKey(),
+                                                                          userId: widget
+                                                                              .amityUserId,
+                                                                          displayName:
+                                                                              getAmityUser().displayName))));
+                                                            },
+                                                            child: Text(
+                                                                '${snapshot.data!.followingCount} following  '),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.of(context).push(MaterialPageRoute(
+                                                                  builder: (context) => ChangeNotifierProvider(
+                                                                      create: (context) =>
+                                                                          FollowerVM(),
+                                                                      child: FollowScreen(
+                                                                          followScreenType: FollowScreenType
+                                                                              .follower,
+                                                                          key:
+                                                                              UniqueKey(),
+                                                                          userId: widget
+                                                                              .amityUserId,
+                                                                          displayName:
+                                                                              getAmityUser().displayName))));
+                                                            },
+                                                            child: Text(
+                                                                '${snapshot.data!.followerCount} followers'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    })
                                           ],
                                         ),
                                       ),

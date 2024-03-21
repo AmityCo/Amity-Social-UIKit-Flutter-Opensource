@@ -109,10 +109,11 @@ class CreatePostVMV2 with ChangeNotifier {
   Future<void> selectFiles(
       List<XFile> selectedFiles, MyFileType fileType) async {
     // Ensure only one type of file is selected at a time
-    if (selectedFileType != null && selectedFileType != fileType) {
-      // Handle error: different file type selected
-      return;
-    }
+    // if (selectedFileType != null && selectedFileType != fileType) {
+    //   // Handle error: different file type selected
+    //   log("selectedFileType != null && selectedFileType != fileType");
+    //   return;
+    // }
 
     selectedFileType = fileType;
 

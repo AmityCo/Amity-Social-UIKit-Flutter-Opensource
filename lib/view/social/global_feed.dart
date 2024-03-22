@@ -84,11 +84,13 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
           child: Stack(
             children: [
               vm.isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                      color: Provider.of<AmityUIConfiguration>(context)
-                          .primaryColor,
-                    ))
+                  ? vm.getAmityPosts().isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .primaryColor,
+                        ))
+                      : const SizedBox()
                   : const SizedBox(),
               Column(
                 children: [

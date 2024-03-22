@@ -39,7 +39,7 @@ class ReplyVM extends PostVM {
 
   Future<void> initReplyComment(String postId, BuildContext context) async {
     print("initReplyComment>>>>>>>>>>>>>>>>>>>>>");
-
+    replyToObject = null;
     print(amityComments.length);
 
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;
@@ -59,7 +59,6 @@ class ReplyVM extends PostVM {
 
   void clearReply() {
     replyToObject = null;
-    notifyListeners();
   }
 
 // Listens for reply comments asynchronously and updates the UI upon receiving new data or an error.

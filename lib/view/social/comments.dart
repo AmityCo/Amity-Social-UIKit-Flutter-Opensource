@@ -47,12 +47,18 @@ class CommentScreenState extends State<CommentScreen> {
 
   @override
   void initState() {
+    Provider.of<ReplyVM>(context, listen: false).clearReply();
     //query comment here
-
     Provider.of<PostVM>(context, listen: false)
         .getPost(widget.amityPost.postId!, widget.amityPost);
-    Provider.of<ReplyVM>(context, listen: false).clearReply();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   bool isMediaPosts() {

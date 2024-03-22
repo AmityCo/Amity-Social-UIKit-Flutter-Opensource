@@ -38,6 +38,8 @@ class ReplyVM extends PostVM {
   ReplyTo? replyToObject;
 
   Future<void> initReplyComment(String postId, BuildContext context) async {
+    _controllersMap.clear();
+    amityReplyCommentsMap.clear();
     print("initReplyComment>>>>>>>>>>>>>>>>>>>>>");
     replyToObject = null;
     print(amityComments.length);

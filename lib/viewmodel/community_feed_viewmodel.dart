@@ -145,8 +145,9 @@ class CommuFeedVM extends ChangeNotifier {
     pendingScrollcontroller.addListener(loadnextpage);
 
     //inititate the PagingController
-    await AmitySocialClient.newFeedRepository()
-        .getCommunityFeed(communityId)
+    await AmitySocialClient.newPostRepository()
+        .getPosts()
+        .targetCommunity(communityId)
         .includeDeleted(false)
         .feedType(amityFeedType)
         .getPagingData()
@@ -160,8 +161,9 @@ class CommuFeedVM extends ChangeNotifier {
   Future<void> initAmityCommunityVideoFeed(String communityId) async {
     //inititate the PagingController
     _controllerVideoCommu = PagingController(
-      pageFuture: (token) => AmitySocialClient.newFeedRepository()
-          .getCommunityFeed(communityId)
+      pageFuture: (token) => AmitySocialClient.newPostRepository()
+          .getPosts()
+          .targetCommunity(communityId)
           .types([AmityDataType.VIDEO])
           //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
           .feedType(AmityFeedType.PUBLISHED)
@@ -196,8 +198,9 @@ class CommuFeedVM extends ChangeNotifier {
     scrollcontroller.addListener(loadnextpage);
 
     //inititate the PagingController
-    await AmitySocialClient.newFeedRepository()
-        .getCommunityFeed(communityId)
+    await AmitySocialClient.newPostRepository()
+        .getPosts()
+        .targetCommunity(communityId)
         .includeDeleted(false)
         .types([AmityDataType.VIDEO])
         .getPagingData()
@@ -213,8 +216,9 @@ class CommuFeedVM extends ChangeNotifier {
 
     //inititate the PagingController
     _controllerImageCommu = PagingController(
-      pageFuture: (token) => AmitySocialClient.newFeedRepository()
-          .getCommunityFeed(communityId)
+      pageFuture: (token) => AmitySocialClient.newPostRepository()
+          .getPosts()
+          .targetCommunity(communityId)
           .types([AmityDataType.IMAGE])
           .feedType(AmityFeedType.PUBLISHED)
           .includeDeleted(false)
@@ -246,8 +250,9 @@ class CommuFeedVM extends ChangeNotifier {
     scrollcontroller.addListener(loadnextpage);
 
     //inititate the PagingController
-    await AmitySocialClient.newFeedRepository()
-        .getCommunityFeed(communityId)
+    await AmitySocialClient.newPostRepository()
+        .getPosts()
+        .targetCommunity(communityId)
         .includeDeleted(false)
         .types([AmityDataType.IMAGE])
         .getPagingData()

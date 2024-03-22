@@ -55,12 +55,6 @@ class CommentScreenState extends State<CommentScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
   bool isMediaPosts() {
     final childrenPosts =
         Provider.of<PostVM>(context, listen: false).amityPost.children;

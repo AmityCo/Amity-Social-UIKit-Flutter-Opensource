@@ -231,7 +231,6 @@ class _UserListPageState extends State<UserListPage> {
                     await AmitySLEUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
-                      authToken: "",
                       callback: (isSuccess, error) {
                         log("callback:$isSuccess");
                         if (isSuccess) {

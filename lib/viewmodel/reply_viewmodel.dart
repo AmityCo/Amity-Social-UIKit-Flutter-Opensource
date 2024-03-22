@@ -120,7 +120,11 @@ class ReplyVM extends PostVM {
       if (_controllersMap[commentId]!.isFetching) {
         return false;
       } else {
-        return _controllersMap[commentId]!.hasMoreItems;
+        if (_controllersMap[commentId]!.loadedItems.isNotEmpty) {
+          return _controllersMap[commentId]!.hasMoreItems;
+        } else {
+          return false;
+        }
       }
     } else {
       return false;

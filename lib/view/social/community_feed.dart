@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
@@ -245,9 +246,9 @@ class CommunityScreenState extends State<CommunityScreen> {
                         headerSliverBuilder:
                             (BuildContext context, bool innerBoxIsScrolled) {
                           return <Widget>[
-                            SliverAppBar(
-                              expandedHeight:
-                                  sizeVM.getCommunityDetailSectionSize(),
+                            DynamicSliverAppBar(
+                              // expandedHeight:
+                              //     sizeVM.getCommunityDetailSectionSize(),
                               shadowColor: Colors.white,
                               elevation: 0,
                               surfaceTintColor: Colors.transparent,
@@ -262,11 +263,10 @@ class CommunityScreenState extends State<CommunityScreen> {
                                 ),
                                 onPressed: () => Navigator.of(context).pop(),
                               ),
-                              flexibleSpace: FlexibleSpaceBar(
-                                background: CommunityDetailComponent(
-                                  community: snapshot.data!,
-                                ),
+                              flexibleSpace: CommunityDetailComponent(
+                                community: snapshot.data!,
                               ),
+
                               actions: [
                                 // Text(
                                 //     "${sizeVM.getCommunityDetailSectionSize()}"),

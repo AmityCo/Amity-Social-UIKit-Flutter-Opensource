@@ -63,6 +63,11 @@ class ReplyVM extends PostVM {
     replyToObject = null;
   }
 
+  void clearReplyAndUpdateUI() {
+    replyToObject = null;
+    notifyListeners();
+  }
+
 // Listens for reply comments asynchronously and updates the UI upon receiving new data or an error.
   Future<void> listenForReplyComments({
     required String postID,

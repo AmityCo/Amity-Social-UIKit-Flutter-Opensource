@@ -313,7 +313,7 @@ class CommentScreenState extends State<CommentScreen> {
                                           onTap: () {
                                             Provider.of<ReplyVM>(context,
                                                     listen: false)
-                                                .clearReply();
+                                                .clearReplyAndUpdateUI();
                                           },
                                           child: const Icon(Icons.close,
                                               color: Color(0xff636878)))

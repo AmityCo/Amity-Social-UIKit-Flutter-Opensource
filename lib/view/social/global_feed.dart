@@ -27,10 +27,13 @@ import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
   final bool isShowMyCommunity;
+  final bool canCreateCommunity;
   // final bool isCustomPostRanking;
+
   const GlobalFeedScreen({
     super.key,
     this.isShowMyCommunity = true,
+    this.canCreateCommunity = true,
     // this.isCustomPostRanking = false
   });
 
@@ -124,6 +127,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                                                               MyCommunityVM>(
                                                           context)
                                                       .amityCommunities,
+                                                  canCreateCommunity:
+                                                      widget.canCreateCommunity,
                                                 )
                                               : const SizedBox(),
                                       PostWidget(

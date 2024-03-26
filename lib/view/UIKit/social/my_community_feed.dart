@@ -8,7 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyCommunityPage extends StatefulWidget {
-  const MyCommunityPage({super.key});
+  const MyCommunityPage({
+    super.key,
+    this.canCreateCommunity = true,
+  });
+
+  final bool canCreateCommunity;
 
   @override
   _MyCommunityPageState createState() => _MyCommunityPageState();
@@ -47,16 +52,17 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
                 .titleTextStyle, // Adjust as needed
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.add, color: Colors.black),
-              onPressed: () async {
-                await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        const CreateCommunityPage())); // Replace with your CreateCommunityPage
-                await Provider.of<MyCommunityVM>(context, listen: false)
-                    .initMyCommunity();
-              },
-            ),
+            if (widget.canCreateCommunity)
+              IconButton(
+                icon: const Icon(Icons.add, color: Colors.black),
+                onPressed: () async {
+                  await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          const CreateCommunityPage())); // Replace with your CreateCommunityPage
+                  await Provider.of<MyCommunityVM>(context, listen: false)
+                      .initMyCommunity();
+                },
+              ),
           ],
         ),
         body: ListView.builder(
@@ -169,8 +175,13 @@ class CommunityWidget extends StatelessWidget {
 
 class CommunityIconList extends StatelessWidget {
   final List<AmityCommunity> amityCommunites;
+  final bool canCreateCommunity;
 
-  const CommunityIconList({super.key, required this.amityCommunites});
+  const CommunityIconList({
+    super.key,
+    required this.amityCommunites,
+    this.canCreateCommunity = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -195,10 +206,15 @@ class CommunityIconList extends StatelessWidget {
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            const Scaffold(body: MyCommunityPage()),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            body: MyCommunityPage(
+                              canCreateCommunity: canCreateCommunity,
+                            ),
+                          ),
+                        ),
+                      );
                     },
                     child: Container(child: const Icon(Icons.chevron_right))),
               ],

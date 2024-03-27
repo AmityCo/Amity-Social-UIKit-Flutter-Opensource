@@ -39,6 +39,10 @@ class CommunityScreenState extends State<CommunityScreen> {
     Provider.of<CommuFeedVM>(context, listen: false)
         .initAmityCommunityFeed(widget.community.communityId!);
     Provider.of<CommuFeedVM>(context, listen: false)
+        .getPostCount(widget.community);
+    Provider.of<CommuFeedVM>(context, listen: false)
+        .getReviewingPostCount(widget.community);
+    Provider.of<CommuFeedVM>(context, listen: false)
         .initAmityCommunityImageFeed(widget.community.communityId!);
     Provider.of<CommuFeedVM>(context, listen: false)
         .initAmityCommunityVideoFeed(widget.community.communityId!);
@@ -102,7 +106,7 @@ class CommunityScreenState extends State<CommunityScreen> {
           children: [
             Column(
               children: [
-                Text(community.postsCount.toString(),
+                Text("${Provider.of<CommuFeedVM>(context).postCount}",
                     style: const TextStyle(fontSize: 16)),
                 const Text('posts',
                     style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
@@ -516,7 +520,7 @@ class PedindingButton extends StatelessWidget {
                   !community
                           .hasPermission(AmityPermission.REVIEW_COMMUNITY_POST)
                       ? "Your posts are pending for review"
-                      : "${Provider.of<CommuFeedVM>(context).getCommunityPendingPosts().length} posts need approval",
+                      : "${Provider.of<CommuFeedVM>(context).reviewingPostCount} posts need approval",
                   style: const TextStyle(
                       fontSize: 13, color: Color(0xff636878) // Text color
                       ),
@@ -580,7 +584,7 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
           children: [
             Column(
               children: [
-                Text(community.postsCount.toString(),
+                Text("${Provider.of<CommuFeedVM>(context).postCount}",
                     style: const TextStyle(fontSize: 16)),
                 const Text('posts',
                     style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))

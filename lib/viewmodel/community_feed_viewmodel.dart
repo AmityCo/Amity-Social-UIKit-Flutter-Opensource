@@ -58,6 +58,30 @@ class CommuFeedVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  int postCount = 0;
+  void getPostCount(AmityCommunity community) {
+    community.getPostCount(AmityFeedType.PUBLISHED).then((value) {
+      //success
+      postCount = value;
+      print("postCount $postCount");
+      // Update UI
+    }).onError((error, stackTrace) {
+      // Handle error
+    });
+  }
+
+  int reviewingPostCount = 0;
+  void getReviewingPostCount(AmityCommunity community) {
+    community.getPostCount(AmityFeedType.REVIEWING).then((value) {
+      //success
+      reviewingPostCount = value;
+      print(reviewingPostCount);
+      // Update UI
+    }).onError((error, stackTrace) {
+      // Handle error
+    });
+  }
+
   Future<void> initAmityCommunityFeed(String communityId) async {
     //inititate the PagingController
     _controllerCommu = PagingController(

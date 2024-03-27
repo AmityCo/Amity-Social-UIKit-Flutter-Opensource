@@ -110,10 +110,10 @@ class UserVM extends ChangeNotifier {
             sortedUserListWithHeaders();
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!",
-                message: _amityUsersController.error.toString());
+            log("error: ${_amityUsersController.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!",
+            //     message: _amityUsersController.error.toString());
           }
         },
       );
@@ -334,10 +334,11 @@ class UserVM extends ChangeNotifier {
             sortedUserListWithHeaders();
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!",
-                message: _amityBlockedUsersController.error.toString());
+            log("error: ${_amityBlockedUsersController.error.toString()}");
+
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!",
+            //     message: _amityBlockedUsersController.error.toString());
           }
         },
       );

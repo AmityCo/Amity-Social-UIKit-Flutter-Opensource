@@ -108,10 +108,10 @@ class ReplyVM extends PostVM {
             }
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!",
-                message: _controllersMap[commentId]!.error.toString());
+            log("error: ${_controllersMap[commentId]!.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!",
+            //     message: _controllersMap[commentId]!.error.toString());
           }
         },
       );

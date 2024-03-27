@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:flutter/material.dart';
 
 class MyCommunityVM with ChangeNotifier {
@@ -40,10 +39,10 @@ class MyCommunityVM with ChangeNotifier {
             // Call any additional methods like sortedUserListWithHeaders here if needed.
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!",
-                message: _communityController.error.toString());
+            log("error:${_communityController.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!",
+            //     message: _communityController.error.toString());
           }
         },
       );
@@ -115,9 +114,9 @@ class SearchCommunityVM with ChangeNotifier {
             // Call any additional methods like sortedUserListWithHeaders here if needed.
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: communityController.error.toString());
+            log("error: ${communityController.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: communityController.error.toString());
           }
         },
       );

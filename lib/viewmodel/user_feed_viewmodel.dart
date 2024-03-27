@@ -196,8 +196,8 @@ class UserFeedVM extends ChangeNotifier {
               {log("update displayname & description & avatarFileUrl success")})
           .onError((error, stackTrace) async => {
                 log("update displayname & description & avatarFileUrl fail"),
-                await AmityDialog().showAlertErrorDialog(
-                    title: "Error!", message: error.toString())
+                // await AmityDialog().showAlertErrorDialog(
+                //     title: "Error!", message: error.toString())
               });
     } else {
       await AmityCoreClient.getCurrentUser()
@@ -208,8 +208,8 @@ class UserFeedVM extends ChangeNotifier {
           .then((value) => {log("update displayname & description success")})
           .onError((error, stackTrace) async => {
                 log("update displayname & description fail"),
-                await AmityDialog().showAlertErrorDialog(
-                    title: "Error!", message: error.toString())
+                // await AmityDialog().showAlertErrorDialog(
+                //     title: "Error!", message: error.toString())
               });
     }
   }

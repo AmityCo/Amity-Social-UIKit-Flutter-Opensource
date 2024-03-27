@@ -210,13 +210,15 @@ class RecommendationSection extends StatelessWidget {
                                       ),
                                 const SizedBox(height: 8.0),
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Expanded(
+                                    Flexible(
                                       child: Text(
-                                        "${community.displayName}",
+                                        "${community.displayName}  ",
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
                                         overflow: TextOverflow
                                             .ellipsis, // Handle text overflow
                                       ),
@@ -226,11 +228,12 @@ class RecommendationSection extends StatelessWidget {
                                                 context)
                                             .iconConfig
                                             .officialIcon(
-                                                iconSize: 17,
-                                                color: Provider.of<
-                                                            AmityUIConfiguration>(
-                                                        context)
-                                                    .primaryColor)
+                                              iconSize: 17,
+                                              color: Provider.of<
+                                                          AmityUIConfiguration>(
+                                                      context)
+                                                  .primaryColor,
+                                            )
                                         : const SizedBox(),
                                   ],
                                 ),
@@ -358,12 +361,15 @@ class TrendingSection extends StatelessWidget {
                       ],
                     ),
                     title: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
+                        Flexible(
                           child: Text(
-                            "${community.displayName}",
+                            "${community.displayName}  ",
                             style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                             overflow:
                                 TextOverflow.ellipsis, // Handle text overflow
                           ),
@@ -372,10 +378,11 @@ class TrendingSection extends StatelessWidget {
                             ? Provider.of<AmityUIConfiguration>(context)
                                 .iconConfig
                                 .officialIcon(
-                                    iconSize: 17,
-                                    color: Provider.of<AmityUIConfiguration>(
-                                            context)
-                                        .primaryColor)
+                                  iconSize: 17,
+                                  color:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .primaryColor,
+                                )
                             : const SizedBox(),
                       ],
                     ),

@@ -159,6 +159,10 @@ class CommunityScreenState extends State<CommunityScreen> {
                 onRefresh: () async {
                   // Call your method to refresh the list here.
                   // For example, you might want to refresh the community feed.
+                  Provider.of<CommuFeedVM>(context, listen: false)
+                      .getPostCount(widget.community);
+                  Provider.of<CommuFeedVM>(context, listen: false)
+                      .getReviewingPostCount(widget.community);
                   await Provider.of<CommuFeedVM>(context, listen: false)
                       .initAmityCommunityFeed(widget.community.communityId!);
                   await Provider.of<CommuFeedVM>(context, listen: false)
@@ -208,6 +212,10 @@ class CommunityScreenState extends State<CommunityScreen> {
                               builder: (context2) => AmityCreatePostV2Screen(
                                     community: snapshot.data!,
                                   )));
+                          Provider.of<CommuFeedVM>(context, listen: false)
+                              .getPostCount(widget.community);
+                          Provider.of<CommuFeedVM>(context, listen: false)
+                              .getReviewingPostCount(widget.community);
                           Provider.of<CommuFeedVM>(context, listen: false)
                               .initAmityCommunityFeed(
                                   widget.community.communityId!);

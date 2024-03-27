@@ -80,8 +80,11 @@ class AmitySLEUIKit {
     }
 
     await AmityCoreClient.setup(
-        option:
-            AmityCoreClientOption(apiKey: apikey, httpEndpoint: amityEndpoint!, mqttEndpoint: amityMqttEndpoint!, socketEndpoint: amitySocketEndpoint!),
+        option: AmityCoreClientOption(
+            apiKey: apikey,
+            httpEndpoint: amityEndpoint!,
+            mqttEndpoint: amityMqttEndpoint!,
+            socketEndpoint: amitySocketEndpoint!),
         sycInitialization: true);
   }
 
@@ -215,11 +218,10 @@ class AmitySLEProvider extends StatelessWidget {
       ],
       child: Builder(
         builder: (context) => MaterialApp(
+          theme: ThemeData(),
           debugShowCheckedModeBanner: false,
           navigatorKey: NavigationService.navigatorKey,
-          home: DefaultTextStyle(
-              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 8),
-              child: child),
+          home: child,
         ),
       ),
     );

@@ -111,7 +111,9 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                           width: double.infinity,
                           height: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: const Color(0xFFD9E5FC),
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .primaryShade3,
                               image: DecorationImage(
                                 image: getCustomImageProvider(widget
                                     .community.avatarImage

@@ -196,13 +196,20 @@ class RecommendationSection extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 community.avatarImage == null
-                                    ? const CircleAvatar(
-                                        backgroundColor: Color(0xFFD9E5FC),
-                                        child: Icon(Icons.people,
+                                    ? CircleAvatar(
+                                        backgroundColor:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .primaryShade3,
+                                        child: const Icon(Icons.people,
                                             color: Colors.white))
                                     : CircleAvatar(
                                         backgroundColor:
-                                            const Color(0xFFD9E5FC),
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .primaryShade3,
                                         backgroundImage: NetworkImage(
                                             community.avatarImage!.fileUrl!),
                                         radius:
@@ -340,8 +347,10 @@ class TrendingSection extends StatelessWidget {
                         Container(
                           height: 40,
                           width: 40,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFD9E5FC),
+                          decoration: BoxDecoration(
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .primaryShade3,
                             shape: BoxShape.circle,
                           ),
                           child: community.avatarImage != null
@@ -487,8 +496,11 @@ class CategorySection extends StatelessWidget {
                           Container(
                             height: 40,
                             width: 40,
-                            decoration: const BoxDecoration(
-                                color: Color(0xFFD9E5FC),
+                            decoration: BoxDecoration(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primaryShade3,
                                 shape: BoxShape.circle),
                             child: const Icon(
                               Icons.category,
@@ -550,8 +562,10 @@ class CategoryListPage extends StatelessWidget {
                 leading: Container(
                   height: 40,
                   width: 40,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFD9E5FC),
+                  decoration: BoxDecoration(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .primaryShade3,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -617,8 +631,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
                 leading: Container(
                   height: 40,
                   width: 40,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFD9E5FC),
+                  decoration: BoxDecoration(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .primaryShade3,
                     shape: BoxShape.circle,
                   ),
                   child: community.avatarImage != null

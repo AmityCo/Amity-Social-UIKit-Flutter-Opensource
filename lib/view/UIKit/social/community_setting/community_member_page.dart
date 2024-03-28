@@ -160,7 +160,9 @@ class MemberList extends StatelessWidget {
                         ))));
               },
               leading: CircleAvatar(
-                backgroundColor: const Color(0xFFD9E5FC),
+                backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .primaryShade3,
                 backgroundImage: viewModel.userList[index].user?.avatarUrl ==
                         null
                     ? null
@@ -215,7 +217,9 @@ class ModeratorList extends StatelessWidget {
                         ))));
               },
               leading: CircleAvatar(
-                backgroundColor: const Color(0xFFD9E5FC),
+                backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .primaryShade3,
                 backgroundImage:
                     viewModel.moderatorList[index].user?.avatarUrl == null
                         ? null

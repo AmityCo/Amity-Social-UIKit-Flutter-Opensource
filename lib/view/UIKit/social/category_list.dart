@@ -209,8 +209,11 @@ class CategoryWidget extends StatelessWidget {
                 : Container(
                     height: 40,
                     width: 40,
-                    decoration: const BoxDecoration(
-                        color: Color(0xFFD9E5FC), shape: BoxShape.circle),
+                    decoration: BoxDecoration(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .primaryShade3,
+                        shape: BoxShape.circle),
                     child: const Icon(
                       Icons.category,
                       color: Colors.white,

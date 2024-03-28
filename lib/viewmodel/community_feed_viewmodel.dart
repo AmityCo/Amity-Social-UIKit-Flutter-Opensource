@@ -59,11 +59,18 @@ class CommuFeedVM extends ChangeNotifier {
   }
 
   int postCount = 0;
-  void getPostCount(AmityCommunity community) {
-    community.getPostCount(AmityFeedType.PUBLISHED).then((value) {
+  void getPostCount(AmityCommunity community) async {
+    await AmitySocialClient.newCommunityRepository()
+        .getCommunity(community.communityId!)
+        .then((value) {
+      print("get community");
+      notifyListeners();
+    });
+    community.getPostCount(AmityFeedType.PUBLISHED).then((value) async {
       //success
       postCount = value;
       print("postCount $postCount");
+
       // Update UI
     }).onError((error, stackTrace) {
       // Handle error

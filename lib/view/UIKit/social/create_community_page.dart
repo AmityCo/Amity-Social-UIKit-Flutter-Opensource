@@ -81,7 +81,9 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                     width: double.infinity,
                     height: MediaQuery.of(context).size.width * 0.7,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFD9E5FC),
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primaryShade3,
                       image: Provider.of<CommunityVM>(context).pickedFile !=
                               null
                           ? DecorationImage(
@@ -421,7 +423,9 @@ class MemberSection extends StatelessWidget {
           Chip(
             backgroundColor: Colors.grey[280],
             avatar: CircleAvatar(
-              backgroundColor: const Color(0xFFD9E5FC),
+              backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .primaryShade3,
               backgroundImage:
                   user.avatarUrl == null ? null : NetworkImage(user.avatarUrl!),
               child: user.avatarUrl != null

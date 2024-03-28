@@ -81,9 +81,13 @@ class _CommunityPageState extends State<CommunityPage> {
                       dividerColor: Provider.of<AmityUIConfiguration>(context)
                           .appColors
                           .baseBackground,
-                      labelColor: const Color(0xFF1054DE), // #1054DE color
+                      labelColor: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
                       unselectedLabelColor: Colors.grey,
-                      indicatorColor: const Color(0xFF1054DE),
+                      indicatorColor: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
                       labelStyle: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,

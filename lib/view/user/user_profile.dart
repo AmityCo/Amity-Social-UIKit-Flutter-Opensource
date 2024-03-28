@@ -104,7 +104,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
     final myAppBar = AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       leading: IconButton(
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onPressed: () {
@@ -127,7 +127,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
         Widget buildPrivateAccountWidget(double bheight) {
           return SingleChildScrollView(
             child: Container(
-              color: Colors.white,
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseShade4,
               width: MediaQuery.of(context).size.width,
               height: bheight - 300,
               child: Column(
@@ -161,7 +163,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
         Widget buildNoPostsWidget(double bheight, BuildContext context) {
           return SingleChildScrollView(
             child: Container(
-              color: Colors.white,
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseShade4,
               width: MediaQuery.of(context).size.width,
               height: bheight - 300,
               child: Column(
@@ -187,7 +191,8 @@ class UserProfileScreenState extends State<UserProfileScreen>
 
         Widget buildPostsList(BuildContext context) {
           return Container(
-            color: Colors.grey[200],
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
             child: ListView.builder(
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
@@ -284,7 +289,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
                           .iconConfig
                           .postIcon(iconSize: 28, color: Colors.white),
                     ),
-          backgroundColor: Colors.white,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           body: DefaultTabController(
             length: 2,
             child: NestedScrollView(
@@ -428,7 +435,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                     shadowColor: Colors.white,
                     elevation: 0,
                     surfaceTintColor: Colors.transparent,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.transparent,
                     floating: false,
                     pinned: true,
                     leading: IconButton(
@@ -574,14 +581,19 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                             },
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: const Color(
-                                                          0xffA5A9B5),
-                                                      style: BorderStyle.solid,
-                                                      width: 1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
-                                                  color: Colors.white),
+                                                border: Border.all(
+                                                    color:
+                                                        const Color(0xffA5A9B5),
+                                                    style: BorderStyle.solid,
+                                                    width: 1),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                color: Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .baseBackground,
+                                              ),
                                               padding:
                                                   const EdgeInsets.fromLTRB(
                                                       10, 10, 10, 10),
@@ -645,8 +657,14 @@ class UserProfileScreenState extends State<UserProfileScreen>
                         children: [
                           Expanded(
                             child: Container(
-                              color: Colors.white,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .baseBackground,
                               child: TabBar(
+                                dividerColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .baseBackground,
                                 tabAlignment: TabAlignment.start,
                                 controller: _tabController,
                                 isScrollable: true,
@@ -676,7 +694,11 @@ class UserProfileScreenState extends State<UserProfileScreen>
           ),
         );
       } else {
-        return const Scaffold();
+        return Scaffold(
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
+        );
       }
     });
   }

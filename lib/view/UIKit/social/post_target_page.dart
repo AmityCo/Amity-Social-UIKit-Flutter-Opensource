@@ -24,7 +24,8 @@ class _PostToPageState extends State<PostToPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         elevation: 0.0, // Add this line to remove the shadow
         leading: IconButton(
@@ -35,7 +36,7 @@ class _PostToPageState extends State<PostToPage> {
           "Post to",
           style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Consumer<MyCommunityVM>(

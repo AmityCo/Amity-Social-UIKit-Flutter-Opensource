@@ -101,7 +101,8 @@ class ProfileScreenState extends State<ProfileScreen> {
         "Edit Profile",
         style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       leading: IconButton(
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onPressed: () {
@@ -174,13 +175,14 @@ class ProfileScreenState extends State<ProfileScreen> {
         myAppBar.preferredSize.height;
     return Consumer<UserFeedVM>(builder: (context, vm, _) {
       return Scaffold(
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: myAppBar,
         body: FadedSlideAnimation(
           beginOffset: const Offset(0, 0.3),
           endOffset: const Offset(0, 0),
           slideCurve: Curves.linearToEaseOut,
-          child: Container(
-            color: Colors.white,
+          child: SizedBox(
             height: bheight,
             child: SingleChildScrollView(
               child: Column(
@@ -208,9 +210,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                           bottom: 0,
                           child: Container(
                             padding: const EdgeInsets.all(5),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Color(0xffEBECEF),
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .baseShade4,
                               // boxShadow: [
                               //   BoxShadow(
                               //     color: Colors.grey, // Shadow color

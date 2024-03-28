@@ -51,9 +51,11 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
             Icons.close,

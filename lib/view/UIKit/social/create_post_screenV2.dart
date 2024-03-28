@@ -42,9 +42,10 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
 
     return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           title: Text(
             widget.community != null

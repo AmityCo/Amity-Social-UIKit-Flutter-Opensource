@@ -198,6 +198,10 @@ class _UserListPageState extends State<UserListPage> {
 
   @override
   Widget build(BuildContext context) {
+    // AmitySLEUIKit().configAmityThemeColor(context, (config) {
+    //   config.appColors =
+    //       AppColors(primary: Colors.green, baseShade4: Colors.black);
+    // });
     return Scaffold(
       appBar: AppBar(
         title: const Text('User List'),

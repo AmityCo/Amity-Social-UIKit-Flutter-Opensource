@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityUIConfiguration extends ChangeNotifier {
-  final appColors = AppColors();
+  var appColors = AppColors();
   Color get primaryColor => appColors.primary;
 
   IconData placeHolderIcon = Icons.chat;
@@ -41,8 +41,8 @@ class AppColors {
   // final Color baseShade1;
   // final Color baseShade2;
   // final Color baseShade3;
-  // final Color baseShade4;
-  // final Color baseBackground;
+  final Color baseShade4;
+  final Color baseBackground;
 
   // final Color secondaryDefault;
   // final Color secondaryShade1;
@@ -68,8 +68,8 @@ class AppColors {
     // this.baseShade1 = const Color(0xFF636878),
     // this.baseShade2 = const Color(0xFF8989e9),
     // this.baseShade3 = const Color(0xFFa5a9b5),
-    // this.baseShade4 = const Color(0xFFebecef),
-    // this.baseBackground = const Color(0xFFFFFFFF),
+    this.baseShade4 = const Color(0xFFebecef),
+    this.baseBackground = const Color(0xFFFFFFFF),
     // this.secondaryDefault = const Color(0xFF292632),
     // this.secondaryShade1 = const Color(0xFF636878),
     // this.secondaryShade2 = const Color(0xFF8989e9),

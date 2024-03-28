@@ -33,7 +33,8 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
     return Consumer2<SearchCommunityVM, UserVM>(
         builder: (context, vm, userVM, _) {
       var searchBar = Container(
-        color: Colors.white,
+        color:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
@@ -84,7 +85,9 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
       return DefaultTabController(
         length: 2,
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           body: SafeArea(
             child: Stack(
               children: [
@@ -127,21 +130,30 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                     textcontroller.text.isEmpty
                         ? const SizedBox()
                         : Container(
-                            color: Colors.white,
-                            child: const TabBar(
+                            child: TabBar(
+                              dividerColor:
+                                  Provider.of<AmityUIConfiguration>(context)
+                                      .appColors
+                                      .baseBackground,
                               tabAlignment: TabAlignment.start,
                               isScrollable:
                                   true, // Ensure that the TabBar is scrollable
 
-                              labelColor: Color(0xFF1054DE), // #1054DE color
+                              labelColor:
+                                  Provider.of<AmityUIConfiguration>(context)
+                                      .appColors
+                                      .primary,
                               unselectedLabelColor: Colors.black,
-                              indicatorColor: Color(0xFF1054DE),
-                              labelStyle: TextStyle(
+                              indicatorColor:
+                                  Provider.of<AmityUIConfiguration>(context)
+                                      .appColors
+                                      .primary,
+                              labelStyle: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'SF Pro Text',
                               ),
-                              tabs: [
+                              tabs: const [
                                 Tab(
                                   text: "Community",
                                 ),
@@ -174,7 +186,9 @@ class CommunityWidget extends StatelessWidget {
         builder: (context, snapshot) {
           var communityStream = snapshot.data ?? community;
           return Card(
-            color: Colors.white,
+            color: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             elevation: 0,
             child: ListTile(
               leading: (communityStream.avatarFileId != null)
@@ -257,7 +271,9 @@ class UserWidget extends StatelessWidget {
         builder: (context, snapshot) {
           var userStream = snapshot.data ?? amityUser;
           return Card(
-            color: Colors.white,
+            color: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             elevation: 0,
             child: ListTile(
               leading: (userStream.avatarFileId != null)
@@ -359,8 +375,9 @@ class CommunityIconList extends StatelessWidget {
               },
             ),
           ),
-          const Divider(
-            color: Color(0xffEBECEF),
+          Divider(
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           )
         ],
       ),

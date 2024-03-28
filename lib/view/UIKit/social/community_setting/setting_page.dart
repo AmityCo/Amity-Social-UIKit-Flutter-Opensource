@@ -26,13 +26,17 @@ class CommunitySettingPage extends StatelessWidget {
         builder: (context, snapshot) {
           var livecommunity = snapshot.data ?? community;
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             appBar: AppBar(
+              backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseBackground,
               elevation: 0.0,
               title: Text(snapshot.data?.displayName ?? community.displayName!,
                   style: Provider.of<AmityUIConfiguration>(context)
                       .titleTextStyle),
-              backgroundColor: Colors.white,
               iconTheme: const IconThemeData(color: Colors.black),
             ),
             body: ListView(
@@ -115,10 +119,12 @@ class CommunitySettingPage extends StatelessWidget {
                 ),
                 !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
                     ? const SizedBox()
-                    : const Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
                         child: Divider(
-                          color: Color(0xffEBECEF),
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .baseShade4,
                           thickness: 1,
                         ),
                       ),
@@ -194,10 +200,12 @@ class CommunitySettingPage extends StatelessWidget {
                               });
                         },
                       ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
                   child: Divider(
-                    color: Color(0xffEBECEF),
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .baseShade4,
                     thickness: 1,
                   ),
                 ),
@@ -256,10 +264,12 @@ class CommunitySettingPage extends StatelessWidget {
 
                 !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
                     ? const SizedBox()
-                    : const Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
                         child: Divider(
-                          color: Color(0xffEBECEF),
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .baseShade4,
                           thickness: 1,
                         ),
                       ),

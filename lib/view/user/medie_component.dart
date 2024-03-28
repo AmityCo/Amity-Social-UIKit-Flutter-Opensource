@@ -23,7 +23,8 @@ class MediaGalleryPage extends StatelessWidget {
       color: Provider.of<AmityUIConfiguration>(context).primaryColor,
       onRefresh: () async {},
       child: Container(
-        color: Colors.white,
+        color:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         child: Column(
           children: [
             const SizedBox(
@@ -90,10 +91,14 @@ class MediaGalleryPage extends StatelessWidget {
         backgroundColor: galleryFeed == GalleryFeed.community
             ? Provider.of<CommuFeedVM>(context).getMediaType() == type
                 ? Provider.of<AmityUIConfiguration>(context).primaryColor
-                : const Color(0xffEBECEF)
+                : Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseShade4
             : Provider.of<UserFeedVM>(context).getMediaType() == type
                 ? Provider.of<AmityUIConfiguration>(context).primaryColor
-                : const Color(0xffEBECEF),
+                : Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseShade4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),

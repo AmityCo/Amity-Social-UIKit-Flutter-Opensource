@@ -33,10 +33,13 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
   Widget build(BuildContext context) {
     return Consumer<MyCommunityVM>(builder: (context, vm, _) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           leading: IconButton(
             icon: const Icon(
               Icons.close,
@@ -124,7 +127,9 @@ class CommunityWidget extends StatelessWidget {
         builder: (context, snapshot) {
           var communityStream = snapshot.data ?? community;
           return Card(
-            color: Colors.white,
+            color: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             elevation: 0,
             child: ListTile(
               leading: (communityStream.avatarFileId != null)
@@ -189,13 +194,14 @@ class CommunityIconList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 40,
-            color: Colors.white,
+            color: Colors.transparent,
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -224,14 +230,14 @@ class CommunityIconList extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.white,
+            color: Colors.transparent,
             height: 90.0,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: amityCommunites.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   padding: EdgeInsets.only(left: index != 0 ? 0 : 16),
                   child: CommunityIconWidget(
                       amityCommunity: amityCommunites[index]),
@@ -239,8 +245,9 @@ class CommunityIconList extends StatelessWidget {
               },
             ),
           ),
-          const Divider(
-            color: Color(0xffEBECEF),
+          Divider(
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           )
         ],
       ),
@@ -266,7 +273,7 @@ class CommunityIconWidget extends StatelessWidget {
                       CommunityScreen(community: communityStream)));
             },
             child: Container(
-              color: Colors.white,
+              color: Colors.transparent,
               width: 62,
               margin: const EdgeInsets.only(right: 4, bottom: 10),
               child: Column(

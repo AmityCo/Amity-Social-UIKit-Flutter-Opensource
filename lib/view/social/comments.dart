@@ -218,7 +218,9 @@ class CommentScreenState extends State<CommentScreen> {
             );
 
             return Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseBackground,
               body: FadedSlideAnimation(
                 beginOffset: const Offset(0, 0.3),
                 endOffset: const Offset(0, 0),
@@ -226,7 +228,7 @@ class CommentScreenState extends State<CommentScreen> {
                 child: SafeArea(
                   child: Column(
                     children: [
-                      Align(
+                      Container(
                         alignment: Alignment.topLeft,
                         child: IconButton(
                           onPressed: () {
@@ -372,13 +374,17 @@ class CommentTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          blurRadius: 0.8,
-          spreadRadius: 0.5,
-        ),
-      ]),
+      decoration: BoxDecoration(
+          color: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 0.8,
+              spreadRadius: 0.5,
+            ),
+          ]),
       child: ListTile(
         contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         leading: getAvatarImage(
@@ -481,9 +487,9 @@ class FullCommentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
@@ -565,7 +571,8 @@ class _EditCommentPageState extends State<EditCommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         backgroundColor: Colors.white,
         shadowColor: Colors.transparent,

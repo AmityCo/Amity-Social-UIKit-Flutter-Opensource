@@ -22,7 +22,9 @@ class UserSettingPage extends StatelessWidget {
         initialData: amityMyFollowInfo,
         builder: (context, snapshot) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(
@@ -36,7 +38,7 @@ class UserSettingPage extends StatelessWidget {
               title: Text("Setting",
                   style: Provider.of<AmityUIConfiguration>(context)
                       .titleTextStyle),
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.transparent,
               iconTheme: const IconThemeData(color: Colors.black),
             ),
             body: ListView(

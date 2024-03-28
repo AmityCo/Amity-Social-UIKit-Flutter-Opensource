@@ -28,7 +28,8 @@ class _PostNotificationSettingPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         title: const Text(
           'Posts',
@@ -38,7 +39,7 @@ class _PostNotificationSettingPageState
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),

@@ -33,10 +33,13 @@ class _CommunityPageState extends State<CommunityPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: const Color(0xFFEBECEF),
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
         appBar: AppBar(
           elevation: 0.05, // Add this line to remove the shadow
-          backgroundColor: Colors.white,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           iconTheme: const IconThemeData(color: Colors.blue),
           leading: IconButton(
             icon: const Icon(
@@ -64,8 +67,8 @@ class _CommunityPageState extends State<CommunityPage> {
               },
             )
           ],
-          bottom: const PreferredSize(
-            preferredSize: Size.fromHeight(
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(
                 48.0), // Provide a height for the AppBar's bottom
             child: Column(
               children: [
@@ -75,16 +78,18 @@ class _CommunityPageState extends State<CommunityPage> {
                       tabAlignment: TabAlignment.start,
                       isScrollable:
                           true, // Ensure that the TabBar is scrollable
-
-                      labelColor: Color(0xFF1054DE), // #1054DE color
+                      dividerColor: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .baseBackground,
+                      labelColor: const Color(0xFF1054DE), // #1054DE color
                       unselectedLabelColor: Colors.grey,
-                      indicatorColor: Color(0xFF1054DE),
-                      labelStyle: TextStyle(
+                      indicatorColor: const Color(0xFF1054DE),
+                      labelStyle: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'SF Pro Text',
                       ),
-                      tabs: [
+                      tabs: const [
                         Tab(
                           text: "Newfeed",
                         ),
@@ -153,7 +158,8 @@ class RecommendationSection extends StatelessWidget {
       builder: (context, vm, _) {
         return Container(
           padding: const EdgeInsets.only(bottom: 24),
-          color: const Color(0xFFEBECEF), // Set background color
+          color:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -187,7 +193,9 @@ class RecommendationSection extends StatelessWidget {
                             borderRadius:
                                 BorderRadius.circular(4), // No border radius
                           ),
-                          color: Colors.white,
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .baseBackground,
                           child: Container(
                             width: 131,
                             height: 194,
@@ -311,7 +319,9 @@ class TrendingSection extends StatelessWidget {
     return Consumer<ExplorePageVM>(
       builder: (context, vm, _) {
         return Container(
-          color: Colors.white,
+          color: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           padding: const EdgeInsets.only(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,7 +436,9 @@ class CategorySection extends StatelessWidget {
       builder: (context, vm, _) {
         return Container(
           padding: const EdgeInsets.only(left: 16, top: 20, bottom: 25),
-          color: Colors.white,
+          color: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -489,8 +501,7 @@ class CategorySection extends StatelessWidget {
                                 )),
                       );
                     },
-                    child: Container(
-                      color: Colors.white,
+                    child: SizedBox(
                       child: Row(
                         children: [
                           Container(
@@ -534,8 +545,10 @@ class CategoryListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0.0, // Remove shadow
         title: Text(
           "Category",
@@ -605,8 +618,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0.0, // Remove shadow
 
         title: Text(

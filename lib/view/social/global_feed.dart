@@ -83,7 +83,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
               isCustomPostRanking: false);
         },
         child: Container(
-          color: Colors.grey[200],
+          color:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           child: Stack(
             children: [
               vm.isLoading
@@ -368,7 +369,9 @@ class _PostWidgetState extends State<PostWidget>
             },
             child: Container(
               margin: const EdgeInsets.only(bottom: 0),
-              color: Colors.white,
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseBackground,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: Column(
@@ -836,7 +839,9 @@ class _PostWidgetState extends State<PostWidget>
             : !widget.showlatestComment
                 ? const SizedBox()
                 : Container(
-                    color: Colors.white,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .baseBackground,
                     child: const Divider(
                       color: Colors.grey,
                       height: 0,
@@ -857,7 +862,9 @@ class _PostWidgetState extends State<PostWidget>
                 : widget.post.latestComments!.isEmpty
                     ? const SizedBox()
                     : Container(
-                        color: Colors.white,
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .baseBackground,
                         child: LatestCommentComponent(
                             postId: widget.post.data!.postId,
                             comments: widget.post.latestComments!),

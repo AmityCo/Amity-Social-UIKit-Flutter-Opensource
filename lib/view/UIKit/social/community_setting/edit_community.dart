@@ -52,13 +52,16 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
         builder: (context, snapshot) {
           var community = snapshot.data ?? widget.community;
           return Scaffold(
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             appBar: AppBar(
               title: Text(
                 "Edit Community",
                 style:
                     Provider.of<AmityUIConfiguration>(context).titleTextStyle,
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.transparent,
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.chevron_left,

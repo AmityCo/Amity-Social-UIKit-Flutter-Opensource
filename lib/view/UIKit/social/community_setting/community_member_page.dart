@@ -45,7 +45,8 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
           actions: [
             !Provider.of<MemberManagementVM>(context)
@@ -96,28 +97,32 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
           ],
           elevation: 0.0,
           iconTheme: const IconThemeData(color: Colors.black),
-          backgroundColor: Colors.white,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           title: Text("Community",
               style: Provider.of<AmityUIConfiguration>(context).titleTextStyle),
-          bottom: const PreferredSize(
-            preferredSize: Size.fromHeight(
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(
                 48.0), // Provide a height for the AppBar's bottom
             child: Row(
               children: [
                 TabBar(
                   tabAlignment: TabAlignment.start,
                   isScrollable: true, // Ensure that the TabBar is scrollable
-
-                  labelColor: Color(0xFF1054DE), // #1054DE color
+                  dividerColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .baseBackground,
+                  labelColor: const Color(0xFF1054DE), // #1054DE color
                   unselectedLabelColor: Colors.grey,
-                  indicatorColor: Color(0xFF1054DE),
-                  labelStyle: TextStyle(
+                  indicatorColor: const Color(0xFF1054DE),
+                  labelStyle: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'SF Pro Text',
                   ),
 
-                  tabs: [
+                  tabs: const [
                     Tab(text: "Members"),
                     Tab(text: "Moderators"),
                   ],

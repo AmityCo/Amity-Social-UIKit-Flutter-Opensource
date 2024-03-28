@@ -28,6 +28,8 @@ class _PostReviewPageState extends State<PostReviewPage> {
         Provider.of<CommunityVM>(context, listen: false); // Get the ViewModel
 
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         title: const Text(
           'Post Review',
@@ -37,7 +39,7 @@ class _PostReviewPageState extends State<PostReviewPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -78,9 +80,6 @@ class _PostReviewPageState extends State<PostReviewPage> {
                           isPostReviewEnabled); // Call the function from the ViewModel when the switch is toggled
                 });
               },
-              // activeColor: Color(0xff292B32),
-              // inactiveThumbColor: Color(0xff636878),
-              // inactiveTrackColor: Color(0xffEBECEF),
             ),
           ),
           const Divider(),

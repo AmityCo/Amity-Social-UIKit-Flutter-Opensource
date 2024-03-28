@@ -153,7 +153,9 @@ class CommunityScreenState extends State<CommunityScreen> {
           initialData: widget.community,
           builder: (context, snapshot) {
             var feedWidget = Container(
-              color: Colors.grey[200],
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseShade4,
               child: RefreshIndicator(
                 color: Provider.of<AmityUIConfiguration>(context).primaryColor,
                 onRefresh: () async {
@@ -238,12 +240,13 @@ class CommunityScreenState extends State<CommunityScreen> {
                             .postIcon(iconSize: 28, color: Colors.white),
                       )
                     : null,
-                backgroundColor: Colors.white,
+                backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseBackground,
                 body: Stack(
                   children: [
                     IntrinsicDimension(
                         listener: (context, width, height, startOffset) {
-                      print('HEIGHT: $height');
                       Provider.of<CompoentSizeVM>(context, listen: false)
                           .setCommunityDetailSectionSize(height);
                     }, builder: (_, __, ___, ____) {
@@ -264,7 +267,10 @@ class CommunityScreenState extends State<CommunityScreen> {
                               shadowColor: Colors.white,
                               elevation: 0,
                               surfaceTintColor: Colors.transparent,
-                              backgroundColor: Colors.white,
+                              backgroundColor:
+                                  Provider.of<AmityUIConfiguration>(context)
+                                      .appColors
+                                      .baseBackground,
                               floating: false,
                               pinned: true,
                               leading: IconButton(
@@ -301,11 +307,20 @@ class CommunityScreenState extends State<CommunityScreen> {
                                   children: [
                                     Expanded(
                                       child: Container(
-                                        color: Colors.white,
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .baseBackground,
                                         child: TabBar(
                                           tabAlignment: TabAlignment.start,
                                           controller: _tabController,
                                           isScrollable: true,
+                                          dividerColor:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .baseBackground,
                                           labelColor: const Color(0xFF1054DE),
                                           unselectedLabelColor: Colors.black,
                                           indicatorColor:
@@ -493,9 +508,11 @@ class PedindingButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         decoration: BoxDecoration(
-          color: const Color(0xffEBECEF),
+          color:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           border: Border.all(
-            color: const Color(0xffEBECEF),
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           ), // Grey border color
           borderRadius: BorderRadius.circular(4), // Rounded corners
         ),
@@ -640,7 +657,9 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
     return Wrap(
       children: [
         Container(
-          color: Colors.white,
+          color: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           height: 120,
         ),
         Stack(

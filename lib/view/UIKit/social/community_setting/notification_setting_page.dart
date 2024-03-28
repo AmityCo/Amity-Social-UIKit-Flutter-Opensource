@@ -24,12 +24,14 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         title: Text(
           'Notifications',
           style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xff292B32)),
       ),

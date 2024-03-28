@@ -36,8 +36,11 @@ class _UserListPageState extends State<UserListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         shadowColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
@@ -202,7 +205,9 @@ class _UserListPageState extends State<UserListPage> {
                   return SliverStickyHeader(
                     header: Container(
                       padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                      color: Colors.grey[300],
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .baseShade4,
                       child: Text(
                         item.keys.first,
                         style: const TextStyle(

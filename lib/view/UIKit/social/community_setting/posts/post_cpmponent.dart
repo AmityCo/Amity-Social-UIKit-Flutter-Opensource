@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -225,7 +226,9 @@ class PostMedia extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(4.0),
               border: Border.all(
-                color: const Color(0xffEBECEF),
+                color: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseShade4,
                 width: 1.0,
               ),
             ),

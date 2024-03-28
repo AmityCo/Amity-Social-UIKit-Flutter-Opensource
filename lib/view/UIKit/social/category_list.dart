@@ -79,10 +79,11 @@ class CategoryListState extends State<CategoryList> {
     final theme = Theme.of(context);
     return Consumer<CategoryVM>(builder: (context, vm, _) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           leading: IconButton(
             icon: const Icon(
               Icons.close,
@@ -103,9 +104,8 @@ class CategoryListState extends State<CategoryList> {
           child: Column(
             children: [
               Expanded(
-                child: Container(
+                child: SizedBox(
                   height: bHeight,
-                  color: Colors.white,
                   child: FadedSlideAnimation(
                     beginOffset: const Offset(0, 0.3),
                     endOffset: const Offset(0, 0),
@@ -183,7 +183,7 @@ class CategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: Colors.transparent,
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

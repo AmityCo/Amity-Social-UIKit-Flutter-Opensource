@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/video_player.dart';
 import 'package:amity_uikit_beta_service/view/social/imag_viewer.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:linkify/linkify.dart';
 import 'package:linkwell/linkwell.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'image_viewer.dart';
@@ -1093,7 +1095,8 @@ Widget _listMediaGrid(List<AmityPost> files) {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(4.0),
           border: Border.all(
-            color: const Color(0xffEBECEF),
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
             width: 1.0,
           ),
         ),

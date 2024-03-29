@@ -100,7 +100,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text("${Provider.of<ChatRoomVM>(context).amitymessage.length}"),
                 ChatTextFieldComponent(
                     theme: theme,
                     textfielHeight: textfielHeight,

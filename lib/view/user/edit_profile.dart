@@ -99,17 +99,22 @@ class ProfileScreenState extends State<ProfileScreen> {
     final myAppBar = AppBar(
       title: Text(
         "Edit Profile",
-        style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+        style: Provider.of<AmityUIConfiguration>(context)
+            .titleTextStyle
+            .copyWith(
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       leading: IconButton(
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onPressed: () {
           Navigator.of(context).pop();
         },
-        icon: const Icon(
+        icon: Icon(
           Icons.chevron_left,
-          color: Colors.black,
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
         ),
       ),
       elevation: 0,
@@ -174,13 +179,14 @@ class ProfileScreenState extends State<ProfileScreen> {
         myAppBar.preferredSize.height;
     return Consumer<UserFeedVM>(builder: (context, vm, _) {
       return Scaffold(
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: myAppBar,
         body: FadedSlideAnimation(
           beginOffset: const Offset(0, 0.3),
           endOffset: const Offset(0, 0),
           slideCurve: Curves.linearToEaseOut,
-          child: Container(
-            color: Colors.white,
+          child: SizedBox(
             height: bheight,
             child: SingleChildScrollView(
               child: Column(

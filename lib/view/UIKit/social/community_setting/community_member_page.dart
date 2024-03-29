@@ -45,7 +45,8 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
           actions: [
             !Provider.of<MemberManagementVM>(context)
@@ -53,7 +54,12 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                     .contains('community-moderator')
                 ? const SizedBox()
                 : IconButton(
-                    icon: const Icon(Icons.add, color: Colors.black),
+                    icon: Icon(
+                      Icons.add,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                     onPressed: () async {
                       var userList = Provider.of<MemberManagementVM>(context,
                               listen: false)
@@ -96,28 +102,49 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
           ],
           elevation: 0.0,
           iconTheme: const IconThemeData(color: Colors.black),
-          backgroundColor: Colors.white,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
+          leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.chevron_left,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
+                size: 30),
+          ),
           title: Text("Community",
-              style: Provider.of<AmityUIConfiguration>(context).titleTextStyle),
-          bottom: const PreferredSize(
-            preferredSize: Size.fromHeight(
+              style: Provider.of<AmityUIConfiguration>(context)
+                  .titleTextStyle
+                  .copyWith(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                  )),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(
                 48.0), // Provide a height for the AppBar's bottom
             child: Row(
               children: [
                 TabBar(
                   tabAlignment: TabAlignment.start,
                   isScrollable: true, // Ensure that the TabBar is scrollable
+                  dividerColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .baseBackground,
+                  labelColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .primary,
 
-                  labelColor: Color(0xFF1054DE), // #1054DE color
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Color(0xFF1054DE),
-                  labelStyle: TextStyle(
+                  indicatorColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .primary,
+                  labelStyle: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'SF Pro Text',
                   ),
 
-                  tabs: [
+                  tabs: const [
                     Tab(text: "Members"),
                     Tab(text: "Moderators"),
                   ],
@@ -160,7 +187,9 @@ class MemberList extends StatelessWidget {
                         ))));
               },
               leading: CircleAvatar(
-                backgroundColor: const Color(0xFFD9E5FC),
+                backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .primaryShade3,
                 backgroundImage: viewModel.userList[index].user?.avatarUrl ==
                         null
                     ? null
@@ -171,14 +200,18 @@ class MemberList extends StatelessWidget {
               ),
               title: Text(
                 viewModel.userList[index].user?.displayName ?? '',
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
               ),
               trailing: IconButton(
-                icon: const Icon(
-                  Icons.more_horiz_rounded,
-                  color: Colors.black,
-                ),
+                icon: Icon(Icons.more_horiz_rounded,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
                 onPressed: () {
                   _showOptionsBottomSheet(
                       context, viewModel.userList[index], viewModel,
@@ -215,7 +248,9 @@ class ModeratorList extends StatelessWidget {
                         ))));
               },
               leading: CircleAvatar(
-                backgroundColor: const Color(0xFFD9E5FC),
+                backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .primaryShade3,
                 backgroundImage:
                     viewModel.moderatorList[index].user?.avatarUrl == null
                         ? null

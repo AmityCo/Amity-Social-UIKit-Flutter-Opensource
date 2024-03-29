@@ -24,71 +24,70 @@ class FollowScreen extends StatefulWidget {
 
 class _FollowScreenState extends State<FollowScreen> {
   TabController? _tabController;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(
           widget.displayName ?? "",
           style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
       ),
-      backgroundColor: Provider.of<AmityUIConfiguration>(context)
-          .messageRoomConfig
-          .backgroundColor,
-      body: SafeArea(
-        bottom: false,
-        child: DefaultTabController(
-          initialIndex:
-              widget.followScreenType == FollowScreenType.following ? 0 : 1,
-          length: 2,
-          child: Scaffold(
-            body: Column(
-              children: [
-                TabBar(
-                  tabAlignment: TabAlignment.start,
-                  controller: _tabController,
-                  isScrollable: true,
-                  labelColor: const Color(0xFF1054DE),
-                  unselectedLabelColor: Colors.black,
-                  indicatorColor: const Color(0xFF1054DE),
-                  labelStyle: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'SF Pro Text',
+      body: DefaultTabController(
+        initialIndex:
+            widget.followScreenType == FollowScreenType.following ? 0 : 1,
+        length: 2,
+        child: Column(
+          children: [
+            TabBar(
+              tabAlignment: TabAlignment.start,
+              controller: _tabController,
+              isScrollable: true,
+              dividerColor: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseBackground,
+              labelColor: const Color(0xFF1054DE),
+              unselectedLabelColor: Colors.black,
+              indicatorColor: const Color(0xFF1054DE),
+              labelStyle: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'SF Pro Text',
+              ),
+              tabs: const [
+                Tab(
+                  child: Text(
+                    "Following",
                   ),
-                  tabs: const [
-                    Tab(
-                      child: Text(
-                        "Following",
-                      ),
-                    ),
-                    Tab(
-                      child: Text(
-                        "Followers",
-                      ),
-                    ),
-                  ],
                 ),
-                Expanded(
-                  child: Consumer<FollowerVM>(builder: (context, vm, _) {
-                    return TabBarView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        AmityFollowingScreen(
-                          userId: widget.userId,
-                        ),
-                        AmityFollowerScreen(
-                          userId: widget.userId,
-                        ),
-                      ],
-                    );
-                  }),
+                Tab(
+                  child: Text(
+                    "Followers",
+                  ),
                 ),
               ],
             ),
-          ),
+            Expanded(
+              child: Consumer<FollowerVM>(builder: (context, vm, _) {
+                return TabBarView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    AmityFollowingScreen(
+                      userId: widget.userId,
+                    ),
+                    AmityFollowerScreen(
+                      userId: widget.userId,
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ],
         ),
       ),
     );

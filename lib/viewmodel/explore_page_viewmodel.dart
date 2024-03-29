@@ -44,6 +44,7 @@ class ExplorePageVM with ChangeNotifier {
     communities.clear();
     AmitySocialClient.newCommunityRepository()
         .getCommunities()
+        .includeDeleted(false)
         .categoryId(categoryId)
         .getPagingData(token: null)
         .then((value) {

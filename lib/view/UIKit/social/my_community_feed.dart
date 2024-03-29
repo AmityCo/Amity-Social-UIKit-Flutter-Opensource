@@ -33,14 +33,17 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
   Widget build(BuildContext context) {
     return Consumer<MyCommunityVM>(builder: (context, vm, _) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.close,
-              color: Colors.black,
+              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
             ),
             onPressed: () {
               Navigator.of(context).pop();
@@ -49,12 +52,20 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
           title: Text(
             'My Community',
             style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle, // Adjust as needed
+                .titleTextStyle
+                .copyWith(
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).appColors.base,
+                ), // Adjust as needed
           ),
           actions: [
             if (widget.canCreateCommunity)
               IconButton(
-                icon: const Icon(Icons.add, color: Colors.black),
+                icon: Icon(
+                  Icons.add,
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).appColors.base,
+                ),
                 onPressed: () async {
                   await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
@@ -124,7 +135,9 @@ class CommunityWidget extends StatelessWidget {
         builder: (context, snapshot) {
           var communityStream = snapshot.data ?? community;
           return Card(
-            color: Colors.white,
+            color: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             elevation: 0,
             child: ListTile(
               leading: (communityStream.avatarFileId != null)
@@ -136,8 +149,11 @@ class CommunityWidget extends StatelessWidget {
                   : Container(
                       height: 40,
                       width: 40,
-                      decoration: const BoxDecoration(
-                          color: Color(0xFFD9E5FC), shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                          shape: BoxShape.circle),
                       child: const Icon(
                         Icons.group,
                         color: Colors.white,
@@ -145,11 +161,23 @@ class CommunityWidget extends StatelessWidget {
                     ),
               title: Row(
                 children: [
-                  if (!community.isPublic!) const Icon(Icons.lock, size: 16.0),
+                  if (!community.isPublic!)
+                    Icon(
+                      Icons.lock,
+                      size: 16.0,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                   const SizedBox(width: 4.0),
                   Text(
                     communityStream.displayName ?? "Community ",
-                    style: const TextStyle(overflow: TextOverflow.ellipsis),
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                   ),
                   const SizedBox(width: 4.0),
                   communityStream.isOfficial!
@@ -186,22 +214,26 @@ class CommunityIconList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 40,
-            color: Colors.white,
+            color: Colors.transparent,
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'My Community',
                   style: TextStyle(
                     fontSize: 17.0,
                     fontWeight: FontWeight.bold,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                   ),
                 ),
                 GestureDetector(
@@ -221,14 +253,14 @@ class CommunityIconList extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.white,
+            color: Colors.transparent,
             height: 90.0,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: amityCommunites.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   padding: EdgeInsets.only(left: index != 0 ? 0 : 16),
                   child: CommunityIconWidget(
                       amityCommunity: amityCommunites[index]),
@@ -236,8 +268,9 @@ class CommunityIconList extends StatelessWidget {
               },
             ),
           ),
-          const Divider(
-            color: Color(0xffEBECEF),
+          Divider(
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           )
         ],
       ),
@@ -263,7 +296,7 @@ class CommunityIconWidget extends StatelessWidget {
                       CommunityScreen(community: communityStream)));
             },
             child: Container(
-              color: Colors.white,
+              color: Colors.transparent,
               width: 62,
               margin: const EdgeInsets.only(right: 4, bottom: 10),
               child: Column(
@@ -280,8 +313,11 @@ class CommunityIconWidget extends StatelessWidget {
                         : Container(
                             height: 40,
                             width: 40,
-                            decoration: const BoxDecoration(
-                                color: Color(0xFFD9E5FC),
+                            decoration: BoxDecoration(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primaryShade3,
                                 shape: BoxShape.circle),
                             child: const Icon(
                               Icons.group,
@@ -292,15 +328,22 @@ class CommunityIconWidget extends StatelessWidget {
                   Row(
                     children: [
                       !amityCommunity.isPublic!
-                          ? const Icon(
+                          ? Icon(
                               Icons.lock,
                               size: 12,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
                             )
                           : const SizedBox(),
                       Expanded(
                         child: Text(amityCommunity.displayName ?? "",
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base,
                                 overflow: TextOverflow.ellipsis)),
                       ),
                       amityCommunity.isOfficial!

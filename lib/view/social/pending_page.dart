@@ -184,10 +184,12 @@ class PendingFeddScreenState extends State<PendingFeddScreen> {
                       "Pending posts (${vm.getCommunityPendingPosts().length})",
                       style: Provider.of<AmityUIConfiguration>(context)
                           .titleTextStyle),
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.transparent,
                   iconTheme: const IconThemeData(color: Colors.black),
                 ),
-                backgroundColor: Colors.grey[200],
+                backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseBackground,
                 body: feedWidget);
           });
     });

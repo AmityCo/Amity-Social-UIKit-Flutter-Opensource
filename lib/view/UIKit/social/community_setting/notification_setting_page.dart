@@ -24,30 +24,47 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         title: Text(
           'Notifications',
-          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+          style: Provider.of<AmityUIConfiguration>(context)
+              .titleTextStyle
+              .copyWith(
+                  color: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .base),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xff292B32)),
       ),
       body: ListView(
         children: [
           // Section 1: Allow Notification
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Text(
               'Allow Notification',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .base),
             ),
           ),
           ListTile(
-            title: const Text(
-              'Turn on to receive push notification from this community',
-            ),
+            title: Text(
+                'Turn on to receive push notification from this community',
+                style: TextStyle(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base)),
             trailing: Switch(
+              activeColor:
+                  Provider.of<AmityUIConfiguration>(context).appColors.primary,
               value: isNotificationEnabled,
               onChanged: (value) {
                 setState(() {
@@ -74,12 +91,20 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                           color: Colors
                               .grey[200], // Choose the color to fit your design
                         ),
-                        child: const Icon(Icons.newspaper_outlined,
-                            color: Color(0xff292B32)),
+                        child: Icon(Icons.newspaper_outlined,
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .base),
                       ), // You may want to replace with your icon
-                      title: const Text('Posts'),
-                      trailing: const Icon(Icons.chevron_right,
-                          color: Color(0xff292B32)),
+                      title: Text('Posts',
+                          style: TextStyle(
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base)),
+                      trailing: Icon(Icons.chevron_right,
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base),
                       onTap: () {
                         // Navigate to post settings page
                         Navigator.of(context).push(MaterialPageRoute(
@@ -97,14 +122,24 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                           color: const Color(
                               0xfff1f1f1), // Choose the color to fit your design
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.chat_bubble_outlined,
-                          color: Color(0xff292B32),
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base,
                         ),
                       ), // You may want to replace with your icon
-                      title: const Text('Comments'),
-                      trailing: const Icon(Icons.chevron_right,
-                          color: Color(0xff292B32)),
+                      title: Text(
+                        'Comments',
+                        style: TextStyle(
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .base),
+                      ),
+                      trailing: Icon(Icons.chevron_right,
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base),
                       onTap: () {
                         // Navigate to comment settings page
                         Navigator.of(context).push(MaterialPageRoute(

@@ -34,6 +34,7 @@ class _AmityPendingScreenState extends State<AmityPendingScreen> {
       final theme = Theme.of(context);
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
           title: Text(
             "Follow Request",
             style:

@@ -104,15 +104,15 @@ class UserProfileScreenState extends State<UserProfileScreen>
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
     final myAppBar = AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       leading: IconButton(
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onPressed: () {
           Navigator.of(context).pop();
         },
-        icon: const Icon(
+        icon: Icon(
           Icons.chevron_left,
-          color: Colors.black,
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
           size: 24,
         ),
       ),
@@ -125,65 +125,74 @@ class UserProfileScreenState extends State<UserProfileScreen>
     return Consumer<UserFeedVM>(builder: (context, vm, _) {
       if (vm.amityUser != null) {
         Widget buildPrivateAccountWidget(double bheight) {
-          return Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            height: bheight - 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/privateIcon.png",
-                  package: "amity_uikit_beta_service",
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  "This account is private",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff292B32)),
-                ),
-                const Text(
-                  "Follow this user to see all posts",
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xffA5A9B5)),
-                ),
-              ],
+          return SingleChildScrollView(
+            child: Container(
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseShade4,
+              width: MediaQuery.of(context).size.width,
+              height: bheight - 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/privateIcon.png",
+                    package: "amity_uikit_beta_service",
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "This account is private",
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff292B32)),
+                  ),
+                  const Text(
+                    "Follow this user to see all posts",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xffA5A9B5)),
+                  ),
+                ],
+              ),
             ),
           );
         }
 
         Widget buildNoPostsWidget(double bheight, BuildContext context) {
-          return Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            height: bheight - 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/noPostYet.png",
-                  package: "amity_uikit_beta_service",
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  "No post yet",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xffA5A9B5)),
-                ),
-              ],
+          return SingleChildScrollView(
+            child: Container(
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseShade4,
+              width: MediaQuery.of(context).size.width,
+              height: bheight - 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/noPostYet.png",
+                    package: "amity_uikit_beta_service",
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "No post yet",
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xffA5A9B5)),
+                  ),
+                ],
+              ),
             ),
           );
         }
 
         Widget buildPostsList(BuildContext context) {
           return Container(
-            color: Colors.grey[200],
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
             child: ListView.builder(
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
@@ -223,9 +232,33 @@ class UserProfileScreenState extends State<UserProfileScreen>
         }
 
         var tablist = [
-          buildContent(context, bheight),
-          const MediaGalleryPage(
+          RefreshIndicator(
+              color: Provider.of<AmityUIConfiguration>(context).primaryColor,
+              onRefresh: () async {
+                if (widget.amityUser != null) {
+                  await Provider.of<UserFeedVM>(context, listen: false)
+                      .initUserFeed(
+                          amityUser: widget.amityUser,
+                          userId: widget.amityUser!.userId!);
+                } else {
+                  await Provider.of<UserFeedVM>(context, listen: false)
+                      .initUserFeed(userId: widget.amityUserId);
+                }
+              },
+              child: buildContent(context, bheight)),
+          MediaGalleryPage(
             galleryFeed: GalleryFeed.user,
+            onRefresh: () async {
+              if (widget.amityUser != null) {
+                await Provider.of<UserFeedVM>(context, listen: false)
+                    .initUserFeed(
+                        amityUser: widget.amityUser,
+                        userId: widget.amityUser!.userId!);
+              } else {
+                await Provider.of<UserFeedVM>(context, listen: false)
+                    .initUserFeed(userId: widget.amityUserId);
+              }
+            },
           )
         ];
         return Scaffold(
@@ -256,7 +289,8 @@ class UserProfileScreenState extends State<UserProfileScreen>
                           .iconConfig
                           .postIcon(iconSize: 28, color: Colors.white),
                     ),
-          backgroundColor: Colors.white,
+          backgroundColor:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           body: DefaultTabController(
             length: 2,
             child: NestedScrollView(
@@ -400,13 +434,17 @@ class UserProfileScreenState extends State<UserProfileScreen>
                     shadowColor: Colors.white,
                     elevation: 0,
                     surfaceTintColor: Colors.transparent,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .baseBackground,
                     floating: false,
                     pinned: true,
                     leading: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.chevron_left,
-                        color: Color(0xff292B32),
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
                         size: 30,
                       ),
                       onPressed: () => Navigator.of(context).pop(),
@@ -447,59 +485,83 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                             //     .toString()),
                                             Text(
                                               getAmityUser().displayName ?? "",
-                                              style: const TextStyle(
+                                              style: TextStyle(
+                                                  color: Provider.of<
+                                                              AmityUIConfiguration>(
+                                                          context)
+                                                      .appColors
+                                                      .base,
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.w700,
                                                   letterSpacing: -0.4),
                                             ),
-                                            Row(
-                                              children: [
-                                                // Text('${  vm.amityMyFollowInfo.followerCount
-                                                //     .toString()} Posts  '),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.of(context).push(MaterialPageRoute(
-                                                        builder: (context) => ChangeNotifierProvider(
-                                                            create: (context) =>
-                                                                FollowerVM(),
-                                                            child: FollowScreen(
-                                                                followScreenType:
-                                                                    FollowScreenType
-                                                                        .following,
-                                                                key:
-                                                                    UniqueKey(),
-                                                                userId: widget
-                                                                    .amityUserId,
-                                                                displayName:
-                                                                    getAmityUser()
-                                                                        .displayName))));
-                                                  },
-                                                  child: Text(
-                                                      '${vm.amityMyFollowInfo.followingCount.toString()} following  '),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.of(context).push(MaterialPageRoute(
-                                                        builder: (context) => ChangeNotifierProvider(
-                                                            create: (context) =>
-                                                                FollowerVM(),
-                                                            child: FollowScreen(
-                                                                followScreenType:
-                                                                    FollowScreenType
-                                                                        .follower,
-                                                                key:
-                                                                    UniqueKey(),
-                                                                userId: widget
-                                                                    .amityUserId,
-                                                                displayName:
-                                                                    getAmityUser()
-                                                                        .displayName))));
-                                                  },
-                                                  child: Text(
-                                                      '${vm.amityMyFollowInfo.followerCount.toString()} followers'),
-                                                ),
-                                              ],
-                                            )
+                                            vm.amityMyFollowInfo.id == null
+                                                ? const SizedBox()
+                                                : StreamBuilder<
+                                                        AmityUserFollowInfo>(
+                                                    stream: vm.amityMyFollowInfo
+                                                        .listen.stream,
+                                                    initialData:
+                                                        vm.amityMyFollowInfo,
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      return Row(
+                                                        children: [
+                                                          // Text('${  vm.amityMyFollowInfo.followerCount
+                                                          //     .toString()} Posts  '),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.of(context).push(MaterialPageRoute(
+                                                                  builder: (context) => ChangeNotifierProvider(
+                                                                      create: (context) =>
+                                                                          FollowerVM(),
+                                                                      child: FollowScreen(
+                                                                          followScreenType: FollowScreenType
+                                                                              .following,
+                                                                          key:
+                                                                              UniqueKey(),
+                                                                          userId: widget
+                                                                              .amityUserId,
+                                                                          displayName:
+                                                                              getAmityUser().displayName))));
+                                                            },
+                                                            child: Text(
+                                                                '${snapshot.data!.followingCount} following  ',
+                                                                style: TextStyle(
+                                                                    color: Provider.of<AmityUIConfiguration>(
+                                                                            context)
+                                                                        .appColors
+                                                                        .base)),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.of(context).push(MaterialPageRoute(
+                                                                  builder: (context) => ChangeNotifierProvider(
+                                                                      create: (context) =>
+                                                                          FollowerVM(),
+                                                                      child: FollowScreen(
+                                                                          followScreenType: FollowScreenType
+                                                                              .follower,
+                                                                          key:
+                                                                              UniqueKey(),
+                                                                          userId: widget
+                                                                              .amityUserId,
+                                                                          displayName:
+                                                                              getAmityUser().displayName))));
+                                                            },
+                                                            child: Text(
+                                                              '${snapshot.data!.followerCount} followers',
+                                                              style: TextStyle(
+                                                                  color: Provider.of<
+                                                                              AmityUIConfiguration>(
+                                                                          context)
+                                                                      .appColors
+                                                                      .base),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    })
                                           ],
                                         ),
                                       ),
@@ -515,7 +577,13 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                   children: [
                                     Text(
                                       getAmityUser().description ?? "",
-                                      style: const TextStyle(fontSize: 16),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .base),
                                     ),
                                   ],
                                 ),
@@ -539,14 +607,19 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                             },
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: const Color(
-                                                          0xffA5A9B5),
-                                                      style: BorderStyle.solid,
-                                                      width: 1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
-                                                  color: Colors.white),
+                                                border: Border.all(
+                                                    color:
+                                                        const Color(0xffA5A9B5),
+                                                    style: BorderStyle.solid,
+                                                    width: 1),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                color: Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .baseBackground,
+                                              ),
                                               padding:
                                                   const EdgeInsets.fromLTRB(
                                                       10, 10, 10, 10),
@@ -554,14 +627,24 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  const Icon(
-                                                      Icons.edit_outlined),
+                                                  Icon(
+                                                    Icons.edit_outlined,
+                                                    color: Provider.of<
+                                                                AmityUIConfiguration>(
+                                                            context)
+                                                        .appColors
+                                                        .base,
+                                                  ),
                                                   Text(
                                                     "Edit Profile",
                                                     style: theme
                                                         .textTheme.titleSmall!
                                                         .copyWith(
-                                                      color: Colors.black,
+                                                      color: Provider.of<
+                                                                  AmityUIConfiguration>(
+                                                              context)
+                                                          .appColors
+                                                          .base,
                                                       fontSize: 15,
                                                     ),
                                                     textAlign: TextAlign.center,
@@ -588,8 +671,11 @@ class UserProfileScreenState extends State<UserProfileScreen>
                               initialData: vm.amityMyFollowInfo,
                               builder: (context, snapshot) {
                                 return IconButton(
-                                  icon: const Icon(Icons.more_horiz,
-                                      color: Colors.black),
+                                  icon: Icon(Icons.more_horiz,
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base),
                                   onPressed: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -610,14 +696,25 @@ class UserProfileScreenState extends State<UserProfileScreen>
                         children: [
                           Expanded(
                             child: Container(
-                              color: Colors.white,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .baseBackground,
                               child: TabBar(
+                                dividerColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .baseBackground,
                                 tabAlignment: TabAlignment.start,
                                 controller: _tabController,
                                 isScrollable: true,
-                                labelColor: const Color(0xFF1054DE),
-                                unselectedLabelColor: Colors.black,
-                                indicatorColor: const Color(0xFF1054DE),
+                                labelColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
+                                indicatorColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
                                 labelStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w600,
@@ -641,7 +738,11 @@ class UserProfileScreenState extends State<UserProfileScreen>
           ),
         );
       } else {
-        return const Scaffold();
+        return Scaffold(
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
+        );
       }
     });
   }

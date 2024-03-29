@@ -24,18 +24,27 @@ class _PostToPageState extends State<PostToPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         elevation: 0.0, // Add this line to remove the shadow
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: Icon(
+            Icons.close,
+            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           "Post to",
-          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+          style: Provider.of<AmityUIConfiguration>(context)
+              .titleTextStyle
+              .copyWith(
+                  color: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .base),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Consumer<MyCommunityVM>(
@@ -56,16 +65,24 @@ class _PostToPageState extends State<PostToPage> {
                       : Container(
                           height: 40,
                           width: 40,
-                          decoration: const BoxDecoration(
-                              color: Color(0xFFD9E5FC), shape: BoxShape.circle),
+                          decoration: BoxDecoration(
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .primaryShade3,
+                              shape: BoxShape.circle),
                           child: const Icon(
                             Icons.person,
                             color: Colors.white,
                           ),
                         ),
-                  title: const Text(
+                  title: Text(
                     "My Timeline",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base),
                     // Adjust as needed),
                   ),
                   onTap: () {
@@ -101,8 +118,11 @@ class _PostToPageState extends State<PostToPage> {
                               : Container(
                                   height: 40,
                                   width: 40,
-                                  decoration: const BoxDecoration(
-                                      color: Color(0xFFD9E5FC),
+                                  decoration: BoxDecoration(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .primaryShade3,
                                       shape: BoxShape.circle),
                                   child: const Icon(
                                     Icons.group,
@@ -111,10 +131,31 @@ class _PostToPageState extends State<PostToPage> {
                                 ),
                           title: Row(
                             children: [
+                              !community.isPublic!
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(left: 7.0),
+                                      child: Icon(
+                                        Icons.lock,
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base,
+                                        size: 17,
+                                      ))
+                                  : const SizedBox(),
+                              const SizedBox(
+                                width: 5,
+                              ),
                               Text(
                                 community.displayName ?? '',
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base),
                               ),
                               community.isOfficial!
                                   ? Padding(

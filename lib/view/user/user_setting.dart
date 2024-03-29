@@ -22,12 +22,15 @@ class UserSettingPage extends StatelessWidget {
         initialData: amityMyFollowInfo,
         builder: (context, snapshot) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             appBar: AppBar(
               leading: IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.chevron_left,
-                  color: Colors.black,
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).appColors.base,
                   size: 30,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
@@ -35,17 +38,25 @@ class UserSettingPage extends StatelessWidget {
               elevation: 0.0,
               title: Text("Setting",
                   style: Provider.of<AmityUIConfiguration>(context)
-                      .titleTextStyle),
-              backgroundColor: Colors.white,
+                      .titleTextStyle
+                      .copyWith(
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base)),
+              backgroundColor: Colors.transparent,
               iconTheme: const IconThemeData(color: Colors.black),
             ),
             body: ListView(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Text("Basic info",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17,
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base)),
                 ),
                 amityUser.userId == AmityCoreClient.getCurrentUser().userId
                     ? ListTile(
@@ -58,14 +69,19 @@ class UserSettingPage extends StatelessWidget {
                               color: const Color(
                                   0xfff1f1f1), // Choose the color to fit your design
                             ),
-                            child: const Icon(Icons.edit,
-                                color: Color(0xff292B32))),
-                        title: const Text(
+                            child: Icon(Icons.edit,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base)),
+                        title: Text(
                           "Edit Profile",
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .base,
                           ),
                         ),
                         onTap: () async {
@@ -118,14 +134,21 @@ class UserSettingPage extends StatelessWidget {
                                       color: const Color(
                                           0xfff1f1f1), // Choose the color to fit your design
                                     ),
-                                    child: const Icon(Icons.person_remove,
-                                        color: Color(0xff292B32))),
-                                title: const Text(
+                                    child: Icon(Icons.person_remove,
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base)),
+                                title: Text(
                                   "Unfollow",
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.black,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base,
                                   ),
                                 ),
                                 onTap: () {
@@ -149,12 +172,15 @@ class UserSettingPage extends StatelessWidget {
                                 ),
                                 child: const Icon(Icons.flag,
                                     color: Color(0xff292B32))),
-                            title: const Text(
+                            title: Text(
                               "Unreport User",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base,
                               ),
                             ),
                             onTap: () {
@@ -171,14 +197,20 @@ class UserSettingPage extends StatelessWidget {
                                   color: const Color(
                                       0xfff1f1f1), // Choose the color to fit your design
                                 ),
-                                child: const Icon(Icons.flag,
-                                    color: Color(0xff292B32))),
-                            title: const Text(
+                                child: Icon(Icons.flag,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base)),
+                            title: Text(
                               "Report User",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base,
                               ),
                             ),
                             onTap: () {
@@ -199,16 +231,21 @@ class UserSettingPage extends StatelessWidget {
                               color: const Color(
                                   0xfff1f1f1), // Choose the color to fit your design
                             ),
-                            child: const Icon(Icons.person_off,
-                                color: Color(0xff292B32))),
+                            child: Icon(Icons.person_off,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base)),
                         title: Text(
                           snapshot.data!.status == AmityFollowStatus.BLOCKED
                               ? "Unblock"
                               : "Block User",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .base,
                           ),
                         ),
                         onTap: () {

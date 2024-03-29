@@ -35,18 +35,24 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
 
     return Consumer<EditPostVM>(builder: (context, vm, _) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           title: Text(
             "Edit post",
-            style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+            style: Provider.of<AmityUIConfiguration>(context)
+                .titleTextStyle
+                .copyWith(
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).appColors.base,
+                ),
           ),
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.chevron_left,
-              color: Colors.black,
+              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
             ),
             onPressed: () {
               if (hasContent) {
@@ -97,6 +103,11 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                         TextField(
                           onChanged: (value) => vm.updatePostValidity(),
                           controller: vm.textEditingController,
+                          style: TextStyle(
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .base,
+                          ),
                           scrollPhysics: const NeverScrollableScrollPhysics(),
                           maxLines: null,
                           decoration: const InputDecoration(

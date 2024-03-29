@@ -15,7 +15,9 @@ import '../../viewmodel/user_feed_viewmodel.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.user});
+
   final AmityUser user;
+
   @override
   ProfileScreenState createState() => ProfileScreenState();
 }
@@ -101,15 +103,17 @@ class ProfileScreenState extends State<ProfileScreen> {
         "Edit Profile",
         style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).userProfileBGColor,
       leading: IconButton(
         color: Provider.of<AmityUIConfiguration>(context).primaryColor,
         onPressed: () {
           Navigator.of(context).pop();
         },
-        icon: const Icon(
+        icon: Icon(
           Icons.chevron_left,
-          color: Colors.black,
+          color:
+              Provider.of<AmityUIConfiguration>(context).userProfileIconColor,
         ),
       ),
       elevation: 0,
@@ -180,7 +184,8 @@ class ProfileScreenState extends State<ProfileScreen> {
           endOffset: const Offset(0, 0),
           slideCurve: Curves.linearToEaseOut,
           child: Container(
-            color: Colors.white,
+            color:
+                Provider.of<AmityUIConfiguration>(context).userProfileBGColor,
             height: bheight,
             child: SingleChildScrollView(
               child: Column(

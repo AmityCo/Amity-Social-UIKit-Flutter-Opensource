@@ -57,7 +57,10 @@ class _TextFieldWithCounterState extends State<TextFieldWithCounter> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
                       '${widget.controller.text.length}/${widget.maxCharacters}',
-                      style: const TextStyle(fontSize: 13.4),
+                      style: TextStyle(
+                          fontSize: 13.4,
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .userProfileTextColor),
                     ),
                   )
                 : Container(),
@@ -70,8 +73,12 @@ class _TextFieldWithCounterState extends State<TextFieldWithCounter> {
             hintText: widget.hintText,
             counterText: "",
           ),
+          cursorColor: Provider.of<AmityUIConfiguration>(context).primaryColor,
           maxLength: widget.maxCharacters,
           keyboardType: widget.keyboardType,
+          style: TextStyle(
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .userProfileTextColor),
           maxLines: widget.maxLines,
           onTap: widget.onTap,
           readOnly: widget.onTap != null,

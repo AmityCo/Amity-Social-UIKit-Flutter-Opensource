@@ -200,6 +200,7 @@ class CommunityScreenState extends State<CommunityScreen> {
                           await Navigator.of(context).push(MaterialPageRoute(
                               builder: (context2) => AmityCreatePostV2Screen(
                                     community: snapshot.data!,
+                                    feedType: FeedType.community,
                                   )));
                           Provider.of<CommuFeedVM>(context, listen: false)
                               .initAmityCommunityFeed(
@@ -327,6 +328,7 @@ class CommunityScreenState extends State<CommunityScreen> {
 
 class EditProfileButton extends StatefulWidget {
   final AmityCommunity community;
+
   const EditProfileButton({super.key, required this.community});
 
   @override
@@ -451,6 +453,7 @@ class _EditProfileButtonState extends State<EditProfileButton> {
 
 class PedindingButton extends StatelessWidget {
   final AmityCommunity community;
+
   const PedindingButton({super.key, required this.community});
 
   @override
@@ -478,7 +481,8 @@ class PedindingButton extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min, // To wrap the content of the row
+              mainAxisSize: MainAxisSize.min,
+              // To wrap the content of the row
               children: <Widget>[
                 Icon(
                   Icons.circle,
@@ -497,7 +501,8 @@ class PedindingButton extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min, // To wrap the content of the row
+              mainAxisSize: MainAxisSize.min,
+              // To wrap the content of the row
               children: <Widget>[
                 Text(
                   !community
@@ -519,6 +524,7 @@ class PedindingButton extends StatelessWidget {
 
 class CommunityDetailComponent extends StatefulWidget {
   final AmityCommunity community;
+
   const CommunityDetailComponent({super.key, required this.community});
 
   @override

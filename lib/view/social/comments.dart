@@ -18,17 +18,20 @@ import 'package:provider/provider.dart';
 import '../../components/custom_user_avatar.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/post_viewmodel.dart';
+import 'global_feed.dart';
+import 'global_feed.dart';
 
 class CommentScreen extends StatefulWidget {
   final AmityPost amityPost;
   final ThemeData theme;
   final bool isFromFeed;
-
+  final FeedType feedType;
   const CommentScreen(
       {Key? key,
       required this.amityPost,
       required this.theme,
-      required this.isFromFeed})
+      required this.isFromFeed ,
+        required this.feedType,})
       : super(key: key);
 
   @override
@@ -75,6 +78,7 @@ class CommentScreenState extends State<CommentScreen> {
         true,
         false,
         haveChildrenPost: true,
+        widget.feedType,
       );
     }
     // else {
@@ -112,7 +116,7 @@ class CommentScreenState extends State<CommentScreen> {
             var actionSection = Column(
               children: [
                 Container(
-                  color: Colors.white,
+                  color: widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -218,7 +222,7 @@ class CommentScreenState extends State<CommentScreen> {
             );
 
             return Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor:widget.feedType==FeedType.user?Provider.of<AmityUIConfiguration>(context).userProfileBGColor: Colors.white,
               body: FadedSlideAnimation(
                 beginOffset: const Offset(0, 0.3),
                 endOffset: const Offset(0, 0),
@@ -232,8 +236,8 @@ class CommentScreenState extends State<CommentScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: const Icon(Icons.chevron_left,
-                              color: Colors.black, size: 35),
+                          icon:  Icon(Icons.chevron_left,
+                              color: widget.feedType==FeedType.user?Provider.of<AmityUIConfiguration>(context).userProfileIconColor:Colors.black, size: 35),
                         ),
                       ),
                       Expanded(
@@ -264,7 +268,7 @@ class CommentScreenState extends State<CommentScreen> {
                                         Container(
                                           color: Colors.red,
                                           child: PostWidget(
-                                            feedType: FeedType.community,
+                                            feedType: widget.feedType,
                                             showCommunity:
                                                 snapshot.data?.targetType ==
                                                         AmityPostTargetType
@@ -276,13 +280,14 @@ class CommentScreenState extends State<CommentScreen> {
                                             theme: theme,
                                             postIndex: 0,
                                             isFromFeed: false,
+
                                           ),
                                         ),
 
                                         const Divider(),
                                         CommentComponent(
                                             postId: widget.amityPost.postId!,
-                                            theme: theme),
+                                            theme: theme,feedType:widget.feedType ,),
                                       ],
                                     ),
                                   ),
@@ -322,11 +327,13 @@ class CommentScreenState extends State<CommentScreen> {
                                 ),
                           CommentTextField(
                             postId: snapshot.data!.postId!,
+                            feedType: widget.feedType,
                             commentTextEditController:
                                 _commentTextEditController,
                             navigateToFullCommentPage: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => FullCommentPage(
+                                    feedType: widget.feedType,
                                         commentTextEditController:
                                             _commentTextEditController,
                                         postId: snapshot.data!.postId!,
@@ -363,16 +370,17 @@ class CommentTextField extends StatelessWidget {
     required this.commentTextEditController,
     required this.postId,
     required this.navigateToFullCommentPage,
+    required this.feedType,
   });
 
   final TextEditingController commentTextEditController;
   final String postId;
   final VoidCallback navigateToFullCommentPage;
-
+  final FeedType feedType;
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+      decoration:  BoxDecoration(color:feedType==FeedType.user?  Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           blurRadius: 0.8,
@@ -472,18 +480,20 @@ class FullCommentPage extends StatelessWidget {
   final TextEditingController commentTextEditController;
   final String postId;
   final VoidCallback postCallback;
+  final FeedType feedType;
   const FullCommentPage({
     super.key,
     required this.commentTextEditController,
     required this.postId,
     required this.postCallback,
+    required this.feedType,
   });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white,
         shadowColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
@@ -528,11 +538,13 @@ class EditCommentPage extends StatefulWidget {
   final AmityComment comment;
   final VoidCallback postCallback;
   final String initailText;
+  final FeedType feedType;
   const EditCommentPage({
     super.key,
     required this.initailText,
     required this.comment,
     required this.postCallback,
+    required this.feedType,
   });
 
   @override
@@ -550,9 +562,9 @@ class _EditCommentPageState extends State<EditCommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white,
         shadowColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
@@ -603,10 +615,13 @@ class CommentComponent extends StatefulWidget {
     Key? key,
     required this.postId,
     required this.theme,
+    required this.feedType
   }) : super(key: key);
-
+  final FeedType feedType;
   final String postId;
   final ThemeData theme;
+
+
 
   @override
   State<CommentComponent> createState() => _CommentComponentState();
@@ -711,8 +726,10 @@ class _CommentComponentState extends State<CommentComponent> {
                               ),
                               title: Text(
                                 comments.user!.displayName!,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                style:  TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                color: widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileTextColor:Colors.black,
+                                ),
                               ),
                               subtitle: Row(
                                 children: [
@@ -891,6 +908,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               EditCommentPage(
+                                                                feedType: widget.feedType,
                                                                 initailText:
                                                                     commentData
                                                                         .text!,
@@ -965,6 +983,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                                     comments.commentId]![index];
                                             return ReplyCommentComponent(
                                               comment: replyComment,
+                                              feedType: widget.feedType,
                                             );
                                           },
                                         ),
@@ -1154,9 +1173,10 @@ class _CommentComponentState extends State<CommentComponent> {
 
 class ReplyCommentComponent extends StatelessWidget {
   final AmityComment comment;
+  final FeedType feedType;
   const ReplyCommentComponent({
     super.key,
-    required this.comment,
+    required this.comment,required this.feedType,
   });
   bool isLiked(AsyncSnapshot<AmityComment> snapshot) {
     var comments = snapshot.data!;
@@ -1238,7 +1258,7 @@ class ReplyCommentComponent extends StatelessWidget {
                           ),
                           title: Text(
                             comment.user!.displayName!,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style:  TextStyle(fontWeight: FontWeight.bold,color: feedType==FeedType.user?Provider.of<AmityUIConfiguration>(context).userProfileTextColor:Colors.black),
                           ),
                           subtitle: TimeAgoWidget(
                             createdAt: snapshot.data!.createdAt!,
@@ -1361,6 +1381,7 @@ class ReplyCommentComponent extends StatelessWidget {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           EditCommentPage(
+                                                            feedType: feedType,
                                                             initailText: (comments
                                                                         .data
                                                                     as CommentTextData)

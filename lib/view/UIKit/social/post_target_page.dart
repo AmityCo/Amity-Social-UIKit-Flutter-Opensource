@@ -5,6 +5,8 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../social/global_feed.dart';
+
 class PostToPage extends StatefulWidget {
   const PostToPage({super.key});
 
@@ -138,6 +140,7 @@ class _PostToPageState extends State<PostToPage> {
                               builder: (context) => AmityCreatePostV2Screen(
                                 community: community,
                                 isFromPostToPage: true,
+                                feedType: FeedType.community,
                               ),
                             ));
                           },

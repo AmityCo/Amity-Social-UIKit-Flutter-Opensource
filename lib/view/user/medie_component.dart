@@ -13,12 +13,12 @@ enum GalleryFeed { user, community }
 
 class MediaGalleryPage extends StatelessWidget {
   final GalleryFeed galleryFeed;
-  const MediaGalleryPage({super.key, required this.galleryFeed});
+  const MediaGalleryPage({super.key, required this.galleryFeed,});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color:Provider.of<AmityUIConfiguration>(context).userProfileBGColor,
       child: Column(
         children: [
           const SizedBox(

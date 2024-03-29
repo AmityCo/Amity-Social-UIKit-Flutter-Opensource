@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/imag_viewer.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -11,9 +12,11 @@ import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:linkify/linkify.dart';
 import 'package:linkwell/linkwell.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/video_player.dart';
+import '../../viewmodel/configuration_viewmodel.dart';
 import 'image_viewer.dart';
 
 class AmityPostWidget extends StatefulWidget {
@@ -22,12 +25,12 @@ class AmityPostWidget extends StatefulWidget {
   final bool isCornerRadiusEnabled;
   final bool haveChildrenPost;
   final bool shouldShowTextPost;
-
+  final FeedType feedType;
   const AmityPostWidget(
-      this.posts, this.isChildrenPost, this.isCornerRadiusEnabled,
+      this.posts, this.isChildrenPost, this.isCornerRadiusEnabled, this.feedType,
       {super.key,
       this.haveChildrenPost = false,
-      this.shouldShowTextPost = true});
+      this.shouldShowTextPost = true,});
   @override
   AmityPostWidgetState createState() => AmityPostWidgetState();
 }
@@ -183,7 +186,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
   Widget build(BuildContext context) {
     if (!widget.isChildrenPost) {
       if (widget.haveChildrenPost || !urlValidation(widget.posts[0])) {
-        return TextPost(post: widget.posts[0]);
+        return TextPost(post: widget.posts[0],feedType: widget.feedType);
       } else {
         String url =
             extractLink(widget.posts[0]); //urlExtraction(widget.posts[0]);
@@ -192,7 +195,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           children: [
             // Text(url),
             widget.shouldShowTextPost
-                ? TextPost(post: widget.posts[0])
+                ? TextPost(post: widget.posts[0],feedType: widget.feedType)
                 : Container(),
             generateURLWidget(url.toLowerCase())
             // AnyLinkPreview(
@@ -448,8 +451,8 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                           Center(
                             child: Text(
                               "${files.length - 3}+",
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style:  TextStyle(
+                                color:widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileTextColor:Colors.black,
                                 fontSize: 24, // Adjust the font size as needed
                                 fontWeight: FontWeight.bold,
                               ),
@@ -787,10 +790,11 @@ Widget _listMediaGrid(List<AmityPost> files) {
 
 class TextPost extends StatelessWidget {
   final AmityPost post;
-  const TextPost({Key? key, required this.post}) : super(key: key);
+  final FeedType feedType;
+  const TextPost({Key? key, required this.post,required this.feedType}) : super(key: key);
 
-  Widget buildURLWidget(String text) {
-    return LinkWell(text);
+  Widget buildURLWidget(String text,BuildContext context) {
+    return LinkWell(text,style: TextStyle(color:feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileTextColor:Colors.black));
   }
 
   @override
@@ -824,7 +828,7 @@ class TextPost extends StatelessWidget {
                                           const EdgeInsets.only(bottom: 16),
                                       child: Container(
                                         child: buildURLWidget(
-                                            textdata.text.toString()),
+                                            textdata.text.toString(),context),
                                       )
                                       // Text(
                                       //   textdata.text.toString(),

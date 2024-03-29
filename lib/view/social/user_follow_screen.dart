@@ -14,9 +14,9 @@ class FollowScreen extends StatefulWidget {
   final FollowScreenType followScreenType;
   const FollowScreen(
       {super.key,
-      required this.userId,
-      this.displayName,
-      required this.followScreenType});
+        required this.userId,
+        this.displayName,
+        required this.followScreenType});
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();
@@ -41,7 +41,7 @@ class _FollowScreenState extends State<FollowScreen> {
         bottom: false,
         child: DefaultTabController(
           initialIndex:
-              widget.followScreenType == FollowScreenType.following ? 0 : 1,
+          widget.followScreenType == FollowScreenType.following ? 0 : 1,
           length: 2,
           child: Scaffold(
             body: Column(

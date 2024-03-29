@@ -161,7 +161,8 @@ class CreatePostVMV2 with ChangeNotifier {
             notifyListeners();
           }
           await _performUpload(
-            AmityCoreClient.newFileRepository().uploadVideo(uploadingFile),
+            AmityCoreClient.newFileRepository().uploadVideo(uploadingFile,
+                feedtype: AmityContentFeedType.POST),
             uikitFile,
           );
         } else {

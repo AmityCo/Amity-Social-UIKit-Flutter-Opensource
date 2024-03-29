@@ -51,13 +51,17 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
             widget.community != null
                 ? widget.community?.displayName ?? "Community"
                 : "My Feed",
-            style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+            style: Provider.of<AmityUIConfiguration>(context)
+                .titleTextStyle
+                .copyWith(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
           ),
           leading: IconButton(
-            icon: const Icon(
-              Icons.chevron_left,
-              color: Colors.black,
-            ),
+            icon: Icon(Icons.chevron_left,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base),
             onPressed: () {
               if (hasContent) {
                 ConfirmationDialog().show(
@@ -156,6 +160,10 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                     child: Column(
                       children: [
                         TextField(
+                          style: TextStyle(
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base),
                           onChanged: (value) => vm.updatePostValidity(),
                           controller: vm.textEditingController,
                           scrollPhysics: const NeverScrollableScrollPhysics(),

@@ -1155,7 +1155,15 @@ class TextPost extends StatelessWidget {
   const TextPost({Key? key, required this.post}) : super(key: key);
 
   Widget buildURLWidget(String text) {
-    return LinkWell(text);
+    return Builder(builder: (context) {
+      return LinkWell(
+        text,
+        style: TextStyle(
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+          fontSize: 15,
+        ),
+      );
+    });
   }
 
   @override

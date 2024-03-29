@@ -110,9 +110,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
         onPressed: () {
           Navigator.of(context).pop();
         },
-        icon: const Icon(
+        icon: Icon(
           Icons.chevron_left,
-          color: Colors.black,
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
           size: 24,
         ),
       ),
@@ -289,9 +289,8 @@ class UserProfileScreenState extends State<UserProfileScreen>
                           .iconConfig
                           .postIcon(iconSize: 28, color: Colors.white),
                     ),
-          backgroundColor: Provider.of<AmityUIConfiguration>(context)
-              .appColors
-              .baseBackground,
+          backgroundColor:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           body: DefaultTabController(
             length: 2,
             child: NestedScrollView(
@@ -435,13 +434,17 @@ class UserProfileScreenState extends State<UserProfileScreen>
                     shadowColor: Colors.white,
                     elevation: 0,
                     surfaceTintColor: Colors.transparent,
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .baseBackground,
                     floating: false,
                     pinned: true,
                     leading: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.chevron_left,
-                        color: Color(0xff292B32),
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
                         size: 30,
                       ),
                       onPressed: () => Navigator.of(context).pop(),
@@ -482,7 +485,12 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                             //     .toString()),
                                             Text(
                                               getAmityUser().displayName ?? "",
-                                              style: const TextStyle(
+                                              style: TextStyle(
+                                                  color: Provider.of<
+                                                              AmityUIConfiguration>(
+                                                          context)
+                                                      .appColors
+                                                      .base,
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.w700,
                                                   letterSpacing: -0.4),
@@ -518,7 +526,12 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                                               getAmityUser().displayName))));
                                                             },
                                                             child: Text(
-                                                                '${snapshot.data!.followingCount} following  '),
+                                                                '${snapshot.data!.followingCount} following  ',
+                                                                style: TextStyle(
+                                                                    color: Provider.of<AmityUIConfiguration>(
+                                                                            context)
+                                                                        .appColors
+                                                                        .base)),
                                                           ),
                                                           GestureDetector(
                                                             onTap: () {
@@ -537,7 +550,14 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                                               getAmityUser().displayName))));
                                                             },
                                                             child: Text(
-                                                                '${snapshot.data!.followerCount} followers'),
+                                                              '${snapshot.data!.followerCount} followers',
+                                                              style: TextStyle(
+                                                                  color: Provider.of<
+                                                                              AmityUIConfiguration>(
+                                                                          context)
+                                                                      .appColors
+                                                                      .base),
+                                                            ),
                                                           ),
                                                         ],
                                                       );
@@ -557,7 +577,13 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                   children: [
                                     Text(
                                       getAmityUser().description ?? "",
-                                      style: const TextStyle(fontSize: 16),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .base),
                                     ),
                                   ],
                                 ),
@@ -601,14 +627,24 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  const Icon(
-                                                      Icons.edit_outlined),
+                                                  Icon(
+                                                    Icons.edit_outlined,
+                                                    color: Provider.of<
+                                                                AmityUIConfiguration>(
+                                                            context)
+                                                        .appColors
+                                                        .base,
+                                                  ),
                                                   Text(
                                                     "Edit Profile",
                                                     style: theme
                                                         .textTheme.titleSmall!
                                                         .copyWith(
-                                                      color: Colors.black,
+                                                      color: Provider.of<
+                                                                  AmityUIConfiguration>(
+                                                              context)
+                                                          .appColors
+                                                          .base,
                                                       fontSize: 15,
                                                     ),
                                                     textAlign: TextAlign.center,
@@ -635,8 +671,11 @@ class UserProfileScreenState extends State<UserProfileScreen>
                               initialData: vm.amityMyFollowInfo,
                               builder: (context, snapshot) {
                                 return IconButton(
-                                  icon: const Icon(Icons.more_horiz,
-                                      color: Colors.black),
+                                  icon: Icon(Icons.more_horiz,
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base),
                                   onPressed: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -668,9 +707,14 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                 tabAlignment: TabAlignment.start,
                                 controller: _tabController,
                                 isScrollable: true,
-                                labelColor: const Color(0xFF1054DE),
-                                unselectedLabelColor: Colors.black,
-                                indicatorColor: const Color(0xFF1054DE),
+                                labelColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
+                                indicatorColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
                                 labelStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w600,

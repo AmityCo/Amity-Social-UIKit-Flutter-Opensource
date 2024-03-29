@@ -51,7 +51,12 @@ class _UserListPageState extends State<UserListPage> {
         ),
         title: Text(
           'Select member',
-          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+          style: Provider.of<AmityUIConfiguration>(context)
+              .titleTextStyle
+              .copyWith(
+                  color: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .base),
         ),
         actions: [
           TextButton(
@@ -188,6 +193,12 @@ class _UserListPageState extends State<UserListPage> {
                                     child: Text(
                                       user.displayName ?? "",
                                       overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .base),
                                     ),
                                   ),
                                 ) // Display user's name, replace 'name' with the appropriate attribute for the user's name
@@ -243,8 +254,14 @@ class _UserListPageState extends State<UserListPage> {
                                               .white), // Adjust to use the correct attribute for avatar URL
                                 ),
 
-                                title: Text(user.displayName ??
-                                    'No name'), // Fallback for a null displayName
+                                title: Text(
+                                  user.displayName ?? 'No name',
+                                  style: TextStyle(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base),
+                                ), // Fallback for a null displayName
                                 trailing: Checkbox(
                                   activeColor: Provider.of<
                                               AmityUIConfiguration>(context,

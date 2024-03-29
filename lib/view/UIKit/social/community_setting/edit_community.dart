@@ -58,14 +58,21 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
             appBar: AppBar(
               title: Text(
                 "Edit Community",
-                style:
-                    Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+                style: Provider.of<AmityUIConfiguration>(context)
+                    .titleTextStyle
+                    .copyWith(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base),
               ),
               backgroundColor: Colors.transparent,
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.chevron_left,
-                    color: Colors.black, size: 30),
+                icon: Icon(Icons.chevron_left,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                    size: 30),
               ),
               actions: [
                 TextButton(
@@ -88,10 +95,12 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                     AmityLoadingDialog.hideLoadingDialog();
                     Navigator.of(context).pop();
                   },
-                  child: const Text(
+                  child: Text(
                     "Save",
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -215,10 +224,27 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                                     shape: BoxShape.circle),
                                 child: const Icon(Icons.public),
                               ),
-                              title: const Text('Public'),
-                              subtitle: const Text(
-                                  'Anyone can join, view and search this community'),
+                              title: Text(
+                                'Public',
+                                style: TextStyle(
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base),
+                              ),
+                              subtitle: Text(
+                                'Anyone can join, view and search this community',
+                                style: TextStyle(
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base),
+                              ),
                               trailing: Radio(
+                                activeColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
                                 value: true,
                                 groupValue: _isPublic,
                                 onChanged: (bool? value) {
@@ -241,10 +267,27 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                                     shape: BoxShape.circle),
                                 child: const Icon(Icons.lock),
                               ),
-                              title: const Text('Private'),
-                              subtitle: const Text(
-                                  'Only members invited by the moderators can join, view and search this community'),
+                              title: Text(
+                                'Private',
+                                style: TextStyle(
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base),
+                              ),
+                              subtitle: Text(
+                                'Only members invited by the moderators can join, view and search this community',
+                                style: TextStyle(
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base),
+                              ),
                               trailing: Radio(
+                                activeColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
                                 value: true,
                                 groupValue: !_isPublic,
                                 onChanged: (bool? value) {

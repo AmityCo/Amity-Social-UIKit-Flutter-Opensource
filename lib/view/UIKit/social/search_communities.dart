@@ -72,10 +72,16 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
               onTap: () {
                 Navigator.of(context).pop();
               },
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "cancel",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                  ),
                 ),
               ),
             )
@@ -143,7 +149,7 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                                   Provider.of<AmityUIConfiguration>(context)
                                       .appColors
                                       .primary,
-                              unselectedLabelColor: Colors.black,
+
                               indicatorColor:
                                   Provider.of<AmityUIConfiguration>(context)
                                       .appColors
@@ -216,8 +222,11 @@ class CommunityWidget extends StatelessWidget {
                   const SizedBox(width: 4.0),
                   Text(
                     communityStream.displayName ?? "Community",
-                    style: const TextStyle(
+                    style: TextStyle(
                         overflow: TextOverflow.ellipsis,
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
                         fontWeight: FontWeight.bold),
                   ),
                   community.isOfficial!
@@ -301,7 +310,10 @@ class UserWidget extends StatelessWidget {
                   Expanded(
                     child: Text(
                       userStream.displayName ?? "Community",
-                      style: const TextStyle(
+                      style: TextStyle(
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base,
                           overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.bold),
                     ),

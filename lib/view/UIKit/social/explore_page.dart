@@ -42,9 +42,9 @@ class _CommunityPageState extends State<CommunityPage> {
               .baseBackground,
           iconTheme: const IconThemeData(color: Colors.blue),
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.close,
-              color: Colors.black,
+              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -52,13 +52,19 @@ class _CommunityPageState extends State<CommunityPage> {
           automaticallyImplyLeading: false,
           title: Text(
             "Community",
-            style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+            style: Provider.of<AmityUIConfiguration>(context)
+                .titleTextStyle
+                .copyWith(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
           ),
           actions: [
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.search,
-                color: Colors.black,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
               ),
               onPressed: () {
                 // Implement search functionality
@@ -121,7 +127,9 @@ class _CommunityPageState extends State<CommunityPage> {
                     builder: (context) => const Scaffold(body: PostToPage()),
                   ));
                 },
-                backgroundColor: AmityUIConfiguration().primaryColor,
+                backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .primary,
                 child: Provider.of<AmityUIConfiguration>(context)
                     .iconConfig
                     .postIcon(iconSize: 28, color: Colors.white),
@@ -167,11 +175,16 @@ class RecommendationSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 16, top: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 20),
                 child: Text(
                   'Recommended for you',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base),
                 ),
               ),
               const SizedBox(
@@ -234,7 +247,12 @@ class RecommendationSection extends StatelessWidget {
                                     Flexible(
                                       child: Text(
                                         "${community.displayName}  ",
-                                        style: const TextStyle(
+                                        style: TextStyle(
+                                          color:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .base,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15,
                                         ),
@@ -269,8 +287,13 @@ class RecommendationSection extends StatelessWidget {
                                       )
                                     : Text(
                                         '${community.categories?[0]?.name}',
-                                        style: const TextStyle(
-                                            color: Colors.black, fontSize: 13),
+                                        style: TextStyle(
+                                            color: Provider.of<
+                                                        AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base,
+                                            fontSize: 13),
                                         overflow: TextOverflow
                                             .ellipsis, // Handle text overflow
                                       ),
@@ -292,7 +315,14 @@ class RecommendationSection extends StatelessWidget {
                                   child: Text(
                                     community.description ?? '',
                                     softWrap: true,
-                                    style: const TextStyle(fontSize: 13),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base),
+
                                     overflow: TextOverflow
                                         .ellipsis, // Handle text overflow
                                     maxLines: 3, // Display up to two lines
@@ -330,11 +360,16 @@ class TrendingSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 16, top: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 20),
                 child: Text(
                   'Today\'s Trending',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base),
                 ),
               ),
               ListView.builder(
@@ -376,9 +411,12 @@ class TrendingSection extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         Text("${index + 1}",
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 20,
-                                color: Color(0xff1054DE),
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
                                 fontWeight: FontWeight.bold)), // Ranking number
                         // Spacing between rank and avatar
                       ],
@@ -389,8 +427,11 @@ class TrendingSection extends StatelessWidget {
                         Flexible(
                           child: Text(
                             "${community.displayName}  ",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
                               fontSize: 15,
                             ),
                             overflow:
@@ -455,7 +496,11 @@ class CategorySection extends StatelessWidget {
                   Text(
                     'Categories',
                     style: Provider.of<AmityUIConfiguration>(context)
-                        .titleTextStyle,
+                        .titleTextStyle
+                        .copyWith(
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .base),
                   ),
                   const SizedBox(
                     height: 30,
@@ -527,6 +572,12 @@ class CategorySection extends StatelessWidget {
                             child: Text(
                               category.name ?? '',
                               overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .appColors
+                                          .base,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],

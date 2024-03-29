@@ -274,9 +274,12 @@ class CommunityScreenState extends State<CommunityScreen> {
                               floating: false,
                               pinned: true,
                               leading: IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.chevron_left,
-                                  color: Color(0xff292B32),
+                                  color:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .appColors
+                                          .base,
                                   size: 30,
                                 ),
                                 onPressed: () => Navigator.of(context).pop(),
@@ -297,8 +300,13 @@ class CommunityScreenState extends State<CommunityScreen> {
                                                     community: snapshot.data!,
                                                   )));
                                     },
-                                    icon: const Icon(Icons.more_horiz_rounded,
-                                        color: Colors.black))
+                                    icon: Icon(
+                                      Icons.more_horiz_rounded,
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base,
+                                    ))
                               ],
                               bottom: PreferredSize(
                                 preferredSize: const Size.fromHeight(25),
@@ -321,10 +329,16 @@ class CommunityScreenState extends State<CommunityScreen> {
                                                       context)
                                                   .appColors
                                                   .baseBackground,
-                                          labelColor: const Color(0xFF1054DE),
-                                          unselectedLabelColor: Colors.black,
+                                          labelColor:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .primary,
                                           indicatorColor:
-                                              const Color(0xFF1054DE),
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .primary,
                                           labelStyle: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.w600,
@@ -474,12 +488,18 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                 children: <Widget>[
                   Provider.of<AmityUIConfiguration>(context)
                       .iconConfig
-                      .editIcon(color: Colors.black),
+                      .editIcon(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
+                      ),
                   const SizedBox(width: 8.0), // Space between icon and text
-                  const Text(
+                  Text(
                     "Edit Profile",
                     style: TextStyle(
-                      color: Colors.black, // Text color
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base, // Text color
                     ),
                   ),
                 ],
@@ -529,10 +549,12 @@ class PedindingButton extends StatelessWidget {
                       Provider.of<AmityUIConfiguration>(context).primaryColor,
                 ),
                 const SizedBox(width: 8.0), // Space between icon and text
-                const Text(
+                Text(
                   "Pending posts",
                   style: TextStyle(
-                    color: Colors.black, // Text color
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base, // Text color
                   ),
                 ),
               ],
@@ -546,9 +568,12 @@ class PedindingButton extends StatelessWidget {
                           .hasPermission(AmityPermission.REVIEW_COMMUNITY_POST)
                       ? "Your posts are pending for review"
                       : "${Provider.of<CommuFeedVM>(context).reviewingPostCount} posts need approval",
-                  style: const TextStyle(
-                      fontSize: 13, color: Color(0xff636878) // Text color
-                      ),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base, // Text color
+                  ),
                 ),
               ],
             ),
@@ -578,7 +603,10 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
         ),
         Text(
           community.description ?? "",
-          style: const TextStyle(fontSize: 15),
+          style: TextStyle(
+            fontSize: 15,
+            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+          ),
         ),
       ],
     );
@@ -610,7 +638,12 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
             Column(
               children: [
                 Text("${Provider.of<CommuFeedVM>(context).postCount}",
-                    style: const TextStyle(fontSize: 16)),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    )),
                 const Text('posts',
                     style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
               ],
@@ -633,7 +666,12 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 children: [
                   Text(
                     community.membersCount.toString(),
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                   ),
                   Text(community.membersCount == 1 ? 'member' : 'members',
                       style: const TextStyle(

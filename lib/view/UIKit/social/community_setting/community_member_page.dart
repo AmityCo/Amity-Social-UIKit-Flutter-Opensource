@@ -54,7 +54,12 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                     .contains('community-moderator')
                 ? const SizedBox()
                 : IconButton(
-                    icon: const Icon(Icons.add, color: Colors.black),
+                    icon: Icon(
+                      Icons.add,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                     onPressed: () async {
                       var userList = Provider.of<MemberManagementVM>(context,
                               listen: false)
@@ -100,8 +105,21 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
           backgroundColor: Provider.of<AmityUIConfiguration>(context)
               .appColors
               .baseBackground,
+          leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.chevron_left,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
+                size: 30),
+          ),
           title: Text("Community",
-              style: Provider.of<AmityUIConfiguration>(context).titleTextStyle),
+              style: Provider.of<AmityUIConfiguration>(context)
+                  .titleTextStyle
+                  .copyWith(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                  )),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(
                 48.0), // Provide a height for the AppBar's bottom
@@ -113,9 +131,13 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                   dividerColor: Provider.of<AmityUIConfiguration>(context)
                       .appColors
                       .baseBackground,
-                  labelColor: const Color(0xFF1054DE), // #1054DE color
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: const Color(0xFF1054DE),
+                  labelColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .primary,
+
+                  indicatorColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .primary,
                   labelStyle: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
@@ -178,14 +200,18 @@ class MemberList extends StatelessWidget {
               ),
               title: Text(
                 viewModel.userList[index].user?.displayName ?? '',
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
               ),
               trailing: IconButton(
-                icon: const Icon(
-                  Icons.more_horiz_rounded,
-                  color: Colors.black,
-                ),
+                icon: Icon(Icons.more_horiz_rounded,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
                 onPressed: () {
                   _showOptionsBottomSheet(
                       context, viewModel.userList[index], viewModel,

@@ -9,7 +9,9 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart
 import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -198,10 +200,6 @@ class _UserListPageState extends State<UserListPage> {
 
   @override
   Widget build(BuildContext context) {
-    // AmitySLEUIKit().configAmityThemeColor(context, (config) {
-    //   config.appColors =
-    //       AppColors(primary: Colors.green, baseShade4: Colors.black);
-    // });
     return Scaffold(
       appBar: AppBar(
         title: const Text('User List'),
@@ -306,12 +304,133 @@ class SecondPage extends StatelessWidget {
 class SocialPage extends StatelessWidget {
   const SocialPage({super.key, required this.username});
   final String username;
+  void showColorPickerDialog(BuildContext sourceContext) {
+    Color primary = Colors.red;
+    Color base = Colors.red;
+    Color baseBackground = Colors.red;
+    Color baseShade4 = Colors.red;
+    AmitySLEUIKit().configAmityThemeColor(sourceContext, (config) {
+      primary = config.appColors.primary;
+      base = config.appColors.base;
+      baseBackground = config.appColors.baseBackground;
+      baseShade4 = config.appColors.baseShade4;
+    });
+    showDialog(
+        context: sourceContext,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Select a Color'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      const Text("primary color"),
+                      ColorPicker(
+                        displayThumbColor: false,
+                        showLabel: false,
+                        pickerColor: primary,
+                        onColorChanged: (Color color) {
+                          primary = color;
+                        },
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Text("base color"),
+                      ColorPicker(
+                        displayThumbColor: false,
+                        showLabel: false,
+                        pickerColor: base,
+                        onColorChanged: (Color color) {
+                          base = color;
+                        },
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Text("baseBackground color"),
+                      ColorPicker(
+                        displayThumbColor: false,
+                        showLabel: false,
+                        pickerColor: baseBackground,
+                        onColorChanged: (Color color) {
+                          baseBackground = color;
+                        },
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Text("baseShade4 color"),
+                      ColorPicker(
+                        displayThumbColor: false,
+                        showLabel: false,
+                        pickerColor: baseShade4,
+                        onColorChanged: (Color color) {
+                          baseShade4 = color;
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Select'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  AppColors appColors = AppColors(
+                      primary: primary,
+                      base: base,
+                      baseBackground: baseBackground,
+                      baseShade4: baseShade4);
+                  configThemeColor(sourceContext, appColors);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void configThemeColor(BuildContext context, AppColors appColors) {
+    // Place your AmitySLEUIKit configuration code here
+    // For demonstration, the primary color is being used. Adapt as needed.
+    print("configThemeColor");
+    AmitySLEUIKit().configAmityThemeColor(context, (config) {
+      config.appColors = appColors;
+    });
+
+    // Show a simple snackbar to confirm the color has been set
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Theme color set to $appColors'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Social'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                showColorPickerDialog(context);
+              },
+              child: const Text("config"))
+        ],
       ),
       body: Center(
         child: Column(

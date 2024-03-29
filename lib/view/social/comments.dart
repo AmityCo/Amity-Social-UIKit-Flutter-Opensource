@@ -140,9 +140,9 @@ class CommentScreenState extends State<CommentScreen> {
                                         const Text(
                                           "Like",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xff898E9E),
-                                              fontSize: 15),
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xff898E9E),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -155,9 +155,9 @@ class CommentScreenState extends State<CommentScreen> {
                                               listen: false)
                                           .addPostReaction(widget.amityPost);
                                     },
-                                    child: const Row(
+                                    child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.thumb_up_off_alt,
                                           color: Colors.grey,
                                           size: 16,
@@ -165,9 +165,13 @@ class CommentScreenState extends State<CommentScreen> {
                                         Text(
                                           "Like",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xff898E9E),
-                                              fontSize: 15),
+                                            fontWeight: FontWeight.bold,
+                                            color: Provider.of<
+                                                        AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .baseShade4,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -234,8 +238,11 @@ class CommentScreenState extends State<CommentScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: const Icon(Icons.chevron_left,
-                              color: Colors.black, size: 35),
+                          icon: Icon(Icons.chevron_left,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
+                              size: 35),
                         ),
                       ),
                       Expanded(
@@ -771,7 +778,10 @@ class _CommentComponentState extends State<CommentComponent> {
                               padding: const EdgeInsets.all(10.0),
                               margin: const EdgeInsets.only(left: 70.0),
                               decoration: BoxDecoration(
-                                color: Colors.grey[200],
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .baseShade4,
                                 borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(10),
                                   bottomRight: Radius.circular(10),
@@ -780,7 +790,13 @@ class _CommentComponentState extends State<CommentComponent> {
                               ),
                               child: Text(
                                 commentData.text!,
-                                style: widget.theme.textTheme.bodyMedium,
+                                style: widget.theme.textTheme.bodyMedium!
+                                    .copyWith(
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base),
                               ),
                             ),
                             Padding(
@@ -805,7 +821,16 @@ class _CommentComponentState extends State<CommentComponent> {
                                                               context)
                                                           .primaryColor),
                                               Text(
-                                                  " ${snapshot.data?.reactionCount ?? 0}"),
+                                                " ${snapshot.data?.reactionCount ?? 0}",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Provider.of<
+                                                              AmityUIConfiguration>(
+                                                          context)
+                                                      .appColors
+                                                      .primary,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         )
@@ -821,13 +846,22 @@ class _CommentComponentState extends State<CommentComponent> {
                                                   .likeIcon(iconSize: 16),
                                               snapshot.data!.reactionCount! > 0
                                                   ? Text(
-                                                      " ${snapshot.data!.reactionCount!}")
+                                                      " ${snapshot.data!.reactionCount!}",
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Color(0xff898E9E),
+                                                      ),
+                                                    )
                                                   : const Text(
                                                       " Like",
                                                       style: TextStyle(
-                                                          color:
-                                                              Color(0xff898E9E),
-                                                          fontSize: 15),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Color(0xff898E9E),
+                                                      ),
                                                     ),
                                             ],
                                           )),
@@ -1004,10 +1038,15 @@ class _CommentComponentState extends State<CommentComponent> {
                                           },
                                           child: Container(
                                             margin: const EdgeInsets.all(12),
-                                            decoration: const BoxDecoration(
-                                                color: Color(0xffEBECEF),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(4))),
+                                            decoration: BoxDecoration(
+                                                color: Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .base,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(4))),
                                             padding: const EdgeInsets.all(5.0),
                                             child: const Wrap(
                                               crossAxisAlignment:
@@ -1203,10 +1242,12 @@ class ReplyCommentComponent extends StatelessWidget {
                       children: [
                         Container(
                           margin: const EdgeInsets.all(12),
-                          decoration: const BoxDecoration(
-                              color: Color(0xffEBECEF),
+                          decoration: BoxDecoration(
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(4))),
+                                  const BorderRadius.all(Radius.circular(4))),
                           padding: const EdgeInsets.all(5.0),
                           child: const Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
@@ -1297,7 +1338,9 @@ class ReplyCommentComponent extends StatelessWidget {
                           padding: const EdgeInsets.all(10.0),
                           margin: const EdgeInsets.only(left: 70.0),
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .baseShade4,
                             borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(10),
                               bottomRight: Radius.circular(10),
@@ -1306,6 +1349,11 @@ class ReplyCommentComponent extends StatelessWidget {
                           ),
                           child: Text(
                             commentData.text!,
+                            style: TextStyle(
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
+                            ),
                           ),
                         ),
                         Padding(
@@ -1330,7 +1378,16 @@ class ReplyCommentComponent extends StatelessWidget {
                                                           context)
                                                       .primaryColor),
                                           Text(
-                                              " ${snapshot.data?.reactionCount ?? 0}"),
+                                            " ${snapshot.data?.reactionCount ?? 0}",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Provider.of<
+                                                          AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .primary,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     )
@@ -1346,12 +1403,18 @@ class ReplyCommentComponent extends StatelessWidget {
                                               .likeIcon(iconSize: 16),
                                           snapshot.data!.reactionCount! > 0
                                               ? Text(
-                                                  " ${snapshot.data!.reactionCount!}")
+                                                  " ${snapshot.data!.reactionCount!}",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xff898E9E),
+                                                  ),
+                                                )
                                               : const Text(
                                                   " Like",
                                                   style: TextStyle(
-                                                      color: Color(0xff898E9E),
-                                                      fontSize: 15),
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xff898E9E),
+                                                  ),
                                                 ),
                                         ],
                                       )),

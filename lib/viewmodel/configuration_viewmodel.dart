@@ -35,7 +35,7 @@ class AppColors {
   final Color primaryShade3;
   // final Color primaryShade4;
 
-  // final Color base;
+  final Color base;
   // final Color baseInverse;
   // final Color baseDefault;
   // final Color baseShade1;
@@ -62,7 +62,7 @@ class AppColors {
     // this.primaryShade2 = const Color(0xFFa0bd8f),
     this.primaryShade3 = const Color(0xFFd9e5fc),
     // this.primaryShade4 = const Color(0xFFFFFFFF),
-    // this.base = const Color(0xFF000000),
+    this.base = const Color(0xFF000000),
     // this.baseInverse = const Color(0xFFFFFFFF),
     // this.baseDefault = const Color(0xFF292b32),
     // this.baseShade1 = const Color(0xFF636878),

@@ -221,7 +221,8 @@ class _PostWidgetState extends State<PostWidget>
     final isFlaggedByMe = widget.post.isFlaggedByMe ?? false;
 
     return PopupMenuButton(
-      color: Colors.white,
+      color:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       surfaceTintColor: Colors.white,
       onSelected: (value) {
         switch (value) {
@@ -326,7 +327,16 @@ class _PostWidgetState extends State<PostWidget>
         if (isPostOwner) {
           menuItems.addAll(postOwnerMenu.map((option) => PopupMenuItem(
                 value: option,
-                child: Text(option),
+                child: Builder(builder: (context) {
+                  return Text(
+                    option,
+                    style: TextStyle(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
+                  );
+                }),
               )));
         }
 
@@ -334,7 +344,15 @@ class _PostWidgetState extends State<PostWidget>
         if (!isPostOwner) {
           menuItems.add(PopupMenuItem(
             value: isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-            child: Text(isFlaggedByMe ? 'Unreport Post' : 'Report Post'),
+            child: Builder(builder: (context) {
+              return Text(
+                isFlaggedByMe ? 'Unreport Post' : 'Report Post',
+                style: TextStyle(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
+              );
+            }),
           ));
         }
         // Add block user option
@@ -425,18 +443,23 @@ class _PostWidgetState extends State<PostWidget>
                                             .currentamityUser!
                                             .displayName ??
                                         "",
-                                style: widget.theme.textTheme.bodyLarge!
-                                    .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base),
                               ),
                             ),
                             widget.showCommunity &&
                                     widget.post.targetType ==
                                         AmityPostTargetType.COMMUNITY
-                                ? const Icon(
+                                ? Icon(
                                     Icons.arrow_right_rounded,
-                                    color: Colors.black,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .appColors
+                                        .base,
                                   )
                                 : Container(),
                             widget.showCommunity &&
@@ -466,6 +489,11 @@ class _PostWidgetState extends State<PostWidget>
                                           "Community name",
                                       style: widget.theme.textTheme.bodyLarge!
                                           .copyWith(
+                                              color: Provider.of<
+                                                          AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .base,
                                               overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
@@ -1075,8 +1103,16 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                       child: getAvatarImage(
                                           comments.user?.avatarUrl),
                                     ),
-                                    title:
-                                        Text(comments.user?.displayName ?? ""),
+                                    title: Text(
+                                      comments.user?.displayName ?? "",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .base),
+                                    ),
                                     subtitle: TimeAgoWidget(
                                       createdAt: comments.createdAt!,
                                     ),
@@ -1086,7 +1122,10 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                     margin: const EdgeInsets.only(
                                         left: 70.0, right: 18),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[200],
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .baseShade4,
                                       borderRadius: const BorderRadius.only(
                                         topRight: Radius.circular(10),
                                         bottomRight: Radius.circular(10),
@@ -1095,7 +1134,14 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                     ),
                                     child: Text(
                                       commentData.text!,
-                                      style: const TextStyle(fontSize: 15),
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base,
+                                      ),
                                     ),
                                   ),
                                   CommentActionComponent(
@@ -1147,7 +1193,13 @@ class CommentActionComponent extends StatelessWidget {
                             Provider.of<AmityUIConfiguration>(context)
                                 .iconConfig
                                 .likeIcon(),
-                            const Text(" Like"),
+                            const Text(
+                              " Like",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xff898E9E),
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -1162,7 +1214,13 @@ class CommentActionComponent extends StatelessWidget {
                                 Provider.of<AmityUIConfiguration>(context)
                                     .iconConfig
                                     .likeIcon(),
-                                const Text(" Like"),
+                                const Text(
+                                  " Like",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff898E9E),
+                                  ),
+                                ),
                               ],
                             ),
                           )
@@ -1181,7 +1239,15 @@ class CommentActionComponent extends StatelessWidget {
                                             Provider.of<AmityUIConfiguration>(
                                                     context)
                                                 .primaryColor),
-                                Text(" ${snapshot.data?.reactionCount ?? 0}"),
+                                Text(
+                                  " ${snapshot.data?.reactionCount ?? 0}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .primary),
+                                ),
                               ],
                             )),
 

@@ -41,9 +41,9 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
               .appColors
               .baseBackground,
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.close,
-              color: Colors.black,
+              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
             ),
             onPressed: () {
               Navigator.of(context).pop();
@@ -52,12 +52,20 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
           title: Text(
             'My Community',
             style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle, // Adjust as needed
+                .titleTextStyle
+                .copyWith(
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).appColors.base,
+                ), // Adjust as needed
           ),
           actions: [
             if (widget.canCreateCommunity)
               IconButton(
-                icon: const Icon(Icons.add, color: Colors.black),
+                icon: Icon(
+                  Icons.add,
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).appColors.base,
+                ),
                 onPressed: () async {
                   await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
@@ -153,11 +161,23 @@ class CommunityWidget extends StatelessWidget {
                     ),
               title: Row(
                 children: [
-                  if (!community.isPublic!) const Icon(Icons.lock, size: 16.0),
+                  if (!community.isPublic!)
+                    Icon(
+                      Icons.lock,
+                      size: 16.0,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                   const SizedBox(width: 4.0),
                   Text(
                     communityStream.displayName ?? "Community ",
-                    style: const TextStyle(overflow: TextOverflow.ellipsis),
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                   ),
                   const SizedBox(width: 4.0),
                   communityStream.isOfficial!
@@ -206,11 +226,14 @@ class CommunityIconList extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'My Community',
                   style: TextStyle(
                     fontSize: 17.0,
                     fontWeight: FontWeight.bold,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                   ),
                 ),
                 GestureDetector(
@@ -305,15 +328,22 @@ class CommunityIconWidget extends StatelessWidget {
                   Row(
                     children: [
                       !amityCommunity.isPublic!
-                          ? const Icon(
+                          ? Icon(
                               Icons.lock,
                               size: 12,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
                             )
                           : const SizedBox(),
                       Expanded(
                         child: Text(amityCommunity.displayName ?? "",
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base,
                                 overflow: TextOverflow.ellipsis)),
                       ),
                       amityCommunity.isOfficial!

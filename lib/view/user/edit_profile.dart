@@ -99,7 +99,11 @@ class ProfileScreenState extends State<ProfileScreen> {
     final myAppBar = AppBar(
       title: Text(
         "Edit Profile",
-        style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+        style: Provider.of<AmityUIConfiguration>(context)
+            .titleTextStyle
+            .copyWith(
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base),
       ),
       backgroundColor:
           Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
@@ -108,9 +112,9 @@ class ProfileScreenState extends State<ProfileScreen> {
         onPressed: () {
           Navigator.of(context).pop();
         },
-        icon: const Icon(
+        icon: Icon(
           Icons.chevron_left,
-          color: Colors.black,
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
         ),
       ),
       elevation: 0,
@@ -210,11 +214,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                           bottom: 0,
                           child: Container(
                             padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Provider.of<AmityUIConfiguration>(context)
-                                  .appColors
-                                  .baseShade4,
+                              color: Color(0xffEBECEF),
                               // boxShadow: [
                               //   BoxShadow(
                               //     color: Colors.grey, // Shadow color

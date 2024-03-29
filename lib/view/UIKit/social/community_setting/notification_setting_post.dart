@@ -31,10 +31,16 @@ class _PostNotificationSettingPageState
       backgroundColor:
           Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
-        title: const Text(
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(Icons.chevron_left,
+              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+              size: 30),
+        ),
+        title: Text(
           'Posts',
           style: TextStyle(
-            color: Colors.black,
+            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -47,17 +53,19 @@ class _PostNotificationSettingPageState
         children: [
           // Section 1: React Posts
 
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Text(
               "React Posts",
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
-                color: Color(0xff292B32),
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
               ),
             ),
           ),
+
           const Padding(
             padding: EdgeInsets.only(left: 16.0, bottom: 16, right: 16),
             child: Text(
@@ -186,9 +194,9 @@ class _PostNotificationSettingPageState
     return ListTile(
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 14,
-          color: Color(0xff292B32),
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
         ),
       ),
       trailing: Radio<T>(

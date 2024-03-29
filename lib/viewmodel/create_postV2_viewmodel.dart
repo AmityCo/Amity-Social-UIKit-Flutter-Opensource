@@ -208,6 +208,7 @@ class CreatePostVMV2 with ChangeNotifier {
                 title: "Upload fail", message: error.toString());
             uikitFile.status = FileStatus.rejected;
             notifyListeners();
+            throw Exception(error);
             // Handle the error as appropriate for your app
           },
           cancel: () {

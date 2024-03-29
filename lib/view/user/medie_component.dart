@@ -180,9 +180,9 @@ class MediaGalleryPage extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => ImageViewerScreen(
                   files: [
-                    amityPosts[0],
+                    amityPosts[index],
                   ],
-                  initialIndex: index,
+                  initialIndex: 0,
                 ),
               ),
             );

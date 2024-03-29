@@ -202,7 +202,15 @@ class CommunityScreenState extends State<CommunityScreen> {
               feedWidget,
               MediaGalleryPage(
                 galleryFeed: GalleryFeed.community,
-                onRefresh: () async {},
+                onRefresh: () async {
+                  Provider.of<CommuFeedVM>(context, listen: false)
+                      .initAmityCommunityImageFeed(
+                          widget.community.communityId!);
+                  Provider.of<CommuFeedVM>(context, listen: false)
+                      .initAmityCommunityVideoFeed(
+                          widget.community.communityId!);
+                  Provider.of<CommuFeedVM>(context, listen: false);
+                },
               )
             ];
             return Scaffold(

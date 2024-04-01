@@ -26,19 +26,19 @@ class _PostToPageState extends State<PostToPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:Provider.of<AmityUIConfiguration>(context).userProfileBGColor,
       appBar: AppBar(
         elevation: 0.0, // Add this line to remove the shadow
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon:  Icon(Icons.close,color: Provider.of<AmityUIConfiguration>(context).userProfileIconColor,),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           "Post to",
           style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
         ),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
+        backgroundColor:Provider.of<AmityUIConfiguration>(context).userProfileBGColor,
+        iconTheme:  IconThemeData(color: Provider.of<AmityUIConfiguration>(context).userProfileIconColor),
       ),
       body: Consumer<MyCommunityVM>(
         builder: (context, viewModel, child) {
@@ -60,14 +60,14 @@ class _PostToPageState extends State<PostToPage> {
                           width: 40,
                           decoration: const BoxDecoration(
                               color: Color(0xFFD9E5FC), shape: BoxShape.circle),
-                          child: const Icon(
+                          child:  Icon(
                             Icons.person,
-                            color: Colors.white,
+                            color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor,
                           ),
                         ),
-                  title: const Text(
+                  title:  Text(
                     "My Timeline",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600,color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor),
                     // Adjust as needed),
                   ),
                   onTap: () {
@@ -85,7 +85,7 @@ class _PostToPageState extends State<PostToPage> {
                     "My community",
                     style: TextStyle(
                         fontSize: 15,
-                        color: const Color(0xff292B32).withOpacity(0.4)),
+                        color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor),
                   ),
                 ),
                 ...viewModel.amityCommunities.map((community) {
@@ -115,8 +115,9 @@ class _PostToPageState extends State<PostToPage> {
                             children: [
                               Text(
                                 community.displayName ?? '',
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w600),
+                                style:  TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w600,
+                                color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor),
                               ),
                               community.isOfficial!
                                   ? Padding(

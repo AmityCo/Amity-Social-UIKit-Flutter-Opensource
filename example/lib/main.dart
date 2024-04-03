@@ -391,6 +391,7 @@ class SocialPage extends StatelessWidget {
                   Navigator.of(context).pop();
                   AppColors appColors = AppColors(
                       primary: primary,
+                      // primaryShade3: Colors.red,
                       base: base,
                       baseBackground: baseBackground,
                       baseShade4: baseShade4);

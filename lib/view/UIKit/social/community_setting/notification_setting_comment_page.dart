@@ -25,17 +25,18 @@ class _CommentsNotificationSettingPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Comments',
           style: TextStyle(
-            color: Colors.black,
+            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -158,11 +159,10 @@ class _CommentsNotificationSettingPageState
       padding: const EdgeInsets.all(16.0),
       child: Text(
         text,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          color: Color(0xff292B32),
-        ),
+        style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: Provider.of<AmityUIConfiguration>(context).appColors.base),
       ),
     );
   }
@@ -188,10 +188,9 @@ class _CommentsNotificationSettingPageState
     return ListTile(
       title: Text(
         title,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Color(0xff292B32),
-        ),
+        style: TextStyle(
+            fontSize: 14,
+            color: Provider.of<AmityUIConfiguration>(context).appColors.base),
       ),
       trailing: Radio<T>(
         focusColor: Provider.of<AmityUIConfiguration>(context).primaryColor,

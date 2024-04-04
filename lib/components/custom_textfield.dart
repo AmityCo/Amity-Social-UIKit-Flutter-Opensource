@@ -43,7 +43,11 @@ class _TextFieldWithCounterState extends State<TextFieldWithCounter> {
               text: TextSpan(
                 text: widget.title,
                 style: Provider.of<AmityUIConfiguration>(context, listen: false)
-                    .titleTextStyle,
+                    .titleTextStyle
+                    .copyWith(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base),
                 children: [
                   TextSpan(
                     text: widget.isRequired ? ' *' : "",
@@ -60,15 +64,21 @@ class _TextFieldWithCounterState extends State<TextFieldWithCounter> {
                       style: TextStyle(
                           fontSize: 13.4,
                           color: Provider.of<AmityUIConfiguration>(context)
-                              .userProfileTextColor),
+                              .appColors
+                              .base),
                     ),
                   )
                 : Container(),
           ],
         ),
         TextField(
+          style: TextStyle(
+              color: Provider.of<AmityUIConfiguration>(context).appColors.base),
           controller: widget.controller,
           decoration: InputDecoration(
+            // hintStyle: TextStyle(
+            //     color:
+            //         Provider.of<AmityUIConfiguration>(context).appColors.base),
             border: InputBorder.none,
             hintText: widget.hintText,
             counterText: "",

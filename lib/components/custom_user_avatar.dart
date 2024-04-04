@@ -5,17 +5,20 @@ import '../utils/env_manager.dart';
 import '../viewmodel/configuration_viewmodel.dart';
 
 Widget getAvatarImage(String? url, {double? radius = 20, String? fileId}) {
-  return CircleAvatar(
-      radius: radius,
-      backgroundColor: const Color(0xFFD9E5FC),
-      backgroundImage: url != null ? NetworkImage("$url?size=medium") : null,
-      child: url != null
-          ? const SizedBox()
-          : Icon(
-              Icons.person,
-              color: Colors.white,
-              size: radius! * 1.5,
-            ));
+  return Builder(builder: (context) {
+    return CircleAvatar(
+        radius: radius,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
+        backgroundImage: url != null ? NetworkImage("$url?size=medium") : null,
+        child: url != null
+            ? const SizedBox()
+            : Icon(
+                Icons.person,
+                color: Colors.white,
+                size: radius! * 1.5,
+              ));
+  });
 }
 
 Widget getNotificationAvatarImage(String? url,

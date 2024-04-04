@@ -2,6 +2,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/post_cpmponent.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 // import 'package:amity_uikit_beta_service/viewmodel/create_post_viewmodel.dart';
@@ -44,21 +45,26 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
 
     return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
       return Scaffold(
-        backgroundColor: Provider.of<AmityUIConfiguration>(context).userProfileBGColor,
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
-          backgroundColor:Provider.of<AmityUIConfiguration>(context).userProfileBGColor,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           title: Text(
             widget.community != null
                 ? widget.community?.displayName ?? "Community"
                 : "My Feed",
-            style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+            style: Provider.of<AmityUIConfiguration>(context)
+                .titleTextStyle
+                .copyWith(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base),
           ),
           leading: IconButton(
-            icon:  Icon(
-              Icons.chevron_left,
-              color: Provider.of<AmityUIConfiguration>(context).userProfileIconColor,
-            ),
+            icon: Icon(Icons.chevron_left,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base),
             onPressed: () {
               if (hasContent) {
                 ConfirmationDialog().show(
@@ -98,11 +104,20 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                               communityId: widget.community?.communityId!,
                               callback: (isSuccess, error) async {
                             if (isSuccess) {
+                              var roleVM = Provider.of<MemberManagementVM>(
+                                  context,
+                                  listen: false);
+                              roleVM.checkCurrentUserRole(
+                                  widget.community!.communityId!);
+
                               if (widget.community!.isPostReviewEnabled!) {
-                                await AmityDialog().showAlertErrorDialog(
-                                    title: "Post submitted",
-                                    message:
-                                        "Your post has been submitted to the pending list. It will be reviewed by community moderator");
+                                if (!widget.community!.hasPermission(
+                                    AmityPermission.REVIEW_COMMUNITY_POST)) {
+                                  await AmityDialog().showAlertErrorDialog(
+                                      title: "Post submitted",
+                                      message:
+                                          "Your post has been submitted to the pending list. It will be reviewed by community moderator");
+                                }
                               }
                               Navigator.of(context).pop();
                               if (widget.isFromPostToPage) {
@@ -148,7 +163,10 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                     child: Column(
                       children: [
                         TextField(
-                          style: TextStyle(color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor),
+                          style: TextStyle(
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base),
                           onChanged: (value) => vm.updatePostValidity(),
                           controller: vm.textEditingController,
                           scrollPhysics: const NeverScrollableScrollPhysics(),
@@ -238,6 +256,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
       required bool isEnable,
       String? debugingText}) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         debugingText == null ? const SizedBox() : Text(debugingText),
         CircleAvatar(
@@ -267,60 +286,116 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0),
-              topRight: Radius.circular(15.0),
-            ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16.0), // Space at the top
-              child: Wrap(
-                children: <Widget>[
-                  ListTile(
-                    leading: _iconButton(Icons.camera_alt_outlined,
-                        isEnable: true, label: "Camera", onTap: () {}),
-                    title: const Text('Camera'),
-                    onTap: () {
-                      _handleCameraTap(context);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: _iconButton(Icons.image_outlined,
-                        isEnable: true, label: "Photo", onTap: () {}),
-                    title: const Text('Photo'),
-                    onTap: () {
-                      _handleImageTap(context);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: _iconButton(Icons.attach_file_rounded,
-                        isEnable: true, label: "Attachment", onTap: () {}),
-                    title: const Text('Attachment'),
-                    onTap: () {
-                      _handleFileTap(context);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: _iconButton(Icons.play_circle_outline_outlined,
-                        isEnable: true, label: "Video", onTap: () {}),
-                    title: const Text('Video'),
-                    onTap: () {
-                      _handleVideoTap(context);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+        return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
               ),
             ),
-          ),
-        );
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0), // Space at the top
+                child: Wrap(
+                  children: <Widget>[
+                    ListTile(
+                      leading: _iconButton(Icons.camera_alt_outlined,
+                          isEnable: vm.availableFileSelectionOptions()[
+                              MyFileType.image]!,
+                          label: "Camera",
+                          onTap: () {}),
+                      title: Text(
+                        'Camera',
+                        style: TextStyle(
+                            color: vm.availableFileSelectionOptions()[
+                                    MyFileType.image]!
+                                ? Colors.black
+                                : Colors.grey),
+                      ),
+                      onTap: () {
+                        if (vm.availableFileSelectionOptions()[
+                            MyFileType.image]!) {
+                          _handleImageTap(context);
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                    ListTile(
+                      leading: _iconButton(Icons.image_outlined,
+                          isEnable: vm.availableFileSelectionOptions()[
+                              MyFileType.image]!,
+                          label: "Photo",
+                          onTap: () {}),
+                      title: Text(
+                        'Photo',
+                        style: TextStyle(
+                            color: vm.availableFileSelectionOptions()[
+                                    MyFileType.image]!
+                                ? Colors.black
+                                : Colors.grey),
+                      ),
+                      onTap: () {
+                        if (vm.availableFileSelectionOptions()[
+                            MyFileType.image]!) {
+                          _handleImageTap(context);
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                    ListTile(
+                      leading: _iconButton(Icons.attach_file_rounded,
+                          isEnable: vm.availableFileSelectionOptions()[
+                              MyFileType.file]!,
+                          label: "Attachment",
+                          onTap: () {}),
+                      title: Text(
+                        'Attachment',
+                        style: TextStyle(
+                            color: vm.availableFileSelectionOptions()[
+                                    MyFileType.file]!
+                                ? Colors.black
+                                : Colors.grey),
+                      ),
+                      onTap: () {
+                        if (vm.availableFileSelectionOptions()[
+                            MyFileType.file]!) {
+                          _handleFileTap(context);
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                    ListTile(
+                      leading: _iconButton(
+                        Icons.play_circle_outline_outlined,
+                        isEnable: vm
+                            .availableFileSelectionOptions()[MyFileType.video]!,
+                        label: "Video",
+                        onTap: () {},
+                      ),
+                      title: Text(
+                        'Video',
+                        style: TextStyle(
+                            color: vm.availableFileSelectionOptions()[
+                                    MyFileType.video]!
+                                ? Colors.black
+                                : Colors.grey),
+                      ),
+                      onTap: () {
+                        if (vm.availableFileSelectionOptions()[
+                            MyFileType.video]!) {
+                          _handleVideoTap(context);
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
       },
     );
   }

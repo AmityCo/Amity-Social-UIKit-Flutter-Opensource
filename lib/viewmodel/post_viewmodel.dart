@@ -65,9 +65,9 @@ class PostVM extends ChangeNotifier {
             }
           } else {
             // Error on pagination controller
-            log("error from Comment");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: _controller.error.toString());
+            log("error from Comment: ${_controller.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controller.error.toString());
           }
         },
       );

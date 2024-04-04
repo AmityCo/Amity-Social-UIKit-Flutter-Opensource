@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -108,10 +109,11 @@ class CreatePostVMV2 with ChangeNotifier {
   Future<void> selectFiles(
       List<XFile> selectedFiles, MyFileType fileType) async {
     // Ensure only one type of file is selected at a time
-    if (selectedFileType != null && selectedFileType != fileType) {
-      // Handle error: different file type selected
-      return;
-    }
+    // if (selectedFileType != null && selectedFileType != fileType) {
+    //   // Handle error: different file type selected
+    //   log("selectedFileType != null && selectedFileType != fileType");
+    //   return;
+    // }
 
     selectedFileType = fileType;
 
@@ -159,7 +161,8 @@ class CreatePostVMV2 with ChangeNotifier {
             notifyListeners();
           }
           await _performUpload(
-            AmityCoreClient.newFileRepository().uploadVideo(uploadingFile),
+            AmityCoreClient.newFileRepository().uploadVideo(uploadingFile,
+                feedtype: AmityContentFeedType.POST),
             uikitFile,
           );
         } else {
@@ -202,8 +205,11 @@ class CreatePostVMV2 with ChangeNotifier {
             notifyListeners();
           },
           error: (error) {
+            AmityDialog().showAlertErrorDialog(
+                title: "Upload fail", message: error.toString());
             uikitFile.status = FileStatus.rejected;
             notifyListeners();
+            throw Exception(error);
             // Handle the error as appropriate for your app
           },
           cancel: () {

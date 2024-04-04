@@ -68,10 +68,10 @@ class FeedVM extends ChangeNotifier {
               isLoading = false;
 
               notifyListeners();
-              log("error");
-              await AmityDialog().showAlertErrorDialog(
-                  title: "Error!",
-                  message: _controllerGlobal!.error.toString());
+              log("error: ${_controllerGlobal!.error.toString()}");
+              // await AmityDialog().showAlertErrorDialog(
+              //     title: "Error!",
+              //     message: _controllerGlobal!.error.toString());
             }
           },
         );
@@ -100,10 +100,10 @@ class FeedVM extends ChangeNotifier {
               //Error on pagination controller
 
               notifyListeners();
-              log("error");
-              await AmityDialog().showAlertErrorDialog(
-                  title: "Error!",
-                  message: _controllerGlobal!.error.toString());
+              log("error: ${_controllerGlobal!.error.toString()}");
+              // await AmityDialog().showAlertErrorDialog(
+              //     title: "Error!",
+              //     message: _controllerGlobal!.error.toString());
             }
             if (_controllerGlobal?.isFetching == false) {
               isLoading = false;

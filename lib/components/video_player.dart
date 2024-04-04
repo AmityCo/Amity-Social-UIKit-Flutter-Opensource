@@ -84,8 +84,12 @@ class _LocalVideoPlayerState extends State<LocalVideoPlayer> {
 class VideoPlayerScreen extends StatefulWidget {
   final List<AmityPost> files;
   final bool isFillScreen;
+  final int initialIndex;
   const VideoPlayerScreen(
-      {Key? key, required this.files, this.isFillScreen = false})
+      {Key? key,
+      required this.files,
+      this.isFillScreen = false,
+      required this.initialIndex})
       : super(key: key);
 
   @override
@@ -93,13 +97,13 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  final PageController _pageController = PageController();
   int _currentIndex = 0;
   List<VideoPlayerController>? _controllers; // Changed from late to nullable
 
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _initializeControllers();
   }
 
@@ -128,7 +132,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _controllers?.forEach((controller) {
       controller.dispose();
     });
-    _pageController.dispose();
+
     super.dispose();
   }
 
@@ -173,7 +177,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             ),
             body: _controllers != null && _controllers!.isNotEmpty
                 ? PageView.builder(
-                    controller: _pageController,
+                    controller:
+                        PageController(initialPage: widget.initialIndex),
                     itemCount: widget.files.length,
                     onPageChanged: (index) {
                       setState(() {

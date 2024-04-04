@@ -1199,7 +1199,7 @@ class TextPost extends StatelessWidget {
                                           const EdgeInsets.only(bottom: 16),
                                       child: Container(
                                         child: buildURLWidget(
-                                            textdata.text.toString(),context),
+                                            textdata.text.toString()),
                                       )
                                       // Text(
                                       //   textdata.text.toString(),

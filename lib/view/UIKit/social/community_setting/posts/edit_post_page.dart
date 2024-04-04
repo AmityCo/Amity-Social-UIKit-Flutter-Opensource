@@ -104,9 +104,6 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                     child: Column(
                       children: [
                         TextField(
-                          style: theme.textTheme.bodyLarge!.copyWith(
-                              color: Provider.of<AmityUIConfiguration>(context)
-                                  .userProfileTextColor),
                           onChanged: (value) => vm.updatePostValidity(),
                           controller: vm.textEditingController,
                           style: TextStyle(

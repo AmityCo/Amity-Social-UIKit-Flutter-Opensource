@@ -72,7 +72,7 @@ class _PostToPageState extends State<PostToPage> {
                                   .appColors
                                   .primaryShade3,
                               shape: BoxShape.circle),
-                          child: const Icon(
+                          child:  Icon(
                             Icons.person,
                             color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor,
                           ),

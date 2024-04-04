@@ -109,47 +109,50 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           itemCount: vm.getAmityPosts().length,
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
-                                key: Key(vm.getAmityPosts()[index].postId!),
-                                stream: vm.getAmityPosts()[index].listen.stream,
-                                initialData: vm.getAmityPosts()[index],
-                                builder: (context, snapshot) {
-                                  var latestComments =
-                                      snapshot.data!.latestComments;
-
-                            return Column(
-                              children: [
-                                index != 0
-                                    ? const SizedBox()
-                                    : widget.isShowMyCommunity
-                                        ? CommunityIconList(
-                                            amityCommunites:
-                                                Provider.of<MyCommunityVM>(
-                                                        context)
-                                                    .amityCommunities,
-                                            canCreateCommunity:
-                                                widget.canCreateCommunity,
-                                          )
-                                        : const SizedBox(),
-                                PostWidget(
-                                  // customPostRanking:
-                                  //     widget.isCustomPostRanking,
-                                  feedType: FeedType.global,
-                                  showCommunity: true,
-                                  showlatestComment: true,
-                                  post: snapshot.data!,
-                                  theme: theme,
-                                  postIndex: index,
-                                  isFromFeed: true,
-                                ),
-                              ],
+                              key: Key(vm.getAmityPosts()[index].postId!),
+                              stream: vm.getAmityPosts()[index].listen.stream,
+                              initialData: vm.getAmityPosts()[index],
+                              builder: (context, snapshot) {
+                                var latestComments =
+                                    snapshot.data!.latestComments;
+                                return Column(
+                                  children: [
+                                    index != 0
+                                        ? const SizedBox()
+                                        : widget.isShowMyCommunity
+                                            ? CommunityIconList(
+                                                amityCommunites:
+                                                    Provider.of<MyCommunityVM>(
+                                                            context)
+                                                        .amityCommunities,
+                                                canCreateCommunity:
+                                                    widget.canCreateCommunity,
+                                              )
+                                            : const SizedBox(),
+                                    PostWidget(
+                                      // customPostRanking:
+                                      //     widget.isCustomPostRanking,
+                                      feedType: FeedType.global,
+                                      showCommunity: true,
+                                      showlatestComment: true,
+                                      post: snapshot.data!,
+                                      theme: theme,
+                                      postIndex: index,
+                                      isFromFeed: true,
+                                    ),
+                                  ],
+                                );
+                              },
                             );
-                          });
-                    },
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });
@@ -493,21 +496,15 @@ class _PostWidgetState
                                           "Community name",
                                       style: widget.theme.textTheme.bodyLarge!
                                           .copyWith(
-                                              color: Provider.of<
-                                                          AmityUIConfiguration>(
-                                                      context)
-                                                  .appColors
-                                                  .base,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: widget.feedType ==
-                                                      FeedType.user
-                                                  ? Provider.of<
-                                                              AmityUIConfiguration>(
-                                                          context)
-                                                      .userProfileTextColor
-                                                  : Colors.black),
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   )
                                 : Container()

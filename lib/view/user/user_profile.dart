@@ -496,18 +496,15 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                             Text(
                                               getAmityUser().displayName ?? "",
                                               style: TextStyle(
-                                                  color: Provider.of<
-                                                              AmityUIConfiguration>(
-                                                          context)
-                                                      .appColors
-                                                      .base,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: -0.4,
-                                                  color: Provider.of<
-                                                              AmityUIConfiguration>(
-                                                          context)
-                                                      .userProfileTextColor),
+                                                color: Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .base,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700,
+                                                letterSpacing: -0.4,
+                                              ),
                                             ),
                                             vm.amityMyFollowInfo.id == null
                                                 ? const SizedBox()

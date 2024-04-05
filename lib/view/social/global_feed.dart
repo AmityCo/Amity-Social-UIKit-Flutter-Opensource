@@ -26,9 +26,8 @@ import 'community_feed.dart';
 import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
-  final bool isShowMyCommunity;
+  final isShowMyCommunity;
   final bool canCreateCommunity;
-  // final bool isCustomPostRanking;
 
   const GlobalFeedScreen({
     super.key,
@@ -52,12 +51,11 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
     super.initState();
     var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
     var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
+    if (myCommunityList.amityCommunities.isEmpty) {
+      myCommunityList.initMyCommunity();
+    }
 
-    myCommunityList.initMyCommunity();
-
-    globalFeedProvider.initAmityGlobalfeed(
-        // isCustomPostRanking: widget.isCustomPostRanking
-        isCustomPostRanking: false);
+    globalFeedProvider.initAmityGlobalfeed();
   }
 
   @override
@@ -111,41 +109,41 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           itemCount: vm.getAmityPosts().length,
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
-                                key: Key(vm.getAmityPosts()[index].postId!),
-                                stream: vm.getAmityPosts()[index].listen.stream,
-                                initialData: vm.getAmityPosts()[index],
-                                builder: (context, snapshot) {
-                                  var latestComments =
-                                      snapshot.data!.latestComments;
-
-                                  return Column(
-                                    children: [
-                                      index != 0
-                                          ? const SizedBox()
-                                          : widget.isShowMyCommunity
-                                              ? CommunityIconList(
-                                                  amityCommunites: Provider.of<
-                                                              MyCommunityVM>(
-                                                          context)
-                                                      .amityCommunities,
-                                                  canCreateCommunity:
-                                                      widget.canCreateCommunity,
-                                                )
-                                              : const SizedBox(),
-                                      PostWidget(
-                                        // customPostRanking:
-                                        //     widget.isCustomPostRanking,
-                                        feedType: FeedType.global,
-                                        showCommunity: true,
-                                        showlatestComment: true,
-                                        post: snapshot.data!,
-                                        theme: theme,
-                                        postIndex: index,
-                                        isFromFeed: true,
-                                      ),
-                                    ],
-                                  );
-                                });
+                              key: Key(vm.getAmityPosts()[index].postId!),
+                              stream: vm.getAmityPosts()[index].listen.stream,
+                              initialData: vm.getAmityPosts()[index],
+                              builder: (context, snapshot) {
+                                var latestComments =
+                                    snapshot.data!.latestComments;
+                                return Column(
+                                  children: [
+                                    index != 0
+                                        ? const SizedBox()
+                                        : widget.isShowMyCommunity
+                                            ? CommunityIconList(
+                                                amityCommunites:
+                                                    Provider.of<MyCommunityVM>(
+                                                            context)
+                                                        .amityCommunities,
+                                                canCreateCommunity:
+                                                    widget.canCreateCommunity,
+                                              )
+                                            : const SizedBox(),
+                                    PostWidget(
+                                      // customPostRanking:
+                                      //     widget.isCustomPostRanking,
+                                      feedType: FeedType.global,
+                                      showCommunity: true,
+                                      showlatestComment: true,
+                                      post: snapshot.data!,
+                                      theme: theme,
+                                      postIndex: index,
+                                      isFromFeed: true,
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                         ),
                       ),
@@ -164,19 +162,17 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 enum FeedType { user, community, global, pending }
 
 class PostWidget extends StatefulWidget {
-  const PostWidget(
-      {Key? key,
-      required this.post,
-      required this.theme,
-      required this.postIndex,
-      this.isFromFeed = false,
-      required this.showlatestComment,
-      required this.feedType,
-      required this.showCommunity,
-      this.showAcceptOrRejectButton = false,
-      this.customPostRanking = false})
-      : super(key: key);
-  final bool customPostRanking;
+  const PostWidget({
+    Key? key,
+    required this.post,
+    required this.theme,
+    required this.postIndex,
+    this.isFromFeed = false,
+    required this.showlatestComment,
+    required this.feedType,
+    required this.showCommunity,
+    this.showAcceptOrRejectButton = false,
+  }) : super(key: key);
   final FeedType feedType;
   final AmityPost post;
   final ThemeData theme;
@@ -185,12 +181,13 @@ class PostWidget extends StatefulWidget {
   final bool showlatestComment;
   final bool showCommunity;
   final bool showAcceptOrRejectButton;
+
   @override
   State<PostWidget> createState() => _PostWidgetState();
 }
 
-class _PostWidgetState extends State<PostWidget>
-// with AutomaticKeepAliveClientMixin
+class _PostWidgetState
+    extends State<PostWidget> // with AutomaticKeepAliveClientMixin
 {
   double iconSize = 16;
   double feedReactionCountSize = 16;
@@ -198,11 +195,12 @@ class _PostWidgetState extends State<PostWidget>
   Widget postWidgets() {
     List<Widget> widgets = [];
     if (widget.post.data != null) {
-      widgets.add(AmityPostWidget([widget.post], false, false));
+      widgets
+          .add(AmityPostWidget([widget.post], false, false, widget.feedType));
     }
     final childrenPosts = widget.post.children;
     if (childrenPosts != null && childrenPosts.isNotEmpty) {
-      widgets.add(AmityPostWidget(childrenPosts, true, true));
+      widgets.add(AmityPostWidget(childrenPosts, true, true, widget.feedType));
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -211,7 +209,7 @@ class _PostWidgetState extends State<PostWidget>
     );
   }
 
-  Widget postOptions(BuildContext context, bool isCustomPostRanking) {
+  Widget postOptions(BuildContext context) {
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
@@ -243,6 +241,7 @@ class _PostWidgetState extends State<PostWidget>
                     create: (context) => EditPostVM(),
                     child: AmityEditPostScreen(
                       amityPost: widget.post,
+                      feedType: widget.feedType,
                     ))));
             break;
           case 'Delete Post':
@@ -302,8 +301,8 @@ class _PostWidgetState extends State<PostWidget>
             Provider.of<UserVM>(context, listen: false)
                 .blockUser(widget.post.postedUserId!, () {
               if (widget.feedType == FeedType.global) {
-                Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed(
-                    isCustomPostRanking: isCustomPostRanking);
+                Provider.of<FeedVM>(context, listen: false)
+                    .initAmityGlobalfeed();
               } else if (widget.feedType == FeedType.community) {
                 Provider.of<CommuFeedVM>(context, listen: false)
                     .initAmityCommunityFeed(
@@ -316,10 +315,12 @@ class _PostWidgetState extends State<PostWidget>
           default:
         }
       },
-      child: const Icon(
+      child: Icon(
         Icons.more_horiz_rounded,
         size: 24,
-        color: Colors.grey,
+        color: widget.feedType == FeedType.user
+            ? Provider.of<AmityUIConfiguration>(context).userProfileTextColor
+            : Colors.grey,
       ),
       itemBuilder: (context) {
         List<PopupMenuEntry<String>> menuItems = [];
@@ -382,6 +383,7 @@ class _PostWidgetState extends State<PostWidget>
                           amityPost: widget.post,
                           theme: widget.theme,
                           isFromFeed: true,
+                          feedType: widget.feedType,
                         )));
               }
             },
@@ -401,16 +403,19 @@ class _PostWidgetState extends State<PostWidget>
                         leading: FadeAnimation(
                             child: GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
                                       builder: (context) =>
                                           ChangeNotifierProvider(
-                                              create: (context) => UserFeedVM(),
-                                              child: UserProfileScreen(
-                                                amityUser:
-                                                    widget.post.postedUser!,
-                                                amityUserId: widget
-                                                    .post.postedUser!.userId!,
-                                              ))));
+                                        create: (context) => UserFeedVM(),
+                                        child: UserProfileScreen(
+                                          amityUser: widget.post.postedUser!,
+                                          amityUserId:
+                                              widget.post.postedUser!.userId!,
+                                        ),
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: getAvatarImage(widget
                                             .post.postedUser!.userId !=
@@ -423,16 +428,18 @@ class _PostWidgetState extends State<PostWidget>
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
                                     builder: (context) =>
                                         ChangeNotifierProvider(
-                                            create: (context) => UserFeedVM(),
-                                            child: UserProfileScreen(
-                                              amityUser:
-                                                  widget.post.postedUser!,
-                                              amityUserId: widget
-                                                  .post.postedUser!.userId!,
-                                            ))));
+                                      create: (context) => UserFeedVM(),
+                                      child: UserProfileScreen(
+                                          amityUser: widget.post.postedUser!,
+                                          amityUserId:
+                                              widget.post.postedUser!.userId!),
+                                    ),
+                                  ),
+                                );
                               },
                               child: Text(
                                 widget.post.postedUser!.userId !=
@@ -489,47 +496,31 @@ class _PostWidgetState extends State<PostWidget>
                                           "Community name",
                                       style: widget.theme.textTheme.bodyLarge!
                                           .copyWith(
-                                              color: Provider.of<
-                                                          AmityUIConfiguration>(
-                                                      context)
-                                                  .appColors
-                                                  .base,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   )
-                                : Container(),
-                            widget.showCommunity &&
-                                    widget.post.targetType ==
-                                        AmityPostTargetType.COMMUNITY
-                                ? (widget.post.target as CommunityTarget)
-                                        .targetCommunity!
-                                        .isOfficial!
-                                    ? Container(
-                                        padding:
-                                            const EdgeInsets.only(left: 7.0),
-                                        child: Provider.of<
-                                                AmityUIConfiguration>(context)
-                                            .iconConfig
-                                            .officialIcon(
-                                                iconSize: 17,
-                                                color: Provider.of<
-                                                            AmityUIConfiguration>(
-                                                        context)
-                                                    .primaryColor),
-                                      )
-                                    : const SizedBox()
-                                : const SizedBox(),
+                                : Container()
                           ],
                         ),
                         subtitle: Row(
                           children: [
                             TimeAgoWidget(
                               createdAt: widget.post.createdAt!,
+                              textColor: widget.feedType == FeedType.user
+                                  ? Provider.of<AmityUIConfiguration>(context)
+                                      .userProfileTextColor
+                                  : Colors.grey,
                             ),
                             widget.post.editedAt != widget.post.createdAt
-                                ? const Row(
+                                ? Row(
                                     children: [
                                       SizedBox(
                                         width: 4,
@@ -537,11 +528,25 @@ class _PostWidgetState extends State<PostWidget>
                                       Icon(
                                         Icons.circle,
                                         size: 4,
+                                        color: widget.feedType == FeedType.user
+                                            ? Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .userProfileTextColor
+                                            : Colors.grey,
                                       ),
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Text("Edited"),
+                                      Text("Edited",
+                                          style: TextStyle(
+                                            color: widget.feedType ==
+                                                    FeedType.user
+                                                ? Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .userProfileTextColor
+                                                : Colors.grey,
+                                          )),
                                     ],
                                   )
                                 : const SizedBox()
@@ -566,8 +571,7 @@ class _PostWidgetState extends State<PostWidget>
                                   //   color: ApplicationColors.grey,
                                   // ),
                                   // SizedBox(width: iconSize.feedIconSize),
-                                  postOptions(
-                                      context, widget.customPostRanking),
+                                  postOptions(context),
                                 ],
                               ),
                       ),
@@ -606,7 +610,14 @@ class _PostWidgetState extends State<PostWidget>
                                                     widget.post.reactionCount
                                                         .toString(),
                                                     style: TextStyle(
-                                                        color: Colors.grey,
+                                                        color: widget
+                                                                    .feedType ==
+                                                                FeedType.user
+                                                            ? Provider.of<
+                                                                        AmityUIConfiguration>(
+                                                                    context)
+                                                                .userProfileTextColor
+                                                            : Colors.grey,
                                                         fontSize:
                                                             feedReactionCountSize,
                                                         letterSpacing: 1)),
@@ -619,7 +630,14 @@ class _PostWidgetState extends State<PostWidget>
                                                         ? "likes"
                                                         : "like",
                                                     style: TextStyle(
-                                                        color: Colors.grey,
+                                                        color: widget
+                                                                    .feedType ==
+                                                                FeedType.user
+                                                            ? Provider.of<
+                                                                        AmityUIConfiguration>(
+                                                                    context)
+                                                                .userProfileTextColor
+                                                            : Colors.grey,
                                                         fontSize:
                                                             feedReactionCountSize,
                                                         letterSpacing: 1)),
@@ -632,19 +650,19 @@ class _PostWidgetState extends State<PostWidget>
                                     Builder(builder: (context) {
                                       // any logic needed...
                                       if (widget.post.commentCount! > 1) {
-                                        return StreamBuilder<AmityPost>(
-                                            stream: widget.post.listen.stream,
-                                            initialData: widget.post,
-                                            builder: (context, snapshot) {
-                                              return Text(
-                                                '${snapshot.data!.commentCount} ${snapshot.data!.commentCount == 1 ? 'comment' : 'comments'}',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize:
-                                                        feedReactionCountSize,
-                                                    letterSpacing: 0.5),
-                                              );
-                                            });
+                                        return Text(
+                                          '${widget.post.commentCount} comments',
+                                          style: TextStyle(
+                                              color: widget.feedType ==
+                                                      FeedType.user
+                                                  ? Provider.of<
+                                                              AmityUIConfiguration>(
+                                                          context)
+                                                      .userProfileTextColor
+                                                  : Colors.grey,
+                                              fontSize: feedReactionCountSize,
+                                              letterSpacing: 0.5),
+                                        );
                                       } else if (widget.post.commentCount! ==
                                           0) {
                                         return const SizedBox(
@@ -654,7 +672,13 @@ class _PostWidgetState extends State<PostWidget>
                                         return Text(
                                           '${widget.post.commentCount} comment',
                                           style: TextStyle(
-                                              color: Colors.grey,
+                                              color: widget.feedType ==
+                                                      FeedType.user
+                                                  ? Provider.of<
+                                                              AmityUIConfiguration>(
+                                                          context)
+                                                      .userProfileTextColor
+                                                  : Colors.grey,
                                               fontSize: feedReactionCountSize,
                                               letterSpacing: 0.5),
                                         );
@@ -663,8 +687,11 @@ class _PostWidgetState extends State<PostWidget>
                                   ],
                                 )),
                           ),
-                    const Divider(
-                      color: Colors.grey,
+                    Divider(
+                      color: widget.feedType == FeedType.user
+                          ? Provider.of<AmityUIConfiguration>(context)
+                              .userProfileTextColor
+                          : Colors.grey,
                       height: 8,
                     ),
 
@@ -780,11 +807,27 @@ class _PostWidgetState extends State<PostWidget>
                                                     Provider.of<AmityUIConfiguration>(
                                                             context)
                                                         .iconConfig
-                                                        .likeIcon(),
+                                                        .likeIcon(
+                                                            color: widget
+                                                                        .feedType ==
+                                                                    FeedType
+                                                                        .user
+                                                                ? Provider.of<
+                                                                            AmityUIConfiguration>(
+                                                                        context)
+                                                                    .userProfileTextColor
+                                                                : Colors.grey),
                                                     Text(
                                                       ' Like',
                                                       style: TextStyle(
-                                                          color: Colors.grey,
+                                                          color: widget
+                                                                      .feedType ==
+                                                                  FeedType.user
+                                                              ? Provider.of<
+                                                                          AmityUIConfiguration>(
+                                                                      context)
+                                                                  .userProfileTextColor
+                                                              : Colors.grey,
                                                           fontSize:
                                                               feedReactionCountSize,
                                                           letterSpacing: 1),
@@ -808,6 +851,7 @@ class _PostWidgetState extends State<PostWidget>
                                                     amityPost: widget.post,
                                                     theme: widget.theme,
                                                     isFromFeed: true,
+                                                    feedType: widget.feedType,
                                                   )));
                                     }
                                   },
@@ -821,7 +865,10 @@ class _PostWidgetState extends State<PostWidget>
                                       Text(
                                         'Comment',
                                         style: TextStyle(
-                                            color: Colors.grey,
+                                            color: Provider.of<
+                                                        AmityUIConfiguration>(
+                                                    context)
+                                                .userProfileIconColor,
                                             fontSize: feedReactionCountSize,
                                             letterSpacing: 0.5),
                                       ),
@@ -894,9 +941,12 @@ class _PostWidgetState extends State<PostWidget>
                             .appColors
                             .baseBackground,
                         child: LatestCommentComponent(
-                            postId: widget.post.data!.postId,
-                            comments: widget.post.latestComments!),
+                          feedType: widget.feedType,
+                          postId: widget.post.data!.postId,
+                          comments: widget.post.latestComments!,
+                        ),
                       ),
+
         !widget.isFromFeed
             ? const SizedBox()
             : const SizedBox(
@@ -906,25 +956,26 @@ class _PostWidgetState extends State<PostWidget>
     );
   }
 
-  // @override
-  // bool get wantKeepAlive {
-  //   final childrenPosts = widget.post.children;
-  //   if (childrenPosts != null && childrenPosts.isNotEmpty) {
-  //     if (childrenPosts[0].data is VideoData) {
-  //       log("keep ${childrenPosts[0].parentPostId} alive");
-  //       return true;
-  //     } else {
-  //       return true;
-  //     }
-  //   } else {
-  //     return false;
-  //   }
-  // }
+// @override
+// bool get wantKeepAlive {
+//   final childrenPosts = widget.post.children;
+//   if (childrenPosts != null && childrenPosts.isNotEmpty) {
+//     if (childrenPosts[0].data is VideoData) {
+//       log("keep ${childrenPosts[0].parentPostId} alive");
+//       return true;
+//     } else {
+//       return true;
+//     }
+//   } else {
+//     return false;
+//   }
+// }
 }
 
 class PendingSectionButton extends StatelessWidget {
   final String postId;
   final String communityId;
+
   const PendingSectionButton(
       {super.key, required this.postId, required this.communityId});
 
@@ -1000,11 +1051,14 @@ class LatestCommentComponent extends StatefulWidget {
     Key? key,
     required this.postId,
     required this.comments,
+    required this.feedType,
+    this.textColor,
   }) : super(key: key);
-
+  final FeedType feedType;
   final String postId;
 
   final List<AmityComment> comments;
+  final Color? textColor;
 
   @override
   State<LatestCommentComponent> createState() => _LatestCommentComponentState();
@@ -1078,6 +1132,10 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                       : Column(
                           children: [
                             Container(
+                              color: widget.feedType == FeedType.user
+                                  ? Provider.of<AmityUIConfiguration>(context)
+                                      .userProfileBGColor
+                                  : Colors.white,
                               padding: const EdgeInsets.symmetric(
                                   vertical: 0, horizontal: 0),
                               child: Column(
@@ -1087,18 +1145,6 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                     leading: GestureDetector(
                                       onTap: () {
                                         // Navigate to user profile
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ChangeNotifierProvider(
-                                                        create:
-                                                            (context) =>
-                                                                UserFeedVM(),
-                                                        child: UserProfileScreen(
-                                                            amityUser:
-                                                                comments.user!,
-                                                            amityUserId: comments
-                                                                .userId!))));
                                       },
                                       child: getAvatarImage(
                                           comments.user?.avatarUrl),
@@ -1115,6 +1161,7 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                     ),
                                     subtitle: TimeAgoWidget(
                                       createdAt: comments.createdAt!,
+                                      textColor: widget.textColor,
                                     ),
                                   ),
                                   Container(
@@ -1316,7 +1363,6 @@ class CommentActionComponent extends StatelessWidget {
                                     onConfirm: () {
                                       Provider.of<PostVM>(context)
                                           .deleteComment(comments);
-
                                       // AmitySuccessDialog
                                       //     .showTimedDialog(
                                       //         "Success",

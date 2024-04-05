@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/video_player.dart';
+import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/imag_viewer.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:any_link_preview/any_link_preview.dart';
@@ -24,12 +25,12 @@ class AmityPostWidget extends StatefulWidget {
   final bool isCornerRadiusEnabled;
   final bool haveChildrenPost;
   final bool shouldShowTextPost;
-
+  final FeedType feedType;
   const AmityPostWidget(
-      this.posts, this.isChildrenPost, this.isCornerRadiusEnabled,
+      this.posts, this.isChildrenPost, this.isCornerRadiusEnabled, this.feedType,
       {super.key,
       this.haveChildrenPost = false,
-      this.shouldShowTextPost = true});
+      this.shouldShowTextPost = true,});
   @override
   AmityPostWidgetState createState() => AmityPostWidgetState();
 }
@@ -185,7 +186,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
   Widget build(BuildContext context) {
     if (!widget.isChildrenPost) {
       if (widget.haveChildrenPost || !urlValidation(widget.posts[0])) {
-        return TextPost(post: widget.posts[0]);
+        return TextPost(post: widget.posts[0],feedType: widget.feedType);
       } else {
         String url =
             extractLink(widget.posts[0]); //urlExtraction(widget.posts[0]);
@@ -194,7 +195,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           children: [
             // Text(url),
             widget.shouldShowTextPost
-                ? TextPost(post: widget.posts[0])
+                ? TextPost(post: widget.posts[0],feedType: widget.feedType)
                 : Container(),
             generateURLWidget(url.toLowerCase())
             // AnyLinkPreview(
@@ -1152,7 +1153,8 @@ Widget _listMediaGrid(List<AmityPost> files) {
 
 class TextPost extends StatelessWidget {
   final AmityPost post;
-  const TextPost({Key? key, required this.post}) : super(key: key);
+  final FeedType feedType;
+  const TextPost({Key? key, required this.post,required this.feedType}) : super(key: key);
 
   Widget buildURLWidget(String text) {
     return Builder(builder: (context) {

@@ -10,7 +10,9 @@ class AmityUIConfiguration extends ChangeNotifier {
   AmityIconConfig iconConfig = AmityIconConfig();
   ChannelListConfig channelListConfig = ChannelListConfig();
   MessageRoomConfig messageRoomConfig = MessageRoomConfig();
-
+  Color userProfileBGColor = Colors.white;
+  Color userProfileTextColor = Colors.black;
+  Color userProfileIconColor = Colors.grey;
   TextStyle titleTextStyle = const TextStyle(
     fontSize: 17,
     color: Colors.black,

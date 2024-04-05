@@ -83,6 +83,7 @@ class _TextFieldWithCounterState extends State<TextFieldWithCounter> {
             hintText: widget.hintText,
             counterText: "",
           ),
+          cursorColor: Provider.of<AmityUIConfiguration>(context).primaryColor,
           maxLength: widget.maxCharacters,
           keyboardType: widget.keyboardType,
           maxLines: widget.maxLines,

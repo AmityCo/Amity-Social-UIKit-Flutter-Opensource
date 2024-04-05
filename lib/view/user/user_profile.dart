@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/social/user_follow_screen.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/view/user/user_setting.dart';
@@ -20,12 +21,16 @@ class UserProfileScreen extends StatefulWidget {
   final AmityUser? amityUser;
   final String amityUserId;
   bool? isEnableAppbar = true;
+  Widget? customActions = Container();
+
   UserProfileScreen(
       {Key? key,
       this.amityUser,
       this.isEnableAppbar,
+      this.customActions,
       required this.amityUserId})
       : super(key: key);
+
   @override
   UserProfileScreenState createState() => UserProfileScreenState();
 }
@@ -393,10 +398,13 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
-                                                    const Icon(
+                                                    Icon(
                                                       Icons.add,
                                                       size: 16,
-                                                      color: Colors.white,
+                                                      color: Provider.of<
+                                                                  AmityUIConfiguration>(
+                                                              context)
+                                                          .userProfileBGColor,
                                                       weight: 4,
                                                     ),
                                                     const SizedBox(
@@ -451,7 +459,9 @@ class UserProfileScreenState extends State<UserProfileScreen>
                     ),
                     flexibleSpace: Column(
                       children: [
-                        const SizedBox(height: 120),
+                        widget.customActions != null
+                            ? const SizedBox(height: 10)
+                            : const SizedBox(height: 120),
                         Padding(
                           padding: const EdgeInsets.only(left: 16, right: 16),
                           child: Column(
@@ -486,14 +496,15 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                             Text(
                                               getAmityUser().displayName ?? "",
                                               style: TextStyle(
-                                                  color: Provider.of<
-                                                              AmityUIConfiguration>(
-                                                          context)
-                                                      .appColors
-                                                      .base,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: -0.4),
+                                                color: Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .base,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700,
+                                                letterSpacing: -0.4,
+                                              ),
                                             ),
                                             vm.amityMyFollowInfo.id == null
                                                 ? const SizedBox()
@@ -748,7 +759,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
   }
 }
 
-    // TabBarView(
-    //               controller: _tabController,
-    //               children: tablist,
-    //             ),
+// TabBarView(
+//               controller: _tabController,
+//               children: tablist,
+//             ),

@@ -1015,7 +1015,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                                             AmityUIConfiguration>(
                                                         context)
                                                     .appColors
-                                                    .base,
+                                                    .baseShade4,
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(4))),

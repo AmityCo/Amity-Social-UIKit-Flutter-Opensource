@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/components/post_profile.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/edit_post_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
@@ -522,7 +523,7 @@ class _PostWidgetState
                             widget.post.editedAt != widget.post.createdAt
                                 ? Row(
                                     children: [
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 4,
                                       ),
                                       Icon(
@@ -534,7 +535,7 @@ class _PostWidgetState
                                                 .userProfileTextColor
                                             : Colors.grey,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 5,
                                       ),
                                       Text("Edited",
@@ -1141,28 +1142,17 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ListTile(
-                                    leading: GestureDetector(
-                                      onTap: () {
-                                        // Navigate to user profile
-                                      },
-                                      child: getAvatarImage(
-                                          comments.user?.avatarUrl),
-                                    ),
-                                    title: Text(
-                                      comments.user?.displayName ?? "",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Provider.of<AmityUIConfiguration>(
-                                                      context)
-                                                  .appColors
-                                                  .base),
-                                    ),
-                                    subtitle: TimeAgoWidget(
-                                      createdAt: comments.createdAt!,
-                                      textColor: widget.textColor,
-                                    ),
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 14, left: 16, bottom: 8),
+                                    child: CustomListTile(
+                                        avatarUrl: comments.user!.avatarUrl,
+                                        displayName:
+                                            comments.user!.displayName!,
+                                        createdAt: comments.createdAt!,
+                                        editedAt: comments.editedAt!,
+                                        userId: comments.user!.userId!,
+                                        user: comments.user!),
                                   ),
                                   Container(
                                     padding: const EdgeInsets.all(10.0),
@@ -1191,8 +1181,14 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                       ),
                                     ),
                                   ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
                                   CommentActionComponent(
                                       amityComment: comments),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
                                 ],
                               ),
                             ),
@@ -1313,12 +1309,15 @@ class CommentActionComponent extends StatelessWidget {
                 // ),
 
                 // More Options Button
-                IconButton(
-                  icon: const Icon(
+                const SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                  child: const Icon(
                     Icons.more_horiz,
                     color: Color(0xff898E9E),
                   ),
-                  onPressed: () {
+                  onTap: () {
                     AmityGeneralCompomemt.showOptionsBottomSheet(context, [
                       comments.user?.userId! ==
                               AmityCoreClient.getCurrentUser().userId

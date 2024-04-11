@@ -2,13 +2,12 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/components/post_profile.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/post_content_widget.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,21 +17,19 @@ import 'package:provider/provider.dart';
 import '../../components/custom_user_avatar.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/post_viewmodel.dart';
-import 'global_feed.dart';
-import 'global_feed.dart';
 
 class CommentScreen extends StatefulWidget {
   final AmityPost amityPost;
   final ThemeData theme;
   final bool isFromFeed;
   final FeedType feedType;
-  const CommentScreen(
-      {Key? key,
-      required this.amityPost,
-      required this.theme,
-      required this.isFromFeed ,
-        required this.feedType,})
-      : super(key: key);
+  const CommentScreen({
+    Key? key,
+    required this.amityPost,
+    required this.theme,
+    required this.isFromFeed,
+    required this.feedType,
+  }) : super(key: key);
 
   @override
   CommentScreenState createState() => CommentScreenState();
@@ -116,7 +113,10 @@ class CommentScreenState extends State<CommentScreen> {
             var actionSection = Column(
               children: [
                 Container(
-                  color: widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white,
+                  color: widget.feedType == FeedType.user
+                      ? Provider.of<AmityUIConfiguration>(context)
+                          .userProfileBGColor
+                      : Colors.white,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -289,14 +289,15 @@ class CommentScreenState extends State<CommentScreen> {
                                             theme: theme,
                                             postIndex: 0,
                                             isFromFeed: false,
-
                                           ),
                                         ),
 
                                         const Divider(),
                                         CommentComponent(
-                                            postId: widget.amityPost.postId!,
-                                            theme: theme,feedType:widget.feedType ,),
+                                          postId: widget.amityPost.postId!,
+                                          theme: theme,
+                                          feedType: widget.feedType,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -342,7 +343,7 @@ class CommentScreenState extends State<CommentScreen> {
                             navigateToFullCommentPage: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => FullCommentPage(
-                                    feedType: widget.feedType,
+                                        feedType: widget.feedType,
                                         commentTextEditController:
                                             _commentTextEditController,
                                         postId: snapshot.data!.postId!,
@@ -593,7 +594,9 @@ class _EditCommentPageState extends State<EditCommentPage> {
       backgroundColor:
           Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
-        backgroundColor: widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileBGColor:Colors.white,
+        backgroundColor: widget.feedType == FeedType.user
+            ? Provider.of<AmityUIConfiguration>(context).userProfileBGColor
+            : Colors.white,
         shadowColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
@@ -640,17 +643,15 @@ class _EditCommentPageState extends State<EditCommentPage> {
 }
 
 class CommentComponent extends StatefulWidget {
-  const CommentComponent({
-    Key? key,
-    required this.postId,
-    required this.theme,
-    required this.feedType
-  }) : super(key: key);
+  const CommentComponent(
+      {Key? key,
+      required this.postId,
+      required this.theme,
+      required this.feedType})
+      : super(key: key);
   final FeedType feedType;
   final String postId;
   final ThemeData theme;
-
-
 
   @override
   State<CommentComponent> createState() => _CommentComponentState();
@@ -731,69 +732,20 @@ class _CommentComponentState extends State<CommentComponent> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ListTile(
-                              leading: GestureDetector(
-                                onTap: () {
-                                  // Navigate to user profile
-                                },
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ChangeNotifierProvider(
-                                                      create: (context) =>
-                                                          UserFeedVM(),
-                                                      child: UserProfileScreen(
-                                                          amityUserId:
-                                                              comments.userId!,
-                                                          amityUser: comments
-                                                              .user!))));
-                                    },
-                                    child: getAvatarImage(
-                                        comments.user!.avatarUrl)),
-                              ),
-                              title: Text(
-                                comments.user!.displayName!,
-                                style:  TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                color: widget.feedType==FeedType.user? Provider.of<AmityUIConfiguration>(context).userProfileTextColor:Colors.black,
-                                ),
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  TimeAgoWidget(
-                                    createdAt:
-                                        comments.createdAt == comments.editedAt
-                                            ? comments.createdAt!
-                                            : comments.editedAt!,
-                                  ),
-                                  comments.createdAt == comments.editedAt
-                                      ? const SizedBox()
-                                      : Row(
-                                          children: [
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            const Icon(
-                                              Icons.circle,
-                                              size: 5,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(comments.createdAt ==
-                                                    comments.editedAt
-                                                ? ""
-                                                : "Edited"),
-                                          ],
-                                        )
-                                ],
-                              ),
-                            ),
                             Container(
-                              padding: const EdgeInsets.all(10.0),
-                              margin: const EdgeInsets.only(left: 70.0),
+                                padding: const EdgeInsets.only(
+                                    top: 14, left: 16, bottom: 8),
+                                child: CustomListTile(
+                                    avatarUrl: comments.user!.avatarUrl,
+                                    displayName: comments.user!.displayName!,
+                                    createdAt: comments.createdAt!,
+                                    editedAt: comments.editedAt!,
+                                    userId: comments.user!.userId!,
+                                    user: comments.user!)),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              margin:
+                                  const EdgeInsets.only(left: 70.0, right: 16),
                               decoration: BoxDecoration(
                                 color:
                                     Provider.of<AmityUIConfiguration>(context)
@@ -817,8 +769,8 @@ class _CommentComponentState extends State<CommentComponent> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 70.0, top: 0),
+                              padding: const EdgeInsets.only(
+                                  left: 70.0, top: 8, bottom: 16),
                               child: Row(
                                 children: [
                                   // Like Button
@@ -883,7 +835,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                             ],
                                           )),
 
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 8),
                                   // Reply Button
                                   GestureDetector(
                                     onTap: () {
@@ -911,14 +863,14 @@ class _CommentComponentState extends State<CommentComponent> {
                                       ],
                                     ),
                                   ),
-
+                                  const SizedBox(width: 10),
                                   // More Options Button
-                                  IconButton(
-                                    icon: const Icon(
+                                  GestureDetector(
+                                    child: const Icon(
                                       Icons.more_horiz,
                                       color: Color(0xff898E9E),
                                     ),
-                                    onPressed: () {
+                                    onTap: () {
                                       AmityGeneralCompomemt
                                           .showOptionsBottomSheet(context, [
                                         comments.user?.userId! ==
@@ -964,7 +916,8 @@ class _CommentComponentState extends State<CommentComponent> {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               EditCommentPage(
-                                                                feedType: widget.feedType,
+                                                                feedType: widget
+                                                                    .feedType,
                                                                 initailText:
                                                                     commentData
                                                                         .text!,
@@ -1013,8 +966,8 @@ class _CommentComponentState extends State<CommentComponent> {
                               ),
                             ),
                             Container(
-                              padding:
-                                  const EdgeInsets.only(left: 60, right: 15),
+                              padding: const EdgeInsets.only(
+                                  left: 70, right: 15, top: 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1237,7 +1190,8 @@ class ReplyCommentComponent extends StatelessWidget {
   final FeedType feedType;
   const ReplyCommentComponent({
     super.key,
-    required this.comment,required this.feedType,
+    required this.comment,
+    required this.feedType,
   });
   bool isLiked(AsyncSnapshot<AmityComment> snapshot) {
     var comments = snapshot.data!;
@@ -1261,11 +1215,11 @@ class ReplyCommentComponent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          margin: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.only(bottom: 12),
                           decoration: BoxDecoration(
                               color: Provider.of<AmityUIConfiguration>(context)
                                   .appColors
-                                  .base,
+                                  .baseShade4,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(4))),
                           padding: const EdgeInsets.all(5.0),
@@ -1298,65 +1252,24 @@ class ReplyCommentComponent extends StatelessWidget {
                     ),
                   )
                 : Container(
-                    padding: const EdgeInsets.only(left: 0),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ListTile(
-                          leading: GestureDetector(
-                            onTap: () {
-                              // Navigate to user profile
-                            },
-                            child: GestureDetector(
-                                onTap: () async {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChangeNotifierProvider(
-                                              create: (context) => UserFeedVM(),
-                                              child: UserProfileScreen(
-                                                  amityUserId: comment.userId!,
-                                                  amityUser: comment.user!))));
-                                },
-                                child: getAvatarImage(comment.user!.avatarUrl)),
-                          ),
-                          title: Text(
-                            comment.user!.displayName!,
-                            style:  TextStyle(fontWeight: FontWeight.bold,color: feedType==FeedType.user?Provider.of<AmityUIConfiguration>(context).userProfileTextColor:Colors.black),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              TimeAgoWidget(
-                                createdAt:
-                                    comments.createdAt == comments.editedAt
-                                        ? comments.createdAt!
-                                        : comments.editedAt!,
-                              ),
-                              comments.createdAt == comments.editedAt
-                                  ? const SizedBox()
-                                  : Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        const Icon(
-                                          Icons.circle,
-                                          size: 5,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(comments.createdAt ==
-                                                comments.editedAt
-                                            ? ""
-                                            : "Edited"),
-                                      ],
-                                    )
-                            ],
-                          ),
+                        const SizedBox(
+                          height: 8,
                         ),
+                        CustomListTile(
+                            avatarUrl: comments.user!.avatarUrl,
+                            displayName: comments.user!.displayName!,
+                            createdAt: comments.createdAt!,
+                            editedAt: comments.editedAt!,
+                            userId: comments.user!.userId!,
+                            user: comments.user!),
                         Container(
                           padding: const EdgeInsets.all(10.0),
-                          margin: const EdgeInsets.only(left: 70.0),
+                          margin: const EdgeInsets.only(left: 50.0, top: 8),
                           decoration: BoxDecoration(
                             color: Provider.of<AmityUIConfiguration>(context)
                                 .appColors
@@ -1377,7 +1290,7 @@ class ReplyCommentComponent extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 70.0, top: 0),
+                          padding: const EdgeInsets.only(left: 50.0, top: 8),
                           child: Row(
                             children: [
                               // Like Button
@@ -1453,12 +1366,15 @@ class ReplyCommentComponent extends StatelessWidget {
                               // ),
 
                               // More Options Button
-                              IconButton(
-                                icon: const Icon(
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                child: const Icon(
                                   Icons.more_horiz,
                                   color: Color(0xff898E9E),
                                 ),
-                                onPressed: () {
+                                onTap: () {
                                   AmityGeneralCompomemt.showOptionsBottomSheet(
                                       context, [
                                     comment.user?.userId! ==
@@ -1535,6 +1451,9 @@ class ReplyCommentComponent extends StatelessWidget {
                               ),
                             ],
                           ),
+                        ),
+                        const SizedBox(
+                          height: 16,
                         ),
                       ],
                     ),

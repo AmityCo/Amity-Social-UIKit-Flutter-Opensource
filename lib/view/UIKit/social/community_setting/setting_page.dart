@@ -4,7 +4,6 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/notification_setting_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/post_review_settimg_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -127,47 +126,47 @@ class CommunitySettingPage extends StatelessWidget {
                           builder: (context) => MemberManagementPage(
                               communityId: livecommunity.communityId!)));
                     }),
-                ListTile(
-                  leading: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            4), // Adjust radius to your need
-                        color: const Color(
-                            0xfff1f1f1), // Choose the color to fit your design
-                      ),
-                      child: Icon(Icons.notifications,
-                          color: Provider.of<AmityUIConfiguration>(context)
-                              .appColors
-                              .base)),
-                  title: Text("Notifications",
-                      style: TextStyle(
-                        color: Provider.of<AmityUIConfiguration>(context)
-                            .appColors
-                            .base,
-                      )),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text("On",
-                          style: TextStyle(
-                            color: Provider.of<AmityUIConfiguration>(context)
-                                .appColors
-                                .base,
-                          )), // Replace with dynamic text
-                      Icon(Icons.chevron_right,
-                          color: Provider.of<AmityUIConfiguration>(context)
-                              .appColors
-                              .base),
-                    ],
-                  ),
-                  onTap: () {
-                    // Navigate to Notifications Page or perform an action
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            NotificationSettingPage(community: livecommunity)));
-                  },
-                ),
+                // ListTile(
+                //   leading: Container(
+                //       padding: const EdgeInsets.all(5),
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(
+                //             4), // Adjust radius to your need
+                //         color: const Color(
+                //             0xfff1f1f1), // Choose the color to fit your design
+                //       ),
+                //       child: Icon(Icons.notifications,
+                //           color: Provider.of<AmityUIConfiguration>(context)
+                //               .appColors
+                //               .base)),
+                //   title: Text("Notifications",
+                //       style: TextStyle(
+                //         color: Provider.of<AmityUIConfiguration>(context)
+                //             .appColors
+                //             .base,
+                //       )),
+                //   trailing: Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       Text("On",
+                //           style: TextStyle(
+                //             color: Provider.of<AmityUIConfiguration>(context)
+                //                 .appColors
+                //                 .base,
+                //           )), // Replace with dynamic text
+                //       Icon(Icons.chevron_right,
+                //           color: Provider.of<AmityUIConfiguration>(context)
+                //               .appColors
+                //               .base),
+                //     ],
+                //   ),
+                //   onTap: () {
+                //     // Navigate to Notifications Page or perform an action
+                //     Navigator.of(context).push(MaterialPageRoute(
+                //         builder: (context) =>
+                //             NotificationSettingPage(community: livecommunity)));
+                //   },
+                // ),
                 !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
                     ? const SizedBox()
                     : Padding(

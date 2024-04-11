@@ -11,15 +11,18 @@ import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart'
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../social/global_feed.dart';
+
 class AmityCreatePostV2Screen extends StatefulWidget {
   final AmityCommunity? community;
   final AmityUser? amityUser;
   final bool isFromPostToPage;
+  final FeedType? feedType;
   const AmityCreatePostV2Screen(
       {super.key,
       this.community,
       this.amityUser,
-      this.isFromPostToPage = false});
+      this.isFromPostToPage = false,this.feedType});
 
   @override
   State<AmityCreatePostV2Screen> createState() =>
@@ -168,9 +171,10 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                           controller: vm.textEditingController,
                           scrollPhysics: const NeverScrollableScrollPhysics(),
                           maxLines: null,
-                          decoration: const InputDecoration(
+                          decoration:  InputDecoration(
                             border: InputBorder.none,
                             hintText: "Write something to post",
+                            hintStyle: TextStyle(color:Provider.of<AmityUIConfiguration>(context).userProfileTextColor),
                           ),
                           // style: t/1heme.textTheme.bodyText1.copyWith(color: Colors.grey),
                         ),

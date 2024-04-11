@@ -13,12 +13,12 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   animation_wrappers: ^3.0.0
   font_awesome_flutter: ^10.1.0
-  pin_code_fields: ^7.0.0
+  pin_code_fields: ^8.0.1
   country_code_picker: ^3.0.0
   flutter_bloc: ^8.0.1
   shared_preferences: ^2.0.5
   flutter_phoenix: ^1.0.0
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
   amity_sdk: ^0.38.1
   provider: ^6.0.3
@@ -30,7 +30,7 @@ dependencies:
   image_picker: ^1.0.4
   socket_io_client: ^1.0.0
   get_time_ago: ^1.1.5
-  shimmer: ^2.0.0
+  shimmer: ^3.0.0
   dio:
   sign_in_with_apple: ^4.1.0
   any_link_preview: ^3.0.1

@@ -15,7 +15,9 @@ import '../../viewmodel/user_feed_viewmodel.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.user});
+
   final AmityUser user;
+
   @override
   ProfileScreenState createState() => ProfileScreenState();
 }

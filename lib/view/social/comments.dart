@@ -2,13 +2,12 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/components/post_profile.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/post_content_widget.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -716,67 +715,20 @@ class _CommentComponentState extends State<CommentComponent> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ListTile(
-                              leading: GestureDetector(
-                                onTap: () {
-                                  // Navigate to user profile
-                                },
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ChangeNotifierProvider(
-                                                      create: (context) =>
-                                                          UserFeedVM(),
-                                                      child: UserProfileScreen(
-                                                          amityUserId:
-                                                              comments.userId!,
-                                                          amityUser: comments
-                                                              .user!))));
-                                    },
-                                    child: getAvatarImage(
-                                        comments.user!.avatarUrl)),
-                              ),
-                              title: Text(
-                                comments.user!.displayName!,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  TimeAgoWidget(
-                                    createdAt:
-                                        comments.createdAt == comments.editedAt
-                                            ? comments.createdAt!
-                                            : comments.editedAt!,
-                                  ),
-                                  comments.createdAt == comments.editedAt
-                                      ? const SizedBox()
-                                      : Row(
-                                          children: [
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            const Icon(
-                                              Icons.circle,
-                                              size: 5,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(comments.createdAt ==
-                                                    comments.editedAt
-                                                ? ""
-                                                : "Edited"),
-                                          ],
-                                        )
-                                ],
-                              ),
-                            ),
                             Container(
-                              padding: const EdgeInsets.all(10.0),
-                              margin: const EdgeInsets.only(left: 70.0),
+                                padding: const EdgeInsets.only(
+                                    top: 14, left: 16, bottom: 8),
+                                child: CustomListTile(
+                                    avatarUrl: comments.user!.avatarUrl,
+                                    displayName: comments.user!.displayName!,
+                                    createdAt: comments.createdAt!,
+                                    editedAt: comments.editedAt!,
+                                    userId: comments.user!.userId!,
+                                    user: comments.user!)),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              margin:
+                                  const EdgeInsets.only(left: 70.0, right: 16),
                               decoration: BoxDecoration(
                                 color:
                                     Provider.of<AmityUIConfiguration>(context)
@@ -800,8 +752,8 @@ class _CommentComponentState extends State<CommentComponent> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 70.0, top: 0),
+                              padding: const EdgeInsets.only(
+                                  left: 70.0, top: 8, bottom: 16),
                               child: Row(
                                 children: [
                                   // Like Button
@@ -866,7 +818,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                             ],
                                           )),
 
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 8),
                                   // Reply Button
                                   GestureDetector(
                                     onTap: () {
@@ -894,14 +846,14 @@ class _CommentComponentState extends State<CommentComponent> {
                                       ],
                                     ),
                                   ),
-
+                                  const SizedBox(width: 10),
                                   // More Options Button
-                                  IconButton(
-                                    icon: const Icon(
+                                  GestureDetector(
+                                    child: const Icon(
                                       Icons.more_horiz,
                                       color: Color(0xff898E9E),
                                     ),
-                                    onPressed: () {
+                                    onTap: () {
                                       AmityGeneralCompomemt
                                           .showOptionsBottomSheet(context, [
                                         comments.user?.userId! ==
@@ -995,8 +947,8 @@ class _CommentComponentState extends State<CommentComponent> {
                               ),
                             ),
                             Container(
-                              padding:
-                                  const EdgeInsets.only(left: 60, right: 15),
+                              padding: const EdgeInsets.only(
+                                  left: 70, right: 15, top: 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1241,11 +1193,11 @@ class ReplyCommentComponent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          margin: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.only(bottom: 12),
                           decoration: BoxDecoration(
                               color: Provider.of<AmityUIConfiguration>(context)
                                   .appColors
-                                  .base,
+                                  .baseShade4,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(4))),
                           padding: const EdgeInsets.all(5.0),
@@ -1278,65 +1230,24 @@ class ReplyCommentComponent extends StatelessWidget {
                     ),
                   )
                 : Container(
-                    padding: const EdgeInsets.only(left: 0),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ListTile(
-                          leading: GestureDetector(
-                            onTap: () {
-                              // Navigate to user profile
-                            },
-                            child: GestureDetector(
-                                onTap: () async {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChangeNotifierProvider(
-                                              create: (context) => UserFeedVM(),
-                                              child: UserProfileScreen(
-                                                  amityUserId: comment.userId!,
-                                                  amityUser: comment.user!))));
-                                },
-                                child: getAvatarImage(comment.user!.avatarUrl)),
-                          ),
-                          title: Text(
-                            comment.user!.displayName!,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              TimeAgoWidget(
-                                createdAt:
-                                    comments.createdAt == comments.editedAt
-                                        ? comments.createdAt!
-                                        : comments.editedAt!,
-                              ),
-                              comments.createdAt == comments.editedAt
-                                  ? const SizedBox()
-                                  : Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        const Icon(
-                                          Icons.circle,
-                                          size: 5,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(comments.createdAt ==
-                                                comments.editedAt
-                                            ? ""
-                                            : "Edited"),
-                                      ],
-                                    )
-                            ],
-                          ),
+                        const SizedBox(
+                          height: 8,
                         ),
+                        CustomListTile(
+                            avatarUrl: comments.user!.avatarUrl,
+                            displayName: comments.user!.displayName!,
+                            createdAt: comments.createdAt!,
+                            editedAt: comments.editedAt!,
+                            userId: comments.user!.userId!,
+                            user: comments.user!),
                         Container(
                           padding: const EdgeInsets.all(10.0),
-                          margin: const EdgeInsets.only(left: 70.0),
+                          margin: const EdgeInsets.only(left: 50.0, top: 8),
                           decoration: BoxDecoration(
                             color: Provider.of<AmityUIConfiguration>(context)
                                 .appColors
@@ -1357,7 +1268,7 @@ class ReplyCommentComponent extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 70.0, top: 0),
+                          padding: const EdgeInsets.only(left: 50.0, top: 8),
                           child: Row(
                             children: [
                               // Like Button
@@ -1433,12 +1344,15 @@ class ReplyCommentComponent extends StatelessWidget {
                               // ),
 
                               // More Options Button
-                              IconButton(
-                                icon: const Icon(
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                child: const Icon(
                                   Icons.more_horiz,
                                   color: Color(0xff898E9E),
                                 ),
-                                onPressed: () {
+                                onTap: () {
                                   AmityGeneralCompomemt.showOptionsBottomSheet(
                                       context, [
                                     comment.user?.userId! ==
@@ -1514,6 +1428,9 @@ class ReplyCommentComponent extends StatelessWidget {
                               ),
                             ],
                           ),
+                        ),
+                        const SizedBox(
+                          height: 16,
                         ),
                       ],
                     ),

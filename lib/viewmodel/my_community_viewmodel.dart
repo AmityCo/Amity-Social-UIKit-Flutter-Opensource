@@ -23,7 +23,8 @@ class MyCommunityVM with ChangeNotifier {
       pageFuture: (token) {
         final repository = AmitySocialClient.newCommunityRepository()
             .getCommunities()
-            .filter(AmityCommunityFilter.MEMBER);
+            .filter(AmityCommunityFilter.MEMBER)
+            .includeDeleted(false);
         if (keyword != null && keyword.isNotEmpty) {
           repository.withKeyword(
               keyword); // Add keyword filtering only if keyword is provided and not empty

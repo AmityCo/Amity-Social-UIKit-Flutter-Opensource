@@ -98,7 +98,8 @@ class SearchCommunityVM with ChangeNotifier {
         final repository = AmitySocialClient.newCommunityRepository()
             .getCommunities()
             .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
-            .filter(AmityCommunityFilter.ALL);
+            .filter(AmityCommunityFilter.ALL)
+            .includeDeleted(false);
         if (keyword != null && keyword.isNotEmpty) {
           repository.withKeyword(
               keyword); // Add keyword filtering only if keyword is provided and not empty

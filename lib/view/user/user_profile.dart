@@ -1,7 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/social/user_follow_screen.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/view/user/user_setting.dart';
@@ -194,36 +193,6 @@ class UserProfileScreenState extends State<UserProfileScreen>
           );
         }
 
-        Widget buildPostsList(BuildContext context) {
-          return Container(
-            color:
-                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: vm.amityPosts.length,
-              itemBuilder: (context, index) {
-                return StreamBuilder<AmityPost>(
-                  stream: vm.amityPosts[index].listen.stream,
-                  initialData: vm.amityPosts[index],
-                  builder: (context, snapshot) {
-                    return PostWidget(
-                      feedType: FeedType.user,
-                      showCommunity: false,
-                      showlatestComment: true,
-                      isFromFeed: true,
-                      post: snapshot.data!,
-                      theme: theme,
-                      postIndex: index,
-                    );
-                  },
-                );
-              },
-            ),
-          );
-        }
-
         Widget buildContent(BuildContext context, double bheight) {
           if (vm.amityMyFollowInfo.status != AmityFollowStatus.ACCEPTED &&
               vm.amityUser!.userId != AmityCoreClient.getUserId()) {
@@ -231,8 +200,36 @@ class UserProfileScreenState extends State<UserProfileScreen>
           } else if (vm.amityPosts.isEmpty) {
             return buildNoPostsWidget(bheight, context);
           } else {
-            return buildPostsList(
-                context); // Placeholder for tab bar can be integrated here
+            return Container(
+              color: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseShade4,
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: Provider.of<UserFeedVM>(context).amityPosts.length,
+                itemBuilder: (context, index) {
+                  print("XXXXXX");
+                  return StreamBuilder<AmityPost>(
+                    stream: vm.amityPosts[index].listen.stream,
+                    initialData: vm.amityPosts[index],
+                    builder: (context, snapshot) {
+                      return PostWidget(
+                        isPostDetail: false,
+                        feedType: FeedType.user,
+                        showCommunity: false,
+                        showlatestComment: true,
+                        isFromFeed: true,
+                        post: snapshot.data!,
+                        theme: theme,
+                        postIndex: index,
+                      );
+                    },
+                  );
+                },
+              ),
+            );
           }
         }
 
@@ -404,6 +401,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                       color: Provider.of<
                                                                   AmityUIConfiguration>(
                                                               context)
+                                                          .appColors
                                                           .userProfileBGColor,
                                                       weight: 4,
                                                     ),

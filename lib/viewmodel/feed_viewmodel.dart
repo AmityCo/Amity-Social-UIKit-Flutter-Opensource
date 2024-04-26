@@ -15,7 +15,7 @@ class FeedVM extends ChangeNotifier {
   final scrollcontroller = ScrollController();
 
   bool loadingNexPage = false;
-  List<AmityPost> getAmityPosts() {
+  List<AmityPost> get getAmityPosts {
     return _amityGlobalFeedPosts;
   }
 
@@ -26,15 +26,26 @@ class FeedVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deletePost(AmityPost post, int postIndex) async {
+  void deletePost(AmityPost post, int postIndex,
+      Function(bool success, String message) callback) async {
     AmitySocialClient.newPostRepository()
         .deletePost(postId: post.postId!)
         .then((value) {
-      _amityGlobalFeedPosts.removeAt(postIndex);
-      notifyListeners();
+      // Find the post by postId and remove it
+      int postIndex =
+          _amityGlobalFeedPosts.indexWhere((p) => p.postId == post.postId);
+      if (postIndex != -1) {
+        _amityGlobalFeedPosts.removeAt(postIndex);
+        notifyListeners();
+        callback(true, "Post deleted successfully.");
+      } else {
+        callback(false, "Post not found in the list.");
+      }
     }).onError((error, stackTrace) async {
+      String errorMessage = error.toString();
       await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
+          .showAlertErrorDialog(title: "Error!", message: errorMessage);
+      callback(false, errorMessage);
     });
   }
 
@@ -54,11 +65,9 @@ class FeedVM extends ChangeNotifier {
             if (_controllerGlobal?.error == null) {
               _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
               for (var post in _amityGlobalFeedPosts) {
+                print("+++${post.myReactions}");
                 if (post.latestComments != null) {
-                  for (var comment in post.latestComments!) {
-                    print(comment.userId);
-                    print(comment.myReactions);
-                  }
+                  for (var comment in post.latestComments!) {}
                 }
               }
               isLoading = false;
@@ -85,29 +94,36 @@ class FeedVM extends ChangeNotifier {
           () async {
             log("initAmityGlobalfeed listener...");
             if (_controllerGlobal?.error == null) {
-              _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
-              for (var post in _amityGlobalFeedPosts) {
-                if (post.latestComments != null) {
-                  for (var comment in post.latestComments!) {
-                    print(comment.userId);
-                    print(comment.myReactions);
-                  }
+              // Append new posts only if they are not already in the list
+              var newPosts = _controllerGlobal!.loadedItems
+                  .where((newItem) => !_amityGlobalFeedPosts.any(
+                      (existingItem) => existingItem.postId == newItem.postId))
+                  .toList();
+
+              if (newPosts.isNotEmpty) {
+                _amityGlobalFeedPosts.addAll(newPosts);
+
+                print(
+                    "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==");
+                for (var post in newPosts) {
+                  print(
+                      "${(post.data as TextData).text}+++${post.myReactions}");
                 }
               }
 
               notifyListeners();
             } else {
-              //Error on pagination controller
-
-              notifyListeners();
+              // Handle pagination controller error
               log("error: ${_controllerGlobal!.error.toString()}");
+              notifyListeners();
+              // Optionally show an error dialog
               // await AmityDialog().showAlertErrorDialog(
-              //     title: "Error!",
-              //     message: _controllerGlobal!.error.toString());
+              //   title: "Error!",
+              //   message: _controllerGlobal!.error.toString());
             }
             if (_controllerGlobal?.isFetching == false) {
               isLoading = false;
-              print("isloading3: $isLoading");
+              print("isLoading3: $isLoading");
             }
           },
         );

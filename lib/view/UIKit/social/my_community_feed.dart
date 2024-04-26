@@ -220,9 +220,7 @@ class CommunityIconList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 40,
-            color: Colors.transparent,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -253,14 +251,13 @@ class CommunityIconList extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.transparent,
-            height: 90.0,
+            padding: const EdgeInsets.only(bottom: 0),
+            height: 70.0,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: amityCommunites.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  color: Colors.transparent,
+                return Padding(
                   padding: EdgeInsets.only(left: index != 0 ? 0 : 16),
                   child: CommunityIconWidget(
                       amityCommunity: amityCommunites[index]),
@@ -269,6 +266,7 @@ class CommunityIconList extends StatelessWidget {
             ),
           ),
           Divider(
+            height: 1,
             color:
                 Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           )

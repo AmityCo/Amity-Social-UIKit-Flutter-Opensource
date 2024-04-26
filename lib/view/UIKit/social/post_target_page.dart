@@ -72,9 +72,11 @@ class _PostToPageState extends State<PostToPage> {
                                   .appColors
                                   .primaryShade3,
                               shape: BoxShape.circle),
-                          child:  Icon(
+                          child: Icon(
                             Icons.person,
-                            color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor,
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .userProfileTextColor,
                           ),
                         ),
                   title: Text(
@@ -102,7 +104,9 @@ class _PostToPageState extends State<PostToPage> {
                     "My community",
                     style: TextStyle(
                         fontSize: 15,
-                        color: Provider.of<AmityUIConfiguration>(context).userProfileTextColor),
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .userProfileTextColor),
                   ),
                 ),
                 ...viewModel.amityCommunities.map((community) {

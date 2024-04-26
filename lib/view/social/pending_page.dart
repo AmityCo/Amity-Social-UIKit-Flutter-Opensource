@@ -158,6 +158,7 @@ class PendingFeddScreenState extends State<PendingFeddScreen> {
                             initialData: vm.getCommunityPendingPosts()[index],
                             builder: (context, snapshot) {
                               return PostWidget(
+                                  isPostDetail: false,
                                   showCommunity: false,
                                   showlatestComment: true,
                                   isFromFeed: false,

@@ -22,7 +22,7 @@ class UserFeedVM extends ChangeNotifier {
   AmityUser? amityUser;
   late AmityUserFollowInfo amityMyFollowInfo = AmityUserFollowInfo();
   late PagingController<AmityPost> _controller;
-  final amityPosts = <AmityPost>[];
+  var amityPosts = <AmityPost>[];
   late PagingController<AmityPost> _imagePostController;
   final amityImagePosts = <AmityPost>[];
   late PagingController<AmityPost> _videoPostController;
@@ -240,18 +240,28 @@ class UserFeedVM extends ChangeNotifier {
     }
   }
 
-  void deletePost(AmityPost post, int postIndex) async {
-    log("deleting post....");
+  void deletePost(
+      AmityPost post, Function(bool success, String message) callback) async {
     AmitySocialClient.newPostRepository()
         .deletePost(postId: post.postId!)
         .then((value) {
-      print("remove at index $postIndex");
+      int postIndex = amityPosts.indexWhere((p) => p.postId == post.postId);
+      print("index:$postIndex");
+      print(amityPosts.length);
       amityPosts.removeAt(postIndex);
-      listenForUserFeed(amityUser!.userId!);
+      print("rmove");
+      print(amityPosts.length);
       notifyListeners();
+      print("notifyListeners");
+      listenForUserFeed(amityUser!.userId!);
+      callback(true, "Post deleted successfully.");
+
+      callback(false, "Post not found in the list.");
     }).onError((error, stackTrace) async {
+      String errorMessage = error.toString();
       await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
+          .showAlertErrorDialog(title: "Error!", message: errorMessage);
+      callback(false, errorMessage);
     });
   }
 

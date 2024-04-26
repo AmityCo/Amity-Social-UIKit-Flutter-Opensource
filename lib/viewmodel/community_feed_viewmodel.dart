@@ -305,16 +305,26 @@ class CommuFeedVM extends ChangeNotifier {
 
   void loadCoomunityMember() {}
 
-  void deletePost(AmityPost post, int postIndex) async {
-    log("deleting post....");
+  void deletePost(AmityPost post, int postIndex,
+      Function(bool success, String message) callback) async {
     AmitySocialClient.newPostRepository()
         .deletePost(postId: post.postId!)
         .then((value) {
-      _amityCommunityFeedPosts.removeAt(postIndex);
-      notifyListeners();
+      // Find the post by postId and remove it
+      int postIndex =
+          _amityCommunityFeedPosts.indexWhere((p) => p.postId == post.postId);
+      if (postIndex != -1) {
+        _amityCommunityFeedPosts.removeAt(postIndex);
+        notifyListeners();
+        callback(true, "Post deleted successfully.");
+      } else {
+        callback(false, "Post not found in the list.");
+      }
     }).onError((error, stackTrace) async {
+      String errorMessage = error.toString();
       await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
+          .showAlertErrorDialog(title: "Error!", message: errorMessage);
+      callback(false, errorMessage);
     });
   }
 

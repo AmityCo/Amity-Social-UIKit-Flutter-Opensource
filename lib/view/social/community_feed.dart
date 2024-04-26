@@ -184,6 +184,7 @@ class CommunityScreenState extends State<CommunityScreen> {
                         initialData: vm.getCommunityPosts()[index],
                         builder: (context, snapshot) {
                           return PostWidget(
+                            isPostDetail: false,
                             showCommunity: false,
                             showlatestComment: true,
                             isFromFeed: true,

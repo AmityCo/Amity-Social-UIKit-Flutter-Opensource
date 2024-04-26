@@ -22,7 +22,8 @@ class AmityCreatePostV2Screen extends StatefulWidget {
       {super.key,
       this.community,
       this.amityUser,
-      this.isFromPostToPage = false,this.feedType});
+      this.isFromPostToPage = false,
+      this.feedType});
 
   @override
   State<AmityCreatePostV2Screen> createState() =>
@@ -171,10 +172,14 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                           controller: vm.textEditingController,
                           scrollPhysics: const NeverScrollableScrollPhysics(),
                           maxLines: null,
-                          decoration:  InputDecoration(
+                          decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Write something to post",
-                            hintStyle: TextStyle(color:Provider.of<AmityUIConfiguration>(context).userProfileTextColor),
+                            hintStyle: TextStyle(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .userProfileTextColor),
                           ),
                           // style: t/1heme.textTheme.bodyText1.copyWith(color: Colors.grey),
                         ),

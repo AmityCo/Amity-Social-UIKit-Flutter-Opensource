@@ -182,6 +182,7 @@ class PostVM extends ChangeNotifier {
     print("removePostReaction");
 
     post.react().removeReaction('like').then((value) {
+      print("LIKE:::");
       print(value.toString());
       print("success");
       // Handle success

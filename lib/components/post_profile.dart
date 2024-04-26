@@ -39,52 +39,55 @@ class CustomListTile extends StatelessWidget {
           ),
         ));
       },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () async {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ChangeNotifierProvider(
-                  create: (context) =>
-                      UserFeedVM(), // Assuming UserFeedVM is your ViewModel
-                  child: UserProfileScreen(
-                    amityUserId: userId,
-                    amityUser: user,
-                  ),
-                ),
-              ));
-            },
-            child: GestureDetector(child: getAvatarImage(avatarUrl)
-                // If avatarUrl can be null, consider handling it with a placeholder image
-                ),
-          ),
-          const SizedBox(width: 10), // Space between the avatar and text
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  displayName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Row(
-                  children: [
-                    TimeAgoWidget(
-                      createdAt: createdAt == editedAt ? createdAt : editedAt,
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 2, top: 2),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider(
+                    create: (context) =>
+                        UserFeedVM(), // Assuming UserFeedVM is your ViewModel
+                    child: UserProfileScreen(
+                      amityUserId: userId,
+                      amityUser: user,
                     ),
-                    if (createdAt != editedAt) ...[
-                      const SizedBox(width: 5),
-                      const Icon(Icons.circle, size: 5),
-                      const SizedBox(width: 5),
-                      const Text("Edited"),
-                    ]
-                  ],
-                ),
-              ],
+                  ),
+                ));
+              },
+              child: GestureDetector(child: getAvatarImage(avatarUrl)
+                  // If avatarUrl can be null, consider handling it with a placeholder image
+                  ),
             ),
-          ),
-        ],
+            const SizedBox(width: 10), // Space between the avatar and text
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    displayName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      TimeAgoWidget(
+                        createdAt: createdAt == editedAt ? createdAt : editedAt,
+                      ),
+                      if (createdAt != editedAt) ...[
+                        const SizedBox(width: 5),
+                        const Icon(Icons.circle, size: 5),
+                        const SizedBox(width: 5),
+                        const Text("Edited"),
+                      ]
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

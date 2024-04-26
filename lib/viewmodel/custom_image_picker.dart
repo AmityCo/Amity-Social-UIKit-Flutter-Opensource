@@ -101,7 +101,7 @@ class ImagePickerVM extends ChangeNotifier {
                   onTap: () async {
                     Navigator.pop(context);
                     final XFile? image =
-                        await _picker.pickImage(source: ImageSource.gallery);
+                        await _picker.pickImage(source: ImageSource.camera);
                     if (image != null) {
                       imageState = ImageState.loading;
                       notifyListeners();

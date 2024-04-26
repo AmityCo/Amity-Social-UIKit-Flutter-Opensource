@@ -87,7 +87,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
           child: Stack(
             children: [
               vm.isLoading
-                  ? vm.getAmityPosts().isEmpty
+                  ? vm.getAmityPosts.isEmpty
                       ? Center(
                           child: CircularProgressIndicator(
                           color: Provider.of<AmityUIConfiguration>(context)
@@ -107,15 +107,18 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           // shrinkWrap: true,
                           controller: vm.scrollcontroller,
                           physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: vm.getAmityPosts().length,
+                          itemCount: vm.getAmityPosts.length,
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
-                              key: Key(vm.getAmityPosts()[index].postId!),
-                              stream: vm.getAmityPosts()[index].listen.stream,
-                              initialData: vm.getAmityPosts()[index],
+                              key: Key(vm.getAmityPosts[index].postId!),
+                              stream: vm.getAmityPosts[index].listen.stream,
+                              initialData: vm.getAmityPosts[index],
                               builder: (context, snapshot) {
                                 var latestComments =
                                     snapshot.data!.latestComments;
+                                var post = snapshot.data!;
+                                print(
+                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
                                 return Column(
                                   children: [
                                     index != 0
@@ -131,6 +134,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                                               )
                                             : const SizedBox(),
                                     PostWidget(
+                                      isPostDetail: false,
                                       // customPostRanking:
                                       //     widget.isCustomPostRanking,
                                       feedType: FeedType.global,
@@ -173,6 +177,7 @@ class PostWidget extends StatefulWidget {
     required this.feedType,
     required this.showCommunity,
     this.showAcceptOrRejectButton = false,
+    required this.isPostDetail,
   }) : super(key: key);
   final FeedType feedType;
   final AmityPost post;
@@ -182,6 +187,7 @@ class PostWidget extends StatefulWidget {
   final bool showlatestComment;
   final bool showCommunity;
   final bool showAcceptOrRejectButton;
+  final bool isPostDetail;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -254,8 +260,14 @@ class _PostWidgetState
                 leftButtonText: 'Cancel',
                 rightButtonText: 'Delete',
                 onConfirm: () {
-                  Provider.of<FeedVM>(context, listen: false)
-                      .deletePost(widget.post, widget.postIndex);
+                  Provider.of<FeedVM>(context, listen: false).deletePost(
+                      widget.post, widget.postIndex, (isSuccess, error) {
+                    if (isSuccess) {
+                      if (widget.isPostDetail) {
+                        Navigator.of(context).pop();
+                      }
+                    }
+                  });
                 },
               );
             } else if (widget.feedType == FeedType.community) {
@@ -266,8 +278,14 @@ class _PostWidgetState
                 leftButtonText: 'Cancel',
                 rightButtonText: 'Delete',
                 onConfirm: () {
-                  Provider.of<CommuFeedVM>(context, listen: false)
-                      .deletePost(widget.post, widget.postIndex);
+                  Provider.of<CommuFeedVM>(context, listen: false).deletePost(
+                      widget.post, widget.postIndex, (isSuccess, error) {
+                    if (isSuccess) {
+                      if (widget.isPostDetail) {
+                        Navigator.of(context).pop();
+                      }
+                    }
+                  });
                 },
               );
             } else if (widget.feedType == FeedType.user) {
@@ -279,7 +297,13 @@ class _PostWidgetState
                 rightButtonText: 'Delete',
                 onConfirm: () {
                   Provider.of<UserFeedVM>(context, listen: false)
-                      .deletePost(widget.post, widget.postIndex);
+                      .deletePost(widget.post, (isSuccess, error) {
+                    if (isSuccess) {
+                      if (widget.isPostDetail) {
+                        Navigator.of(context).pop();
+                      }
+                    }
+                  });
                 },
               );
             } else if (widget.feedType == FeedType.pending) {
@@ -320,7 +344,9 @@ class _PostWidgetState
         Icons.more_horiz_rounded,
         size: 24,
         color: widget.feedType == FeedType.user
-            ? Provider.of<AmityUIConfiguration>(context).userProfileTextColor
+            ? Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .userProfileTextColor
             : Colors.grey,
       ),
       itemBuilder: (context) {
@@ -517,6 +543,7 @@ class _PostWidgetState
                               createdAt: widget.post.createdAt!,
                               textColor: widget.feedType == FeedType.user
                                   ? Provider.of<AmityUIConfiguration>(context)
+                                      .appColors
                                       .userProfileTextColor
                                   : Colors.grey,
                             ),
@@ -532,6 +559,7 @@ class _PostWidgetState
                                         color: widget.feedType == FeedType.user
                                             ? Provider.of<AmityUIConfiguration>(
                                                     context)
+                                                .appColors
                                                 .userProfileTextColor
                                             : Colors.grey,
                                       ),
@@ -545,6 +573,7 @@ class _PostWidgetState
                                                 ? Provider.of<
                                                             AmityUIConfiguration>(
                                                         context)
+                                                    .appColors
                                                     .userProfileTextColor
                                                 : Colors.grey,
                                           )),
@@ -617,6 +646,7 @@ class _PostWidgetState
                                                             ? Provider.of<
                                                                         AmityUIConfiguration>(
                                                                     context)
+                                                                .appColors
                                                                 .userProfileTextColor
                                                             : Colors.grey,
                                                         fontSize:
@@ -637,6 +667,7 @@ class _PostWidgetState
                                                             ? Provider.of<
                                                                         AmityUIConfiguration>(
                                                                     context)
+                                                                .appColors
                                                                 .userProfileTextColor
                                                             : Colors.grey,
                                                         fontSize:
@@ -659,6 +690,7 @@ class _PostWidgetState
                                                   ? Provider.of<
                                                               AmityUIConfiguration>(
                                                           context)
+                                                      .appColors
                                                       .userProfileTextColor
                                                   : Colors.grey,
                                               fontSize: feedReactionCountSize,
@@ -678,6 +710,7 @@ class _PostWidgetState
                                                   ? Provider.of<
                                                               AmityUIConfiguration>(
                                                           context)
+                                                      .appColors
                                                       .userProfileTextColor
                                                   : Colors.grey,
                                               fontSize: feedReactionCountSize,
@@ -691,11 +724,14 @@ class _PostWidgetState
                     Divider(
                       color: widget.feedType == FeedType.user
                           ? Provider.of<AmityUIConfiguration>(context)
+                              .appColors
                               .userProfileTextColor
                           : Colors.grey,
-                      height: 8,
+                      height: 1,
                     ),
-
+                    const SizedBox(
+                      height: 7,
+                    ),
                     widget.feedType == FeedType.pending
                         ? widget.showAcceptOrRejectButton
                             ? PendingSectionButton(
@@ -706,138 +742,100 @@ class _PostWidgetState
                               )
                             : const SizedBox()
                         : Container(
-                            padding: const EdgeInsets.only(bottom: 5),
+                            padding: const EdgeInsets.only(bottom: 12, top: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                // Row(
-                                //   children: [
-                                //     Icon(
-                                //       Icons.remove_red_eye,
-                                //       size: iconSize.feedIconSize,
-                                //       color: ApplicationColors.grey,
-                                //     ),
-                                //     SizedBox(width: 8.5),
-                                //     Text(
-                                //       S.of(context).onepointtwok,
-                                //       style: TextStyle(
-                                //           color: ApplicationColors.grey,
-                                //           fontSize: 12,
-                                //           letterSpacing: 1),
-                                //     ),
-                                //   ],
-                                // ),
-                                // Row(
-                                //   children: [
-                                //     FaIcon(
-                                //       Icons.repeat_rounded,
-                                //       color: ApplicationColors.grey,
-                                //       size: iconSize.feedIconSize,
-                                //     ),
-                                //     SizedBox(width: 8.5),
-                                //     Text(
-                                //       '287',
-                                //       style: TextStyle(
-                                //           color: ApplicationColors.grey,
-                                //           fontSize: 12,
-                                //           letterSpacing: 0.5),
-                                //     ),
-                                //   ],
-                                // ),
-
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      widget.post.myReactions!.contains("like")
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                print(widget.post.myReactions);
-                                                HapticFeedback.heavyImpact();
-                                                Provider.of<PostVM>(context,
-                                                        listen: false)
-                                                    .removePostReaction(
-                                                        widget.post);
-                                              },
-                                              child: SizedBox(
-                                                height: 40,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Provider.of<AmityUIConfiguration>(
-                                                            context)
-                                                        .iconConfig
-                                                        .likedIcon(
-                                                            color: Provider.of<
-                                                                        AmityUIConfiguration>(
-                                                                    context)
-                                                                .primaryColor),
-                                                    Text(
-                                                      ' Liked',
-                                                      style: TextStyle(
-                                                        color: Provider.of<
-                                                                    AmityUIConfiguration>(
-                                                                context)
-                                                            .primaryColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize:
-                                                            feedReactionCountSize,
-                                                      ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    widget.post.myReactions!.contains("like")
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              print(widget.post.myReactions);
+                                              HapticFeedback.heavyImpact();
+                                              Provider.of<PostVM>(context,
+                                                      listen: false)
+                                                  .removePostReaction(
+                                                      widget.post);
+                                            },
+                                            child: SizedBox(
+                                              height: 40,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Provider.of<AmityUIConfiguration>(
+                                                          context)
+                                                      .iconConfig
+                                                      .likedIcon(
+                                                          color: Provider.of<
+                                                                      AmityUIConfiguration>(
+                                                                  context)
+                                                              .primaryColor),
+                                                  Text(
+                                                    ' Liked',
+                                                    style: TextStyle(
+                                                      color: Provider.of<
+                                                                  AmityUIConfiguration>(
+                                                              context)
+                                                          .primaryColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize:
+                                                          feedReactionCountSize,
                                                     ),
-                                                  ],
-                                                ),
-                                              ))
-                                          : GestureDetector(
-                                              onTap: () {
-                                                print(widget.post.myReactions);
-                                                HapticFeedback.heavyImpact();
-                                                Provider.of<PostVM>(context,
-                                                        listen: false)
-                                                    .addPostReaction(
-                                                        widget.post);
-                                              },
-                                              child: SizedBox(
-                                                height: 40,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Provider.of<AmityUIConfiguration>(
-                                                            context)
-                                                        .iconConfig
-                                                        .likeIcon(
-                                                            color: widget
-                                                                        .feedType ==
-                                                                    FeedType
-                                                                        .user
-                                                                ? Provider.of<
-                                                                            AmityUIConfiguration>(
-                                                                        context)
-                                                                    .userProfileTextColor
-                                                                : Colors.grey),
-                                                    Text(
-                                                      ' Like',
-                                                      style: TextStyle(
+                                                  ),
+                                                ],
+                                              ),
+                                            ))
+                                        : GestureDetector(
+                                            onTap: () {
+                                              print(widget.post.myReactions);
+                                              HapticFeedback.heavyImpact();
+                                              Provider.of<PostVM>(context,
+                                                      listen: false)
+                                                  .addPostReaction(widget.post);
+                                            },
+                                            child: SizedBox(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Provider.of<AmityUIConfiguration>(
+                                                          context)
+                                                      .iconConfig
+                                                      .likeIcon(
                                                           color: widget
                                                                       .feedType ==
                                                                   FeedType.user
                                                               ? Provider.of<
                                                                           AmityUIConfiguration>(
                                                                       context)
+                                                                  .appColors
                                                                   .userProfileTextColor
-                                                              : Colors.grey,
-                                                          fontSize:
-                                                              feedReactionCountSize,
-                                                          letterSpacing: 1),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )),
-                                    ],
-                                  ),
+                                                              : Colors.grey),
+                                                  Text(
+                                                    ' Like',
+                                                    style: TextStyle(
+                                                        color: widget
+                                                                    .feedType ==
+                                                                FeedType.user
+                                                            ? Provider.of<
+                                                                        AmityUIConfiguration>(
+                                                                    context)
+                                                                .appColors
+                                                                .userProfileTextColor
+                                                            : Colors.grey,
+                                                        fontSize:
+                                                            feedReactionCountSize,
+                                                        letterSpacing: 1),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                  ],
                                 ),
                                 const SizedBox(
                                   width: 12,
@@ -869,6 +867,7 @@ class _PostWidgetState
                                             color: Provider.of<
                                                         AmityUIConfiguration>(
                                                     context)
+                                                .appColors
                                                 .userProfileIconColor,
                                             fontSize: feedReactionCountSize,
                                             letterSpacing: 0.5),
@@ -918,8 +917,12 @@ class _PostWidgetState
                     color: Provider.of<AmityUIConfiguration>(context)
                         .appColors
                         .baseBackground,
-                    child: const Divider(
-                      color: Colors.grey,
+                    child: Divider(
+                      color: widget.feedType == FeedType.user
+                          ? Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .userProfileTextColor
+                          : Colors.grey,
                       height: 0,
                     )),
         // widget.isFromFeed
@@ -1086,12 +1089,12 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         itemCount: widget.comments.length,
         itemBuilder: (context, index) {
           return StreamBuilder<AmityComment>(
-            // key: Key(widget.comments[index].commentId!),
+            key: Key(widget.comments[index].commentId!),
             stream: widget.comments[index].listen.stream,
             initialData: widget.comments[index],
             builder: (context, snapshot) {
-              var comments = widget.comments[index];
-              var commentData = widget.comments[index].data as CommentTextData;
+              var comments = snapshot.data!;
+              var commentData = comments.data as CommentTextData;
 
               return index > 1
                   ? const SizedBox()
@@ -1135,6 +1138,7 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                             Container(
                               color: widget.feedType == FeedType.user
                                   ? Provider.of<AmityUIConfiguration>(context)
+                                      .appColors
                                       .userProfileBGColor
                                   : Colors.white,
                               padding: const EdgeInsets.symmetric(
@@ -1343,6 +1347,15 @@ class CommentActionComponent extends StatelessWidget {
                               ),
                               onTap: () async {
                                 Navigator.pop(context);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => EditCommentPage(
+                                          feedType: FeedType.user,
+                                          initailText:
+                                              (comments.data as CommentTextData)
+                                                  .text!,
+                                          comment: comments,
+                                          postCallback: () async {},
+                                        )));
                               },
                             ),
                       comments.user?.userId! !=

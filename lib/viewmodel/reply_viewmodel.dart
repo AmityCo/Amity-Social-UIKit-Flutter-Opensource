@@ -92,11 +92,8 @@ class ReplyVM extends PostVM {
         () async {
           if (_controllersMap[commentId]!.error == null) {
             var loadedItems = _controllersMap[commentId]!.loadedItems;
-            for (var item in loadedItems) {
-              print("XXXXXX: ${item.myReactions}");
-            }
-            print(
-                "XXXXXX-hasmore: ${_controllersMap[commentId]!.hasMoreItems}");
+            for (var item in loadedItems) {}
+
             // Append only new comments by checking against existing ones.
             var currentIds = amityComments.map((e) => e.commentId).toSet();
             var newItems = loadedItems

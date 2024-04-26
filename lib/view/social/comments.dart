@@ -115,6 +115,7 @@ class CommentScreenState extends State<CommentScreen> {
                 Container(
                   color: widget.feedType == FeedType.user
                       ? Provider.of<AmityUIConfiguration>(context)
+                          .appColors
                           .userProfileBGColor
                       : Colors.white,
                   child: Row(
@@ -274,22 +275,19 @@ class CommentScreenState extends State<CommentScreen> {
                                           CrossAxisAlignment.stretch,
                                       children: [
                                         // Text("${snapshot.data!.targetType!}"),
-                                        Container(
-                                          color: Colors.red,
-                                          child: PostWidget(
-                                            feedType: widget.feedType,
-                                            showCommunity:
-                                                snapshot.data?.targetType ==
-                                                        AmityPostTargetType
-                                                            .COMMUNITY
-                                                    ? true
-                                                    : false,
-                                            showlatestComment: false,
-                                            post: snapshot.data!,
-                                            theme: theme,
-                                            postIndex: 0,
-                                            isFromFeed: false,
-                                          ),
+                                        PostWidget(
+                                          isPostDetail: true,
+                                          feedType: widget.feedType,
+                                          showCommunity: snapshot
+                                                      .data?.targetType ==
+                                                  AmityPostTargetType.COMMUNITY
+                                              ? true
+                                              : false,
+                                          showlatestComment: false,
+                                          post: snapshot.data!,
+                                          theme: theme,
+                                          postIndex: 0,
+                                          isFromFeed: false,
                                         ),
 
                                         const Divider(),
@@ -595,7 +593,9 @@ class _EditCommentPageState extends State<EditCommentPage> {
           Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
         backgroundColor: widget.feedType == FeedType.user
-            ? Provider.of<AmityUIConfiguration>(context).userProfileBGColor
+            ? Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .userProfileBGColor
             : Colors.white,
         shadowColor: Colors.transparent,
         leading: IconButton(
@@ -732,9 +732,13 @@ class _CommentComponentState extends State<CommentComponent> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const SizedBox(
+                              height: 16,
+                            ),
                             Container(
                                 padding: const EdgeInsets.only(
-                                    top: 14, left: 16, bottom: 8),
+                                  left: 16,
+                                ),
                                 child: CustomListTile(
                                     avatarUrl: comments.user!.avatarUrl,
                                     displayName: comments.user!.displayName!,
@@ -742,6 +746,9 @@ class _CommentComponentState extends State<CommentComponent> {
                                     editedAt: comments.editedAt!,
                                     userId: comments.user!.userId!,
                                     user: comments.user!)),
+                            const SizedBox(
+                              height: 4,
+                            ),
                             Container(
                               padding: const EdgeInsets.all(10),
                               margin:
@@ -768,9 +775,12 @@ class _CommentComponentState extends State<CommentComponent> {
                                                 .base),
                               ),
                             ),
+                            const SizedBox(
+                              height: 8,
+                            ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 70.0, top: 8, bottom: 16),
+                              padding:
+                                  const EdgeInsets.only(left: 70.0, bottom: 16),
                               child: Row(
                                 children: [
                                   // Like Button
@@ -1257,9 +1267,6 @@ class ReplyCommentComponent extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          height: 8,
-                        ),
                         CustomListTile(
                             avatarUrl: comments.user!.avatarUrl,
                             displayName: comments.user!.displayName!,

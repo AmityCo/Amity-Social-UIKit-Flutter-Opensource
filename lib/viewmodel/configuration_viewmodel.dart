@@ -10,9 +10,9 @@ class AmityUIConfiguration extends ChangeNotifier {
   AmityIconConfig iconConfig = AmityIconConfig();
   ChannelListConfig channelListConfig = ChannelListConfig();
   MessageRoomConfig messageRoomConfig = MessageRoomConfig();
-  Color userProfileBGColor = Colors.white;
-  Color userProfileTextColor = Colors.black;
-  Color userProfileIconColor = Colors.grey;
+  // Color userProfileBGColor = Colors.white;
+  // Color userProfileTextColor = Colors.black;
+  // Color userProfileIconColor = Colors.grey;
   TextStyle titleTextStyle = const TextStyle(
     fontSize: 17,
     color: Colors.black,
@@ -58,6 +58,11 @@ class AppColors {
   // final Color hyperlink;
   // final Color highlight;
 
+  //addditional
+  final userProfileBGColor;
+  final userProfileTextColor;
+  final userProfileIconColor;
+
   AppColors({
     this.primary = const Color(0xFF1054de),
     // this.primaryShade1 = const Color(0xFF4a82f2),
@@ -72,6 +77,9 @@ class AppColors {
     // this.baseShade3 = const Color(0xFFa5a9b5),
     this.baseShade4 = const Color(0xFFebecef),
     this.baseBackground = const Color(0xFFFFFFFF),
+    this.userProfileBGColor = const Color(0xFFFFFFFF),
+    this.userProfileTextColor = const Color(0xff898E9E),
+    this.userProfileIconColor = const Color(0xff898E9E),
     // this.secondaryDefault = const Color(0xFF292632),
     // this.secondaryShade1 = const Color(0xFF636878),
     // this.secondaryShade2 = const Color(0xFF8989e9),

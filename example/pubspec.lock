@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: amity_sdk
-      sha256: fd1d111870a9c31ff1743c264f73e0d8f7721c33a1973881e5e0a3da8e8b18fc
+      sha256: "58aa7f82bba62deb2da98fb1588ff7e8908d06b3b4ce32e162301f4f2e86041a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.38.0"
+    version: "0.38.2"
   amity_sdk_api:
     dependency: transitive
     description:

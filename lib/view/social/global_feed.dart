@@ -1089,12 +1089,12 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         itemCount: widget.comments.length,
         itemBuilder: (context, index) {
           return StreamBuilder<AmityComment>(
-            // key: Key(widget.comments[index].commentId!),
+            key: Key(widget.comments[index].commentId!),
             stream: widget.comments[index].listen.stream,
             initialData: widget.comments[index],
             builder: (context, snapshot) {
-              var comments = widget.comments[index];
-              var commentData = widget.comments[index].data as CommentTextData;
+              var comments = snapshot.data!;
+              var commentData = comments.data as CommentTextData;
 
               return index > 1
                   ? const SizedBox()
@@ -1347,6 +1347,15 @@ class CommentActionComponent extends StatelessWidget {
                               ),
                               onTap: () async {
                                 Navigator.pop(context);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => EditCommentPage(
+                                          feedType: FeedType.user,
+                                          initailText:
+                                              (comments.data as CommentTextData)
+                                                  .text!,
+                                          comment: comments,
+                                          postCallback: () async {},
+                                        )));
                               },
                             ),
                       comments.user?.userId! !=

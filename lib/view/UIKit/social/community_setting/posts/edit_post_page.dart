@@ -15,20 +15,22 @@ import '../../../../social/global_feed.dart';
 class AmityEditPostScreen extends StatefulWidget {
   final AmityPost amityPost;
   final FeedType feedType;
-  const AmityEditPostScreen({super.key, required this.amityPost,required this.feedType});
+  const AmityEditPostScreen(
+      {super.key, required this.amityPost, required this.feedType});
 
   @override
   State<AmityEditPostScreen> createState() => _AmityEditPostScreenState();
 }
 
 class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
-  bool hasContent = true;
-
+  bool hasContent = false;
+  String originalText = "";
   @override
   void initState() {
     Provider.of<EditPostVM>(context, listen: false)
         .initForEditPost(widget.amityPost);
-
+    TextData textData = widget.amityPost.data as TextData;
+    originalText = textData.text!;
     super.initState();
   }
 
@@ -104,7 +106,19 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                     child: Column(
                       children: [
                         TextField(
-                          onChanged: (value) => vm.updatePostValidity(),
+                          onChanged: (value) {
+                            vm.updatePostValidity();
+
+                            if (value == originalText) {
+                              print("match");
+                              hasContent = false;
+                              setState(() {});
+                            } else {
+                              print("unmatch");
+                              hasContent = true;
+                              setState(() {});
+                            }
+                          },
                           controller: vm.textEditingController,
                           style: TextStyle(
                             color: Provider.of<AmityUIConfiguration>(context)

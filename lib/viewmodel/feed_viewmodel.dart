@@ -53,6 +53,8 @@ class FeedVM extends ChangeNotifier {
     isLoading = true;
     print("isloading1: $isLoading");
     print("isCustomPostRanking:$isCustomPostRanking");
+    _amityGlobalFeedPosts.clear();
+
     if (isCustomPostRanking) {
       _controllerGlobal = PagingController(
         pageFuture: (token) => AmitySocialClient.newFeedRepository()

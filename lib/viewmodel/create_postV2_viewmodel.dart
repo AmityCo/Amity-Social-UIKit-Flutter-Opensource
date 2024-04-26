@@ -418,6 +418,9 @@ class CreatePostVMV2 with ChangeNotifier {
               isCommunity: isCommunity,
               context: context,
               callback: callback);
+        }).onError((error, stackTrace) {
+          AmityDialog()
+              .showAlertErrorDialog(title: "Error", message: error.toString());
         });
       }
     }

@@ -130,8 +130,8 @@ class PostVM extends ChangeNotifier {
     print("delete commet...");
     comment.delete().then((value) {
       print("delete commet success: $value");
-      amityComments
-          .removeWhere((element) => element.commentId == comment.commentId);
+      // amityComments
+      //     .removeWhere((element) => element.commentId == comment.commentId);
       getPost(amityPost.postId!, amityPost);
       notifyListeners();
     }).onError((error, stackTrace) async {
@@ -182,9 +182,6 @@ class PostVM extends ChangeNotifier {
     print("removePostReaction");
 
     post.react().removeReaction('like').then((value) {
-      print("LIKE:::");
-      print(value.toString());
-      print("success");
       // Handle success
     }).catchError((error) {
       print(error);

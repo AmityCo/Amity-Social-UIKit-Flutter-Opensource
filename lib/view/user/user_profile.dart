@@ -445,21 +445,25 @@ class UserProfileScreenState extends State<UserProfileScreen>
                         .baseBackground,
                     floating: false,
                     pinned: true,
-                    leading: IconButton(
-                      icon: Icon(
-                        Icons.chevron_left,
-                        color: Provider.of<AmityUIConfiguration>(context)
-                            .appColors
-                            .base,
-                        size: 30,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
+                    leading: AmityCoreClient.getCurrentUser().userId ==
+                                Provider.of<UserFeedVM>(context)
+                                    .amityUser!
+                                    .userId &&
+                            widget.customActions != null
+                        ? null
+                        : IconButton(
+                            icon: Icon(
+                              Icons.chevron_left,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
+                              size: 30,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
                     flexibleSpace: Column(
                       children: [
-                        widget.customActions != null
-                            ? const SizedBox(height: 10)
-                            : const SizedBox(height: 120),
+                        const SizedBox(height: 120),
                         Padding(
                           padding: const EdgeInsets.only(left: 16, right: 16),
                           child: Column(
@@ -602,69 +606,71 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                       Provider.of<UserFeedVM>(context)
                                           .amityUser!
                                           .userId
-                                  ? Row(
-                                      children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () async {
-                                              await Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ProfileScreen(
-                                                              user: vm
-                                                                  .amityUser!)));
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color:
-                                                        const Color(0xffA5A9B5),
-                                                    style: BorderStyle.solid,
-                                                    width: 1),
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                                color: Provider.of<
-                                                            AmityUIConfiguration>(
-                                                        context)
-                                                    .appColors
-                                                    .baseBackground,
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      10, 10, 10, 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.edit_outlined,
-                                                    color: Provider.of<
-                                                                AmityUIConfiguration>(
-                                                            context)
-                                                        .appColors
-                                                        .base,
-                                                  ),
-                                                  Text(
-                                                    "Edit Profile",
-                                                    style: theme
-                                                        .textTheme.titleSmall!
-                                                        .copyWith(
+                                  ? widget.customActions ??
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                await Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProfileScreen(
+                                                                user: vm
+                                                                    .amityUser!)));
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: const Color(
+                                                          0xffA5A9B5),
+                                                      style: BorderStyle.solid,
+                                                      width: 1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  color: Provider.of<
+                                                              AmityUIConfiguration>(
+                                                          context)
+                                                      .appColors
+                                                      .baseBackground,
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 10, 10, 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.edit_outlined,
                                                       color: Provider.of<
                                                                   AmityUIConfiguration>(
                                                               context)
                                                           .appColors
                                                           .base,
-                                                      fontSize: 15,
                                                     ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ],
+                                                    Text(
+                                                      "Edit Profile",
+                                                      style: theme
+                                                          .textTheme.titleSmall!
+                                                          .copyWith(
+                                                        color: Provider.of<
+                                                                    AmityUIConfiguration>(
+                                                                context)
+                                                            .appColors
+                                                            .base,
+                                                        fontSize: 15,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    )
+                                        ],
+                                      )
                                   : followWidget,
                             ],
                           ),
@@ -679,23 +685,32 @@ class UserProfileScreenState extends State<UserProfileScreen>
                               stream: vm.amityMyFollowInfo.listen.stream,
                               initialData: vm.amityMyFollowInfo,
                               builder: (context, snapshot) {
-                                return IconButton(
-                                  icon: Icon(Icons.more_horiz,
-                                      color: Provider.of<AmityUIConfiguration>(
-                                              context)
-                                          .appColors
-                                          .base),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                UserSettingPage(
-                                                  amityMyFollowInfo:
-                                                      snapshot.data!,
-                                                  amityUser: vm.amityUser!,
-                                                )));
-                                  },
-                                );
+                                return AmityCoreClient.getCurrentUser()
+                                                .userId ==
+                                            Provider.of<UserFeedVM>(context)
+                                                .amityUser!
+                                                .userId &&
+                                        widget.customActions != null
+                                    ? Container()
+                                    : IconButton(
+                                        icon: Icon(Icons.more_horiz,
+                                            color: Provider.of<
+                                                        AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base),
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UserSettingPage(
+                                                        amityMyFollowInfo:
+                                                            snapshot.data!,
+                                                        amityUser:
+                                                            vm.amityUser!,
+                                                      )));
+                                        },
+                                      );
                               }),
                     ],
                     bottom: PreferredSize(

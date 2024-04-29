@@ -64,7 +64,7 @@ class AppColors {
   final userProfileIconColor;
 
   AppColors({
-    this.primary = const Color(0xFF1054de),
+    this.primary = const Color(0xFF10F48B),
     // this.primaryShade1 = const Color(0xFF4a82f2),
     // this.primaryShade2 = const Color(0xFFa0bd8f),
     this.primaryShade3 = const Color(0xFFd9e5fc),

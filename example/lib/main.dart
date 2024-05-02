@@ -135,9 +135,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     log("save pref");
 
                     await AmitySLEUIKit().initUIKit(
-                        apikey: _apiKey.text,
-                        region: _selectedRegion!,
-                        customEndpoint: _customUrl.text);
+                      apikey: _apiKey.text,
+                      region: _selectedRegion!,
+                      customEndpoint: _customUrl.text,
+                    );
                     // Navigate to the nextx page
                     Navigator.push(
                       context,
@@ -233,6 +234,7 @@ class _UserListPageState extends State<UserListPage> {
                     await AmitySLEUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
+                      authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
                       callback: (isSuccess, error) {
                         log("callback:$isSuccess");
                         if (isSuccess) {

@@ -530,9 +530,7 @@ class SocialPage extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const Scaffold(
-                      body: CommunityPage(
-                        showAppBarTop: true,
-                      ),
+                      body: CommunityPage(),
                     ),
                   ),
                 );

@@ -12,11 +12,13 @@ import 'package:provider/provider.dart';
 class CommunityPage extends StatefulWidget {
   final bool showAppBarTop;
   final bool isShowMyCommunity;
+  final bool showPostToButton;
 
   const CommunityPage({
     super.key,
     this.showAppBarTop = true,
     this.isShowMyCommunity = true,
+    this.showPostToButton = true,
   });
 
   @override
@@ -138,21 +140,25 @@ class _CommunityPageState extends State<CommunityPage> {
         body: TabBarView(
           children: [
             Scaffold(
-              floatingActionButton: FloatingActionButton(
-                shape: const CircleBorder(),
-                onPressed: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const Scaffold(body: PostToPage()),
-                  ));
-                },
-                backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .primary,
-                child: Provider.of<AmityUIConfiguration>(context)
-                    .iconConfig
-                    .postIcon(iconSize: 28, color: Colors.white),
-              ),
+              floatingActionButton: widget.showPostToButton
+                  ? FloatingActionButton(
+                      shape: const CircleBorder(),
+                      onPressed: () {
+                        // Navigate or perform action based on 'Newsfeed' tap
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              const Scaffold(body: PostToPage()),
+                        ));
+                      },
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primary,
+                      child: Provider.of<AmityUIConfiguration>(context)
+                          .iconConfig
+                          .postIcon(iconSize: 28, color: Colors.white),
+                    )
+                  : null,
               body: GlobalFeedScreen(
                 isShowMyCommunity: widget.isShowMyCommunity,
               ),

@@ -15,7 +15,7 @@ class CommunityPage extends StatefulWidget {
 
   const CommunityPage({
     super.key,
-    required this.showAppBarTop,
+    this.showAppBarTop = true,
     this.isShowMyCommunity = true,
   });
 

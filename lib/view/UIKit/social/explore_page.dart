@@ -10,8 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPage extends StatefulWidget {
+  final bool showAppBarTop;
   final bool isShowMyCommunity;
-  const CommunityPage({super.key, this.isShowMyCommunity = true});
+
+  const CommunityPage({
+    super.key,
+    required this.showAppBarTop,
+    this.isShowMyCommunity = true,
+  });
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -41,38 +47,48 @@ class _CommunityPageState extends State<CommunityPage> {
               .appColors
               .baseBackground,
           iconTheme: const IconThemeData(color: Colors.blue),
-          leading: IconButton(
-            icon: Icon(
-              Icons.close,
-              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          // centerTitle: false,
-          automaticallyImplyLeading: false,
-          title: Text(
-            "Community",
-            style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle
-                .copyWith(
+          leading: widget.showAppBarTop
+              ? IconButton(
+                  icon: Icon(
+                    Icons.close,
                     color: Provider.of<AmityUIConfiguration>(context)
                         .appColors
-                        .base),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                color:
-                    Provider.of<AmityUIConfiguration>(context).appColors.base,
-              ),
-              onPressed: () {
-                // Implement search functionality
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SearchCommunitiesScreen()));
-              },
-            )
-          ],
+                        .base,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
+          // centerTitle: false,
+          automaticallyImplyLeading: false,
+          title: widget.showAppBarTop
+              ? Text(
+                  "Community",
+                  style: Provider.of<AmityUIConfiguration>(context)
+                      .titleTextStyle
+                      .copyWith(
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base),
+                )
+              : null,
+          actions: widget.showAppBarTop
+              ? [
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
+                    onPressed: () {
+                      // Implement search functionality
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              const SearchCommunitiesScreen()));
+                    },
+                  )
+                ]
+              : null,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(
                 48.0), // Provide a height for the AppBar's bottom

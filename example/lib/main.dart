@@ -527,9 +527,15 @@ class SocialPage extends StatelessWidget {
               title: const Text('Explore'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(body: CommunityPage()),
-                ));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Scaffold(
+                      body: CommunityPage(
+                        showAppBarTop: true,
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
           ],

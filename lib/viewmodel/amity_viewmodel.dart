@@ -49,6 +49,7 @@ class AmityVM extends ChangeNotifier {
       if (displayName != null) {
         log("displayName is provided");
         await AmityCoreClient.login(userID)
+            .authToken(authToken)
             .displayName(displayName)
             .submit()
             .then((value) async {
@@ -65,7 +66,10 @@ class AmityVM extends ChangeNotifier {
         });
       } else {
         log("displayName is not provided");
-        await AmityCoreClient.login(userID).submit().then((value) async {
+        await AmityCoreClient.login(userID)
+            .authToken(authToken)
+            .submit()
+            .then((value) async {
           log("success");
 
           getUserByID(userID);

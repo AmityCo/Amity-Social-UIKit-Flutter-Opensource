@@ -337,8 +337,13 @@ class UserWidget extends StatelessWidget {
 
 class CommunityIconList extends StatelessWidget {
   final List<AmityCommunity> amityCommunites;
+  final bool canCreateCommunity;
 
-  const CommunityIconList({super.key, required this.amityCommunites});
+  const CommunityIconList({
+    super.key,
+    required this.amityCommunites,
+    this.canCreateCommunity = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -363,10 +368,15 @@ class CommunityIconList extends StatelessWidget {
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            const Scaffold(body: MyCommunityPage()),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            body: MyCommunityPage(
+                              canCreateCommunity: canCreateCommunity,
+                            ),
+                          ),
+                        ),
+                      );
                     },
                     child: Container(child: const Icon(Icons.chevron_right))),
               ],

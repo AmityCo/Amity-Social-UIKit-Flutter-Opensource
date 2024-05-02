@@ -27,7 +27,7 @@ import 'community_feed.dart';
 import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
-  final isShowMyCommunity;
+  final bool isShowMyCommunity;
   final bool canCreateCommunity;
 
   const GlobalFeedScreen({

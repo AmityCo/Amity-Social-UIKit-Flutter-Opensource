@@ -338,11 +338,13 @@ class UserWidget extends StatelessWidget {
 class CommunityIconList extends StatelessWidget {
   final List<AmityCommunity> amityCommunites;
   final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
   const CommunityIconList({
     super.key,
     required this.amityCommunites,
     this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
   });
 
   @override
@@ -373,6 +375,7 @@ class CommunityIconList extends StatelessWidget {
                           builder: (context) => Scaffold(
                             body: MyCommunityPage(
                               canCreateCommunity: canCreateCommunity,
+                              canSearchCommunities: canSearchCommunities,
                             ),
                           ),
                         ),

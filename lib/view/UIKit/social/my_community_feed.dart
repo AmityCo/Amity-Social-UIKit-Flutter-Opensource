@@ -11,9 +11,11 @@ class MyCommunityPage extends StatefulWidget {
   const MyCommunityPage({
     super.key,
     this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
   });
 
   final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
   @override
   _MyCommunityPageState createState() => _MyCommunityPageState();
@@ -82,35 +84,39 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
           itemBuilder: (context, index) {
             // If it's the first item in the list, return the search bar
             if (index == 0) {
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: TextField(
-                  controller: vm.textEditingController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.grey,
+              if (widget.canSearchCommunities) {
+                return Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                    controller: vm.textEditingController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      hintText: 'Search',
+                      filled: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      fillColor: Colors.grey[3],
+                      focusColor: Colors.white,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
-                    hintText: 'Search',
-                    filled: true,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                    fillColor: Colors.grey[3],
-                    focusColor: Colors.white,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
+                    onChanged: (value) {
+                      Provider.of<MyCommunityVM>(context, listen: false)
+                          .initMyCommunity(value);
+                    },
                   ),
-                  onChanged: (value) {
-                    Provider.of<MyCommunityVM>(context, listen: false)
-                        .initMyCommunity(value);
-                  },
-                ),
-              );
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
             }
             // Otherwise, return the community widget
             return CommunityWidget(
@@ -204,11 +210,13 @@ class CommunityWidget extends StatelessWidget {
 class CommunityIconList extends StatelessWidget {
   final List<AmityCommunity> amityCommunites;
   final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
   const CommunityIconList({
     super.key,
     required this.amityCommunites,
     this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
   });
 
   @override
@@ -241,6 +249,7 @@ class CommunityIconList extends StatelessWidget {
                           builder: (context) => Scaffold(
                             body: MyCommunityPage(
                               canCreateCommunity: canCreateCommunity,
+                              canSearchCommunities: canSearchCommunities,
                             ),
                           ),
                         ),

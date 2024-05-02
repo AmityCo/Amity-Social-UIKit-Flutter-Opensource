@@ -14,6 +14,7 @@ class CommunityPage extends StatefulWidget {
   final bool isShowMyCommunity;
   final bool showPostToButton;
   final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
   const CommunityPage({
     super.key,
@@ -21,6 +22,7 @@ class CommunityPage extends StatefulWidget {
     this.isShowMyCommunity = true,
     this.showPostToButton = true,
     this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
   });
 
   @override
@@ -164,6 +166,7 @@ class _CommunityPageState extends State<CommunityPage> {
               body: GlobalFeedScreen(
                 isShowMyCommunity: widget.isShowMyCommunity,
                 canCreateCommunity: widget.canCreateCommunity,
+                canSearchCommunities: widget.canSearchCommunities,
               ),
             ),
             const ExplorePage(),

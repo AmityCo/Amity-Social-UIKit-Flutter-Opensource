@@ -42,7 +42,9 @@ class _CommunityPageState extends State<CommunityPage> {
         backgroundColor:
             Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
         appBar: AppBar(
-          elevation: 0.05, // Add this line to remove the shadow
+          toolbarHeight: widget.showAppBarTop ? kToolbarHeight : 0,
+          // Add this line to remove the shadow
+          elevation: 0.05,
           backgroundColor: Provider.of<AmityUIConfiguration>(context)
               .appColors
               .baseBackground,
@@ -66,9 +68,10 @@ class _CommunityPageState extends State<CommunityPage> {
                   style: Provider.of<AmityUIConfiguration>(context)
                       .titleTextStyle
                       .copyWith(
-                          color: Provider.of<AmityUIConfiguration>(context)
-                              .appColors
-                              .base),
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
+                      ),
                 )
               : null,
           actions: widget.showAppBarTop
@@ -82,24 +85,26 @@ class _CommunityPageState extends State<CommunityPage> {
                     ),
                     onPressed: () {
                       // Implement search functionality
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              const SearchCommunitiesScreen()));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SearchCommunitiesScreen(),
+                        ),
+                      );
                     },
                   )
                 ]
               : null,
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(
-                48.0), // Provide a height for the AppBar's bottom
+            // Provide a height for the AppBar's bottom
+            preferredSize: const Size.fromHeight(48.0),
             child: Column(
               children: [
                 Row(
                   children: [
                     TabBar(
                       tabAlignment: TabAlignment.start,
-                      isScrollable:
-                          true, // Ensure that the TabBar is scrollable
+                      // Ensure that the TabBar is scrollable
+                      isScrollable: true,
                       dividerColor: Provider.of<AmityUIConfiguration>(context)
                           .appColors
                           .baseBackground,
@@ -116,9 +121,7 @@ class _CommunityPageState extends State<CommunityPage> {
                         fontFamily: 'SF Pro Text',
                       ),
                       tabs: const [
-                        Tab(
-                          text: "Newsfeed",
-                        ),
+                        Tab(text: "Newsfeed"),
                         Tab(text: "Explore"),
                       ],
                     ),

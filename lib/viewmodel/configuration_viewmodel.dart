@@ -3,27 +3,26 @@ import 'package:flutter_svg/svg.dart';
 
 class AmityUIConfiguration extends ChangeNotifier {
   var appColors = AppColors();
-  Color get primaryColor => appColors.primary;
-
-  IconData placeHolderIcon = Icons.chat;
   Color displaynameColor = Colors.black;
-  AmityIconConfig iconConfig = AmityIconConfig();
+  Color get primaryColor => appColors.primary;
   ChannelListConfig channelListConfig = ChannelListConfig();
   MessageRoomConfig messageRoomConfig = MessageRoomConfig();
-  // Color userProfileBGColor = Colors.white;
-  // Color userProfileTextColor = Colors.black;
-  // Color userProfileIconColor = Colors.grey;
+
+  IconData placeHolderIcon = Icons.chat;
+  AmityIconConfig iconConfig = AmityIconConfig();
+
   TextStyle titleTextStyle = const TextStyle(
     fontSize: 17,
     color: Colors.black,
     fontWeight: FontWeight.w600,
   );
-
   TextStyle hintTextStyle = const TextStyle(
     fontSize: 15,
     color: Colors.black,
     fontWeight: FontWeight.w400,
   );
+
+  AmityWidgetConfig widgetConfig = AmityWidgetConfig();
 
   void updateUI() {
     notifyListeners();
@@ -203,4 +202,12 @@ class MessageRoomConfig {
   Color appbarColor = Colors.white;
   Color textFieldBackGroundColor = Colors.white;
   Color textFieldHintColor = Colors.grey[500]!;
+}
+
+class AmityWidgetConfig {
+  final bool showCommunityPostButton;
+
+  AmityWidgetConfig({
+    this.showCommunityPostButton = true,
+  });
 }

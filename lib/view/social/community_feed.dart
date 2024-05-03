@@ -25,9 +25,11 @@ class CommunityScreen extends StatefulWidget {
   final AmityCommunity community;
   final bool isFromFeed;
 
-  const CommunityScreen(
-      {Key? key, required this.community, this.isFromFeed = false})
-      : super(key: key);
+  const CommunityScreen({
+    Key? key,
+    required this.community,
+    this.isFromFeed = false,
+  }) : super(key: key);
 
   @override
   CommunityScreenState createState() => CommunityScreenState();
@@ -215,7 +217,11 @@ class CommunityScreenState extends State<CommunityScreen> {
               )
             ];
             return Scaffold(
-                floatingActionButton: (snapshot.data!.isJoined!)
+                floatingActionButton: (Provider.of<AmityUIConfiguration>(
+                                context)
+                            .widgetConfig
+                            .showCommunityPostButton &&
+                        snapshot.data!.isJoined!)
                     ? FloatingActionButton(
                         shape: const CircleBorder(),
                         onPressed: () async {

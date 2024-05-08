@@ -59,7 +59,11 @@ class CommunitySettingPage extends StatelessWidget {
                             .base,
                       )),
                 ),
-                !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                (!Provider.of<AmityUIConfiguration>(context)
+                            .widgetConfig
+                            .showEditProfile ||
+                        !community
+                            .hasPermission(AmityPermission.EDIT_COMMUNITY))
                     ? const SizedBox()
                     : ListTile(
                         leading: Container(

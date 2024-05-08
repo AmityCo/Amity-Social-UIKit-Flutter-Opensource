@@ -220,9 +220,11 @@ class AmityWidgetConfig {
 }
 
 class AmityLogicConfig {
-  final bool hideModeratorProfile;
+  final bool replaceModeratorProfile;
+  final bool replaceModeratorProfileNavigation;
 
   AmityLogicConfig({
-    this.hideModeratorProfile = false,
+    this.replaceModeratorProfile = false,
+    this.replaceModeratorProfileNavigation = false,
   });
 }

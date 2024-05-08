@@ -401,17 +401,19 @@ class _PostWidgetState
   }
 
   void _onUserProfile() {
-    final hideModeratorProfile = Provider.of<AmityUIConfiguration>(
+    final replaceModeratorProfileNavigation = Provider.of<AmityUIConfiguration>(
       context,
       listen: false,
-    ).logicConfig.hideModeratorProfile;
+    ).logicConfig.replaceModeratorProfileNavigation;
     final userRoles = widget.post.postedUser!.roles!;
     final isModerator = userRoles.contains('community-moderator') ||
         userRoles.contains('global-admin');
     final targetingCommunity =
         widget.post.targetType == AmityPostTargetType.COMMUNITY;
 
-    if (hideModeratorProfile && isModerator && targetingCommunity) {
+    if (replaceModeratorProfileNavigation &&
+        isModerator &&
+        targetingCommunity) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ChangeNotifierProvider(
@@ -436,6 +438,52 @@ class _PostWidgetState
           ),
         ),
       );
+    }
+  }
+
+  String? get _avatarUrl {
+    final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
+        .logicConfig
+        .replaceModeratorProfile;
+    final userRoles = widget.post.postedUser!.roles!;
+    final isModerator = userRoles.contains('community-moderator') ||
+        userRoles.contains('global-admin');
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfile && isModerator && targetingCommunity) {
+      return (widget.post.target as CommunityTarget)
+          .targetCommunity
+          ?.avatarImage
+          ?.fileUrl;
+    } else {
+      return (widget.post.postedUser!.userId !=
+              AmityCoreClient.getCurrentUser().userId)
+          ? (widget.post.postedUser?.avatarUrl)
+          : (Provider.of<AmityVM>(context).currentamityUser!.avatarUrl);
+    }
+  }
+
+  String get _displayName {
+    final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
+        .logicConfig
+        .replaceModeratorProfile;
+    final userRoles = widget.post.postedUser!.roles!;
+    final isModerator = userRoles.contains('community-moderator') ||
+        userRoles.contains('global-admin');
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfile && isModerator && targetingCommunity) {
+      return ((widget.post.target as CommunityTarget)
+              .targetCommunity
+              ?.displayName) ??
+          "Display name";
+    } else {
+      return (widget.post.postedUser!.userId !=
+              AmityCoreClient.getCurrentUser().userId)
+          ? (widget.post.postedUser?.displayName ?? "Display name")
+          : (Provider.of<AmityVM>(context).currentamityUser!.displayName ?? "");
     }
   }
 
@@ -471,28 +519,17 @@ class _PostWidgetState
                         contentPadding: const EdgeInsets.only(
                             left: 0, top: 0, right: 0, bottom: 0),
                         leading: FadeAnimation(
-                            child: GestureDetector(
-                                onTap: _onUserProfile,
-                                child: getAvatarImage(widget
-                                            .post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.avatarUrl
-                                    : Provider.of<AmityVM>(context)
-                                        .currentamityUser!
-                                        .avatarUrl))),
+                          child: GestureDetector(
+                            onTap: _onUserProfile,
+                            child: getAvatarImage(_avatarUrl),
+                          ),
+                        ),
                         title: Wrap(
                           children: [
                             GestureDetector(
                               onTap: _onUserProfile,
                               child: Text(
-                                widget.post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.displayName ??
-                                        "Display name"
-                                    : Provider.of<AmityVM>(context)
-                                            .currentamityUser!
-                                            .displayName ??
-                                        "",
+                                _displayName,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Provider.of<AmityUIConfiguration>(

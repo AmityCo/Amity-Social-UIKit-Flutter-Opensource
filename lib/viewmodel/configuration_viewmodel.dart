@@ -208,10 +208,12 @@ class AmityWidgetConfig {
   final bool showCommunityPostButton;
   final bool showEditProfile;
   final bool showPostReview;
+  final bool showRemoveFromCommunity;
 
   AmityWidgetConfig({
     this.showCommunityPostButton = true,
     this.showEditProfile = true,
     this.showPostReview = true,
+    this.showRemoveFromCommunity = true,
   });
 }

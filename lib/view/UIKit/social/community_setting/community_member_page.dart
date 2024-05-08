@@ -364,31 +364,34 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
                         Navigator.pop(context);
                       },
                     ),
-                    ListTile(
-                      title: const Text(
-                        'Remove from community',
-                        style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.w500),
+                    if (Provider.of<AmityUIConfiguration>(context)
+                        .widgetConfig
+                        .showRemoveFromCommunity)
+                      ListTile(
+                        title: const Text(
+                          'Remove from community',
+                          style: TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.w500),
+                        ),
+                        onTap: () async {
+                          Navigator.pop(context);
+                          await ConfirmationDialog().show(
+                            context: context,
+                            title: 'Remove user from Community?',
+                            detailText:
+                                "This user won't no longer be able to search, post and interact in this community",
+                            onConfirm: () {
+                              viewModel.removeMembers(
+                                  viewModel.communityId, [member.userId!]);
+                            },
+                          );
+                          await viewModel.initModerators(
+                              communityId: viewModel.communityId);
+                          await viewModel.initMember(
+                            communityId: viewModel.communityId,
+                          );
+                        },
                       ),
-                      onTap: () async {
-                        Navigator.pop(context);
-                        await ConfirmationDialog().show(
-                          context: context,
-                          title: 'Remove user from Community?',
-                          detailText:
-                              "This user won't no longer be able to search, post and interact in this community",
-                          onConfirm: () {
-                            viewModel.removeMembers(
-                                viewModel.communityId, [member.userId!]);
-                          },
-                        );
-                        await viewModel.initModerators(
-                            communityId: viewModel.communityId);
-                        await viewModel.initMember(
-                          communityId: viewModel.communityId,
-                        );
-                      },
-                    ),
                   ]
                 : [
                     ListTile(

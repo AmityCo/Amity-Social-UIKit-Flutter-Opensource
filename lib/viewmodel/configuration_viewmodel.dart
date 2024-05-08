@@ -23,6 +23,7 @@ class AmityUIConfiguration extends ChangeNotifier {
   );
 
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
+  AmityLogicConfig logicConfig = AmityLogicConfig();
 
   void updateUI() {
     notifyListeners();
@@ -215,5 +216,13 @@ class AmityWidgetConfig {
     this.showEditProfile = true,
     this.showPostReview = true,
     this.showRemoveFromCommunity = true,
+  });
+}
+
+class AmityLogicConfig {
+  final bool hideModeratorProfile;
+
+  AmityLogicConfig({
+    this.hideModeratorProfile = false,
   });
 }

@@ -400,6 +400,45 @@ class _PostWidgetState
     );
   }
 
+  void _onUserProfile() {
+    final hideModeratorProfile = Provider.of<AmityUIConfiguration>(
+      context,
+      listen: false,
+    ).logicConfig.hideModeratorProfile;
+    final userRoles = widget.post.postedUser!.roles!;
+    final isModerator = userRoles.contains('community-moderator') ||
+        userRoles.contains('global-admin');
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (hideModeratorProfile && isModerator && targetingCommunity) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) => CommuFeedVM(),
+            child: CommunityScreen(
+              isFromFeed: true,
+              community:
+                  (widget.post.target as CommunityTarget).targetCommunity!,
+            ),
+          ),
+        ),
+      );
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) => UserFeedVM(),
+            child: UserProfileScreen(
+              amityUser: widget.post.postedUser!,
+              amityUserId: widget.post.postedUser!.userId!,
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
   // @override
   @override
   Widget build(BuildContext context) {
@@ -433,21 +472,7 @@ class _PostWidgetState
                             left: 0, top: 0, right: 0, bottom: 0),
                         leading: FadeAnimation(
                             child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChangeNotifierProvider(
-                                        create: (context) => UserFeedVM(),
-                                        child: UserProfileScreen(
-                                          amityUser: widget.post.postedUser!,
-                                          amityUserId:
-                                              widget.post.postedUser!.userId!,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
+                                onTap: _onUserProfile,
                                 child: getAvatarImage(widget
                                             .post.postedUser!.userId !=
                                         AmityCoreClient.getCurrentUser().userId
@@ -458,20 +483,7 @@ class _PostWidgetState
                         title: Wrap(
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangeNotifierProvider(
-                                      create: (context) => UserFeedVM(),
-                                      child: UserProfileScreen(
-                                          amityUser: widget.post.postedUser!,
-                                          amityUserId:
-                                              widget.post.postedUser!.userId!),
-                                    ),
-                                  ),
-                                );
-                              },
+                              onTap: _onUserProfile,
                               child: Text(
                                 widget.post.postedUser!.userId !=
                                         AmityCoreClient.getCurrentUser().userId

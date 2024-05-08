@@ -171,7 +171,11 @@ class CommunitySettingPage extends StatelessWidget {
                 //             NotificationSettingPage(community: livecommunity)));
                 //   },
                 // ),
-                !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                (!Provider.of<AmityUIConfiguration>(context)
+                            .widgetConfig
+                            .showPostReview ||
+                        !community
+                            .hasPermission(AmityPermission.EDIT_COMMUNITY))
                     ? const SizedBox()
                     : Padding(
                         padding: const EdgeInsets.only(left: 16, right: 16),
@@ -184,7 +188,11 @@ class CommunitySettingPage extends StatelessWidget {
                       ),
 
                 // Section 2: Community Permission
-                !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                (!Provider.of<AmityUIConfiguration>(context)
+                            .widgetConfig
+                            .showPostReview ||
+                        !community
+                            .hasPermission(AmityPermission.EDIT_COMMUNITY))
                     ? const SizedBox()
                     : Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -197,7 +205,11 @@ class CommunitySettingPage extends StatelessWidget {
                                         .appColors
                                         .base)),
                       ),
-                !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                (!Provider.of<AmityUIConfiguration>(context)
+                            .widgetConfig
+                            .showPostReview ||
+                        !community
+                            .hasPermission(AmityPermission.EDIT_COMMUNITY))
                     ? const SizedBox()
                     : ListTile(
                         leading: Container(

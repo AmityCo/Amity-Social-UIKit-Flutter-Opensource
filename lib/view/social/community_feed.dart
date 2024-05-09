@@ -396,11 +396,17 @@ class EditProfileButton extends StatefulWidget {
 class _EditProfileButtonState extends State<EditProfileButton> {
   @override
   Widget build(BuildContext context) {
-    return (!Provider.of<AmityUIConfiguration>(context)
-                .widgetConfig
-                .showEditProfile ||
-            !widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY))
-        ? widget.community.isJoined!
+    final hideEditProfile = !Provider.of<AmityUIConfiguration>(context)
+            .widgetConfig
+            .showEditProfile ||
+        !widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY);
+    final hideJoinButton = !Provider.of<AmityUIConfiguration>(context)
+            .widgetConfig
+            .showJoinButton ||
+        widget.community.isJoined!;
+
+    return (hideEditProfile)
+        ? (hideJoinButton)
             ? const SizedBox()
             : InkWell(
                 onTap: () {

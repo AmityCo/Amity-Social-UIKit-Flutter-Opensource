@@ -206,6 +206,7 @@ class MessageRoomConfig {
 }
 
 class AmityWidgetConfig {
+  final bool showCommunityMoreButton;
   final bool showCommunityPostButton;
   final bool showEditProfile;
   final bool showJoinButton;
@@ -213,6 +214,7 @@ class AmityWidgetConfig {
   final bool showRemoveFromCommunity;
 
   AmityWidgetConfig({
+    this.showCommunityMoreButton = true,
     this.showCommunityPostButton = true,
     this.showEditProfile = true,
     this.showJoinButton = true,

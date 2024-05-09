@@ -307,22 +307,27 @@ class CommunityScreenState extends State<CommunityScreen> {
                               actions: [
                                 // Text(
                                 //     "${sizeVM.getCommunityDetailSectionSize()}"),
-                                IconButton(
+                                if (Provider.of<AmityUIConfiguration>(context)
+                                    .widgetConfig
+                                    .showCommunityMoreButton)
+                                  IconButton(
                                     onPressed: () {
                                       Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context2) =>
-                                                  CommunitySettingPage(
-                                                    community: snapshot.data!,
-                                                  )));
+                                        MaterialPageRoute(
+                                          builder: (context2) =>
+                                              CommunitySettingPage(
+                                            community: snapshot.data!,
+                                          ),
+                                        ),
+                                      );
                                     },
                                     icon: Icon(
                                       Icons.more_horiz_rounded,
                                       color: Provider.of<AmityUIConfiguration>(
-                                              context)
-                                          .appColors
-                                          .base,
-                                    ))
+                                        context,
+                                      ).appColors.base,
+                                    ),
+                                  ),
                               ],
                               bottom: PreferredSize(
                                 preferredSize: const Size.fromHeight(25),

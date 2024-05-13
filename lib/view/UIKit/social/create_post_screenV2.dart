@@ -295,110 +295,112 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
       context: context,
       builder: (BuildContext context) {
         return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
-          return Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0),
+          return ThemeConfig(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15.0),
+                  topRight: Radius.circular(15.0),
+                ),
               ),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16.0), // Space at the top
-                child: Wrap(
-                  children: <Widget>[
-                    ListTile(
-                      leading: _iconButton(Icons.camera_alt_outlined,
-                          isEnable: vm.availableFileSelectionOptions()[
-                              MyFileType.image]!,
-                          label: "Camera",
-                          onTap: () {}),
-                      title: Text(
-                        'Camera',
-                        style: TextStyle(
-                            color: vm.availableFileSelectionOptions()[
-                                    MyFileType.image]!
-                                ? Colors.black
-                                : Colors.grey),
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16.0), // Space at the top
+                  child: Wrap(
+                    children: <Widget>[
+                      ListTile(
+                        leading: _iconButton(Icons.camera_alt_outlined,
+                            isEnable: vm.availableFileSelectionOptions()[
+                                MyFileType.image]!,
+                            label: "Camera",
+                            onTap: () {}),
+                        title: Text(
+                          'Camera',
+                          style: TextStyle(
+                              color: vm.availableFileSelectionOptions()[
+                                      MyFileType.image]!
+                                  ? Colors.black
+                                  : Colors.grey),
+                        ),
+                        onTap: () {
+                          if (vm.availableFileSelectionOptions()[
+                              MyFileType.image]!) {
+                            _handleImageTap(context);
+                            Navigator.pop(context);
+                          }
+                        },
                       ),
-                      onTap: () {
-                        if (vm.availableFileSelectionOptions()[
-                            MyFileType.image]!) {
-                          _handleImageTap(context);
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                    ListTile(
-                      leading: _iconButton(Icons.image_outlined,
-                          isEnable: vm.availableFileSelectionOptions()[
-                              MyFileType.image]!,
-                          label: "Photo",
-                          onTap: () {}),
-                      title: Text(
-                        'Photo',
-                        style: TextStyle(
-                            color: vm.availableFileSelectionOptions()[
-                                    MyFileType.image]!
-                                ? Colors.black
-                                : Colors.grey),
+                      ListTile(
+                        leading: _iconButton(Icons.image_outlined,
+                            isEnable: vm.availableFileSelectionOptions()[
+                                MyFileType.image]!,
+                            label: "Photo",
+                            onTap: () {}),
+                        title: Text(
+                          'Photo',
+                          style: TextStyle(
+                              color: vm.availableFileSelectionOptions()[
+                                      MyFileType.image]!
+                                  ? Colors.black
+                                  : Colors.grey),
+                        ),
+                        onTap: () {
+                          if (vm.availableFileSelectionOptions()[
+                              MyFileType.image]!) {
+                            _handleImageTap(context);
+                            Navigator.pop(context);
+                          }
+                        },
                       ),
-                      onTap: () {
-                        if (vm.availableFileSelectionOptions()[
-                            MyFileType.image]!) {
-                          _handleImageTap(context);
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                    ListTile(
-                      leading: _iconButton(Icons.attach_file_rounded,
-                          isEnable: vm.availableFileSelectionOptions()[
-                              MyFileType.file]!,
-                          label: "Attachment",
-                          onTap: () {}),
-                      title: Text(
-                        'Attachment',
-                        style: TextStyle(
-                            color: vm.availableFileSelectionOptions()[
-                                    MyFileType.file]!
-                                ? Colors.black
-                                : Colors.grey),
+                      ListTile(
+                        leading: _iconButton(Icons.attach_file_rounded,
+                            isEnable: vm.availableFileSelectionOptions()[
+                                MyFileType.file]!,
+                            label: "Attachment",
+                            onTap: () {}),
+                        title: Text(
+                          'Attachment',
+                          style: TextStyle(
+                              color: vm.availableFileSelectionOptions()[
+                                      MyFileType.file]!
+                                  ? Colors.black
+                                  : Colors.grey),
+                        ),
+                        onTap: () {
+                          if (vm.availableFileSelectionOptions()[
+                              MyFileType.file]!) {
+                            _handleFileTap(context);
+                            Navigator.pop(context);
+                          }
+                        },
                       ),
-                      onTap: () {
-                        if (vm.availableFileSelectionOptions()[
-                            MyFileType.file]!) {
-                          _handleFileTap(context);
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                    ListTile(
-                      leading: _iconButton(
-                        Icons.play_circle_outline_outlined,
-                        isEnable: vm
-                            .availableFileSelectionOptions()[MyFileType.video]!,
-                        label: "Video",
-                        onTap: () {},
+                      ListTile(
+                        leading: _iconButton(
+                          Icons.play_circle_outline_outlined,
+                          isEnable: vm
+                              .availableFileSelectionOptions()[MyFileType.video]!,
+                          label: "Video",
+                          onTap: () {},
+                        ),
+                        title: Text(
+                          'Video',
+                          style: TextStyle(
+                              color: vm.availableFileSelectionOptions()[
+                                      MyFileType.video]!
+                                  ? Colors.black
+                                  : Colors.grey),
+                        ),
+                        onTap: () {
+                          if (vm.availableFileSelectionOptions()[
+                              MyFileType.video]!) {
+                            _handleVideoTap(context);
+                            Navigator.pop(context);
+                          }
+                        },
                       ),
-                      title: Text(
-                        'Video',
-                        style: TextStyle(
-                            color: vm.availableFileSelectionOptions()[
-                                    MyFileType.video]!
-                                ? Colors.black
-                                : Colors.grey),
-                      ),
-                      onTap: () {
-                        if (vm.availableFileSelectionOptions()[
-                            MyFileType.video]!) {
-                          _handleVideoTap(context);
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

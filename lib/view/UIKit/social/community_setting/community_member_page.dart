@@ -300,129 +300,131 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext bc) {
-        return Container(
-          padding: const EdgeInsets.only(top: 20, bottom: 20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
+        return ThemeConfig(
+          child: Container(
+            padding: const EdgeInsets.only(top: 20, bottom: 20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0),
+              ),
             ),
-          ),
-          child: Wrap(
-            children: isModerator
-                ? [
-                    ((member.roles!.contains('community-moderator') &
-                                !showDemoteButton) ||
-                            !Provider.of<AmityUIConfiguration>(context)
-                                .widgetConfig
-                                .showPromoteAndDismissModerator)
-                        ? const SizedBox()
-                        : ListTile(
-                            title: Text(
-                              member.roles!.contains('community-moderator')
-                                  ? 'Dismiss moderator'
-                                  : 'Promote to moderator',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w500),
+            child: Wrap(
+              children: isModerator
+                  ? [
+                      ((member.roles!.contains('community-moderator') &
+                                  !showDemoteButton) ||
+                              !Provider.of<AmityUIConfiguration>(context)
+                                  .widgetConfig
+                                  .showPromoteAndDismissModerator)
+                          ? const SizedBox()
+                          : ListTile(
+                              title: Text(
+                                member.roles!.contains('community-moderator')
+                                    ? 'Dismiss moderator'
+                                    : 'Promote to moderator',
+                                style:
+                                    const TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              onTap: () async {
+                                Navigator.pop(context);
+                                if (member.roles!
+                                    .contains('community-moderator')) {
+                                  await viewModel.demoteFromModerator(
+                                      viewModel.communityId, [member.userId!]);
+                                } else {
+                                  await viewModel.promoteToModerator(
+                                      viewModel.communityId, [member.userId!]);
+                                }
+                                await viewModel.initModerators(
+                                    communityId: viewModel.communityId);
+                                await viewModel.initMember(
+                                  communityId: viewModel.communityId,
+                                );
+                              },
                             ),
-                            onTap: () async {
-                              Navigator.pop(context);
-                              if (member.roles!
-                                  .contains('community-moderator')) {
-                                await viewModel.demoteFromModerator(
-                                    viewModel.communityId, [member.userId!]);
-                              } else {
-                                await viewModel.promoteToModerator(
-                                    viewModel.communityId, [member.userId!]);
-                              }
-                              await viewModel.initModerators(
-                                  communityId: viewModel.communityId);
-                              await viewModel.initMember(
-                                communityId: viewModel.communityId,
-                              );
-                            },
-                          ),
-                    ListTile(
-                      title: Text(
-                        member.user!.isFlaggedByMe ? "Undo Report" : "Report",
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      onTap: () async {
-                        if (member.user!.isFlaggedByMe) {
-                          await viewModel.undoReportUser(member.user!);
-                        } else {
-                          await viewModel.reportUser(member.user!);
-                        }
-                        await viewModel.initModerators(
-                            communityId: viewModel.communityId);
-                        await viewModel.initMember(
-                          communityId: viewModel.communityId,
-                        );
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'Block User',
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      onTap: () {
-                        viewModel.blockUser(member.user!);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    if (Provider.of<AmityUIConfiguration>(context)
-                        .widgetConfig
-                        .showRemoveFromCommunity)
                       ListTile(
-                        title: const Text(
-                          'Remove from community',
-                          style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.w500),
+                        title: Text(
+                          member.user!.isFlaggedByMe ? "Undo Report" : "Report",
+                          style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                         onTap: () async {
-                          Navigator.pop(context);
-                          await ConfirmationDialog().show(
-                            context: context,
-                            title: 'Remove user from Community?',
-                            detailText:
-                                "This user won't no longer be able to search, post and interact in this community",
-                            onConfirm: () {
-                              viewModel.removeMembers(
-                                  viewModel.communityId, [member.userId!]);
-                            },
-                          );
+                          if (member.user!.isFlaggedByMe) {
+                            await viewModel.undoReportUser(member.user!);
+                          } else {
+                            await viewModel.reportUser(member.user!);
+                          }
                           await viewModel.initModerators(
                               communityId: viewModel.communityId);
                           await viewModel.initMember(
                             communityId: viewModel.communityId,
                           );
+                          Navigator.pop(context);
                         },
                       ),
-                  ]
-                : [
-                    ListTile(
-                      title: const Text(
-                        'Block User',
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ListTile(
+                        title: const Text(
+                          'Block User',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        onTap: () {
+                          viewModel.blockUser(member.user!);
+                          Navigator.pop(context);
+                        },
                       ),
-                      onTap: () {
-                        viewModel.blockUser(member.user!);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'Report',
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                      if (Provider.of<AmityUIConfiguration>(context)
+                          .widgetConfig
+                          .showRemoveFromCommunity)
+                        ListTile(
+                          title: const Text(
+                            'Remove from community',
+                            style: TextStyle(
+                                color: Colors.red, fontWeight: FontWeight.w500),
+                          ),
+                          onTap: () async {
+                            Navigator.pop(context);
+                            await ConfirmationDialog().show(
+                              context: context,
+                              title: 'Remove user from Community?',
+                              detailText:
+                                  "This user won't no longer be able to search, post and interact in this community",
+                              onConfirm: () {
+                                viewModel.removeMembers(
+                                    viewModel.communityId, [member.userId!]);
+                              },
+                            );
+                            await viewModel.initModerators(
+                                communityId: viewModel.communityId);
+                            await viewModel.initMember(
+                              communityId: viewModel.communityId,
+                            );
+                          },
+                        ),
+                    ]
+                  : [
+                      ListTile(
+                        title: const Text(
+                          'Block User',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        onTap: () {
+                          viewModel.blockUser(member.user!);
+                          Navigator.pop(context);
+                        },
                       ),
-                      onTap: () {
-                        viewModel.reportUser(member.user!);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
+                      ListTile(
+                        title: const Text(
+                          'Report',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        onTap: () {
+                          viewModel.reportUser(member.user!);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+            ),
           ),
         );
       });

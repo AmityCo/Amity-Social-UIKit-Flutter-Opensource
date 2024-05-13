@@ -248,7 +248,6 @@ class _PostWidgetState
                     create: (context) => EditPostVM(),
                     child: AmityEditPostScreen(
                       amityPost: widget.post,
-                      feedType: widget.feedType,
                     ))));
             break;
           case 'Delete Post':

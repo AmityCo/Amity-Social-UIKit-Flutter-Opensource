@@ -29,7 +29,7 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
     Provider.of<EditPostVM>(context, listen: false)
         .initForEditPost(widget.amityPost);
     TextData textData = widget.amityPost.data as TextData;
-    originalText = textData.text!;
+    originalText = textData.text ?? "";
     super.initState();
   }
 

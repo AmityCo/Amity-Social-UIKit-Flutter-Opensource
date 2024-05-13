@@ -213,6 +213,7 @@ class AmityWidgetConfig {
   final bool showEditProfile;
   final bool showJoinButton;
   final bool showPostReview;
+  final bool showPromoteAndDismissModerator;
   final bool showRemoveFromCommunity;
 
   AmityWidgetConfig({
@@ -221,6 +222,7 @@ class AmityWidgetConfig {
     this.showEditProfile = true,
     this.showJoinButton = true,
     this.showPostReview = true,
+    this.showPromoteAndDismissModerator = true,
     this.showRemoveFromCommunity = true,
   });
 }

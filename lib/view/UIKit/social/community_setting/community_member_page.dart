@@ -312,8 +312,11 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
           child: Wrap(
             children: isModerator
                 ? [
-                    member.roles!.contains('community-moderator') &
-                            !showDemoteButton
+                    ((member.roles!.contains('community-moderator') &
+                                !showDemoteButton) ||
+                            !Provider.of<AmityUIConfiguration>(context)
+                                .widgetConfig
+                                .showPromoteAndDismissModerator)
                         ? const SizedBox()
                         : ListTile(
                             title: Text(

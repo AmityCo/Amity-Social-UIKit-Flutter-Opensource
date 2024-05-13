@@ -145,37 +145,35 @@ class _CommunityPageState extends State<CommunityPage> {
           ),
           body: TabBarView(
             children: [
-              ThemeConfig(
-                child: Scaffold(
-                  floatingActionButton: widget.showPostToButton
-                      ? FloatingActionButton(
-                          shape: const CircleBorder(),
-                          onPressed: () {
-                            // Navigate or perform action based on 'Newsfeed' tap
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const ThemeConfig(
-                                  child: Scaffold(
-                                    body: PostToPage(),
-                                  ),
+              Scaffold(
+                floatingActionButton: widget.showPostToButton
+                    ? FloatingActionButton(
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          // Navigate or perform action based on 'Newsfeed' tap
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ThemeConfig(
+                                child: Scaffold(
+                                  body: PostToPage(),
                                 ),
                               ),
-                            );
-                          },
-                          backgroundColor:
-                              Provider.of<AmityUIConfiguration>(context)
-                                  .appColors
-                                  .primary,
-                          child: Provider.of<AmityUIConfiguration>(context)
-                              .iconConfig
-                              .postIcon(iconSize: 28, color: Colors.white),
-                        )
-                      : null,
-                  body: GlobalFeedScreen(
-                    isShowMyCommunity: widget.isShowMyCommunity,
-                    canCreateCommunity: widget.canCreateCommunity,
-                    canSearchCommunities: widget.canSearchCommunities,
-                  ),
+                            ),
+                          );
+                        },
+                        backgroundColor:
+                            Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .primary,
+                        child: Provider.of<AmityUIConfiguration>(context)
+                            .iconConfig
+                            .postIcon(iconSize: 28, color: Colors.white),
+                      )
+                    : null,
+                body: GlobalFeedScreen(
+                  isShowMyCommunity: widget.isShowMyCommunity,
+                  canCreateCommunity: widget.canCreateCommunity,
+                  canSearchCommunities: widget.canSearchCommunities,
                 ),
               ),
               const ExplorePage(),

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/social/user_pending_request_component.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
@@ -76,230 +77,232 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Consumer<NotificationVM>(builder: (context, vm, _) {
-      return Scaffold(
-        backgroundColor: Colors.grey[200],
-        body: Column(
-          children: [
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await vm.updateNotification();
-                },
-                child: vm.notificationsObject == null
-                    ? Row(
-                        children: [
-                          Expanded(
-                              child: Column(
-                            children: [
-                              Expanded(
-                                  child: Center(
-                                child: CircularProgressIndicator(
-                                  color:
-                                      Provider.of<AmityUIConfiguration>(context)
-                                          .primaryColor,
-                                ),
-                              ))
-                            ],
-                          ))
-                        ],
-                      )
-                    : SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+      return ThemeConfig(
+        child: Scaffold(
+          backgroundColor: Colors.grey[200],
+          body: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await vm.updateNotification();
+                  },
+                  child: vm.notificationsObject == null
+                      ? Row(
                           children: [
-                            Provider.of<PendingVM>(context, listen: true)
-                                    .pendingRequestList
-                                    .isEmpty
-                                ? const SizedBox()
-                                : FadeAnimation(
-                                    child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const AmityPendingScreen()));
-                                    },
-                                    child: Card(
-                                      child: ListTile(
-                                        contentPadding: const EdgeInsets.only(
-                                            left: 16, right: 10),
-                                        // leading: GestureDetector(
-                                        //   onTap: () {
-                                        //     Navigator.of(context).push(MaterialPageRoute(
-                                        //         builder: (_) =>
-                                        //             const AmityPendingScreen()));
-                                        //   },
-                                        //   child: FadedScaleAnimation(
-                                        //       child: getAvatarImage(
-                                        //           notificationItem!.actors![0].imageUrl)),
-                                        // ),
-                                        title: RichText(
-                                          text: TextSpan(
-                                            style: theme.textTheme.titleMedium!
-                                                .copyWith(
-                                              letterSpacing: 0.5,
-                                            ),
-                                            children: [
-                                              TextSpan(
-                                                  text: "Follow Request",
-                                                  style: theme
-                                                      .textTheme.titleSmall!
-                                                      .copyWith(fontSize: 12)),
-                                            ],
-                                          ),
-                                        ),
-                                        subtitle: Text(
-                                          followRequestStringBuilder(
-                                              Provider.of<PendingVM>(context,
-                                                      listen: true)
-                                                  .pendingRequestList),
-                                          style: theme.textTheme.titleSmall!
-                                              .copyWith(
-                                            fontSize: 9,
-                                            color: theme.hintColor,
-                                          ),
-                                        ),
-                                        trailing:
-                                            const Icon(Icons.chevron_right),
-                                      ),
-                                    ),
-                                  )),
-                            Container(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  vm.notificationsObject?.data?.isEmpty ?? false
-                                      ? ""
-                                      : "This month",
-                                  style: theme.textTheme.titleLarge,
-                                )),
-                            vm.notificationsObject?.data?.isEmpty ?? false
-                                ? const Center(
-                                    child: Text("Notification box is empty!"))
-                                : ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount:
-                                        vm.notificationsObject?.data?.length ??
-                                            0,
-                                    itemBuilder: (context, index) {
-                                      var notificationItem =
-                                          vm.notificationsObject?.data?[index];
-                                      return FadeAnimation(
-                                        child: Card(
-                                          child: ListTile(
-                                            contentPadding:
-                                                const EdgeInsets.only(
-                                                    left: 16, right: 10),
-                                            leading: GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            UserProfileScreen(
-                                                              amityUser:
-                                                                  AmityCoreClient
-                                                                      .getCurrentUser(),
-                                                              amityUserId:
-                                                                  AmityCoreClient
-                                                                      .getUserId(),
-                                                            )));
-                                              },
-                                              child: FadedScaleAnimation(
-                                                  child: getAvatarImage(
-                                                      notificationItem!
-                                                          .actors![0]
-                                                          .imageUrl)),
-                                            ),
-                                            title: RichText(
-                                              text: TextSpan(
-                                                style: theme
-                                                    .textTheme.titleMedium!
-                                                    .copyWith(
-                                                  letterSpacing: 0.5,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                      text: vm
-                                                          .prefixStringBuilder(
-                                                              notificationItem
-                                                                      .actors ??
-                                                                  []),
-                                                      style: theme
-                                                          .textTheme.titleSmall!
-                                                          .copyWith(
-                                                              fontSize: 12)),
-                                                  TextSpan(
-                                                      text:
-                                                          " ${vm.verbStringBuilder(
-                                                        notificationItem.verb!,
-                                                      )} ",
-                                                      style: TextStyle(
-                                                          color: theme
-                                                              .primaryColor,
-                                                          fontSize: 12)),
-                                                  TextSpan(
-                                                      text: vm.suffixStringBuilder(
-                                                          notificationItem
-                                                              .verb!,
-                                                          notificationItem
-                                                              .targetDisplayName),
-                                                      style: theme
-                                                          .textTheme.titleSmall!
-                                                          .copyWith(
-                                                        fontSize: 12,
-                                                      )),
-                                                ],
-                                              ),
-                                            ),
-                                            subtitle: Text(
-                                              getDateTime(vm
-                                                  .notificationsObject!
-                                                  .data![index]
-                                                  .lastUpdate!),
-                                              style: theme.textTheme.titleSmall!
+                            Expanded(
+                                child: Column(
+                              children: [
+                                Expanded(
+                                    child: Center(
+                                  child: CircularProgressIndicator(
+                                    color:
+                                        Provider.of<AmityUIConfiguration>(context)
+                                            .primaryColor,
+                                  ),
+                                ))
+                              ],
+                            ))
+                          ],
+                        )
+                      : SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Provider.of<PendingVM>(context, listen: true)
+                                      .pendingRequestList
+                                      .isEmpty
+                                  ? const SizedBox()
+                                  : FadeAnimation(
+                                      child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const AmityPendingScreen()));
+                                      },
+                                      child: Card(
+                                        child: ListTile(
+                                          contentPadding: const EdgeInsets.only(
+                                              left: 16, right: 10),
+                                          // leading: GestureDetector(
+                                          //   onTap: () {
+                                          //     Navigator.of(context).push(MaterialPageRoute(
+                                          //         builder: (_) =>
+                                          //             const AmityPendingScreen()));
+                                          //   },
+                                          //   child: FadedScaleAnimation(
+                                          //       child: getAvatarImage(
+                                          //           notificationItem!.actors![0].imageUrl)),
+                                          // ),
+                                          title: RichText(
+                                            text: TextSpan(
+                                              style: theme.textTheme.titleMedium!
                                                   .copyWith(
-                                                fontSize: 9,
-                                                color: theme.hintColor,
+                                                letterSpacing: 0.5,
                                               ),
+                                              children: [
+                                                TextSpan(
+                                                    text: "Follow Request",
+                                                    style: theme
+                                                        .textTheme.titleSmall!
+                                                        .copyWith(fontSize: 12)),
+                                              ],
                                             ),
-                                            trailing: notificationItem
-                                                        .targetImageUrl ==
-                                                    null
-                                                ? null
-                                                : Container(
-                                                    margin:
-                                                        const EdgeInsets.all(0),
-                                                    child: AspectRatio(
-                                                      aspectRatio: 1 / 1,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(7),
-                                                        child: FadeInImage(
-                                                          image: NetworkImage(
+                                          ),
+                                          subtitle: Text(
+                                            followRequestStringBuilder(
+                                                Provider.of<PendingVM>(context,
+                                                        listen: true)
+                                                    .pendingRequestList),
+                                            style: theme.textTheme.titleSmall!
+                                                .copyWith(
+                                              fontSize: 9,
+                                              color: theme.hintColor,
+                                            ),
+                                          ),
+                                          trailing:
+                                              const Icon(Icons.chevron_right),
+                                        ),
+                                      ),
+                                    )),
+                              Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    vm.notificationsObject?.data?.isEmpty ?? false
+                                        ? ""
+                                        : "This month",
+                                    style: theme.textTheme.titleLarge,
+                                  )),
+                              vm.notificationsObject?.data?.isEmpty ?? false
+                                  ? const Center(
+                                      child: Text("Notification box is empty!"))
+                                  : ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          vm.notificationsObject?.data?.length ??
+                                              0,
+                                      itemBuilder: (context, index) {
+                                        var notificationItem =
+                                            vm.notificationsObject?.data?[index];
+                                        return FadeAnimation(
+                                          child: Card(
+                                            child: ListTile(
+                                              contentPadding:
+                                                  const EdgeInsets.only(
+                                                      left: 16, right: 10),
+                                              leading: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              UserProfileScreen(
+                                                                amityUser:
+                                                                    AmityCoreClient
+                                                                        .getCurrentUser(),
+                                                                amityUserId:
+                                                                    AmityCoreClient
+                                                                        .getUserId(),
+                                                              )));
+                                                },
+                                                child: FadedScaleAnimation(
+                                                    child: getAvatarImage(
+                                                        notificationItem!
+                                                            .actors![0]
+                                                            .imageUrl)),
+                                              ),
+                                              title: RichText(
+                                                text: TextSpan(
+                                                  style: theme
+                                                      .textTheme.titleMedium!
+                                                      .copyWith(
+                                                    letterSpacing: 0.5,
+                                                  ),
+                                                  children: [
+                                                    TextSpan(
+                                                        text: vm
+                                                            .prefixStringBuilder(
+                                                                notificationItem
+                                                                        .actors ??
+                                                                    []),
+                                                        style: theme
+                                                            .textTheme.titleSmall!
+                                                            .copyWith(
+                                                                fontSize: 12)),
+                                                    TextSpan(
+                                                        text:
+                                                            " ${vm.verbStringBuilder(
+                                                          notificationItem.verb!,
+                                                        )} ",
+                                                        style: TextStyle(
+                                                            color: theme
+                                                                .primaryColor,
+                                                            fontSize: 12)),
+                                                    TextSpan(
+                                                        text: vm.suffixStringBuilder(
                                                             notificationItem
-                                                                    .targetImageUrl ??
-                                                                "",
+                                                                .verb!,
+                                                            notificationItem
+                                                                .targetDisplayName),
+                                                        style: theme
+                                                            .textTheme.titleSmall!
+                                                            .copyWith(
+                                                          fontSize: 12,
+                                                        )),
+                                                  ],
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                getDateTime(vm
+                                                    .notificationsObject!
+                                                    .data![index]
+                                                    .lastUpdate!),
+                                                style: theme.textTheme.titleSmall!
+                                                    .copyWith(
+                                                  fontSize: 9,
+                                                  color: theme.hintColor,
+                                                ),
+                                              ),
+                                              trailing: notificationItem
+                                                          .targetImageUrl ==
+                                                      null
+                                                  ? null
+                                                  : Container(
+                                                      margin:
+                                                          const EdgeInsets.all(0),
+                                                      child: AspectRatio(
+                                                        aspectRatio: 1 / 1,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(7),
+                                                          child: FadeInImage(
+                                                            image: NetworkImage(
+                                                              notificationItem
+                                                                      .targetImageUrl ??
+                                                                  "",
+                                                            ),
+                                                            placeholder:
+                                                                const AssetImage(
+                                                                    "assets/images/placeholder_image.png"), // Update with your local asset
                                                           ),
-                                                          placeholder:
-                                                              const AssetImage(
-                                                                  "assets/images/placeholder_image.png"), // Update with your local asset
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                          ],
+                                        );
+                                      },
+                                    ),
+                            ],
+                          ),
                         ),
-                      ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });

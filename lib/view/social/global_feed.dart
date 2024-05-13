@@ -220,10 +220,11 @@ class _PostWidgetState
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
-
-    List<String> otherPostMenu = ['Report', 'Block User'];
-
-    final isFlaggedByMe = widget.post.isFlaggedByMe ?? false;
+    final isFlaggedByMe = widget.post.isFlaggedByMe;
+    List<String> otherPostMenu = [
+      widget.post.isFlaggedByMe ? 'Report Post' : 'Unreport Post',
+      'Block User'
+    ];
 
     return PopupMenuButton(
       color:
@@ -248,7 +249,6 @@ class _PostWidgetState
                     create: (context) => EditPostVM(),
                     child: AmityEditPostScreen(
                       amityPost: widget.post,
-                      feedType: widget.feedType,
                     ))));
             break;
           case 'Delete Post':
@@ -370,18 +370,19 @@ class _PostWidgetState
 
         // Add report/unreport option
         if (!isPostOwner) {
-          menuItems.add(PopupMenuItem(
-            value: isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-            child: Builder(builder: (context) {
-              return Text(
-                isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-                style: TextStyle(
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .base),
-              );
-            }),
-          ));
+          menuItems.addAll(otherPostMenu.map((option) => PopupMenuItem(
+                value: option,
+                child: Builder(builder: (context) {
+                  return Text(
+                    option,
+                    style: TextStyle(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
+                  );
+                }),
+              )));
         }
         // Add block user option
         // if (!isPostOwner) {

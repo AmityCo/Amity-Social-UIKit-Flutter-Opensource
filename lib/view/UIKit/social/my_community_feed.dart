@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -34,95 +35,97 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MyCommunityVM>(builder: (context, vm, _) {
-      return Scaffold(
-        backgroundColor:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Provider.of<AmityUIConfiguration>(context)
-              .appColors
-              .baseBackground,
-          leading: IconButton(
-            icon: Icon(
-              Icons.close,
-              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+      return ThemeConfig(
+        child: Scaffold(
+          backgroundColor:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
+            leading: IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
+            title: Text(
+              'My Community',
+              style: Provider.of<AmityUIConfiguration>(context)
+                  .titleTextStyle
+                  .copyWith(
+                    color:
+                        Provider.of<AmityUIConfiguration>(context).appColors.base,
+                  ), // Adjust as needed
+            ),
+            actions: [
+              if (widget.canCreateCommunity)
+                IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color:
+                        Provider.of<AmityUIConfiguration>(context).appColors.base,
+                  ),
+                  onPressed: () async {
+                    await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            const CreateCommunityPage())); // Replace with your CreateCommunityPage
+                    await Provider.of<MyCommunityVM>(context, listen: false)
+                        .initMyCommunity();
+                  },
+                ),
+            ],
+          ),
+          body: ListView.builder(
+            controller: vm.scrollcontroller,
+            itemCount: vm.amityCommunities.length + 1,
+            itemBuilder: (context, index) {
+              // If it's the first item in the list, return the search bar
+              if (index == 0) {
+                if (widget.canSearchCommunities) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextField(
+                      controller: vm.textEditingController,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        hintText: 'Search',
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                        fillColor: Colors.grey[3],
+                        focusColor: Colors.white,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        Provider.of<MyCommunityVM>(context, listen: false)
+                            .initMyCommunity(value);
+                      },
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              }
+              // Otherwise, return the community widget
+              return CommunityWidget(
+                community: vm.amityCommunities[index - 1],
+              );
             },
           ),
-          title: Text(
-            'My Community',
-            style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle
-                .copyWith(
-                  color:
-                      Provider.of<AmityUIConfiguration>(context).appColors.base,
-                ), // Adjust as needed
-          ),
-          actions: [
-            if (widget.canCreateCommunity)
-              IconButton(
-                icon: Icon(
-                  Icons.add,
-                  color:
-                      Provider.of<AmityUIConfiguration>(context).appColors.base,
-                ),
-                onPressed: () async {
-                  await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          const CreateCommunityPage())); // Replace with your CreateCommunityPage
-                  await Provider.of<MyCommunityVM>(context, listen: false)
-                      .initMyCommunity();
-                },
-              ),
-          ],
-        ),
-        body: ListView.builder(
-          controller: vm.scrollcontroller,
-          itemCount: vm.amityCommunities.length + 1,
-          itemBuilder: (context, index) {
-            // If it's the first item in the list, return the search bar
-            if (index == 0) {
-              if (widget.canSearchCommunities) {
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: TextField(
-                    controller: vm.textEditingController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      hintText: 'Search',
-                      filled: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                      fillColor: Colors.grey[3],
-                      focusColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    onChanged: (value) {
-                      Provider.of<MyCommunityVM>(context, listen: false)
-                          .initMyCommunity(value);
-                    },
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            }
-            // Otherwise, return the community widget
-            return CommunityWidget(
-              community: vm.amityCommunities[index - 1],
-            );
-          },
         ),
       );
     });
@@ -246,10 +249,12 @@ class CommunityIconList extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => Scaffold(
-                            body: MyCommunityPage(
-                              canCreateCommunity: canCreateCommunity,
-                              canSearchCommunities: canSearchCommunities,
+                          builder: (context) => ThemeConfig(
+                            child: Scaffold(
+                              body: MyCommunityPage(
+                                canCreateCommunity: canCreateCommunity,
+                                canSearchCommunities: canSearchCommunities,
+                              ),
                             ),
                           ),
                         ),

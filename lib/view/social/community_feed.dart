@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
@@ -216,174 +217,176 @@ class CommunityScreenState extends State<CommunityScreen> {
                 },
               )
             ];
-            return Scaffold(
-                floatingActionButton: (Provider.of<AmityUIConfiguration>(
-                                context)
-                            .widgetConfig
-                            .showCommunityPostButton &&
-                        snapshot.data!.isJoined!)
-                    ? FloatingActionButton(
-                        shape: const CircleBorder(),
-                        onPressed: () async {
-                          await Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context2) => AmityCreatePostV2Screen(
-                                    community: snapshot.data!,
-                                    feedType: FeedType.community,
-                                  )));
-                          Provider.of<CommuFeedVM>(context, listen: false)
-                              .getPostCount(widget.community);
-                          Provider.of<CommuFeedVM>(context, listen: false)
-                              .getReviewingPostCount(widget.community);
-                          Provider.of<CommuFeedVM>(context, listen: false)
-                              .initAmityCommunityFeed(
-                                  widget.community.communityId!);
-                          Provider.of<CommuFeedVM>(context, listen: false)
-                              .initAmityCommunityImageFeed(
-                                  widget.community.communityId!);
-                          Provider.of<CommuFeedVM>(context, listen: false)
-                              .initAmityCommunityVideoFeed(
-                                  widget.community.communityId!);
-                          Provider.of<CommuFeedVM>(context, listen: false)
-                              .initAmityPendingCommunityFeed(
-                                  widget.community.communityId!,
-                                  AmityFeedType.REVIEWING);
-                        },
-                        backgroundColor:
-                            Provider.of<AmityUIConfiguration>(context)
-                                .primaryColor,
-                        child: Provider.of<AmityUIConfiguration>(context)
-                            .iconConfig
-                            .postIcon(iconSize: 28, color: Colors.white),
-                      )
-                    : null,
-                backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .baseBackground,
-                body: Stack(
-                  children: [
-                    IntrinsicDimension(
-                        listener: (context, width, height, startOffset) {
-                      Provider.of<CompoentSizeVM>(context, listen: false)
-                          .setCommunityDetailSectionSize(height);
-                    }, builder: (_, __, ___, ____) {
-                      return CommunityDetailComponent(
-                        community: snapshot.data!,
-                      );
-                    }),
-                    DefaultTabController(
-                      length: 2,
-                      child: NestedScrollView(
-                        controller: vm.scrollcontroller,
-                        headerSliverBuilder:
-                            (BuildContext context, bool innerBoxIsScrolled) {
-                          return <Widget>[
-                            DynamicSliverAppBar(
-                              // expandedHeight:
-                              //     sizeVM.getCommunityDetailSectionSize(),
-                              shadowColor: Colors.white,
-                              elevation: 0,
-                              surfaceTintColor: Colors.transparent,
-                              backgroundColor:
-                                  Provider.of<AmityUIConfiguration>(context)
-                                      .appColors
-                                      .baseBackground,
-                              floating: false,
-                              pinned: true,
-                              leading: IconButton(
-                                icon: Icon(
-                                  Icons.chevron_left,
-                                  color:
-                                      Provider.of<AmityUIConfiguration>(context)
-                                          .appColors
-                                          .base,
-                                  size: 30,
-                                ),
-                                onPressed: () => Navigator.of(context).pop(),
-                              ),
-                              flexibleSpace: CommunityDetailComponent(
-                                community: snapshot.data!,
-                              ),
-
-                              actions: [
-                                // Text(
-                                //     "${sizeVM.getCommunityDetailSectionSize()}"),
-                                if (Provider.of<AmityUIConfiguration>(context)
-                                    .widgetConfig
-                                    .showCommunityMoreButton)
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context2) =>
-                                              CommunitySettingPage(
-                                            community: snapshot.data!,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.more_horiz_rounded,
-                                      color: Provider.of<AmityUIConfiguration>(
-                                        context,
-                                      ).appColors.base,
-                                    ),
+            return ThemeConfig(
+              child: Scaffold(
+                  floatingActionButton: (Provider.of<AmityUIConfiguration>(
+                                  context)
+                              .widgetConfig
+                              .showCommunityPostButton &&
+                          snapshot.data!.isJoined!)
+                      ? FloatingActionButton(
+                          shape: const CircleBorder(),
+                          onPressed: () async {
+                            await Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context2) => AmityCreatePostV2Screen(
+                                      community: snapshot.data!,
+                                      feedType: FeedType.community,
+                                    )));
+                            Provider.of<CommuFeedVM>(context, listen: false)
+                                .getPostCount(widget.community);
+                            Provider.of<CommuFeedVM>(context, listen: false)
+                                .getReviewingPostCount(widget.community);
+                            Provider.of<CommuFeedVM>(context, listen: false)
+                                .initAmityCommunityFeed(
+                                    widget.community.communityId!);
+                            Provider.of<CommuFeedVM>(context, listen: false)
+                                .initAmityCommunityImageFeed(
+                                    widget.community.communityId!);
+                            Provider.of<CommuFeedVM>(context, listen: false)
+                                .initAmityCommunityVideoFeed(
+                                    widget.community.communityId!);
+                            Provider.of<CommuFeedVM>(context, listen: false)
+                                .initAmityPendingCommunityFeed(
+                                    widget.community.communityId!,
+                                    AmityFeedType.REVIEWING);
+                          },
+                          backgroundColor:
+                              Provider.of<AmityUIConfiguration>(context)
+                                  .primaryColor,
+                          child: Provider.of<AmityUIConfiguration>(context)
+                              .iconConfig
+                              .postIcon(iconSize: 28, color: Colors.white),
+                        )
+                      : null,
+                  backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .baseBackground,
+                  body: Stack(
+                    children: [
+                      IntrinsicDimension(
+                          listener: (context, width, height, startOffset) {
+                        Provider.of<CompoentSizeVM>(context, listen: false)
+                            .setCommunityDetailSectionSize(height);
+                      }, builder: (_, __, ___, ____) {
+                        return CommunityDetailComponent(
+                          community: snapshot.data!,
+                        );
+                      }),
+                      DefaultTabController(
+                        length: 2,
+                        child: NestedScrollView(
+                          controller: vm.scrollcontroller,
+                          headerSliverBuilder:
+                              (BuildContext context, bool innerBoxIsScrolled) {
+                            return <Widget>[
+                              DynamicSliverAppBar(
+                                // expandedHeight:
+                                //     sizeVM.getCommunityDetailSectionSize(),
+                                shadowColor: Colors.white,
+                                elevation: 0,
+                                surfaceTintColor: Colors.transparent,
+                                backgroundColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .baseBackground,
+                                floating: false,
+                                pinned: true,
+                                leading: IconButton(
+                                  icon: Icon(
+                                    Icons.chevron_left,
+                                    color:
+                                        Provider.of<AmityUIConfiguration>(context)
+                                            .appColors
+                                            .base,
+                                    size: 30,
                                   ),
-                              ],
-                              bottom: PreferredSize(
-                                preferredSize: const Size.fromHeight(25),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        color:
-                                            Provider.of<AmityUIConfiguration>(
-                                                    context)
-                                                .appColors
-                                                .baseBackground,
-                                        child: TabBar(
-                                          tabAlignment: TabAlignment.start,
-                                          controller: _tabController,
-                                          isScrollable: true,
-                                          dividerColor:
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                                flexibleSpace: CommunityDetailComponent(
+                                  community: snapshot.data!,
+                                ),
+              
+                                actions: [
+                                  // Text(
+                                  //     "${sizeVM.getCommunityDetailSectionSize()}"),
+                                  if (Provider.of<AmityUIConfiguration>(context)
+                                      .widgetConfig
+                                      .showCommunityMoreButton)
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context2) =>
+                                                CommunitySettingPage(
+                                              community: snapshot.data!,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      icon: Icon(
+                                        Icons.more_horiz_rounded,
+                                        color: Provider.of<AmityUIConfiguration>(
+                                          context,
+                                        ).appColors.base,
+                                      ),
+                                    ),
+                                ],
+                                bottom: PreferredSize(
+                                  preferredSize: const Size.fromHeight(25),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          color:
                                               Provider.of<AmityUIConfiguration>(
                                                       context)
                                                   .appColors
                                                   .baseBackground,
-                                          labelColor:
-                                              Provider.of<AmityUIConfiguration>(
-                                                      context)
-                                                  .appColors
-                                                  .primary,
-                                          indicatorColor:
-                                              Provider.of<AmityUIConfiguration>(
-                                                      context)
-                                                  .appColors
-                                                  .primary,
-                                          labelStyle: const TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: 'SF Pro Text',
+                                          child: TabBar(
+                                            tabAlignment: TabAlignment.start,
+                                            controller: _tabController,
+                                            isScrollable: true,
+                                            dividerColor:
+                                                Provider.of<AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .baseBackground,
+                                            labelColor:
+                                                Provider.of<AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .primary,
+                                            indicatorColor:
+                                                Provider.of<AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .primary,
+                                            labelStyle: const TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'SF Pro Text',
+                                            ),
+                                            tabs: const [
+                                              Tab(text: "Timeline"),
+                                              Tab(text: "Gallery"),
+                                            ],
                                           ),
-                                          tabs: const [
-                                            Tab(text: "Timeline"),
-                                            Tab(text: "Gallery"),
-                                          ],
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ];
-                        },
-                        body: TabBarView(
-                            controller: _tabController, children: tablist),
+                            ];
+                          },
+                          body: TabBarView(
+                              controller: _tabController, children: tablist),
+                        ),
                       ),
-                    ),
-                  ],
-                ));
+                    ],
+                  )),
+            );
           });
     });
   }

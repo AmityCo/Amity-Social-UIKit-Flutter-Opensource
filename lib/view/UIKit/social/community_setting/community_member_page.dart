@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/social/select_user_page.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
@@ -44,120 +45,124 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        backgroundColor:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-        appBar: AppBar(
-          actions: [
-            !Provider.of<MemberManagementVM>(context)
-                    .currentUserRoles
-                    .contains('community-moderator')
-                ? const SizedBox()
-                : IconButton(
-                    icon: Icon(
-                      Icons.add,
-                      color: Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .base,
-                    ),
-                    onPressed: () async {
-                      var userList = Provider.of<MemberManagementVM>(context,
-                              listen: false)
-                          .userList;
-                      List<AmityUser> userIdList =
-                          userList.map((user) => user.user!).toList();
-                      Navigator.of(context)
-                          .push<List<AmityUser>>(MaterialPageRoute(
-                              builder: (context) => UserListPage(
-                                    preSelectMember: userIdList,
-                                    onDonePressed: (users) async {
-                                      List<String> userIds = users
-                                          .map((user) => user.userId!)
-                                          .toList();
-                                      if (users.isNotEmpty) {
-                                        await Provider.of<CommunityVM>(context,
-                                                listen: false)
-                                            .addMembers(
-                                                widget.communityId, userIds);
-                                        await Provider.of<MemberManagementVM>(
-                                                context,
-                                                listen: false)
-                                            .initMember(
-                                          communityId: widget.communityId,
-                                        );
-                                        await Provider.of<MemberManagementVM>(
-                                                context,
-                                                listen: false)
-                                            .initModerators(
-                                          communityId: widget.communityId,
-                                        );
-                                        Navigator.of(context).pop();
-                                      } else {
-                                        log('Failed to add members');
-                                      }
-                                    },
-                                  )));
-                    },
-                  ),
-          ],
-          elevation: 0.0,
-          iconTheme: const IconThemeData(color: Colors.black),
+      child: ThemeConfig(
+        child: Scaffold(
           backgroundColor: Provider.of<AmityUIConfiguration>(context)
               .appColors
               .baseBackground,
-          leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.chevron_left,
-                color:
-                    Provider.of<AmityUIConfiguration>(context).appColors.base,
-                size: 30),
-          ),
-          title: Text("Community",
-              style: Provider.of<AmityUIConfiguration>(context)
-                  .titleTextStyle
-                  .copyWith(
-                    color: Provider.of<AmityUIConfiguration>(context)
+          appBar: AppBar(
+            actions: [
+              !Provider.of<MemberManagementVM>(context)
+                      .currentUserRoles
+                      .contains('community-moderator')
+                  ? const SizedBox()
+                  : IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
+                      ),
+                      onPressed: () async {
+                        var userList = Provider.of<MemberManagementVM>(context,
+                                listen: false)
+                            .userList;
+                        List<AmityUser> userIdList =
+                            userList.map((user) => user.user!).toList();
+                        Navigator.of(context)
+                            .push<List<AmityUser>>(MaterialPageRoute(
+                                builder: (context) => UserListPage(
+                                      preSelectMember: userIdList,
+                                      onDonePressed: (users) async {
+                                        List<String> userIds = users
+                                            .map((user) => user.userId!)
+                                            .toList();
+                                        if (users.isNotEmpty) {
+                                          await Provider.of<CommunityVM>(
+                                                  context,
+                                                  listen: false)
+                                              .addMembers(
+                                                  widget.communityId, userIds);
+                                          await Provider.of<MemberManagementVM>(
+                                                  context,
+                                                  listen: false)
+                                              .initMember(
+                                            communityId: widget.communityId,
+                                          );
+                                          await Provider.of<MemberManagementVM>(
+                                                  context,
+                                                  listen: false)
+                                              .initModerators(
+                                            communityId: widget.communityId,
+                                          );
+                                          Navigator.of(context).pop();
+                                        } else {
+                                          log('Failed to add members');
+                                        }
+                                      },
+                                    )));
+                      },
+                    ),
+            ],
+            elevation: 0.0,
+            iconTheme: const IconThemeData(color: Colors.black),
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
+            leading: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(Icons.chevron_left,
+                  color:
+                      Provider.of<AmityUIConfiguration>(context).appColors.base,
+                  size: 30),
+            ),
+            title: Text("Community",
+                style: Provider.of<AmityUIConfiguration>(context)
+                    .titleTextStyle
+                    .copyWith(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    )),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(
+                  48.0), // Provide a height for the AppBar's bottom
+              child: Row(
+                children: [
+                  TabBar(
+                    tabAlignment: TabAlignment.start,
+                    isScrollable: true, // Ensure that the TabBar is scrollable
+                    dividerColor: Provider.of<AmityUIConfiguration>(context)
                         .appColors
-                        .base,
-                  )),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(
-                48.0), // Provide a height for the AppBar's bottom
-            child: Row(
-              children: [
-                TabBar(
-                  tabAlignment: TabAlignment.start,
-                  isScrollable: true, // Ensure that the TabBar is scrollable
-                  dividerColor: Provider.of<AmityUIConfiguration>(context)
-                      .appColors
-                      .baseBackground,
-                  labelColor: Provider.of<AmityUIConfiguration>(context)
-                      .appColors
-                      .primary,
+                        .baseBackground,
+                    labelColor: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .primary,
 
-                  indicatorColor: Provider.of<AmityUIConfiguration>(context)
-                      .appColors
-                      .primary,
-                  labelStyle: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'SF Pro Text',
+                    indicatorColor: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .primary,
+                    labelStyle: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'SF Pro Text',
+                    ),
+
+                    tabs: const [
+                      Tab(text: "Members"),
+                      Tab(text: "Moderators"),
+                    ],
                   ),
-
-                  tabs: const [
-                    Tab(text: "Members"),
-                    Tab(text: "Moderators"),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        body: const TabBarView(
-          children: [
-            MemberList(), // You need to create a MemberList widget
-            ModeratorList(), // You need to create a ModeratorList widget
-          ],
+          body: const TabBarView(
+            children: [
+              MemberList(), // You need to create a MemberList widget
+              ModeratorList(), // You need to create a ModeratorList widget
+            ],
+          ),
         ),
       ),
     );

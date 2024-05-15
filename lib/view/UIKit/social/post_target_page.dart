@@ -29,6 +29,7 @@ class _PostToPageState extends State<PostToPage> {
       backgroundColor:
           Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         elevation: 0.0, // Add this line to remove the shadow
         leading: IconButton(
           icon: Icon(

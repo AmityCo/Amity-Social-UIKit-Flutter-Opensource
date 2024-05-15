@@ -748,6 +748,7 @@ class AppScaffold extends StatelessWidget {
                         .postIcon(iconSize: 28, color: Colors.white),
                   ),
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: Text(title),
           leading: IconButton(
             icon: Icon(

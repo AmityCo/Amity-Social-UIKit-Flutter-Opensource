@@ -215,6 +215,7 @@ class AmityWidgetConfig {
   final bool showPostReview;
   final bool showPromoteAndDismissModerator;
   final bool showRemoveFromCommunity;
+  final bool showSelectMemberButton;
 
   AmityWidgetConfig({
     this.showCommunityMoreButton = true,
@@ -224,6 +225,7 @@ class AmityWidgetConfig {
     this.showPostReview = true,
     this.showPromoteAndDismissModerator = true,
     this.showRemoveFromCommunity = true,
+    this.showSelectMemberButton = true,
   });
 }
 

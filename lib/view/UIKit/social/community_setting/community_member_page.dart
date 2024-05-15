@@ -52,9 +52,12 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
               .baseBackground,
           appBar: AppBar(
             actions: [
-              !Provider.of<MemberManagementVM>(context)
-                      .currentUserRoles
-                      .contains('community-moderator')
+              (!Provider.of<MemberManagementVM>(context)
+                          .currentUserRoles
+                          .contains('community-moderator') ||
+                      !Provider.of<AmityUIConfiguration>(context)
+                          .widgetConfig
+                          .showSelectMemberButton)
                   ? const SizedBox()
                   : IconButton(
                       icon: Icon(
@@ -324,8 +327,8 @@ void _showOptionsBottomSheet(BuildContext context, AmityCommunityMember member,
                                 member.roles!.contains('community-moderator')
                                     ? 'Dismiss moderator'
                                     : 'Promote to moderator',
-                                style:
-                                    const TextStyle(fontWeight: FontWeight.w500),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500),
                               ),
                               onTap: () async {
                                 Navigator.pop(context);

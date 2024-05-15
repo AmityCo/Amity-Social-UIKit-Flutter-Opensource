@@ -31,6 +31,10 @@ class UserFeedVM extends ChangeNotifier {
   final imageScrollcontroller = ScrollController();
   final videoScrollcontroller = ScrollController();
   bool loading = false;
+  TabController? userFeedTabController;
+  void changeTab() {
+    notifyListeners();
+  }
 
   Future<void> initUserFeed(
       {AmityUser? amityUser, required String userId}) async {

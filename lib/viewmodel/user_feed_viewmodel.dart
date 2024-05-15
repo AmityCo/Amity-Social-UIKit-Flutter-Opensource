@@ -28,8 +28,6 @@ class UserFeedVM extends ChangeNotifier {
   late PagingController<AmityPost> _videoPostController;
   final amityVideoPosts = <AmityPost>[];
   final scrollcontroller = ScrollController();
-  final imageScrollcontroller = ScrollController();
-  final videoScrollcontroller = ScrollController();
   bool loading = false;
   TabController? userFeedTabController;
   void changeTab() {
@@ -105,7 +103,7 @@ class UserFeedVM extends ChangeNotifier {
       _controller.fetchNextPage();
     });
 
-    videoScrollcontroller.addListener(() {
+    scrollcontroller.addListener(() {
       loadnextpage(scrollcontroller, _controller);
     });
   }
@@ -138,8 +136,8 @@ class UserFeedVM extends ChangeNotifier {
       _imagePostController.fetchNextPage();
     });
 
-    videoScrollcontroller.addListener(() {
-      loadnextpage(imageScrollcontroller, _imagePostController);
+    scrollcontroller.addListener(() {
+      loadnextpage(scrollcontroller, _imagePostController);
     });
   }
 
@@ -171,8 +169,8 @@ class UserFeedVM extends ChangeNotifier {
       _videoPostController.fetchNextPage();
     });
 
-    videoScrollcontroller.addListener(() {
-      loadnextpage(videoScrollcontroller, _videoPostController);
+    scrollcontroller.addListener(() {
+      loadnextpage(scrollcontroller, _videoPostController);
     });
   }
 

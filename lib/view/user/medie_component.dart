@@ -19,51 +19,45 @@ class MediaGalleryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      color: Provider.of<AmityUIConfiguration>(context).primaryColor,
-      onRefresh: () async {},
-      child: Container(
-        color:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 12,
+    return Container(
+      color:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 12,
+          ),
+          Row(
+            children: [
+              const SizedBox(
+                width: 12,
+              ),
+              _mediaButton(context, "Photos", MediaType.photos),
+              const SizedBox(
+                width: 6,
+              ),
+              _mediaButton(context, "Videos", MediaType.videos),
+            ],
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          galleryFeed == GalleryFeed.community
+              ? Consumer<CommuFeedVM>(
+                  builder: (context, vm, child) {
+                    return vm.getMediaType() == MediaType.photos
+                        ? _buildMediaGrid(vm.getCommunityImagePosts())
+                        : _buildVideoGrid(vm.getCommunityVideoPosts());
+                  },
+                )
+              : Consumer<UserFeedVM>(
+                  builder: (context, vm, child) {
+                    return vm.getMediaType() == MediaType.photos
+                        ? _buildMediaGrid(vm.amityImagePosts)
+                        : _buildVideoGrid(vm.amityVideoPosts);
+                  },
                 ),
-                _mediaButton(context, "Photos", MediaType.photos),
-                const SizedBox(
-                  width: 6,
-                ),
-                _mediaButton(context, "Videos", MediaType.videos),
-              ],
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            Expanded(
-              child: galleryFeed == GalleryFeed.community
-                  ? Consumer<CommuFeedVM>(
-                      builder: (context, vm, child) {
-                        return vm.getMediaType() == MediaType.photos
-                            ? _buildMediaGrid(vm.getCommunityImagePosts())
-                            : _buildVideoGrid(vm.getCommunityVideoPosts());
-                      },
-                    )
-                  : Consumer<UserFeedVM>(
-                      builder: (context, vm, child) {
-                        return vm.getMediaType() == MediaType.photos
-                            ? _buildMediaGrid(vm.amityImagePosts)
-                            : _buildVideoGrid(vm.amityVideoPosts);
-                      },
-                    ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

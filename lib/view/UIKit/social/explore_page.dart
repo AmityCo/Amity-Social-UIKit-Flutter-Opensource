@@ -40,7 +40,7 @@ class _CommunityPageState extends State<CommunityPage> {
           backgroundColor: Provider.of<AmityUIConfiguration>(context)
               .appColors
               .baseBackground,
-          iconTheme: const IconThemeData(color: Colors.blue),
+
           leading: IconButton(
             icon: Icon(
               Icons.close,
@@ -101,7 +101,7 @@ class _CommunityPageState extends State<CommunityPage> {
                       ),
                       tabs: const [
                         Tab(
-                          text: "Newfeed",
+                          text: "Newsfeed",
                         ),
                         Tab(text: "Explore"),
                       ],

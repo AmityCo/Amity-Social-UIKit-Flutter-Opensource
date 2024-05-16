@@ -227,6 +227,31 @@ class _UserListPageState extends State<UserListPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(_usernames[index]),
+                  onLongPress: () async {
+                    log("login");
+
+                    ///Step 3: login with Amity
+                    await AmitySLEUIKit().registerDevice(
+                      context: context,
+                      userId: _usernames[index],
+                      authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
+                      callback: (isSuccess, error) {
+                        log("callback:$isSuccess");
+                        if (isSuccess) {
+                          log("success");
+                          //ignore call back
+                        } else {
+                          log("fail");
+                          AmityDialog().showAlertErrorDialog(
+                              title: "Error", message: error.toString());
+                        }
+                      },
+                    );
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          const Scaffold(body: CommunityPage()),
+                    ));
+                  },
                   onTap: () async {
                     log("login");
 

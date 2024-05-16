@@ -19,6 +19,8 @@ class MyCommunityVM with ChangeNotifier {
   final textEditingController = TextEditingController();
 
   Future<void> initMyCommunity([String? keyword]) async {
+    _amityCommunities.clear();
+    notifyListeners();
     _communityController = PagingController(
       pageFuture: (token) {
         final repository = AmitySocialClient.newCommunityRepository()

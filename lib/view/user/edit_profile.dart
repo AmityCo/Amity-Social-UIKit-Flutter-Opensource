@@ -15,9 +15,10 @@ import '../../viewmodel/custom_image_picker.dart';
 import '../../viewmodel/user_feed_viewmodel.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required this.user});
+   ProfileScreen({super.key, required this.user,this.customActions});
 
   final AmityUser user;
+  Widget? customActions = Container();
 
   @override
   ProfileScreenState createState() => ProfileScreenState();
@@ -292,7 +293,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                           ),
-
+                          widget.customActions ?? Container(),
                           // Container(
                           //   color: Colors.white,
                           //   width: double.infinity,

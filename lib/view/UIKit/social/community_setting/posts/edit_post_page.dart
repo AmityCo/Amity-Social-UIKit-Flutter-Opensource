@@ -11,13 +11,12 @@ import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../social/global_feed.dart';
-
 class AmityEditPostScreen extends StatefulWidget {
   final AmityPost amityPost;
-  final FeedType feedType;
-  const AmityEditPostScreen(
-      {super.key, required this.amityPost, required this.feedType});
+  const AmityEditPostScreen({
+    super.key,
+    required this.amityPost,
+  });
 
   @override
   State<AmityEditPostScreen> createState() => _AmityEditPostScreenState();
@@ -31,7 +30,7 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
     Provider.of<EditPostVM>(context, listen: false)
         .initForEditPost(widget.amityPost);
     TextData textData = widget.amityPost.data as TextData;
-    originalText = textData.text!;
+    originalText = textData.text ?? "";
     super.initState();
   }
 

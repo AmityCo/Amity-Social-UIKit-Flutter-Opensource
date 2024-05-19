@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/components/post_profile.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/edit_post_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
+import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
@@ -21,7 +22,6 @@ import '../../viewmodel/edit_post_viewmodel.dart';
 import '../../viewmodel/feed_viewmodel.dart';
 import '../../viewmodel/post_viewmodel.dart';
 import '../../viewmodel/user_feed_viewmodel.dart';
-import '../user/user_profile.dart';
 import 'comments.dart';
 import 'community_feed.dart';
 import 'post_content_widget.dart';
@@ -111,47 +111,41 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: vm.getAmityPosts.length,
                           itemBuilder: (context, index) {
-                            return StreamBuilder<AmityPost>(
-                              key: Key(vm.getAmityPosts[index].postId!),
-                              stream: vm.getAmityPosts[index].listen.stream,
-                              initialData: vm.getAmityPosts[index],
-                              builder: (context, snapshot) {
-                                var latestComments =
-                                    snapshot.data!.latestComments;
-                                var post = snapshot.data!;
-                                print(
-                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
-                                return Column(
-                                  children: [
-                                    index != 0
-                                        ? const SizedBox()
-                                        : widget.isShowMyCommunity
-                                            ? CommunityIconList(
-                                                amityCommunites:
-                                                    Provider.of<MyCommunityVM>(
-                                                            context)
-                                                        .amityCommunities,
-                                                canCreateCommunity:
-                                                    widget.canCreateCommunity,
-                                                canSearchCommunities:
-                                                    widget.canSearchCommunities,
-                                              )
-                                            : const SizedBox(),
-                                    PostWidget(
-                                      isPostDetail: false,
-                                      // customPostRanking:
-                                      //     widget.isCustomPostRanking,
-                                      feedType: FeedType.global,
-                                      showCommunity: true,
-                                      showlatestComment: true,
-                                      post: snapshot.data!,
-                                      theme: theme,
-                                      postIndex: index,
-                                      isFromFeed: true,
-                                    ),
-                                  ],
-                                );
-                              },
+                            return Column(
+                              children: [
+                                index != 0
+                                    ? const SizedBox()
+                                    : widget.isShowMyCommunity
+                                        ? CommunityIconList(
+                                            amityCommunites:
+                                                Provider.of<MyCommunityVM>(
+                                                        context)
+                                                    .amityCommunities,
+                                            canCreateCommunity:
+                                                widget.canCreateCommunity,
+                                            canSearchCommunities:
+                                                widget.canSearchCommunities,
+                                          )
+                                        : const SizedBox(),
+                                StreamBuilder<AmityPost>(
+                                    stream:
+                                        vm.getAmityPosts[index].listen.stream,
+                                    initialData: vm.getAmityPosts[index],
+                                    builder: (context, snapshot) {
+                                      return PostWidget(
+                                        isPostDetail: false,
+                                        // customPostRanking:
+                                        //     widget.isCustomPostRanking,
+                                        feedType: FeedType.global,
+                                        showCommunity: true,
+                                        showlatestComment: true,
+                                        post: snapshot.data!,
+                                        theme: theme,
+                                        postIndex: index,
+                                        isFromFeed: true,
+                                      );
+                                    }),
+                              ],
                             );
                           },
                         ),
@@ -224,10 +218,11 @@ class _PostWidgetState
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
-
-    List<String> otherPostMenu = ['Report', 'Block User'];
-
-    final isFlaggedByMe = widget.post.isFlaggedByMe ?? false;
+    final isFlaggedByMe = widget.post.isFlaggedByMe;
+    List<String> otherPostMenu = [
+      widget.post.isFlaggedByMe ? 'Report Post' : 'Unreport Post',
+      'Block User'
+    ];
 
     return PopupMenuButton(
       color:
@@ -252,7 +247,6 @@ class _PostWidgetState
                     create: (context) => EditPostVM(),
                     child: AmityEditPostScreen(
                       amityPost: widget.post,
-                      feedType: widget.feedType,
                     ))));
             break;
           case 'Delete Post':
@@ -374,18 +368,19 @@ class _PostWidgetState
 
         // Add report/unreport option
         if (!isPostOwner) {
-          menuItems.add(PopupMenuItem(
-            value: isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-            child: Builder(builder: (context) {
-              return Text(
-                isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-                style: TextStyle(
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .base),
-              );
-            }),
-          ));
+          menuItems.addAll(otherPostMenu.map((option) => PopupMenuItem(
+                value: option,
+                child: Builder(builder: (context) {
+                  return Text(
+                    option,
+                    style: TextStyle(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
+                  );
+                }),
+              )));
         }
         // Add block user option
         // if (!isPostOwner) {

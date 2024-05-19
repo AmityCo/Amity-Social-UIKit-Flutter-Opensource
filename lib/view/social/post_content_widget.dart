@@ -27,10 +27,14 @@ class AmityPostWidget extends StatefulWidget {
   final bool shouldShowTextPost;
   final FeedType feedType;
   const AmityPostWidget(
-      this.posts, this.isChildrenPost, this.isCornerRadiusEnabled, this.feedType,
-      {super.key,
-      this.haveChildrenPost = false,
-      this.shouldShowTextPost = true,});
+    this.posts,
+    this.isChildrenPost,
+    this.isCornerRadiusEnabled,
+    this.feedType, {
+    super.key,
+    this.haveChildrenPost = false,
+    this.shouldShowTextPost = true,
+  });
   @override
   AmityPostWidgetState createState() => AmityPostWidgetState();
 }
@@ -186,7 +190,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
   Widget build(BuildContext context) {
     if (!widget.isChildrenPost) {
       if (widget.haveChildrenPost || !urlValidation(widget.posts[0])) {
-        return TextPost(post: widget.posts[0],feedType: widget.feedType);
+        return TextPost(post: widget.posts[0], feedType: widget.feedType);
       } else {
         String url =
             extractLink(widget.posts[0]); //urlExtraction(widget.posts[0]);
@@ -195,7 +199,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           children: [
             // Text(url),
             widget.shouldShowTextPost
-                ? TextPost(post: widget.posts[0],feedType: widget.feedType)
+                ? TextPost(post: widget.posts[0], feedType: widget.feedType)
                 : Container(),
             generateURLWidget(url.toLowerCase())
             // AnyLinkPreview(
@@ -1046,7 +1050,7 @@ String _getFileImage(String filePath) {
   String extension = filePath.split('.').last;
   switch (extension) {
     case 'audio':
-      return 'assets/images/fileType/audio_small.png';
+      return 'assets/images/fileType/audio_large.png';
     case 'avi':
       return 'assets/images/fileType/avi_large.png';
     case 'csv':
@@ -1154,7 +1158,8 @@ Widget _listMediaGrid(List<AmityPost> files) {
 class TextPost extends StatelessWidget {
   final AmityPost post;
   final FeedType feedType;
-  const TextPost({Key? key, required this.post,required this.feedType}) : super(key: key);
+  const TextPost({Key? key, required this.post, required this.feedType})
+      : super(key: key);
 
   Widget buildURLWidget(String text) {
     return Builder(builder: (context) {

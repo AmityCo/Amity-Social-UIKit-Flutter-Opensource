@@ -8,7 +8,7 @@ import '../../components/alert_dialog.dart';
 enum Feedtype { global, commu }
 
 class FeedVM extends ChangeNotifier {
-  var _amityGlobalFeedPosts = <AmityPost>[];
+  final _amityGlobalFeedPosts = <AmityPost>[];
 
   PagingController<AmityPost>? _controllerGlobal;
   bool isLoading = true;
@@ -53,7 +53,6 @@ class FeedVM extends ChangeNotifier {
     isLoading = true;
     print("isloading1: $isLoading");
     print("isCustomPostRanking:$isCustomPostRanking");
-    _amityGlobalFeedPosts.clear();
 
     if (isCustomPostRanking) {
       _controllerGlobal = PagingController(
@@ -65,13 +64,9 @@ class FeedVM extends ChangeNotifier {
           () async {
             log("getCustomRankingGlobalFeed listener...");
             if (_controllerGlobal?.error == null) {
-              _amityGlobalFeedPosts = _controllerGlobal!.loadedItems;
-              for (var post in _amityGlobalFeedPosts) {
-                print("+++${post.myReactions}");
-                if (post.latestComments != null) {
-                  for (var comment in post.latestComments!) {}
-                }
-              }
+              _amityGlobalFeedPosts.clear();
+              _amityGlobalFeedPosts.addAll(_controllerGlobal!.loadedItems);
+
               isLoading = false;
               notifyListeners();
             } else {
@@ -96,23 +91,10 @@ class FeedVM extends ChangeNotifier {
           () async {
             log("initAmityGlobalfeed listener...");
             if (_controllerGlobal?.error == null) {
-              // Append new posts only if they are not already in the list
-              var newPosts = _controllerGlobal!.loadedItems
-                  .where((newItem) => !_amityGlobalFeedPosts.any(
-                      (existingItem) => existingItem.postId == newItem.postId))
-                  .toList();
+              _amityGlobalFeedPosts.clear();
+              _amityGlobalFeedPosts.addAll(_controllerGlobal!.loadedItems);
 
-              if (newPosts.isNotEmpty) {
-                _amityGlobalFeedPosts.addAll(newPosts);
-
-                print(
-                    "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==");
-                for (var post in newPosts) {
-                  print(
-                      "${(post.data as TextData).text}+++${post.myReactions}");
-                }
-              }
-
+              isLoading = false;
               notifyListeners();
             } else {
               // Handle pagination controller error
@@ -134,7 +116,7 @@ class FeedVM extends ChangeNotifier {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controllerGlobal?.fetchNextPage();
     });
-    scrollcontroller.removeListener(() {});
+
     scrollcontroller.addListener(loadnextpage);
   }
 

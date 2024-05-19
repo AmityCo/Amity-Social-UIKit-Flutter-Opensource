@@ -31,6 +31,7 @@ class _PostToPageState extends State<PostToPage> {
         backgroundColor:
             Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           elevation: 0.0, // Add this line to remove the shadow
           leading: IconButton(
             icon: Icon(
@@ -60,7 +61,8 @@ class _PostToPageState extends State<PostToPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ListTile(
-                    leading: (AmityCoreClient.getCurrentUser().avatarUrl != null)
+                    leading: (AmityCoreClient.getCurrentUser().avatarUrl !=
+                            null)
                         ? CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: NetworkImage(
@@ -70,9 +72,10 @@ class _PostToPageState extends State<PostToPage> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .appColors
-                                    .primaryShade3,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primaryShade3,
                                 shape: BoxShape.circle),
                             child: Icon(
                               Icons.person,
@@ -127,10 +130,11 @@ class _PostToPageState extends State<PostToPage> {
                                     height: 40,
                                     width: 40,
                                     decoration: BoxDecoration(
-                                        color: Provider.of<AmityUIConfiguration>(
-                                                context)
-                                            .appColors
-                                            .primaryShade3,
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .primaryShade3,
                                         shape: BoxShape.circle),
                                     child: const Icon(
                                       Icons.group,
@@ -141,7 +145,8 @@ class _PostToPageState extends State<PostToPage> {
                               children: [
                                 !community.isPublic!
                                     ? Padding(
-                                        padding: const EdgeInsets.only(left: 7.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 7.0),
                                         child: Icon(
                                           Icons.lock,
                                           color:
@@ -167,9 +172,10 @@ class _PostToPageState extends State<PostToPage> {
                                 ),
                                 community.isOfficial!
                                     ? Padding(
-                                        padding: const EdgeInsets.only(left: 7.0),
-                                        child: Provider.of<AmityUIConfiguration>(
-                                                context)
+                                        padding:
+                                            const EdgeInsets.only(left: 7.0),
+                                        child: Provider.of<
+                                                AmityUIConfiguration>(context)
                                             .iconConfig
                                             .officialIcon(
                                                 iconSize: 17,

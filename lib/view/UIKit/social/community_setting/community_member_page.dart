@@ -4,7 +4,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/social/select_user_page.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
+import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';

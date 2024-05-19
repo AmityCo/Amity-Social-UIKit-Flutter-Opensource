@@ -56,7 +56,6 @@ class _CommunityPageState extends State<CommunityPage> {
             backgroundColor: Provider.of<AmityUIConfiguration>(context)
                 .appColors
                 .baseBackground,
-            iconTheme: const IconThemeData(color: Colors.blue),
             leading: widget.showAppBarTop
                 ? IconButton(
                     icon: Icon(
@@ -95,7 +94,8 @@ class _CommunityPageState extends State<CommunityPage> {
                         // Implement search functionality
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const SearchCommunitiesScreen(),
+                            builder: (context) =>
+                                const SearchCommunitiesScreen(),
                           ),
                         );
                       },
@@ -120,9 +120,10 @@ class _CommunityPageState extends State<CommunityPage> {
                             .appColors
                             .primary,
                         unselectedLabelColor: Colors.grey,
-                        indicatorColor: Provider.of<AmityUIConfiguration>(context)
-                            .appColors
-                            .primary,
+                        indicatorColor:
+                            Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .primary,
                         labelStyle: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w600,

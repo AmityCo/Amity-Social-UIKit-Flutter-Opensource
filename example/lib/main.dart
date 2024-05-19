@@ -9,7 +9,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dar
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
+import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';

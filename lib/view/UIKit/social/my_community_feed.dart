@@ -37,9 +37,11 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
     return Consumer<MyCommunityVM>(builder: (context, vm, _) {
       return ThemeConfig(
         child: Scaffold(
-          backgroundColor:
-              Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           appBar: AppBar(
+            scrolledUnderElevation: 0,
             elevation: 0.0,
             backgroundColor: Provider.of<AmityUIConfiguration>(context)
                 .appColors
@@ -47,7 +49,8 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
             leading: IconButton(
               icon: Icon(
                 Icons.close,
-                color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -58,8 +61,9 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
               style: Provider.of<AmityUIConfiguration>(context)
                   .titleTextStyle
                   .copyWith(
-                    color:
-                        Provider.of<AmityUIConfiguration>(context).appColors.base,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                   ), // Adjust as needed
             ),
             actions: [
@@ -67,8 +71,9 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
                 IconButton(
                   icon: Icon(
                     Icons.add,
-                    color:
-                        Provider.of<AmityUIConfiguration>(context).appColors.base,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                   ),
                   onPressed: () async {
                     await Navigator.of(context).push(MaterialPageRoute(

@@ -200,7 +200,8 @@ class CreatePostVMV2 with ChangeNotifier {
             uikitFile.status = FileStatus.complete;
             uikitFile.fileInfo = amityFile;
             uikitFile.amityFile = amityFile;
-
+            print(
+                "file type ${uikitFile.fileType} ${uikitFile.fileInfo.toString()}");
             checkAllFilesUploaded();
             notifyListeners();
           },

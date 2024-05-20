@@ -108,39 +108,45 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: vm.getAmityPosts.length,
                           itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                index != 0
-                                    ? const SizedBox()
-                                    : widget.isShowMyCommunity
-                                        ? CommunityIconList(
-                                            amityCommunites:
-                                                Provider.of<MyCommunityVM>(
-                                                        context)
-                                                    .amityCommunities,
-                                            canCreateCommunity:
-                                                widget.canCreateCommunity,
-                                          )
-                                        : const SizedBox(),
-                                StreamBuilder<AmityPost>(
-                                    stream:
-                                        vm.getAmityPosts[index].listen.stream,
-                                    initialData: vm.getAmityPosts[index],
-                                    builder: (context, snapshot) {
-                                      return PostWidget(
-                                        isPostDetail: false,
-                                        // customPostRanking:
-                                        //     widget.isCustomPostRanking,
-                                        feedType: FeedType.global,
-                                        showCommunity: true,
-                                        showlatestComment: true,
-                                        post: snapshot.data!,
-                                        theme: theme,
-                                        postIndex: index,
-                                        isFromFeed: true,
-                                      );
-                                    }),
-                              ],
+                            return StreamBuilder<AmityPost>(
+                              key: Key(vm.getAmityPosts[index].postId!),
+                              stream: vm.getAmityPosts[index].listen.stream,
+                              initialData: vm.getAmityPosts[index],
+                              builder: (context, snapshot) {
+                                var latestComments =
+                                    snapshot.data!.latestComments;
+                                var post = snapshot.data!;
+                                print(
+                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
+                                return Column(
+                                  children: [
+                                    index != 0
+                                        ? const SizedBox()
+                                        : widget.isShowMyCommunity
+                                            ? CommunityIconList(
+                                                amityCommunites:
+                                                    Provider.of<MyCommunityVM>(
+                                                            context)
+                                                        .amityCommunities,
+                                                canCreateCommunity:
+                                                    widget.canCreateCommunity,
+                                              )
+                                            : const SizedBox(),
+                                    PostWidget(
+                                      isPostDetail: false,
+                                      // customPostRanking:
+                                      //     widget.isCustomPostRanking,
+                                      feedType: FeedType.global,
+                                      showCommunity: true,
+                                      showlatestComment: true,
+                                      post: snapshot.data!,
+                                      theme: theme,
+                                      postIndex: index,
+                                      isFromFeed: true,
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
                         ),

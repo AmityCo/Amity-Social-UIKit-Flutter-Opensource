@@ -76,81 +76,78 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemeConfig(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('API Configuration'),
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('API Configuration'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextFormField(
+              controller: _apiKey,
+              decoration: const InputDecoration(
+                labelText: 'API Key',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text('Select Region:'),
+            ...AmityRegion.values.map((region) {
+              return RadioListTile<AmityRegion>(
+                title: Text(region.toString().split('.').last.toUpperCase()),
+                value: region,
+                groupValue: _selectedRegion,
+                onChanged: (AmityRegion? value) {
+                  setState(() {
+                    _selectedRegion = value;
+                    if (value != AmityRegion.custom) {
+                      _customUrl.text = ""; // Reset custom URL
+                    }
+                  });
+                },
+              );
+            }).toList(),
+            if (_selectedRegion == AmityRegion.custom) ...[
+              const SizedBox(height: 20),
               TextFormField(
-                controller: _apiKey,
                 decoration: const InputDecoration(
-                  labelText: 'API Key',
+                  labelText: 'Custom URL',
                   border: OutlineInputBorder(),
                 ),
+                controller: _customUrl,
               ),
-              const SizedBox(height: 20),
-              const Text('Select Region:'),
-              ...AmityRegion.values.map((region) {
-                return RadioListTile<AmityRegion>(
-                  title: Text(region.toString().split('.').last.toUpperCase()),
-                  value: region,
-                  groupValue: _selectedRegion,
-                  onChanged: (AmityRegion? value) {
-                    setState(() {
-                      _selectedRegion = value;
-                      if (value != AmityRegion.custom) {
-                        _customUrl.text = ""; // Reset custom URL
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-              if (_selectedRegion == AmityRegion.custom) ...[
-                const SizedBox(height: 20),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Custom URL',
-                    border: OutlineInputBorder(),
-                  ),
-                  controller: _customUrl,
-                ),
-              ],
-              const SizedBox(height: 40),
-              ElevatedButton(
-                  child: const Text('Initialize'),
-                  onPressed: () async {
-                    if (_selectedRegion != null &&
-                        (_selectedRegion != AmityRegion.custom)) {
-                      final prefs = await SharedPreferences.getInstance();
-
-                      await prefs.setString('apiKey', _apiKey.text);
-                      await prefs.setString(
-                          'selectedRegion', _selectedRegion.toString());
-                      if (_selectedRegion == AmityRegion.custom) {
-                        await prefs.setString('customUrl', _customUrl.text);
-                      }
-                      log("save pref");
-
-                      await AmitySLEUIKit().initUIKit(
-                        apikey: _apiKey.text,
-                        region: _selectedRegion!,
-                        customEndpoint: _customUrl.text,
-                      );
-                      // Navigate to the nextx page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AmityApp()),
-                      );
-                    }
-                  }),
             ],
-          ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+                child: const Text('Initialize'),
+                onPressed: () async {
+                  if (_selectedRegion != null &&
+                      (_selectedRegion != AmityRegion.custom)) {
+                    final prefs = await SharedPreferences.getInstance();
+
+                    await prefs.setString('apiKey', _apiKey.text);
+                    await prefs.setString(
+                        'selectedRegion', _selectedRegion.toString());
+                    if (_selectedRegion == AmityRegion.custom) {
+                      await prefs.setString('customUrl', _customUrl.text);
+                    }
+                    log("save pref");
+
+                    await AmitySLEUIKit().initUIKit(
+                      apikey: _apiKey.text,
+                      region: _selectedRegion!,
+                      customEndpoint: _customUrl.text,
+                    );
+                    // Navigate to the nextx page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AmityApp()),
+                    );
+                  }
+                }),
+          ],
         ),
       ),
     );

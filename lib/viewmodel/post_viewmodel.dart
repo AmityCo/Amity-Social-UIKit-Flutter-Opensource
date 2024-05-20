@@ -65,9 +65,9 @@ class PostVM extends ChangeNotifier {
             }
           } else {
             // Error on pagination controller
-            log("error from Comment");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: _controller.error.toString());
+            log("error from Comment: ${_controller.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controller.error.toString());
           }
         },
       );
@@ -130,8 +130,8 @@ class PostVM extends ChangeNotifier {
     print("delete commet...");
     comment.delete().then((value) {
       print("delete commet success: $value");
-      amityComments
-          .removeWhere((element) => element.commentId == comment.commentId);
+      // amityComments
+      //     .removeWhere((element) => element.commentId == comment.commentId);
       getPost(amityPost.postId!, amityPost);
       notifyListeners();
     }).onError((error, stackTrace) async {
@@ -182,8 +182,6 @@ class PostVM extends ChangeNotifier {
     print("removePostReaction");
 
     post.react().removeReaction('like').then((value) {
-      print(value.toString());
-      print("success");
       // Handle success
     }).catchError((error) {
       print(error);

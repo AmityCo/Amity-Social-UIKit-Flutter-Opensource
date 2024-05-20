@@ -13,12 +13,15 @@ enum GalleryFeed { user, community }
 
 class MediaGalleryPage extends StatelessWidget {
   final GalleryFeed galleryFeed;
-  const MediaGalleryPage({super.key, required this.galleryFeed});
+  final Function() onRefresh;
+  const MediaGalleryPage(
+      {super.key, required this.galleryFeed, required this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       child: Column(
         children: [
           const SizedBox(
@@ -39,23 +42,21 @@ class MediaGalleryPage extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-          Expanded(
-            child: galleryFeed == GalleryFeed.community
-                ? Consumer<CommuFeedVM>(
-                    builder: (context, vm, child) {
-                      return vm.getMediaType() == MediaType.photos
-                          ? _buildMediaGrid(vm.getCommunityImagePosts())
-                          : _buildVideoGrid(vm.getCommunityVideoPosts());
-                    },
-                  )
-                : Consumer<UserFeedVM>(
-                    builder: (context, vm, child) {
-                      return vm.getMediaType() == MediaType.photos
-                          ? _buildMediaGrid(vm.amityImagePosts)
-                          : _buildVideoGrid(vm.amityVideoPosts);
-                    },
-                  ),
-          ),
+          galleryFeed == GalleryFeed.community
+              ? Consumer<CommuFeedVM>(
+                  builder: (context, vm, child) {
+                    return vm.getMediaType() == MediaType.photos
+                        ? _buildMediaGrid(vm.getCommunityImagePosts())
+                        : _buildVideoGrid(vm.getCommunityVideoPosts());
+                  },
+                )
+              : Consumer<UserFeedVM>(
+                  builder: (context, vm, child) {
+                    return vm.getMediaType() == MediaType.photos
+                        ? _buildMediaGrid(vm.amityImagePosts)
+                        : _buildVideoGrid(vm.amityVideoPosts);
+                  },
+                ),
         ],
       ),
     );
@@ -84,10 +85,14 @@ class MediaGalleryPage extends StatelessWidget {
         backgroundColor: galleryFeed == GalleryFeed.community
             ? Provider.of<CommuFeedVM>(context).getMediaType() == type
                 ? Provider.of<AmityUIConfiguration>(context).primaryColor
-                : const Color(0xffEBECEF)
+                : Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseShade4
             : Provider.of<UserFeedVM>(context).getMediaType() == type
                 ? Provider.of<AmityUIConfiguration>(context).primaryColor
-                : const Color(0xffEBECEF),
+                : Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseShade4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),
@@ -167,7 +172,12 @@ class MediaGalleryPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ImageViewerScreen(files: [amityPosts[0]]),
+                builder: (context) => ImageViewerScreen(
+                  files: [
+                    amityPosts[index],
+                  ],
+                  initialIndex: 0,
+                ),
               ),
             );
           },
@@ -256,6 +266,7 @@ class MediaGalleryPage extends StatelessWidget {
                 builder: (context) => VideoPlayerScreen(
                   files: [amityPosts[index]],
                   isFillScreen: true,
+                  initialIndex: 0,
                 ),
               ),
             );

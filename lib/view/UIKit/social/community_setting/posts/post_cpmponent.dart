@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class PostMedia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget buildMediaGrid(List<UIKitFileSystem> files) {
+      print("XXXXXXXX: buildMediaGrid");
       if (files.isEmpty) return Container();
 
       Widget backgroundImage(UIKitFileSystem file, int index) {
@@ -73,6 +75,14 @@ class PostMedia extends StatelessWidget {
                         },
                       ),
                     ),
+              files[0].status == FileStatus.rejected
+                  ? const Center(
+                      child: Icon(
+                        Icons.warning,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const SizedBox(),
             ],
           ),
         );
@@ -160,9 +170,11 @@ class PostMedia extends StatelessWidget {
 
     String getFileImage(String filePath) {
       String extension = filePath.split('.').last;
+
+      print("getFileImage: $extension");
       switch (extension) {
         case 'audio':
-          return 'assets/images/fileType/audio_small.png';
+          return 'assets/images/fileType/audio_large.png';
         case 'avi':
           return 'assets/images/fileType/avi_large.png';
         case 'csv':
@@ -199,12 +211,15 @@ class PostMedia extends StatelessWidget {
     }
 
     Widget listMediaGrid(List<UIKitFileSystem> files) {
+      print("XXXXXXXX: listMediaGrid");
       return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: files.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           var file = files[index];
+          print("file: ${file.fileInfo.toString()}");
+          print("path to render: ${file.file.path}");
           int rawprogress = isEditPost
               ? Provider.of<EditPostVM>(context).editPostMedie[index].progress
               : Provider.of<CreatePostVMV2>(context).files[index].progress;
@@ -217,7 +232,9 @@ class PostMedia extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(4.0),
               border: Border.all(
-                color: const Color(0xffEBECEF),
+                color: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseShade4,
                 width: 1.0,
               ),
             ),
@@ -296,16 +313,15 @@ class PostMedia extends StatelessWidget {
       );
     }
 
-    bool isNotImageVideoOrAudio(UIKitFileSystem file) {
+    bool isNotImageOrVideo(UIKitFileSystem file) {
       if (!isEditPost) {
         final mimeType = lookupMimeType(file.file.path);
 
         if (mimeType != null) {
           final isImage = mimeType.startsWith('image/');
           final isVideo = mimeType.startsWith('video/');
-          final isAudio = mimeType.startsWith('audio/');
 
-          return !(isImage || isVideo || isAudio);
+          return !(isImage || isVideo);
         } else {
           // If the MIME type is unknown, consider it as not an image, video, or audio.
           return true;
@@ -325,7 +341,8 @@ class PostMedia extends StatelessWidget {
     if (files.isEmpty) {
       return Container(); // No non-image, non-video, non-audio files to display.
     }
-    return isNotImageVideoOrAudio(files[0])
+    print("XXXXXXXX ${isNotImageOrVideo(files[0])}");
+    return isNotImageOrVideo(files[0])
         ? listMediaGrid(files)
         : buildMediaGrid(files);
   }

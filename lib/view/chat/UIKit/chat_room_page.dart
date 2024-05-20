@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:animation_wrappers/animations/faded_slide_animation.dart';
@@ -70,44 +71,45 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         myAppBar.preferredSize.height;
     const textfielHeight = 60.0;
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: myAppBar,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            FadedSlideAnimation(
-              beginOffset: const Offset(0, 0.3),
-              endOffset: const Offset(0, 0),
-              slideCurve: Curves.linearToEaseOut,
-              child: Provider.of<ChatRoomVM>(context).channel == null
-                  ? const SizedBox()
-                  : SingleChildScrollView(
-                      reverse: true,
-                      controller:
-                          Provider.of<ChatRoomVM>(context).scrollcontroller,
-                      child: MessageComponent(
-                        bheight: bHeight - textfielHeight,
-                        theme: theme,
-                        mediaQuery: mediaQuery,
-                        channelId: Provider.of<ChatRoomVM>(context)
-                            .channel!
-                            .channelId!,
-                        channel: Provider.of<ChatRoomVM>(context).channel!,
+    return ThemeConfig(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: myAppBar,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              FadedSlideAnimation(
+                beginOffset: const Offset(0, 0.3),
+                endOffset: const Offset(0, 0),
+                slideCurve: Curves.linearToEaseOut,
+                child: Provider.of<ChatRoomVM>(context).channel == null
+                    ? const SizedBox()
+                    : SingleChildScrollView(
+                        reverse: true,
+                        controller:
+                            Provider.of<ChatRoomVM>(context).scrollcontroller,
+                        child: MessageComponent(
+                          bheight: bHeight - textfielHeight,
+                          theme: theme,
+                          mediaQuery: mediaQuery,
+                          channelId: Provider.of<ChatRoomVM>(context)
+                              .channel!
+                              .channelId!,
+                          channel: Provider.of<ChatRoomVM>(context).channel!,
+                        ),
                       ),
-                    ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text("${Provider.of<ChatRoomVM>(context).amitymessage.length}"),
-                ChatTextFieldComponent(
-                    theme: theme,
-                    textfielHeight: textfielHeight,
-                    mediaQuery: mediaQuery),
-              ],
-            ),
-          ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ChatTextFieldComponent(
+                      theme: theme,
+                      textfielHeight: textfielHeight,
+                      mediaQuery: mediaQuery),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

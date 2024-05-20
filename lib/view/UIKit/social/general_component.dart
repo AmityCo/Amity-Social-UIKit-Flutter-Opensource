@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:flutter/material.dart';
 
 class AmityGeneralCompomemt {
@@ -7,17 +8,19 @@ class AmityGeneralCompomemt {
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext bc) {
-        return Container(
-          padding: const EdgeInsets.only(top: 20, bottom: 20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
+        return ThemeConfig(
+          child: Container(
+            padding: const EdgeInsets.only(top: 20, bottom: 20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0),
+              ),
             ),
-          ),
-          child: Wrap(
-            children: listTiles,
+            child: Wrap(
+              children: listTiles,
+            ),
           ),
         );
       },
@@ -27,16 +30,18 @@ class AmityGeneralCompomemt {
 
 class TimeAgoWidget extends StatelessWidget {
   final DateTime createdAt; // Assuming createdAt is a DateTime object
+  final Color? textColor;
 
-  const TimeAgoWidget({Key? key, required this.createdAt}) : super(key: key);
+  const TimeAgoWidget({Key? key, required this.createdAt, this.textColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       _formatDate(createdAt),
-      style: const TextStyle(
-          // Add your text style here
-          ),
+      style: TextStyle(
+        color: textColor ?? Colors.grey,
+      ),
     );
   }
 

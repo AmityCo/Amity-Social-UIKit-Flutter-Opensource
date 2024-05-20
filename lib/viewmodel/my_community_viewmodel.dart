@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:flutter/material.dart';
 
 class MyCommunityVM with ChangeNotifier {
@@ -24,7 +23,8 @@ class MyCommunityVM with ChangeNotifier {
       pageFuture: (token) {
         final repository = AmitySocialClient.newCommunityRepository()
             .getCommunities()
-            .filter(AmityCommunityFilter.MEMBER);
+            .filter(AmityCommunityFilter.MEMBER)
+            .includeDeleted(false);
         if (keyword != null && keyword.isNotEmpty) {
           repository.withKeyword(
               keyword); // Add keyword filtering only if keyword is provided and not empty
@@ -40,10 +40,10 @@ class MyCommunityVM with ChangeNotifier {
             // Call any additional methods like sortedUserListWithHeaders here if needed.
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!",
-                message: _communityController.error.toString());
+            log("error:${_communityController.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!",
+            //     message: _communityController.error.toString());
           }
         },
       );
@@ -99,7 +99,8 @@ class SearchCommunityVM with ChangeNotifier {
         final repository = AmitySocialClient.newCommunityRepository()
             .getCommunities()
             .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
-            .filter(AmityCommunityFilter.ALL);
+            .filter(AmityCommunityFilter.ALL)
+            .includeDeleted(false);
         if (keyword != null && keyword.isNotEmpty) {
           repository.withKeyword(
               keyword); // Add keyword filtering only if keyword is provided and not empty
@@ -115,9 +116,9 @@ class SearchCommunityVM with ChangeNotifier {
             // Call any additional methods like sortedUserListWithHeaders here if needed.
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!", message: communityController.error.toString());
+            log("error: ${communityController.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: communityController.error.toString());
           }
         },
       );

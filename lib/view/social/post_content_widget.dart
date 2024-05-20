@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/video_player.dart';
+import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/imag_viewer.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
@@ -11,9 +14,9 @@ import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:linkify/linkify.dart';
 import 'package:linkwell/linkwell.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../components/video_player.dart';
 import 'image_viewer.dart';
 
 class AmityPostWidget extends StatefulWidget {
@@ -22,12 +25,16 @@ class AmityPostWidget extends StatefulWidget {
   final bool isCornerRadiusEnabled;
   final bool haveChildrenPost;
   final bool shouldShowTextPost;
-
+  final FeedType feedType;
   const AmityPostWidget(
-      this.posts, this.isChildrenPost, this.isCornerRadiusEnabled,
-      {super.key,
-      this.haveChildrenPost = false,
-      this.shouldShowTextPost = true});
+    this.posts,
+    this.isChildrenPost,
+    this.isCornerRadiusEnabled,
+    this.feedType, {
+    super.key,
+    this.haveChildrenPost = false,
+    this.shouldShowTextPost = true,
+  });
   @override
   AmityPostWidgetState createState() => AmityPostWidgetState();
 }
@@ -183,7 +190,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
   Widget build(BuildContext context) {
     if (!widget.isChildrenPost) {
       if (widget.haveChildrenPost || !urlValidation(widget.posts[0])) {
-        return TextPost(post: widget.posts[0]);
+        return TextPost(post: widget.posts[0], feedType: widget.feedType);
       } else {
         String url =
             extractLink(widget.posts[0]); //urlExtraction(widget.posts[0]);
@@ -192,7 +199,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           children: [
             // Text(url),
             widget.shouldShowTextPost
-                ? TextPost(post: widget.posts[0])
+                ? TextPost(post: widget.posts[0], feedType: widget.feedType)
                 : Container(),
             generateURLWidget(url.toLowerCase())
             // AnyLinkPreview(
@@ -252,40 +259,28 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
 
     Widget backgroundThumbnail(String fileUrl, int index,
         {BorderRadius? borderRadius}) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => VideoPlayerScreen(
-                files: files,
+      return Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: borderRadius,
+                image: DecorationImage(
+                  image: NetworkImage(fileUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                  image: DecorationImage(
-                    image: NetworkImage(fileUrl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+            const Align(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.play_arrow,
+                size: 70.0,
+                color: Colors.white,
               ),
-              const Align(
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.play_arrow,
-                  size: 70.0,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
@@ -304,14 +299,27 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
 
     switch (files.length) {
       case 1:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: backgroundThumbnail(getURL(files[0].data!), 0,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8))),
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VideoPlayerScreen(
+                  files: files,
+                  initialIndex: 0,
+                ),
+              ),
+            );
+          },
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: backgroundThumbnail(getURL(files[0].data!), 0,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                    bottomLeft: Radius.circular(8),
+                    bottomRight: Radius.circular(8))),
+          ),
         );
 
       case 2:
@@ -319,16 +327,42 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           aspectRatio: 1,
           child: Row(children: [
             Expanded(
-                child: backgroundThumbnail(getURL(files[0].data!), 0,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8)))),
+                child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoPlayerScreen(
+                      files: files,
+                      initialIndex: 0,
+                    ),
+                  ),
+                );
+              },
+              child: backgroundThumbnail(getURL(files[0].data!), 0,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      bottomLeft: Radius.circular(8))),
+            )),
             Expanded(
-                child: backgroundThumbnail(getURL(files[1].data!), 1,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8),
-                    )))
+                child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoPlayerScreen(
+                      files: files,
+                      initialIndex: 1,
+                    ),
+                  ),
+                );
+              },
+              child: backgroundThumbnail(getURL(files[1].data!), 1,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  )),
+            ))
           ]),
         );
 
@@ -338,23 +372,65 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           child: Column(
             children: [
               Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VideoPlayerScreen(
+                          files: files,
+                          initialIndex: 0,
+                        ),
+                      ),
+                    );
+                  },
                   child: backgroundThumbnail(getURL(files[0].data!), 0,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(8),
                         topRight: Radius.circular(8),
-                      ))),
-              Row(
-                children: [
-                  Expanded(
+                      )),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 1,
+                            ),
+                          ),
+                        );
+                      },
                       child: backgroundThumbnail(getURL(files[1].data!), 1,
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(8),
-                          ))),
-                  Expanded(
+                          )),
+                    )),
+                    Expanded(
+                        child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 2,
+                            ),
+                          ),
+                        );
+                      },
                       child: backgroundThumbnail(getURL(files[2].data!), 2,
                           borderRadius: const BorderRadius.only(
-                              bottomRight: Radius.circular(8)))),
-                ],
+                              bottomRight: Radius.circular(8))),
+                    )),
+                  ],
+                ),
               ),
             ],
           ),
@@ -366,33 +442,85 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           child: Column(
             children: [
               Expanded(
-                  child: backgroundThumbnail(getURL(files[0].data!), 0,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                      ))),
+                  child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VideoPlayerScreen(
+                        files: files,
+                        initialIndex: 0,
+                      ),
+                    ),
+                  );
+                },
+                child: backgroundThumbnail(getURL(files[0].data!), 0,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                    )),
+              )),
               Row(
                 children: [
                   Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: backgroundThumbnail(getURL(files[1].data!), 1,
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(8),
-                          )),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 1,
+                            ),
+                          ),
+                        );
+                      },
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundThumbnail(getURL(files[1].data!), 1,
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(8),
+                            )),
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: backgroundThumbnail(getURL(files[2].data!), 2),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 2,
+                            ),
+                          ),
+                        );
+                      },
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundThumbnail(getURL(files[2].data!), 2),
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: backgroundThumbnail(getURL(files[3].data!), 3,
-                          borderRadius: const BorderRadius.only(
-                              bottomRight: Radius.circular(8))),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 3,
+                            ),
+                          ),
+                        );
+                      },
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundThumbnail(getURL(files[3].data!), 3,
+                            borderRadius: const BorderRadius.only(
+                                bottomRight: Radius.circular(8))),
+                      ),
                     ),
                   ),
                 ],
@@ -407,55 +535,108 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
           child: Column(
             children: [
               Expanded(
-                  child: backgroundThumbnail(getURL(files[0].data!), 0,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8),
-                      ))),
+                  child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VideoPlayerScreen(
+                        files: files,
+                        initialIndex: 0,
+                      ),
+                    ),
+                  );
+                },
+                child: backgroundThumbnail(getURL(files[0].data!), 0,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8),
+                    )),
+              )),
               Row(
                 children: [
                   Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: backgroundThumbnail(getURL(files[1].data!), 1,
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(8),
-                          )),
-                    ),
-                  ),
-                  Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: backgroundThumbnail(getURL(files[2].data!), 2),
-                    ),
-                  ),
-                  Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Stack(
-                        children: [
-                          backgroundThumbnail(getURL(files[3].data!), 3,
-                              borderRadius: const BorderRadius.only(
-                                  bottomRight: Radius.circular(8))),
-                          // Black filter overlay
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black
-                                  .withOpacity(0.3), // Semi-transparent black
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 1,
                             ),
                           ),
-                          // Centered Text "6+"
-                          Center(
-                            child: Text(
-                              "${files.length - 3}+",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24, // Adjust the font size as needed
-                                fontWeight: FontWeight.bold,
+                        );
+                      },
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundThumbnail(getURL(files[1].data!), 1,
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(8),
+                            )),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 2,
+                            ),
+                          ),
+                        );
+                      },
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: backgroundThumbnail(getURL(files[2].data!), 2),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              files: files,
+                              initialIndex: 3,
+                            ),
+                          ),
+                        );
+                      },
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Stack(
+                          children: [
+                            backgroundThumbnail(getURL(files[3].data!), 3,
+                                borderRadius: const BorderRadius.only(
+                                    bottomRight: Radius.circular(8))),
+                            // Black filter overlay
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black
+                                    .withOpacity(0.3), // Semi-transparent black
                               ),
                             ),
-                          ),
-                        ],
+                            // Centered Text "6+"
+                            Center(
+                              child: Text(
+                                "${files.length - 3}+",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize:
+                                      24, // Adjust the font size as needed
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -472,25 +653,15 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
 
     Widget backgroundImage(String fileUrl, int index,
         {BorderRadius? borderRadius}) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ImageViewerScreen(files: files),
-            ),
-          );
-        },
-        child: Padding(
+      return Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Container(
           padding: const EdgeInsets.all(2.0),
-          child: Container(
-            padding: const EdgeInsets.all(2.0),
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              image: DecorationImage(
-                image: NetworkImage(fileUrl),
-                fit: BoxFit.cover,
-              ),
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            image: DecorationImage(
+              image: NetworkImage(fileUrl),
+              fit: BoxFit.cover,
             ),
           ),
         ),
@@ -509,72 +680,177 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
       }
     }
 
-    switch (files.length) {
-      case 1:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: backgroundImage(getURL(files[0].data!), 0,
-              borderRadius: BorderRadius.circular(8)),
-        );
-
-      case 2:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Row(children: [
-            Expanded(
-                child: backgroundImage(getURL(files[0].data!), 0,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8)))),
-            Expanded(
-                child: backgroundImage(getURL(files[1].data!), 1,
-                    borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(8),
-                        bottomRight: Radius.circular(8))))
-          ]),
-        );
-
-      case 3:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Column(
-            children: [
-              Expanded(
-                  child: backgroundImage(getURL(files[0].data!), 0,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8)))),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: backgroundImage(getURL(files[1].data!), 1,
-                            borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(8)))),
-                    Expanded(
-                        child: backgroundImage(getURL(files[2].data!), 2,
-                            borderRadius: const BorderRadius.only(
-                                bottomRight: Radius.circular(8)))),
-                  ],
+    Widget buildSingleImage(List<AmityPost> files) {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ImageViewerScreen(
+                  files: files,
+                  initialIndex: 0,
                 ),
               ),
-            ],
-          ),
-        );
+            );
+          },
+          child: backgroundImage(getURL(files[0].data!), 0,
+              borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+    }
 
-      case 4:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Column(
-            children: [
-              Expanded(
-                  child: backgroundImage(getURL(files[0].data!), 0,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8)))),
-              Row(
+    Widget buildTwoImages(List<AmityPost> files) {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: Row(children: [
+          Expanded(
+              child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ImageViewerScreen(
+                    files: files,
+                    initialIndex: 0,
+                  ),
+                ),
+              );
+            },
+            child: backgroundImage(getURL(files[0].data!), 0,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8))),
+          )),
+          Expanded(
+              child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ImageViewerScreen(
+                    files: files,
+                    initialIndex: 1,
+                  ),
+                ),
+              );
+            },
+            child: backgroundImage(getURL(files[1].data!), 1,
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8))),
+          ))
+        ]),
+      );
+    }
+
+    Widget buildThreeImages(List<AmityPost> files) {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: Column(
+          children: [
+            Expanded(
+                child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageViewerScreen(
+                      files: files,
+                      initialIndex: 0,
+                    ),
+                  ),
+                );
+              },
+              child: backgroundImage(getURL(files[0].data!), 0,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8))),
+            )),
+            Expanded(
+              child: Row(
                 children: [
                   Expanded(
+                      child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageViewerScreen(
+                            files: files,
+                            initialIndex: 1,
+                          ),
+                        ),
+                      );
+                    },
+                    child: backgroundImage(getURL(files[1].data!), 1,
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(8))),
+                  )),
+                  Expanded(
+                      child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageViewerScreen(
+                            files: files,
+                            initialIndex: 2,
+                          ),
+                        ),
+                      );
+                    },
+                    child: backgroundImage(getURL(files[2].data!), 2,
+                        borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(8))),
+                  )),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget buildFourImages(List<AmityPost> files) {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: Column(
+          children: [
+            Expanded(
+                child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageViewerScreen(
+                      files: files,
+                      initialIndex: 0,
+                    ),
+                  ),
+                );
+              },
+              child: backgroundImage(getURL(files[0].data!), 0,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8))),
+            )),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageViewerScreen(
+                            files: files,
+                            initialIndex: 1,
+                          ),
+                        ),
+                      );
+                    },
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: backgroundImage(getURL(files[1].data!), 1,
@@ -582,13 +858,39 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                               bottomLeft: Radius.circular(8))),
                     ),
                   ),
-                  Expanded(
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageViewerScreen(
+                            files: files,
+                            initialIndex: 2,
+                          ),
+                        ),
+                      );
+                    },
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: backgroundImage(getURL(files[2].data!), 2),
                     ),
                   ),
-                  Expanded(
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageViewerScreen(
+                            files: files,
+                            initialIndex: 3,
+                          ),
+                        ),
+                      );
+                    },
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: backgroundImage(getURL(files[3].data!), 3,
@@ -596,32 +898,59 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                               bottomRight: Radius.circular(8))),
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
-        );
-
-      default:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                  8.0), // Border radius for the entire grid
-              // Add other properties like a border or shadow if needed
+                ),
+              ],
             ),
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                Expanded(
-                    child: backgroundImage(getURL(files[0].data!), 0,
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            topRight: Radius.circular(8)))),
-                Row(
-                  children: [
-                    Expanded(
+          ],
+        ),
+      );
+    }
+
+    Widget buildDefaultImage(List<AmityPost> files) {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius:
+                BorderRadius.circular(8.0), // Border radius for the entire grid
+            // Add other properties like a border or shadow if needed
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              Expanded(
+                  child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ImageViewerScreen(
+                        files: files,
+                        initialIndex: 0,
+                      ),
+                    ),
+                  );
+                },
+                child: backgroundImage(getURL(files[0].data!), 0,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8))),
+              )),
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageViewerScreen(
+                              files: files,
+                              initialIndex: 1,
+                            ),
+                          ),
+                        );
+                      },
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: backgroundImage(getURL(files[1].data!), 1,
@@ -630,13 +959,39 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                             )),
                       ),
                     ),
-                    Expanded(
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageViewerScreen(
+                              files: files,
+                              initialIndex: 2,
+                            ),
+                          ),
+                        );
+                      },
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: backgroundImage(getURL(files[2].data!), 2),
                       ),
                     ),
-                    Expanded(
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageViewerScreen(
+                              files: files,
+                              initialIndex: 3,
+                            ),
+                          ),
+                        );
+                      },
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: Stack(
@@ -667,12 +1022,26 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
+        ),
+      );
+    }
+
+    switch (files.length) {
+      case 1:
+        return buildSingleImage(files);
+      case 2:
+        return buildTwoImages(files);
+      case 3:
+        return buildThreeImages(files);
+      case 4:
+        return buildFourImages(files);
+      default:
+        return buildDefaultImage(files);
     }
   }
 }
@@ -681,7 +1050,7 @@ String _getFileImage(String filePath) {
   String extension = filePath.split('.').last;
   switch (extension) {
     case 'audio':
-      return 'assets/images/fileType/audio_small.png';
+      return 'assets/images/fileType/audio_large.png';
     case 'avi':
       return 'assets/images/fileType/avi_large.png';
     case 'csv':
@@ -731,7 +1100,8 @@ Widget _listMediaGrid(List<AmityPost> files) {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(4.0),
           border: Border.all(
-            color: const Color(0xffEBECEF),
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
             width: 1.0,
           ),
         ),
@@ -787,10 +1157,20 @@ Widget _listMediaGrid(List<AmityPost> files) {
 
 class TextPost extends StatelessWidget {
   final AmityPost post;
-  const TextPost({Key? key, required this.post}) : super(key: key);
+  final FeedType feedType;
+  const TextPost({Key? key, required this.post, required this.feedType})
+      : super(key: key);
 
   Widget buildURLWidget(String text) {
-    return LinkWell(text);
+    return Builder(builder: (context) {
+      return LinkWell(
+        text,
+        style: TextStyle(
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+          fontSize: 15,
+        ),
+      );
+    });
   }
 
   @override

@@ -43,6 +43,8 @@ class AmitySLEUIKit {
       required AmityRegion region,
       String? customEndpoint}) async {
     AmityRegionalHttpEndpoint? amityEndpoint;
+    AmityRegionalMqttEndpoint? amityMqttEndpoint;
+    AmityRegionalSocketEndpoint? amitySocketEndpoint;
 
     switch (region) {
       case AmityRegion.custom:
@@ -56,24 +58,33 @@ class AmitySLEUIKit {
       case AmityRegion.sg:
         {
           amityEndpoint = AmityRegionalHttpEndpoint.SG;
+          amityMqttEndpoint = AmityRegionalMqttEndpoint.SG;
+          amitySocketEndpoint = AmityRegionalSocketEndpoint.SG;
         }
 
         break;
       case AmityRegion.eu:
         {
           amityEndpoint = AmityRegionalHttpEndpoint.EU;
+          amityMqttEndpoint = AmityRegionalMqttEndpoint.EU;
+          amitySocketEndpoint = AmityRegionalSocketEndpoint.EU;
         }
 
         break;
       case AmityRegion.us:
         {
           amityEndpoint = AmityRegionalHttpEndpoint.US;
+          amityMqttEndpoint = AmityRegionalMqttEndpoint.US;
+          amitySocketEndpoint = AmityRegionalSocketEndpoint.US;
         }
     }
 
     await AmityCoreClient.setup(
-        option:
-            AmityCoreClientOption(apiKey: apikey, httpEndpoint: amityEndpoint!),
+        option: AmityCoreClientOption(
+            apiKey: apikey,
+            httpEndpoint: amityEndpoint!,
+            mqttEndpoint: amityMqttEndpoint!,
+            socketEndpoint: amitySocketEndpoint!),
         sycInitialization: true);
   }
 
@@ -207,11 +218,10 @@ class AmitySLEProvider extends StatelessWidget {
       ],
       child: Builder(
         builder: (context) => MaterialApp(
+          theme: ThemeData(),
           debugShowCheckedModeBanner: false,
           navigatorKey: NavigationService.navigatorKey,
-          home: DefaultTextStyle(
-              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 8),
-              child: child),
+          home: child,
         ),
       ),
     );

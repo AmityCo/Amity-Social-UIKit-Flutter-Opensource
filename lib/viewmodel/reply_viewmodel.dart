@@ -38,7 +38,10 @@ class ReplyVM extends PostVM {
   ReplyTo? replyToObject;
 
   Future<void> initReplyComment(String postId, BuildContext context) async {
+    _controllersMap.clear();
+    amityReplyCommentsMap.clear();
     print("initReplyComment>>>>>>>>>>>>>>>>>>>>>");
+    replyToObject = null;
     print(amityComments.length);
 
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;
@@ -57,6 +60,10 @@ class ReplyVM extends PostVM {
   }
 
   void clearReply() {
+    replyToObject = null;
+  }
+
+  void clearReplyAndUpdateUI() {
     replyToObject = null;
     notifyListeners();
   }
@@ -85,11 +92,8 @@ class ReplyVM extends PostVM {
         () async {
           if (_controllersMap[commentId]!.error == null) {
             var loadedItems = _controllersMap[commentId]!.loadedItems;
-            for (var item in loadedItems) {
-              print("XXXXXX: ${item.myReactions}");
-            }
-            print(
-                "XXXXXX-hasmore: ${_controllersMap[commentId]!.hasMoreItems}");
+            for (var item in loadedItems) {}
+
             // Append only new comments by checking against existing ones.
             var currentIds = amityComments.map((e) => e.commentId).toSet();
             var newItems = loadedItems
@@ -101,10 +105,10 @@ class ReplyVM extends PostVM {
             }
             notifyListeners();
           } else {
-            log("error");
-            await AmityDialog().showAlertErrorDialog(
-                title: "Error!",
-                message: _controllersMap[commentId]!.error.toString());
+            log("error: ${_controllersMap[commentId]!.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!",
+            //     message: _controllersMap[commentId]!.error.toString());
           }
         },
       );
@@ -120,7 +124,11 @@ class ReplyVM extends PostVM {
       if (_controllersMap[commentId]!.isFetching) {
         return false;
       } else {
-        return _controllersMap[commentId]!.hasMoreItems;
+        if (_controllersMap[commentId]!.loadedItems.isNotEmpty) {
+          return _controllersMap[commentId]!.hasMoreItems;
+        } else {
+          return false;
+        }
       }
     } else {
       return false;

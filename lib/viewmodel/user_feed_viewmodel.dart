@@ -22,19 +22,22 @@ class UserFeedVM extends ChangeNotifier {
   AmityUser? amityUser;
   late AmityUserFollowInfo amityMyFollowInfo = AmityUserFollowInfo();
   late PagingController<AmityPost> _controller;
-  final amityPosts = <AmityPost>[];
+  var amityPosts = <AmityPost>[];
   late PagingController<AmityPost> _imagePostController;
   final amityImagePosts = <AmityPost>[];
   late PagingController<AmityPost> _videoPostController;
   final amityVideoPosts = <AmityPost>[];
   final scrollcontroller = ScrollController();
-  final imageScrollcontroller = ScrollController();
-  final videoScrollcontroller = ScrollController();
   bool loading = false;
+  TabController? userFeedTabController;
+  void changeTab() {
+    notifyListeners();
+  }
 
-  void initUserFeed({AmityUser? amityUser, required String userId}) async {
+  Future<void> initUserFeed(
+      {AmityUser? amityUser, required String userId}) async {
     _getUser(userId: userId, otherUser: amityUser);
-    listenForUserFeed(userId);
+    await listenForUserFeed(userId);
     listenForImageFeed(userId);
     listenForVideoFeed(userId);
   }
@@ -74,7 +77,7 @@ class UserFeedVM extends ChangeNotifier {
     });
   }
 
-  void listenForUserFeed(String userId) {
+  Future<void> listenForUserFeed(String userId) async {
     _controller = PagingController(
       pageFuture: (token) => AmitySocialClient.newFeedRepository()
           .getUserFeed(userId)
@@ -100,7 +103,7 @@ class UserFeedVM extends ChangeNotifier {
       _controller.fetchNextPage();
     });
 
-    videoScrollcontroller.addListener(() {
+    scrollcontroller.addListener(() {
       loadnextpage(scrollcontroller, _controller);
     });
   }
@@ -133,8 +136,8 @@ class UserFeedVM extends ChangeNotifier {
       _imagePostController.fetchNextPage();
     });
 
-    videoScrollcontroller.addListener(() {
-      loadnextpage(imageScrollcontroller, _imagePostController);
+    scrollcontroller.addListener(() {
+      loadnextpage(scrollcontroller, _imagePostController);
     });
   }
 
@@ -166,8 +169,8 @@ class UserFeedVM extends ChangeNotifier {
       _videoPostController.fetchNextPage();
     });
 
-    videoScrollcontroller.addListener(() {
-      loadnextpage(videoScrollcontroller, _videoPostController);
+    scrollcontroller.addListener(() {
+      loadnextpage(scrollcontroller, _videoPostController);
     });
   }
 
@@ -195,8 +198,8 @@ class UserFeedVM extends ChangeNotifier {
               {log("update displayname & description & avatarFileUrl success")})
           .onError((error, stackTrace) async => {
                 log("update displayname & description & avatarFileUrl fail"),
-                await AmityDialog().showAlertErrorDialog(
-                    title: "Error!", message: error.toString())
+                // await AmityDialog().showAlertErrorDialog(
+                //     title: "Error!", message: error.toString())
               });
     } else {
       await AmityCoreClient.getCurrentUser()
@@ -207,8 +210,8 @@ class UserFeedVM extends ChangeNotifier {
           .then((value) => {log("update displayname & description success")})
           .onError((error, stackTrace) async => {
                 log("update displayname & description fail"),
-                await AmityDialog().showAlertErrorDialog(
-                    title: "Error!", message: error.toString())
+                // await AmityDialog().showAlertErrorDialog(
+                //     title: "Error!", message: error.toString())
               });
     }
   }
@@ -226,9 +229,10 @@ class UserFeedVM extends ChangeNotifier {
       initUserFeed(userId: amityUser!.userId!);
       notifyListeners();
     } else if (amityFollowStatus == AmityFollowStatus.ACCEPTED) {
-      await unfollowUser(user);
+      await _getUser(userId: amityUser!.userId!);
+
       print("clear post");
-      // initUserFeed(userId: amityUser!.userId!);
+      initUserFeed(userId: amityUser!.userId!);
     } else if (amityFollowStatus == AmityFollowStatus.BLOCKED) {
       //do nothing
     } else {
@@ -238,18 +242,28 @@ class UserFeedVM extends ChangeNotifier {
     }
   }
 
-  void deletePost(AmityPost post, int postIndex) async {
-    log("deleting post....");
+  void deletePost(
+      AmityPost post, Function(bool success, String message) callback) async {
     AmitySocialClient.newPostRepository()
         .deletePost(postId: post.postId!)
         .then((value) {
-      print("remove at index $postIndex");
+      int postIndex = amityPosts.indexWhere((p) => p.postId == post.postId);
+      print("index:$postIndex");
+      print(amityPosts.length);
       amityPosts.removeAt(postIndex);
-      listenForUserFeed(amityUser!.userId!);
+      print("rmove");
+      print(amityPosts.length);
       notifyListeners();
+      print("notifyListeners");
+      listenForUserFeed(amityUser!.userId!);
+      callback(true, "Post deleted successfully.");
+
+      callback(false, "Post not found in the list.");
     }).onError((error, stackTrace) async {
+      String errorMessage = error.toString();
       await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
+          .showAlertErrorDialog(title: "Error!", message: errorMessage);
+      callback(false, errorMessage);
     });
   }
 
@@ -261,6 +275,7 @@ class UserFeedVM extends ChangeNotifier {
         .then((AmityFollowStatus followStatus) {
       //success
       log("sendFollowRequest: Success");
+
       notifyListeners();
     }).onError((error, stackTrace) {
       //handle error
@@ -294,6 +309,7 @@ class UserFeedVM extends ChangeNotifier {
       amityVideoPosts.clear();
       log("clear post: $amityImagePosts, $amityPosts, $amityVideoPosts");
       notifyListeners();
+      initUserFeed(userId: amityUser!.userId!);
     }).onError((error, stackTrace) {
       AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());

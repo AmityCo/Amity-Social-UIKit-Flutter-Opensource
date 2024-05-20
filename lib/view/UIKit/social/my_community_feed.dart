@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -8,7 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyCommunityPage extends StatefulWidget {
-  const MyCommunityPage({super.key});
+  const MyCommunityPage({
+    super.key,
+    this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
+  });
+
+  final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
   @override
   _MyCommunityPageState createState() => _MyCommunityPageState();
@@ -27,79 +35,102 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MyCommunityVM>(builder: (context, vm, _) {
-      return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.close,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          title: Text(
-            'My Community',
-            style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle, // Adjust as needed
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.add, color: Colors.black),
-              onPressed: () async {
-                await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        const CreateCommunityPage())); // Replace with your CreateCommunityPage
-                await Provider.of<MyCommunityVM>(context, listen: false)
-                    .initMyCommunity();
+      return ThemeConfig(
+        child: Scaffold(
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
+          appBar: AppBar(
+            scrolledUnderElevation: 0,
+            elevation: 0.0,
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
+            leading: IconButton(
+              icon: Icon(
+                Icons.close,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
               },
             ),
-          ],
-        ),
-        body: ListView.builder(
-          controller: vm.scrollcontroller,
-          itemCount: vm.amityCommunities.length + 1,
-          itemBuilder: (context, index) {
-            // If it's the first item in the list, return the search bar
-            if (index == 0) {
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: TextField(
-                  controller: vm.textEditingController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                    ),
-                    hintText: 'Search',
-                    filled: true,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                    fillColor: Colors.grey[3],
-                    focusColor: Colors.white,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
+            title: Text(
+              'My Community',
+              style: Provider.of<AmityUIConfiguration>(context)
+                  .titleTextStyle
+                  .copyWith(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                  ), // Adjust as needed
+            ),
+            actions: [
+              if (widget.canCreateCommunity)
+                IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                   ),
-                  onChanged: (value) {
-                    Provider.of<MyCommunityVM>(context, listen: false)
-                        .initMyCommunity(value);
+                  onPressed: () async {
+                    await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            const CreateCommunityPage())); // Replace with your CreateCommunityPage
+                    await Provider.of<MyCommunityVM>(context, listen: false)
+                        .initMyCommunity();
                   },
                 ),
+            ],
+          ),
+          body: ListView.builder(
+            controller: vm.scrollcontroller,
+            itemCount: vm.amityCommunities.length + 1,
+            itemBuilder: (context, index) {
+              // If it's the first item in the list, return the search bar
+              if (index == 0) {
+                if (widget.canSearchCommunities) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextField(
+                      controller: vm.textEditingController,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        hintText: 'Search',
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                        fillColor: Colors.grey[3],
+                        focusColor: Colors.white,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        Provider.of<MyCommunityVM>(context, listen: false)
+                            .initMyCommunity(value);
+                      },
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              }
+              // Otherwise, return the community widget
+              return CommunityWidget(
+                community: vm.amityCommunities[index - 1],
               );
-            }
-            // Otherwise, return the community widget
-            return CommunityWidget(
-              community: vm.amityCommunities[index - 1],
-            );
-          },
+            },
+          ),
         ),
       );
     });
@@ -118,7 +149,9 @@ class CommunityWidget extends StatelessWidget {
         builder: (context, snapshot) {
           var communityStream = snapshot.data ?? community;
           return Card(
-            color: Colors.white,
+            color: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             elevation: 0,
             child: ListTile(
               leading: (communityStream.avatarFileId != null)
@@ -130,8 +163,11 @@ class CommunityWidget extends StatelessWidget {
                   : Container(
                       height: 40,
                       width: 40,
-                      decoration: const BoxDecoration(
-                          color: Color(0xFFD9E5FC), shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                          shape: BoxShape.circle),
                       child: const Icon(
                         Icons.group,
                         color: Colors.white,
@@ -139,11 +175,23 @@ class CommunityWidget extends StatelessWidget {
                     ),
               title: Row(
                 children: [
-                  if (!community.isPublic!) const Icon(Icons.lock, size: 16.0),
+                  if (!community.isPublic!)
+                    Icon(
+                      Icons.lock,
+                      size: 16.0,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                   const SizedBox(width: 4.0),
                   Text(
                     communityStream.displayName ?? "Community ",
-                    style: const TextStyle(overflow: TextOverflow.ellipsis),
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
                   ),
                   const SizedBox(width: 4.0),
                   communityStream.isOfficial!
@@ -169,50 +217,66 @@ class CommunityWidget extends StatelessWidget {
 
 class CommunityIconList extends StatelessWidget {
   final List<AmityCommunity> amityCommunites;
+  final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
-  const CommunityIconList({super.key, required this.amityCommunites});
+  const CommunityIconList({
+    super.key,
+    required this.amityCommunites,
+    this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color:
+          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 40,
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'My Community',
                   style: TextStyle(
                     fontSize: 17.0,
                     fontWeight: FontWeight.bold,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                   ),
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            const Scaffold(body: MyCommunityPage()),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ThemeConfig(
+                            child: Scaffold(
+                              body: MyCommunityPage(
+                                canCreateCommunity: canCreateCommunity,
+                                canSearchCommunities: canSearchCommunities,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
                     },
                     child: Container(child: const Icon(Icons.chevron_right))),
               ],
             ),
           ),
           Container(
-            color: Colors.white,
-            height: 90.0,
+            padding: const EdgeInsets.only(bottom: 0),
+            height: 70.0,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: amityCommunites.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  color: Colors.white,
+                return Padding(
                   padding: EdgeInsets.only(left: index != 0 ? 0 : 16),
                   child: CommunityIconWidget(
                       amityCommunity: amityCommunites[index]),
@@ -220,8 +284,10 @@ class CommunityIconList extends StatelessWidget {
               },
             ),
           ),
-          const Divider(
-            color: Color(0xffEBECEF),
+          Divider(
+            height: 1,
+            color:
+                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           )
         ],
       ),
@@ -247,7 +313,7 @@ class CommunityIconWidget extends StatelessWidget {
                       CommunityScreen(community: communityStream)));
             },
             child: Container(
-              color: Colors.white,
+              color: Colors.transparent,
               width: 62,
               margin: const EdgeInsets.only(right: 4, bottom: 10),
               child: Column(
@@ -264,8 +330,11 @@ class CommunityIconWidget extends StatelessWidget {
                         : Container(
                             height: 40,
                             width: 40,
-                            decoration: const BoxDecoration(
-                                color: Color(0xFFD9E5FC),
+                            decoration: BoxDecoration(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primaryShade3,
                                 shape: BoxShape.circle),
                             child: const Icon(
                               Icons.group,
@@ -276,15 +345,22 @@ class CommunityIconWidget extends StatelessWidget {
                   Row(
                     children: [
                       !amityCommunity.isPublic!
-                          ? const Icon(
+                          ? Icon(
                               Icons.lock,
                               size: 12,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
                             )
                           : const SizedBox(),
                       Expanded(
                         child: Text(amityCommunity.displayName ?? "",
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base,
                                 overflow: TextOverflow.ellipsis)),
                       ),
                       amityCommunity.isOfficial!

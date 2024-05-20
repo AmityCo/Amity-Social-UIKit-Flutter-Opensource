@@ -143,7 +143,9 @@ class CommunityVM extends ChangeNotifier {
     });
   }
 
-  void joinCommunity(String communityId, {CommunityListType? type}) async {
+  void joinCommunity(String communityId,
+      {CommunityListType? type,
+      required void Function(bool isSuccess) callback}) async {
     AmitySocialClient.newCommunityRepository()
         .joinCommunity(communityId)
         .then((value) {
@@ -152,6 +154,7 @@ class CommunityVM extends ChangeNotifier {
       }
 
       notifyListeners();
+      callback(true); // Calling the callback with success status
     }).onError((error, stackTrace) async {
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());

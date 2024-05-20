@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
@@ -158,6 +159,7 @@ class PendingFeddScreenState extends State<PendingFeddScreen> {
                             initialData: vm.getCommunityPendingPosts()[index],
                             builder: (context, snapshot) {
                               return PostWidget(
+                                  isPostDetail: false,
                                   showCommunity: false,
                                   showlatestComment: true,
                                   isFromFeed: false,
@@ -177,18 +179,22 @@ class PendingFeddScreenState extends State<PendingFeddScreen> {
               ),
             );
 
-            return Scaffold(
-                appBar: AppBar(
-                  elevation: 0.0,
-                  title: Text(
-                      "Pending posts (${vm.getCommunityPendingPosts().length})",
-                      style: Provider.of<AmityUIConfiguration>(context)
-                          .titleTextStyle),
-                  backgroundColor: Colors.white,
-                  iconTheme: const IconThemeData(color: Colors.black),
-                ),
-                backgroundColor: Colors.grey[200],
-                body: feedWidget);
+            return ThemeConfig(
+              child: Scaffold(
+                  appBar: AppBar(
+                    elevation: 0.0,
+                    title: Text(
+                        "Pending posts (${vm.getCommunityPendingPosts().length})",
+                        style: Provider.of<AmityUIConfiguration>(context)
+                            .titleTextStyle),
+                    backgroundColor: Colors.transparent,
+                    iconTheme: const IconThemeData(color: Colors.black),
+                  ),
+                  backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .baseBackground,
+                  body: feedWidget),
+            );
           });
     });
   }

@@ -17,7 +17,6 @@ class PostMedia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget buildMediaGrid(List<UIKitFileSystem> files) {
-      print("XXXXXXXX: buildMediaGrid");
       if (files.isEmpty) return Container();
 
       Widget backgroundImage(UIKitFileSystem file, int index) {
@@ -211,7 +210,6 @@ class PostMedia extends StatelessWidget {
     }
 
     Widget listMediaGrid(List<UIKitFileSystem> files) {
-      print("XXXXXXXX: listMediaGrid");
       return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: files.length,
@@ -341,7 +339,7 @@ class PostMedia extends StatelessWidget {
     if (files.isEmpty) {
       return Container(); // No non-image, non-video, non-audio files to display.
     }
-    print("XXXXXXXX ${isNotImageOrVideo(files[0])}");
+
     return isNotImageOrVideo(files[0])
         ? listMediaGrid(files)
         : buildMediaGrid(files);

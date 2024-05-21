@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
@@ -8,7 +9,6 @@ import 'package:provider/provider.dart';
 import '../../viewmodel/community_feed_viewmodel.dart';
 import '../../viewmodel/community_viewmodel.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
-import 'community_feed.dart';
 
 class CommunityList extends StatefulWidget {
   final CommunityListType communityType;

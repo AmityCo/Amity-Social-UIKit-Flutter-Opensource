@@ -1,7 +1,7 @@
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../viewmodel/configuration_viewmodel.dart';
 import 'notification_all_tab.dart';
 
 class NotificationPage extends StatelessWidget {

@@ -14,6 +14,11 @@ class CommuFeedVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  TabController? userFeedTabController;
+  void changeTab() {
+    notifyListeners();
+  }
+
   MediaType getMediaType() => _selectedMediaType;
   bool isCurrentUserIsAdmin = false;
   var _amityCommunityFeedPosts = <AmityPost>[];

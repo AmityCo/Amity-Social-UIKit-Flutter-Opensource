@@ -19,7 +19,9 @@ class MediaGalleryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenheight = MediaQuery.of(context).size.height;
     return Container(
+      constraints: BoxConstraints(minHeight: screenheight),
       color:
           Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
       child: Column(

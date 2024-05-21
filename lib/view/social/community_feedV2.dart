@@ -896,7 +896,17 @@ class AppScaffold extends StatelessWidget {
         body: RefreshIndicator(
           color: Provider.of<AmityUIConfiguration>(context).primaryColor,
           onRefresh: () async {
-            //todo: refresh
+            // Call your method to refresh the list here.
+            // For example, you might want to refresh the community feed.
+            Provider.of<CommuFeedVM>(context, listen: false)
+                .getPostCount(amityCommunity);
+            Provider.of<CommuFeedVM>(context, listen: false)
+                .getReviewingPostCount(amityCommunity);
+            await Provider.of<CommuFeedVM>(context, listen: false)
+                .initAmityCommunityFeed(amityCommunity.communityId!);
+            await Provider.of<CommuFeedVM>(context, listen: false)
+                .initAmityPendingCommunityFeed(
+                    amityCommunity.communityId!, AmityFeedType.REVIEWING);
           },
           child: CustomScrollView(
             controller: Provider.of<CommuFeedVM>(context).scrollcontroller,

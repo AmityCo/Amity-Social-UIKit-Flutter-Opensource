@@ -6,7 +6,7 @@ import 'package:amity_uikit_beta_service/view/social/user_follow_screen.dart';
 import 'package:amity_uikit_beta_service/view/user/edit_profile.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/view/user/user_setting.dart';
-import 'package:amity_uikit_beta_service/viewmodel/follower_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/follower_following_viewmodel.dart';
 import 'package:animation_wrappers/animations/fade_animation.dart';
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';

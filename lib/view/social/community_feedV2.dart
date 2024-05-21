@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
@@ -862,56 +863,60 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultStickyHeaderController(
-      child: Scaffold(
-        backgroundColor:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          title: Text(title),
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-              size: 30,
+      child: ThemeConfig(
+        child: Scaffold(
+          backgroundColor:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
+          appBar: AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(title),
+            leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
+                size: 30,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-            onPressed: () => Navigator.of(context).pop(),
+            actions: [
+              // Text(
+              //     "${sizeVM.getCommunityDetailSectionSize()}"),
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context2) => CommunitySettingPage(
+                              community: amityCommunity,
+                            )));
+                  },
+                  icon: Icon(
+                    Icons.more_horiz_rounded,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                  ))
+            ],
           ),
-          actions: [
-            // Text(
-            //     "${sizeVM.getCommunityDetailSectionSize()}"),
-            IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context2) => CommunitySettingPage(
-                            community: amityCommunity,
-                          )));
-                },
-                icon: Icon(
-                  Icons.more_horiz_rounded,
-                  color:
-                      Provider.of<AmityUIConfiguration>(context).appColors.base,
-                ))
-          ],
-        ),
-        body: RefreshIndicator(
-          color: Provider.of<AmityUIConfiguration>(context).primaryColor,
-          onRefresh: () async {
-            // Call your method to refresh the list here.
-            // For example, you might want to refresh the community feed.
-            Provider.of<CommuFeedVM>(context, listen: false)
-                .getPostCount(amityCommunity);
-            Provider.of<CommuFeedVM>(context, listen: false)
-                .getReviewingPostCount(amityCommunity);
-            await Provider.of<CommuFeedVM>(context, listen: false)
-                .initAmityCommunityFeed(amityCommunity.communityId!);
-            await Provider.of<CommuFeedVM>(context, listen: false)
-                .initAmityPendingCommunityFeed(
-                    amityCommunity.communityId!, AmityFeedType.REVIEWING);
-          },
-          child: CustomScrollView(
-            controller: Provider.of<CommuFeedVM>(context).scrollcontroller,
-            slivers: slivers,
-            reverse: reverse,
+          body: RefreshIndicator(
+            color: Provider.of<AmityUIConfiguration>(context).primaryColor,
+            onRefresh: () async {
+              // Call your method to refresh the list here.
+              // For example, you might want to refresh the community feed.
+              Provider.of<CommuFeedVM>(context, listen: false)
+                  .getPostCount(amityCommunity);
+              Provider.of<CommuFeedVM>(context, listen: false)
+                  .getReviewingPostCount(amityCommunity);
+              await Provider.of<CommuFeedVM>(context, listen: false)
+                  .initAmityCommunityFeed(amityCommunity.communityId!);
+              await Provider.of<CommuFeedVM>(context, listen: false)
+                  .initAmityPendingCommunityFeed(
+                      amityCommunity.communityId!, AmityFeedType.REVIEWING);
+            },
+            child: CustomScrollView(
+              controller: Provider.of<CommuFeedVM>(context).scrollcontroller,
+              slivers: slivers,
+              reverse: reverse,
+            ),
           ),
         ),
       ),

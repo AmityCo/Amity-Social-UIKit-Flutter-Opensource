@@ -277,7 +277,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                           controller: _displayNameController,
                           title: 'Display name',
                           hintText: 'Display name',
-                          maxCharacters: 180,
+                          maxCharacters: 50,
                         ),
 
                         TextFieldWithCounter(

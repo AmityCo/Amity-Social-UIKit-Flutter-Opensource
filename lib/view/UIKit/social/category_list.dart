@@ -132,8 +132,10 @@ class CategoryListState extends State<CategoryList> {
                               )
                             : Expanded(
                                 child: ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: getLength(),
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemCount: vm.getCategories().length,
+                                  controller: vm.scrollcontroller,
                                   itemBuilder: (context, index) {
                                     return CategoryWidget(
                                       category: Provider.of<CategoryVM>(context,
@@ -190,14 +192,9 @@ class CategoryWidget extends StatelessWidget {
         child: ListTile(
           contentPadding: const EdgeInsets.all(0),
           onTap: () {
-            Provider.of<CategoryVM>(context, listen: false).setSelectedCategory(
-                Provider.of<CategoryVM>(context, listen: false)
-                    .getCategoryIds()[index]);
-            textController.text =
-                Provider.of<CategoryVM>(context, listen: false)
-                    .getSelectedCommunityName(
-                        Provider.of<CategoryVM>(context, listen: false)
-                            .getCategoryIds()[index]);
+            Provider.of<CategoryVM>(context, listen: false)
+                .setSelectedCategory(category.categoryId!);
+            textController.text = category.name ?? "";
             Navigator.of(context).pop();
           },
           leading: FadeAnimation(

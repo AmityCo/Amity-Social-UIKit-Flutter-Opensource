@@ -1,16 +1,16 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ExplorePageVM with ChangeNotifier {
   List<AmityCommunity> _recommendedCommunities = [];
   List<AmityCommunity> _trendingCommunities = [];
-  List<AmityCommunityCategory> _categories = [];
 
   List<AmityCommunity> get recommendedCommunities => _recommendedCommunities;
   List<AmityCommunity> get trendingCommunities => _trendingCommunities;
-  List<AmityCommunityCategory> get amityCategories => _categories;
+
+  final amityCategories = <AmityCommunityCategory>[];
+  late PagingController<AmityCommunityCategory> _communityCategoryController;
+  final categoryScrollcontroller = ScrollController();
 
   void getRecommendedCommunities() async {
     print("getRecommendedCommunities...");
@@ -38,42 +38,102 @@ class ExplorePageVM with ChangeNotifier {
             });
   }
 
-  List<AmityCommunity> communities = [];
+  final amityCommunities = <AmityCommunity>[];
+  late PagingController<AmityCommunity> _communityController;
+  final communityScrollcontroller = ScrollController();
+  void getCommunitiesInCategory(
+      {required String categoryId, bool enableNotifyListener = false}) {
+    _communityController = PagingController(
+      pageFuture: (token) => AmitySocialClient.newCommunityRepository()
+          .getCommunities()
+          .filter(AmityCommunityFilter.ALL)
+          .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
+          .includeDeleted(false)
+          .categoryId(
+              categoryId) //optional filter communities based on community categories
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () {
+          if (_communityController.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+            amityCommunities.clear();
+            amityCommunities.addAll(_communityController.loadedItems);
+            //update widgets
+            if (enableNotifyListener) {
+              notifyListeners();
+            }
+          } else {
+            //error on pagination controller
+            //update widgets
+          }
+        },
+      );
 
-  void getCommunitiesInCategory(String categoryId) {
-    communities.clear();
-    AmitySocialClient.newCommunityRepository()
-        .getCommunities()
-        .includeDeleted(false)
-        .categoryId(categoryId)
-        .getPagingData(token: null)
-        .then((value) {
-      communities = value.data;
-      notifyListeners();
-    }).onError((error, stackTrace) async {
-      await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
-    });
+    _communityController.fetchNextPage();
+
+    communityScrollcontroller.addListener(communityPagination);
   }
 
-  final List<String> _categoryIds = [];
-  void queryCommunityCategories(
-      AmityCommunityCategorySortOption sortOption) async {
-    AmitySocialClient.newCommunityRepository()
-        .getCategories()
-        .sortBy(sortOption)
-        .includeDeleted(false)
-        .getPagingData(token: null, limit: 20)
-        .then((communityCategories) {
-      _categories = communityCategories.data;
-      for (var category in _categories) {
-        _categoryIds.add(category.categoryId!);
+  void communityPagination() {
+    if ((communityScrollcontroller.position.pixels >=
+        (communityScrollcontroller.position.maxScrollExtent - 100))) {
+      if (isLoadingFinish) {
+        print("load more");
+        _communityController.fetchNextPage();
+        isLoadingFinish = false;
+        notifyListeners();
       }
+    }
+  }
 
-      notifyListeners();
-    }).onError((error, stackTrace) async {
-      await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
-    });
+  void queryCommunityCategories(
+      {required AmityCommunityCategorySortOption sortOption,
+      bool enablenotifylistener = false}) async {
+    print("queryCommunityCategories");
+    _communityCategoryController = PagingController(
+      pageFuture: (token) => AmitySocialClient.newCommunityRepository()
+          .getCategories()
+          .sortBy(sortOption)
+          .includeDeleted(false)
+          .getPagingData(token: token, limit: 20),
+      pageSize: 20,
+    )..addListener(
+        () {
+          if (_communityCategoryController.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+            amityCategories.clear();
+            amityCategories.addAll(_communityCategoryController.loadedItems);
+            if (enablenotifylistener) {
+              notifyListeners();
+            }
+            isLoadingFinish = true;
+            //update widgets
+          } else {
+            //error on pagination controller
+            //update widgets
+          }
+        },
+      );
+
+    // fetch the data for the first page
+    _communityCategoryController.fetchNextPage();
+
+    categoryScrollcontroller.addListener(categoryPagination);
+  }
+
+  var isLoadingFinish = true;
+  void categoryPagination() {
+    if ((categoryScrollcontroller.position.pixels >=
+        (categoryScrollcontroller.position.maxScrollExtent - 100))) {
+      if (isLoadingFinish) {
+        print("load more");
+        _communityCategoryController.fetchNextPage();
+        isLoadingFinish = false;
+        notifyListeners();
+      }
+    }
   }
 }

@@ -202,7 +202,7 @@ class UserWidget extends StatelessWidget {
               },
               leading: FadeAnimation(child: getAvatarImage(user.avatarUrl!)),
               title: Text(
-                user.displayName ?? "Category",
+                user.displayName ?? "",
                 style: Provider.of<AmityUIConfiguration>(context)
                     .titleTextStyle
                     .copyWith(fontWeight: FontWeight.bold),

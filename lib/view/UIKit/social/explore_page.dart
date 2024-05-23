@@ -37,8 +37,8 @@ class _CommunityPageState extends State<CommunityPage> {
     var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
     explorePageVM.getRecommendedCommunities();
     explorePageVM.getTrendingCommunities();
-    explorePageVM
-        .queryCommunityCategories(AmityCommunityCategorySortOption.NAME);
+    explorePageVM.queryCommunityCategories(
+        sortOption: AmityCommunityCategorySortOption.NAME);
   }
 
   @override
@@ -634,8 +634,25 @@ class CategorySection extends StatelessWidget {
   }
 }
 
-class CategoryListPage extends StatelessWidget {
+class CategoryListPage extends StatefulWidget {
   const CategoryListPage({super.key});
+
+  @override
+  State<CategoryListPage> createState() => _CategoryListPageState();
+}
+
+class _CategoryListPageState extends State<CategoryListPage> {
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
+
+      explorePageVM.queryCommunityCategories(
+          sortOption: AmityCommunityCategorySortOption.NAME,
+          enablenotifylistener: true);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -708,8 +725,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
   @override
   void initState() {
     super.initState();
-    _viewModel = Provider.of<ExplorePageVM>(context, listen: false);
-    _viewModel.getCommunitiesInCategory(widget.category.categoryId!);
+    Future.delayed(Duration.zero, () {
+      _viewModel = Provider.of<ExplorePageVM>(context, listen: false);
+      _viewModel.getCommunitiesInCategory(
+          categoryId: widget.category.categoryId!, enableNotifyListener: true);
+    });
   }
 
   @override
@@ -732,9 +752,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
           builder: (context, vm, _) {
             return ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: vm.communities.length,
+              itemCount: vm.amityCommunities.length,
+              controller: vm.communityScrollcontroller,
               itemBuilder: (context, index) {
-                final community = vm.communities[index];
+                final community = vm.amityCommunities[index];
                 return ListTile(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(

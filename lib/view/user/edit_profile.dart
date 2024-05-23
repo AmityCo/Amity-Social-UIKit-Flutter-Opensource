@@ -15,7 +15,7 @@ import '../../viewmodel/custom_image_picker.dart';
 import '../../viewmodel/user_feed_viewmodel.dart';
 
 class ProfileScreen extends StatefulWidget {
-   ProfileScreen({super.key, required this.user,this.customActions});
+  ProfileScreen({super.key, required this.user, this.customActions});
 
   final AmityUser user;
   Widget? customActions = Container();
@@ -281,7 +281,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                             controller: _displayNameController,
                             title: 'Display name',
                             hintText: 'Display name',
-                            maxCharacters: 180,
+                            maxCharacters: 50,
                           ),
 
                           TextFieldWithCounter(

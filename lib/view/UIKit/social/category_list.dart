@@ -81,8 +81,9 @@ class CategoryListState extends State<CategoryList> {
     return Consumer<CategoryVM>(builder: (context, vm, _) {
       return ThemeConfig(
         child: Scaffold(
-          backgroundColor:
-              Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: Colors.transparent,
@@ -127,9 +128,9 @@ class CategoryListState extends State<CategoryList> {
                           getLength() < 1
                               ? Center(
                                   child: CircularProgressIndicator(
-                                    color:
-                                        Provider.of<AmityUIConfiguration>(context)
-                                            .primaryColor,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .primaryColor,
                                   ),
                                 )
                               : Expanded(
@@ -138,7 +139,8 @@ class CategoryListState extends State<CategoryList> {
                                     itemCount: getLength(),
                                     itemBuilder: (context, index) {
                                       return CategoryWidget(
-                                        category: Provider.of<CategoryVM>(context,
+                                        category: Provider.of<CategoryVM>(
+                                                context,
                                                 listen: false)
                                             .getCategories()[index],
                                         theme: theme,
@@ -193,14 +195,9 @@ class CategoryWidget extends StatelessWidget {
         child: ListTile(
           contentPadding: const EdgeInsets.all(0),
           onTap: () {
-            Provider.of<CategoryVM>(context, listen: false).setSelectedCategory(
-                Provider.of<CategoryVM>(context, listen: false)
-                    .getCategoryIds()[index]);
-            textController.text =
-                Provider.of<CategoryVM>(context, listen: false)
-                    .getSelectedCommunityName(
-                        Provider.of<CategoryVM>(context, listen: false)
-                            .getCategoryIds()[index]);
+            Provider.of<CategoryVM>(context, listen: false)
+                .setSelectedCategory(category.categoryId!);
+            textController.text = category.name ?? "";
             Navigator.of(context).pop();
           },
           leading: FadeAnimation(

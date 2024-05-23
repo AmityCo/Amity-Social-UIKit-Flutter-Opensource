@@ -147,7 +147,6 @@ class UserProfileScreenState extends State<UserProfileScreen>
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 64,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

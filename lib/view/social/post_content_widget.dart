@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart'
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
@@ -1155,27 +1156,45 @@ Widget _listMediaGrid(List<AmityPost> files) {
   );
 }
 
-class TextPost extends StatelessWidget {
+class TextPost extends StatefulWidget {
   final AmityPost post;
   final FeedType feedType;
+
   const TextPost({Key? key, required this.post, required this.feedType})
       : super(key: key);
+
+  @override
+  _TextPostState createState() => _TextPostState();
+}
+
+class _TextPostState extends State<TextPost> {
+  bool isExpanded = false;
 
   Widget buildURLWidget(String text) {
     return Builder(builder: (context) {
       return LinkWell(
         text,
         style: TextStyle(
-          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-          fontSize: 15,
-        ),
+            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+            fontSize: 15,
+            fontWeight: FontWeight.bold),
       );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final textdata = post.data as TextData;
+    final textData = widget.post.data as TextData;
+    final String text = textData.text ?? "";
+    final bool shouldShorten = text.length > 180 && !isExpanded;
+
+    TextStyle linkStyle = TextStyle(
+      color: Provider.of<AmityUIConfiguration>(context, listen: false)
+          .appColors
+          .primary,
+      fontSize: 15,
+    );
+
     return Column(
       children: [
         Row(
@@ -1184,38 +1203,51 @@ class TextPost extends StatelessWidget {
               child: Wrap(
                 alignment: WrapAlignment.start,
                 children: [
-                  GestureDetector(
-                      onTap: () {
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => CommentScreen(
-                        //           amityPost: post,
-                        //           theme: Theme.of(context),
-                        //           isFromFeed: true,
-                        //           onSharePost: (post) {},
-                        //         )));
-                      },
-                      child: post.type == AmityDataType.TEXT
-                          ? textdata.text == null
-                              ? const SizedBox()
-                              : textdata.text!.isEmpty
-                                  ? const SizedBox()
-                                  : Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 16),
-                                      child: Container(
-                                        child: buildURLWidget(
-                                            textdata.text.toString()),
-                                      )
-                                      // Text(
-                                      //   textdata.text.toString(),
-                                      //   style:
-                                      //       const TextStyle(fontSize: 18),
-                                      // ),
-                                      )
-                          : Container()),
+                  widget.post.type == AmityDataType.TEXT && text.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: shouldShorten
+                              ? RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(text: text.substring(0, 250)),
+                                      TextSpan(
+                                        text: " ... Load more",
+                                        style: linkStyle,
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            setState(() {
+                                              isExpanded = true;
+                                            });
+                                          },
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    if (text.length > 180) {
+                                      setState(() {
+                                        isExpanded = false;
+                                      });
+                                    }
+                                  },
+                                  child: Text(
+                                    text,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                        )
+                      : const SizedBox(),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ],

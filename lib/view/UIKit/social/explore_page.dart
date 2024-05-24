@@ -25,7 +25,7 @@ class _CommunityPageState extends State<CommunityPage> {
     explorePageVM.getRecommendedCommunities();
     explorePageVM.getTrendingCommunities();
     explorePageVM.queryCommunityCategories(
-        sortOption: AmityCommunityCategorySortOption.NAME);
+        sortOption: AmityCommunityCategorySortOption.FIRST_CREATED);
   }
 
   @override

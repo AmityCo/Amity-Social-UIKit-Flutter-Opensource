@@ -1214,7 +1214,7 @@ class _TextPostState extends State<TextPost> {
                                       fontSize: 15,
                                     ),
                                     children: <TextSpan>[
-                                      TextSpan(text: text.substring(0, 250)),
+                                      TextSpan(text: text.substring(0, 180)),
                                       TextSpan(
                                         text: " ... Load more",
                                         style: linkStyle,

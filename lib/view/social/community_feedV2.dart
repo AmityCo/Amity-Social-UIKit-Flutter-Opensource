@@ -208,8 +208,17 @@ class EditProfileButton extends StatefulWidget {
 class _EditProfileButtonState extends State<EditProfileButton> {
   @override
   Widget build(BuildContext context) {
-    return !widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-        ? widget.community.isJoined!
+    final hideEditProfile = !Provider.of<AmityUIConfiguration>(context)
+            .widgetConfig
+            .showEditProfile ||
+        !widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY);
+    final hideJoinButton = !Provider.of<AmityUIConfiguration>(context)
+            .widgetConfig
+            .showJoinButton ||
+        widget.community.isJoined!;
+
+    return (hideEditProfile)
+        ? (hideJoinButton)
             ? const SizedBox()
             : InkWell(
                 onTap: () {
@@ -882,19 +891,26 @@ class AppScaffold extends StatelessWidget {
             actions: [
               // Text(
               //     "${sizeVM.getCommunityDetailSectionSize()}"),
-              IconButton(
+              if (Provider.of<AmityUIConfiguration>(context)
+                  .widgetConfig
+                  .showCommunityMoreButton)
+                IconButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
                         builder: (context2) => CommunitySettingPage(
-                              community: amityCommunity,
-                            )));
+                          community: amityCommunity,
+                        ),
+                      ),
+                    );
                   },
                   icon: Icon(
                     Icons.more_horiz_rounded,
                     color: Provider.of<AmityUIConfiguration>(context)
                         .appColors
                         .base,
-                  ))
+                  ),
+                ),
             ],
           ),
           body: RefreshIndicator(

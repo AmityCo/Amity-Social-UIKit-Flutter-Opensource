@@ -471,6 +471,8 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
   }
 
   Widget communityInfo(AmityCommunity community) {
+    final chatButton = Provider.of<AmityUIConfiguration>(context).chatButton;
+
     return Column(
       children: [
         Row(
@@ -479,30 +481,40 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
           children: [
             Column(
               children: [
-                Text("${Provider.of<CommuFeedVM>(context).postCount}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .base,
-                    )),
-                const Text('posts',
-                    style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
+                Text(
+                  "${Provider.of<CommuFeedVM>(context).postCount}",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                  ),
+                ),
+                const Text(
+                  'posts',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xff898E9E),
+                  ),
+                ),
               ],
             ),
             Container(
               color: const Color(0xffE5E5E5), // Divider color
               height: 20,
               width: 1,
-
               margin: const EdgeInsets.symmetric(horizontal: 8),
             ),
             GestureDetector(
               onTap: () {
                 // Navigate to Members Page or perform an action
-                Navigator.of(context).push(MaterialPageRoute(
+                Navigator.of(context).push(
+                  MaterialPageRoute(
                     builder: (context) => MemberManagementPage(
-                        communityId: widget.community.communityId!)));
+                      communityId: widget.community.communityId!,
+                    ),
+                  ),
+                );
               },
               child: Column(
                 children: [
@@ -515,12 +527,18 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                           .base,
                     ),
                   ),
-                  Text(community.membersCount == 1 ? 'member' : 'members',
-                      style: const TextStyle(
-                          fontSize: 16, color: Color(0xff898E9E)))
+                  Text(
+                    community.membersCount == 1 ? 'member' : 'members',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xff898E9E),
+                    ),
+                  ),
                 ],
               ),
             ),
+            if (chatButton != null) const Spacer(),
+            if (chatButton != null) chatButton,
           ],
         ),
       ],

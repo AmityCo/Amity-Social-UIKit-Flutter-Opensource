@@ -26,6 +26,7 @@ class AmityUIConfiguration extends ChangeNotifier {
 
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
+  Widget? chatButton;
 
   void updateUI() {
     notifyListeners();

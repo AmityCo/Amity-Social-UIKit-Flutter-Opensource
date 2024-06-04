@@ -400,6 +400,7 @@ class CommentTextField extends StatelessWidget {
             ),
           ]),
       child: ListTile(
+        horizontalTitleGap: 0,
         contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         leading: getAvatarImage(
             Provider.of<AmityVM>(context).currentamityUser?.avatarUrl),
@@ -478,11 +479,18 @@ class CommentTextField extends StatelessWidget {
 
               commentTextEditController.clear();
             },
-            child: Text("Post  ",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .primaryColor))),
+            child: Container(
+              height: 30,
+              width: 50,
+              color: Colors.transparent,
+              child: Center(
+                child: Text("Post  ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .primaryColor)),
+              ),
+            )),
       ),
     );
   }

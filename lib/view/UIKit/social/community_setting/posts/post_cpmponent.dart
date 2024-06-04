@@ -297,9 +297,7 @@ class PostMedia extends StatelessWidget {
                     onTap: () {
                       log("delete file...");
                       Provider.of<CreatePostVMV2>(context, listen: false)
-                          .deselectFile(Provider.of<CreatePostVMV2>(context,
-                                  listen: false)
-                              .files[index]);
+                          .deselectFile(files[index]);
                     },
                     child: const Icon(Icons.close),
                   ),

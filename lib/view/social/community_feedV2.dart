@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
@@ -894,6 +895,39 @@ class AppScaffold extends StatelessWidget {
         child: Scaffold(
           backgroundColor:
               Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
+          floatingActionButton: (amityCommunity.isJoined!)
+              ? FloatingActionButton(
+                  shape: const CircleBorder(),
+                  onPressed: () async {
+                    await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context2) => AmityCreatePostV2Screen(
+                              community: amityCommunity,
+                              feedType: FeedType.community,
+                            )));
+                    Provider.of<CommuFeedVM>(context, listen: false)
+                        .getPostCount(amityCommunity);
+                    Provider.of<CommuFeedVM>(context, listen: false)
+                        .getReviewingPostCount(amityCommunity);
+                    Provider.of<CommuFeedVM>(context, listen: false)
+                        .initAmityCommunityFeed(amityCommunity.communityId!);
+                    Provider.of<CommuFeedVM>(context, listen: false)
+                        .initAmityCommunityImageFeed(
+                            amityCommunity.communityId!);
+                    Provider.of<CommuFeedVM>(context, listen: false)
+                        .initAmityCommunityVideoFeed(
+                            amityCommunity.communityId!);
+                    Provider.of<CommuFeedVM>(context, listen: false)
+                        .initAmityPendingCommunityFeed(
+                            amityCommunity.communityId!,
+                            AmityFeedType.REVIEWING);
+                  },
+                  backgroundColor:
+                      Provider.of<AmityUIConfiguration>(context).primaryColor,
+                  child: Provider.of<AmityUIConfiguration>(context)
+                      .iconConfig
+                      .postIcon(iconSize: 28, color: Colors.white),
+                )
+              : null,
           appBar: AppBar(
             scrolledUnderElevation: 0,
             title: Text(title),

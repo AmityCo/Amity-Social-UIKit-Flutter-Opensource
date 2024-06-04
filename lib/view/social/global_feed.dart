@@ -1240,13 +1240,21 @@ class CommentActionComponent extends StatelessWidget {
                             Provider.of<AmityUIConfiguration>(context)
                                 .iconConfig
                                 .likeIcon(),
-                            const Text(
-                              " Like",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xff898E9E),
-                              ),
-                            ),
+                            snapshot.data!.reactionCount! > 0
+                                ? Text(
+                                    " ${snapshot.data!.reactionCount!}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff898E9E),
+                                    ),
+                                  )
+                                : const Text(
+                                    " Like",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff898E9E),
+                                    ),
+                                  ),
                           ],
                         ),
                       )
@@ -1261,13 +1269,21 @@ class CommentActionComponent extends StatelessWidget {
                                 Provider.of<AmityUIConfiguration>(context)
                                     .iconConfig
                                     .likeIcon(),
-                                const Text(
-                                  " Like",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff898E9E),
-                                  ),
-                                ),
+                                snapshot.data!.reactionCount! > 0
+                                    ? Text(
+                                        " ${snapshot.data!.reactionCount!}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xff898E9E),
+                                        ),
+                                      )
+                                    : const Text(
+                                        " Like",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xff898E9E),
+                                        ),
+                                      ),
                               ],
                             ),
                           )

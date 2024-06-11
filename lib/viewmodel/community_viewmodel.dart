@@ -347,7 +347,9 @@ class CommunityVM extends ChangeNotifier {
     AmitySocialClient.newCommunityRepository()
         .updateCommunity(communityId)
         .isPublic(ispublic)
-        .isPostReviewEnabled(isEnabled)
+        .postSetting(isEnabled
+            ? AmityCommunityPostSettings.ADMIN_REVIEW_POST_REQUIRED
+            : AmityCommunityPostSettings.ANYONE_CAN_POST)
         .update()
         .then((value) {
       //handle result

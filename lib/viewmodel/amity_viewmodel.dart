@@ -54,7 +54,7 @@ class AmityVM extends ChangeNotifier {
             .submit()
             .then((value) async {
           log("success");
-
+          print("current amity user :$value");
           currentamityUser = value;
           notifyListeners();
         }).catchError((error, stackTrace) async {
@@ -71,7 +71,7 @@ class AmityVM extends ChangeNotifier {
             .submit()
             .then((value) async {
           log("success");
-
+          print("current amity user :$value");
           getUserByID(userID);
           currentamityUser = value;
           notifyListeners();

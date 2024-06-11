@@ -43,6 +43,7 @@ class PostVM extends ChangeNotifier {
           .getComments()
           .post(postID)
           .sortBy(_sortOption)
+          .parentId(null)
           .includeDeleted(true)
           .getPagingData(token: token, limit: 20),
       pageSize: 20,

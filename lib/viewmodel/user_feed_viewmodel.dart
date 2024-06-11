@@ -1,13 +1,10 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../components/alert_dialog.dart';
-import 'amity_viewmodel.dart';
 
 class UserFeedVM extends ChangeNotifier {
   MediaType _selectedMediaType = MediaType.photos;
@@ -46,10 +43,8 @@ class UserFeedVM extends ChangeNotifier {
     log("getUser=> $userId");
     if (userId == AmityCoreClient.getUserId()) {
       log("isCurrentUser:$userId");
-      amityUser = Provider.of<AmityVM>(
-              NavigationService.navigatorKey.currentContext!,
-              listen: false)
-          .currentamityUser;
+      amityUser = AmityCoreClient.getCurrentUser();
+      print("get user from currentamityUser :$amityUser");
     } else {
       log("isNotCurrentUser:$userId");
       if (otherUser != null) {
@@ -299,6 +294,7 @@ class UserFeedVM extends ChangeNotifier {
   }
 
   Future<void> unfollowUser(AmityUser user) async {
+    print(user.userId);
     await AmityCoreClient.newUserRepository()
         .relationship()
         .unfollow(user.userId!)

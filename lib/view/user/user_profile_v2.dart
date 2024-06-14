@@ -23,12 +23,14 @@ class UserProfileScreen extends StatefulWidget {
   final String amityUserId;
   bool? isEnableAppbar = true;
   Widget? customActions = Container();
+  Widget? customProfile= Container();
 
   UserProfileScreen(
       {Key? key,
       this.amityUser,
       this.isEnableAppbar,
       this.customActions,
+      this.customProfile,
       required this.amityUserId})
       : super(key: key);
 
@@ -151,7 +153,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              FadedScaleAnimation(
+                              widget.customProfile!=null&&isCurrentUser?widget.customProfile!:FadedScaleAnimation(
                                   child: getAvatarImage(
                                       isCurrentUser
                                           ? Provider.of<AmityVM>(

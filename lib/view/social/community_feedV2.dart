@@ -929,6 +929,9 @@ class AppScaffold extends StatelessWidget {
                 )
               : null,
           appBar: AppBar(
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
             scrolledUnderElevation: 0,
             title: Text(title),
             leading: IconButton(

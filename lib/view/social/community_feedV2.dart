@@ -472,7 +472,15 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
   }
 
   Widget communityInfo(AmityCommunity community) {
-    final chatButton = Provider.of<AmityUIConfiguration>(context).chatButton;
+    late final Widget chatButton;
+    if (community.metadata == null ||
+        community.metadata!['communityId'] == null ||
+        community.metadata!['communityId'] is! int) {
+      chatButton = const SizedBox.shrink();
+    } else {
+      chatButton = Provider.of<AmityUIConfiguration>(context)
+          .buildChatButton(community.metadata!['communityId'] as int);
+    }
 
     return Column(
       children: [
@@ -538,8 +546,8 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 ],
               ),
             ),
-            if (chatButton != null) const Spacer(),
-            if (chatButton != null) chatButton,
+            const Spacer(),
+            chatButton,
           ],
         ),
       ],

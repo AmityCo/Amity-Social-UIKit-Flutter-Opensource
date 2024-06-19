@@ -20,7 +20,6 @@ class AmityVM extends ChangeNotifier {
             .then((value) async {
           log("success");
 
-          getUserByID(userID);
           currentamityUser = value;
           notifyListeners();
         }).catchError((error, stackTrace) async {
@@ -72,7 +71,7 @@ class AmityVM extends ChangeNotifier {
             .then((value) async {
           log("success");
           print("current amity user :$value");
-          getUserByID(userID);
+
           currentamityUser = value;
           notifyListeners();
         }).catchError((error, stackTrace) async {
@@ -99,16 +98,6 @@ class AmityVM extends ChangeNotifier {
             .showAlertErrorDialog(title: "Error!", message: error.toString());
       });
     }
-  }
-
-  Future<void> getUserByID(String id) async {
-    await AmityCoreClient.newUserRepository().getUser(id).then((user) {
-      log("IsGlobalban: ${user.isGlobalBan}");
-    }).onError((error, stackTrace) async {
-      log(error.toString());
-      await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
-    });
   }
 
   late Function(AmityPost) onShareButtonPressed;

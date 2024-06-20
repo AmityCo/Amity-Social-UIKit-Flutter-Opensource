@@ -20,7 +20,7 @@ class AmityUIConfiguration extends ChangeNotifier {
     fontSize: 17,
     color: Colors.black,
     fontWeight: FontWeight.w600,
-  );
+  );s
   TextStyle hintTextStyle = const TextStyle(
     fontSize: 15,
     color: Colors.black,
@@ -31,7 +31,7 @@ class AmityUIConfiguration extends ChangeNotifier {
   AmityLogicConfig logicConfig = AmityLogicConfig();
   Widget Function(int) buildChatButton =
       (communityId) => const SizedBox.shrink();
-
+  bool currentUserImageUrl = false;
   Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
   // Future<AmityPost> Function(AmityPost) onCustomPostModel = (posts) async => posts;
   void updateUI() {

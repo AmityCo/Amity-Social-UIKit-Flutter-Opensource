@@ -45,6 +45,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
     super.initState();
 
     if (widget.amityUser != null) {
+
       Provider.of<UserFeedVM>(context, listen: false).initUserFeed(
           amityUser: widget.amityUser, userId: widget.amityUser!.userId!);
       Provider.of<UserFeedVM>(context, listen: false).userFeedTabController =

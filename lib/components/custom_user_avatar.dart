@@ -6,13 +6,23 @@ import '../viewmodel/configuration_viewmodel.dart';
 
 Widget getAvatarImage(String? url, {double? radius = 20, String? fileId}) {
   return Builder(builder: (context) {
-    return CircleAvatar(
+    return Provider.of<AmityUIConfiguration>(context)
+        .currentUserImageUrl==true?CircleAvatar(
+        radius: radius,
+        backgroundColor:
+        Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
+        backgroundImage: url != null&&url!='' ? NetworkImage(url) : null,
+        child: url != null&&url!='' ? const SizedBox()
+            : Icon(
+          Icons.person,
+          color: Colors.white,
+          size: radius! * 1.5,
+        )):CircleAvatar(
         radius: radius,
         backgroundColor:
             Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
         backgroundImage: url != null ? NetworkImage("$url?size=medium") : null,
-        child: url != null
-            ? const SizedBox()
+        child: url != null ? const SizedBox()
             : Icon(
                 Icons.person,
                 color: Colors.white,

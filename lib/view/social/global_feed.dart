@@ -54,10 +54,13 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
     super.initState();
     var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
     var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
-
     myCommunityList.initMyCommunity();
-
-    globalFeedProvider.initAmityGlobalfeed();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      globalFeedProvider.initAmityGlobalfeed(
+          onCustomPost:
+              Provider.of<AmityUIConfiguration>(context, listen: false)
+                  .onCustomPost);
+    });
   }
 
   @override
@@ -78,9 +81,12 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
           myCommunityList.initMyCommunity();
 
-          globalFeedProvider.initAmityGlobalfeed(
-              // isCustomPostRanking: widget.isCustomPostRanking
-              isCustomPostRanking: false);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            globalFeedProvider.initAmityGlobalfeed(
+                onCustomPost:
+                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                        .onCustomPost);
+          });
         },
         child: Container(
           color:
@@ -327,8 +333,14 @@ class _PostWidgetState
             Provider.of<UserVM>(context, listen: false)
                 .blockUser(widget.post.postedUserId!, () {
               if (widget.feedType == FeedType.global) {
-                Provider.of<FeedVM>(context, listen: false)
-                    .initAmityGlobalfeed();
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Provider.of<FeedVM>(context, listen: false)
+                      .initAmityGlobalfeed(
+                          onCustomPost: Provider.of<AmityUIConfiguration>(
+                                  context,
+                                  listen: false)
+                              .onCustomPost);
+                });
               } else if (widget.feedType == FeedType.community) {
                 Provider.of<CommuFeedVM>(context, listen: false)
                     .initAmityCommunityFeed(
@@ -455,10 +467,10 @@ class _PostWidgetState
           ?.avatarImage
           ?.fileUrl;
     } else {
-      return (widget.post.postedUser!.userId !=
-              AmityCoreClient.getCurrentUser().userId)
+      return (widget.post.postedUser!.userId != AmityCoreClient.getCurrentUser().userId)
           ? (widget.post.postedUser?.avatarUrl)
-          : (Provider.of<AmityVM>(context).currentamityUser!.avatarUrl);
+          :Provider.of<AmityUIConfiguration>(context)
+    .currentUserImageUrl==true?(widget.post.postedUser?.avatarUrl):(Provider.of<AmityVM>(context).currentamityUser!.avatarUrl);
     }
   }
 

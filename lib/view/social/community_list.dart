@@ -243,9 +243,12 @@ class CommunityWidget extends StatelessWidget {
                               print(i.displayName);
                             }
                             print(myCommunityList.amityCommunities);
-                            globalFeedProvider.initAmityGlobalfeed(
-                                // isCustomPostRanking: widget.isCustomPostRanking
-                                isCustomPostRanking: false);
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              globalFeedProvider.initAmityGlobalfeed(
+                                  onCustomPost:
+                                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                                      .onCustomPost);
+                            });
                           });
                         } else {
                           Provider.of<CommunityVM>(context, listen: false)
@@ -264,9 +267,12 @@ class CommunityWidget extends StatelessWidget {
                                 print(">>>>>>>>>>>>>>>${i.displayName}");
                               }
                               print(myCommunityList.amityCommunities);
-                              globalFeedProvider.initAmityGlobalfeed(
-                                  // isCustomPostRanking: widget.isCustomPostRanking
-                                  isCustomPostRanking: false);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                globalFeedProvider.initAmityGlobalfeed(
+                                    onCustomPost:
+                                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                                        .onCustomPost);
+                              });
                             },
                           );
                         }

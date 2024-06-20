@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/alert_dialog.dart';
+import 'configuration_viewmodel.dart';
 
 enum Feedtype { global, commu }
 
@@ -15,6 +17,7 @@ class FeedVM extends ChangeNotifier {
   final scrollcontroller = ScrollController();
 
   bool loadingNexPage = false;
+
   List<AmityPost> get getAmityPosts {
     return _amityGlobalFeedPosts;
   }
@@ -49,7 +52,10 @@ class FeedVM extends ChangeNotifier {
     });
   }
 
-  Future<void> initAmityGlobalfeed({bool isCustomPostRanking = false}) async {
+  Future<void> initAmityGlobalfeed(
+      {bool isCustomPostRanking = false,
+      required Future<List<AmityPost>> Function(List<AmityPost>)
+          onCustomPost}) async {
     isLoading = true;
     print("isloading1: $isLoading");
     print("isCustomPostRanking:$isCustomPostRanking");
@@ -64,8 +70,10 @@ class FeedVM extends ChangeNotifier {
           () async {
             log("getCustomRankingGlobalFeed listener...");
             if (_controllerGlobal?.error == null) {
+              final feedItems =
+                  await onCustomPost(_controllerGlobal!.loadedItems);
               _amityGlobalFeedPosts.clear();
-              _amityGlobalFeedPosts.addAll(_controllerGlobal!.loadedItems);
+              _amityGlobalFeedPosts.addAll(feedItems);
 
               isLoading = false;
               notifyListeners();
@@ -91,8 +99,10 @@ class FeedVM extends ChangeNotifier {
           () async {
             log("initAmityGlobalfeed listener...");
             if (_controllerGlobal?.error == null) {
+              final feedItems =
+                  await onCustomPost(_controllerGlobal!.loadedItems);
               _amityGlobalFeedPosts.clear();
-              _amityGlobalFeedPosts.addAll(_controllerGlobal!.loadedItems);
+              _amityGlobalFeedPosts.addAll(feedItems);
 
               isLoading = false;
               notifyListeners();

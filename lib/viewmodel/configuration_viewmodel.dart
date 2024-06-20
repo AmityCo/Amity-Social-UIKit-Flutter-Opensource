@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -27,7 +30,10 @@ class AmityUIConfiguration extends ChangeNotifier {
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
   Widget? chatButton;
+  bool? currentUserImageUrl;
 
+  Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
+  // Future<AmityPost> Function(AmityPost) onCustomPostModel = (posts) async => posts;
   void updateUI() {
     notifyListeners();
   }

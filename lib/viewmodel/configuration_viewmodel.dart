@@ -29,8 +29,8 @@ class AmityUIConfiguration extends ChangeNotifier {
 
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
-  Widget? chatButton;
-  bool? currentUserImageUrl;
+  Widget Function(int) buildChatButton =
+      (communityId) => const SizedBox.shrink();
 
   Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
   // Future<AmityPost> Function(AmityPost) onCustomPostModel = (posts) async => posts;

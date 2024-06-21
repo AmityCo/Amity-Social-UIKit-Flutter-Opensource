@@ -501,7 +501,18 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                     ),
                                   ),
                                 ],
-                              )
+                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(top:15.0),
+                          child: Provider.of<AmityUIConfiguration>(context).buildSocialRating(isCurrentUser
+                              ?Provider.of<AmityVM>(
+                            context,
+                          ).currentamityUser!.userId!
+                              : Provider.of<UserFeedVM>(context)
+                              .amityUser!
+                              .userId!) ?? Container(),
+                        ),
+
                       ],
                     ),
                   ),
@@ -805,6 +816,7 @@ class AppScaffold extends StatelessWidget {
           ],
         ),
         body: RefreshIndicator(
+
           color: Provider.of<AmityUIConfiguration>(context).primaryColor,
           onRefresh: () async {
             await Provider.of<UserFeedVM>(context, listen: false)

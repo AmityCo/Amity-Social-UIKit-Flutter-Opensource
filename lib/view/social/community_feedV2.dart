@@ -903,7 +903,11 @@ class AppScaffold extends StatelessWidget {
         child: Scaffold(
           backgroundColor:
               Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
-          floatingActionButton: (amityCommunity.isJoined!)
+          floatingActionButton: (Provider.of<AmityUIConfiguration>(context)
+                      .widgetConfig
+                      .showCommunityPostButton &&
+                  (amityCommunity.onlyAdminCanPost == false) &&
+                  amityCommunity.isJoined!)
               ? FloatingActionButton(
                   shape: const CircleBorder(),
                   onPressed: () async {

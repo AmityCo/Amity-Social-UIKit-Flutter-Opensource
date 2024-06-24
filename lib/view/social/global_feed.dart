@@ -415,14 +415,11 @@ class _PostWidgetState
       context,
       listen: false,
     ).logicConfig.replaceModeratorProfileNavigation;
-    final userRoles = widget.post.postedUser!.roles!;
-    final isModerator = userRoles.contains('community-moderator') ||
-        userRoles.contains('global-admin');
     final targetingCommunity =
         widget.post.targetType == AmityPostTargetType.COMMUNITY;
 
     if (replaceModeratorProfileNavigation &&
-        isModerator &&
+        _isModerator &&
         targetingCommunity) {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -455,22 +452,22 @@ class _PostWidgetState
     final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
         .logicConfig
         .replaceModeratorProfile;
-    final userRoles = widget.post.postedUser!.roles!;
-    final isModerator = userRoles.contains('community-moderator') ||
-        userRoles.contains('global-admin');
     final targetingCommunity =
         widget.post.targetType == AmityPostTargetType.COMMUNITY;
 
-    if (replaceModeratorProfile && isModerator && targetingCommunity) {
+    if (replaceModeratorProfile && _isModerator && targetingCommunity) {
       return (widget.post.target as CommunityTarget)
           .targetCommunity
           ?.avatarImage
           ?.fileUrl;
     } else {
-      return (widget.post.postedUser!.userId != AmityCoreClient.getCurrentUser().userId)
+      return (widget.post.postedUser!.userId !=
+              AmityCoreClient.getCurrentUser().userId)
           ? (widget.post.postedUser?.avatarUrl)
-          :Provider.of<AmityUIConfiguration>(context)
-    .currentUserImageUrl==true?(widget.post.postedUser?.avatarUrl):(Provider.of<AmityVM>(context).currentamityUser!.avatarUrl);
+          : Provider.of<AmityUIConfiguration>(context).currentUserImageUrl ==
+                  true
+              ? (widget.post.postedUser?.avatarUrl)
+              : (Provider.of<AmityVM>(context).currentamityUser!.avatarUrl);
     }
   }
 
@@ -478,13 +475,10 @@ class _PostWidgetState
     final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
         .logicConfig
         .replaceModeratorProfile;
-    final userRoles = widget.post.postedUser!.roles!;
-    final isModerator = userRoles.contains('community-moderator') ||
-        userRoles.contains('global-admin');
     final targetingCommunity =
         widget.post.targetType == AmityPostTargetType.COMMUNITY;
 
-    if (replaceModeratorProfile && isModerator && targetingCommunity) {
+    if (replaceModeratorProfile && _isModerator && targetingCommunity) {
       return ((widget.post.target as CommunityTarget)
               .targetCommunity
               ?.displayName) ??
@@ -495,6 +489,14 @@ class _PostWidgetState
           ? (widget.post.postedUser?.displayName ?? "Display name")
           : (Provider.of<AmityVM>(context).currentamityUser!.displayName ?? "");
     }
+  }
+
+  bool get _isModerator {
+    final postMetadata = widget.post.metadata;
+    final isModerator =
+        postMetadata != null && postMetadata['isCreateByAdmin'] == true;
+
+    return isModerator;
   }
 
   // @override
@@ -548,9 +550,10 @@ class _PostWidgetState
                                         .base),
                               ),
                             ),
-                            widget.showCommunity &&
+                            (widget.showCommunity &&
                                     widget.post.targetType ==
-                                        AmityPostTargetType.COMMUNITY
+                                        AmityPostTargetType.COMMUNITY &&
+                                    !_isModerator)
                                 ? Icon(
                                     Icons.arrow_right_rounded,
                                     color: Provider.of<AmityUIConfiguration>(
@@ -559,9 +562,10 @@ class _PostWidgetState
                                         .base,
                                   )
                                 : Container(),
-                            widget.showCommunity &&
+                            (widget.showCommunity &&
                                     widget.post.targetType ==
-                                        AmityPostTargetType.COMMUNITY
+                                        AmityPostTargetType.COMMUNITY &&
+                                    !_isModerator)
                                 ? GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).push(

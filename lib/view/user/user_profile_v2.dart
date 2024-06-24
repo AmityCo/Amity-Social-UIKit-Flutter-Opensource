@@ -503,7 +503,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                 ],
                               ),
                         Padding(
-                          padding: const EdgeInsets.only(top:15.0),
+                          padding:  EdgeInsets.only(top:Provider.of<AmityUIConfiguration>(context).buildSocialRating==null?15.0:6),
                           child: Provider.of<AmityUIConfiguration>(context).buildSocialRating(isCurrentUser
                               ?Provider.of<AmityVM>(
                             context,

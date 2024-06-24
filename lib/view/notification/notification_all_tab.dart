@@ -96,9 +96,9 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                 Expanded(
                                     child: Center(
                                   child: CircularProgressIndicator(
-                                    color:
-                                        Provider.of<AmityUIConfiguration>(context)
-                                            .primaryColor,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .primaryColor,
                                   ),
                                 ))
                               ],
@@ -137,7 +137,8 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                           // ),
                                           title: RichText(
                                             text: TextSpan(
-                                              style: theme.textTheme.titleMedium!
+                                              style: theme
+                                                  .textTheme.titleMedium!
                                                   .copyWith(
                                                 letterSpacing: 0.5,
                                               ),
@@ -146,7 +147,8 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                     text: "Follow Request",
                                                     style: theme
                                                         .textTheme.titleSmall!
-                                                        .copyWith(fontSize: 12)),
+                                                        .copyWith(
+                                                            fontSize: 12)),
                                               ],
                                             ),
                                           ),
@@ -169,7 +171,8 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                               Container(
                                   padding: const EdgeInsets.all(10),
                                   child: Text(
-                                    vm.notificationsObject?.data?.isEmpty ?? false
+                                    vm.notificationsObject?.data?.isEmpty ??
+                                            false
                                         ? ""
                                         : "This month",
                                     style: theme.textTheme.titleLarge,
@@ -181,12 +184,12 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                       physics:
                                           const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
-                                      itemCount:
-                                          vm.notificationsObject?.data?.length ??
-                                              0,
+                                      itemCount: vm.notificationsObject?.data
+                                              ?.length ??
+                                          0,
                                       itemBuilder: (context, index) {
-                                        var notificationItem =
-                                            vm.notificationsObject?.data?[index];
+                                        var notificationItem = vm
+                                            .notificationsObject?.data?[index];
                                         return FadeAnimation(
                                           child: Card(
                                             child: ListTile(
@@ -195,17 +198,32 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                       left: 16, right: 10),
                                               leading: GestureDetector(
                                                 onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) =>
-                                                              UserProfileScreen(
-                                                                amityUser:
-                                                                    AmityCoreClient
-                                                                        .getCurrentUser(),
-                                                                amityUserId:
-                                                                    AmityCoreClient
-                                                                        .getUserId(),
-                                                              )));
+                                                  if (AmityCoreClient
+                                                              .getUserId() ==
+                                                          AmityCoreClient
+                                                                  .getCurrentUser()
+                                                              .userId &&
+                                                      Provider.of<AmityUIConfiguration>(
+                                                              context,
+                                                              listen: false)
+                                                          .customUserProfileNavigate) {
+                                                    Provider.of<AmityUIConfiguration>(
+                                                            context,
+                                                            listen: false)
+                                                        .onUserProfile(context);
+                                                  } else {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (_) =>
+                                                                UserProfileScreen(
+                                                                  amityUser:
+                                                                      AmityCoreClient
+                                                                          .getCurrentUser(),
+                                                                  amityUserId:
+                                                                      AmityCoreClient
+                                                                          .getUserId(),
+                                                                )));
+                                                  }
                                                 },
                                                 child: FadedScaleAnimation(
                                                     child: getAvatarImage(
@@ -227,14 +245,15 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                                 notificationItem
                                                                         .actors ??
                                                                     []),
-                                                        style: theme
-                                                            .textTheme.titleSmall!
+                                                        style: theme.textTheme
+                                                            .titleSmall!
                                                             .copyWith(
                                                                 fontSize: 12)),
                                                     TextSpan(
                                                         text:
                                                             " ${vm.verbStringBuilder(
-                                                          notificationItem.verb!,
+                                                          notificationItem
+                                                              .verb!,
                                                         )} ",
                                                         style: TextStyle(
                                                             color: theme
@@ -246,8 +265,8 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                                 .verb!,
                                                             notificationItem
                                                                 .targetDisplayName),
-                                                        style: theme
-                                                            .textTheme.titleSmall!
+                                                        style: theme.textTheme
+                                                            .titleSmall!
                                                             .copyWith(
                                                           fontSize: 12,
                                                         )),
@@ -259,7 +278,8 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                     .notificationsObject!
                                                     .data![index]
                                                     .lastUpdate!),
-                                                style: theme.textTheme.titleSmall!
+                                                style: theme
+                                                    .textTheme.titleSmall!
                                                     .copyWith(
                                                   fontSize: 9,
                                                   color: theme.hintColor,
@@ -271,7 +291,8 @@ class _NotificationAllTabScreenState extends State<NotificationAllTabScreen> {
                                                   ? null
                                                   : Container(
                                                       margin:
-                                                          const EdgeInsets.all(0),
+                                                          const EdgeInsets.all(
+                                                              0),
                                                       child: AspectRatio(
                                                         aspectRatio: 1 / 1,
                                                         child: ClipRRect(

@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
+import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/follower_following_viewmodel.dart';
 
 class AmityFollowerScreen extends StatefulWidget {
   final String userId;
+
   const AmityFollowerScreen({
     Key? key,
     required this.userId,
@@ -79,18 +81,31 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                               builder: (context, snapshot) {
                                 return ListTile(
                                   onTap: () async {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ChangeNotifierProvider(
-                                                    create: (context) =>
-                                                        UserFeedVM(),
-                                                    child: UserProfileScreen(
-                                                        amityUser: snapshot
-                                                            .data!.sourceUser!,
-                                                        amityUserId: snapshot
-                                                            .data!
-                                                            .sourceUserId!))));
+                                    if (snapshot.data!.sourceUserId! ==
+                                            AmityCoreClient.getCurrentUser()
+                                                .userId &&
+                                        Provider.of<AmityUIConfiguration>(
+                                                context,
+                                                listen: false)
+                                            .customUserProfileNavigate) {
+                                      Provider.of<AmityUIConfiguration>(context,
+                                              listen: false)
+                                          .onUserProfile(context);
+                                    } else {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ChangeNotifierProvider(
+                                                      create: (context) =>
+                                                          UserFeedVM(),
+                                                      child: UserProfileScreen(
+                                                          amityUser:
+                                                              snapshot.data!
+                                                                  .sourceUser!,
+                                                          amityUserId: snapshot
+                                                              .data!
+                                                              .sourceUserId!))));
+                                    }
                                   },
                                   trailing: GestureDetector(
                                       onTap: () {

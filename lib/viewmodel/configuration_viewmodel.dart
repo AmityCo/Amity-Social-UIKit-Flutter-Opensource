@@ -35,7 +35,8 @@ class AmityUIConfiguration extends ChangeNotifier {
   bool currentUserImageUrl = false;
   Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
   Future<void> Function(String) onRefreshSocialRating = (userId) async {};
-
+  Future<void> Function(BuildContext) onUserProfile = (context) async {};
+  bool customUserProfileNavigate = false;
   // Future<AmityPost> Function(AmityPost) onCustomPostModel = (posts) async => posts;
   void updateUI() {
     notifyListeners();

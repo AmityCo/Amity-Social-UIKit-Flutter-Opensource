@@ -29,6 +29,7 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
   }
 
   var textcontroller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<SearchCommunityVM, UserVM>(
@@ -144,8 +145,8 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                                         .appColors
                                         .baseBackground,
                                 tabAlignment: TabAlignment.start,
-                                isScrollable:
-                                    true, // Ensure that the TabBar is scrollable
+                                isScrollable: true,
+                                // Ensure that the TabBar is scrollable
 
                                 labelColor:
                                     Provider.of<AmityUIConfiguration>(context)
@@ -324,13 +325,21 @@ class UserWidget extends StatelessWidget {
                 ],
               ),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
-                        create: (context) => UserFeedVM(),
-                        child: UserProfileScreen(
-                          amityUser: amityUser,
-                          amityUserId: amityUser.userId!,
-                        ))));
+                if (amityUser.userId! ==
+                        AmityCoreClient.getCurrentUser().userId &&
+                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                        .customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                      .onUserProfile(context);
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                          create: (context) => UserFeedVM(),
+                          child: UserProfileScreen(
+                            amityUser: amityUser,
+                            amityUserId: amityUser.userId!,
+                          ))));
+                }
               },
             ),
           );

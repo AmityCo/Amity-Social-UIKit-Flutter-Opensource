@@ -434,6 +434,9 @@ class _PostWidgetState
         ),
       );
     } else {
+      if (widget.post.postedUser!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
+        Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
+      }else{
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ChangeNotifierProvider(
@@ -444,7 +447,7 @@ class _PostWidgetState
             ),
           ),
         ),
-      );
+      );}
     }
   }
 

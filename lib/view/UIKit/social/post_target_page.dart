@@ -114,7 +114,12 @@ class _PostToPageState extends State<PostToPage> {
                               .userProfileTextColor),
                     ),
                   ),
-                  ...viewModel.amityCommunities.map((community) {
+                  ...viewModel.amityCommunities
+                      .where(
+                    (amityCommunity) =>
+                        amityCommunity.onlyAdminCanPost == false,
+                  )
+                      .map((community) {
                     return StreamBuilder<AmityCommunity>(
                         stream: community.listen.stream,
                         builder: (context, snapshot) {

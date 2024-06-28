@@ -186,23 +186,26 @@ class MemberList extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
+                if (viewModel.userList[index].user!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
+                }else{
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ChangeNotifierProvider(
                         create: (context) => UserFeedVM(),
                         child: UserProfileScreen(
                           amityUser: viewModel.userList[index].user!,
                           amityUserId: viewModel.userList[index].user!.userId!,
-                        ))));
+                        ))));}
               },
               leading: CircleAvatar(
                 backgroundColor: Provider.of<AmityUIConfiguration>(context)
                     .appColors
                     .primaryShade3,
                 backgroundImage: viewModel.userList[index].user?.avatarUrl ==
-                        null
+                        null||viewModel.userList[index].user?.avatarUrl==""
                     ? null
                     : NetworkImage(viewModel.userList[index].user!.avatarUrl!),
-                child: viewModel.userList[index].user?.avatarUrl != null
+                child: viewModel.userList[index].user?.avatarUrl != null&&viewModel.userList[index].user?.avatarUrl!=""
                     ? null
                     : const Icon(Icons.person, size: 20, color: Colors.white),
               ),
@@ -247,13 +250,19 @@ class ModeratorList extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
-                        create: (context) => UserFeedVM(),
-                        child: UserProfileScreen(
-                          amityUser: viewModel.moderatorList[index].user!,
-                          amityUserId: viewModel.userList[index].user!.userId!,
-                        ))));
+                if (viewModel.userList[index].user!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
+                }else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          ChangeNotifierProvider(
+                              create: (context) => UserFeedVM(),
+                              child: UserProfileScreen(
+                                amityUser: viewModel.moderatorList[index].user!,
+                                amityUserId: viewModel.userList[index].user!
+                                    .userId!,
+                              ))));
+                }
               },
               leading: CircleAvatar(
                 backgroundColor: Provider.of<AmityUIConfiguration>(context)

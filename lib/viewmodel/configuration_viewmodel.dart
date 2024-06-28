@@ -33,10 +33,14 @@ class AmityUIConfiguration extends ChangeNotifier {
       (communityId) => const SizedBox.shrink();
   Widget?Function(String) buildSocialRating  =(userId) => const SizedBox.shrink() ;
   bool currentUserImageUrl = false;
-  Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
+  static Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
+  static Future<List<AmityComment>> Function(List<AmityComment>) onCustomComment = (comments) async => comments;
+  static Future<List<AmityCommunityMember>> Function(List<AmityCommunityMember>) onCustomMember = (members) async => members;
+  static Future<List<AmityFollowRelationship>> Function(List<AmityFollowRelationship>) onCustomFollow = (follows) async => follows;
   Future<void> Function(String) onRefreshSocialRating = (userId) async {};
+  Future<void> Function(BuildContext) onUserProfile = (context) async {};
+  bool customUserProfileNavigate = false;
 
-  // Future<AmityPost> Function(AmityPost) onCustomPostModel = (posts) async => posts;
   void updateUI() {
     notifyListeners();
   }

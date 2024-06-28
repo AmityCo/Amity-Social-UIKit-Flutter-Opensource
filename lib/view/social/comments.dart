@@ -49,7 +49,7 @@ class CommentScreenState extends State<CommentScreen> {
   @override
   void initState() {
     Provider.of<ReplyVM>(context, listen: false).clearReply();
-    //query comment here
+    // query comment here
     Provider.of<PostVM>(context, listen: false)
         .getPost(widget.amityPost.postId!, widget.amityPost);
 
@@ -107,9 +107,15 @@ class CommentScreenState extends State<CommentScreen> {
     return Consumer<PostVM>(builder: (context, vm, _) {
       return StreamBuilder<AmityPost>(
           key: Key(postData.postId),
-          stream: vm.amityPost.listen.stream,
+          stream: vm.amityPost.listen.stream.asyncMap((event) async{
+            final newPost = await AmityUIConfiguration.onCustomPost([event]);
+            return newPost.first;
+          }),
+
           initialData: vm.amityPost,
           builder: (context, snapshot) {
+            print("snapshot from comments ${snapshot.data?.postedUser?.avatarUrl}");
+
             var snapshotPostData = snapshot.data?.data as TextData;
             var actionSection = Column(
               children: [
@@ -702,7 +708,10 @@ class _CommentComponentState extends State<CommentComponent> {
         itemBuilder: (context, index) {
           return StreamBuilder<AmityComment>(
             key: Key(vm.amityComments[index].commentId!),
-            stream: vm.amityComments[index].listen.stream,
+            stream: vm.amityComments[index].listen.stream.asyncMap((event) async{
+              final newPost = await AmityUIConfiguration.onCustomComment([event]);
+              return newPost.first;
+            }),
             initialData: vm.amityComments[index],
             builder: (context, snapshot) {
               var comments = snapshot.data!;
@@ -1228,7 +1237,10 @@ class ReplyCommentComponent extends StatelessWidget {
     return Consumer<ReplyVM>(builder: (context, vm, _) {
       return StreamBuilder<AmityComment>(
           key: Key(comment.commentId!),
-          stream: comment.listen.stream,
+          stream: comment.listen.stream.asyncMap((event) async{
+            final newPost = await AmityUIConfiguration.onCustomComment([event]);
+            return newPost.first;
+          }),
           initialData: comment,
           builder: (context, snapshot) {
             var comments = snapshot.data!;

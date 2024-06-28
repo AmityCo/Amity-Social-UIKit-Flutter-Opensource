@@ -835,8 +835,14 @@ class _StickyHeaderList extends StatelessWidget {
                       ),
                     );
                   }
-
+                  Future<List<AmityPost>> preprocessInitialPosts(List<AmityPost> posts) async {
+                    return Future.wait(posts.map((post) async {
+                      final newPost = await AmityUIConfiguration.onCustomPost([post]);
+                      return newPost.first;
+                    }).toList());
+                  }
                   Widget buildContent(BuildContext context, double bheight) {
+
                     return ListView.builder(
                       padding: const EdgeInsets.only(top: 0),
                       physics: const NeverScrollableScrollPhysics(),
@@ -845,9 +851,13 @@ class _StickyHeaderList extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return StreamBuilder<AmityPost>(
                             key: Key(vm.getCommunityPosts()[index].postId!),
-                            stream: vm.getCommunityPosts()[index].listen.stream,
+                            stream: vm.getCommunityPosts()[index].listen.stream.asyncMap((event) async{
+                              final newPost = await AmityUIConfiguration.onCustomPost([event]);
+                              return newPost.first;
+                            }),
                             initialData: vm.getCommunityPosts()[index],
                             builder: (context, snapshot) {
+                              print("Post ${snapshot.data!.postedUser?.avatarUrl}");
                               return PostWidget(
                                 isPostDetail: false,
                                 showCommunity: false,

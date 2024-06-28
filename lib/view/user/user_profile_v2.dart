@@ -686,7 +686,10 @@ class _StickyHeaderList extends StatelessWidget {
                               .length,
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
-                              stream: vm.amityPosts[index].listen.stream,
+                              stream: vm.amityPosts[index].listen.stream.asyncMap((event) async{
+                                final newPost = await AmityUIConfiguration.onCustomPost([event]);
+                                return newPost.first;
+                              }),
                               initialData: vm.amityPosts[index],
                               builder: (context, snapshot) {
                                 return PostWidget(

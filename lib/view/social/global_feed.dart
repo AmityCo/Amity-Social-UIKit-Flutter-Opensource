@@ -57,9 +57,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
     myCommunityList.initMyCommunity();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalFeedProvider.initAmityGlobalfeed(
-          onCustomPost:
-              Provider.of<AmityUIConfiguration>(context, listen: false)
-                  .onCustomPost);
+          onCustomPost: AmityUIConfiguration.onCustomPost);
     });
   }
 
@@ -83,9 +81,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             globalFeedProvider.initAmityGlobalfeed(
-                onCustomPost:
-                    Provider.of<AmityUIConfiguration>(context, listen: false)
-                        .onCustomPost);
+                onCustomPost:AmityUIConfiguration.onCustomPost);
           });
         },
         child: Container(
@@ -118,9 +114,13 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
                               key: Key(vm.getAmityPosts[index].postId!),
-                              stream: vm.getAmityPosts[index].listen.stream,
+                              stream: vm.getAmityPosts[index].listen.stream.asyncMap((event) async{
+                                final newPost = await AmityUIConfiguration.onCustomPost([event]);
+                                return newPost.first;
+                              }),
                               initialData: vm.getAmityPosts[index],
                               builder: (context, snapshot) {
+                                print("user  ${snapshot.data!.postedUser?.displayName} snapshot  ${snapshot.data!.postedUser?.avatarUrl} ");
                                 var latestComments =
                                     snapshot.data!.latestComments;
                                 var post = snapshot.data!;
@@ -336,10 +336,7 @@ class _PostWidgetState
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   Provider.of<FeedVM>(context, listen: false)
                       .initAmityGlobalfeed(
-                          onCustomPost: Provider.of<AmityUIConfiguration>(
-                                  context,
-                                  listen: false)
-                              .onCustomPost);
+                          onCustomPost: AmityUIConfiguration.onCustomPost);
                 });
               } else if (widget.feedType == FeedType.community) {
                 Provider.of<CommuFeedVM>(context, listen: false)
@@ -509,6 +506,7 @@ class _PostWidgetState
       children: [
         GestureDetector(
             onTap: () {
+              print("ontap widget_post${widget.post.postedUser?.avatarUrl}");
               FocusScope.of(context).unfocus();
               if (widget.isFromFeed) {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -1160,7 +1158,10 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         itemBuilder: (context, index) {
           return StreamBuilder<AmityComment>(
             key: Key(widget.comments[index].commentId!),
-            stream: widget.comments[index].listen.stream,
+            stream: widget.comments[index].listen.stream.asyncMap((event) async{
+              final newPost = await AmityUIConfiguration.onCustomComment([event]);
+              return newPost.first;
+            }),
             initialData: widget.comments[index],
             builder: (context, snapshot) {
               var comments = snapshot.data!;
@@ -1290,7 +1291,10 @@ class CommentActionComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AmityComment>(
-        stream: amityComment.listen.stream,
+        stream: amityComment.listen.stream..asyncMap((event) async{
+          final newPost = await AmityUIConfiguration.onCustomComment([event]);
+          return newPost.first;
+        }),
         initialData: amityComment,
         builder: (context, snapshot) {
           var comments = snapshot.data!;

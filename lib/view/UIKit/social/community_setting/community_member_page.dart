@@ -202,10 +202,10 @@ class MemberList extends StatelessWidget {
                     .appColors
                     .primaryShade3,
                 backgroundImage: viewModel.userList[index].user?.avatarUrl ==
-                        null
+                        null||viewModel.userList[index].user?.avatarUrl==""
                     ? null
                     : NetworkImage(viewModel.userList[index].user!.avatarUrl!),
-                child: viewModel.userList[index].user?.avatarUrl != null
+                child: viewModel.userList[index].user?.avatarUrl != null&&viewModel.userList[index].user?.avatarUrl!=""
                     ? null
                     : const Icon(Icons.person, size: 20, color: Colors.white),
               ),

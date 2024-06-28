@@ -245,9 +245,7 @@ class CommunityWidget extends StatelessWidget {
                             print(myCommunityList.amityCommunities);
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               globalFeedProvider.initAmityGlobalfeed(
-                                  onCustomPost:
-                                  Provider.of<AmityUIConfiguration>(context, listen: false)
-                                      .onCustomPost);
+                                  onCustomPost:AmityUIConfiguration.onCustomPost);
                             });
                           });
                         } else {
@@ -269,9 +267,7 @@ class CommunityWidget extends StatelessWidget {
                               print(myCommunityList.amityCommunities);
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 globalFeedProvider.initAmityGlobalfeed(
-                                    onCustomPost:
-                                    Provider.of<AmityUIConfiguration>(context, listen: false)
-                                        .onCustomPost);
+                                    onCustomPost:AmityUIConfiguration.onCustomPost);
                               });
                             },
                           );

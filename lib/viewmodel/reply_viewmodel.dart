@@ -6,6 +6,8 @@ import 'package:amity_uikit_beta_service/viewmodel/post_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'configuration_viewmodel.dart';
+
 class ReplyTo {
   ReplyTo(this._replyToComment, this._replyingToUser);
   AmityUser _replyingToUser;
@@ -100,7 +102,8 @@ class ReplyVM extends PostVM {
                 .where((item) => !currentIds.contains(item.commentId))
                 .toList();
             if (newItems.isNotEmpty) {
-              amityComments.addAll(newItems);
+          final newPost = await AmityUIConfiguration.onCustomComment(newItems);
+              amityComments.addAll(newPost);
               amityReplyCommentsMap[commentId] = amityComments;
             }
             notifyListeners();

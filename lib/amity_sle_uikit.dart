@@ -42,6 +42,7 @@ class AmitySLEUIKit {
       {required String apikey,
       required AmityRegion region,
       String? customEndpoint}) async {
+    Stopwatch stopwatch = Stopwatch()..start();
     AmityRegionalHttpEndpoint? amityEndpoint;
     AmityRegionalMqttEndpoint? amityMqttEndpoint;
     AmityRegionalSocketEndpoint? amitySocketEndpoint;
@@ -86,6 +87,8 @@ class AmitySLEUIKit {
             mqttEndpoint: amityMqttEndpoint!,
             socketEndpoint: amitySocketEndpoint!),
         sycInitialization: true);
+    stopwatch.stop();
+    log('setupAmityClient execution time: ${stopwatch.elapsedMilliseconds} ms');
   }
 
   Future<void> registerDevice(
@@ -94,6 +97,7 @@ class AmitySLEUIKit {
       String? displayName,
       String? authToken,
       Function(bool isSuccess, String? error)? callback}) async {
+    Stopwatch stopwatch = Stopwatch()..start();
     await Provider.of<AmityVM>(context, listen: false)
         .login(userID: userId, displayName: displayName, authToken: authToken)
         .then((value) async {
@@ -126,6 +130,8 @@ class AmitySLEUIKit {
         callback(false, error.toString());
       }
     });
+    stopwatch.stop();
+    log('registerDevice execution time: ${stopwatch.elapsedMilliseconds} ms');
   }
 
   Future<void> registerNotification(

@@ -305,7 +305,7 @@ class UserFeedVM extends ChangeNotifier {
       amityVideoPosts.clear();
       log("clear post: $amityImagePosts, $amityPosts, $amityVideoPosts");
       notifyListeners();
-      initUserFeed(userId: amityUser!.userId!);
+      initUserFeed(userId: user.userId!);
     }).onError((error, stackTrace) {
       AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());

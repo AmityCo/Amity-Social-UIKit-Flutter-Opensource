@@ -409,98 +409,139 @@ class CommentTextField extends StatelessWidget {
             ),
           ]),
       child: ListTile(
-        horizontalTitleGap: 0,
-        contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-        leading: getAvatarImage(
-            Provider.of<AmityVM>(context).currentamityUser?.avatarUrl),
-        title: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 200.0, // Maximum height for the text field
-          ),
-          child: TextField(
-            controller: commentTextEditController,
-            decoration: InputDecoration(
-              suffixIcon: IconButton(
-                icon: Stack(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Icon(
-                        Icons.arrow_outward_sharp,
-                        size: 15,
-                        color: Color(0xffA5A9B5),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Transform(
-                        alignment: Alignment.center,
-                        transform: Matrix4.identity()
-                          ..scale(-1.0, -1.0), // Flips horizontally
-                        child: const Icon(
-                          Icons.arrow_outward_sharp,
-                          size: 15,
-                          color: Color(0xffA5A9B5),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                onPressed: navigateToFullCommentPage,
-              ),
-              hintText: 'Say something nice...',
-              fillColor: Colors.grey[300], // Set the background color to grey
-              filled: true, // Enable the fill color
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0), // Rounded border
-                borderSide: BorderSide.none, // No border side
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 10), // Padding inside the text field
+          horizontalTitleGap: 0,
+          contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+          leading: getAvatarImage(
+              Provider.of<AmityVM>(context).currentamityUser?.avatarUrl),
+          title: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 200.0, // Maximum height for the text field
             ),
-            keyboardType: TextInputType.multiline,
-            maxLines: null, // Allows for any number of lines
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: commentTextEditController,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: Stack(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Icon(
+                                Icons.arrow_outward_sharp,
+                                size: 15,
+                                color: Color(0xffA5A9B5),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.identity()
+                                  ..scale(-1.0, -1.0), // Flips horizontally
+                                child: const Icon(
+                                  Icons.arrow_outward_sharp,
+                                  size: 15,
+                                  color: Color(0xffA5A9B5),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: navigateToFullCommentPage,
+                      ),
+                      hintText: 'Say something nice...',
+                      fillColor:
+                          Colors.grey[300], // Set the background color to grey
+                      filled: true, // Enable the fill color
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(20.0), // Rounded border
+                        borderSide: BorderSide.none, // No border side
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 10), // Padding inside the text field
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null, // Allows for any number of lines
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        trailing: GestureDetector(
-            onTap: () async {
-              if (Provider.of<ReplyVM>(context, listen: false).replyToObject ==
-                  null) {
-                HapticFeedback.heavyImpact();
-                await Provider.of<PostVM>(context, listen: false)
-                    .createComment(postId, commentTextEditController.text);
-              } else {
-                ///Create Comment with Reply
-                print("reply comment");
-                var replyingComment =
-                    Provider.of<ReplyVM>(context, listen: false)
-                        .replyToObject
-                        ?.replyToComment
-                        .commentId;
-                HapticFeedback.heavyImpact();
-                print(replyingComment!);
-                Provider.of<ReplyVM>(context, listen: false).createReplyComment(
-                    postId: postId,
-                    commentId: replyingComment,
-                    text: commentTextEditController.text);
-              }
+          trailing: TextButton(
+              isSemanticButton: true,
+              onPressed: () async {
+                if (Provider.of<ReplyVM>(context, listen: false)
+                        .replyToObject ==
+                    null) {
+                  HapticFeedback.heavyImpact();
+                  await Provider.of<PostVM>(context, listen: false)
+                      .createComment(postId, commentTextEditController.text);
+                } else {
+                  ///Create Comment with Reply
+                  print("reply comment");
+                  var replyingComment =
+                      Provider.of<ReplyVM>(context, listen: false)
+                          .replyToObject
+                          ?.replyToComment
+                          .commentId;
+                  HapticFeedback.heavyImpact();
+                  print(replyingComment!);
+                  Provider.of<ReplyVM>(context, listen: false)
+                      .createReplyComment(
+                          postId: postId,
+                          commentId: replyingComment,
+                          text: commentTextEditController.text);
+                }
 
-              commentTextEditController.clear();
-            },
-            child: Container(
-              height: 30,
-              width: 50,
-              color: Colors.transparent,
-              child: Center(
-                child: Text("Post  ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Provider.of<AmityUIConfiguration>(context)
-                            .primaryColor)),
-              ),
-            )),
-      ),
+                commentTextEditController.clear();
+              },
+              child: Text(
+                "Post",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .primaryColor),
+              ))
+
+          // GestureDetector(
+          //     onTap: () async {
+          //       if (Provider.of<ReplyVM>(context, listen: false).replyToObject ==
+          //           null) {
+          //         HapticFeedback.heavyImpact();
+          //         await Provider.of<PostVM>(context, listen: false)
+          //             .createComment(postId, commentTextEditController.text);
+          //       } else {
+          //         ///Create Comment with Reply
+          //         print("reply comment");
+          //         var replyingComment =
+          //             Provider.of<ReplyVM>(context, listen: false)
+          //                 .replyToObject
+          //                 ?.replyToComment
+          //                 .commentId;
+          //         HapticFeedback.heavyImpact();
+          //         print(replyingComment!);
+          //         Provider.of<ReplyVM>(context, listen: false).createReplyComment(
+          //             postId: postId,
+          //             commentId: replyingComment,
+          //             text: commentTextEditController.text);
+          //       }
+
+          //       commentTextEditController.clear();
+          //     },
+          //     child: Text("Post  ",
+          //         style: TextStyle(
+          //             fontWeight: FontWeight.bold,
+          //             color: Provider.of<AmityUIConfiguration>(context)
+          //                 .primaryColor))),
+
+          ),
     );
   }
 }

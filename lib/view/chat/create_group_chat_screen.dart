@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -70,99 +71,101 @@ class CreateChatGroupState extends State<CreateChatGroup> {
   @override
   Widget build(BuildContext context) {
     return Consumer<UserVM>(builder: (context, vm, _) {
-      return Scaffold(
-          appBar: AppBar(
-            title: const Text("Setup group",
-                style: TextStyle(color: Colors.black)),
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child:
-                  const Icon(Icons.chevron_left, color: Colors.black, size: 35),
-            ),
-            actions: [
-              displayName != ""
-                  ? TextButton(
-                      onPressed: () {
-                        onCreateTap();
-                      },
-                      child: const Text("Create"),
-                    )
-                  : Container()
-            ],
-          ),
-          body: SafeArea(
-              child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 20),
-                width: double.infinity,
-                alignment: Alignment.center,
-                child: Stack(
-                  children: [
-                    FadedScaleAnimation(
-                      child: GestureDetector(
-                        onTap: () {
-                          Provider.of<ImagePickerVM>(context, listen: false)
-                              .showBottomSheet(context);
-                        },
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundImage:
-                              Provider.of<ImagePickerVM>(context, listen: true)
-                                          .amityImage !=
-                                      null
-                                  ? NetworkImage(Provider.of<ImagePickerVM>(
-                                          context,
-                                          listen: false)
-                                      .amityImage!
-                                      .fileUrl!)
-                                  : getImageProvider(null),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      top: 7,
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Provider.of<AmityUIConfiguration>(context)
-                              .primaryColor,
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      return ThemeConfig(
+        child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Setup group",
+                  style: TextStyle(color: Colors.black)),
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child:
+                    const Icon(Icons.chevron_left, color: Colors.black, size: 35),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      displayName = value;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    labelText: "Group name",
-                    alignLabelWithHint: false,
-                    border: InputBorder.none,
-                    labelStyle: TextStyle(height: 1),
+              actions: [
+                displayName != ""
+                    ? TextButton(
+                        onPressed: () {
+                          onCreateTap();
+                        },
+                        child: const Text("Create"),
+                      )
+                    : Container()
+              ],
+            ),
+            body: SafeArea(
+                child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 20, bottom: 20),
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Stack(
+                    children: [
+                      FadedScaleAnimation(
+                        child: GestureDetector(
+                          onTap: () {
+                            Provider.of<ImagePickerVM>(context, listen: false)
+                                .showBottomSheet(context);
+                          },
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundImage:
+                                Provider.of<ImagePickerVM>(context, listen: true)
+                                            .amityImage !=
+                                        null
+                                    ? NetworkImage(Provider.of<ImagePickerVM>(
+                                            context,
+                                            listen: false)
+                                        .amityImage!
+                                        .fileUrl!)
+                                    : getImageProvider(null),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 7,
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .primaryColor,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const Divider(
-                color: Colors.grey,
-                thickness: 3,
-              ),
-            ],
-          )));
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        displayName = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: "Group name",
+                      alignLabelWithHint: false,
+                      border: InputBorder.none,
+                      labelStyle: TextStyle(height: 1),
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 3,
+                ),
+              ],
+            ))),
+      );
     });
   }
 }

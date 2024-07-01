@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -149,77 +150,81 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ? _controllers != null && _controllers!.isNotEmpty
             ? FullScreenVideoPlayerWidget(
                 videoPlayerController: _controllers![0])
-            : Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.black,
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.white,
+            : ThemeConfig(
+                child: Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Colors.black,
+                      leading: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                backgroundColor: Colors.black,
-                body: const Center(child: CircularProgressIndicator()))
-        : Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
+                    backgroundColor: Colors.black,
+                    body: const Center(child: CircularProgressIndicator())),
+              )
+        : ThemeConfig(
+            child: Scaffold(
               backgroundColor: Colors.black,
-              title: Text('${_currentIndex + 1}/${widget.files.length}'),
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                title: Text('${_currentIndex + 1}/${widget.files.length}'),
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
               ),
-            ),
-            body: _controllers != null && _controllers!.isNotEmpty
-                ? PageView.builder(
-                    controller:
-                        PageController(initialPage: widget.initialIndex),
-                    itemCount: widget.files.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      var controller = _controllers![index];
-                      var videoData = widget.files[index].data as VideoData;
-                      return GestureDetector(
-                        onTap: () {
-                          _openFullScreenVideo(controller);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        videoData.thumbnail!.fileUrl!),
-                                    fit: BoxFit.fitWidth,
+              body: _controllers != null && _controllers!.isNotEmpty
+                  ? PageView.builder(
+                      controller:
+                          PageController(initialPage: widget.initialIndex),
+                      itemCount: widget.files.length,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        var controller = _controllers![index];
+                        var videoData = widget.files[index].data as VideoData;
+                        return GestureDetector(
+                          onTap: () {
+                            _openFullScreenVideo(controller);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          videoData.thumbnail!.fileUrl!),
+                                      fit: BoxFit.fitWidth,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const Align(
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  size: 70.0,
-                                  color: Colors.white,
+                                const Align(
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    size: 70.0,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-                : const Center(child: CircularProgressIndicator()),
+                        );
+                      },
+                    )
+                  : const Center(child: CircularProgressIndicator()),
+            ),
           );
   }
 }
@@ -259,21 +264,23 @@ class _FullScreenVideoPlayerWidgetState
         minChildSize: 0.5,
         initialChildSize: 1.0,
         builder: (BuildContext context, ScrollController scrollController) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
+          return ThemeConfig(
+            child: Scaffold(
               backgroundColor: Colors.black,
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
               ),
-            ),
-            body: SafeArea(
-              child: Chewie(
-                controller: _chewieController,
+              body: SafeArea(
+                child: Chewie(
+                  controller: _chewieController,
+                ),
               ),
             ),
           );

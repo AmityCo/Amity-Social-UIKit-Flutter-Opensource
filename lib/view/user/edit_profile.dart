@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/custom_textfield.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +15,10 @@ import '../../viewmodel/custom_image_picker.dart';
 import '../../viewmodel/user_feed_viewmodel.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required this.user});
+  ProfileScreen({super.key, required this.user, this.customActions});
 
   final AmityUser user;
+  Widget? customActions = Container();
 
   @override
   ProfileScreenState createState() => ProfileScreenState();
@@ -180,174 +182,177 @@ class ProfileScreenState extends State<ProfileScreen> {
         mediaQuery.padding.top -
         myAppBar.preferredSize.height;
     return Consumer<UserFeedVM>(builder: (context, vm, _) {
-      return Scaffold(
-        backgroundColor:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-        appBar: myAppBar,
-        body: FadedSlideAnimation(
-          beginOffset: const Offset(0, 0.3),
-          endOffset: const Offset(0, 0),
-          slideCurve: Curves.linearToEaseOut,
-          child: SizedBox(
-            height: bheight,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 20, bottom: 20),
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    child: Stack(
-                      children: [
-                        FadedScaleAnimation(
-                          child: GestureDetector(
-                              onTap: () {
-                                Provider.of<ImagePickerVM>(context,
-                                        listen: false)
-                                    .showBottomSheet(context);
-                              },
-                              child:
-                                  imageWidgetBuilder(Provider.of<ImagePickerVM>(
-                                context,
-                              ).imageState)),
-                        ),
-                        Positioned(
-                          right: 0,
-                          bottom: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xffEBECEF),
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //     color: Colors.grey, // Shadow color
-                              //     blurRadius: 4.0, // Blur radius
-                              //     offset: Offset(
-                              //         0, 2), // Changes position of shadow
-                              //   ),
-                              // ],
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt_outlined,
-                              size: 18,
+      return ThemeConfig(
+        child: Scaffold(
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
+          appBar: myAppBar,
+          body: FadedSlideAnimation(
+            beginOffset: const Offset(0, 0.3),
+            endOffset: const Offset(0, 0),
+            slideCurve: Curves.linearToEaseOut,
+            child: SizedBox(
+              height: bheight,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 20, bottom: 20),
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: Stack(
+                        children: [
+                          FadedScaleAnimation(
+                            child: GestureDetector(
+                                onTap: () {
+                                  Provider.of<ImagePickerVM>(context,
+                                          listen: false)
+                                      .showBottomSheet(context);
+                                },
+                                child: imageWidgetBuilder(
+                                    Provider.of<ImagePickerVM>(
+                                  context,
+                                ).imageState)),
+                          ),
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffEBECEF),
+                                // boxShadow: [
+                                //   BoxShadow(
+                                //     color: Colors.grey, // Shadow color
+                                //     blurRadius: 4.0, // Blur radius
+                                //     offset: Offset(
+                                //         0, 2), // Changes position of shadow
+                                //   ),
+                                // ],
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_outlined,
+                                size: 18,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        // Container(
-                        //   padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-                        //   alignment: Alignment.centerLeft,
-                        //   color: Colors.grey[200],
-                        //   width: double.infinity,
-                        //   child: Text(
-                        //     "Profile Info",
-                        //     style: theme.textTheme.titleLarge!.copyWith(
-                        //       color: Colors.grey,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        // ),
-                        // Container(
-                        //   color: Colors.white,
-                        //   width: double.infinity,
-                        //   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                        //   child: TextField(
-                        //     enabled: false,
-                        //     controller:
-                        //         TextEditingController(text: vm.amityUser!.userId),
-                        //     decoration: const InputDecoration(
-                        //       labelText: "User Id",
-                        //       labelStyle: TextStyle(height: 1),
-                        //       border: InputBorder.none,
-                        //     ),
-                        //   ),
-                        // ),
-                        // Divider(
-                        //   color: Colors.grey[200],
-                        //   thickness: 3,
-                        // ),
-                        TextFieldWithCounter(
-                          controller: _displayNameController,
-                          title: 'Display name',
-                          hintText: 'Display name',
-                          maxCharacters: 50,
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          // Container(
+                          //   padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
+                          //   alignment: Alignment.centerLeft,
+                          //   color: Colors.grey[200],
+                          //   width: double.infinity,
+                          //   child: Text(
+                          //     "Profile Info",
+                          //     style: theme.textTheme.titleLarge!.copyWith(
+                          //       color: Colors.grey,
+                          //       fontSize: 16,
+                          //     ),
+                          //   ),
+                          // ),
+                          // Container(
+                          //   color: Colors.white,
+                          //   width: double.infinity,
+                          //   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                          //   child: TextField(
+                          //     enabled: false,
+                          //     controller:
+                          //         TextEditingController(text: vm.amityUser!.userId),
+                          //     decoration: const InputDecoration(
+                          //       labelText: "User Id",
+                          //       labelStyle: TextStyle(height: 1),
+                          //       border: InputBorder.none,
+                          //     ),
+                          //   ),
+                          // ),
+                          // Divider(
+                          //   color: Colors.grey[200],
+                          //   thickness: 3,
+                          // ),
+                          TextFieldWithCounter(
+                            controller: _displayNameController,
+                            title: 'Display name',
+                            hintText: 'Display name',
+                            maxCharacters: 50,
+                          ),
 
-                        TextFieldWithCounter(
-                          isRequired: false,
-                          controller: _descriptionController,
-                          title: 'About',
-                          hintText: 'Enter description',
-                          maxCharacters: 180,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                        ),
-
-                        // Container(
-                        //   color: Colors.white,
-                        //   width: double.infinity,
-                        //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                        //   child: TextField(
-                        //     controller:
-                        //         TextEditingController(text: '+1 9876543210'),
-                        //     decoration: InputDecoration(
-                        //       labelText: S.of(context).phoneNumber,
-                        //       labelStyle: TextStyle(height: 1),
-                        //       border: InputBorder.none,
-                        //     ),
-                        //   ),
-                        // ),
-                        // Divider(
-                        //   color: ApplicationColors.lightGrey,
-                        //   thickness: 3,
-                        // ),
-                        // Container(
-                        //   color: Colors.white,
-                        //   width: double.infinity,
-                        //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                        //   child: TextField(
-                        //     controller: TextEditingController(
-                        //         text: S.of(context).samanthasmithmailcom),
-                        //     decoration: InputDecoration(
-                        //       labelText: S.of(context).emailAddress,
-                        //       labelStyle: TextStyle(height: 1),
-                        //       border: InputBorder.none,
-                        //     ),
-                        //   ),
-                        // ),
-                        // Divider(
-                        //   color: ApplicationColors.lightGrey,
-                        //   thickness: 3,
-                        // ),
-                        // Container(
-                        //   color: Colors.white,
-                        //   width: double.infinity,
-                        //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                        //   child: TextField(
-                        //     controller:
-                        //         TextEditingController(text: S.of(context).female),
-                        //     decoration: InputDecoration(
-                        //       labelText: S.of(context).gender,
-                        //       labelStyle: TextStyle(height: 1),
-                        //       border: InputBorder.none,
-                        //     ),
-                        //   ),
-                        // ),
-                        // Divider(
-                        //   color: ApplicationColors.lightGrey,
-                        //   thickness: 3,
-                        // ),
-                      ],
+                          TextFieldWithCounter(
+                            isRequired: false,
+                            controller: _descriptionController,
+                            title: 'About',
+                            hintText: 'Enter description',
+                            maxCharacters: 180,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                          ),
+                          widget.customActions ?? Container(),
+                          // Container(
+                          //   color: Colors.white,
+                          //   width: double.infinity,
+                          //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                          //   child: TextField(
+                          //     controller:
+                          //         TextEditingController(text: '+1 9876543210'),
+                          //     decoration: InputDecoration(
+                          //       labelText: S.of(context).phoneNumber,
+                          //       labelStyle: TextStyle(height: 1),
+                          //       border: InputBorder.none,
+                          //     ),
+                          //   ),
+                          // ),
+                          // Divider(
+                          //   color: ApplicationColors.lightGrey,
+                          //   thickness: 3,
+                          // ),
+                          // Container(
+                          //   color: Colors.white,
+                          //   width: double.infinity,
+                          //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                          //   child: TextField(
+                          //     controller: TextEditingController(
+                          //         text: S.of(context).samanthasmithmailcom),
+                          //     decoration: InputDecoration(
+                          //       labelText: S.of(context).emailAddress,
+                          //       labelStyle: TextStyle(height: 1),
+                          //       border: InputBorder.none,
+                          //     ),
+                          //   ),
+                          // ),
+                          // Divider(
+                          //   color: ApplicationColors.lightGrey,
+                          //   thickness: 3,
+                          // ),
+                          // Container(
+                          //   color: Colors.white,
+                          //   width: double.infinity,
+                          //   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                          //   child: TextField(
+                          //     controller:
+                          //         TextEditingController(text: S.of(context).female),
+                          //     decoration: InputDecoration(
+                          //       labelText: S.of(context).gender,
+                          //       labelStyle: TextStyle(height: 1),
+                          //       border: InputBorder.none,
+                          //     ),
+                          //   ),
+                          // ),
+                          // Divider(
+                          //   color: ApplicationColors.lightGrey,
+                          //   thickness: 3,
+                          // ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/post_cpmponent.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
@@ -38,167 +39,169 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
     final theme = Theme.of(context);
 
     return Consumer<EditPostVM>(builder: (context, vm, _) {
-      return Scaffold(
-        backgroundColor:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(
-            "Edit post",
-            style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle
-                .copyWith(
-                  color:
-                      Provider.of<AmityUIConfiguration>(context).appColors.base,
-                ),
-          ),
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+      return ThemeConfig(
+        child: Scaffold(
+          backgroundColor:
+              Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Text(
+              "Edit post",
+              style: Provider.of<AmityUIConfiguration>(context)
+                  .titleTextStyle
+                  .copyWith(
+                    color:
+                        Provider.of<AmityUIConfiguration>(context).appColors.base,
+                  ),
             ),
-            onPressed: () {
-              if (hasContent) {
-                ConfirmationDialog().show(
-                  context: context,
-                  title: 'Discard Post?',
-                  detailText: 'Do you want to discard your post?',
-                  leftButtonText: 'Cancel',
-                  rightButtonText: 'Discard',
-                  onConfirm: () {
-                    Navigator.of(context).pop();
-                  },
-                );
-              } else {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: hasContent
-                  ? () async {
-                      vm.editPost(
-                          context: context,
-                          callback: () {
-                            Navigator.of(context).pop();
-                          });
-                    }
-                  : null,
-              child: Text("Save",
-                  style: TextStyle(
-                      color: vm.isPostValid
-                          ? Provider.of<AmityUIConfiguration>(context)
-                              .primaryColor
-                          : Colors.grey)),
+            leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+              ),
+              onPressed: () {
+                if (hasContent) {
+                  ConfirmationDialog().show(
+                    context: context,
+                    title: 'Discard Post?',
+                    detailText: 'Do you want to discard your post?',
+                    leftButtonText: 'Cancel',
+                    rightButtonText: 'Discard',
+                    onConfirm: () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
-          ],
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        TextField(
-                          onChanged: (value) {
-                            vm.updatePostValidity();
-
-                            if (value == originalText) {
-                              print("match");
-                              hasContent = false;
-                              setState(() {});
-                            } else {
-                              print("unmatch");
-                              hasContent = true;
-                              setState(() {});
-                            }
-                          },
-                          controller: vm.textEditingController,
-                          style: TextStyle(
-                            color: Provider.of<AmityUIConfiguration>(context)
-                                .appColors
-                                .base,
+            actions: [
+              TextButton(
+                onPressed: hasContent
+                    ? () async {
+                        vm.editPost(
+                            context: context,
+                            callback: () {
+                              Navigator.of(context).pop();
+                            });
+                      }
+                    : null,
+                child: Text("Save",
+                    style: TextStyle(
+                        color: vm.isPostValid
+                            ? Provider.of<AmityUIConfiguration>(context)
+                                .primaryColor
+                            : Colors.grey)),
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          TextField(
+                            onChanged: (value) {
+                              vm.updatePostValidity();
+        
+                              if (value == originalText) {
+                                print("match");
+                                hasContent = false;
+                                setState(() {});
+                              } else {
+                                print("unmatch");
+                                hasContent = true;
+                                setState(() {});
+                              }
+                            },
+                            controller: vm.textEditingController,
+                            style: TextStyle(
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .appColors
+                                  .base,
+                            ),
+                            scrollPhysics: const NeverScrollableScrollPhysics(),
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Write something to post",
+                            ),
                           ),
-                          scrollPhysics: const NeverScrollableScrollPhysics(),
-                          maxLines: null,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Write something to post",
-                          ),
-                        ),
-                        Consumer<EditPostVM>(
-                          builder: (context, vm, _) => PostMedia(
-                            files: vm.editPostMedie,
-                            isEditPost: true,
-                          ),
-                        )
-                      ],
+                          Consumer<EditPostVM>(
+                            builder: (context, vm, _) => PostMedia(
+                              files: vm.editPostMedie,
+                              isEditPost: true,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // const Divider(),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 16, bottom: 16),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //     children: [
-              //       _iconButton(
-              //         Icons.camera_alt_outlined,
-              //         isEnable:
-              //             vm.availableFileSelectionOptions()[MyFileType.image]!,
-              //         label: "Photo",
-              //         // debugingText:
-              //         //     "${vm2.isNotSelectVideoYet()}&& ${vm2.isNotSelectedFileYet()}",
-              //         onTap: () {
-              //           _handleCameraTap(context);
-              //         },
-              //       ),
-              //       _iconButton(
-              //         Icons.image_outlined,
-              //         label: "Image",
-              //         isEnable:
-              //             vm.availableFileSelectionOptions()[MyFileType.image]!,
-              //         onTap: () async {
-              //           _handleImageTap(context);
-              //         },
-              //       ),
-              //       _iconButton(
-              //         Icons.play_circle_outline,
-              //         label: "Video",
-              //         isEnable:
-              //             vm.availableFileSelectionOptions()[MyFileType.video]!,
-              //         onTap: () async {
-              //           _handleVideoTap(context);
-              //         },
-              //       ),
-              //       _iconButton(
-              //         Icons.attach_file_outlined,
-              //         label: "File",
-              //         isEnable:
-              //             vm.availableFileSelectionOptions()[MyFileType.file]!,
-              //         onTap: () async {
-              //           _handleFileTap(context);
-              //         },
-              //       ),
-              //       _iconButton(
-              //         Icons.more_horiz,
-              //         isEnable: true,
-              //         label: "More",
-              //         onTap: () {
-              //           // TODO: Implement more options logic
-              //           _showMoreOptions(context);
-              //         },
-              //       ),
-              //     ],
-              //   ),
-              // ),
-            ],
+                // const Divider(),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 16, bottom: 16),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //     children: [
+                //       _iconButton(
+                //         Icons.camera_alt_outlined,
+                //         isEnable:
+                //             vm.availableFileSelectionOptions()[MyFileType.image]!,
+                //         label: "Photo",
+                //         // debugingText:
+                //         //     "${vm2.isNotSelectVideoYet()}&& ${vm2.isNotSelectedFileYet()}",
+                //         onTap: () {
+                //           _handleCameraTap(context);
+                //         },
+                //       ),
+                //       _iconButton(
+                //         Icons.image_outlined,
+                //         label: "Image",
+                //         isEnable:
+                //             vm.availableFileSelectionOptions()[MyFileType.image]!,
+                //         onTap: () async {
+                //           _handleImageTap(context);
+                //         },
+                //       ),
+                //       _iconButton(
+                //         Icons.play_circle_outline,
+                //         label: "Video",
+                //         isEnable:
+                //             vm.availableFileSelectionOptions()[MyFileType.video]!,
+                //         onTap: () async {
+                //           _handleVideoTap(context);
+                //         },
+                //       ),
+                //       _iconButton(
+                //         Icons.attach_file_outlined,
+                //         label: "File",
+                //         isEnable:
+                //             vm.availableFileSelectionOptions()[MyFileType.file]!,
+                //         onTap: () async {
+                //           _handleFileTap(context);
+                //         },
+                //       ),
+                //       _iconButton(
+                //         Icons.more_horiz,
+                //         isEnable: true,
+                //         label: "More",
+                //         onTap: () {
+                //           // TODO: Implement more options logic
+                //           _showMoreOptions(context);
+                //         },
+                //       ),
+                //     ],
+                //   ),
+                // ),
+              ],
+            ),
           ),
         ),
       );

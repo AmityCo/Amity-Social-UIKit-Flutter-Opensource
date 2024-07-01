@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../components/alert_dialog.dart';
+import 'configuration_viewmodel.dart';
 
 class PostVM extends ChangeNotifier {
   late AmityPost amityPost;
@@ -22,7 +23,10 @@ class PostVM extends ChangeNotifier {
     AmitySocialClient.newPostRepository()
         .getPostStream(postId)
         .stream
-        .listen((event) {
+        .asyncMap((event) async{
+      final newPost = await AmityUIConfiguration.onCustomPost([event]);
+      return newPost.first;
+    }).listen((event) async {
       amityPost = event;
     }).onError((error, stackTrace) async {
       log(error.toString());
@@ -59,8 +63,11 @@ class PostVM extends ChangeNotifier {
                 .where((item) => !currentIds.contains(item.commentId))
                 .toList();
             if (newItems.isNotEmpty) {
-              amityComments.addAll(newItems);
-              print("parent comments added: ${newItems.length}");
+              final customComments =
+                  await AmityUIConfiguration.onCustomComment(newItems);
+
+              amityComments.addAll(customComments);
+              print("parent comments added: ${customComments.length}");
               successCallback?.call();
               notifyListeners(); // Uncomment if you are using a listener-based state management
             }
@@ -98,7 +105,8 @@ class PostVM extends ChangeNotifier {
         .text(text)
         .send()
         .then((comment) async {
-      amityComments.insert(0, comment);
+      final customComments = await AmityUIConfiguration.onCustomComment([comment]);
+      amityComments.insert(0, customComments.first);
       Future.delayed(const Duration(milliseconds: 500)).then((value) {
         scrollcontroller.jumpTo(0);
       });

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -78,87 +79,89 @@ class CategoryListState extends State<CategoryList> {
 
     final theme = Theme.of(context);
     return Consumer<CategoryVM>(builder: (context, vm, _) {
-      return Scaffold(
-        backgroundColor:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.close,
-              color: Colors.black,
+      return ThemeConfig(
+        child: Scaffold(
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.close,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            title: Text(
+              'Select category',
+              style: Provider.of<AmityUIConfiguration>(context)
+                  .titleTextStyle
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           ),
-          title: Text(
-            'Select category',
-            style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle
-                .copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: bHeight,
-                  child: FadedSlideAnimation(
-                    beginOffset: const Offset(0, 0.3),
-                    endOffset: const Offset(0, 0),
-                    slideCurve: Curves.linearToEaseOut,
-                    child: Column(
-                      children: [
-                        // Align(
-                        //   alignment: Alignment.topLeft,
-                        //   child: GestureDetector(
-                        //     onTap: () {
-                        //       Navigator.of(context).pop();
-                        //     },
-                        //     child: const Icon(Icons.chevron_left,
-                        //         color: Colors.black, size: 35),
-                        //   ),
-                        // ),
-                        getLength() < 1
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                  color:
-                                      Provider.of<AmityUIConfiguration>(context)
-                                          .primaryColor,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: bHeight,
+                    child: FadedSlideAnimation(
+                      beginOffset: const Offset(0, 0.3),
+                      endOffset: const Offset(0, 0),
+                      slideCurve: Curves.linearToEaseOut,
+                      child: Column(
+                        children: [
+                          // Align(
+                          //   alignment: Alignment.topLeft,
+                          //   child: GestureDetector(
+                          //     onTap: () {
+                          //       Navigator.of(context).pop();
+                          //     },
+                          //     child: const Icon(Icons.chevron_left,
+                          //         color: Colors.black, size: 35),
+                          //   ),
+                          // ),
+                          getLength() < 1
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .primaryColor,
+                                  ),
+                                )
+                              : Expanded(
+                                  child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: getLength(),
+                                    itemBuilder: (context, index) {
+                                      return CategoryWidget(
+                                        category: Provider.of<CategoryVM>(
+                                                context,
+                                                listen: false)
+                                            .getCategories()[index],
+                                        theme: theme,
+                                        textController:
+                                            widget.categoryTextController,
+                                        community: Provider.of<CategoryVM>(
+                                                context,
+                                                listen: false)
+                                            .getCommunity(),
+                                        index: index,
+                                      );
+                                    },
+                                  ),
                                 ),
-                              )
-                            : Expanded(
-                                child: ListView.builder(
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  itemCount: vm.getCategories().length,
-                                  controller: vm.scrollcontroller,
-                                  itemBuilder: (context, index) {
-                                    return CategoryWidget(
-                                      category: Provider.of<CategoryVM>(context,
-                                              listen: false)
-                                          .getCategories()[index],
-                                      theme: theme,
-                                      textController:
-                                          widget.categoryTextController,
-                                      community: Provider.of<CategoryVM>(
-                                              context,
-                                              listen: false)
-                                          .getCommunity(),
-                                      index: index,
-                                    );
-                                  },
-                                ),
-                              ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

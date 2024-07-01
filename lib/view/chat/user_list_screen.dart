@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -95,75 +96,77 @@ class UserListState extends State<UserList> {
 
     final theme = Theme.of(context);
     return Consumer<UserVM>(builder: (context, vm, _) {
-      return Scaffold(
-        appBar: AppBar(
-          title:
-              const Text("Select Users", style: TextStyle(color: Colors.black)),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child:
-                const Icon(Icons.chevron_left, color: Colors.black, size: 35),
+      return ThemeConfig(
+        child: Scaffold(
+          appBar: AppBar(
+            title:
+                const Text("Select Users", style: TextStyle(color: Colors.black)),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child:
+                  const Icon(Icons.chevron_left, color: Colors.black, size: 35),
+            ),
+            actions: [
+              getSelectedLength() > 0
+                  ? TextButton(
+                      onPressed: () {
+                        onNextTap();
+                      },
+                      child: const Text(true
+                          // getSelectedLength() > 1
+                          ? "Next"
+                          : "Create"))
+                  : Container()
+            ],
           ),
-          actions: [
-            getSelectedLength() > 0
-                ? TextButton(
-                    onPressed: () {
-                      onNextTap();
-                    },
-                    child: const Text(true
-                        // getSelectedLength() > 1
-                        ? "Next"
-                        : "Create"))
-                : Container()
-          ],
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: bHeight,
-
-                  // color: ApplicationColors.lightGrey,
-                  child: FadedSlideAnimation(
-                    beginOffset: const Offset(0, 0.3),
-                    endOffset: const Offset(0, 0),
-                    slideCurve: Curves.linearToEaseOut,
-                    child: Column(
-                      children: [
-                        getLength() < 1
-                            ? Expanded(
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                      color: Provider.of<AmityUIConfiguration>(
-                                              context)
-                                          .primaryColor),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: bHeight,
+        
+                    // color: ApplicationColors.lightGrey,
+                    child: FadedSlideAnimation(
+                      beginOffset: const Offset(0, 0.3),
+                      endOffset: const Offset(0, 0),
+                      slideCurve: Curves.linearToEaseOut,
+                      child: Column(
+                        children: [
+                          getLength() < 1
+                              ? Expanded(
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                        color: Provider.of<AmityUIConfiguration>(
+                                                context)
+                                            .primaryColor),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    // shrinkWrap: true,
+                                    itemCount: getLength(),
+                                    itemBuilder: (context, index) {
+                                      return UserWidget(
+                                        theme: theme,
+                                        index: index,
+                                        user: Provider.of<UserVM>(context,
+                                                listen: false)
+                                            .getUserList()[index],
+                                      );
+                                    },
+                                  ),
                                 ),
-                              )
-                            : Expanded(
-                                child: ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  // shrinkWrap: true,
-                                  itemCount: getLength(),
-                                  itemBuilder: (context, index) {
-                                    return UserWidget(
-                                      theme: theme,
-                                      index: index,
-                                      user: Provider.of<UserVM>(context,
-                                              listen: false)
-                                          .getUserList()[index],
-                                    );
-                                  },
-                                ),
-                              ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

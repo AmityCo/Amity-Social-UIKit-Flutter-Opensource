@@ -2,6 +2,8 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:flutter/material.dart';
 
+import 'configuration_viewmodel.dart';
+
 class MemberManagementVM extends ChangeNotifier {
   final ScrollController scrollController = ScrollController();
   bool loadingNextPage = false;
@@ -57,10 +59,12 @@ class MemberManagementVM extends ChangeNotifier {
     scrollController.addListener(loadNextPage);
   }
 
-  void _handleMemberControllerUpdates() {
+  Future<void> _handleMemberControllerUpdates() async {
     if (_amityUsersController.error == null) {
+      // final newMember= await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems);
       _userList.clear();
-      _userList.addAll(_amityUsersController.loadedItems);
+      _userList.addAll(await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems));
+      print("userList: $_userList");
       notifyListeners();
     } else {
       // Handle the error appropriately

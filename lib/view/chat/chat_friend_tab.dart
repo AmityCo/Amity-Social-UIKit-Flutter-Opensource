@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
@@ -71,146 +72,148 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
         onRefresh: () async {
           await vm.refreshChannels();
         },
-        child: Scaffold(
-          body: FadedSlideAnimation(
-            beginOffset: const Offset(0, 0.3),
-            endOffset: const Offset(0, 0),
-            slideCurve: Curves.linearToEaseOut,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .channelListConfig
-                        .backgroundColor,
-                    margin: const EdgeInsets.only(top: 5),
-                    child: ListView.builder(
-                      controller: vm.scrollController,
-                      shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: getLength(vm),
-                      itemBuilder: (context, index) {
-                        var messageCount =
-                            vm.getChannelList()[index].unreadCount;
-
-                        bool rand = messageCount > 0 ? true : false;
-                        // if ((Random().nextInt(10)) % 2 == 0) {
-                        //   _rand = true;
-                        // } else {
-                        //   _rand = false;
-                        // }
-                        return Card(
-                          child: ListTile(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ChangeNotifierProvider(
-                                        create: (context) => MessageVM(),
-                                        child: ChatSingleScreen(
-                                          key: UniqueKey(),
-                                          channel: vm.getChannelList()[index],
-                                        ),
-                                      )));
-                            },
-                            leading: Stack(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                  child: FadedScaleAnimation(
-                                    child: getCommuAvatarImage(null,
-                                        fileId: vm
-                                            .getChannelList()[index]
-                                            .avatarFileId),
+        child: ThemeConfig(
+          child: Scaffold(
+            body: FadedSlideAnimation(
+              beginOffset: const Offset(0, 0.3),
+              endOffset: const Offset(0, 0),
+              slideCurve: Curves.linearToEaseOut,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .channelListConfig
+                          .backgroundColor,
+                      margin: const EdgeInsets.only(top: 5),
+                      child: ListView.builder(
+                        controller: vm.scrollController,
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: getLength(vm),
+                        itemBuilder: (context, index) {
+                          var messageCount =
+                              vm.getChannelList()[index].unreadCount;
+          
+                          bool rand = messageCount > 0 ? true : false;
+                          // if ((Random().nextInt(10)) % 2 == 0) {
+                          //   _rand = true;
+                          // } else {
+                          //   _rand = false;
+                          // }
+                          return Card(
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ChangeNotifierProvider(
+                                          create: (context) => MessageVM(),
+                                          child: ChatSingleScreen(
+                                            key: UniqueKey(),
+                                            channel: vm.getChannelList()[index],
+                                          ),
+                                        )));
+                              },
+                              leading: Stack(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                    child: FadedScaleAnimation(
+                                      child: getCommuAvatarImage(null,
+                                          fileId: vm
+                                              .getChannelList()[index]
+                                              .avatarFileId),
+                                    ),
                                   ),
-                                ),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: rand
-                                      ? Container(
-                                          decoration: BoxDecoration(
-                                            color: Provider.of<
-                                                        AmityUIConfiguration>(
-                                                    context)
-                                                .primaryColor,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          padding: const EdgeInsets.fromLTRB(
-                                              4, 0, 4, 2),
-                                          child: Center(
-                                            child: Text(
-                                              vm
-                                                  .getChannelList()[index]
-                                                  .unreadCount
-                                                  .toString(),
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white,
-                                                      fontSize: 8),
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: rand
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              color: Provider.of<
+                                                          AmityUIConfiguration>(
+                                                      context)
+                                                  .primaryColor,
+                                              shape: BoxShape.circle,
                                             ),
-                                          ),
-                                        )
-                                      : Container(),
+                                            padding: const EdgeInsets.fromLTRB(
+                                                4, 0, 4, 2),
+                                            child: Center(
+                                              child: Text(
+                                                vm
+                                                    .getChannelList()[index]
+                                                    .unreadCount
+                                                    .toString(),
+                                                style: theme.textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        color: Colors.white,
+                                                        fontSize: 8),
+                                              ),
+                                            ),
+                                          )
+                                        : Container(),
+                                  ),
+                                ],
+                              ),
+                              title: Text(
+                                vm.getChannelList()[index].displayName ??
+                                    "Display name",
+                                style: TextStyle(
+                                  color: rand
+                                      ? Provider.of<AmityUIConfiguration>(context)
+                                          .primaryColor
+                                      : Provider.of<AmityUIConfiguration>(context)
+                                          .channelListConfig
+                                          .channelDisplayname,
+                                  fontSize: 13.3,
                                 ),
-                              ],
-                            ),
-                            title: Text(
-                              vm.getChannelList()[index].displayName ??
-                                  "Display name",
-                              style: TextStyle(
-                                color: rand
-                                    ? Provider.of<AmityUIConfiguration>(context)
-                                        .primaryColor
-                                    : Provider.of<AmityUIConfiguration>(context)
-                                        .channelListConfig
-                                        .channelDisplayname,
-                                fontSize: 13.3,
                               ),
-                            ),
-                            subtitle: Text(
-                              vm.getChannelList()[index].latestMessage,
-                              style: theme.textTheme.titleSmall!.copyWith(
-                                color:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .channelListConfig
-                                        .latestMessageColor,
-                                fontSize: 10.7,
-                              ),
-                            ),
-                            trailing: Text(
-                              (vm.getChannelList()[index].lastActivity == null)
-                                  ? ""
-                                  : getDateTime(
-                                      vm.getChannelList()[index].lastActivity!),
-                              style: theme.textTheme.bodyLarge!.copyWith(
+                              subtitle: Text(
+                                vm.getChannelList()[index].latestMessage,
+                                style: theme.textTheme.titleSmall!.copyWith(
                                   color:
                                       Provider.of<AmityUIConfiguration>(context)
                                           .channelListConfig
-                                          .latestTimeColor,
-                                  fontSize: 9.3),
+                                          .latestMessageColor,
+                                  fontSize: 10.7,
+                                ),
+                              ),
+                              trailing: Text(
+                                (vm.getChannelList()[index].lastActivity == null)
+                                    ? ""
+                                    : getDateTime(
+                                        vm.getChannelList()[index].lastActivity!),
+                                style: theme.textTheme.bodyLarge!.copyWith(
+                                    color:
+                                        Provider.of<AmityUIConfiguration>(context)
+                                            .channelListConfig
+                                            .latestTimeColor,
+                                    fontSize: 9.3),
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            // floatingActionButton: FloatingActionButton(
+            //   heroTag: 'chat',
+            //   child: Icon(Icons.person_add),
+            //   backgroundColor:  Provider.of<AmityUIConfiguration>(context)
+            //              .primaryColor,
+            //   onPressed: () {
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //       builder: (context) => UserList(
+            //         UniqueKey(),
+            //       ),
+            //     ));
+            //   },
+            // ),
           ),
-          // floatingActionButton: FloatingActionButton(
-          //   heroTag: 'chat',
-          //   child: Icon(Icons.person_add),
-          //   backgroundColor:  Provider.of<AmityUIConfiguration>(context)
-          //              .primaryColor,
-          //   onPressed: () {
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (context) => UserList(
-          //         UniqueKey(),
-          //       ),
-          //     ));
-          //   },
-          // ),
         ),
       );
     });

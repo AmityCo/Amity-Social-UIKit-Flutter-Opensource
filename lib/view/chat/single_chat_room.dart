@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,17 +32,19 @@ class _SingleChatRoomState extends State<SingleChatRoom> {
   @override
   Widget build(BuildContext context) {
     return Provider.of<ChannelVM>(context).amitySingleChannel == null
-        ? const Scaffold(
-            body: Row(
-              children: [
-                Expanded(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [CircularProgressIndicator()],
-                ))
-              ],
+        ? const ThemeConfig(
+          child: Scaffold(
+              body: Row(
+                children: [
+                  Expanded(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [CircularProgressIndicator()],
+                  ))
+                ],
+              ),
             ),
-          )
+        )
         : ChangeNotifierProvider(
             create: (context) => ChatRoomVM(),
             child: ChatSingleScreen(

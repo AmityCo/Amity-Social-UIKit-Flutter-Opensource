@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/alert_dialog.dart';
+import 'configuration_viewmodel.dart';
 
 class CommuFeedVM extends ChangeNotifier {
   MediaType _selectedMediaType = MediaType.photos;
@@ -103,15 +104,18 @@ class CommuFeedVM extends ChangeNotifier {
           .feedType(AmityFeedType.PUBLISHED)
           .includeDeleted(false)
           .getPagingData(token: token, limit: 20),
-      pageSize: 20,
+      pageSize: 20
     )..addListener(
         () async {
           log("initAmityCommunityFeed ID: $communityId");
           if (_controllerCommu.error == null) {
             //handle results, we suggest to clear the previous items
             //and add with the latest _controller.loadedItems
+
+            final newPost = await AmityUIConfiguration.onCustomPost(_amityCommunityFeedPosts);
             _amityCommunityFeedPosts.clear();
-            _amityCommunityFeedPosts.addAll(_controllerCommu.loadedItems);
+
+            _amityCommunityFeedPosts.addAll(newPost);
 
             //update widgets
             notifyListeners();
@@ -159,9 +163,13 @@ class CommuFeedVM extends ChangeNotifier {
           if (_controllerPendingPost.error == null) {
             //handle results, we suggest to clear the previous items
             //and add with the latest _controller.loadedItems
+
+            final newPost = await AmityUIConfiguration.onCustomPost(_amityCommunityFeedPosts);
             _amityCommunityPendingFeedPosts.clear();
+
+
             _amityCommunityPendingFeedPosts
-                .addAll(_controllerPendingPost.loadedItems);
+                .addAll(newPost);
 
             //update widgets
             notifyListeners();
@@ -214,7 +222,7 @@ class CommuFeedVM extends ChangeNotifier {
             print(">>> video ${_controllerVideoCommu.loadedItems.length}");
             _amityCommunityVideoFeedPosts.clear();
             _amityCommunityVideoFeedPosts
-                .addAll(_controllerVideoCommu.loadedItems);
+                .addAll(_controllerCommu.loadedItems);
 
             //update widgets
             notifyListeners();

@@ -45,17 +45,23 @@ class Comments {
 
 class CommentScreenState extends State<CommentScreen> {
   final _commentTextEditController = TextEditingController();
-
+  String? userAvatarUrl;
   @override
   void initState() {
     Provider.of<ReplyVM>(context, listen: false).clearReply();
     // query comment here
     Provider.of<PostVM>(context, listen: false)
         .getPost(widget.amityPost.postId!, widget.amityPost);
-
+    _fetchUserAvatar();
     super.initState();
   }
-
+  Future<void> _fetchUserAvatar() async {
+    final currentUser = Provider.of<AmityVM>(context, listen: false).currentamityUser;
+    final avatarUrl = await AmityUIConfiguration.onCustomUserProfileImage("");
+    setState(() {
+      userAvatarUrl = avatarUrl ==""? currentUser?.avatarUrl:avatarUrl;
+    });
+  }
   bool isMediaPosts() {
     final childrenPosts =
         Provider.of<PostVM>(context, listen: false).amityPost.children;
@@ -114,8 +120,6 @@ class CommentScreenState extends State<CommentScreen> {
 
           initialData: vm.amityPost,
           builder: (context, snapshot) {
-            print("snapshot from comments ${snapshot.data?.postedUser?.avatarUrl}");
-
             var snapshotPostData = snapshot.data?.data as TextData;
             var actionSection = Column(
               children: [
@@ -367,6 +371,7 @@ class CommentScreenState extends State<CommentScreen> {
                                           },
                                         )));
                               },
+                              userAvatarUrl: userAvatarUrl??"",
                             ),
                           ],
                         ),
@@ -388,14 +393,18 @@ class CommentTextField extends StatelessWidget {
     required this.postId,
     required this.navigateToFullCommentPage,
     required this.feedType,
+    required this.userAvatarUrl,
   });
 
   final TextEditingController commentTextEditController;
   final String postId;
   final VoidCallback navigateToFullCommentPage;
   final FeedType feedType;
+  final String userAvatarUrl;
   @override
   Widget build(BuildContext context) {
+
+
     return Container(
       decoration: BoxDecoration(
           color: Provider.of<AmityUIConfiguration>(context)
@@ -412,7 +421,7 @@ class CommentTextField extends StatelessWidget {
         horizontalTitleGap: 0,
         contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         leading: getAvatarImage(
-            Provider.of<AmityVM>(context).currentamityUser?.avatarUrl),
+            userAvatarUrl),
         title: ConstrainedBox(
           constraints: const BoxConstraints(
             maxHeight: 200.0, // Maximum height for the text field

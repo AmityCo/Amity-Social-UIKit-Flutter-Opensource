@@ -72,11 +72,17 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                     return StreamBuilder<AmityFollowRelationship>(
                         // key: Key(vm.getFollowRelationships[index].sourceUserId! +
                         //     vm.getFollowRelationships[index].targetUserId!),
-                        stream: vm.getFollowerList[index].listen.stream,
+                        stream: vm.getFollowerList[index].listen.stream.asyncMap((event) async{
+                          final NewFollow = await AmityUIConfiguration.onCustomFollow([event]);
+                          return NewFollow.first;
+                        }),
                         initialData: vm.getFollowerList[index],
                         builder: (context, snapshot) {
                           return StreamBuilder<AmityFollowRelationship>(
-                              stream: vm.getFollowerList[index].listen.stream,
+                              stream: vm.getFollowerList[index].listen.stream.asyncMap((event) async{
+                                final NewFollow = await AmityUIConfiguration.onCustomFollow([event]);
+                                return NewFollow.first;
+                              }),
                               initialData: vm.getFollowerList[index],
                               builder: (context, snapshot) {
                                 return ListTile(

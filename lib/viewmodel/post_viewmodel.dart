@@ -28,7 +28,6 @@ class PostVM extends ChangeNotifier {
       return newPost.first;
     }).listen((event) async {
       amityPost = event;
-      print("Event ${amityPost.postedUser?.avatarUrl}");
     }).onError((error, stackTrace) async {
       log(error.toString());
       await AmityDialog()
@@ -105,7 +104,8 @@ class PostVM extends ChangeNotifier {
         .text(text)
         .send()
         .then((comment) async {
-      amityComments.insert(0, comment);
+      final customComments = await AmityUIConfiguration.onCustomComment([comment]);
+      amityComments.insert(0, customComments.first);
       Future.delayed(const Duration(milliseconds: 500)).then((value) {
         scrollcontroller.jumpTo(0);
       });

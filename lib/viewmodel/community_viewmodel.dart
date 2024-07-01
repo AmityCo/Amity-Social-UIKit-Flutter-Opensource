@@ -145,7 +145,7 @@ class CommunityVM extends ChangeNotifier {
 
   void joinCommunity(String communityId,
       {CommunityListType? type,
-      required void Function(bool isSuccess) callback}) async {
+        required void Function(bool isSuccess) callback}) async {
     AmitySocialClient.newCommunityRepository()
         .joinCommunity(communityId)
         .then((value) {
@@ -163,7 +163,7 @@ class CommunityVM extends ChangeNotifier {
 
   Future<void> leaveCommunity(String communityId,
       {CommunityListType? type,
-      required void Function(bool isSuccess) callback}) async {
+        required void Function(bool isSuccess) callback}) async {
     AmitySocialClient.newCommunityRepository()
         .leaveCommunity(communityId)
         .then((value) {
@@ -226,7 +226,7 @@ class CommunityVM extends ChangeNotifier {
 
   Future addFile() async {
     final XFile? xFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (xFile != null) {
       pickedFile = File(xFile.path);
       notifyListeners();
@@ -282,7 +282,7 @@ class CommunityVM extends ChangeNotifier {
           .uploadImage(pickedFile!)
           .stream
           .listen(
-        (amityUploadResult) {
+            (amityUploadResult) {
           amityUploadResult.when(
             progress: (uploadInfo, cancelToken) {
               int progress = uploadInfo.getProgressPercentage();
@@ -340,34 +340,34 @@ class CommunityVM extends ChangeNotifier {
   }
 
   void configPostReview(
-      {required String communityId,
-      required bool isEnabled,
-      required bool ispublic,
-      required}) {
-    AmitySocialClient.newCommunityRepository()
-        .updateCommunity(communityId)
-        .isPublic(ispublic)
-        .isPostReviewEnabled(isEnabled)
-        .update()
-        .then((value) {
-      //handle result
-      log("success");
-    }).onError((error, stackTrace) async {
-      //handle error
-      await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
-    });
-  }
+  {required String communityId,
+  required bool isEnabled,
+  required bool ispublic,
+  required}) {
+AmitySocialClient.newCommunityRepository()
+    .updateCommunity(communityId)
+    .isPublic(ispublic)
+    .isPostReviewEnabled(isEnabled)
+    .update()
+    .then((value) {
+//handle result
+log("success");
+}).onError((error, stackTrace) async {
+//handle error
+await AmityDialog()
+    .showAlertErrorDialog(title: "Error!", message: error.toString());
+});
+}
 
-  Future<void> addMembers(String communityId, List<String> userIds) async {
-    await AmitySocialClient.newCommunityRepository()
-        .membership(communityId)
-        .addMembers(userIds)
-        .then((members) {})
-        .onError((error, stackTrace) async {
-      //handle error
-      await AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
-    });
-  }
+Future<void> addMembers(String communityId, List<String> userIds) async {
+  await AmitySocialClient.newCommunityRepository()
+      .membership(communityId)
+      .addMembers(userIds)
+      .then((members) {})
+      .onError((error, stackTrace) async {
+    //handle error
+    await AmityDialog()
+        .showAlertErrorDialog(title: "Error!", message: error.toString());
+  });
+}
 }

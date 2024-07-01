@@ -1,15 +1,12 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../components/alert_dialog.dart';
 import 'amity_viewmodel.dart';
 import 'configuration_viewmodel.dart';
-
 class UserFeedVM extends ChangeNotifier {
   MediaType _selectedMediaType = MediaType.photos;
   void doSelectMedieType(MediaType mediaType) {
@@ -47,10 +44,8 @@ class UserFeedVM extends ChangeNotifier {
     log("getUser=> $userId");
     if (userId == AmityCoreClient.getUserId()) {
       log("isCurrentUser:$userId");
-      amityUser = Provider.of<AmityVM>(
-              NavigationService.navigatorKey.currentContext!,
-              listen: false)
-          .currentamityUser;
+      amityUser = AmityCoreClient.getCurrentUser();
+      print("get user from currentamityUser :$amityUser");
     } else {
       log("isNotCurrentUser:$userId");
       if (otherUser != null) {
@@ -87,21 +82,21 @@ class UserFeedVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-        () async {
-          if (_controller.error == null) {
-            final feedItems =
-                await onCustomPost(_controller.loadedItems);
-            amityPosts.clear();
-            amityPosts.addAll(feedItems);
+          () async {
+        if (_controller.error == null) {
+          final feedItems =
+          await onCustomPost(_controller.loadedItems);
+          amityPosts.clear();
+          amityPosts.addAll(feedItems);
 
-            notifyListeners();
-          } else {
-            //Error on pagination controller
-            log("Error: listenForUserFeed... with userId = $userId");
-            log("ERROR::${_controller.error.toString()}");
-          }
-        },
-      );
+          notifyListeners();
+        } else {
+          //Error on pagination controller
+          log("Error: listenForUserFeed... with userId = $userId");
+          log("ERROR::${_controller.error.toString()}");
+        }
+      },
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controller.fetchNextPage();
@@ -122,21 +117,21 @@ class UserFeedVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-        () async{
-          if (_imagePostController.error == null) {
-            final feedItems =
-                await AmityUIConfiguration.onCustomPost(_controller.loadedItems);
-            amityImagePosts.clear();
-            amityImagePosts.addAll(feedItems);
+          () async{
+        if (_imagePostController.error == null) {
+          final feedItems =
+          await AmityUIConfiguration.onCustomPost(_controller.loadedItems);
+          amityImagePosts.clear();
+          amityImagePosts.addAll(feedItems);
 
-            notifyListeners();
-          } else {
-            //Error on pagination controller
-            log("Error: listenForUserFeed... with userId = $userId");
-            log("ERROR::${_imagePostController.error.toString()}");
-          }
-        },
-      );
+          notifyListeners();
+        } else {
+          //Error on pagination controller
+          log("Error: listenForUserFeed... with userId = $userId");
+          log("ERROR::${_imagePostController.error.toString()}");
+        }
+      },
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _imagePostController.fetchNextPage();
@@ -157,21 +152,21 @@ class UserFeedVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-        () async{
-          if (_videoPostController.error == null) {
-            final feedItems =
-                await AmityUIConfiguration.onCustomPost(_controller.loadedItems);
-            amityVideoPosts.clear();
-            amityVideoPosts.addAll(feedItems);
+          () async{
+        if (_videoPostController.error == null) {
+          final feedItems =
+          await AmityUIConfiguration.onCustomPost(_controller.loadedItems);
+          amityVideoPosts.clear();
+          amityVideoPosts.addAll(feedItems);
 
-            notifyListeners();
-          } else {
-            //Error on pagination controller
-            log("Error: listenForUserFeed... with userId = $userId");
-            log("ERROR::${_videoPostController.error.toString()}");
-          }
-        },
-      );
+          notifyListeners();
+        } else {
+          //Error on pagination controller
+          log("Error: listenForUserFeed... with userId = $userId");
+          log("ERROR::${_videoPostController.error.toString()}");
+        }
+      },
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _videoPostController.fetchNextPage();
@@ -185,7 +180,7 @@ class UserFeedVM extends ChangeNotifier {
   void loadnextpage(ScrollController scrollController,
       PagingController<AmityPost> pagingController) {
     if ((scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) &&
+        scrollController.position.maxScrollExtent) &&
         pagingController.hasMoreItems) {
       pagingController.fetchNextPage();
     }
@@ -193,8 +188,8 @@ class UserFeedVM extends ChangeNotifier {
 
   Future<void> editCurrentUserInfo(
       {required String displayName,
-      required String description,
-      String? avatarFileId}) async {
+        required String description,
+        String? avatarFileId}) async {
     if (avatarFileId != null) {
       await AmityCoreClient.getCurrentUser()
           .update()
@@ -203,12 +198,12 @@ class UserFeedVM extends ChangeNotifier {
           .displayName(displayName)
           .update()
           .then((value) =>
-              {log("update displayname & description & avatarFileUrl success")})
+      {log("update displayname & description & avatarFileUrl success")})
           .onError((error, stackTrace) async => {
-                log("update displayname & description & avatarFileUrl fail"),
-                // await AmityDialog().showAlertErrorDialog(
-                //     title: "Error!", message: error.toString())
-              });
+        log("update displayname & description & avatarFileUrl fail"),
+        // await AmityDialog().showAlertErrorDialog(
+        //     title: "Error!", message: error.toString())
+      });
     } else {
       await AmityCoreClient.getCurrentUser()
           .update()
@@ -217,10 +212,10 @@ class UserFeedVM extends ChangeNotifier {
           .update()
           .then((value) => {log("update displayname & description success")})
           .onError((error, stackTrace) async => {
-                log("update displayname & description fail"),
-                // await AmityDialog().showAlertErrorDialog(
-                //     title: "Error!", message: error.toString())
-              });
+        log("update displayname & description fail"),
+        // await AmityDialog().showAlertErrorDialog(
+        //     title: "Error!", message: error.toString())
+      });
     }
   }
 
@@ -307,6 +302,7 @@ class UserFeedVM extends ChangeNotifier {
   }
 
   Future<void> unfollowUser(AmityUser user) async {
+    print(user.userId);
     await AmityCoreClient.newUserRepository()
         .relationship()
         .unfollow(user.userId!)
@@ -317,7 +313,7 @@ class UserFeedVM extends ChangeNotifier {
       amityVideoPosts.clear();
       log("clear post: $amityImagePosts, $amityPosts, $amityVideoPosts");
       notifyListeners();
-      initUserFeed(userId: amityUser!.userId!);
+      initUserFeed(userId: user.userId!);
     }).onError((error, stackTrace) {
       AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());

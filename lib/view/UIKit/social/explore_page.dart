@@ -602,10 +602,15 @@ class CategorySection extends StatelessWidget {
                                         .appColors
                                         .primaryShade3,
                                 shape: BoxShape.circle),
-                            child: const Icon(
-                              Icons.category,
-                              color: Colors.white,
-                            ),
+                            child: category.avatar != null
+                                ? CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(category.avatar!.fileUrl!),
+                                  )
+                                : const Icon(
+                                    Icons.category,
+                                    color: Colors.white,
+                                  ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(

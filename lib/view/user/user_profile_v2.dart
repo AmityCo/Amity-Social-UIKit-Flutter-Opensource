@@ -808,7 +808,7 @@ class AppScaffold extends StatelessWidget {
                                 .base),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => UserSettingPage(
+                              builder: (_) => UserSettingPage(
                                     amityMyFollowInfo: snapshot.data!,
                                     amityUser: Provider.of<UserFeedVM>(context)
                                         .amityUser!,

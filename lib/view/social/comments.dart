@@ -495,21 +495,48 @@ class CommentTextField extends StatelessWidget {
                     text: commentTextEditController.text);
               }
 
-              commentTextEditController.clear();
-            },
-            child: Container(
-              height: 30,
-              width: 50,
-              color: Colors.transparent,
-              child: Center(
-                child: Text("Post  ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Provider.of<AmityUIConfiguration>(context)
-                            .primaryColor)),
-              ),
-            )),
-      ),
+                commentTextEditController.clear();
+              },
+              child: Text(
+                "Post",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .primaryColor),
+              ))
+
+          // GestureDetector(
+          //     onTap: () async {
+          //       if (Provider.of<ReplyVM>(context, listen: false).replyToObject ==
+          //           null) {
+          //         HapticFeedback.heavyImpact();
+          //         await Provider.of<PostVM>(context, listen: false)
+          //             .createComment(postId, commentTextEditController.text);
+          //       } else {
+          //         ///Create Comment with Reply
+          //         print("reply comment");
+          //         var replyingComment =
+          //             Provider.of<ReplyVM>(context, listen: false)
+          //                 .replyToObject
+          //                 ?.replyToComment
+          //                 .commentId;
+          //         HapticFeedback.heavyImpact();
+          //         print(replyingComment!);
+          //         Provider.of<ReplyVM>(context, listen: false).createReplyComment(
+          //             postId: postId,
+          //             commentId: replyingComment,
+          //             text: commentTextEditController.text);
+          //       }
+
+          //       commentTextEditController.clear();
+          //     },
+          //     child: Text("Post  ",
+          //         style: TextStyle(
+          //             fontWeight: FontWeight.bold,
+          //             color: Provider.of<AmityUIConfiguration>(context)
+          //                 .primaryColor))),
+
+          ),
     );
   }
 }

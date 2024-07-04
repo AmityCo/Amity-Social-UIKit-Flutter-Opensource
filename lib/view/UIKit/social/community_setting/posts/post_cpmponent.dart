@@ -35,7 +35,7 @@ class PostMedia extends StatelessWidget {
                   image: DecorationImage(
                     image: isEditPost
                         ? getImageProvider(
-                            "${Provider.of<EditPostVM>(context).editPostMedie[index].postDataForEditMedie!.fileInfo.fileUrl}?size=medium")
+                            "${files[index].postDataForEditMedie!.fileInfo.fileUrl}?size=medium")
                         : Provider.of<CreatePostVMV2>(context, listen: false)
                             .getImageProvider(file.file.path),
                     fit: BoxFit.cover,
@@ -112,8 +112,8 @@ class PostMedia extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(child: backgroundImage(files[1], 0)),
-                      Expanded(child: backgroundImage(files[2], 0)),
+                      Expanded(child: backgroundImage(files[1], 1)),
+                      Expanded(child: backgroundImage(files[2], 2)),
                     ],
                   ),
                 ),

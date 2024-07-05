@@ -857,7 +857,6 @@ class _StickyHeaderList extends StatelessWidget {
                             }),
                             initialData: vm.getCommunityPosts()[index],
                             builder: (context, snapshot) {
-                              print("Post ${snapshot.data!.postedUser?.avatarUrl}");
                               return PostWidget(
                                 isPostDetail: false,
                                 showCommunity: false,

@@ -45,7 +45,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
     super.initState();
 
     if (widget.amityUser != null) {
-
+      AmityUIConfiguration.onRefreshSocialRating(widget.amityUser!.userId!);
       Provider.of<UserFeedVM>(context, listen: false).initUserFeed(
           amityUser: widget.amityUser, userId: widget.amityUser!.userId!);
       Provider.of<UserFeedVM>(context, listen: false).userFeedTabController =
@@ -54,6 +54,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
             vsync: this,
           );
     } else {
+      AmityUIConfiguration.onRefreshSocialRating(widget.amityUserId);
       Provider.of<UserFeedVM>(context, listen: false)
           .initUserFeed(userId: widget.amityUserId);
 
@@ -824,6 +825,7 @@ class AppScaffold extends StatelessWidget {
           onRefresh: () async {
             await Provider.of<UserFeedVM>(context, listen: false)
                 .initUserFeed(amityUser: amityUser, userId: amityUser.userId!);
+            AmityUIConfiguration.onRefreshSocialRating(amityUser.userId!);
           },
           child: CustomScrollView(
             controller: Provider.of<UserFeedVM>(context).scrollcontroller,

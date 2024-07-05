@@ -115,7 +115,6 @@ class CommentScreenState extends State<CommentScreen> {
       return StreamBuilder<AmityPost>(
           key: Key(postData.postId),
           stream: vm.amityPost.listen.stream.asyncMap((event) async{
-            print('log async map comment1');
             final newPost = await AmityUIConfiguration.onCustomPost([event]);
             return newPost.first;
           }),
@@ -747,7 +746,6 @@ class _CommentComponentState extends State<CommentComponent> {
           return StreamBuilder<AmityComment>(
             key: Key(vm.amityComments[index].commentId!),
             stream: vm.amityComments[index].listen.stream.asyncMap((event) async{
-              print('log async map comment2');
               final newPost = await AmityUIConfiguration.onCustomComment([event]);
               return newPost.first;
             }),
@@ -1277,7 +1275,6 @@ class ReplyCommentComponent extends StatelessWidget {
       return StreamBuilder<AmityComment>(
           key: Key(comment.commentId!),
           stream: comment.listen.stream.asyncMap((event) async{
-            print('log async map comment3');
             final newPost = await AmityUIConfiguration.onCustomComment([event]);
             return newPost.first;
           }),

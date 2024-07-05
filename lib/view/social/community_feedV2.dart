@@ -852,13 +852,11 @@ class _StickyHeaderList extends StatelessWidget {
                         return StreamBuilder<AmityPost>(
                             key: Key(vm.getCommunityPosts()[index].postId!),
                             stream: vm.getCommunityPosts()[index].listen.stream.asyncMap((event) async{
-                              print('log async map community feed');
                               final newPost = await AmityUIConfiguration.onCustomPost([event]);
                               return newPost.first;
                             }),
                             initialData: vm.getCommunityPosts()[index],
                             builder: (context, snapshot) {
-                              print("Post ${snapshot.data!.postedUser?.avatarUrl}");
                               return PostWidget(
                                 isPostDetail: false,
                                 showCommunity: false,

@@ -115,7 +115,6 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                             return StreamBuilder<AmityPost>(
                               key: Key(vm.getAmityPosts[index].postId!),
                               stream: vm.getAmityPosts[index].listen.stream.asyncMap((event) async{
-                                print('log async map global feed1');
                                 final newPost = await AmityUIConfiguration.onCustomPost([event]);
                                 return newPost.first;
                               }),
@@ -1160,7 +1159,6 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
           return StreamBuilder<AmityComment>(
             key: Key(widget.comments[index].commentId!),
             stream: widget.comments[index].listen.stream.asyncMap((event) async{
-              print('log async map global feed2');
               final newPost = await AmityUIConfiguration.onCustomComment([event]);
               return newPost.first;
             }),
@@ -1294,7 +1292,6 @@ class CommentActionComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<AmityComment>(
         stream: amityComment.listen.stream..asyncMap((event) async{
-          print('log async map global feed3');
           final newPost = await AmityUIConfiguration.onCustomComment([event]);
           return newPost.first;
         }),

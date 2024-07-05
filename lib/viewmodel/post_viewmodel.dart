@@ -24,6 +24,7 @@ class PostVM extends ChangeNotifier {
         .getPostStream(postId)
         .stream
         .asyncMap((event) async{
+          print('log async map post');
       final newPost = await AmityUIConfiguration.onCustomPost([event]);
       return newPost.first;
     }).listen((event) async {

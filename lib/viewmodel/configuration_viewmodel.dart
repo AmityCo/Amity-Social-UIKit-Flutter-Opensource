@@ -37,7 +37,7 @@ class AmityUIConfiguration extends ChangeNotifier {
   static Future<List<AmityComment>> Function(List<AmityComment>) onCustomComment = (comments) async => comments;
   static Future<List<AmityCommunityMember>> Function(List<AmityCommunityMember>) onCustomMember = (members) async => members;
   static Future<List<AmityFollowRelationship>> Function(List<AmityFollowRelationship>) onCustomFollow = (follows) async => follows;
-  Future<void> Function(String) onRefreshSocialRating = (userId) async {};
+  static Future<void> Function(String) onRefreshSocialRating = (userId) async {};
   Future<void> Function(BuildContext) onUserProfile = (context) async {};
   bool customUserProfileNavigate = false;
   static Future<String> Function(String) onCustomUserProfileImage =(userId) async=>userId;

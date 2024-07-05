@@ -59,11 +59,14 @@ class MemberManagementVM extends ChangeNotifier {
     scrollController.addListener(loadNextPage);
   }
 
+  bool isLoading = false;
+
   Future<void> _handleMemberControllerUpdates() async {
     if (_amityUsersController.error == null) {
       // final newMember= await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems);
+      final users = await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems);
       _userList.clear();
-      _userList.addAll(await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems));
+      _userList.addAll(users);
       print("userList: $_userList");
       notifyListeners();
     } else {

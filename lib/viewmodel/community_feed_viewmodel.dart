@@ -139,8 +139,9 @@ class CommuFeedVM extends ChangeNotifier {
         .getCommunityFeed(communityId)
         .includeDeleted(false)
         .getPagingData()
-        .then((value) {
-      _amityCommunityFeedPosts = value.data;
+        .then((value) async {
+      final newPost = await AmityUIConfiguration.onCustomPost(value.data);
+      _amityCommunityFeedPosts = newPost;
     });
     notifyListeners();
     await checkIsCurrentUserIsAdmin(communityId);

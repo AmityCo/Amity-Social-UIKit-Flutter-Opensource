@@ -45,7 +45,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
     super.initState();
 
     if (widget.amityUser != null) {
-
+      AmityUIConfiguration.onRefreshSocialRating(widget.amityUser!.userId!);
       Provider.of<UserFeedVM>(context, listen: false).initUserFeed(
           amityUser: widget.amityUser, userId: widget.amityUser!.userId!);
       Provider.of<UserFeedVM>(context, listen: false).userFeedTabController =
@@ -54,6 +54,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
             vsync: this,
           );
     } else {
+      AmityUIConfiguration.onRefreshSocialRating(widget.amityUserId);
       Provider.of<UserFeedVM>(context, listen: false)
           .initUserFeed(userId: widget.amityUserId);
 
@@ -687,6 +688,7 @@ class _StickyHeaderList extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
                               stream: vm.amityPosts[index].listen.stream.asyncMap((event) async{
+                                print('log async map profile');
                                 final newPost = await AmityUIConfiguration.onCustomPost([event]);
                                 return newPost.first;
                               }),
@@ -824,6 +826,7 @@ class AppScaffold extends StatelessWidget {
           onRefresh: () async {
             await Provider.of<UserFeedVM>(context, listen: false)
                 .initUserFeed(amityUser: amityUser, userId: amityUser.userId!);
+            AmityUIConfiguration.onRefreshSocialRating(amityUser.userId!);
           },
           child: CustomScrollView(
             controller: Provider.of<UserFeedVM>(context).scrollcontroller,

@@ -15,12 +15,12 @@ dependencies:
   font_awesome_flutter: ^10.1.0
   pin_code_fields: ^8.0.1
   country_code_picker: ^3.0.0
-  flutter_bloc: ^8.0.1
+  flutter_bloc: ^8.1.5
   shared_preferences: ^2.0.5
   flutter_phoenix: ^1.0.0
   flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
-  amity_sdk: ^0.44.0
+  amity_sdk: ^0.46.0
   provider: ^6.0.3
   carousel_slider: ^4.1.1
   chewie: ^1.3.4
@@ -96,8 +96,8 @@ flutter:
     - assets/images/noPostYet.png
     - assets/images/privateIcon.png
     - assets/images/noVideo.png
+    - assets/config/config.json
     - assets/
-
 
 
 

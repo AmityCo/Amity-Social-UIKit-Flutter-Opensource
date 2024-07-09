@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,132 +25,134 @@ class _CommentsNotificationSettingPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:
-          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-      appBar: AppBar(
-        title: Text(
-          'Comments',
-          style: TextStyle(
-            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return ThemeConfig(
+      child: Scaffold(
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+        appBar: AppBar(
+          title: Text(
+            'Comments',
+            style: TextStyle(
+              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: ListView(
-        children: [
-          // Section 1: React Comments
-          _buildSectionHeader('React Comments'),
-          _buildDescriptionTile(
-              'Receive notifications when someone likes your comment in this community'),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Everyone',
-            value: NotificationSetting.everyone,
-            groupValue: _reactCommentsSetting,
-            onChanged: (value) {
-              setState(() {
-                _reactCommentsSetting = value!;
-              });
-            },
-          ),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Only Moderator',
-            value: NotificationSetting.onlyModerator,
-            groupValue: _reactCommentsSetting,
-            onChanged: (value) {
-              setState(() {
-                _reactCommentsSetting = value!;
-              });
-            },
-          ),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Off',
-            value: NotificationSetting.off,
-            groupValue: _reactCommentsSetting,
-            onChanged: (value) {
-              setState(() {
-                _reactCommentsSetting = value!;
-              });
-            },
-          ),
-          const Divider(),
-
-          // Section 2: New Comments
-          _buildSectionHeader('New Comments'),
-          _buildDescriptionTile(
-              'Receive notifications when someone comments on your posts in this community'),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Everyone',
-            value: NotificationSetting.everyone,
-            groupValue: _newCommentsSetting,
-            onChanged: (value) {
-              setState(() {
-                _newCommentsSetting = value!;
-              });
-            },
-          ),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Only Moderator',
-            value: NotificationSetting.onlyModerator,
-            groupValue: _newCommentsSetting,
-            onChanged: (value) {
-              setState(() {
-                _newCommentsSetting = value!;
-              });
-            },
-          ),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Off',
-            value: NotificationSetting.off,
-            groupValue: _newCommentsSetting,
-            onChanged: (value) {
-              setState(() {
-                _newCommentsSetting = value!;
-              });
-            },
-          ),
-          const Divider(),
-
-          // Section 3: Replies
-          _buildSectionHeader('Replies'),
-          _buildDescriptionTile(
-              'Receive notifications when someone replies to your comments in this community'),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Everyone',
-            value: NotificationSetting.everyone,
-            groupValue: _repliesSetting,
-            onChanged: (value) {
-              setState(() {
-                _repliesSetting = value!;
-              });
-            },
-          ),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Only Moderator',
-            value: NotificationSetting.onlyModerator,
-            groupValue: _repliesSetting,
-            onChanged: (value) {
-              setState(() {
-                _repliesSetting = value!;
-              });
-            },
-          ),
-          _buildRadioTile<NotificationSetting>(
-            title: 'Off',
-            value: NotificationSetting.off,
-            groupValue: _repliesSetting,
-            onChanged: (value) {
-              setState(() {
-                _repliesSetting = value!;
-              });
-            },
-          ),
-          const Divider(),
-        ],
+        body: ListView(
+          children: [
+            // Section 1: React Comments
+            _buildSectionHeader('React Comments'),
+            _buildDescriptionTile(
+                'Receive notifications when someone likes your comment in this community'),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Everyone',
+              value: NotificationSetting.everyone,
+              groupValue: _reactCommentsSetting,
+              onChanged: (value) {
+                setState(() {
+                  _reactCommentsSetting = value!;
+                });
+              },
+            ),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Only Moderator',
+              value: NotificationSetting.onlyModerator,
+              groupValue: _reactCommentsSetting,
+              onChanged: (value) {
+                setState(() {
+                  _reactCommentsSetting = value!;
+                });
+              },
+            ),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Off',
+              value: NotificationSetting.off,
+              groupValue: _reactCommentsSetting,
+              onChanged: (value) {
+                setState(() {
+                  _reactCommentsSetting = value!;
+                });
+              },
+            ),
+            const Divider(),
+      
+            // Section 2: New Comments
+            _buildSectionHeader('New Comments'),
+            _buildDescriptionTile(
+                'Receive notifications when someone comments on your posts in this community'),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Everyone',
+              value: NotificationSetting.everyone,
+              groupValue: _newCommentsSetting,
+              onChanged: (value) {
+                setState(() {
+                  _newCommentsSetting = value!;
+                });
+              },
+            ),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Only Moderator',
+              value: NotificationSetting.onlyModerator,
+              groupValue: _newCommentsSetting,
+              onChanged: (value) {
+                setState(() {
+                  _newCommentsSetting = value!;
+                });
+              },
+            ),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Off',
+              value: NotificationSetting.off,
+              groupValue: _newCommentsSetting,
+              onChanged: (value) {
+                setState(() {
+                  _newCommentsSetting = value!;
+                });
+              },
+            ),
+            const Divider(),
+      
+            // Section 3: Replies
+            _buildSectionHeader('Replies'),
+            _buildDescriptionTile(
+                'Receive notifications when someone replies to your comments in this community'),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Everyone',
+              value: NotificationSetting.everyone,
+              groupValue: _repliesSetting,
+              onChanged: (value) {
+                setState(() {
+                  _repliesSetting = value!;
+                });
+              },
+            ),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Only Moderator',
+              value: NotificationSetting.onlyModerator,
+              groupValue: _repliesSetting,
+              onChanged: (value) {
+                setState(() {
+                  _repliesSetting = value!;
+                });
+              },
+            ),
+            _buildRadioTile<NotificationSetting>(
+              title: 'Off',
+              value: NotificationSetting.off,
+              groupValue: _repliesSetting,
+              onChanged: (value) {
+                setState(() {
+                  _repliesSetting = value!;
+                });
+              },
+            ),
+            const Divider(),
+          ],
+        ),
       ),
     );
   }

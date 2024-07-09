@@ -1,29 +1,46 @@
+import 'dart:async';
+
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityUIConfiguration extends ChangeNotifier {
   var appColors = AppColors();
-  Color get primaryColor => appColors.primary;
-
-  IconData placeHolderIcon = Icons.chat;
   Color displaynameColor = Colors.black;
-  AmityIconConfig iconConfig = AmityIconConfig();
+  Color get primaryColor => appColors.primary;
   ChannelListConfig channelListConfig = ChannelListConfig();
   MessageRoomConfig messageRoomConfig = MessageRoomConfig();
-  // Color userProfileBGColor = Colors.white;
-  // Color userProfileTextColor = Colors.black;
-  // Color userProfileIconColor = Colors.grey;
+  ThemeData? themeData;
+  MediaQueryData? mediaQueryData;
+
+  IconData placeHolderIcon = Icons.chat;
+  AmityIconConfig iconConfig = AmityIconConfig();
+
   TextStyle titleTextStyle = const TextStyle(
     fontSize: 17,
     color: Colors.black,
     fontWeight: FontWeight.w600,
   );
-
   TextStyle hintTextStyle = const TextStyle(
     fontSize: 15,
     color: Colors.black,
     fontWeight: FontWeight.w400,
   );
+
+  AmityWidgetConfig widgetConfig = AmityWidgetConfig();
+  AmityLogicConfig logicConfig = AmityLogicConfig();
+  Widget Function(int) buildChatButton =
+      (communityId) => const SizedBox.shrink();
+  Widget?Function(String) buildSocialRating  =(userId) => const SizedBox.shrink() ;
+  bool currentUserImageUrl = false;
+  static Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
+  static Future<List<AmityComment>> Function(List<AmityComment>) onCustomComment = (comments) async => comments;
+  static Future<List<AmityCommunityMember>> Function(List<AmityCommunityMember>) onCustomMember = (members) async => members;
+  static Future<List<AmityFollowRelationship>> Function(List<AmityFollowRelationship>) onCustomFollow = (follows) async => follows;
+  Future<void> Function(String) onRefreshSocialRating = (userId) async {};
+  Future<void> Function(BuildContext) onUserProfile = (context) async {};
+  bool customUserProfileNavigate = false;
+  static Future<String> Function(String) onCustomUserProfileImage =(userId) async=>userId;
 
   void updateUI() {
     notifyListeners();
@@ -64,7 +81,7 @@ class AppColors {
   final userProfileIconColor;
 
   AppColors({
-    this.primary = const Color(0xFF1054de),
+    this.primary = const Color(0xFF10F48B),
     // this.primaryShade1 = const Color(0xFF4a82f2),
     // this.primaryShade2 = const Color(0xFFa0bd8f),
     this.primaryShade3 = const Color(0xFFd9e5fc),
@@ -203,4 +220,36 @@ class MessageRoomConfig {
   Color appbarColor = Colors.white;
   Color textFieldBackGroundColor = Colors.white;
   Color textFieldHintColor = Colors.grey[500]!;
+}
+
+class AmityWidgetConfig {
+  final bool showCommunityMoreButton;
+  final bool showCommunityPostButton;
+  final bool showEditProfile;
+  final bool showJoinButton;
+  final bool showPostReview;
+  final bool showPromoteAndDismissModerator;
+  final bool showRemoveFromCommunity;
+  final bool showSelectMemberButton;
+
+  AmityWidgetConfig({
+    this.showCommunityMoreButton = true,
+    this.showCommunityPostButton = true,
+    this.showEditProfile = true,
+    this.showJoinButton = true,
+    this.showPostReview = true,
+    this.showPromoteAndDismissModerator = true,
+    this.showRemoveFromCommunity = true,
+    this.showSelectMemberButton = true,
+  });
+}
+
+class AmityLogicConfig {
+  final bool replaceModeratorProfile;
+  final bool replaceModeratorProfileNavigation;
+
+  AmityLogicConfig({
+    this.replaceModeratorProfile = false,
+    this.replaceModeratorProfileNavigation = false,
+  });
 }

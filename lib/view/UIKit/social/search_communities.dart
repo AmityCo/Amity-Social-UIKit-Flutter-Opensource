@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
@@ -28,6 +29,7 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
   }
 
   var textcontroller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<SearchCommunityVM, UserVM>(
@@ -90,88 +92,90 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
       );
       return DefaultTabController(
         length: 2,
-        child: Scaffold(
-          backgroundColor: Provider.of<AmityUIConfiguration>(context)
-              .appColors
-              .baseBackground,
-          body: SafeArea(
-            child: Stack(
-              children: [
-                textcontroller.text.isEmpty
-                    ? const SizedBox()
-                    : TabBarView(
-                        children: [
-                          ListView.builder(
-                            controller: vm.scrollcontroller,
-                            itemCount: vm.amityCommunities.length + 1,
-                            itemBuilder: (context, index) {
-                              // If it's the first item in the list, return the search bar
-                              if (index == 0) {
-                                return const SizedBox(height: 120);
-                              }
-                              // Otherwise, return the community widget
-                              return CommunityWidget(
-                                community: vm.amityCommunities[index - 1],
-                              );
-                            },
-                          ),
-                          ListView.builder(
-                            controller: userVM.scrollcontroller,
-                            itemCount: userVM.getUserList().length + 1,
-                            itemBuilder: (context, index) {
-                              // If it's the first item in the list, return the search bar
-                              if (index == 0) {
-                                return const SizedBox(height: 120);
-                              }
-                              // Otherwise, return the community widget
-                              return UserWidget(
-                                  amityUser: userVM.getUserList()[index - 1]);
-                            },
-                          ),
-                        ],
-                      ),
-                Column(
-                  children: [
-                    searchBar,
-                    textcontroller.text.isEmpty
-                        ? const SizedBox()
-                        : Container(
-                            child: TabBar(
-                              dividerColor:
-                                  Provider.of<AmityUIConfiguration>(context)
-                                      .appColors
-                                      .baseBackground,
-                              tabAlignment: TabAlignment.start,
-                              isScrollable:
-                                  true, // Ensure that the TabBar is scrollable
-
-                              labelColor:
-                                  Provider.of<AmityUIConfiguration>(context)
-                                      .appColors
-                                      .primary,
-
-                              indicatorColor:
-                                  Provider.of<AmityUIConfiguration>(context)
-                                      .appColors
-                                      .primary,
-                              labelStyle: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'SF Pro Text',
-                              ),
-                              tabs: const [
-                                Tab(
-                                  text: "Community",
-                                ),
-                                Tab(
-                                  text: "User",
-                                ),
-                              ],
+        child: ThemeConfig(
+          child: Scaffold(
+            backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  textcontroller.text.isEmpty
+                      ? const SizedBox()
+                      : TabBarView(
+                          children: [
+                            ListView.builder(
+                              controller: vm.scrollcontroller,
+                              itemCount: vm.amityCommunities.length + 1,
+                              itemBuilder: (context, index) {
+                                // If it's the first item in the list, return the search bar
+                                if (index == 0) {
+                                  return const SizedBox(height: 120);
+                                }
+                                // Otherwise, return the community widget
+                                return CommunityWidget(
+                                  community: vm.amityCommunities[index - 1],
+                                );
+                              },
                             ),
-                          ),
-                  ],
-                ),
-              ],
+                            ListView.builder(
+                              controller: userVM.scrollcontroller,
+                              itemCount: userVM.getUserList().length + 1,
+                              itemBuilder: (context, index) {
+                                // If it's the first item in the list, return the search bar
+                                if (index == 0) {
+                                  return const SizedBox(height: 120);
+                                }
+                                // Otherwise, return the community widget
+                                return UserWidget(
+                                    amityUser: userVM.getUserList()[index - 1]);
+                              },
+                            ),
+                          ],
+                        ),
+                  Column(
+                    children: [
+                      searchBar,
+                      textcontroller.text.isEmpty
+                          ? const SizedBox()
+                          : Container(
+                              child: TabBar(
+                                dividerColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .baseBackground,
+                                tabAlignment: TabAlignment.start,
+                                isScrollable: true,
+                                // Ensure that the TabBar is scrollable
+
+                                labelColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
+
+                                indicatorColor:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primary,
+                                labelStyle: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'SF Pro Text',
+                                ),
+                                tabs: const [
+                                  Tab(
+                                    text: "Community",
+                                  ),
+                                  Tab(
+                                    text: "User",
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -321,13 +325,21 @@ class UserWidget extends StatelessWidget {
                 ],
               ),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
-                        create: (context) => UserFeedVM(),
-                        child: UserProfileScreen(
-                          amityUser: amityUser,
-                          amityUserId: amityUser.userId!,
-                        ))));
+                if (amityUser.userId! ==
+                        AmityCoreClient.getCurrentUser().userId &&
+                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                        .customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                      .onUserProfile(context);
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                          create: (context) => UserFeedVM(),
+                          child: UserProfileScreen(
+                            amityUser: amityUser,
+                            amityUserId: amityUser.userId!,
+                          ))));
+                }
               },
             ),
           );
@@ -337,8 +349,15 @@ class UserWidget extends StatelessWidget {
 
 class CommunityIconList extends StatelessWidget {
   final List<AmityCommunity> amityCommunites;
+  final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
-  const CommunityIconList({super.key, required this.amityCommunites});
+  const CommunityIconList({
+    super.key,
+    required this.amityCommunites,
+    this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -363,10 +382,18 @@ class CommunityIconList extends StatelessWidget {
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            const Scaffold(body: MyCommunityPage()),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ThemeConfig(
+                            child: Scaffold(
+                              body: MyCommunityPage(
+                                canCreateCommunity: canCreateCommunity,
+                                canSearchCommunities: canSearchCommunities,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
                     },
                     child: Container(child: const Icon(Icons.chevron_right))),
               ],

@@ -5,7 +5,8 @@ import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/alert_dialog.dart';
-
+import 'amity_viewmodel.dart';
+import 'configuration_viewmodel.dart';
 class UserFeedVM extends ChangeNotifier {
   MediaType _selectedMediaType = MediaType.photos;
   void doSelectMedieType(MediaType mediaType) {
@@ -34,7 +35,7 @@ class UserFeedVM extends ChangeNotifier {
   Future<void> initUserFeed(
       {AmityUser? amityUser, required String userId}) async {
     _getUser(userId: userId, otherUser: amityUser);
-    await listenForUserFeed(userId);
+    await listenForUserFeed(userId,onCustomPost: AmityUIConfiguration.onCustomPost);
     listenForImageFeed(userId);
     listenForVideoFeed(userId);
   }
@@ -72,7 +73,8 @@ class UserFeedVM extends ChangeNotifier {
     });
   }
 
-  Future<void> listenForUserFeed(String userId) async {
+  Future<void> listenForUserFeed(String userId,  {required Future<List<AmityPost>> Function(List<AmityPost>)
+  onCustomPost}) async {
     _controller = PagingController(
       pageFuture: (token) => AmitySocialClient.newFeedRepository()
           .getUserFeed(userId)
@@ -80,10 +82,12 @@ class UserFeedVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-        () {
+        () async {
           if (_controller.error == null) {
+            final feedItems =
+                await onCustomPost(_controller.loadedItems);
             amityPosts.clear();
-            amityPosts.addAll(_controller.loadedItems);
+            amityPosts.addAll(feedItems);
 
             notifyListeners();
           } else {
@@ -113,10 +117,12 @@ class UserFeedVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-        () {
+        () async{
           if (_imagePostController.error == null) {
+            final feedItems =
+                await AmityUIConfiguration.onCustomPost(_controller.loadedItems);
             amityImagePosts.clear();
-            amityImagePosts.addAll(_imagePostController.loadedItems);
+            amityImagePosts.addAll(feedItems);
 
             notifyListeners();
           } else {
@@ -146,10 +152,12 @@ class UserFeedVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-        () {
+        () async{
           if (_videoPostController.error == null) {
+            final feedItems =
+                await AmityUIConfiguration.onCustomPost(_controller.loadedItems);
             amityVideoPosts.clear();
-            amityVideoPosts.addAll(_videoPostController.loadedItems);
+            amityVideoPosts.addAll(feedItems);
 
             notifyListeners();
           } else {
@@ -250,7 +258,7 @@ class UserFeedVM extends ChangeNotifier {
       print(amityPosts.length);
       notifyListeners();
       print("notifyListeners");
-      listenForUserFeed(amityUser!.userId!);
+      listenForUserFeed(amityUser!.userId!,onCustomPost:AmityUIConfiguration.onCustomPost);
       callback(true, "Post deleted successfully.");
 
       callback(false, "Post not found in the list.");

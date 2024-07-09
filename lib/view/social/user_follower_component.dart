@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
+import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/follower_following_viewmodel.dart';
 
 class AmityFollowerScreen extends StatefulWidget {
   final String userId;
+
   const AmityFollowerScreen({
     Key? key,
     required this.userId,
@@ -70,27 +72,46 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                     return StreamBuilder<AmityFollowRelationship>(
                         // key: Key(vm.getFollowRelationships[index].sourceUserId! +
                         //     vm.getFollowRelationships[index].targetUserId!),
-                        stream: vm.getFollowerList[index].listen.stream,
+                        stream: vm.getFollowerList[index].listen.stream.asyncMap((event) async{
+                          final NewFollow = await AmityUIConfiguration.onCustomFollow([event]);
+                          return NewFollow.first;
+                        }),
                         initialData: vm.getFollowerList[index],
                         builder: (context, snapshot) {
                           return StreamBuilder<AmityFollowRelationship>(
-                              stream: vm.getFollowerList[index].listen.stream,
+                              stream: vm.getFollowerList[index].listen.stream.asyncMap((event) async{
+                                final NewFollow = await AmityUIConfiguration.onCustomFollow([event]);
+                                return NewFollow.first;
+                              }),
                               initialData: vm.getFollowerList[index],
                               builder: (context, snapshot) {
                                 return ListTile(
                                   onTap: () async {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ChangeNotifierProvider(
-                                                    create: (context) =>
-                                                        UserFeedVM(),
-                                                    child: UserProfileScreen(
-                                                        amityUser: snapshot
-                                                            .data!.sourceUser!,
-                                                        amityUserId: snapshot
-                                                            .data!
-                                                            .sourceUserId!))));
+                                    if (snapshot.data!.sourceUserId! ==
+                                            AmityCoreClient.getCurrentUser()
+                                                .userId &&
+                                        Provider.of<AmityUIConfiguration>(
+                                                context,
+                                                listen: false)
+                                            .customUserProfileNavigate) {
+                                      Provider.of<AmityUIConfiguration>(context,
+                                              listen: false)
+                                          .onUserProfile(context);
+                                    } else {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ChangeNotifierProvider(
+                                                      create: (context) =>
+                                                          UserFeedVM(),
+                                                      child: UserProfileScreen(
+                                                          amityUser:
+                                                              snapshot.data!
+                                                                  .sourceUser!,
+                                                          amityUserId: snapshot
+                                                              .data!
+                                                              .sourceUserId!))));
+                                    }
                                   },
                                   trailing: GestureDetector(
                                       onTap: () {

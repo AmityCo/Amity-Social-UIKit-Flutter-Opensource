@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/custom_textfield.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/category_list.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
@@ -51,259 +52,261 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
         stream: widget.community.listen.stream,
         builder: (context, snapshot) {
           var community = snapshot.data ?? widget.community;
-          return Scaffold(
-            backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                .appColors
-                .baseBackground,
-            appBar: AppBar(
-              title: Text(
-                "Edit Community",
-                style: Provider.of<AmityUIConfiguration>(context)
-                    .titleTextStyle
-                    .copyWith(
-                        color: Provider.of<AmityUIConfiguration>(context)
-                            .appColors
-                            .base),
-              ),
-              backgroundColor: Colors.transparent,
-              leading: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: Icon(Icons.chevron_left,
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .base,
-                    size: 30),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    AmityLoadingDialog.showLoadingDialog();
-                    var imageProvider =
-                        Provider.of<CommunityVM>(context, listen: false);
-                    await imageProvider.uploadSelectedFileToAmity();
-                    await Provider.of<CommunityVM>(context, listen: false)
-                        .updateCommunity(
-                            community.communityId ?? "",
-                            imageProvider.amityImages ?? community.avatarImage,
-                            _displayNameController.text,
-                            _descriptionController.text,
-                            Provider.of<CategoryVM>(context, listen: false)
-                                .getSelectedCategory(),
-                            communityType == CommunityType.public
-                                ? true
-                                : false);
-                    AmityLoadingDialog.hideLoadingDialog();
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
+          return ThemeConfig(
+            child: Scaffold(
+              backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseBackground,
+              appBar: AppBar(
+                title: Text(
+                  "Edit Community",
+                  style: Provider.of<AmityUIConfiguration>(context)
+                      .titleTextStyle
+                      .copyWith(
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base),
+                ),
+                backgroundColor: Colors.transparent,
+                leading: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(Icons.chevron_left,
                       color: Provider.of<AmityUIConfiguration>(context)
                           .appColors
-                          .primary,
-                      fontWeight: FontWeight.bold,
+                          .base,
+                      size: 30),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () async {
+                      AmityLoadingDialog.showLoadingDialog();
+                      var imageProvider =
+                          Provider.of<CommunityVM>(context, listen: false);
+                      await imageProvider.uploadSelectedFileToAmity();
+                      await Provider.of<CommunityVM>(context, listen: false)
+                          .updateCommunity(
+                              community.communityId ?? "",
+                              imageProvider.amityImages ?? community.avatarImage,
+                              _displayNameController.text,
+                              _descriptionController.text,
+                              Provider.of<CategoryVM>(context, listen: false)
+                                  .getSelectedCategory(),
+                              communityType == CommunityType.public
+                                  ? true
+                                  : false);
+                      AmityLoadingDialog.hideLoadingDialog();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: ListView(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Provider.of<CommunityVM>(context, listen: false)
-                          .selectFile();
-                    },
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.width * 0.7,
-                          decoration: BoxDecoration(
-                              color: Provider.of<AmityUIConfiguration>(context)
-                                  .appColors
-                                  .primaryShade3,
-                              image: DecorationImage(
-                                image: getCustomImageProvider(widget
-                                    .community.avatarImage
-                                    ?.getUrl(AmityImageSize.LARGE)),
-                                fit: BoxFit.cover,
-                              )),
-                          child: DecoratedBox(
+                ],
+              ),
+              body: Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: ListView(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Provider.of<CommunityVM>(context, listen: false)
+                            .selectFile();
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.width * 0.7,
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(
-                                  0.4), // Applying a 40% dark filter to the entire container
+                                color: Provider.of<AmityUIConfiguration>(context)
+                                    .appColors
+                                    .primaryShade3,
+                                image: DecorationImage(
+                                  image: getCustomImageProvider(widget
+                                      .community.avatarImage
+                                      ?.getUrl(AmityImageSize.LARGE)),
+                                  fit: BoxFit.cover,
+                                )),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(
+                                    0.4), // Applying a 40% dark filter to the entire container
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(
-                                5.0), // Adding rounded corners
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize
-                                .min, // Making the row only as wide as the children need
-                            children: [
-                              Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                              ), // Adding a camera icon
-                              SizedBox(
-                                  width:
-                                      8.0), // Adding some space between the icon and the text
-                              Text(
-                                'Upload image',
-                                style: TextStyle(
+                          Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(
+                                  5.0), // Adding rounded corners
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize
+                                  .min, // Making the row only as wide as the children need
+                              children: [
+                                Icon(
+                                  Icons.camera_alt,
                                   color: Colors.white,
+                                ), // Adding a camera icon
+                                SizedBox(
+                                    width:
+                                        8.0), // Adding some space between the icon and the text
+                                Text(
+                                  'Upload image',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          TextFieldWithCounter(
+                            controller: _displayNameController,
+                            title: 'Community name',
+                            hintText: 'Name your community',
+                            maxCharacters: 30,
+                          ),
+                          const SizedBox(height: 16.0),
+                          TextFieldWithCounter(
+                            isRequired: false,
+                            controller: _descriptionController,
+                            title: 'About',
+                            hintText: 'Enter description',
+                            maxCharacters: 180,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                          ),
+                          const SizedBox(height: 16.0),
+                          TextFieldWithCounter(
+                            controller: _categoryController,
+                            title: 'Category',
+                            hintText: 'Select category',
+                            showCount: false,
+                            maxCharacters: 30,
+                            onTap: () async {
+                              String? category =
+                                  await Navigator.of(context).push<String>(
+                                MaterialPageRoute(
+                                    builder: (context) => CategoryList(
+                                          categoryTextController:
+                                              _categoryController,
+                                        )),
+                              );
+                              if (category != null) {
+                                _categoryController.text = category;
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 16.0),
+                          Column(
+                            children: [
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      shape: BoxShape.circle),
+                                  child: const Icon(Icons.public),
+                                ),
+                                title: Text(
+                                  'Public',
+                                  style: TextStyle(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base),
+                                ),
+                                subtitle: Text(
+                                  'Anyone can join, view and search this community',
+                                  style: TextStyle(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base),
+                                ),
+                                trailing: Radio(
+                                  activeColor:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .appColors
+                                          .primary,
+                                  value: true,
+                                  groupValue: _isPublic,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _isPublic = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      shape: BoxShape.circle),
+                                  child: const Icon(Icons.lock),
+                                ),
+                                title: Text(
+                                  'Private',
+                                  style: TextStyle(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base),
+                                ),
+                                subtitle: Text(
+                                  'Only members invited by the moderators can join, view and search this community',
+                                  style: TextStyle(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .base),
+                                ),
+                                trailing: Radio(
+                                  activeColor:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .appColors
+                                          .primary,
+                                  value: true,
+                                  groupValue: !_isPublic,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _isPublic = !value!;
+                                    });
+                                  },
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 16.0),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      children: [
-                        TextFieldWithCounter(
-                          controller: _displayNameController,
-                          title: 'Community name',
-                          hintText: 'Name your community',
-                          maxCharacters: 30,
-                        ),
-                        const SizedBox(height: 16.0),
-                        TextFieldWithCounter(
-                          isRequired: false,
-                          controller: _descriptionController,
-                          title: 'About',
-                          hintText: 'Enter description',
-                          maxCharacters: 180,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                        ),
-                        const SizedBox(height: 16.0),
-                        TextFieldWithCounter(
-                          controller: _categoryController,
-                          title: 'Category',
-                          hintText: 'Select category',
-                          showCount: false,
-                          maxCharacters: 30,
-                          onTap: () async {
-                            String? category =
-                                await Navigator.of(context).push<String>(
-                              MaterialPageRoute(
-                                  builder: (context) => CategoryList(
-                                        categoryTextController:
-                                            _categoryController,
-                                      )),
-                            );
-                            if (category != null) {
-                              _categoryController.text = category;
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 16.0),
-                        Column(
-                          children: [
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    shape: BoxShape.circle),
-                                child: const Icon(Icons.public),
-                              ),
-                              title: Text(
-                                'Public',
-                                style: TextStyle(
-                                    color: Provider.of<AmityUIConfiguration>(
-                                            context)
-                                        .appColors
-                                        .base),
-                              ),
-                              subtitle: Text(
-                                'Anyone can join, view and search this community',
-                                style: TextStyle(
-                                    color: Provider.of<AmityUIConfiguration>(
-                                            context)
-                                        .appColors
-                                        .base),
-                              ),
-                              trailing: Radio(
-                                activeColor:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .appColors
-                                        .primary,
-                                value: true,
-                                groupValue: _isPublic,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _isPublic = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    shape: BoxShape.circle),
-                                child: const Icon(Icons.lock),
-                              ),
-                              title: Text(
-                                'Private',
-                                style: TextStyle(
-                                    color: Provider.of<AmityUIConfiguration>(
-                                            context)
-                                        .appColors
-                                        .base),
-                              ),
-                              subtitle: Text(
-                                'Only members invited by the moderators can join, view and search this community',
-                                style: TextStyle(
-                                    color: Provider.of<AmityUIConfiguration>(
-                                            context)
-                                        .appColors
-                                        .base),
-                              ),
-                              trailing: Radio(
-                                activeColor:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .appColors
-                                        .primary,
-                                value: true,
-                                groupValue: !_isPublic,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _isPublic = !value!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16.0),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

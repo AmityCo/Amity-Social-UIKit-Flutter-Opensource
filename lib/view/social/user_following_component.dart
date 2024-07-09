@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
+import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/follower_following_viewmodel.dart';
 
 class AmityFollowingScreen extends StatefulWidget {
   final String userId;
+
   const AmityFollowingScreen({
     Key? key,
     required this.userId,
@@ -54,19 +56,43 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
               return StreamBuilder<AmityFollowRelationship>(
                   // key: Key(vm.getFollowRelationships[index].targetUserId! +
                   //     vm.getFollowRelationships[index].targetUserId!),
-                  stream: vm.getFollowingList[index].listen.stream,
+                  stream: vm.getFollowingList[index].listen.stream.asyncMap((event) async{
+                    final NewFollow = await AmityUIConfiguration.onCustomFollow([event]);
+                    return NewFollow.first;
+                  }),
                   initialData: vm.getFollowingList[index],
                   builder: (context, snapshot) {
                     return ListTile(
                       onTap: () async {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ChangeNotifierProvider(
-                                create: (context) => UserFeedVM(),
-                                child: UserProfileScreen(
-                                  amityUser: snapshot.data!.targetUser,
-                                  amityUserId: snapshot.data!.targetUserId!,
-                                ))));
-                      },
+                        if (snapshot.data!.targetUserId! ==
+                                AmityCoreClient.getCurrentUser().userId &&
+                            Provider.of<AmityUIConfiguration>(context,
+                                    listen: false)
+                                .customUserProfileNavigate) {
+                          Provider.of<AmityUIConfiguration>(context,
+                                  listen: false)
+                              .onUserProfile(context);
+                        } else {
+                          if (snapshot.data!
+                              .targetUserId! == AmityCoreClient
+                              .getCurrentUser()
+                              .userId && Provider
+                              .of<AmityUIConfiguration>(context, listen: false)
+                              .customUserProfileNavigate) {
+                            Provider.of<AmityUIConfiguration>(
+                                context, listen: false).onUserProfile(context);
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    ChangeNotifierProvider(
+                                        create: (context) => UserFeedVM(),
+                                        child: UserProfileScreen(
+                                          amityUser: snapshot.data!.targetUser,
+                                          amityUserId: snapshot.data!
+                                              .targetUserId!,
+                                        ))));
+                          }
+                        }},
                       trailing: GestureDetector(
                           onTap: () {
                             showOptionsBottomSheet(

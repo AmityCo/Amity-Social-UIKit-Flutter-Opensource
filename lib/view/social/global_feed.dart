@@ -27,13 +27,15 @@ import 'comments.dart';
 import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
-  final isShowMyCommunity;
+  final bool isShowMyCommunity;
   final bool canCreateCommunity;
+  final bool canSearchCommunities;
 
   const GlobalFeedScreen({
     super.key,
     this.isShowMyCommunity = true,
     this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
     // this.isCustomPostRanking = false
   });
 
@@ -52,10 +54,11 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
     super.initState();
     var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
     var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
-
     myCommunityList.initMyCommunity();
-
-    globalFeedProvider.initAmityGlobalfeed();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      globalFeedProvider.initAmityGlobalfeed(
+          onCustomPost: AmityUIConfiguration.onCustomPost);
+    });
   }
 
   @override
@@ -76,9 +79,10 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
           myCommunityList.initMyCommunity();
 
-          globalFeedProvider.initAmityGlobalfeed(
-              // isCustomPostRanking: widget.isCustomPostRanking
-              isCustomPostRanking: false);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            globalFeedProvider.initAmityGlobalfeed(
+                onCustomPost:AmityUIConfiguration.onCustomPost);
+          });
         },
         child: Container(
           color:
@@ -110,9 +114,13 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
                               key: Key(vm.getAmityPosts[index].postId!),
-                              stream: vm.getAmityPosts[index].listen.stream,
+                              stream: vm.getAmityPosts[index].listen.stream.asyncMap((event) async{
+                                final newPost = await AmityUIConfiguration.onCustomPost([event]);
+                                return newPost.first;
+                              }),
                               initialData: vm.getAmityPosts[index],
                               builder: (context, snapshot) {
+                                print("user  ${snapshot.data!.postedUser?.displayName} snapshot  ${snapshot.data!.postedUser?.avatarUrl} ");
                                 var latestComments =
                                     snapshot.data!.latestComments;
                                 var post = snapshot.data!;
@@ -325,8 +333,11 @@ class _PostWidgetState
             Provider.of<UserVM>(context, listen: false)
                 .blockUser(widget.post.postedUserId!, () {
               if (widget.feedType == FeedType.global) {
-                Provider.of<FeedVM>(context, listen: false)
-                    .initAmityGlobalfeed();
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Provider.of<FeedVM>(context, listen: false)
+                      .initAmityGlobalfeed(
+                          onCustomPost: AmityUIConfiguration.onCustomPost);
+                });
               } else if (widget.feedType == FeedType.community) {
                 Provider.of<CommuFeedVM>(context, listen: false)
                     .initAmityCommunityFeed(
@@ -396,6 +407,98 @@ class _PostWidgetState
     );
   }
 
+  void _onUserProfile() {
+    final replaceModeratorProfileNavigation = Provider.of<AmityUIConfiguration>(
+      context,
+      listen: false,
+    ).logicConfig.replaceModeratorProfileNavigation;
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfileNavigation &&
+        _isModerator &&
+        targetingCommunity) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) => CommuFeedVM(),
+            child: CommunityScreen(
+              isFromFeed: true,
+              community:
+                  (widget.post.target as CommunityTarget).targetCommunity!,
+            ),
+          ),
+        ),
+      );
+    } else {
+      if (widget.post.postedUser!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
+        Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
+      }else{
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) => UserFeedVM(),
+            child: UserProfileScreen(
+              amityUser: widget.post.postedUser!,
+              amityUserId: widget.post.postedUser!.userId!,
+            ),
+          ),
+        ),
+      );}
+    }
+  }
+
+  String? get _avatarUrl {
+    final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
+        .logicConfig
+        .replaceModeratorProfile;
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfile && _isModerator && targetingCommunity) {
+      return (widget.post.target as CommunityTarget)
+          .targetCommunity
+          ?.avatarImage
+          ?.fileUrl;
+    } else {
+      return (widget.post.postedUser!.userId !=
+              AmityCoreClient.getCurrentUser().userId)
+          ? (widget.post.postedUser?.avatarUrl)
+          : Provider.of<AmityUIConfiguration>(context).currentUserImageUrl ==
+                  true
+              ? (widget.post.postedUser?.avatarUrl)
+              : (Provider.of<AmityVM>(context).currentamityUser!.avatarUrl);
+    }
+  }
+
+  String get _displayName {
+    final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
+        .logicConfig
+        .replaceModeratorProfile;
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfile && _isModerator && targetingCommunity) {
+      return ((widget.post.target as CommunityTarget)
+              .targetCommunity
+              ?.displayName) ??
+          "Display name";
+    } else {
+      return (widget.post.postedUser!.userId !=
+              AmityCoreClient.getCurrentUser().userId)
+          ? (widget.post.postedUser?.displayName ?? "Display name")
+          : (Provider.of<AmityVM>(context).currentamityUser!.displayName ?? "");
+    }
+  }
+
+  bool get _isModerator {
+    final postMetadata = widget.post.metadata;
+    final isModerator =
+        postMetadata != null && postMetadata['isCreateByAdmin'] == true;
+
+    return isModerator;
+  }
+
   // @override
   @override
   Widget build(BuildContext context) {
@@ -403,6 +506,7 @@ class _PostWidgetState
       children: [
         GestureDetector(
             onTap: () {
+              print("ontap widget_post${widget.post.postedUser?.avatarUrl}");
               FocusScope.of(context).unfocus();
               if (widget.isFromFeed) {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -428,55 +532,17 @@ class _PostWidgetState
                         contentPadding: const EdgeInsets.only(
                             left: 0, top: 0, right: 0, bottom: 0),
                         leading: FadeAnimation(
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChangeNotifierProvider(
-                                        create: (context) => UserFeedVM(),
-                                        child: UserProfileScreen(
-                                          amityUser: widget.post.postedUser!,
-                                          amityUserId:
-                                              widget.post.postedUser!.userId!,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: getAvatarImage(widget
-                                            .post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.avatarUrl
-                                    : Provider.of<AmityVM>(context)
-                                        .currentamityUser!
-                                        .avatarUrl))),
+                          child: GestureDetector(
+                            onTap: _onUserProfile,
+                            child: getAvatarImage(_avatarUrl),
+                          ),
+                        ),
                         title: Wrap(
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangeNotifierProvider(
-                                      create: (context) => UserFeedVM(),
-                                      child: UserProfileScreen(
-                                          amityUser: widget.post.postedUser!,
-                                          amityUserId:
-                                              widget.post.postedUser!.userId!),
-                                    ),
-                                  ),
-                                );
-                              },
+                              onTap: _onUserProfile,
                               child: Text(
-                                widget.post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.displayName ??
-                                        "Display name"
-                                    : Provider.of<AmityVM>(context)
-                                            .currentamityUser!
-                                            .displayName ??
-                                        "",
+                                _displayName,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Provider.of<AmityUIConfiguration>(
@@ -485,9 +551,10 @@ class _PostWidgetState
                                         .base),
                               ),
                             ),
-                            widget.showCommunity &&
+                            (widget.showCommunity &&
                                     widget.post.targetType ==
-                                        AmityPostTargetType.COMMUNITY
+                                        AmityPostTargetType.COMMUNITY &&
+                                    !_isModerator)
                                 ? Icon(
                                     Icons.arrow_right_rounded,
                                     color: Provider.of<AmityUIConfiguration>(
@@ -496,9 +563,10 @@ class _PostWidgetState
                                         .base,
                                   )
                                 : Container(),
-                            widget.showCommunity &&
+                            (widget.showCommunity &&
                                     widget.post.targetType ==
-                                        AmityPostTargetType.COMMUNITY
+                                        AmityPostTargetType.COMMUNITY &&
+                                    !_isModerator)
                                 ? GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).push(
@@ -1090,7 +1158,10 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         itemBuilder: (context, index) {
           return StreamBuilder<AmityComment>(
             key: Key(widget.comments[index].commentId!),
-            stream: widget.comments[index].listen.stream,
+            stream: widget.comments[index].listen.stream.asyncMap((event) async{
+              final newPost = await AmityUIConfiguration.onCustomComment([event]);
+              return newPost.first;
+            }),
             initialData: widget.comments[index],
             builder: (context, snapshot) {
               var comments = snapshot.data!;
@@ -1220,7 +1291,10 @@ class CommentActionComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AmityComment>(
-        stream: amityComment.listen.stream,
+        stream: amityComment.listen.stream..asyncMap((event) async{
+          final newPost = await AmityUIConfiguration.onCustomComment([event]);
+          return newPost.first;
+        }),
         initialData: amityComment,
         builder: (context, snapshot) {
           var comments = snapshot.data!;

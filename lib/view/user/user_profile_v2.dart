@@ -148,7 +148,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
               profileSectionWidget: Column(
                 children: [
                   Padding(
-                    padding: widget.customProfile==null? EdgeInsets.only(left: 16, right: 16):EdgeInsets.only(left: 16, right: 16,top:12),
+                    padding: widget.customProfile!=null&&mediaQuery.size.height<800?EdgeInsets.only(left: 16, right: 16,top:13):EdgeInsets.only(left: 16, right: 16),
                     child: Column(
                       children: [
                         SizedBox(

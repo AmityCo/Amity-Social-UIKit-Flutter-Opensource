@@ -27,6 +27,33 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
+      final amityReactions = <AmityReaction>[];
+      late PagingController<AmityReaction> reactionController;
+
+      void queryPostReaction(String postId) {
+        reactionController = PagingController(
+          pageFuture: (token) => AmitySocialClient.newPostRepository()
+              .getReaction(postId: postId)
+              //Optional to query specific reaction, eg. "like"
+              .reactionName('like')
+              .getPagingData(token: token, limit: 20),
+          pageSize: 20,
+        )..addListener(
+            () {
+              if (reactionController.error == null) {
+                //handle results, we suggest to clear the previous items
+                //and add with the latest _controller.loadedItems
+                amityReactions.clear();
+                amityReactions.addAll(reactionController.loadedItems);
+                //update widgets
+              } else {
+                //error on pagination controller
+                //update widgets
+              }
+            },
+          );
+      }
+
       Provider.of<MemberManagementVM>(context, listen: false).initMember(
         communityId: widget.communityId,
       );

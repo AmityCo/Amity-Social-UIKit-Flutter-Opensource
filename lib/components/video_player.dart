@@ -114,7 +114,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         var videoData = file.data
             as VideoData; // Assuming VideoData is a type from your code
         var fileURL = await videoData.getVideo(AmityVideoQuality.MEDIUM);
-        print(fileURL.getFileProperties!.fileUrl);
+        print(fileURL);
+
         print("  ");
         var controller =
             VideoPlayerController.networkUrl(Uri.parse(fileURL.fileUrl!));

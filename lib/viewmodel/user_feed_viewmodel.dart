@@ -119,10 +119,12 @@ class UserFeedVM extends ChangeNotifier {
     )..addListener(
           () async{
         if (_imagePostController.error == null) {
-          // final feedItems =
-          // await AmityUIConfiguration.onCustomPost(_controller.loadedItems);
+
+
           amityImagePosts.clear();
-          amityImagePosts.addAll(_controller.loadedItems);
+          final feedItems =
+          await AmityUIConfiguration.onCustomPost(_imagePostController.loadedItems);
+          amityImagePosts.addAll(feedItems);
 
           notifyListeners();
         } else {
@@ -156,7 +158,10 @@ class UserFeedVM extends ChangeNotifier {
         if (_videoPostController.error == null) {
 
           amityVideoPosts.clear();
-          amityVideoPosts.addAll(_controller.loadedItems);
+          final feedItems =
+          await AmityUIConfiguration.onCustomPost(_videoPostController.loadedItems);
+
+          amityVideoPosts.addAll(feedItems);
 
           notifyListeners();
         } else {

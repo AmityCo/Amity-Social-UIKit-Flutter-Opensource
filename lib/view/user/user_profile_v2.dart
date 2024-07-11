@@ -156,7 +156,13 @@ class UserProfileScreenState extends State<UserProfileScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               widget.customProfile!=null&&isCurrentUser?widget.customProfile!:FadedScaleAnimation(
-                                  child: getAvatarImage(
+                                  child: Provider.of<AmityUIConfiguration>(context).buildOtherUserProfile(isCurrentUser
+                                      ?Provider.of<AmityVM>(
+                                    context,
+                                  ).currentamityUser!.userId!
+                                      : Provider.of<UserFeedVM>(context)
+                                      .amityUser!
+                                      .userId!) ??getAvatarImage(
                                       isCurrentUser
                                           ? Provider.of<AmityVM>(
                                         context,
@@ -820,7 +826,6 @@ class AppScaffold extends StatelessWidget {
           ],
         ),
         body: RefreshIndicator(
-
           color: Provider.of<AmityUIConfiguration>(context).primaryColor,
           onRefresh: () async {
             await Provider.of<UserFeedVM>(context, listen: false)

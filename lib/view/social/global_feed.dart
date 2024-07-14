@@ -97,7 +97,11 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                               .primaryColor,
                         ))
                       : const SizedBox()
-                  : const SizedBox(),
+                  : Center(
+                  child: CircularProgressIndicator(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .primaryColor,
+                  )),
               Column(
                 children: [
                   Expanded(

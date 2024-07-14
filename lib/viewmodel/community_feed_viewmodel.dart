@@ -112,9 +112,7 @@ class CommuFeedVM extends ChangeNotifier {
           //handle results, we suggest to clear the previous items
           //and add with the latest _controller.loadedItems
           // notifyListeners();
-          _amityCommunityFeedPosts.clear();
-          _amityCommunityFeedPosts.addAll(_controllerCommu.loadedItems);
-          notifyListeners();
+
           final newPost = await AmityUIConfiguration.onCustomPost(_controllerCommu.loadedItems);
           _amityCommunityFeedPosts.clear();
           _amityCommunityFeedPosts.addAll(newPost);
@@ -140,8 +138,7 @@ class CommuFeedVM extends ChangeNotifier {
         .includeDeleted(false)
         .getPagingData()
         .then((value) async {
-      _amityCommunityFeedPosts = value.data;
-      notifyListeners();
+
       final newPost = await AmityUIConfiguration.onCustomPost(value.data);
       _amityCommunityFeedPosts = newPost;
       notifyListeners();

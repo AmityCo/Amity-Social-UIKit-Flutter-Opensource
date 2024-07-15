@@ -56,6 +56,7 @@ class FeedVM extends ChangeNotifier {
       {bool isCustomPostRanking = false,
       required Future<List<AmityPost>> Function(List<AmityPost>)
           onCustomPost}) async {
+
     isLoading = true;
     print("isloading1: $isLoading");
     print("isCustomPostRanking:$isCustomPostRanking");
@@ -80,8 +81,9 @@ class FeedVM extends ChangeNotifier {
             } else {
               //Error on pagination controller
               isLoading = false;
-
               notifyListeners();
+              _amityGlobalFeedPosts.clear();
+              _amityGlobalFeedPosts.addAll([]);
               log("error: ${_controllerGlobal!.error.toString()}");
               // await AmityDialog().showAlertErrorDialog(
               //     title: "Error!",
@@ -107,9 +109,10 @@ class FeedVM extends ChangeNotifier {
               isLoading = false;
               notifyListeners();
             } else {
+              _amityGlobalFeedPosts.clear();
               // Handle pagination controller error
               log("error: ${_controllerGlobal!.error.toString()}");
-              notifyListeners();
+              // notifyListeners();
               // Optionally show an error dialog
               // await AmityDialog().showAlertErrorDialog(
               //   title: "Error!",

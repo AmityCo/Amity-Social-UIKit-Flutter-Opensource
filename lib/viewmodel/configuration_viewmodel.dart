@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+
+import 'community_feed_viewmodel.dart';
 
 class AmityUIConfiguration extends ChangeNotifier {
   var appColors = AppColors();
@@ -32,16 +35,19 @@ class AmityUIConfiguration extends ChangeNotifier {
   Widget Function(int) buildChatButton =
       (communityId) => const SizedBox.shrink();
   Widget?Function(String) buildSocialRating  =(userId) => const SizedBox.shrink() ;
+  Widget?Function(String) buildOtherUserProfile =(userId) => const SizedBox.shrink() ;
   bool currentUserImageUrl = false;
   static Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
   static Future<List<AmityComment>> Function(List<AmityComment>) onCustomComment = (comments) async => comments;
   static Future<List<AmityCommunityMember>> Function(List<AmityCommunityMember>) onCustomMember = (members) async => members;
   static Future<List<AmityFollowRelationship>> Function(List<AmityFollowRelationship>) onCustomFollow = (follows) async => follows;
+  static Future<List<AmityFollowRelationship>> Function(List<AmityFollowRelationship>) onCustomFollower = (followers) async => followers;
   static Future<void> Function(String) onRefreshSocialRating = (userId) async {};
   Future<void> Function(BuildContext) onUserProfile = (context) async {};
+  static Future<void> Function(String communityId,BuildContext context,AmityCommunity community) onCustomCommunityProfile = (String communityId,BuildContext context,AmityCommunity community) async {};
+  bool customCommunityFeedPost = false;
   bool customUserProfileNavigate = false;
   static Future<String> Function(String) onCustomUserProfileImage =(userId) async=>userId;
-
   void updateUI() {
     notifyListeners();
   }

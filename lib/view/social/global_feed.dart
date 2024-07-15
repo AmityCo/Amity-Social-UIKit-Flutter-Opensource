@@ -97,7 +97,11 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                               .primaryColor,
                         ))
                       : const SizedBox()
-                  : const SizedBox(),
+                  : Center(
+                  child: CircularProgressIndicator(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .primaryColor,
+                  )),
               Column(
                 children: [
                   Expanded(
@@ -120,12 +124,8 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                               }),
                               initialData: vm.getAmityPosts[index],
                               builder: (context, snapshot) {
-                                print("user  ${snapshot.data!.postedUser?.displayName} snapshot  ${snapshot.data!.postedUser?.avatarUrl} ");
-                                var latestComments =
                                     snapshot.data!.latestComments;
                                 var post = snapshot.data!;
-                                print(
-                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
                                 return Column(
                                   children: [
                                     index != 0
@@ -326,7 +326,6 @@ class _PostWidgetState
                 },
               );
             } else {
-              print("unhandle postType");
             }
             break;
           case 'Block User':
@@ -506,7 +505,6 @@ class _PostWidgetState
       children: [
         GestureDetector(
             onTap: () {
-              print("ontap widget_post${widget.post.postedUser?.avatarUrl}");
               FocusScope.of(context).unfocus();
               if (widget.isFromFeed) {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -860,7 +858,6 @@ class _PostWidgetState
                                             ))
                                         : GestureDetector(
                                             onTap: () {
-                                              print(widget.post.myReactions);
                                               HapticFeedback.heavyImpact();
                                               Provider.of<PostVM>(context,
                                                       listen: false)

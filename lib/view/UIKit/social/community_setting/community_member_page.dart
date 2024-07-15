@@ -250,7 +250,7 @@ class ModeratorList extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
-                if (viewModel.userList[index].user!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
+                if (viewModel.moderatorList[index].user!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
                   Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
                 }else {
                   Navigator.of(context).push(MaterialPageRoute(

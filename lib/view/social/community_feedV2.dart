@@ -34,21 +34,28 @@ class CommunityScreen extends StatefulWidget {
 
 class CommunityScreenState extends State<CommunityScreen>
     with SingleTickerProviderStateMixin {
+  bool isLoading = false;
+
   @override
   void initState() {
-    Provider.of<CommuFeedVM>(context, listen: false)
-        .initAmityCommunityFeed(widget.community.communityId!);
-    Provider.of<CommuFeedVM>(context, listen: false)
-        .getPostCount(widget.community);
-    Provider.of<CommuFeedVM>(context, listen: false)
-        .getReviewingPostCount(widget.community);
-    Provider.of<CommuFeedVM>(context, listen: false)
-        .initAmityCommunityImageFeed(widget.community.communityId!);
-    Provider.of<CommuFeedVM>(context, listen: false)
-        .initAmityCommunityVideoFeed(widget.community.communityId!);
-    Provider.of<CommuFeedVM>(context, listen: false)
-        .initAmityPendingCommunityFeed(
-            widget.community.communityId!, AmityFeedType.REVIEWING);
+    if (Provider.of<AmityUIConfiguration>(context,listen: false).customCommunityFeedPost==true) {
+      AmityUIConfiguration.onCustomCommunityProfile(
+          widget.community.communityId!, context, widget.community);
+    } else {
+      Provider.of<CommuFeedVM>(context, listen: false)
+          .getPostCount(widget.community);
+      Provider.of<CommuFeedVM>(context, listen: false)
+          .getReviewingPostCount(widget.community);
+      Provider.of<CommuFeedVM>(context, listen: false)
+          .initAmityCommunityFeed(widget.community.communityId!);
+      Provider.of<CommuFeedVM>(context, listen: false)
+          .initAmityCommunityImageFeed(widget.community.communityId!);
+      Provider.of<CommuFeedVM>(context, listen: false)
+          .initAmityCommunityVideoFeed(widget.community.communityId!);
+      Provider.of<CommuFeedVM>(context, listen: false)
+          .initAmityPendingCommunityFeed(
+              widget.community.communityId!, AmityFeedType.REVIEWING);
+    }
 
     super.initState();
     Provider.of<CommuFeedVM>(context, listen: false).userFeedTabController =
@@ -756,6 +763,7 @@ class _StickyHeaderList extends StatelessWidget {
   final Widget? profileSectionWidget;
   final ThemeData theme;
   final double bheight;
+
   @override
   Widget build(BuildContext context) {
     return SliverStickyHeader(
@@ -835,14 +843,8 @@ class _StickyHeaderList extends StatelessWidget {
                       ),
                     );
                   }
-                  Future<List<AmityPost>> preprocessInitialPosts(List<AmityPost> posts) async {
-                    return Future.wait(posts.map((post) async {
-                      final newPost = await AmityUIConfiguration.onCustomPost([post]);
-                      return newPost.first;
-                    }).toList());
-                  }
-                  Widget buildContent(BuildContext context, double bheight) {
 
+                  Widget buildContent(BuildContext context, double bheight) {
                     return ListView.builder(
                       padding: const EdgeInsets.only(top: 0),
                       physics: const NeverScrollableScrollPhysics(),
@@ -851,8 +853,14 @@ class _StickyHeaderList extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return StreamBuilder<AmityPost>(
                             key: Key(vm.getCommunityPosts()[index].postId!),
-                            stream: vm.getCommunityPosts()[index].listen.stream.asyncMap((event) async{
-                              final newPost = await AmityUIConfiguration.onCustomPost([event]);
+                            stream: vm
+                                .getCommunityPosts()[index]
+                                .listen
+                                .stream
+                                .asyncMap((event) async {
+                              final newPost =
+                                  await AmityUIConfiguration.onCustomPost(
+                                      [event]);
                               return newPost.first;
                             }),
                             initialData: vm.getCommunityPosts()[index],

@@ -10,12 +10,13 @@ class MyCommunityVM with ChangeNotifier {
   bool loadingNextPage = false;
   // The list of communities.
   final List<AmityCommunity> _amityCommunities = [];
-
+  final List<AmityCommunity> _amityCommunitiesForFeed = [];
   // The controller for handling pagination.
   late PagingController<AmityCommunity> _communityController;
 
   // Getter for _amityCommunities for external classes to use.
   List<AmityCommunity> get amityCommunities => _amityCommunities;
+  List<AmityCommunity> get amityCommunitiesForFeed => _amityCommunitiesForFeed;
   final textEditingController = TextEditingController();
 
   Future<void> initMyCommunity([String? keyword]) async {
@@ -35,6 +36,9 @@ class MyCommunityVM with ChangeNotifier {
     )..addListener(
         () async {
           if (_communityController.error == null) {
+            if (_amityCommunitiesForFeed.isEmpty) {
+              _amityCommunitiesForFeed.addAll(_communityController.loadedItems);
+            }
             _amityCommunities.clear();
             _amityCommunities.addAll(_communityController.loadedItems);
             // Call any additional methods like sortedUserListWithHeaders here if needed.

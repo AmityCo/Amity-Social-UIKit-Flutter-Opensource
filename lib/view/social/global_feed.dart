@@ -124,10 +124,9 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                                         ? const SizedBox()
                                         : widget.isShowMyCommunity
                                             ? CommunityIconList(
-                                                amityCommunites:
-                                                    Provider.of<MyCommunityVM>(
-                                                            context)
-                                                        .amityCommunities,
+                                                amityCommunites: Provider.of<
+                                                        MyCommunityVM>(context)
+                                                    .amityCommunitiesForFeed,
                                                 canCreateCommunity:
                                                     widget.canCreateCommunity,
                                               )

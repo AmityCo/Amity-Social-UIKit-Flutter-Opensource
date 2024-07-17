@@ -62,9 +62,14 @@ class UserFeedVM extends ChangeNotifier {
         });
       }
     }
+    amityMyFollowInfo.id = null;
     print("get following info");
     amityUser!.relationship().getFollowInfo(amityUser!.userId!).then((value) {
       amityMyFollowInfo = value;
+      amityMyFollowInfo.id = value.id;
+      amityMyFollowInfo.status = value.status;
+      amityMyFollowInfo.followerCount = value.followerCount;
+      amityMyFollowInfo.followingCount = value.followingCount;
       notifyListeners();
     }).onError((error, stackTrace) {
       AmityDialog()

@@ -338,14 +338,17 @@ class _PostWidgetState
           default:
         }
       },
-      child: Icon(
-        Icons.more_horiz_rounded,
-        size: 24,
-        color: widget.feedType == FeedType.user
-            ? Provider.of<AmityUIConfiguration>(context)
-                .appColors
-                .userProfileTextColor
-            : Colors.grey,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(30, 8, 0, 30),
+        child: Icon(
+          Icons.more_horiz_rounded,
+          size: 24,
+          color: widget.feedType == FeedType.user
+              ? Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .userProfileTextColor
+              : Colors.grey,
+        ),
       ),
       itemBuilder: (context) {
         List<PopupMenuEntry<String>> menuItems = [];

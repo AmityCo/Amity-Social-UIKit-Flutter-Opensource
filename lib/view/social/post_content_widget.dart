@@ -289,10 +289,11 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
     String getURL(AmityPostData postData) {
       if (postData is VideoData) {
         var data = postData;
-        return data.thumbnail?.getUrl(AmityImageSize.MEDIUM) ?? "";
+        print("XXXX${data.thumbnail?.getUrl(AmityImageSize.MEDIUM)}");
+        return data.thumbnail?.getUrl(AmityImageSize.LARGE) ?? "";
       } else if (postData is ImageData) {
         var data = postData;
-        return data.image?.getUrl(AmityImageSize.MEDIUM) ?? "";
+        return data.image?.getUrl(AmityImageSize.LARGE) ?? "";
       } else {
         return "";
       }

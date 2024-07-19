@@ -660,10 +660,18 @@ class _CategoryListPageState extends State<CategoryListPage> {
                         .primaryShade3,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.category,
-                    color: Colors.white,
-                  ),
+                  child: category.avatar != null
+                      ? CircleAvatar(
+                        backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .primaryShade3,
+                          backgroundImage: NetworkImage(
+                              category.avatar?.fileUrl ?? ''),
+                        )
+                      : const Icon(
+                          Icons.people,
+                          color: Colors.white,
+                        ),
                 ),
                 title: Text(category.name ?? ''),
               );

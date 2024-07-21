@@ -108,6 +108,7 @@ class MediaGalleryPage extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const SizedBox(height: 100),
         Image.asset(
           "assets/images/privateIcon.png",
           package: "amity_uikit_beta_service",

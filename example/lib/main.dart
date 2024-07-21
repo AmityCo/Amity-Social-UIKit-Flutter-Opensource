@@ -151,12 +151,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     final prefs = await SharedPreferences.getInstance();
 
                     await prefs.setString('apiKey', _apiKey.text);
-                    await prefs.setString('selectedRegion', _selectedRegion.toString());
-                    
+                    await prefs.setString(
+                        'selectedRegion', _selectedRegion.toString());
+
                     if (_selectedRegion == AmityEndpointRegion.custom) {
                       await prefs.setString('customUrl', _customHttpUrl.text);
-                      await prefs.setString('customSocketUrl', _customSocketUrl.text);
-                      await prefs.setString('customMqttUrl', _customMqttUrl.text);
+                      await prefs.setString(
+                          'customSocketUrl', _customSocketUrl.text);
+                      await prefs.setString(
+                          'customMqttUrl', _customMqttUrl.text);
                     }
                     log("save pref");
 
@@ -510,8 +513,8 @@ class SocialPage extends StatelessWidget {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const Scaffold(
                       body: GlobalFeedScreen(
-                    //isCustomPostRanking: true,
-                  )),
+                          //isCustomPostRanking: true,
+                          )),
                 ));
               },
             ),
@@ -580,8 +583,7 @@ class SocialPage extends StatelessWidget {
               onTap: () {
                 // Navigate or perform action based on 'Global Feed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      const SampleV4(),
+                  builder: (context) => const SampleV4(),
                 ));
               },
             ),

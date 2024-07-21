@@ -85,7 +85,8 @@ class AmityGlobalFeedComponent extends NewBaseComponent {
                                                     .add(
                                                         GlobalFeedReloadThePost(
                                                             postId: postId));
-                                              }, onPostUpdated: (post ) {  },
+                                              },
+                                              onPostUpdated: (post) {},
                                             )),
                                         const SizedBox(height: 8),
                                       ],

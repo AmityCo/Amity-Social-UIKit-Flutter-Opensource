@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/post_profile.dart';
+import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/post_content_widget.dart';
@@ -354,7 +355,6 @@ class CommentScreenState extends State<CommentScreen> {
                                                   snapshot.data!.postId!,
                                                   _commentTextEditController
                                                       .text);
-
                                           _commentTextEditController.clear();
                                         },
                                       )));

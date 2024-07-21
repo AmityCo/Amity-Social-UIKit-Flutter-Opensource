@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/post_profile.dart';
+import 'package:amity_uikit_beta_service/components/skeleton.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/edit_post_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
@@ -80,74 +81,77 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
           child: Stack(
             children: [
               vm.isLoading
-                  ? vm.getAmityPosts.isEmpty
-                      ? Center(
-                          child: CircularProgressIndicator(
-                          color: Provider.of<AmityUIConfiguration>(context)
-                              .primaryColor,
-                        ))
-                      : const SizedBox()
-                  : const SizedBox(),
-              Column(
-                children: [
-                  Expanded(
-                    child: Container(
-                      child: FadedSlideAnimation(
-                        beginOffset: const Offset(0, 0.3),
-                        endOffset: const Offset(0, 0),
-                        slideCurve: Curves.linearToEaseOut,
-                        child: ListView.builder(
-                          // shrinkWrap: true,
-                          controller: vm.scrollcontroller,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: vm.getAmityPosts.length,
-                          itemBuilder: (context, index) {
-                            return StreamBuilder<AmityPost>(
-                              key: Key(vm.getAmityPosts[index].postId!),
-                              stream: vm.getAmityPosts[index].listen.stream,
-                              initialData: vm.getAmityPosts[index],
-                              builder: (context, snapshot) {
-                                var latestComments =
-                                    snapshot.data!.latestComments;
-                                var post = snapshot.data!;
-                                print(
-                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
-                                return Column(
-                                  children: [
-                                    index != 0
-                                        ? const SizedBox()
-                                        : widget.isShowMyCommunity
-                                            ? CommunityIconList(
-                                                amityCommunites: Provider.of<
-                                                        MyCommunityVM>(context)
-                                                    .amityCommunitiesForFeed,
-                                                canCreateCommunity:
-                                                    widget.canCreateCommunity,
-                                              )
-                                            : const SizedBox(),
-                                    PostWidget(
-                                      isPostDetail: false,
-                                      // customPostRanking:
-                                      //     widget.isCustomPostRanking,
-                                      feedType: FeedType.global,
-                                      showCommunity: true,
-                                      showlatestComment: true,
-                                      post: snapshot.data!,
-                                      theme: theme,
-                                      postIndex: index,
-                                      isFromFeed: true,
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
+                  ? LoadingSkeleton(
+                      context: context,
+                    )
+                  : vm.getAmityPosts.isEmpty
+                      ? LoadingSkeleton(
+                          context: context,
+                        )
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                child: FadedSlideAnimation(
+                                  beginOffset: const Offset(0, 0.3),
+                                  endOffset: const Offset(0, 0),
+                                  slideCurve: Curves.linearToEaseOut,
+                                  child: ListView.builder(
+                                    // shrinkWrap: true,
+                                    controller: vm.scrollcontroller,
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    itemCount: vm.getAmityPosts.length,
+                                    itemBuilder: (context, index) {
+                                      return StreamBuilder<AmityPost>(
+                                        key: Key(
+                                            vm.getAmityPosts[index].postId!),
+                                        stream: vm
+                                            .getAmityPosts[index].listen.stream,
+                                        initialData: vm.getAmityPosts[index],
+                                        builder: (context, snapshot) {
+                                          var latestComments =
+                                              snapshot.data!.latestComments;
+                                          var post = snapshot.data!;
+                                          print(
+                                              "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
+                                          return Column(
+                                            children: [
+                                              index != 0
+                                                  ? const SizedBox()
+                                                  : widget.isShowMyCommunity
+                                                      ? CommunityIconList(
+                                                          amityCommunites: Provider
+                                                                  .of<MyCommunityVM>(
+                                                                      context)
+                                                              .amityCommunitiesForFeed,
+                                                          canCreateCommunity: widget
+                                                              .canCreateCommunity,
+                                                        )
+                                                      : const SizedBox(),
+                                              PostWidget(
+                                                isPostDetail: false,
+                                                // customPostRanking:
+                                                //     widget.isCustomPostRanking,
+                                                feedType: FeedType.global,
+                                                showCommunity: true,
+                                                showlatestComment: true,
+                                                post: snapshot.data!,
+                                                theme: theme,
+                                                postIndex: index,
+                                                isFromFeed: true,
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

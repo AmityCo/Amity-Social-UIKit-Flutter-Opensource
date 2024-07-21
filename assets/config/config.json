@@ -1,0 +1,306 @@
+{
+    "preferred_theme": "default",
+    "theme": {
+        "light": {
+            "primary_color": "#1054DE",
+            "secondary_color": "#292B32",
+            "base_color": "#292B32",
+            "base_shade1_color": "#636878",
+            "base_shade2_color": "#898E9E",
+            "base_shade3_color": "#A5A9b5",
+            "base_shade4_color": "#EBECEF",
+            "alert_color": "#FA4D30",
+            "background_color": "#FFFFFF",
+            "base_inverse_color": "#000000"
+        },
+        "dark": {
+            "primary_color": "#1054DE",
+            "secondary_color": "#292B32",
+            "base_color": "#EBECEF",
+            "base_shade1_color": "#A5A9B5",
+            "base_shade2_color": "#6E7487",
+            "base_shade3_color": "#40434E",
+            "base_shade4_color": "#292B32",
+            "alert_color": "#FA4D30",
+            "background_color": "#191919",
+            "base_inverse_color": "#FFFFFF"
+        }
+    },
+    "excludes": [],
+    "message_reactions": [
+        {
+            "name": "heart",
+            "image": "assets/Icons/amity_ic_heart_reaction.svg"
+        },
+        {
+            "name": "like",
+            "image": "assets/Icons/amity_ic_like_reaction.svg"
+        },
+        {
+            "name": "fire",
+            "image": "assets/Icons/amity_ic_fire_reaction.svg"
+        },
+        {
+            "name": "grinning",
+            "image": "assets/Icons/amity_ic_grinning_reaction.svg"
+        },
+        {
+            "name": "sad",
+            "image": "assets/Icons/amity_ic_sad_reaction.svg"
+        }
+    ],
+    "customizations": {
+        "select_target_page/*/*": {
+            "title": "Share to"
+        },
+        "select_target_page/*/back_button": {
+            "back_icon": "back.png"
+        },
+        "camera_page/*/*": {
+            "resolution": "720p"
+        },
+        "camera_page/*/close_button": {
+            "close_icon": "backgroundedCloseIcon"
+        },
+        "create_story_page/*/*": {},
+        "create_story_page/*/back_button": {
+            "back_icon": "backArrowIcon",
+            "background_color": "#000000"
+        },
+        "create_story_page/*/aspect_ratio_button": {
+            "aspect_ratio_icon": "aspectRatioIcon",
+            "background_color": "#000000"
+        },
+        "create_story_page/*/story_hyperlink_button": {
+            "hyperlink_button_icon": "hyperLinkIcon",
+            "background_color": "#000000"
+        },
+        "create_story_page/*/hyper_link": {
+            "hyper_link_icon": "hyperLinkBlueIcon",
+            "background_color": "#EBECEF"
+        },
+        "create_story_page/*/share_story_button": {
+            "share_icon": "nextIcon",
+            "background_color": "#FFFFFF",
+            "hide_avatar": false
+        },
+        "story_page/*/*": {},
+        "story_page/*/progress_bar": {
+            "progress_color": "#FFFFFF",
+            "background_color": "#FFFFFF"
+        },
+        "story_page/*/overflow_menu": {
+            "overflow_menu_icon": "threeDotIcon"
+        },
+        "story_page/*/close_button": {
+            "close_icon": "closeIcon"
+        },
+        "story_page/*/story_impression_button": {
+            "impression_icon": "eyeIcon"
+        },
+        "story_page/*/story_comment_button": {
+            "comment_icon": "storyCommentIcon",
+            "background_color": "#292B32"
+        },
+        "story_page/*/story_reaction_button": {
+            "reaction_icon": "storyLikeIcon",
+            "background_color": "#292B32"
+        },
+        "story_page/*/create_new_story_button": {
+            "create_new_story_icon": "plus.png",
+            "background_color": "#1243EE"
+        },
+        "story_page/*/speaker_button": {
+            "mute_icon": "muteIcon",
+            "unmute_icon": "unmuteIcon",
+            "background_color": "#6A6A6B"
+        },
+        "*/edit_comment_component/*": {},
+        "*/edit_comment_component/cancel_button": {
+            "cancel_icon": "",
+            "cancel_button_text": "cancel",
+            "background_color": "#1243EE"
+        },
+        "*/edit_comment_component/save_button": {
+            "save_icon": "",
+            "save_button_text": "Save",
+            "background_color": "#1243EE"
+        },
+        "*/hyper_link_config_component/*": {
+            "component_theme": {
+                "light_theme": {
+                    "primary_color": "#UD1234",
+                    "secondary_color": "#AB1234"
+                }
+            }
+        },
+        "*/hyper_link_config_component/done_button": {
+            "done_icon": "",
+            "done_button_text": "Done",
+            "background_color": "#1243EE"
+        },
+        "*/hyper_link_config_component/cancel_button": {
+            "cancel_icon": "",
+            "cancel_button_text": "Cancel"
+        },
+        "*/comment_tray_component/*": {},
+        "*/story_tab_component/*": {},
+        "*/story_tab_component/story_ring": {
+            "progress_color": [
+                "#339AF9",
+                "#78FA58"
+            ],
+            "background_color": "#EBECEF"
+        },
+        "*/story_tab_component/create_new_story_button": {
+            "create_new_story_icon": "createStoryIcon",
+            "background_color": "#FFFFFF"
+        },
+        "*/*/close_button": {
+            "close_icon": "closeIcon"
+        },
+        "live_chat/*/*": {
+            "theme": {
+                "light": {
+                    "primary_color": "#1054DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000"
+                },
+                "dark": {
+                    "primary_color": "#1054DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#EBECEF",
+                    "base_shade1_color": "#A5A9B5",
+                    "base_shade2_color": "#6E7487",
+                    "base_shade3_color": "#40434E",
+                    "base_shade4_color": "#292B32",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#191919",
+                    "base_inverse_color": "#FFFFFF"
+                }
+            }
+        },
+        "live_chat/chat_header/*": {},
+        "live_chat/message_list/*": {},
+        "live_chat/message_composer/*": {
+            "theme": {},
+            "message_limit": 200,
+            "placeholder_text": "Write a message"
+        },
+        "live_chat_page/mesage_list/message_reaction_preview": {},
+        "live_chat_page/mesage_list/message_quick_reaction": {
+            "reactions": "heart",
+            "reaction_icon": "amity_ic_message_quick_reaction.png"
+        },
+        "live_chat_page/mesage_list/message_reaction_picker": {},
+        "message_reaction_list_page/*/*": {},
+        "message_reaction_list_page/message_reaction_list_header/*": {},
+        "message_reaction_list_page/message_reaction_list_header/message_reaction_list_tab": {},
+        "message_reaction_list_page/message_reaction_list/*": {},
+        "message_reaction_list_page/message_reaction_list/user_avatar_view": {},
+        "message_reaction_list_page/message_reaction_list/user_display_name": {},
+        "message_reaction_list_page/message_reaction_list/reaction_image_view": {},
+        "social_home_page/top_navigation/header_label": {
+            "text": "Community"
+        },
+        "social_home_page/top_navigation/global_search_button": {
+            "icon": "searchButtonIcon"
+        },
+        "social_home_page/top_navigation/post_creation_button": {
+            "icon": "postCreationIcon"
+        },
+        "social_home_page/*/newsfeed_button": {
+            "text": "Newsfeed"
+        },
+        "social_home_page/*/explore_button": {
+            "text": "Explore"
+        },
+        "social_home_page/*/my_communities_button": {
+            "text": "My Communities"
+        },
+        "social_home_page/empty_newsfeed/illustration": {
+            "icon": "emptyFeedIcon"
+        },
+        "social_home_page/empty_newsfeed/title": {
+            "text": "Your Feed is empty"
+        },
+        "social_home_page/empty_newsfeed/description": {
+            "text": "Find community or create your own"
+        },
+        "social_home_page/empty_newsfeed/explore_communitties_button": {
+            "icon": "exploreCommunityIcon",
+            "text": "Explore Community"
+        },
+        "social_home_page/empty_newsfeed/create_community_button": {
+            "icon": "createCommunityIcon"
+        },
+        "social_home_page/my_communities/community_avatar": {},
+        "social_home_page/my_communities/community_display_name": {},
+        "social_home_page/my_communities/community_private_badge": {
+            "icon": "lockIcon"
+        },
+        "social_home_page/my_communities/community_official_badge": {
+            "icon": "officalBadgeIcon"
+        },
+        "social_home_page/my_communities/community_category_name": {},
+        "social_home_page/my_communities/community_members_count": {},
+        "social_home_page/newsfeed_component/*": {},
+        "social_home_page/global_feed_component/*": {},
+        "global_search_page/*/*": {},
+        "post_detail_page/*/back_button": {
+            "icon": "backButtonIcon"
+        },
+        "post_detail_page/*/menu_button": {
+            "icon": "menuIcon"
+        },
+        "*/post_content/moderator_badge": {
+            "icon": "badgeIcon",
+            "text": "Moderator"
+        },
+        "*/post_content/timestamp": {},
+        "*/post_content/menu_button": {
+            "icon": "menuIcon"
+        },
+        "*/post_content/post_content_view_count": {},
+        "*/post_content/reaction_button": {
+            "icon": "likeButtonIcon",
+            "text": "Like"
+        },
+        "*/post_content/comment_button": {
+            "icon": "commentButtonIcon",
+            "text": "Comment"
+        },
+        "*/post_content/share_button": {
+            "icon": "shareButtonIcon",
+            "text": "Share"
+        },
+        "social_global_search_page/*/*": {},
+        "social_global_search_page/top_search_bar/*": {},
+        "social_global_search_page/top_search_bar/search_icon": {
+            "icon": "search"
+        },
+        "social_global_search_page/top_search_bar/clear_button": {
+            "icon": "clear"
+        },
+        "social_global_search_page/top_search_bar/cancel_button": {
+            "text": "Cancel"
+        },
+        "social_global_search_page/community_search_result/community_avatar": {},
+        "social_global_search_page/community_search_result/community_display_name": {},
+        "social_global_search_page/community_search_result/community_private_badge": {
+            "icon": "lockIcon"
+        },
+        "social_global_search_page/community_search_result/community_official_badge": {
+            "icon": "officalBadgeIcon"
+        },
+        "social_global_search_page/community_search_result/community_category_name": {},
+        "social_global_search_page/community_search_result/community_members_count": {}
+    }
+}

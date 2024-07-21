@@ -88,7 +88,7 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                   : null,
               child: Text("Save",
                   style: TextStyle(
-                      color: vm.isPostValid
+                      color: hasContent
                           ? Provider.of<AmityUIConfiguration>(context)
                               .primaryColor
                           : Colors.grey)),

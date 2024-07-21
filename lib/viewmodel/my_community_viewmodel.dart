@@ -12,50 +12,39 @@ class MyCommunityVM with ChangeNotifier {
   final List<AmityCommunity> _amityCommunities = [];
   final List<AmityCommunity> _amityCommunitiesForFeed = [];
   // The controller for handling pagination.
-  late PagingController<AmityCommunity> _communityController;
-
+  // late PagingController<AmityCommunity> _communityController;
+  late CommunityLiveCollection communityLiveCollection;
   // Getter for _amityCommunities for external classes to use.
   List<AmityCommunity> get amityCommunities => _amityCommunities;
   List<AmityCommunity> get amityCommunitiesForFeed => _amityCommunitiesForFeed;
   final textEditingController = TextEditingController();
 
   Future<void> initMyCommunity([String? keyword]) async {
-    _communityController = PagingController(
-      pageFuture: (token) {
-        final repository = AmitySocialClient.newCommunityRepository()
-            .getCommunities()
-            .filter(AmityCommunityFilter.MEMBER)
-            .includeDeleted(false);
-        if (keyword != null && keyword.isNotEmpty) {
-          repository.withKeyword(
-              keyword); // Add keyword filtering only if keyword is provided and not empty
-        }
-        return repository.getPagingData(token: token, limit: 20);
-      },
-      pageSize: 20,
-    )..addListener(
-        () async {
-          if (_communityController.error == null) {
-            if (_amityCommunitiesForFeed.isEmpty) {
-              _amityCommunitiesForFeed.addAll(_communityController.loadedItems);
-            }
-            _amityCommunities.clear();
-            _amityCommunities.addAll(_communityController.loadedItems);
-            // Call any additional methods like sortedUserListWithHeaders here if needed.
-            notifyListeners();
-          } else {
-            log("error:${_communityController.error.toString()}");
-            // await AmityDialog().showAlertErrorDialog(
-            //     title: "Error!",
-            //     message: _communityController.error.toString());
-          }
-        },
-      );
+    final repository = AmitySocialClient.newCommunityRepository()
+        .getCommunities()
+        .filter(AmityCommunityFilter.MEMBER)
+        .includeDeleted(false);
+    if (keyword != null && keyword.isNotEmpty) {
+      repository.withKeyword(
+          keyword); // Add keyword filtering only if keyword is provided and not empty
+    }
+    communityLiveCollection = repository.getLiveCollection(pageSize: 50);
+    communityLiveCollection.getStreamController().stream.listen((event) {
+      print("getStreamController");
+      _amityCommunitiesForFeed.clear();
+      _amityCommunitiesForFeed.addAll(event);
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _communityController.fetchNextPage();
+      _amityCommunities.clear();
+      _amityCommunities.addAll(event);
+
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      log("error:${error.error.toString()}");
+      // await AmityDialog().showAlertErrorDialog(
+      //     title: "Error!",
+      //     message: _communityController.error.toString());
     });
-
+    communityLiveCollection.loadNext();
     scrollcontroller.removeListener(() {});
     scrollcontroller.addListener(loadNextPage);
   }
@@ -63,17 +52,17 @@ class MyCommunityVM with ChangeNotifier {
   void loadNextPage() async {
     if ((scrollcontroller.position.pixels >
         scrollcontroller.position.maxScrollExtent - 800)) {
-      print("hasMore: ${_communityController.hasMoreItems}");
+      print("hasMore: ${communityLiveCollection.hasNextPage()}");
     }
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&
-        _communityController.hasMoreItems &&
+        communityLiveCollection.hasNextPage() &&
         !loadingNextPage) {
       loadingNextPage = true;
       notifyListeners();
       log("loading Next Page...");
-      // Call any additional methods like sortedUserListWithHeaders here if needed.
-      await _communityController.fetchNextPage().then((value) {
+
+      await communityLiveCollection.loadNext().then((value) {
         loadingNextPage = false;
         notifyListeners();
       });

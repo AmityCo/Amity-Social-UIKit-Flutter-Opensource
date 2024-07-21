@@ -101,33 +101,58 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                     ? const SizedBox()
                     : TabBarView(
                         children: [
-                          ListView.builder(
-                            controller: vm.scrollcontroller,
-                            itemCount: vm.amityCommunities.length + 1,
-                            itemBuilder: (context, index) {
-                              // If it's the first item in the list, return the search bar
-                              if (index == 0) {
-                                return const SizedBox(height: 120);
-                              }
-                              // Otherwise, return the community widget
-                              return CommunityWidget(
-                                community: vm.amityCommunities[index - 1],
-                              );
-                            },
-                          ),
-                          ListView.builder(
-                            controller: userVM.scrollcontroller,
-                            itemCount: userVM.getUserList().length + 1,
-                            itemBuilder: (context, index) {
-                              // If it's the first item in the list, return the search bar
-                              if (index == 0) {
-                                return const SizedBox(height: 120);
-                              }
-                              // Otherwise, return the community widget
-                              return UserWidget(
-                                  amityUser: userVM.getUserList()[index - 1]);
-                            },
-                          ),
+                          vm.amityCommunities.isEmpty
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .primary,
+                                    ),
+                                  ],
+                                )
+                              : ListView.builder(
+                                  controller: vm.scrollcontroller,
+                                  itemCount: vm.amityCommunities.length + 1,
+                                  itemBuilder: (context, index) {
+                                    // If it's the first item in the list, return the search bar
+                                    if (index == 0) {
+                                      return const SizedBox(height: 120);
+                                    }
+                                    // Otherwise, return the community widget
+                                    return CommunityWidget(
+                                      community: vm.amityCommunities[index - 1],
+                                    );
+                                  },
+                                ),
+                          userVM.getUserList().isEmpty
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: Provider.of<AmityUIConfiguration>(
+                                              context)
+                                          .appColors
+                                          .primary,
+                                    ),
+                                  ],
+                                )
+                              : ListView.builder(
+                                  controller: userVM.scrollcontroller,
+                                  itemCount: userVM.getUserList().length + 1,
+                                  itemBuilder: (context, index) {
+                                    // If it's the first item in the list, return the search bar
+                                    if (index == 0) {
+                                      return const SizedBox(height: 120);
+                                    }
+                                    // Otherwise, return the community widget
+                                    return UserWidget(
+                                        amityUser:
+                                            userVM.getUserList()[index - 1]);
+                                  },
+                                ),
                         ],
                       ),
                 Column(
@@ -136,6 +161,7 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                     textcontroller.text.isEmpty
                         ? const SizedBox()
                         : Container(
+                            color: Colors.white,
                             child: TabBar(
                               dividerColor:
                                   Provider.of<AmityUIConfiguration>(context)
@@ -154,6 +180,7 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                                   Provider.of<AmityUIConfiguration>(context)
                                       .appColors
                                       .primary,
+
                               labelStyle: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600,

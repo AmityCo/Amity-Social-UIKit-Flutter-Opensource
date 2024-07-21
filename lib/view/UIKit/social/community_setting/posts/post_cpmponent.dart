@@ -58,7 +58,21 @@ class PostMedia extends StatelessWidget {
                       ),
                     ),
               isEditPost
-                  ? const SizedBox()
+                  ? Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          weight: 300,
+                        ),
+                        onPressed: () {
+                          Provider.of<EditPostVM>(context, listen: false)
+                              .deselectFileAt(index);
+                        },
+                      ),
+                    )
                   : Positioned(
                       top: 0,
                       right: 0,

@@ -257,8 +257,10 @@ class MediaGalleryPage extends StatelessWidget {
       shrinkWrap: true,
       itemBuilder: (context, index) {
         VideoData videoData = amityPosts[index].data as VideoData;
-        String thumbnailUrl =
-            videoData.thumbnail!.getUrl(AmityImageSize.MEDIUM);
+        var thumbnailUrl = "";
+        if (videoData.thumbnail != null) {
+          thumbnailUrl = videoData.thumbnail!.getUrl(AmityImageSize.MEDIUM);
+        }
 
         return GestureDetector(
           onTap: () {

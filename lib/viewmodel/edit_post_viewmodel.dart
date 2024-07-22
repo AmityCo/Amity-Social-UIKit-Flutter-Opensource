@@ -14,10 +14,13 @@ class EditPostVM extends CreatePostVMV2 {
   void initForEditPost(AmityPost post) {
     print("initForEditPost");
     amityPost = post;
-    originalPostLength = amityPost!.children!.length;
-    if (amityPost!.children!.isNotEmpty) {
-      postDataForEditMedie = amityPost!.children![0].type;
+    if (amityPost!.children != null) {
+      originalPostLength = amityPost!.children!.length;
+      if (amityPost!.children!.isNotEmpty) {
+        postDataForEditMedie = amityPost!.children![0].type;
+      }
     }
+
     textEditingController.clear();
     editPostMedie.clear();
 

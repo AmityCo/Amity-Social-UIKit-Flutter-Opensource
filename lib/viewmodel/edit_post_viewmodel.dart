@@ -77,9 +77,7 @@ class EditPostVM extends CreatePostVMV2 {
   Future<void> editPost(
       {required BuildContext context, Function? callback}) async {
     var builder = amityPost!.edit().text(textEditingController.text);
-    print(editPostMedie.length);
-    print(amityPost!.children!.length);
-    print(originalPostLength);
+
     if (editPostMedie.length != originalPostLength) {
       print("Children Length is not equal");
       if (editPostMedie.isNotEmpty) {

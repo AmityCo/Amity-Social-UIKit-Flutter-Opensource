@@ -69,7 +69,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
           var myCommunityList =
               Provider.of<MyCommunityVM>(context, listen: false);
 
-          myCommunityList.initMyCommunity();
+          myCommunityList.initMyCommunityFeed();
 
           globalFeedProvider.initAmityGlobalfeed(
               // isCustomPostRanking: widget.isCustomPostRanking
@@ -80,78 +80,79 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
               Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           child: Stack(
             children: [
-              vm.isLoading
+              Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: FadedSlideAnimation(
+                        beginOffset: const Offset(0, 0.3),
+                        endOffset: const Offset(0, 0),
+                        slideCurve: Curves.linearToEaseOut,
+                        child: ListView.builder(
+                          // shrinkWrap: true,
+                          controller: vm.scrollcontroller,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: vm.getAmityPosts.length,
+                          itemBuilder: (context, index) {
+                            return StreamBuilder<AmityPost>(
+                              key: Key(vm.getAmityPosts[index].postId!),
+                              stream: vm.getAmityPosts[index].listen.stream,
+                              initialData: vm.getAmityPosts[index],
+                              builder: (context, snapshot) {
+                                var latestComments =
+                                    snapshot.data!.latestComments;
+                                var post = snapshot.data!;
+                                print(
+                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
+                                return Column(
+                                  children: [
+                                    index != 0
+                                        ? const SizedBox()
+                                        : widget.isShowMyCommunity
+                                            ? CommunityIconList(
+                                                amityCommunites: Provider.of<
+                                                        MyCommunityVM>(context)
+                                                    .amityCommunitiesForFeed,
+                                                canCreateCommunity:
+                                                    widget.canCreateCommunity,
+                                              )
+                                            : const SizedBox(),
+                                    PostWidget(
+                                      isPostDetail: false,
+                                      // customPostRanking:
+                                      //     widget.isCustomPostRanking,
+                                      feedType: FeedType.global,
+                                      showCommunity: true,
+                                      showlatestComment: true,
+                                      post: snapshot.data!,
+                                      theme: theme,
+                                      postIndex: index,
+                                      isFromFeed: true,
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              vm.getAmityPosts.isEmpty
                   ? LoadingSkeleton(
                       context: context,
                     )
-                  : vm.getAmityPosts.isEmpty
-                      ? LoadingSkeleton(
-                          context: context,
-                        )
-                      : Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                child: FadedSlideAnimation(
-                                  beginOffset: const Offset(0, 0.3),
-                                  endOffset: const Offset(0, 0),
-                                  slideCurve: Curves.linearToEaseOut,
-                                  child: ListView.builder(
-                                    // shrinkWrap: true,
-                                    controller: vm.scrollcontroller,
-                                    physics:
-                                        const AlwaysScrollableScrollPhysics(),
-                                    itemCount: vm.getAmityPosts.length,
-                                    itemBuilder: (context, index) {
-                                      return StreamBuilder<AmityPost>(
-                                        key: Key(
-                                            vm.getAmityPosts[index].postId!),
-                                        stream: vm
-                                            .getAmityPosts[index].listen.stream,
-                                        initialData: vm.getAmityPosts[index],
-                                        builder: (context, snapshot) {
-                                          var latestComments =
-                                              snapshot.data!.latestComments;
-                                          var post = snapshot.data!;
-                                          print(
-                                              "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
-                                          return Column(
-                                            children: [
-                                              index != 0
-                                                  ? const SizedBox()
-                                                  : widget.isShowMyCommunity
-                                                      ? CommunityIconList(
-                                                          amityCommunites: Provider
-                                                                  .of<MyCommunityVM>(
-                                                                      context)
-                                                              .amityCommunitiesForFeed,
-                                                          canCreateCommunity: widget
-                                                              .canCreateCommunity,
-                                                        )
-                                                      : const SizedBox(),
-                                              PostWidget(
-                                                isPostDetail: false,
-                                                // customPostRanking:
-                                                //     widget.isCustomPostRanking,
-                                                feedType: FeedType.global,
-                                                showCommunity: true,
-                                                showlatestComment: true,
-                                                post: snapshot.data!,
-                                                theme: theme,
-                                                postIndex: index,
-                                                isFromFeed: true,
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                  : vm.isLoading
+                      ? vm.getAmityPosts.isEmpty
+                          ? LoadingSkeleton(
+                              context: context,
+                            )
+                          : LoadingSkeleton(
+                              context: context,
+                            )
+                      : const Text("")
             ],
           ),
         ),
@@ -336,17 +337,14 @@ class _PostWidgetState
           default:
         }
       },
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(30, 8, 0, 30),
-        child: Icon(
-          Icons.more_horiz_rounded,
-          size: 24,
-          color: widget.feedType == FeedType.user
-              ? Provider.of<AmityUIConfiguration>(context)
-                  .appColors
-                  .userProfileTextColor
-              : Colors.grey,
-        ),
+      child: Icon(
+        Icons.more_horiz_rounded,
+        size: 24,
+        color: widget.feedType == FeedType.user
+            ? Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .userProfileTextColor
+            : Colors.grey,
       ),
       itemBuilder: (context) {
         List<PopupMenuEntry<String>> menuItems = [];

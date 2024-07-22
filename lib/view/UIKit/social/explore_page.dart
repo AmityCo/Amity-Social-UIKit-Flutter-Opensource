@@ -33,7 +33,7 @@ class _CommunityPageState extends State<CommunityPage> {
     var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
     var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
 
-    myCommunityList.initMyCommunity();
+    myCommunityList.initMyCommunityFeed();
 
     globalFeedProvider.initAmityGlobalfeed();
   }

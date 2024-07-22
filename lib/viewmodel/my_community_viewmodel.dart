@@ -14,6 +14,7 @@ class MyCommunityVM with ChangeNotifier {
   // The controller for handling pagination.
   // late PagingController<AmityCommunity> _communityController;
   late CommunityLiveCollection communityLiveCollection;
+  late CommunityLiveCollection communityFeedLiveCollection;
   // Getter for _amityCommunities for external classes to use.
   List<AmityCommunity> get amityCommunities => _amityCommunities;
   List<AmityCommunity> get amityCommunitiesForFeed => _amityCommunitiesForFeed;
@@ -30,10 +31,6 @@ class MyCommunityVM with ChangeNotifier {
     }
     communityLiveCollection = repository.getLiveCollection(pageSize: 50);
     communityLiveCollection.getStreamController().stream.listen((event) {
-      print("getStreamController");
-      _amityCommunitiesForFeed.clear();
-      _amityCommunitiesForFeed.addAll(event);
-
       _amityCommunities.clear();
       _amityCommunities.addAll(event);
 
@@ -47,6 +44,26 @@ class MyCommunityVM with ChangeNotifier {
     communityLiveCollection.loadNext();
     scrollcontroller.removeListener(() {});
     scrollcontroller.addListener(loadNextPage);
+  }
+
+  Future<void> initMyCommunityFeed() async {
+    final repository = AmitySocialClient.newCommunityRepository()
+        .getCommunities()
+        .filter(AmityCommunityFilter.MEMBER)
+        .includeDeleted(false);
+
+    communityFeedLiveCollection = repository.getLiveCollection(pageSize: 50);
+    communityFeedLiveCollection.getStreamController().stream.listen((event) {
+      _amityCommunitiesForFeed.clear();
+      _amityCommunitiesForFeed.addAll(event);
+
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      log("error:${error.error.toString()}");
+      // await AmityDialog().showAlertErrorDialog(
+      //     title: "Error!",
+      //     message: _communityController.error.toString());
+    });
   }
 
   void loadNextPage() async {

@@ -22,6 +22,7 @@ class EditPostVM extends CreatePostVMV2 {
       print(children[0].type);
       if (children[0].type == AmityDataType.IMAGE) {
         print(children[0].data!.fileId);
+        editPostMedie = [];
         for (var child in children) {
           var uikitFile = UIKitFileSystem(
               postDataForEditMedie: child.data,

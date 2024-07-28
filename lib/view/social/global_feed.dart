@@ -99,11 +99,6 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                               stream: vm.getAmityPosts[index].listen.stream,
                               initialData: vm.getAmityPosts[index],
                               builder: (context, snapshot) {
-                                var latestComments =
-                                    snapshot.data!.latestComments;
-                                var post = snapshot.data!;
-                                print(
-                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
                                 return Column(
                                   children: [
                                     index != 0
@@ -149,9 +144,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           ? LoadingSkeleton(
                               context: context,
                             )
-                          : LoadingSkeleton(
-                              context: context,
-                            )
+                          : const Text("")
                       : const Text("")
             ],
           ),

@@ -1,12 +1,12 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/video_post_player/pager/bloc/video_post_player_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 class VideoPostPlayerPager extends StatelessWidget with ChangeNotifier {
   final List<AmityPost> posts;
@@ -67,8 +67,10 @@ class VideoPostPlayerBuilder with ChangeNotifier {
                 ),
                 color: Colors.white,
                 onPressed: () {
-                  context.read<VideoPostPlayerBloc>().add(VideoPostPlayerEventDispose());
-                  Navigator.of(context).pop(); 
+                  context
+                      .read<VideoPostPlayerBloc>()
+                      .add(VideoPostPlayerEventDispose());
+                  Navigator.of(context).pop();
                 },
               )),
         ),
@@ -82,7 +84,8 @@ class VideoPostPlayerBuilder with ChangeNotifier {
           },
           itemBuilder: (context, index) {
             if (state.urls.isEmpty) {
-              return Center(child: loadingIndicator(context, size: 50, strokeWidth: 5));
+              return Center(
+                  child: loadingIndicator(context, size: 50, strokeWidth: 5));
             } else {
               if (index == state.currentIndex) {
                 if (state.videoController == null) {
@@ -123,12 +126,14 @@ class VideoPostPlayerBuilder with ChangeNotifier {
     });
   }
 
-   Widget loadingIndicator(BuildContext context, {double? size, double? strokeWidth}) {
+  Widget loadingIndicator(BuildContext context,
+      {double? size, double? strokeWidth}) {
     final appTheme = Provider.of<ConfigProvider>(context).getTheme(null, null);
     return SizedBox(
-      width: size ??  20,
+      width: size ?? 20,
       height: size ?? 20,
       child: CircularProgressIndicator(
+        color: Provider.of<AmityUIConfiguration>(context).appColors.primary,
         strokeWidth: strokeWidth ?? 2,
         valueColor: AlwaysStoppedAnimation<Color>(appTheme.primaryColor),
       ),

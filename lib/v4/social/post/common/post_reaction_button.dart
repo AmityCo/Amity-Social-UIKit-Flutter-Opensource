@@ -14,14 +14,14 @@ class PostReactionButton extends StatelessWidget {
   final bool showLabel;
   final bool isOptimisticUi;
 
-  const PostReactionButton(
-      {super.key,
-      required this.post,
-      required this.action,
-      required this.isReacting,
-      this.showLabel = false,
-      this.isOptimisticUi = false,
-    });
+  const PostReactionButton({
+    super.key,
+    required this.post,
+    required this.action,
+    required this.isReacting,
+    this.showLabel = false,
+    this.isOptimisticUi = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,8 @@ class PostReactionButton extends StatelessWidget {
                     alignment: Alignment.center,
                     width: 20,
                     height: 20,
-                    child: loadingIndicator(context, !(post.myReactions?.isNotEmpty ?? false)))
+                    child: loadingIndicator(
+                        context, !(post.myReactions?.isNotEmpty ?? false)))
                 : Container(
                     alignment: Alignment.center,
                     width: 20,
@@ -103,7 +104,7 @@ class PostReactionButton extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        color: hasMyReaction ? appTheme.primaryColor : Color(0xFF898E9E),
+        color: hasMyReaction ? appTheme.primaryColor : const Color(0xFF898E9E),
         fontSize: 15,
         fontWeight: FontWeight.w600,
       ),
@@ -116,7 +117,7 @@ class PostReactionButton extends StatelessWidget {
     bool hasMyReaction = post.myReactions?.isNotEmpty ?? false;
     final isAdding = !hasMyReaction;
     var count = post.reactionCount ?? 0;
-    if(isAdding) {
+    if (isAdding) {
       count++;
     } else {
       count--;
@@ -128,7 +129,7 @@ class PostReactionButton extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        color: !hasMyReaction ? appTheme.primaryColor : Color(0xFF898E9E),
+        color: !hasMyReaction ? appTheme.primaryColor : const Color(0xFF898E9E),
         fontSize: 15,
         fontWeight: FontWeight.w600,
       ),

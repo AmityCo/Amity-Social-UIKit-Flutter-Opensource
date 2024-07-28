@@ -11,7 +11,6 @@ import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +115,8 @@ class CommentItem extends BaseElement {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   UserProfileScreen(
-                                                amityUserId: comment.user?.userId ?? '',
+                                                amityUserId:
+                                                    comment.user?.userId ?? '',
                                                 amityUser: null,
                                               ),
                                             ),

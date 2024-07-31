@@ -316,7 +316,6 @@ class CreatePostVMV2 with ChangeNotifier {
 
   // Method to deselect a file
   void deselectFile(UIKitFileSystem file) {
-    files.remove(file);
     notifyListeners();
   }
 

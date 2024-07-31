@@ -80,11 +80,9 @@ class PostMedia extends StatelessWidget {
                         icon: const Icon(Icons.close, color: Colors.white),
                         onPressed: () {
                           log("delete file...");
-                          log("delete file...");
+
                           Provider.of<CreatePostVMV2>(context, listen: false)
-                              .deselectFile(Provider.of<CreatePostVMV2>(context,
-                                      listen: false)
-                                  .files[index]);
+                              .deselectFile(files[index]);
                         },
                       ),
                     ),
@@ -310,8 +308,11 @@ class PostMedia extends StatelessWidget {
                   trailing: GestureDetector(
                     onTap: () {
                       log("delete file...");
-                      Provider.of<CreatePostVMV2>(context, listen: false)
-                          .deselectFile(files[index]);
+                      isEditPost
+                          ? Provider.of<EditPostVM>(context, listen: false)
+                              .deselectFileAt(index)
+                          : Provider.of<CreatePostVMV2>(context, listen: false)
+                              .deselectFile(files[index]);
                     },
                     child: const Icon(Icons.close),
                   ),

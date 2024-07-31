@@ -205,7 +205,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
     String getURL(AmityPostData postData) {
       if (postData is VideoData) {
         var data = postData;
-        print("XXXX${data.thumbnail?.getUrl(AmityImageSize.MEDIUM)}");
+
         return data.thumbnail?.getUrl(AmityImageSize.LARGE) ?? "";
       } else if (postData is ImageData) {
         var data = postData;

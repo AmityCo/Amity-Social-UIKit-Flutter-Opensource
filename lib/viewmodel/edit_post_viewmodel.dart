@@ -88,8 +88,6 @@ class EditPostVM extends CreatePostVMV2 {
           var children = amityPost!.children;
           var images =
               children!.map((e) => e.data!.fileInfo as AmityImage).toList();
-          print("XXXXXX:::");
-          print(images);
           builder = builder.image(images);
         } else if (postType == AmityDataType.VIDEO) {
           var children = amityPost!.children;

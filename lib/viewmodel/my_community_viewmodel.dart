@@ -50,6 +50,7 @@ class MyCommunityVM with ChangeNotifier {
     final repository = AmitySocialClient.newCommunityRepository()
         .getCommunities()
         .filter(AmityCommunityFilter.MEMBER)
+        .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
         .includeDeleted(false);
 
     communityFeedLiveCollection = repository.getLiveCollection(pageSize: 50);
@@ -59,7 +60,7 @@ class MyCommunityVM with ChangeNotifier {
 
       notifyListeners();
     }).onError((error, stackTrace) {
-      log("error:${error.error.toString()}");
+      // log("error:${error.error.toString()}");
       // await AmityDialog().showAlertErrorDialog(
       //     title: "Error!",
       //     message: _communityController.error.toString());

@@ -10,12 +10,14 @@ import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
+import 'package:camera/camera.dart';
 import 'package:amity_uikit_beta_service_example/sample_v4.dart';
 import 'package:amity_uikit_beta_service_example/social_v4_compatible.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+List<CameraDescription> camera = <CameraDescription>[];
 void main() async {
   ///Step 1: Initialize amity SDK with the following function
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _customMqttUrl = TextEditingController();
   @override
   void initState() {
+    _customHttpUrl.text = "https://api.staging.amity.co/";
+    _customSocketUrl.text = "https://api.staging.amity.co/";
+    _customMqttUrl.text = "ssq.staging.amity.co";
+    _apiKey.text = "b0efe90c3bdda2304d628918520c1688845889e4bc363d2c";
     super.initState();
     _loadPreferences();
   }

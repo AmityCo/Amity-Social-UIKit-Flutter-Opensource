@@ -104,7 +104,18 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
           .dataTypes(null)
           .includeDeleted(false)
           .getLiveCollection();
-    } else {
+    }
+    if (referenceType == AmityCommentReferenceType.STORY) {
+      return AmitySocialClient.newCommentRepository()
+          .getComments()
+          .story(referenceId)
+          .parentId(parentId)
+          .sortBy(AmityCommentSortOption.LAST_CREATED)
+          .dataTypes(null)
+          .includeDeleted(false)
+          .getLiveCollection();
+    }
+    else {
       return AmitySocialClient.newCommentRepository()
           .getComments()
           .content(referenceId)

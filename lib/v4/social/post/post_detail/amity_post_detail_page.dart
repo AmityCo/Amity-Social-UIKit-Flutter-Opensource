@@ -114,13 +114,13 @@ class AmityPostDetailPage extends NewBasePage {
                 getSectionDivider(),
                 AmityCommentCreator(
                   referenceId: postId,
+                  referenceType: AmityCommentReferenceType.POST,
                   replyTo: replyTo,
                   action: CommentCreatorAction(onDissmiss: () {
                     context
                         .read<PostDetailBloc>()
                         .add(const PostDetailReplyComment(replyTo: null));
                   }),
-                  theme: theme,
                 ),
               ],
             ),

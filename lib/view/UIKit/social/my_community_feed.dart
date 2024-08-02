@@ -1,6 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
+import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
@@ -143,6 +143,7 @@ class CommunityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return StreamBuilder<AmityCommunity>(
         stream: community.listen.stream,
         builder: (context, snapshot) {
@@ -205,8 +206,11 @@ class CommunityWidget extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        CommunityScreen(community: communityStream)));
+                  builder: (context) =>
+                      CommunityScreen(community: communityStream),
+                  settings:
+                      const RouteSettings(name: CommunityScreen.routeName),
+                ));
               },
             ),
           );

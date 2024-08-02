@@ -1,6 +1,6 @@
 name: amity_uikit_beta_service
 description: Amity UIkit opensource developed by SLE team to enable social feature in Flutter.
-version: 0.2.1
+version: 3.0.1
 homepage: https://github.com/ThanakornThanom/ThanakornThanom--flutter_amity_uikit_beta_service
 
 environment:
@@ -15,12 +15,12 @@ dependencies:
   font_awesome_flutter: ^10.1.0
   pin_code_fields: ^8.0.1
   country_code_picker: ^3.0.0
-  flutter_bloc: ^8.0.1
+  flutter_bloc: ^8.1.5
   shared_preferences: ^2.0.5
   flutter_phoenix: ^1.0.0
   flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
-  amity_sdk: ^0.44.0
+  amity_sdk: ^0.46.2
   provider: ^6.0.3
   carousel_slider: ^4.1.1
   chewie: ^1.3.4
@@ -47,6 +47,7 @@ dependencies:
   flutter_svg: ^2.0.9
   permission_handler: ^11.0.1
   intrinsic_dimension: ^0.3.1
+  flutter_linkify: ^6.0.0
 
 
 
@@ -96,8 +97,8 @@ flutter:
     - assets/images/noPostYet.png
     - assets/images/privateIcon.png
     - assets/images/noVideo.png
+    - assets/config/config.json
     - assets/
-
 
 
 

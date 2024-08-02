@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/post_cpmponent.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
@@ -83,12 +84,13 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                           context: context,
                           callback: () {
                             Navigator.of(context).pop();
+                            context.read<GlobalFeedBloc>().add(GlobalFeedReloadThePost(postId: widget.amityPost.postId!));
                           });
                     }
                   : null,
               child: Text("Save",
                   style: TextStyle(
-                      color: vm.isPostValid
+                      color: hasContent
                           ? Provider.of<AmityUIConfiguration>(context)
                               .primaryColor
                           : Colors.grey)),

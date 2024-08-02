@@ -100,7 +100,10 @@ class CreatePostVMV2 with ChangeNotifier {
 
     // Check the type of the first file (assuming all files are of the same type)
     MyFileType currentType = files.first.fileType ?? MyFileType.file;
-    selectionOptions[currentType] = true;
+
+    if (files.length < 10) {
+      selectionOptions[currentType] = true;
+    }
 
     return selectionOptions;
   }
@@ -271,7 +274,13 @@ class CreatePostVMV2 with ChangeNotifier {
       } else if (action == PickerAction.galleryImage) {
         List<XFile>? pickedImages = await _picker.pickMultiImage();
         if (pickedImages.isNotEmpty) {
-          selectFiles(pickedImages, MyFileType.image);
+          if (pickedImages.length + files.length > 10) {
+            AmityDialog().showAlertErrorDialog(
+                title: "Error",
+                message: "You can only select a maximum of 10 images");
+          } else {
+            selectFiles(pickedImages, MyFileType.image);
+          }
         }
       } else if (action == PickerAction.galleryVideo) {
         final XFile? video =
@@ -307,7 +316,6 @@ class CreatePostVMV2 with ChangeNotifier {
 
   // Method to deselect a file
   void deselectFile(UIKitFileSystem file) {
-    files.remove(file);
     notifyListeners();
   }
 

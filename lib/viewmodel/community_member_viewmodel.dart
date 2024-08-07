@@ -75,10 +75,11 @@ class MemberManagementVM extends ChangeNotifier {
     }
   }
 
-  void _handleModeratorControllerUpdates() {
+  Future<void> _handleModeratorControllerUpdates() async {
     if (_amityModeratorsController.error == null) {
+      final users = await AmityUIConfiguration.onCustomMember(_amityModeratorsController.loadedItems);
       _moderatorList.clear();
-      _moderatorList.addAll(_amityModeratorsController.loadedItems);
+      _moderatorList.addAll(users);
 
       notifyListeners();
     } else {

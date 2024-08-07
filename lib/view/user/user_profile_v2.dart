@@ -156,13 +156,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               widget.customProfile!=null&&isCurrentUser?widget.customProfile!:FadedScaleAnimation(
-                                  child: Provider.of<AmityUIConfiguration>(context).buildOtherUserProfile(isCurrentUser
-                                      ?Provider.of<AmityVM>(
-                                    context,
-                                  ).currentamityUser!.userId!
-                                      : Provider.of<UserFeedVM>(context)
-                                      .amityUser!
-                                      .userId!) ??getAvatarImage(
+                                  child: Provider.of<AmityUIConfiguration>(context).buildOtherUserProfile(widget.amityUserId) ??getAvatarImage(
                                       isCurrentUser
                                           ? Provider.of<AmityVM>(
                                         context,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
@@ -7,6 +8,7 @@ import '../components/alert_dialog.dart';
 
 class PendingVM extends ChangeNotifier {
   var _pendingList = <AmityFollowRelationship>[];
+
   List<AmityFollowRelationship> get pendingRequestList => _pendingList;
 
   ScrollController? scrollController;
@@ -65,6 +67,7 @@ class PendingVM extends ChangeNotifier {
         _pendingList.clear();
 
         _pendingList.addAll(_pendingListController.loadedItems);
+
         //update widgets
       } else {
         //error on pagination controller
@@ -73,7 +76,8 @@ class PendingVM extends ChangeNotifier {
     };
   }
 
-  void acceptFollowRequest(String userId, int index) {
+  void acceptFollowRequest(String userId, int index,
+      {bool skipUpdate = false}) {
     AmityCoreClient.newUserRepository()
         .relationship()
         .me()
@@ -81,7 +85,7 @@ class PendingVM extends ChangeNotifier {
         .then((value) {
       //success
       log("acceptFollowRequest: Success");
-      _pendingList.removeAt(index);
+      if (!skipUpdate) _pendingList.removeAt(index);
       notifyListeners();
     }).onError((error, stackTrace) {
       //handle error
@@ -90,7 +94,8 @@ class PendingVM extends ChangeNotifier {
     });
   }
 
-  void declineFollowRequest(String userId, int index) {
+  void declineFollowRequest(String userId, int index,
+      {bool skipUpdate = false}) {
     AmityCoreClient.newUserRepository()
         .relationship()
         .me()
@@ -98,7 +103,7 @@ class PendingVM extends ChangeNotifier {
         .then((value) {
       //success
       log("declineFollowRequest: Success");
-      _pendingList.removeAt(index);
+      if (!skipUpdate) _pendingList.removeAt(index);
       notifyListeners();
     }).onError((error, stackTrace) {
       //handle error

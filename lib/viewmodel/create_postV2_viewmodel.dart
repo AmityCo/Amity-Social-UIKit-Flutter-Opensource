@@ -196,8 +196,11 @@ class CreatePostVMV2 with ChangeNotifier {
         amityUploadResult.when(
           progress: (uploadInfo, cancelToken) {
             int progress = uploadInfo.getProgressPercentage();
-            uikitFile.progress = progress;
-            notifyListeners();
+            if (progress < 100) {
+              uikitFile.progress = progress;
+              print("progress: $progress");
+              notifyListeners();
+            }
           },
           complete: (amityFile) {
             uikitFile.status = FileStatus.complete;
@@ -205,6 +208,7 @@ class CreatePostVMV2 with ChangeNotifier {
             uikitFile.amityFile = amityFile;
             print(
                 "file type ${uikitFile.fileType} ${uikitFile.fileInfo.toString()}");
+            uikitFile.progress = 100;
             checkAllFilesUploaded();
             notifyListeners();
           },

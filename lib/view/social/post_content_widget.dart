@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/link_preview.dart';
 import 'package:amity_uikit_beta_service/components/video_player.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/imag_viewer.dart';
@@ -11,10 +12,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
-import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:linkify/linkify.dart';
-import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -105,7 +104,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
 
   bool urlValidation(AmityPost post) {
     final url = extractLink(post); //urlExtraction(post);
-    log("checking url validation $url");
+
     return AnyLinkPreview.isValidLink(url);
   }
 
@@ -125,72 +124,10 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
     return "";
   }
 
-  Widget generateURLWidget(String url) {
-    const style = TextStyle(
-      color: Colors.black,
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-      height: 1.375,
-    );
-
-    return LinkPreview(
-      enableAnimation: true,
-      onPreviewDataFetched: (data) {
-        setState(() {
-          datas = {
-            ...datas,
-            url: data,
-          };
-        });
-      },
-      previewData: datas[url],
-      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-      imageBuilder: ((imageUrl) {
-        return
-            // OptimizedCacheImage(
-            //   imageUrl: url,
-            //   fit: BoxFit.fill,
-            //   placeholder: (context, url) => Container(
-            //     color: Colors.grey,
-            //   ),
-            //   errorWidget: (context, url, error) => const Icon(Icons.error),
-            // );
-            Container(
-          width: double.infinity,
-          margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-          height: 150,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(imageUrl),
-            ),
-          ),
-        );
-      }),
-      metadataTextStyle: style.copyWith(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-      ),
-      animationDuration: const Duration(milliseconds: 300),
-      metadataTitleStyle: style.copyWith(
-        fontWeight: FontWeight.w800,
-      ),
-      textWidget: const SizedBox(
-        height: 0,
-      ),
-      text: url,
-      width: MediaQuery.of(context).size.width,
-      onLinkPressed: ((url) {
-        _launchUrl(url);
-      }),
-      openOnPreviewImageTap: true,
-      openOnPreviewTitleTap: true,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (!widget.isChildrenPost) {
-      if (widget.haveChildrenPost || !urlValidation(widget.posts[0])) {
+      if (widget.posts[0].children != null && urlValidation(widget.posts[0])) {
         return TextPost(post: widget.posts[0], feedType: widget.feedType);
       } else {
         String url =
@@ -202,32 +139,11 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
             widget.shouldShowTextPost
                 ? TextPost(post: widget.posts[0], feedType: widget.feedType)
                 : Container(),
-            generateURLWidget(url.toLowerCase())
-            // AnyLinkPreview(
-            //   link: url.toLowerCase(),
-            //   displayDirection: UIDirection.uiDirectionVertical,
-            //   // showMultimedia: false,
-            //   bodyMaxLines: 5,
-            //   bodyTextOverflow: TextOverflow.ellipsis,
-            //   titleStyle: TextStyle(
-            //     color: Colors.black,
-            //     fontWeight: FontWeight.bold,
-            //     fontSize: 15,
-            //   ),
-            //   bodyStyle: TextStyle(color: Colors.grey, fontSize: 12),
-            //   errorBody: 'Error getting body',
-            //   errorTitle: 'Error getting title',
-            //   errorWidget: Container(
-            //     color: Colors.grey[300],
-            //     child: Text('Oops!'),
-            //   ),
-            //   // errorImage: "https://google.com/",
-            //   cache: const Duration(days: 0),
-            //   backgroundColor: Colors.grey[100],
-            //   borderRadius: 0,
-            //   removeElevation: true,
-            //   boxShadow: null, //[BoxShadow(blurRadius: 3, color: Colors.grey)],
-            //   onTap: () {}, // This disables tap event
+
+            !urlValidation(widget.posts[0])
+                ? const SizedBox()
+                : CustomLinkPreview(url: url.toLowerCase())
+
             // )
           ],
         );
@@ -289,10 +205,11 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
     String getURL(AmityPostData postData) {
       if (postData is VideoData) {
         var data = postData;
-        return data.thumbnail?.getUrl(AmityImageSize.MEDIUM) ?? "";
+
+        return data.thumbnail?.getUrl(AmityImageSize.LARGE) ?? "";
       } else if (postData is ImageData) {
         var data = postData;
-        return data.image?.getUrl(AmityImageSize.MEDIUM) ?? "";
+        return data.image?.getUrl(AmityImageSize.LARGE) ?? "";
       } else {
         return "";
       }
@@ -1170,16 +1087,33 @@ class TextPost extends StatefulWidget {
 class _TextPostState extends State<TextPost> {
   bool isExpanded = false;
 
-  Widget buildURLWidget(String text) {
-    return Builder(builder: (context) {
-      return LinkWell(
-        text,
-        style: TextStyle(
-            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-            fontSize: 15,
-            fontWeight: FontWeight.bold),
-      );
-    });
+  Future<void> _onOpenLink(LinkableElement link) async {
+    if (await canLaunchUrl(Uri.parse(link.url))) {
+      await launchUrl(Uri.parse(link.url));
+    } else {
+      throw 'Could not launch $link';
+    }
+  }
+
+  List<TextSpan> _buildTextSpans(
+      String text, TextStyle textStyle, TextStyle linkStyle) {
+    final elements = linkify(text);
+
+    return elements.map((element) {
+      if (element is LinkableElement) {
+        return TextSpan(
+          text: element.text,
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => _onOpenLink(element),
+        );
+      } else {
+        return TextSpan(
+          text: element.text,
+          style: textStyle,
+        );
+      }
+    }).toList();
   }
 
   @override
@@ -1188,6 +1122,10 @@ class _TextPostState extends State<TextPost> {
     final String text = textData.text ?? "";
     final bool shouldShorten = text.length > 180 && !isExpanded;
 
+    TextStyle textStyle = TextStyle(
+      color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+      fontSize: 15,
+    );
     TextStyle linkStyle = TextStyle(
       color: Provider.of<AmityUIConfiguration>(context, listen: false)
           .appColors
@@ -1209,12 +1147,9 @@ class _TextPostState extends State<TextPost> {
                           child: shouldShorten
                               ? RichText(
                                   text: TextSpan(
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(text: text.substring(0, 180)),
+                                    children: [
+                                      ..._buildTextSpans(text.substring(0, 180),
+                                          textStyle, linkStyle),
                                       TextSpan(
                                         text: " ... Load more",
                                         style: linkStyle,
@@ -1236,10 +1171,10 @@ class _TextPostState extends State<TextPost> {
                                       });
                                     }
                                   },
-                                  child: Text(
-                                    text,
-                                    style: const TextStyle(
-                                      fontSize: 15,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: _buildTextSpans(
+                                          text, textStyle, linkStyle),
                                     ),
                                   ),
                                 ),

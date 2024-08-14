@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
+import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/post_cpmponent.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
@@ -41,8 +42,9 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
     return Consumer<EditPostVM>(builder: (context, vm, _) {
       return ThemeConfig(
         child: Scaffold(
-          backgroundColor:
-              Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -51,14 +53,16 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
               style: Provider.of<AmityUIConfiguration>(context)
                   .titleTextStyle
                   .copyWith(
-                    color:
-                        Provider.of<AmityUIConfiguration>(context).appColors.base,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                   ),
             ),
             leading: IconButton(
               icon: Icon(
                 Icons.chevron_left,
-                color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
               ),
               onPressed: () {
                 if (hasContent) {
@@ -85,12 +89,15 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                             context: context,
                             callback: () {
                               Navigator.of(context).pop();
+                              context.read<GlobalFeedBloc>().add(
+                                  GlobalFeedReloadThePost(
+                                      postId: widget.amityPost.postId!));
                             });
                       }
                     : null,
                 child: Text("Save",
                     style: TextStyle(
-                        color: vm.isPostValid
+                        color: hasContent
                             ? Provider.of<AmityUIConfiguration>(context)
                                 .primaryColor
                             : Colors.grey)),
@@ -109,7 +116,7 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                           TextField(
                             onChanged: (value) {
                               vm.updatePostValidity();
-        
+
                               if (value == originalText) {
                                 print("match");
                                 hasContent = false;

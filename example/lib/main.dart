@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:amity_uikit_beta_service/amity_sle_uikit.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
@@ -11,6 +11,8 @@ import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
+import 'package:amity_uikit_beta_service_example/sample_v4.dart';
+import 'package:amity_uikit_beta_service_example/social_v4_compatible.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,8 +50,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _apiKey = TextEditingController();
-  AmityRegion? _selectedRegion;
-  final TextEditingController _customUrl = TextEditingController();
+  AmityEndpointRegion? _selectedRegion;
+  final TextEditingController _customHttpUrl = TextEditingController();
+  final TextEditingController _customSocketUrl = TextEditingController();
+  final TextEditingController _customMqttUrl = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -63,91 +67,120 @@ class _MyHomePageState extends State<MyHomePage> {
 
       String? selectedRegionString = prefs.getString('selectedRegion');
       if (selectedRegionString != null) {
-        _selectedRegion = AmityRegion.values.firstWhere(
+        _selectedRegion = AmityEndpointRegion.values.firstWhere(
           (e) => e.toString() == selectedRegionString,
-          orElse: () => AmityRegion.sg,
+          orElse: () => AmityEndpointRegion.sg,
         );
       }
-      if (_selectedRegion == AmityRegion.custom) {
-        _customUrl.text = prefs.getString('customUrl') ?? "";
+      if (_selectedRegion == AmityEndpointRegion.custom) {
+        _customHttpUrl.text = prefs.getString('customUrl') ?? "";
+        _customSocketUrl.text = prefs.getString('customSocketUrl') ?? "";
+        _customMqttUrl.text = prefs.getString('customMqttUrl') ?? "";
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('API Configuration'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TextFormField(
-              controller: _apiKey,
-              decoration: const InputDecoration(
-                labelText: 'API Key',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text('Select Region:'),
-            ...AmityRegion.values.map((region) {
-              return RadioListTile<AmityRegion>(
-                title: Text(region.toString().split('.').last.toUpperCase()),
-                value: region,
-                groupValue: _selectedRegion,
-                onChanged: (AmityRegion? value) {
-                  setState(() {
-                    _selectedRegion = value;
-                    if (value != AmityRegion.custom) {
-                      _customUrl.text = ""; // Reset custom URL
-                    }
-                  });
-                },
-              );
-            }).toList(),
-            if (_selectedRegion == AmityRegion.custom) ...[
-              const SizedBox(height: 20),
+    return ThemeConfig(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('API Configuration'),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
               TextFormField(
+                controller: _apiKey,
                 decoration: const InputDecoration(
-                  labelText: 'Custom URL',
+                  labelText: 'API Key',
                   border: OutlineInputBorder(),
                 ),
-                controller: _customUrl,
               ),
-            ],
-            const SizedBox(height: 40),
-            ElevatedButton(
-                child: const Text('Initialize'),
-                onPressed: () async {
-                  if (_selectedRegion != null &&
-                      (_selectedRegion != AmityRegion.custom)) {
-                    final prefs = await SharedPreferences.getInstance();
-
-                    await prefs.setString('apiKey', _apiKey.text);
-                    await prefs.setString(
-                        'selectedRegion', _selectedRegion.toString());
-                    if (_selectedRegion == AmityRegion.custom) {
-                      await prefs.setString('customUrl', _customUrl.text);
+              const SizedBox(height: 20),
+              const Text('Select Region:'),
+              ...AmityEndpointRegion.values.map((region) {
+                return RadioListTile<AmityEndpointRegion>(
+                  title: Text(region.toString().split('.').last.toUpperCase()),
+                  value: region,
+                  groupValue: _selectedRegion,
+                  onChanged: (AmityEndpointRegion? value) {
+                    setState(() {
+                      _selectedRegion = value;
+                      if (value != AmityEndpointRegion.custom) {
+                        // Reset custom URL
+                        _customHttpUrl.text = "";
+                        _customSocketUrl.text = "";
+                        _customHttpUrl.text = "";
+                      }
+                    });
+                  },
+                );
+              }).toList(),
+              if (_selectedRegion == AmityEndpointRegion.custom) ...[
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Custom HTTP URL',
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: _customHttpUrl,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Custom Socket URL',
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: _customSocketUrl,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Custom MQTT URL',
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: _customMqttUrl,
+                ),
+              ],
+              const SizedBox(height: 40),
+              ElevatedButton(
+                  child: const Text('Initialize'),
+                  onPressed: () async {
+                    if (_selectedRegion != null) {
+                      final prefs = await SharedPreferences.getInstance();
+      
+                      await prefs.setString('apiKey', _apiKey.text);
+                      await prefs.setString(
+                          'selectedRegion', _selectedRegion.toString());
+      
+                      if (_selectedRegion == AmityEndpointRegion.custom) {
+                        await prefs.setString('customUrl', _customHttpUrl.text);
+                        await prefs.setString(
+                            'customSocketUrl', _customSocketUrl.text);
+                        await prefs.setString(
+                            'customMqttUrl', _customMqttUrl.text);
+                      }
+                      log("save pref");
+      
+                      await AmityUIKit().setup(
+                        apikey: _apiKey.text,
+                        region: _selectedRegion!,
+                        customEndpoint: _customHttpUrl.text,
+                        customSocketEndpoint: _customSocketUrl.text,
+                        customMqttEndpoint: _customMqttUrl.text,
+                      );
+                      // Navigate to the nextx page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const AmityApp()),
+                      );
                     }
-                    log("save pref");
-
-                    await AmitySLEUIKit().initUIKit(
-                      apikey: _apiKey.text,
-                      region: _selectedRegion!,
-                      customEndpoint: _customUrl.text,
-                    );
-                    // Navigate to the nextx page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const AmityApp()),
-                    );
-                  }
-                }),
-          ],
+                  }),
+            ],
+          ),
         ),
       ),
     );
@@ -158,7 +191,7 @@ class AmityApp extends StatelessWidget {
   const AmityApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return AmitySLEProvider(
+    return AmityUIKitProvider(
       child: Builder(builder: (context2) {
         return const UserListPage();
       }),
@@ -229,11 +262,36 @@ class _UserListPageState extends State<UserListPage> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(_usernames[index]),
+                    onLongPress: () async {
+                      log("login");
+      
+                      ///Step 3: login with Amity
+                      await AmityUIKit().registerDevice(
+                        context: context,
+                        userId: _usernames[index],
+                        authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
+                        callback: (isSuccess, error) {
+                          log("callback:$isSuccess");
+                          if (isSuccess) {
+                            log("success");
+                            //ignore call back
+                          } else {
+                            log("fail");
+                            AmityDialog().showAlertErrorDialog(
+                                title: "Error", message: error.toString());
+                          }
+                        },
+                      );
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            const ThemeConfig(child: Scaffold(body: CommunityPage())),
+                      ));
+                    },
                     onTap: () async {
                       log("login");
-
+      
                       ///Step 3: login with Amity
-                      await AmitySLEUIKit().registerDevice(
+                      await AmityUIKit().registerDevice(
                         context: context,
                         userId: _usernames[index],
                         authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
@@ -316,7 +374,7 @@ class SocialPage extends StatelessWidget {
     Color base = Colors.red;
     Color baseBackground = Colors.red;
     Color baseShade4 = Colors.red;
-    AmitySLEUIKit().configAmityThemeColor(sourceContext, (config) {
+    AmityUIKit().configAmityThemeColor(sourceContext, (config) {
       primary = config.appColors.primary;
       base = config.appColors.base;
       baseBackground = config.appColors.baseBackground;
@@ -414,7 +472,7 @@ class SocialPage extends StatelessWidget {
     // Place your AmitySLEUIKit configuration code here
     // For demonstration, the primary color is being used. Adapt as needed.
     print("configThemeColor");
-    AmitySLEUIKit().configAmityThemeColor(context, (config) {
+    AmityUIKit().configAmityThemeColor(context, (config) {
       config.appColors = appColors;
     });
 
@@ -453,36 +511,23 @@ class SocialPage extends StatelessWidget {
                 title: const Text('unregister'),
                 onTap: () {
                   // Navigate or perform action based on 'Global Feed' tap
-                  AmitySLEUIKit().unRegisterDevice();
+                  AmityUIKit().unRegisterDevice();
                 },
               ),
               ListTile(
-                title: const Text('Global Feed'),
+                title: const Text('Custom Post Ranking Feed'),
                 onTap: () {
                   // Navigate or perform action based on 'Global Feed' tap
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ThemeConfig(
-                        child: Scaffold(
-                          body: GlobalFeedScreen(),
-                        ),
-                      ),
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ThemeConfig(
+                      child: Scaffold(
+                          body: GlobalFeedScreen(
+                              //isCustomPostRanking: true,
+                              )),
                     ),
-                  );
+                  ));
                 },
               ),
-              // ListTile(
-              //   title: const Text('Custom Post Ranking Feed'),
-              //   onTap: () {
-              //     // Navigate or perform action based on 'Global Feed' tap
-              //     Navigator.of(context).push(MaterialPageRoute(
-              //       builder: (context) => const Scaffold(
-              //           body: GlobalFeedScreen(
-              //         isCustomPostRanking: true,
-              //       )),
-              //     ));
-              //   },
-              // ),
               ListTile(
                 title: const Text('User Profile'),
                 onTap: () {
@@ -504,30 +549,19 @@ class SocialPage extends StatelessWidget {
                 title: const Text('Create Community'),
                 onTap: () {
                   // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ThemeConfig(
-                        child: Scaffold(
-                          body: CreateCommunityPage(),
-                        ),
-                      ),
-                    ),
-                  );
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        const ThemeConfig(child: Scaffold(body: CreateCommunityPage())),
+                  ));
                 },
               ),
               ListTile(
                 title: const Text('Create Post'),
                 onTap: () {
                   // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ThemeConfig(
-                        child: Scaffold(
-                          body: PostToPage(),
-                        ),
-                      ),
-                    ),
-                  );
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ThemeConfig(child: Scaffold(body: PostToPage())),
+                  ));
                 },
               ),
               ListTile(
@@ -551,15 +585,27 @@ class SocialPage extends StatelessWidget {
                 title: const Text('Explore'),
                 onTap: () {
                   // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ThemeConfig(
-                        child: Scaffold(
-                          body: CommunityPage(),
-                        ),
-                      ),
-                    ),
-                  );
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ThemeConfig(child: Scaffold(body: CommunityPage())),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('Version 4'),
+                onTap: () {
+                  // Navigate or perform action based on 'Global Feed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SampleV4(),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('Community v4 compatible'),
+                onTap: () {
+                  // Navigate or perform action based on 'Global Feed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AmitySocialV4Compatible(),
+                  ));
                 },
               ),
             ],

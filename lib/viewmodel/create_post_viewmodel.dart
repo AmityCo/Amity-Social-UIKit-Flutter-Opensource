@@ -213,17 +213,21 @@ class CreatePostVM extends ChangeNotifier {
         amityUploadResult.when(
           progress: (uploadInfo, cancelToken) {
             int progress = uploadInfo.getProgressPercentage();
-            setProgress(file.path, progress);
-            setCompletionStatus(file.path, false);
-            checkAreAllPathsComplete();
-            notifyListeners();
-            log(progress.toString());
+
+            if (progress < 100) {
+              setProgress(file.path, progress);
+              setCompletionStatus(file.path, false);
+              checkAreAllPathsComplete();
+              notifyListeners();
+              log(progress.toString());
+            }
           },
           complete: (amityFile) {
             log("complete");
             var uploadedImage = amityFile;
             amityUploadFile.add(
                 AmityFileInfoWithUploadStatus()..addFile(uploadedImage, file));
+            setProgress(file.path, 100); // Set progress to 100%
             setCompletionStatus(file.path, true);
             checkAreAllPathsComplete();
             notifyListeners();

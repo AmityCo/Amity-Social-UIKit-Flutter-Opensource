@@ -53,7 +53,7 @@ class CommunityVM extends ChangeNotifier {
   }
 //ป่าวๆ
 
-  Future<void> createCommunity({
+  Future<AmityCommunity?> createCommunity({
     required BuildContext context,
     required String name,
     required String description,
@@ -64,28 +64,35 @@ class CommunityVM extends ChangeNotifier {
     Map<String, String>? metadata,
     List<String>? userIds,
   }) async {
-    final communityBuilder = AmitySocialClient.newCommunityRepository()
-        .createCommunity(name)
-        .description(description)
-        .categoryIds(categoryIds);
+    try {
+      final communityBuilder = AmitySocialClient.newCommunityRepository()
+          .createCommunity(name)
+          .description(description)
+          .categoryIds(categoryIds);
 
-    if (isPublic) {
-      communityBuilder.isPublic(true);
-    } else {
-      communityBuilder.isPublic(false);
-      communityBuilder.userIds(userIds!);
+      if (isPublic) {
+        communityBuilder.isPublic(true);
+      } else {
+        communityBuilder.isPublic(false);
+        communityBuilder.userIds(userIds!);
+      }
+
+      if (avatar != null) {
+        communityBuilder.avatar(avatar);
+      }
+
+      AmityCommunity createdCommunity = await communityBuilder.create();
+      print("Created community ${createdCommunity.displayName}");
+      notifyListeners();
+      Navigator.of(context).pop();
+      final userProvider = Provider.of<UserVM>(context, listen: false);
+      userProvider.clearselectedCommunityUsers();
+
+      return createdCommunity;
+    } catch (error) {
+      print("Failed to create community: $error");
+      return null;
     }
-
-    if (avatar != null) {
-      communityBuilder.avatar(avatar);
-    }
-
-    await communityBuilder.create();
-
-    notifyListeners();
-    Navigator.of(context).pop();
-    final userProvider = Provider.of<UserVM>(context, listen: false);
-    userProvider.clearselectedCommunityUsers();
   }
 
   Future<void> updateCommunity(

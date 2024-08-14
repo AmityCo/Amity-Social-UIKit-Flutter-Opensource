@@ -1,12 +1,15 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/category_list.dart';
+import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/select_user_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 enum CommunityListType { my, recommend, trending }
@@ -30,6 +33,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
   final TextEditingController _aboutController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   bool _isPublic = true;
+  bool _isCreatingCommunity = false;
 
   @override
   void initState() {
@@ -91,8 +95,9 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                         image: Provider.of<CommunityVM>(context).pickedFile !=
                                 null
                             ? DecorationImage(
-                                image: FileImage(Provider.of<CommunityVM>(context)
-                                    .pickedFile!),
+                                image: FileImage(
+                                    Provider.of<CommunityVM>(context)
+                                        .pickedFile!),
                                 fit: BoxFit.cover,
                               )
                             : const DecorationImage(
@@ -112,8 +117,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         border: Border.all(color: Colors.white),
-                        borderRadius:
-                            BorderRadius.circular(5.0), // Adding rounded corners
+                        borderRadius: BorderRadius.circular(
+                            5.0), // Adding rounded corners
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize
@@ -189,7 +194,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Colors.grey[200], shape: BoxShape.circle),
+                                color: Colors.grey[200],
+                                shape: BoxShape.circle),
                             child: const Icon(Icons.public),
                           ),
                           title: const Text('Public'),
@@ -214,7 +220,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Colors.grey[200], shape: BoxShape.circle),
+                                color: Colors.grey[200],
+                                shape: BoxShape.circle),
                             child: const Icon(Icons.lock),
                           ),
                           title: const Text('Private'),
@@ -283,25 +290,30 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                   child: ElevatedButton(
                     onPressed: () async {
                       // Collect necessary data
+                      setState(() {
+                        _isCreatingCommunity = true;
+                      });
                       final name = _communityNameController.text;
                       final description = _aboutController.text;
                       final imageAvatar =
                           Provider.of<CommunityVM>(context, listen: false)
                               .amityImages;
-      
+
                       final isPublic = _isPublic;
                       final categoryId =
                           Provider.of<CategoryVM>(context, listen: false)
                               .getSelectedCategory();
                       final List<String> userIds = [];
-                      for (var user in Provider.of<UserVM>(context, listen: false)
-                          .selectedCommunityUsers) {
+                      for (var user
+                          in Provider.of<UserVM>(context, listen: false)
+                              .selectedCommunityUsers) {
                         userIds.add(user.userId!);
                       }
-      
+
                       // Call the createCommunity method from your ViewModel
-                      await Provider.of<CommunityVM>(context, listen: false)
-                          .createCommunity(
+                      final createdCommunity =
+                          await Provider.of<CommunityVM>(context, listen: false)
+                              .createCommunity(
                         context: context,
                         name: name,
                         description: description,
@@ -310,27 +322,60 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                         isPublic: isPublic,
                         userIds: userIds,
                       );
+                      if (createdCommunity != null) {
+                        print(
+                            "print create dcommunity page ${createdCommunity.displayName}");
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider(
+                              create: (context) => CommuFeedVM(),
+                              child: Builder(
+                                builder: (context) {
+                                  return CommunityScreen(
+                                    community: createdCommunity,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      setState(() {
+                        _isCreatingCommunity = false;
+                      });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context,
+                      backgroundColor: Provider.of<AmityUIConfiguration>(
+                              context,
                               listen: false)
                           .primaryColor,
                       minimumSize: const Size(10, 50),
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, // Center the icon and text in the row
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ), // Plus icon
-                        SizedBox(width: 10), // Space between icon and text
-                        Text(
-                          'Create Community',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _isCreatingCommunity
+                          ? [
+                              const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )
+                            ]
+                          : [
+                              const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text(
+                                'Create Community',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
                     ),
                   ),
                 ),

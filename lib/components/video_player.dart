@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class LocalVideoPlayer extends StatefulWidget {
@@ -66,14 +68,18 @@ class _LocalVideoPlayerState extends State<LocalVideoPlayer> {
               ? Chewie(
                   controller: chewieController!,
                 )
-              : const Column(
+              : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 20),
-                    Text('Loading',
+                    CircularProgressIndicator(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Loading',
                         style: TextStyle(fontWeight: FontWeight.w500)),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
         ),
@@ -115,7 +121,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         var videoData = file.data
             as VideoData; // Assuming VideoData is a type from your code
         var fileURL = await videoData.getVideo(AmityVideoQuality.MEDIUM);
-        print(fileURL.getFileProperties!.fileUrl);
+        print(fileURL);
+
         print("  ");
         var controller =
             VideoPlayerController.networkUrl(Uri.parse(fileURL.fileUrl!));
@@ -163,7 +170,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                       ),
                     ),
                     backgroundColor: Colors.black,
-                    body: const Center(child: CircularProgressIndicator())),
+                    body: Center(
+                        child: CircularProgressIndicator(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
+                    ))),
               )
         : ThemeConfig(
             child: Scaffold(
@@ -223,7 +235,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                         );
                       },
                     )
-                  : const Center(child: CircularProgressIndicator()),
+                  : Center(
+                      child: CircularProgressIndicator(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
+                    )),
             ),
           );
   }

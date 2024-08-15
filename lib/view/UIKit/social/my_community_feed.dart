@@ -27,10 +27,22 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
+      Provider.of<MyCommunityVM>(context, listen: false)
+          .textEditingController
+          .clear();
       Provider.of<MyCommunityVM>(context, listen: false).initMyCommunity();
       Provider.of<UserVM>(context, listen: false).clearselectedCommunityUsers();
     });
   }
+
+  // @override
+  // dispose() {
+  //   Provider.of<MyCommunityVM>(context, listen: false)
+  //       .textEditingController
+  //       .clear();
+  //   Provider.of<MyCommunityVM>(context, listen: false).initMyCommunity();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

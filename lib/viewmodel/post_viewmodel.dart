@@ -10,7 +10,7 @@ import 'configuration_viewmodel.dart';
 
 class PostVM extends ChangeNotifier {
   late AmityPost amityPost;
-  late PagingController<AmityComment> _controller;
+  late PagingController<AmityComment> controller;
   final amityComments = <AmityComment>[];
 
   final scrollcontroller = ScrollController();
@@ -42,7 +42,7 @@ class PostVM extends ChangeNotifier {
         amityComments.clear();
       }
     }
-    _controller = PagingController(
+    controller = PagingController(
       pageFuture: (token) => AmitySocialClient.newCommentRepository()
           .getComments()
           .post(postID)
@@ -53,10 +53,10 @@ class PostVM extends ChangeNotifier {
       pageSize: 20,
     )..addListener(
           () async {
-        if (_controller.error == null) {
+        if (controller.error == null) {
           // Instead of clearing and re-adding all items, directly append new items
-          // This assumes `amityComments` is a List that can be compared with _controller.loadedItems for duplicates
-          var newComments = _controller.loadedItems;
+          // This assumes `amityComments` is a List that can be compared with controller.loadedItems for duplicates
+          var newComments = controller.loadedItems;
           // Append only new comments
           var currentIds = amityComments.map((e) => e.commentId).toSet();
           var newItems = newComments
@@ -73,15 +73,15 @@ class PostVM extends ChangeNotifier {
           }
         } else {
           // Error on pagination controller
-          log("error from Comment: ${_controller.error.toString()}");
+          log("error from Comment: ${controller.error.toString()}");
           // await AmityDialog().showAlertErrorDialog(
-          //     title: "Error!", message: _controller.error.toString());
+          //     title: "Error!", message: controller.error.toString());
         }
       },
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _controller.fetchNextPage();
+      controller.fetchNextPage();
     });
 
     scrollcontroller.addListener(loadnextpage);
@@ -90,8 +90,8 @@ class PostVM extends ChangeNotifier {
   void loadnextpage() {
     if ((scrollcontroller.position.pixels ==
         scrollcontroller.position.maxScrollExtent) &&
-        _controller.hasMoreItems) {
-      _controller.fetchNextPage();
+        controller.hasMoreItems) {
+      controller.fetchNextPage();
     }
   }
 

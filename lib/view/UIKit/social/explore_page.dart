@@ -7,6 +7,8 @@ import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,10 +37,20 @@ class _CommunityPageState extends State<CommunityPage> {
   void initState() {
     super.initState();
     var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
+
     explorePageVM.getRecommendedCommunities();
     explorePageVM.getTrendingCommunities();
     explorePageVM.queryCommunityCategories(
         sortOption: AmityCommunityCategorySortOption.FIRST_CREATED);
+
+    var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
+    var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
+
+    myCommunityList.initMyCommunityFeed();
+
+    globalFeedProvider.initAmityGlobalfeed(
+      onCustomPost: AmityUIConfiguration.onCustomPost,
+    );
   }
 
   @override
@@ -177,7 +189,18 @@ class _CommunityPageState extends State<CommunityPage> {
                   canSearchCommunities: widget.canSearchCommunities,
                 ),
               ),
-              const ExplorePage(),
+              RefreshIndicator(
+                  onRefresh: () async {
+                    var explorePageVM =
+                        Provider.of<ExplorePageVM>(context, listen: false);
+
+                    explorePageVM.getRecommendedCommunities();
+                    explorePageVM.getTrendingCommunities();
+                    explorePageVM.queryCommunityCategories(
+                        sortOption:
+                            AmityCommunityCategorySortOption.FIRST_CREATED);
+                  },
+                  child: const ExplorePage()),
             ],
           ),
         ),

@@ -15,6 +15,7 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
@@ -82,7 +83,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             globalFeedProvider.initAmityGlobalfeed(
-                onCustomPost:AmityUIConfiguration.onCustomPost);
+                onCustomPost: AmityUIConfiguration.onCustomPost);
           });
         },
         child: Container(
@@ -106,8 +107,11 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
                               key: Key(vm.getAmityPosts[index].postId!),
-                              stream: vm.getAmityPosts[index].listen.stream.asyncMap((event) async{
-                                final newPost = await AmityUIConfiguration.onCustomPost([event]);
+                              stream: vm.getAmityPosts[index].listen.stream
+                                  .asyncMap((event) async {
+                                final newPost =
+                                    await AmityUIConfiguration.onCustomPost(
+                                        [event]);
                                 return newPost.first;
                               }),
                               initialData: vm.getAmityPosts[index],
@@ -321,8 +325,7 @@ class _PostWidgetState
                       .deletePendingPost(widget.post, widget.postIndex);
                 },
               );
-            } else {
-            }
+            } else {}
             break;
           case 'Block User':
             Provider.of<UserVM>(context, listen: false)
@@ -426,20 +429,25 @@ class _PostWidgetState
         ),
       );
     } else {
-      if (widget.post.postedUser!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
-        Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
-      }else{
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (context) => UserFeedVM(),
-            child: UserProfileScreen(
-              amityUser: widget.post.postedUser!,
-              amityUserId: widget.post.postedUser!.userId!,
+      if (widget.post.postedUser!.userId! ==
+              AmityCoreClient.getCurrentUser().userId &&
+          Provider.of<AmityUIConfiguration>(context, listen: false)
+              .customUserProfileNavigate) {
+        Provider.of<AmityUIConfiguration>(context, listen: false)
+            .onUserProfile(context);
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (context) => UserFeedVM(),
+              child: UserProfileScreen(
+                amityUser: widget.post.postedUser!,
+                amityUserId: widget.post.postedUser!.userId!,
+              ),
             ),
           ),
-        ),
-      );}
+        );
+      }
     }
   }
 
@@ -1066,8 +1074,10 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         itemBuilder: (context, index) {
           return StreamBuilder<AmityComment>(
             key: Key(widget.comments[index].commentId!),
-            stream: widget.comments[index].listen.stream.asyncMap((event) async{
-              final newPost = await AmityUIConfiguration.onCustomComment([event]);
+            stream:
+                widget.comments[index].listen.stream.asyncMap((event) async {
+              final newPost =
+                  await AmityUIConfiguration.onCustomComment([event]);
               return newPost.first;
             }),
             initialData: widget.comments[index],
@@ -1199,10 +1209,11 @@ class CommentActionComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AmityComment>(
-        stream: amityComment.listen.stream..asyncMap((event) async{
-          final newPost = await AmityUIConfiguration.onCustomComment([event]);
-          return newPost.first;
-        }),
+        stream: amityComment.listen.stream
+          ..asyncMap((event) async {
+            final newPost = await AmityUIConfiguration.onCustomComment([event]);
+            return newPost.first;
+          }),
         initialData: amityComment,
         builder: (context, snapshot) {
           var comments = snapshot.data!;

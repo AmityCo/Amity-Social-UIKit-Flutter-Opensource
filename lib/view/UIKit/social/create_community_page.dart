@@ -3,6 +3,7 @@ import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/category_list.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
+import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/social/select_user_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
@@ -96,8 +97,9 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                         image: Provider.of<CommunityVM>(context).pickedFile !=
                                 null
                             ? DecorationImage(
-                                image: FileImage(Provider.of<CommunityVM>(context)
-                                    .pickedFile!),
+                                image: FileImage(
+                                    Provider.of<CommunityVM>(context)
+                                        .pickedFile!),
                                 fit: BoxFit.cover,
                               )
                             : const DecorationImage(
@@ -117,8 +119,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         border: Border.all(color: Colors.white),
-                        borderRadius:
-                            BorderRadius.circular(5.0), // Adding rounded corners
+                        borderRadius: BorderRadius.circular(
+                            5.0), // Adding rounded corners
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize
@@ -194,7 +196,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Colors.grey[200], shape: BoxShape.circle),
+                                color: Colors.grey[200],
+                                shape: BoxShape.circle),
                             child: const Icon(Icons.public),
                           ),
                           title: const Text('Public'),
@@ -219,7 +222,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Colors.grey[200], shape: BoxShape.circle),
+                                color: Colors.grey[200],
+                                shape: BoxShape.circle),
                             child: const Icon(Icons.lock),
                           ),
                           title: const Text('Private'),
@@ -296,17 +300,18 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                       final imageAvatar =
                           Provider.of<CommunityVM>(context, listen: false)
                               .amityImages;
-      
+
                       final isPublic = _isPublic;
                       final categoryId =
                           Provider.of<CategoryVM>(context, listen: false)
                               .getSelectedCategory();
                       final List<String> userIds = [];
-                      for (var user in Provider.of<UserVM>(context, listen: false)
-                          .selectedCommunityUsers) {
+                      for (var user
+                          in Provider.of<UserVM>(context, listen: false)
+                              .selectedCommunityUsers) {
                         userIds.add(user.userId!);
                       }
-      
+
                       // Call the createCommunity method from your ViewModel
                       final createdCommunity =
                           await Provider.of<CommunityVM>(context, listen: false)

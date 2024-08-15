@@ -48,7 +48,9 @@ class _CommunityPageState extends State<CommunityPage> {
 
     myCommunityList.initMyCommunityFeed();
 
-    globalFeedProvider.initAmityGlobalfeed();
+    globalFeedProvider.initAmityGlobalfeed(
+      onCustomPost: AmityUIConfiguration.onCustomPost,
+    );
   }
 
   @override

@@ -1,8 +1,6 @@
-import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/create/amity_create_story_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/social_home_page/create_post_menu_component.dart';
 import 'package:flutter/material.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/search_communities.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -44,22 +42,8 @@ class AmitySocialHomeTopNavigationComponent extends NewBaseComponent {
             );
           },
         ),
-        IconButton(
-          icon: SvgPicture.asset(
-            'assets/Icons/amity_ic_create_post_button.svg',
-            package: 'amity_uikit_beta_service',
-            width: 32,
-            height: 32,
-          ),
-          onPressed: () {
-            // V3 action
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const Scaffold(body: PostToPage()),
-              ),
-            );
-          },
-        ),
+
+        AmityCreatePostMenuComponent(),
       ],
       iconTheme: const IconThemeData(color: Colors.black),
     );

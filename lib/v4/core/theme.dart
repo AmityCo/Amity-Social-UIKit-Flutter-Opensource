@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class AmityTheme {
   final Color primaryColor;
   final Color secondaryColor;
@@ -105,3 +107,23 @@ final darkTheme = AmityTheme(
   alertColor: const Color(0xFFFA4D30),
   backgroundColor: const Color(0xFF191919),
 );
+
+enum ColorBlendingOption {
+  shade1(25),
+  shade2(40),
+  shade3(50),
+  shade4(75);
+
+  final double luminance;
+  const ColorBlendingOption(this.luminance);
+}
+
+extension ColorBlending on Color {
+  Color blend(ColorBlendingOption option) {
+    final hslColor = HSLColor.fromColor(this);
+    final blendedHslColor = hslColor.withLightness(
+      (hslColor.lightness + option.luminance / 100).clamp(0.0, 1.0),
+    );
+    return blendedHslColor.toColor();
+  }
+}

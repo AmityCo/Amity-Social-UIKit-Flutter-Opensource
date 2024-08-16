@@ -136,7 +136,7 @@ class AmityMyCommunitiesComponent extends NewBaseComponent {
                       child: Text(
                         community.displayName ?? '',
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: theme.baseColor,
                         ),

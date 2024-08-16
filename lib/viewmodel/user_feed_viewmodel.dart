@@ -66,10 +66,12 @@ class UserFeedVM extends ChangeNotifier {
     print("get following info");
     amityUser!.relationship().getFollowInfo(amityUser!.userId!).then((value) {
       amityMyFollowInfo = value;
-      amityMyFollowInfo.id = value.id;
-      amityMyFollowInfo.status = value.status;
-      amityMyFollowInfo.followerCount = value.followerCount;
-      amityMyFollowInfo.followingCount = value.followingCount;
+
+      // amityMyFollowInfo.id = value.id;
+      // amityMyFollowInfo.status = value.status;
+      // amityMyFollowInfo.followerCount = value.followerCount;
+      // amityMyFollowInfo.followingCount = value.followingCount;
+      amityMyFollowInfo = value;
       notifyListeners();
     }).onError((error, stackTrace) {
       AmityDialog()
@@ -310,10 +312,11 @@ class UserFeedVM extends ChangeNotifier {
       amityVideoPosts.clear();
       log("clear post: $amityImagePosts, $amityPosts, $amityVideoPosts");
       notifyListeners();
-      initUserFeed(userId: user.userId!);
+      initUserFeed(userId: amityUser!.userId!);
     }).onError((error, stackTrace) {
-      AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
+      print(error.toString());
+      // AmityDialog()
+      //     .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
   }
 

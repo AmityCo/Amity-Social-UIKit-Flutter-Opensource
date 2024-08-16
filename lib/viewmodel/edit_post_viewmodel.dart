@@ -9,8 +9,18 @@ import 'package:flutter/material.dart';
 class EditPostVM extends CreatePostVMV2 {
   List<UIKitFileSystem> editPostMedie = [];
   AmityPost? amityPost;
+  int originalPostLength = 0;
+  AmityDataType? postDataForEditMedie;
   void initForEditPost(AmityPost post) {
+    print("initForEditPost");
     amityPost = post;
+    if (amityPost!.children != null) {
+      originalPostLength = amityPost!.children!.length;
+      if (amityPost!.children!.isNotEmpty) {
+        postDataForEditMedie = amityPost!.children![0].type;
+      }
+    }
+
     textEditingController.clear();
     editPostMedie.clear();
 
@@ -66,17 +76,55 @@ class EditPostVM extends CreatePostVMV2 {
 
   Future<void> editPost(
       {required BuildContext context, Function? callback}) async {
-    amityPost!
-        .edit()
-        .text(textEditingController.text)
-        .build()
-        .update()
-        .then((value) {
+    var builder = amityPost!.edit().text(textEditingController.text);
+
+    if (editPostMedie.length != originalPostLength) {
+      print("Children Length is not equal");
+      if (editPostMedie.isNotEmpty) {
+        var childPost = amityPost!.children![0];
+        var postType = childPost.type;
+        print(postType);
+        if (postType == AmityDataType.IMAGE) {
+          var children = amityPost!.children;
+          var images =
+              children!.map((e) => e.data!.fileInfo as AmityImage).toList();
+          builder = builder.image(images);
+        } else if (postType == AmityDataType.VIDEO) {
+          var children = amityPost!.children;
+          var videos =
+              children!.map((e) => e.data!.fileInfo as AmityVideo).toList();
+          builder = builder.video(videos);
+        } else if (postType == AmityDataType.FILE) {
+          var children = amityPost!.children;
+          var files =
+              children!.map((e) => e.data!.fileInfo as AmityFile).toList();
+          builder = builder.file(files);
+        }
+      } else {
+        print("Empty Children");
+
+        print(postDataForEditMedie);
+        if (postDataForEditMedie == AmityDataType.IMAGE) {
+          builder = builder.image([]);
+        } else if (postDataForEditMedie == AmityDataType.VIDEO) {
+          builder = builder.video([]);
+        } else if (postDataForEditMedie == AmityDataType.FILE) {
+          builder = builder.file([]);
+        }
+      }
+    }
+    builder.build().update().then((value) {
       notifyListeners();
       callback!();
     }).onError((error, stackTrace) async {
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
+  }
+
+  void deselectFileAt(int index) {
+    editPostMedie.removeAt(index);
+    amityPost!.children!.removeAt(index);
+    notifyListeners();
   }
 }

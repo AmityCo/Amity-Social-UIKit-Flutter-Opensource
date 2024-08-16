@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/post_profile.dart';
+import 'package:amity_uikit_beta_service/components/reaction_button.dart';
+import 'package:amity_uikit_beta_service/components/skeleton.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/edit_post_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
@@ -13,7 +15,6 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
@@ -50,12 +51,6 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
   @override
   void initState() {
     super.initState();
-    var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
-    var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
-
-    myCommunityList.initMyCommunity();
-
-    globalFeedProvider.initAmityGlobalfeed();
   }
 
   @override
@@ -74,7 +69,7 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
           var myCommunityList =
               Provider.of<MyCommunityVM>(context, listen: false);
 
-          myCommunityList.initMyCommunity();
+          myCommunityList.initMyCommunityFeed();
 
           globalFeedProvider.initAmityGlobalfeed(
               // isCustomPostRanking: widget.isCustomPostRanking
@@ -85,15 +80,6 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
               Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
           child: Stack(
             children: [
-              vm.isLoading
-                  ? vm.getAmityPosts.isEmpty
-                      ? Center(
-                          child: CircularProgressIndicator(
-                          color: Provider.of<AmityUIConfiguration>(context)
-                              .primaryColor,
-                        ))
-                      : const SizedBox()
-                  : const SizedBox(),
               Column(
                 children: [
                   Expanded(
@@ -113,11 +99,6 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                               stream: vm.getAmityPosts[index].listen.stream,
                               initialData: vm.getAmityPosts[index],
                               builder: (context, snapshot) {
-                                var latestComments =
-                                    snapshot.data!.latestComments;
-                                var post = snapshot.data!;
-                                print(
-                                    "STREAM:   ${(post.data as TextData).text}+++${post.myReactions}");
                                 return Column(
                                   children: [
                                     index != 0
@@ -154,6 +135,17 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                   ),
                 ],
               ),
+              vm.getAmityPosts.isEmpty
+                  ? LoadingSkeleton(
+                      context: context,
+                    )
+                  : vm.isLoading
+                      ? vm.getAmityPosts.isEmpty
+                          ? LoadingSkeleton(
+                              context: context,
+                            )
+                          : const Text("")
+                      : const Text("")
             ],
           ),
         ),
@@ -220,7 +212,7 @@ class _PostWidgetState
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
     final isFlaggedByMe = widget.post.isFlaggedByMe;
     List<String> otherPostMenu = [
-      widget.post.isFlaggedByMe ? 'Report Post' : 'Unreport Post',
+      widget.post.isFlaggedByMe ? 'Unreport Post' : 'Report Post',
       'Block User'
     ];
 
@@ -728,9 +720,9 @@ class _PostWidgetState
                           : Colors.grey,
                       height: 1,
                     ),
-                    const SizedBox(
-                      height: 7,
-                    ),
+                    // const SizedBox(
+                    //   height: 7,
+                    // ),
                     widget.feedType == FeedType.pending
                         ? widget.showAcceptOrRejectButton
                             ? PendingSectionButton(
@@ -745,97 +737,11 @@ class _PostWidgetState
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    widget.post.myReactions!.contains("like")
-                                        ? GestureDetector(
-                                            onTap: () {
-                                              print(widget.post.myReactions);
-                                              HapticFeedback.heavyImpact();
-                                              Provider.of<PostVM>(context,
-                                                      listen: false)
-                                                  .removePostReaction(
-                                                      widget.post);
-                                            },
-                                            child: SizedBox(
-                                              height: 40,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Provider.of<AmityUIConfiguration>(
-                                                          context)
-                                                      .iconConfig
-                                                      .likedIcon(
-                                                          color: Provider.of<
-                                                                      AmityUIConfiguration>(
-                                                                  context)
-                                                              .primaryColor),
-                                                  Text(
-                                                    ' Liked',
-                                                    style: TextStyle(
-                                                      color: Provider.of<
-                                                                  AmityUIConfiguration>(
-                                                              context)
-                                                          .primaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          feedReactionCountSize,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ))
-                                        : GestureDetector(
-                                            onTap: () {
-                                              print(widget.post.myReactions);
-                                              HapticFeedback.heavyImpact();
-                                              Provider.of<PostVM>(context,
-                                                      listen: false)
-                                                  .addPostReaction(widget.post);
-                                            },
-                                            child: SizedBox(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Provider.of<AmityUIConfiguration>(
-                                                          context)
-                                                      .iconConfig
-                                                      .likeIcon(
-                                                          color: widget
-                                                                      .feedType ==
-                                                                  FeedType.user
-                                                              ? Provider.of<
-                                                                          AmityUIConfiguration>(
-                                                                      context)
-                                                                  .appColors
-                                                                  .userProfileTextColor
-                                                              : Colors.grey),
-                                                  Text(
-                                                    ' Like',
-                                                    style: TextStyle(
-                                                        color: widget
-                                                                    .feedType ==
-                                                                FeedType.user
-                                                            ? Provider.of<
-                                                                        AmityUIConfiguration>(
-                                                                    context)
-                                                                .appColors
-                                                                .userProfileTextColor
-                                                            : Colors.grey,
-                                                        fontSize:
-                                                            feedReactionCountSize,
-                                                        letterSpacing: 1),
-                                                  ),
-                                                ],
-                                              ),
-                                            )),
-                                  ],
-                                ),
+                                ReactionWidget(
+                                    post: widget.post,
+                                    feedType: widget.feedType,
+                                    feedReactionCountSize:
+                                        feedReactionCountSize),
                                 const SizedBox(
                                   width: 12,
                                 ),

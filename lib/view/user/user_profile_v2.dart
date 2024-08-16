@@ -587,10 +587,13 @@ class _StickyHeaderList extends StatelessWidget {
                             .appColors
                             .baseShade4,
                         width: MediaQuery.of(context).size.width,
-                        height: bheight - 300,
+                        height: bheight,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            const SizedBox(
+                              height: 150,
+                            ),
                             Image.asset(
                               "assets/images/privateIcon.png",
                               package: "amity_uikit_beta_service",
@@ -624,10 +627,13 @@ class _StickyHeaderList extends StatelessWidget {
                             .appColors
                             .baseShade4,
                         width: MediaQuery.of(context).size.width,
-                        height: bheight - 300,
+                        height: bheight,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            const SizedBox(
+                              height: 150,
+                            ),
                             Image.asset(
                               "assets/images/noPostYet.png",
                               package: "amity_uikit_beta_service",

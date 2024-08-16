@@ -107,7 +107,6 @@ class FeedVM extends ChangeNotifier {
             }
             if (_controllerGlobal?.isFetching == false) {
               isLoading = false;
-              print("isLoading3: $isLoading");
             }
           },
         );
@@ -122,7 +121,7 @@ class FeedVM extends ChangeNotifier {
 
   void loadnextpage() async {
     isLoading = true;
-    print("isloading3: $isLoading");
+
     // log(scrollcontroller.offset);
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&

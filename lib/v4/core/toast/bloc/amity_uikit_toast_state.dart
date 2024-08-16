@@ -1,6 +1,6 @@
 part of 'amity_uikit_toast_bloc.dart';
 
-enum AmityToastStyle { hidden, short, long, persistent }
+enum AmityToastStyle { hidden, short, long, persistent, loading }
 // Short is 5 seconds toast, long is 10 seconds toast, persistent is toast that will not disappear until calling dismiss it  
 
 class AmityToastState extends Equatable {

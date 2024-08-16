@@ -79,12 +79,12 @@ class AmityGlobalFeedComponent extends NewBaseComponent {
                                             action: AmityPostAction(
                                               onAddReaction: (String) {},
                                               onRemoveReaction: (String) {},
-                                              onPostDeleted: (String postId) {
+                                              onPostDeleted: (AmityPost post) {
                                                 context
                                                     .read<GlobalFeedBloc>()
                                                     .add(
                                                         GlobalFeedReloadThePost(
-                                                            postId: postId));
+                                                            post: post));
                                               },
                                               onPostUpdated: (post) {},
                                             )),

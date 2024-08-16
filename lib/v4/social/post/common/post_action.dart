@@ -3,7 +3,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 class AmityPostAction {
   final Function(String) onAddReaction;
   final Function(String) onRemoveReaction;
-  final Function(String) onPostDeleted;
+  final Function(AmityPost) onPostDeleted;
   final Function(AmityPost) onPostUpdated;
 
   const AmityPostAction({
@@ -16,7 +16,7 @@ class AmityPostAction {
   AmityPostAction copyWith({
     Function(String)? onAddReaction,
     Function(String)? onRemoveReaction,
-    Function(String)? onPostDeleted,
+    Function(AmityPost)? onPostDeleted,
     Function(AmityPost)? onPostUpdated,
   }) {
     return AmityPostAction(

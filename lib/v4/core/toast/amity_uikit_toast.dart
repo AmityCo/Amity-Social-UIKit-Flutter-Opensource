@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-enum AmityToastIcon { success, warning }
+enum AmityToastIcon { success, warning, loading }
 
 class AmityToast extends BaseElement {
   AmityToast({super.key, required super.elementId});
@@ -23,12 +23,23 @@ class AmityToast extends BaseElement {
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
-            content: renderToastContent(message: state.message, icon: state.icon),
+            content:
+                renderToastContent(message: state.message, icon: state.icon),
             elevation: 0,
             backgroundColor: const Color(0x00000000),
             onVisible: () => Future.delayed(const Duration(seconds: 5), () {
               context.read<AmityToastBloc>().add(AmityToastDismiss());
             }),
+          ));
+      } else if (state.style == AmityToastStyle.loading) {
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..showSnackBar(SnackBar(
+            content:
+                renderToastContent(message: state.message, icon: state.icon),
+            elevation: 0,
+            backgroundColor: const Color(0x00000000),
+            duration: const Duration(days: 1),
           ));
       } else {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -40,10 +51,14 @@ class AmityToast extends BaseElement {
   Widget renderToastContent({required String message, AmityToastIcon? icon}) {
     final toastIcon = icon ?? AmityToastIcon.warning;
     String iconAsset;
+    var shouldRotate = false;
     if (toastIcon == AmityToastIcon.success) {
       iconAsset = 'assets/Icons/amity_ic_toast_success.svg';
     } else if (toastIcon == AmityToastIcon.warning) {
       iconAsset = 'assets/Icons/amity_ic_toast_warning.svg';
+    } else if (toastIcon == AmityToastIcon.loading) {
+      iconAsset = 'assets/Icons/amity_ic_toast_loading.svg';
+      shouldRotate = true;
     } else {
       iconAsset = 'assets/Icons/amity_ic_toast_warning.svg';
     }
@@ -95,12 +110,7 @@ class AmityToast extends BaseElement {
                         SizedBox(
                           width: 24,
                           height: 24,
-                          child: SvgPicture.asset(
-                            iconAsset,
-                            package: 'amity_uikit_beta_service',
-                            width: 24,
-                            height: 20,
-                          ),
+                          child: RotatingSvgPicture(iconAsset: iconAsset, shouldRotate: shouldRotate),
                         ),
                       ],
                     ),
@@ -138,5 +148,70 @@ class AmityToast extends BaseElement {
         ),
       ),
     );
+  }
+}
+
+class RotatingSvgPicture extends StatefulWidget {
+  final String iconAsset;
+  final bool shouldRotate;
+
+  RotatingSvgPicture({required this.iconAsset, required this.shouldRotate});
+
+  @override
+  _RotatingSvgPictureState createState() =>
+      _RotatingSvgPictureState(shouldRotate: shouldRotate);
+}
+
+class _RotatingSvgPictureState extends State<RotatingSvgPicture>
+    with SingleTickerProviderStateMixin {
+  final bool shouldRotate;
+
+  _RotatingSvgPictureState({required this.shouldRotate});
+
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(); // Repeat the animation indefinitely
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose(); // Dispose the controller when the widget is removed
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (shouldRotate) {
+      return RotationTransition(
+        turns: _controller,
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: SvgPicture.asset(
+            widget.iconAsset,
+            package: 'amity_uikit_beta_service',
+            width: 24,
+            height: 20,
+          ),
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 24,
+        height: 24,
+        child: SvgPicture.asset(
+          widget.iconAsset,
+          package: 'amity_uikit_beta_service',
+          width: 24,
+          height: 20,
+        ),
+      );
+    }
   }
 }

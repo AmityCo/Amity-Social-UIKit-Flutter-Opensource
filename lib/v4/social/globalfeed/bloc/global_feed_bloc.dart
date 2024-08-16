@@ -9,6 +9,9 @@ part 'global_feed_state.dart';
 class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
   late PagingController<AmityPost> _controller;
 
+  late List<AmityPost> posts = [];
+  late List<AmityPost> localCreatedPost = [];
+
   final int pageSize = 20;
   GlobalFeedBloc()
       : super(const GlobalFeedState(
@@ -28,20 +31,39 @@ class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
             emit(state.copyWith(isFetching: true));
           } else if (_controller.error == null) {
             // Distinct post list
-            List<AmityPost> _distinctList = _controller.loadedItems;
-            final postIds = _distinctList.map((post) => post.postId).toSet();
-            _distinctList.retainWhere((post) => postIds.remove(post.postId));
-            emit(state.copyWith(
-                list: _controller.loadedItems,
-                hasMoreItems: _controller.hasMoreItems,
-                isFetching: _controller.isFetching));
+            posts.addAll(_controller.loadedItems);
+
+            add(GlobalFeedNotify(posts: []));
           }
         },
       );
 
+    on<GlobalFeedNotify>((event, emit) async {
+      List<AmityPost> allPost = [];
+      allPost.addAll(localCreatedPost);
+
+      allPost.addAll(posts);
+
+      final postIds = allPost.map((post) => post.postId).toSet();
+      allPost.retainWhere((post) => postIds.remove(post.postId));
+
+      emit(state.copyWith(
+          list: allPost,
+          hasMoreItems: _controller.hasMoreItems,
+          isFetching: _controller.isFetching));
+    });
+
+    on<GlobalFeedAddLocalPost>((event, emit) async {
+      final post = event.post;
+      localCreatedPost.insert(0, post);
+      add(GlobalFeedNotify(posts: []));
+    });
+
     on<GlobalFeedInit>((event, emit) async {
       _controller.reset();
       _controller.fetchNextPage();
+      localCreatedPost.clear();
+      posts.clear();
     });
 
     on<GlobalFeedFetch>((event, emit) async {
@@ -59,8 +81,7 @@ class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
     });
 
     on<GlobalFeedReloadThePost>((event, emit) async {
-      var updatedPost =
-          await AmitySocialClient.newPostRepository().getPost(event.postId);
+      var updatedPost = event.post;
       List<AmityPost> updatedList = [];
       for (var element in state.list) {
         if (element.postId == updatedPost.postId) {
@@ -69,6 +90,7 @@ class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
           updatedList.add(element);
         }
       }
+      emit(state.copyWith(list: []));
       emit(state.copyWith(list: updatedList));
     });
   }

@@ -196,8 +196,11 @@ class CreatePostVMV2 with ChangeNotifier {
         amityUploadResult.when(
           progress: (uploadInfo, cancelToken) {
             int progress = uploadInfo.getProgressPercentage();
-            uikitFile.progress = progress;
-            notifyListeners();
+            if (progress < 100) {
+              uikitFile.progress = progress;
+              print("progress: $progress");
+              notifyListeners();
+            }
           },
           complete: (amityFile) {
             uikitFile.status = FileStatus.complete;
@@ -205,6 +208,7 @@ class CreatePostVMV2 with ChangeNotifier {
             uikitFile.amityFile = amityFile;
             print(
                 "file type ${uikitFile.fileType} ${uikitFile.fileInfo.toString()}");
+            uikitFile.progress = 100;
             checkAllFilesUploaded();
             notifyListeners();
           },
@@ -240,7 +244,7 @@ class CreatePostVMV2 with ChangeNotifier {
 
   Future<void> pickMultipleImages() async {
     try {
-      List<XFile>? pickedImages = await _picker.pickMultiImage();
+      List<XFile>? pickedImages = await _picker.pickMultiImage(limit: 2);
 
       if (pickedImages.isNotEmpty) {
         selectFiles(pickedImages, MyFileType.image);
@@ -298,7 +302,13 @@ class CreatePostVMV2 with ChangeNotifier {
               .where((file) => file.path != null)
               .map((file) => XFile(file.path!))
               .toList();
-          selectFiles(pickedFiles, MyFileType.file);
+          if (pickedFiles.length + files.length > 10) {
+            AmityDialog().showAlertErrorDialog(
+                title: "Error",
+                message: "You can only select a maximum of 10 images");
+          } else {
+            selectFiles(pickedFiles, MyFileType.file);
+          }
         }
       }
     } catch (e) {
@@ -316,6 +326,8 @@ class CreatePostVMV2 with ChangeNotifier {
 
   // Method to deselect a file
   void deselectFile(UIKitFileSystem file) {
+    files.remove(file);
+    checkAllFilesUploaded();
     notifyListeners();
   }
 

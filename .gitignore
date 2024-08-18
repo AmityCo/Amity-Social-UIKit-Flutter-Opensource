@@ -30,9 +30,12 @@ migrate_working_dir/
 build/
 *.lock
 
-
 example/lib/firebase_options.dart
+
+# FVM Version Cache
+.fvm/
 .fvmrc
+.vscode/settings.json
 .fvm/versions/3.19.0
 .fvm/flutter_sdk
 .fvm/fvm_config.json

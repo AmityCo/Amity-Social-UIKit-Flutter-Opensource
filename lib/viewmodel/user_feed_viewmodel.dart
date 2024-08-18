@@ -314,8 +314,9 @@ class UserFeedVM extends ChangeNotifier {
       notifyListeners();
       initUserFeed(userId: amityUser!.userId!);
     }).onError((error, stackTrace) {
-      AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: error.toString());
+      print(error.toString());
+      // AmityDialog()
+      //     .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
   }
 

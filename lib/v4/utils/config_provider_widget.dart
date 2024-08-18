@@ -14,27 +14,30 @@ class SocialHomePageConfigProviderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ConfigProvider>(
-      key: const ValueKey("social_home_page"),
-      create: (_) {
-        var configProvider = ConfigProvider();
-        configProvider.loadConfig();
-        return configProvider;
-      },
-      child: Consumer<ConfigProvider>(
-        builder: (context, configProvider, child) {
-          return SocialHomePage(pageId: "social_home_page");
+    return Scaffold(
+      appBar: AppBar(),
+      body: ChangeNotifierProvider<ConfigProvider>(
+        key: const ValueKey("social_home_page"),
+        create: (_) {
+          var configProvider = ConfigProvider();
+          configProvider.loadConfig();
+          return configProvider;
         },
+        child: Consumer<ConfigProvider>(
+          builder: (context, configProvider, child) {
+            return SocialHomePage(pageId: "social_home_page");
+          },
+        ),
       ),
     );
   }
 }
 
-
 class NewsFeedComponentConfigProviderWidget extends StatelessWidget {
   final String pageId;
 
-  const NewsFeedComponentConfigProviderWidget({super.key, required this.pageId});
+  const NewsFeedComponentConfigProviderWidget(
+      {super.key, required this.pageId});
 
   @override
   Widget build(BuildContext context) {

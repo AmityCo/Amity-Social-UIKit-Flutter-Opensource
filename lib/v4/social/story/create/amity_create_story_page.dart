@@ -27,6 +27,7 @@ class AmityCreateStoryPage extends NewBasePage {
 
   @override
   Widget buildPage(BuildContext context) {
+    print('Story ---- CreateStoryConfigProviderWidget ------------ Story Target ${storyTarget.targetId}');
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -73,6 +74,7 @@ class AmityCreateStoryPage extends NewBasePage {
                                 storyTarget: storyTarget,
                                 isFromGallery: false,
                                 onClose: () {
+                                  print('Story ---- OnClose ------------ Create Story Page');
                                   onStoryCreated();
                                   Navigator.pop(context);
                                 })));

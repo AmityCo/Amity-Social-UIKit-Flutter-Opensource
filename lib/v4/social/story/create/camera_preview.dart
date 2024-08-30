@@ -415,23 +415,10 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> with WidgetsB
     } else {
       var camera = controller!.value;
       setFlashMode(isFlashOn ? FlashMode.always : FlashMode.off);
-      // calculate scale depending on screen and camera ratios
-      // this is actually size.aspectRatio / (1 / camera.aspectRatio)
-      // because camera preview size is received as landscape
-      // but we're calculating for portrait orientation
-      // print("Camera Aspect Ratio: ${camera.aspectRatio}");
+      
       var scale = (width / height) * camera.aspectRatio;
-      // print("Camera Aspect Ratio: scale ${scale}");
-
-      // to prevent scaling down, invert the value
+      
       if (scale < 1) scale = 1 / scale;
-
-      //   return Transform.scale(
-      //     scale: scale,
-      //     child: Center(
-      //       child: CameraPreview(_cameraController),
-      //     ),
-      // );
 
       return Listener(
         onPointerDown: (_) => _pointers++,
@@ -591,17 +578,7 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> with WidgetsB
           videoController = null;
         });
         if (file != null) {
-          // final path = file.path;
-          // final bytes = await File(path).readAsBytes();
-          // final img.Image? image = img.decodeImage(bytes);
-
-          // if(image == null) {
-          //  print("Camera Aspect Ratio: Height: ${image!.height} Width: ${image.width}");
-          // }
-
-          print('Picture saved to ${file.path}');
           widget.onImageCaptured(File(file.path), false);
-          // file.saveTo( file.path);
         }
       }
     });

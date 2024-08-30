@@ -2,9 +2,7 @@ import 'dart:io';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class AmityStoryVideoPlayer extends StatefulWidget {
@@ -32,8 +30,6 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
 
   @override
   void dispose() {
-    print("ShouldPauseStateVideo - > Dispose");
-    // BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
     widget.onWidgetDispose();
     super.dispose();
   }
@@ -55,11 +51,9 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
       builder: (context, state) {
         return VisibilityDetector(
           onVisibilityChanged: (VisibilityInfo info) {
-            print("ShouldPauseStateVideo visibility --------->: ${info.visibleFraction}");
             if (info.visibleFraction == 0.0) {
               widget.onWidgetDispose();
               BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-              print("ShouldPauseStateVideo visibility --------->: PauseStoryVideoEvent");
             } else {
               BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
             }

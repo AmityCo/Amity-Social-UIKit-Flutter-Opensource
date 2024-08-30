@@ -39,7 +39,7 @@ class AmityStoryEngagementRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       color: Colors.black,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,18 +57,19 @@ class AmityStoryEngagementRow extends StatelessWidget {
             children: [
               AmityStoryCommentCountElement(
                   onClick: () {
-                    openCommentTraySheet(context, amityStory );
-                  }, count: "${commentCount}"),
+                    BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
+                    BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
+                    openCommentTraySheet(context, amityStory, isAllowedComment);
+                  },
+                  count: "${commentCount}"),
               const SizedBox(width: 10),
               AmityStoryReactionCountElement(
                 count: "$reactionCount",
                 onClick: (addReaction) {
                   if (addReaction) {
-                    BlocProvider.of<ViewStoryBloc>(context)
-                        .add(AddReactionEvent(storyId: storyId));
+                    BlocProvider.of<ViewStoryBloc>(context).add(AddReactionEvent(storyId: storyId));
                   } else {
-                    BlocProvider.of<ViewStoryBloc>(context)
-                        .add(RemoveReactionEvent(storyId: storyId));
+                    BlocProvider.of<ViewStoryBloc>(context).add(RemoveReactionEvent(storyId: storyId));
                   }
                 },
                 isReactedByMe: isReactedByMe,
@@ -81,29 +82,5 @@ class AmityStoryEngagementRow extends StatelessWidget {
     );
   }
 
-  void openCommentTraySheet(BuildContext context, AmityStory story) {
-    ScrollController scrollController = ScrollController();
-    showMaterialModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, top: 10),
-              child: Container(
-                decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                child: CommentTrayWidget(
-                  storyId: story.storyId!,
-                  scrollController: scrollController,
-                ),
-              ),
-            ),
-          );
-        }).whenComplete(() {
-      BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
-      if (story.dataType == AmityStoryDataType.VIDEO) {
-        BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
-      }
-    });
-  }
+  
 }

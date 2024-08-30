@@ -368,6 +368,28 @@ class CommunityVM extends ChangeNotifier {
     });
   }
 
+  void configStoryCommentEnabled(
+      {required String communityId,
+      required bool isEnabled,
+      required bool ispublic,
+      required}) {
+    AmitySocialClient.newCommunityRepository()
+        .updateCommunity(communityId)
+        .isPublic(ispublic)
+        .storySettings( isEnabled
+            ? AmityCommunityStorySettings(allowComment: true)
+            : AmityCommunityStorySettings(allowComment: false))
+        .update()
+        .then((value) {
+      //handle result
+      log("success");
+    }).onError((error, stackTrace) async {
+      //handle error
+      await AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
   Future<void> addMembers(String communityId, List<String> userIds) async {
     await AmitySocialClient.newCommunityRepository()
         .membership(communityId)

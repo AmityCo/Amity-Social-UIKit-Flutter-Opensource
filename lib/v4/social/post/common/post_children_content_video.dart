@@ -389,7 +389,7 @@ class PostContentVideo extends StatelessWidget {
                             // Centered Text "6+"
                             Center(
                               child: Text(
-                                "${posts.length - 3}+",
+                                "+${posts.length - 3}",
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize:

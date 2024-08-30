@@ -187,7 +187,6 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
                 onChanged: (value) {
                   var urlPattern = r"(https?|http)://([-A-Z0-9.]+)(/[-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[A-Z0-9+&@#/%=~_|!:‌​,.;]*)?";
                   setState(() {
-                    print("is URL VALID ----> ${isURL(value, requireTld: false , requireProtocol: false)}");
                     var isValid = isURL(value, requireTld: true , requireProtocol: false);
                     if (!isValid) {
                       BlocProvider.of<HyperlinkBloc>(context).add(OnURLErrorEvent(error: "Please enter a valid URL."));

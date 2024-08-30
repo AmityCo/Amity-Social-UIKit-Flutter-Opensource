@@ -79,7 +79,7 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
                       },
                       onVerticalDragUpdate: (details) {
                         if (details.delta.dy > 0)
-                          print("Dragging in +Y direction");
+                          {}
                         //SWIPE DOWN
                         else
                           showBottomSheet = true;
@@ -116,7 +116,7 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
                       },
                       onVerticalDragUpdate: (details) {
                         if (details.delta.dy > 0)
-                          print("Dragging in +Y direction");
+                          {}
                         //SWIPE DOWN
                         else
                           showBottomSheet = true;
@@ -312,16 +312,13 @@ class AmityStoryBodyVideoView extends StatelessWidget {
         video: (data.video.hasLocalPreview != null && data.video.hasLocalPreview!) ? File(data.video.getFilePath!) : null,
         onInitializing: () {
           AmityStorySingleSegmentTimerElement.currentValue = -1;
-          print("ShouldPauseStateVideo - > Initializing");
           BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
         },
         onWidgetDispose: () {
-          print("ShouldPauseStateVideo - > Dispose");
           BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
         },
         url: (data.video.hasLocalPreview != null && data.video.hasLocalPreview!) ? null : data.video.fileUrl!,
         onInitialize: () {
-          print("ShouldPauseStateVideo - > Initialized");
           AmityStorySingleSegmentTimerElement.totalValue = BlocProvider.of<StoryVideoPlayerBloc>(context).state.duration;
           BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
         },

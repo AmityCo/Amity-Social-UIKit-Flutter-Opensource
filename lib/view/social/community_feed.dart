@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_cus
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/create_action_bottom_sheet.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
@@ -193,11 +194,16 @@ class CommunityScreenState extends State<CommunityScreen> {
                     ? FloatingActionButton(
                         shape: const CircleBorder(),
                         onPressed: () async {
-                          await Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context2) => AmityCreatePostV2Screen(
-                                    community: snapshot.data!,
-                                    feedType: FeedType.community,
-                                  )));
+
+                          CreateActionBottomSheet.show(context , community: widget.community , storyCreated: (){
+                            
+                          });
+
+                          // await Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context2) => AmityCreatePostV2Screen(
+                          //           community: snapshot.data!,
+                          //           feedType: FeedType.community,
+                          //         )));
                           Provider.of<CommuFeedVM>(context, listen: false).getPostCount(widget.community);
                           Provider.of<CommuFeedVM>(context, listen: false).getReviewingPostCount(widget.community);
                           Provider.of<CommuFeedVM>(context, listen: false).initAmityCommunityFeed(widget.community.communityId!);
@@ -673,31 +679,29 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 type: CommunityFeedStoryTab(communityId: widget.community.communityId!),
                 createStory: (storytarget, mediaType, imageMode, hyperlionk) {
                   if (mediaType is AmityStoryMediaTypeImage) {
-                      AmitySocialClient.newStoryRepository()
-                          .createImageStory(
-                            targetType: storytarget.targetType,
-                            targetId: storytarget.targetId,
-                            imageFile: (mediaType).file,
-                            storyItems: hyperlionk != null ? [hyperlionk] : [],
-                            imageDisplayMode: imageMode!,
-                          )
-                          .then((value){
-                            AmityCustomSnackBar.show(context, "Successfully shared story " ,  SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white) , textColor: Colors.white);
-                          })
-                          .onError((error, stackTrace) => null);
-                    } else if (mediaType is AmityStoryMediaTypeVideo) {
-                      AmitySocialClient.newStoryRepository()
-                          .createVideoStory(
-                            targetType: storytarget.targetType,
-                            targetId: storytarget.targetId,
-                            storyItems: hyperlionk != null ? [hyperlionk!] : [],
-                            videoFile: (mediaType).file,
-                          )
-                          .then((value) {
-                            AmityCustomSnackBar.show(context, "Successfully shared story" ,  SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white) , textColor: Colors.white);
-                          })
-                          .onError((error, stackTrace) => null);
-                    }
+                    AmitySocialClient.newStoryRepository()
+                        .createImageStory(
+                      targetType: storytarget.targetType,
+                      targetId: storytarget.targetId,
+                      imageFile: (mediaType).file,
+                      storyItems: hyperlionk != null ? [hyperlionk] : [],
+                      imageDisplayMode: imageMode!,
+                    )
+                        .then((value) {
+                      AmityCustomSnackBar.show(context, "Successfully shared story ", SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white), textColor: Colors.white);
+                    }).onError((error, stackTrace) => null);
+                  } else if (mediaType is AmityStoryMediaTypeVideo) {
+                    AmitySocialClient.newStoryRepository()
+                        .createVideoStory(
+                      targetType: storytarget.targetType,
+                      targetId: storytarget.targetId,
+                      storyItems: hyperlionk != null ? [hyperlionk!] : [],
+                      videoFile: (mediaType).file,
+                    )
+                        .then((value) {
+                      AmityCustomSnackBar.show(context, "Successfully shared story", SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white), textColor: Colors.white);
+                    }).onError((error, stackTrace) => null);
+                  }
                 },
               ),
               widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY)
@@ -732,7 +736,7 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                   community: widget.community,
                                 )),
                               ],
-                            )
+                            ),
             ],
           ),
         ),

@@ -332,6 +332,13 @@ class SecondPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          color: Colors.black,
+          onPressed: () {
+            AmityUIKit().unRegisterDevice();
+            Navigator.of(context).pop();
+          },
+        ),
         title: Text('Welcome, $username'),
       ),
       body: Center(

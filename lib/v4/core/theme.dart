@@ -13,6 +13,8 @@ class AmityTheme {
   final Color baseColorShade4;
   final Color alertColor;
   final Color backgroundColor;
+  final Color backgroundShade1Color;
+  final Color highlightColor;
 
   AmityTheme({
     required this.primaryColor,
@@ -25,6 +27,8 @@ class AmityTheme {
     required this.baseColorShade4,
     required this.alertColor,
     required this.backgroundColor,
+    required this.backgroundShade1Color,
+    required this.highlightColor,
   });
 
   factory AmityTheme.fromJson(Map<String, dynamic> json) {
@@ -39,6 +43,10 @@ class AmityTheme {
       baseColorShade4: _colorFromHex(json['base_shade4_color']),
       alertColor: _colorFromHex(json['alert_color']),
       backgroundColor: _colorFromHex(json['background_color']),
+      backgroundShade1Color: _colorFromHex(json['background_shade1_color']),
+      highlightColor: _colorFromHex(
+        json['highlight_color'],
+      ),
     );
   }
 
@@ -63,6 +71,8 @@ class AmityThemeColor {
   final Color baseColorShade4;
   final Color alertColor;
   final Color backgroundColor;
+  final Color backgroundShade1Color;
+  final Color highlightColor;
 
   AmityThemeColor({
     required this.primaryColor,
@@ -75,9 +85,10 @@ class AmityThemeColor {
     required this.baseColorShade4,
     required this.alertColor,
     required this.backgroundColor,
+    required this.backgroundShade1Color,
+    required this.highlightColor,
   });
 }
-
 
 // Enum to define theme styles
 enum AmityThemeStyle { light, dark, system }
@@ -93,6 +104,8 @@ final lightTheme = AmityTheme(
   baseColorShade4: const Color(0xFFEBECEF),
   alertColor: const Color(0xFFFA4D30),
   backgroundColor: const Color(0xFFFFFFFF),
+  backgroundShade1Color: const Color(0xFFF6F7F8),
+  highlightColor: const Color(0xFF1054DE),
 );
 
 final darkTheme = AmityTheme(
@@ -106,6 +119,8 @@ final darkTheme = AmityTheme(
   baseColorShade4: const Color(0xFF292B32),
   alertColor: const Color(0xFFFA4D30),
   backgroundColor: const Color(0xFF191919),
+  backgroundShade1Color: const Color(0xFF40434E),
+  highlightColor: const Color(0xFF1054DE),
 );
 
 enum ColorBlendingOption {

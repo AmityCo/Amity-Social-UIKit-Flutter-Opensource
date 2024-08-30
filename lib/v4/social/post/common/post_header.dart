@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_display_name.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
@@ -250,7 +251,7 @@ class AmityPostHeader extends StatelessWidget {
 
   void showPostOwnerAction(BuildContext context, AmityPost post,
       AmityThemeColor theme, bool isModerator) {
-    final editOption = AmityPostComposerOptions.editOptions(post: post);
+  final editOption = AmityPostComposerOptions.editOptions(post: post);
 
     onEdit() => {
           Navigator.of(context).push(MaterialPageRoute(

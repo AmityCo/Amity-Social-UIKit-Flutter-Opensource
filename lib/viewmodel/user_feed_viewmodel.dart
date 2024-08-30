@@ -67,10 +67,6 @@ class UserFeedVM extends ChangeNotifier {
     amityUser!.relationship().getFollowInfo(amityUser!.userId!).then((value) {
       amityMyFollowInfo = value;
 
-      // amityMyFollowInfo.id = value.id;
-      // amityMyFollowInfo.status = value.status;
-      // amityMyFollowInfo.followerCount = value.followerCount;
-      // amityMyFollowInfo.followingCount = value.followingCount;
       amityMyFollowInfo = value;
       notifyListeners();
     }).onError((error, stackTrace) {
@@ -314,9 +310,8 @@ class UserFeedVM extends ChangeNotifier {
       notifyListeners();
       initUserFeed(userId: amityUser!.userId!);
     }).onError((error, stackTrace) {
-      print(error.toString());
-      // AmityDialog()
-      //     .showAlertErrorDialog(title: "Error!", message: error.toString());
+      AmityDialog()
+          .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
   }
 

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-void amityStoryModalBottomSheetOverFlowMenu({required BuildContext context, required String storyId, required Function onDeleted , required AmityStory story}) {
+void amityStoryModalBottomSheetOverFlowMenu({required BuildContext context, required String storyId, required Function onDeleted , required AmityStory story , required Function (String) deleteClicked}) {
   showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -14,19 +14,20 @@ void amityStoryModalBottomSheetOverFlowMenu({required BuildContext context, requ
         return AmityStoryModelBottomSheet(
           storyId: storyId,
           onDeleted: onDeleted,
+          deleteClicked: deleteClicked, 
+          // parentContext: context,
         );
       }).then((value) {
-    BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
-    if (story.dataType == AmityStoryDataType.VIDEO) {
-        BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
-      }
   });
 }
 
 class AmityStoryModelBottomSheet extends StatelessWidget {
   final String storyId;
   final Function onDeleted;
-  const AmityStoryModelBottomSheet({super.key, required this.storyId, required this.onDeleted});
+  final Function (String) deleteClicked;
+  // final BuildContext parentContext ;
+  // final Function (String) deleteStory;
+  const AmityStoryModelBottomSheet({super.key, required this.storyId, required this.onDeleted  , required this.deleteClicked});
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +66,7 @@ class AmityStoryModelBottomSheet extends StatelessWidget {
                   icon: "assets/Icons/ic_bin_red.svg",
                   text: 'Delete story',
                   onTap: () {
-                    ConfirmationDialog().show(
-                      context: context,
-                      title: 'Delete this story?',
-                      detailText: 'This story will be permanently deleted.\n You’ll no longer to see and find this story',
-                      leftButtonText: 'Cancel',
-                      rightButtonText: 'Delete',
-                      onConfirm: () {
-                        BlocProvider.of<ViewStoryBloc>(context).add(DeleteStoryEvent(storyId: storyId));
-                      },
-                    );
+                    deleteClicked(storyId);
                   },
                 ),
               ),
@@ -96,6 +88,7 @@ class AmityBottomSheetActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        Navigator.of(context).pop();
         onTap();
       },
       child: Container(

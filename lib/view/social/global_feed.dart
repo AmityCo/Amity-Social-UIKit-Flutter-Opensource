@@ -212,7 +212,7 @@ class _PostWidgetState
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
     final isFlaggedByMe = widget.post.isFlaggedByMe;
     List<String> otherPostMenu = [
-      widget.post.isFlaggedByMe ? 'Unreport Post' : 'Report Post',
+      widget.post.isFlaggedByMe ? 'Report Post' : 'Unreport Post',
       'Block User'
     ];
 

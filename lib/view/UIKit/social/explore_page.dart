@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_custom_snack_bar.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/create_action_bottom_sheet.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/search_communities.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
@@ -9,6 +10,7 @@ import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -132,17 +134,12 @@ class _CommunityPageState extends State<CommunityPage> {
               floatingActionButton: FloatingActionButton(
                 shape: const CircleBorder(),
                 onPressed: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const Scaffold(body: PostToPage()),
-                  ));
+                  CreateActionBottomSheet.show(context , storyCreated: () {
+                    AmityCustomSnackBar.show(context, "Successfully shared story ", SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white), textColor: Colors.white);
+                  });
                 },
-                backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .primary,
-                child: Provider.of<AmityUIConfiguration>(context)
-                    .iconConfig
-                    .postIcon(iconSize: 28, color: Colors.white),
+                backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primary,
+                child: Provider.of<AmityUIConfiguration>(context).iconConfig.postIcon(iconSize: 28, color: Colors.white),
               ),
               body: GlobalFeedScreen(
                 isShowMyCommunity: widget.isShowMyCommunity,
@@ -681,18 +678,10 @@ class _CategoryListPageState extends State<CategoryListPage> {
                         .primaryShade3,
                     shape: BoxShape.circle,
                   ),
-                  child: category.avatar != null
-                      ? CircleAvatar(
-                        backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .primaryShade3,
-                          backgroundImage: NetworkImage(
-                              category.avatar?.fileUrl ?? ''),
-                        )
-                      : const Icon(
-                          Icons.people,
-                          color: Colors.white,
-                        ),
+                  child: const Icon(
+                    Icons.category,
+                    color: Colors.white,
+                  ),
                 ),
                 title: Text(category.name ?? ''),
               );

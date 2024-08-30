@@ -106,9 +106,11 @@ class AmityUIKit {
     await AmityCoreClient.setup(
         option: AmityCoreClientOption(
             apiKey: apikey,
+            showLogs: true,
             httpEndpoint: amityEndpoint!,
             mqttEndpoint: amityMqttEndpoint!,
             socketEndpoint: amitySocketEndpoint!),
+            
         sycInitialization: true);
     stopwatch.stop();
     log('setupAmityClient execution time: ${stopwatch.elapsedMilliseconds} ms');

@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_s
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityStoryTargetElement extends StatelessWidget {
@@ -68,17 +69,13 @@ class AmityStoryTargetElement extends StatelessWidget {
         showLoading = false;
         break;
     }
-
-
-    print("isIndeterminate: showLoading $showLoading");
-
     return
     GestureDetector(
       onTap: () {
         onClick(targetId, target);
       },
       child: SizedBox(
-        width: isCommunityTarget ? 80 : 120,
+        width: isCommunityTarget ? 52 : 72,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -109,27 +106,38 @@ class AmityStoryTargetElement extends StatelessWidget {
                 ],
               ),
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (!isPublicCommunity && !isCommunityTarget)
-                  SvgPicture.asset(
-                    "assets/Icons/ic_lock_black.svg",
-                    height: 12,
-                    package: 'amity_uikit_beta_service',
+            const SizedBox(height: 5),
+            SizedBox(
+              width:  isCommunityTarget ? 52 : 72, 
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (!isPublicCommunity && !isCommunityTarget)
+                    SvgPicture.asset(
+                      "assets/Icons/ic_lock_black.svg",
+                      height: 12,
+                      package: 'amity_uikit_beta_service',
+                    ),
+                  SizedBox(
+                    width:  isCommunityTarget ? 52 : 72, 
+                    child: Center(
+                      child: Text(
+                        isCommunityTarget ? "Story" : communityDisplayName,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontFamily: "SF Pro Text",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ),
-                Text(
-                  isCommunityTarget ? "Story" : communityDisplayName,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                // if (hasManageStoryPermission)
-                //   Icon(Icons.edit, size: 16, color: Colors.amber),
-              ],
+                  // if (hasManageStoryPermission)
+                  //   Icon(Icons.edit, size: 16, color: Colors.amber),
+                ],
+              ),
             )
           ],
         ),

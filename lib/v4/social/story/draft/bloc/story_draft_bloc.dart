@@ -41,14 +41,6 @@ class StoryDraftBloc extends Bloc<StoryDraftEvent, StoryDraftState> {
       if (state.storyTarget == null) {
         return;
       }
-      // print("imageDisplayMode ------> ${event.imageDisplayMode}");
-      //  AmitySocialClient.newStoryRepository().createImageStory(
-      //   targetType: state.storyTarget!.targetType,
-      //   targetId: state.storyTarget!.targetId,
-      //   imageFile: event.imageFile,
-      //   storyItems:  event.hyperlink!=null ? [event.hyperlink!] : [],
-      //   imageDisplayMode: event.imageDisplayMode,
-      // ).then((value) => null).onError((error, stackTrace) => null);
       add(OnStoryPostedEvent());
     });
 
@@ -56,12 +48,6 @@ class StoryDraftBloc extends Bloc<StoryDraftEvent, StoryDraftState> {
       if (state.storyTarget == null) {
         return;
       }
-      //  AmitySocialClient.newStoryRepository().createVideoStory(
-      //   targetType: state.storyTarget!.targetType,
-      //   targetId: state.storyTarget!.targetId,
-      //   storyItems:  event.hyperlink!=null ? [event.hyperlink!] : [],
-      //   videoFile: event.videoFile,
-      // ).then((value) => null).onError((error, stackTrace) => null);
       add(OnStoryPostedEvent());
     });
 

@@ -23,7 +23,6 @@ class _AmityStoryGradientRingElementState
       duration: const Duration(milliseconds: 500),
       vsync: this,
     )..repeat();
-    print("isIndeterminate: ${widget.isIndeterminate}");
     if(!widget.isIndeterminate){
       _controller.stop();
     }

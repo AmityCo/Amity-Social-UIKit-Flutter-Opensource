@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_global_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_story_page_type.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
@@ -12,8 +13,10 @@ import 'amity_view_community_story_page.dart';
 
 class AmityViewStoryPage extends StatefulWidget {
   final AmityViewStoryPageType type;
+  final List<AmityStoryTarget>? targets;
+  final AmityStoryTarget? selectedTarget;
   final Function(AmityStoryTarget storytarget, AmityStoryMediaType mediaType, AmityStoryImageDisplayMode? imageMode, HyperLink? hyperlionk) createStory;
-  const AmityViewStoryPage({super.key, required this.type, required this.createStory});
+  const AmityViewStoryPage({super.key, required this.type, required this.createStory , this.targets, this.selectedTarget});
 
   @override
   State<AmityViewStoryPage> createState() => _AmityViewStoryPageState();
@@ -46,9 +49,10 @@ class _AmityViewStoryPageState extends State<AmityViewStoryPage> {
           },
         ),
       );
-    } else {
-      var amityViewStoryPageType = widget.type as AmityViewStoryPageType;
-      return Container();
+    } else  if (widget.type is AmityViewStoryGlobalFeed){
+      var amityViewStoryPageType = widget.type as AmityViewStoryGlobalFeed;
+      return AmityViewGlobalStoryPage(  selectedTarget:  widget.selectedTarget!, targets: widget.targets!, createStory: widget.createStory);
     }
+    return const SizedBox();
   }
 }

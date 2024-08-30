@@ -27,19 +27,11 @@ class PostTargetSelectionBloc
       if (communityLiveCollection.isFetching == true && communities.isEmpty) {
         emit(PostTargetSelectionLoading());
       } else if (communities.isNotEmpty) {
-        // var state = PostTargetSelectionLoaded(
-        //   list: communities,
-        //   hasMoreItems: communityLiveCollection.hasNextPage(),
-        //   isFetching: communityLiveCollection.isFetching,
-        // );
-        // print("BlocLength ${state.list.length}");
-        // add(PostTargetSelectionEventLoaded());
         add(CommunitiesLoadedEvent(
           communities: communities,
           hasMoreItems: communityLiveCollection.hasNextPage(),
           isFetching: communityLiveCollection.isFetching,
         ));
-        // emit(state);
       }
     });
 

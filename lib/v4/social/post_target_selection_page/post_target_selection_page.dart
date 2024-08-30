@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_target_selection_page/bloc/post_target_selection_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/Shimmer.dart';
@@ -49,6 +50,8 @@ class PostTargetSelectionPage extends NewBasePage {
                     package: 'amity_uikit_beta_service',
                     width: 24,
                     height: 24,
+                    colorFilter:
+                        ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -116,9 +119,11 @@ class PostTargetSelectionPage extends NewBasePage {
                                   "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
                         ),
                       ),
-                      title: const Text('My timeline',
+                      title: Text('My timeline',
                           style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 15)),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: theme.baseColor)),
                     ),
                     const SizedBox(
                       height: 8,
@@ -257,9 +262,10 @@ class PostTargetSelectionPage extends NewBasePage {
                     Flexible(
                       child: Text(
                         community.displayName ?? '',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
+                          color: theme.baseColor,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_community_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
@@ -58,7 +59,7 @@ class AmityStoryHeaderRow extends StatelessWidget {
                   shouldRestart: shouldRestartTimer,
                   totalSegments: totalSegments,
                   currentSegment: currentSegment,
-                  duration: story!.dataType == AmityStoryDataType.VIDEO ? AmityStorySingleSegmentTimerElement.totalValue : 7,
+                  duration: story!.dataType == AmityStoryDataType.VIDEO ? (AmityStorySingleSegmentTimerElement.totalValue+1) : 7,
                   moveToNextSegment: () {
                     moveToNextSegment();
                   },
@@ -196,7 +197,29 @@ class AmityStoryHeaderRow extends StatelessWidget {
                                 if (story!.dataType == AmityStoryDataType.VIDEO) {
                                   BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
                                 }
-                                amityStoryModalBottomSheetOverFlowMenu(context: context, storyId: story!.storyId!, onDeleted: onStoryDelete , story: story!);
+                                amityStoryModalBottomSheetOverFlowMenu(
+                                    context: context,
+                                    storyId: story!.storyId!,
+                                    onDeleted: onStoryDelete,
+                                    story: story!,
+                                    deleteClicked: (String storyId) {
+                                      ConfirmationDialog().show(
+                                        context: context,
+                                        title: 'Delete this story?',
+                                        detailText: 'This story will be permanently deleted.\n You’ll no longer to see and find this story',
+                                        leftButtonText: 'Cancel',
+                                        rightButtonText: 'Delete',
+                                        onConfirm: () {
+
+                                          BlocProvider.of<ViewStoryBloc>(context).add(DeleteStoryEvent(storyId: storyId));
+                                          BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
+                                          if (story!.dataType == AmityStoryDataType.VIDEO) {
+                                            BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
+                                          }
+                                          onStoryDelete();
+                                        },
+                                      );
+                                    });
                               },
                               icon: SvgPicture.asset(
                                 "assets/Icons/ic_dots_horizontal.svg",

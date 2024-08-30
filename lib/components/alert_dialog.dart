@@ -303,7 +303,7 @@ class AmityAlertDialogWithThreeActions {
         context: context,
         builder: (BuildContext context) {
           return CupertinoTheme(
-            data: const CupertinoThemeData(brightness: Brightness.dark),
+            data: const CupertinoThemeData(brightness: Brightness.light),
             child: CupertinoAlertDialog(
               title: Text(title),
               content: Text(detailText),

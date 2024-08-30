@@ -34,8 +34,6 @@ class StoryVideoPlayerBloc extends Bloc<StoryVideoPlayerEvent, StoryVideoPlayerS
         looping: false,
       );
 
-      print("VIDEO DURATION: ${videoController.value.duration.inSeconds}");
-
       emit(StoryVideoPlayerInitialized(videoController: videoController, chewieController: chewieController , duration: videoController.value.duration.inSeconds ));
     });
 
@@ -56,7 +54,6 @@ class StoryVideoPlayerBloc extends Bloc<StoryVideoPlayerEvent, StoryVideoPlayerS
     });
 
     on<DisposeStoryVideoPlayerEvent>((event, emit) {
-      print("ShouldPauseStateVideo - > Dispose Bloc");
       state.videoController?.pause();
       state.videoController?.dispose();
       state.chewieController?.dispose();

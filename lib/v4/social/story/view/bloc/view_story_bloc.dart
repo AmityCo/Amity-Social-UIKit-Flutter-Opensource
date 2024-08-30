@@ -155,9 +155,6 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
 
     on<ManageStoryPermissionFetched>(
       (event, emit) {
-        print(
-          "ManageStoryPermissionFetched -------> ${event.hasManageStoryPermission}",
-        );
         emit(
           ManagerStoryPermissionFetchedState(
             community: state.community,
@@ -262,6 +259,7 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
             var firstUnseenIndex = state.stories?.indexWhere((element) => element.isSeen() == false);
             if (firstUnseenIndex != null) {
               if (firstUnseenIndex != -1) {
+                print("Jumping to unseen story at index: $firstUnseenIndex");
                 add(
                   JumpToUnSeen(
                     jumpToPosition: firstUnseenIndex,

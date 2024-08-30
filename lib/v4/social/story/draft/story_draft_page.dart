@@ -231,15 +231,13 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                         children: [
                           GestureDetector(
                             onTap: () {
+                               print('Story ---- GestureDetector ------------ Draft Story Page');
+                               print('Story ---- GestureDetector ------------ Story target ${state.storyTarget}');
+                               print('Story ---- GestureDetector ------------ Story target From widget ${widget.storyTarget}');
                               HapticFeedback.heavyImpact();
-                              widget.createStory(state.storyTarget!, widget.mediaType, state.imageDisplayMode, state.hyperlink);
+                              widget.createStory(state.storyTarget ?? widget.storyTarget, widget.mediaType, state.imageDisplayMode, state.hyperlink);
                               widget.onClose();
                               Navigator.of(context).pop();
-                              // if (widget.mediaType is AmityStoryMediaTypeImage) {
-                              //   context.read<StoryDraftBloc>().add(OnPostImageStoryEvent(imageDisplayMode: state.imageDisplayMode, hyperlink: state is HyperlinkAddedState ? state.hyperlink : null, imageFile: (widget.mediaType as AmityStoryMediaTypeImage).file));
-                              // } else if (widget.mediaType is AmityStoryMediaTypeVideo) {
-                              //   context.read<StoryDraftBloc>().add(OnPostVideoStoryEvent(hyperlink: state is HyperlinkAddedState ? state.hyperlink : null, videoFile: (widget.mediaType as AmityStoryMediaTypeVideo).file));
-                              // }
                             },
                             child: Container(
                               padding: const EdgeInsets.only(right: 8, left: 4),
@@ -284,6 +282,7 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
           },
           listener: (BuildContext context, StoryDraftState state) {
             if (state is StoryPostedState) {
+              print('Story ---- StoryPostedState ------------ Story Draft Page');
               BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
               widget.createStory(state.storyTarget!, widget.mediaType, state.imageDisplayMode, state.hyperlink);
               widget.onClose();
@@ -353,7 +352,8 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                   url: null,
                   onInitialize: () {},
                   onPause: () {},
-                  onPlay: () {}, onWidgetDispose: () {
+                  onPlay: () {},
+                  onWidgetDispose: () {
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
                   },
                 ),

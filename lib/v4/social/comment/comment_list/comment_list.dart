@@ -27,8 +27,7 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
     return BlocBuilder<CommentListBloc, CommentListState>(
       builder: (context, state) {
         if (state is CommentListStateInitial) {
-          context.read<CommentListBloc>().add(CommentListEventRefresh(
-              toastBloc: context.read<AmityToastBloc>()));
+          context.read<CommentListBloc>().add(CommentListEventRefresh(toastBloc: context.read<AmityToastBloc>()));
         }
         if (state.isFetching && state.comments.isEmpty) {
           return SliverList(
@@ -54,10 +53,8 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
           );
         } else {
           scrollController.addListener(() {
-            if ((scrollController.position.pixels ==
-                (scrollController.position.maxScrollExtent))) {
-              context.read<CommentListBloc>().add(CommentListEventLoadMore(
-                  toastBloc: context.read<AmityToastBloc>()));
+            if ((scrollController.position.pixels == (scrollController.position.maxScrollExtent))) {
+              context.read<CommentListBloc>().add(CommentListEventLoadMore(toastBloc: context.read<AmityToastBloc>()));
             }
           });
           return SliverList(
@@ -66,8 +63,7 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
                 final comment = state.comments[index];
                 final isExpanded = state.expandedId.contains(comment.commentId);
                 return BlocProvider(
-                  key: ValueKey(
-                      "${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}"),
+                  key: ValueKey("${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}"),
                   create: (context) => CommentItemBloc(
                     comment: comment,
                     isExpanded: isExpanded,

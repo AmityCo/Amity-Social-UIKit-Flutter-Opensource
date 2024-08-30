@@ -30,12 +30,22 @@ abstract class NewBaseComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    configProvider = context.watch<ConfigProvider>();
-    theme = configProvider.getTheme(pageId, componentId);
+    if (!isInitialized()) {
+      configProvider = context.watch<ConfigProvider>();
+      theme = configProvider.getTheme(pageId, componentId);
+    }
     return buildComponent(context);
   }
 
-  Widget buildComponent(
-      BuildContext context);
-}
+  Widget buildComponent(BuildContext context);
 
+  bool isInitialized() {
+    try {
+      configProvider; 
+      theme; 
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+}

@@ -76,6 +76,7 @@ class CreateStoryConfigProviderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Story ---- CreateStoryConfigProviderWidget ------------ Story Target ${storyTarget.targetId}');
     return ChangeNotifierProvider<ConfigProvider>(
       create: (_) {
         var configProvider = ConfigProvider();

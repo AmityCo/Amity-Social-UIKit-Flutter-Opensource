@@ -19,6 +19,8 @@ class AmityStoryBottomRow extends StatelessWidget {
   final bool isReactedByMe;
   final bool isCreatedByMe;
   final bool hasModeratorRole;
+  final Function onStoryDelete;
+
 
   const AmityStoryBottomRow({
     super.key,
@@ -32,10 +34,12 @@ class AmityStoryBottomRow extends StatelessWidget {
     required this.isReactedByMe,
     required this.isCreatedByMe,
     required this.hasModeratorRole,
+    required this.onStoryDelete,
   });
 
   @override
   Widget build(BuildContext context) {
+    print("Amity Story ----> $isReactedByMe");
     if (state == AmityStorySyncState.SYNCING) {
       return const AmityStoryUploadProgressRow();
     }
@@ -48,7 +52,7 @@ class AmityStoryBottomRow extends StatelessWidget {
           amityStory: story,
           isCommunityJoined: BlocProvider.of<ViewStoryBloc>(context).state.isCommunityJoined ?? false,
           isReactedByMe: isReactedByMe,
-          isAllowedComment: false,
+          isAllowedComment: BlocProvider.of<ViewStoryBloc>(context).state.community?.allowCommentInStory ?? false,
           reachCount: reachCount,
           reactionCount: reactionCount,
           commentCount: commentCount,
@@ -63,6 +67,7 @@ class AmityStoryBottomRow extends StatelessWidget {
         child: Align(
           alignment: Alignment.topCenter,
           child: AmityStoryUploadFailedRow(
+            onStoryDelete: onStoryDelete,
             storyId: storyId,
             story: story,
           ),
@@ -77,7 +82,8 @@ class AmityStoryBottomRow extends StatelessWidget {
 class AmityStoryUploadFailedRow extends StatelessWidget {
   final String storyId;
   final AmityStory story;
-  const AmityStoryUploadFailedRow({super.key, required this.storyId, required this.story});
+  final Function onStoryDelete;
+  const AmityStoryUploadFailedRow({super.key, required this.storyId, required this.story , required this.onStoryDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +143,8 @@ class AmityStoryUploadFailedRow extends StatelessWidget {
                       BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
                     }
                     BlocProvider.of<ViewStoryBloc>(context).add(DeleteStoryEvent(storyId: storyId));
+                    onStoryDelete();
+                    // 
                   },
                   onDismissRequest: () {
                     BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));

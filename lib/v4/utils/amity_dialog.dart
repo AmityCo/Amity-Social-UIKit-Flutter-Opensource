@@ -12,6 +12,7 @@ class AmityV4Dialog {
   Future<void> showAlertErrorDialog({
     required String title,
     required String message,
+    required String closeText,
   }) async {
     bool isBarrierDismissible() {
       return title.toLowerCase().contains("error");
@@ -32,7 +33,10 @@ class AmityV4Dialog {
                 content: Text(message),
                 actions: <Widget>[
                   CupertinoDialogAction(
-                    child: const Text('OK'),
+                    child: Text(
+                      closeText,
+                      style: const TextStyle(color: Color(0xFF007AFF)),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -52,7 +56,7 @@ class AmityV4Dialog {
                 content: Text(message),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('OK'),
+                    child: Text(closeText),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -70,7 +74,6 @@ class AmityV4Dialog {
 class AmityV4SuccessDialog {
   static Future<void> showTimedDialog(String text,
       {BuildContext? context}) async {
-
     showCupertinoDialog<void>(
       context: context ?? NavigationService.navigatorKey.currentContext!,
       barrierDismissible: false,
@@ -88,6 +91,7 @@ class ConfirmationV4Dialog {
     required BuildContext context,
     required String title,
     required String detailText,
+    Color? leftButtonColor = Colors.red,
     String leftButtonText = 'Cancel',
     String rightButtonText = 'Confirm',
     required Function onConfirm,
@@ -113,9 +117,7 @@ class ConfirmationV4Dialog {
                   Navigator.of(context).pop();
                   onConfirm();
                 },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.red, // Set the text color
-                ),
+                style: TextButton.styleFrom(foregroundColor: leftButtonColor),
                 child: Text(rightButtonText),
               ),
             ],
@@ -143,13 +145,103 @@ class ConfirmationV4Dialog {
                   },
                 ),
                 CupertinoDialogAction(
-                  textStyle: const TextStyle(color: Colors.red),
+                  textStyle: TextStyle(color: leftButtonColor),
                   onPressed: () {
                     Navigator.of(context).pop();
                     onConfirm();
                   },
                   isDefaultAction: true,
                   child: Text(rightButtonText),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+  }
+}
+
+class PermissionAlertV4Dialog {
+  Future<void> show({
+    required BuildContext context,
+    required String title,
+    required String detailText,
+    String bottomButtonText = 'Cancel',
+    String topButtonText = 'Confirm',
+    required Function onTopButtonAction,
+  }) async {
+    // Check the platform
+    if (Platform.isAndroid) {
+      // Android-specific code
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(detailText),
+            actions: <Widget>[
+              TextButton(
+                child: Text(bottomButtonText),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  onTopButtonAction();
+                },
+                child: Text(topButtonText),
+              ),
+            ],
+          );
+        },
+      );
+    } else if (Platform.isIOS) {
+      // iOS-specific code
+      final systemBrightness =
+          SchedulerBinding.instance.platformDispatcher.platformBrightness;
+
+      return showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoTheme(
+            data: CupertinoThemeData(brightness: systemBrightness),
+            child: CupertinoAlertDialog(
+              title: Text(title),
+              content: Text(detailText),
+              actions: <Widget>[
+                Container(
+                  color: CupertinoColors.systemGrey, // Color of the divider
+                ),
+                CupertinoDialogAction(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onTopButtonAction();
+                  },
+                  isDefaultAction: true,
+                  child: Text(
+                    topButtonText,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+                Container(
+                  color: CupertinoColors.systemGrey, // Color of the divider
+                ),
+                CupertinoDialogAction(
+                  child: Text(
+                    bottomButtonText,
+                    style: const TextStyle(
+                      fontSize: 17,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
                 ),
               ],
             ),

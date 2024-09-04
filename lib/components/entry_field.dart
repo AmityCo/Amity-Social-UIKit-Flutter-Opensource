@@ -6,7 +6,8 @@ class EntryField extends StatelessWidget {
   final Widget? prefix;
   final String? initialValue;
 
-  const EntryField({super.key, this.controller, this.hint, this.prefix, this.initialValue});
+  const EntryField(
+      {super.key, this.controller, this.hint, this.prefix, this.initialValue});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class EntryField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         prefix: prefix,
-        hintStyle: theme.textTheme.bodyText2!
+        hintStyle: theme.textTheme.bodyMedium!
             .copyWith(color: theme.hintColor, fontSize: 15),
       ),
     );

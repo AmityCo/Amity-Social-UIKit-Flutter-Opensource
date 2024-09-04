@@ -13,6 +13,7 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../viewmodel/community_feed_viewmodel.dart';
 import '../../viewmodel/community_viewmodel.dart';
@@ -533,29 +534,22 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
           Stack(
             alignment: AlignmentDirectional.bottomStart,
             children: [
-              widget.community.avatarImage != null &&
+              widget.community.avatarImage == null &&
                       widget.community.avatarFileId != null
                   ? Row(
                       children: [
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             width: double.infinity,
                             height: MediaQuery.of(context).size.width * 0.7,
-                            decoration: BoxDecoration(
-                                color:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .appColors
-                                        .primaryShade3,
-                                image: DecorationImage(
-                                  image: NetworkImage(widget
-                                      .community.avatarImage!
-                                      .getUrl(AmityImageSize.LARGE)),
-                                  fit: BoxFit.cover,
-                                )),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(
-                                    0.4), // Applying a 40% dark filter to the entire container
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(
+                                      0.4), // Applying a 40% dark filter to the entire container
+                                ),
                               ),
                             ),
                           ),
@@ -572,11 +566,18 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                               color: Provider.of<AmityUIConfiguration>(context)
                                   .appColors
                                   .primaryShade3,
-                              image: const DecorationImage(
-                                  image: AssetImage(
-                                      "assets/images/IMG_5637.JPG",
-                                      package: 'amity_uikit_beta_service'),
-                                  fit: BoxFit.cover),
+                              image: widget.community.avatarFileId != null
+                                  ? DecorationImage(
+                                      image: NetworkImage(widget
+                                          .community.avatarImage!
+                                          .getUrl(AmityImageSize.LARGE)),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/IMG_5637.JPG",
+                                          package: 'amity_uikit_beta_service'),
+                                      fit: BoxFit.cover),
                             ),
                             child: DecoratedBox(
                               decoration: BoxDecoration(

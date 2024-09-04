@@ -2,7 +2,7 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   amity_sdk:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: amity_sdk
       sha256: "60a8770f1fd4ab6dbb508eabd8a56355c3aa67ffbfefb8ea2980244bad39593a"

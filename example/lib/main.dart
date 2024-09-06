@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
@@ -7,6 +8,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
+import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -360,8 +362,13 @@ class SecondPage extends StatelessWidget {
 }
 
 class SocialPage extends StatelessWidget {
-  const SocialPage({super.key, required this.username});
+  SocialPage({
+    super.key,
+    required this.username,
+  });
   final String username;
+
+  final TextEditingController amityCommunityTextCon = TextEditingController();
   void showColorPickerDialog(BuildContext sourceContext) {
     Color primary = Colors.red;
     Color base = Colors.red;
@@ -565,6 +572,40 @@ class SocialPage extends StatelessWidget {
                         canCreateCommunity: false,
                       ),
                     ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Community'),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Community ID',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        // Handle the community ID input
+                        amityCommunityTextCon.text = value;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () async {
+                CommunityGetQueryBuilder communityGetQueryBuilder =
+                    AmitySocialClient.newCommunityRepository().getCommunities();
+                AmityCommunity amityCommunity = await communityGetQueryBuilder
+                    .useCase.communityRepo
+                    .getCommunity(amityCommunityTextCon.text);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CommunityScreen(
+                        isFromFeed: true, community: amityCommunity),
                   ),
                 );
               },

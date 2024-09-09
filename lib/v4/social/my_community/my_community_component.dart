@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../view/social/community_feedV2.dart';
+
 part 'my_community_elements.dart';
 part 'my_community_ui_ids.dart';
 

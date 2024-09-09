@@ -23,14 +23,14 @@ class UserVM extends ChangeNotifier {
   //   var dio = Dio();
   //   await dio
   //       .post(
-  //     "https://api.${env!.region}.amity.co/api/v3/sessions",
+  //     "https://api.${..env!.region}.amity.co/api/v3/sessions",
   //     data: {
   //       'userId': AmityCoreClient.getUserId(),
   //       'deviceId': AmityCoreClient.getUserId()
   //     },
   //     options: Options(
   //       headers: {
-  //         "x-api-key": env?.apikey // set content-length
+  //         "x-api-key": ..env?.apikey // set content-length
   //       },
   //     ),
   //   )

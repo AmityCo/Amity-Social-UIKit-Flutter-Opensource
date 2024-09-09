@@ -159,7 +159,7 @@ class AmityUIKit {
       log("registerNotification succesfully ✅");
       callback(true, null);
     }).onError((error, stackTrace) {
-      callback(false, "Initialize push notification fail...❌");
+      callback(false, error.toString());
     });
   }
 

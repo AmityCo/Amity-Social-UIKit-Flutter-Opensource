@@ -120,10 +120,25 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                                   title: Row(
                                     children: [
                                       GestureDetector(
-                                        child: getAvatarImage(vm
-                                            .getFollowerList[index]
-                                            .sourceUser!
-                                            .avatarUrl),
+                                        child: GestureDetector(
+                                          child: FutureBuilder<bool>(
+                                            future: AmityUIConfiguration.isFollowing(vm.getFollowerList[index].sourceUser!.userId ?? ''),
+                                            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return getAvatarImage(''); // You can display a loading placeholder or empty avatarUrl
+                                              } else if (vm.getFollowerList[index].sourceUser!.userId == AmityCoreClient.getCurrentUser().userId && vm.getFollowerList[index].sourceUser?.metadata?['profilePublicImageUrl'] == null) {
+                                                return getAvatarImage(vm.getFollowerList[index].sourceUser?.avatarUrl);
+                                              } else if (snapshot.hasError) {
+                                                return getAvatarImage(''); // Handle error case, possibly by showing a default avatar
+                                              } else {
+                                                final isFollowing = snapshot.data ?? false;
+                                                final avatarUrl = isFollowing ? vm.getFollowerList[index].sourceUser?.avatarUrl : vm.getFollowerList[index].sourceUser?.metadata?['profilePublicImageUrl'] ?? '';
+
+                                                return getAvatarImage(avatarUrl);
+                                              }
+                                            },
+                                          ),
+                                        )
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),

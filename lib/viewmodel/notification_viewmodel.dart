@@ -47,7 +47,7 @@ class NotificationVM extends ChangeNotifier {
       });
     } else {
       AmityDialog()
-          .showAlertErrorDialog(title: "Error!", message: ".env is missing");
+          .showAlertErrorDialog(title: "Error!", message: "...env is missing");
     }
   }
 

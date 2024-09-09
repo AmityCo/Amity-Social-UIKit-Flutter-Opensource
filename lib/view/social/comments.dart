@@ -826,15 +826,62 @@ class _CommentComponentState extends State<CommentComponent> {
                                           padding: const EdgeInsets.only(
                                             left: 16,
                                           ),
-                                          child: CustomListTile(
-                                              avatarUrl:
-                                                  comments.user!.avatarUrl,
-                                              displayName:
-                                                  comments.user!.displayName!,
-                                              createdAt: comments.createdAt!,
-                                              editedAt: comments.editedAt!,
-                                              userId: comments.user!.userId!,
-                                              user: comments.user!)),
+                                          child: FutureBuilder<bool>(
+                                            future: AmityUIConfiguration.isFollowing(comments.userId ?? ''),
+                                            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return CustomListTile(
+                                                  avatarUrl: '',
+                                                  displayName: comments.user!.displayName!,
+                                                  createdAt: comments.createdAt!,
+                                                  editedAt: comments.editedAt!,
+                                                  userId: comments.user!.userId!,
+                                                  user: comments.user!,
+                                                ); // You can display a loading placeholder or empty avatarUrl
+                                              }
+                                              else if (comments.user!.userId == AmityCoreClient.getCurrentUser().userId && comments.user?.metadata?['profilePublicImageUrl'] != null) {
+                                                return CustomListTile(
+                                                  avatarUrl:  comments.user?.metadata?['profilePublicImageUrl'],
+                                                  displayName: comments.user!.displayName!,
+                                                  createdAt: comments.createdAt!,
+                                                  editedAt: comments.editedAt!,
+                                                  userId: comments.user!.userId!,
+                                                  user: comments.user!,
+                                                );
+                                              }
+                                              else if (comments.user!.userId == AmityCoreClient.getCurrentUser().userId && comments.user?.metadata?['profilePublicImageUrl'] == null) {
+                                                return CustomListTile(
+                                                  avatarUrl: comments.user?.avatarUrl,
+                                                  displayName: comments.user!.displayName!,
+                                                  createdAt: comments.createdAt!,
+                                                  editedAt: comments.editedAt!,
+                                                  userId: comments.user!.userId!,
+                                                  user: comments.user!,
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return CustomListTile(
+                                                  avatarUrl: '',
+                                                  displayName: comments.user!.displayName!,
+                                                  createdAt: comments.createdAt!,
+                                                  editedAt: comments.editedAt!,
+                                                  userId: comments.user!.userId!,
+                                                  user: comments.user!,
+                                                ); // Handle error case, possibly by showing a default avatar
+                                              } else {
+                                                final isFollowing = snapshot.data ?? false;
+                                                final avatarUrl = isFollowing ? comments.user?.avatarUrl : comments.user?.metadata?['profilePublicImageUrl'] ?? '';
+
+                                                return CustomListTile(
+                                                  avatarUrl: avatarUrl,
+                                                  displayName: comments.user!.displayName!,
+                                                  createdAt: comments.createdAt!,
+                                                  editedAt: comments.editedAt!,
+                                                  userId: comments.user!.userId!,
+                                                  user: comments.user!,
+                                                );
+                                              }
+                                            },
+                                          )),
                                       const SizedBox(
                                         height: 4,
                                       ),
@@ -1402,13 +1449,62 @@ class ReplyCommentComponent extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomListTile(
-                            avatarUrl: comments.user!.avatarUrl,
-                            displayName: comments.user!.displayName!,
-                            createdAt: comments.createdAt!,
-                            editedAt: comments.editedAt!,
-                            userId: comments.user!.userId!,
-                            user: comments.user!),
+                        FutureBuilder<bool>(
+                          future: AmityUIConfiguration.isFollowing(comments.userId ?? ''),
+                          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return CustomListTile(
+                                avatarUrl: '',
+                                displayName: comments.user!.displayName!,
+                                createdAt: comments.createdAt!,
+                                editedAt: comments.editedAt!,
+                                userId: comments.user!.userId!,
+                                user: comments.user!,
+                              ); // You can display a loading placeholder or empty avatarUrl
+                            } else if (comments.user!.userId == AmityCoreClient.getCurrentUser().userId && comments.user?.metadata?['profilePublicImageUrl'] != null) {
+                              return CustomListTile(
+                                avatarUrl:comments.user?.metadata?['profilePublicImageUrl'],
+                                displayName: comments.user!.displayName!,
+                                createdAt: comments.createdAt!,
+                                editedAt: comments.editedAt!,
+                                userId: comments.user!.userId!,
+                                user: comments.user!,
+                              );
+                            }
+                            else if (comments.user!.userId == AmityCoreClient.getCurrentUser().userId && comments.user?.metadata?['profilePublicImageUrl'] == null) {
+                              return CustomListTile(
+                                avatarUrl:comments.user?.avatarUrl,
+                                displayName: comments.user!.displayName!,
+                                createdAt: comments.createdAt!,
+                                editedAt: comments.editedAt!,
+                                userId: comments.user!.userId!,
+                                user: comments.user!,
+                              );
+                            }
+                            else if (snapshot.hasError) {
+                              return CustomListTile(
+                                avatarUrl: '',
+                                displayName: comments.user!.displayName!,
+                                createdAt: comments.createdAt!,
+                                editedAt: comments.editedAt!,
+                                userId: comments.user!.userId!,
+                                user: comments.user!,
+                              ); // Handle error case, possibly by showing a default avatar
+                            } else {
+                              final isFollowing = snapshot.data ?? false;
+                              final avatarUrl = isFollowing ? comments.user?.avatarUrl : comments.user?.metadata?['profilePublicImageUrl'] ?? '';
+
+                              return CustomListTile(
+                                avatarUrl: avatarUrl,
+                                displayName: comments.user!.displayName!,
+                                createdAt: comments.createdAt!,
+                                editedAt: comments.editedAt!,
+                                userId: comments.user!.userId!,
+                                user: comments.user!,
+                              );
+                            }
+                          },
+                        ),
                         Container(
                           padding: const EdgeInsets.all(10.0),
                           margin: const EdgeInsets.only(left: 50.0, top: 8),

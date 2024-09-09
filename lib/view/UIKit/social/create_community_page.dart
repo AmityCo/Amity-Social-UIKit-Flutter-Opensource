@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../../social/community_feedV2.dart';
+
 enum CommunityListType { my, recommend, trending }
 
 enum CommunityFeedMenuOption { edit, members }

@@ -18,7 +18,7 @@ class AmityUIConfiguration extends ChangeNotifier {
 
   IconData placeHolderIcon = Icons.chat;
   AmityIconConfig iconConfig = AmityIconConfig();
-
+  static bool isExplorePage = false;
   TextStyle titleTextStyle = const TextStyle(
     fontSize: 17,
     color: Colors.black,
@@ -29,7 +29,28 @@ class AmityUIConfiguration extends ChangeNotifier {
     color: Colors.black,
     fontWeight: FontWeight.w400,
   );
+  static Future<bool> isFollowing(String userId) async {
+    Future.delayed(const Duration(seconds: 1));
+    final followingUsersPageList = await AmityCoreClient.newUserRepository()
+        .relationship()
+        .getMyFollowings()
+        .status(AmityFollowStatusFilter.ACCEPTED)
+        .getPagingData();
 
+    final followingUsers = followingUsersPageList.data;
+
+    for (var user in followingUsers) {
+      if (user.targetUserId== userId && user.status == AmityFollowStatus.ACCEPTED) {
+        print("user.sourceUserId${user.sourceUserId}");
+        print("userId$userId") ;
+        print('Following = true');
+        return true;
+      }
+    }
+    print('Following = false');
+    return false;
+  }
+  static  GlobalKey newFeedExploreKey = GlobalKey();
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
   Widget Function(int) buildChatButton =

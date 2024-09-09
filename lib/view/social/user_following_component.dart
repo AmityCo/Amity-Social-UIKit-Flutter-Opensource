@@ -59,69 +59,158 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                   stream: vm.getFollowingList[index].listen.stream,
                   initialData: vm.getFollowingList[index],
                   builder: (context, snapshot) {
-                    return ListTile(
-                      onTap: () async {
-                        if (snapshot.data!.targetUserId! ==
-                                AmityCoreClient.getCurrentUser().userId &&
-                            Provider.of<AmityUIConfiguration>(context,
-                                    listen: false)
-                                .customUserProfileNavigate) {
-                          Provider.of<AmityUIConfiguration>(context,
+                    if(widget.userId==AmityCoreClient.getCurrentUser().userId){
+                      return ListTile(
+                        onTap: () async {
+                          if (snapshot.data!.targetUserId! ==
+                              AmityCoreClient.getCurrentUser().userId &&
+                              Provider.of<AmityUIConfiguration>(context,
                                   listen: false)
-                              .onUserProfile(context);
-                        } else {
-                          if (snapshot.data!
-                              .targetUserId! == AmityCoreClient
-                              .getCurrentUser()
-                              .userId && Provider
-                              .of<AmityUIConfiguration>(context, listen: false)
-                              .customUserProfileNavigate) {
-                            Provider.of<AmityUIConfiguration>(
-                                context, listen: false).onUserProfile(context);
+                                  .customUserProfileNavigate) {
+                            Provider.of<AmityUIConfiguration>(context,
+                                listen: false)
+                                .onUserProfile(context);
                           } else {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    ChangeNotifierProvider(
-                                        create: (context) => UserFeedVM(),
-                                        child: UserProfileScreen(
-                                          amityUser: snapshot.data!.targetUser,
-                                          amityUserId: snapshot.data!
-                                              .targetUserId!,
-                                        ))));
-                          }
-                        }},
-                      trailing: GestureDetector(
-                          onTap: () {
-                            showOptionsBottomSheet(
-                                context, snapshot.data!.targetUser!);
-                            Provider.of<FollowerVM>(context, listen: false)
-                                .getFollowingListof(userId: widget.userId);
-                          },
-                          child: const Icon(Icons.more_horiz)),
-                      title: Row(
-                        children: [
-                          GestureDetector(
-                            child: getAvatarImage(vm
-                                .getFollowingList[index].targetUser!.avatarUrl),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  vm.getFollowingList[index].targetUser!
-                                          .displayName ??
-                                      "displayname not found",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
+                            if (snapshot.data!
+                                .targetUserId! == AmityCoreClient
+                                .getCurrentUser()
+                                .userId && Provider
+                                .of<AmityUIConfiguration>(context, listen: false)
+                                .customUserProfileNavigate) {
+                              Provider.of<AmityUIConfiguration>(
+                                  context, listen: false).onUserProfile(context);
+                            } else {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChangeNotifierProvider(
+                                          create: (context) => UserFeedVM(),
+                                          child: UserProfileScreen(
+                                            amityUser: snapshot.data!.targetUser,
+                                            amityUserId: snapshot.data!
+                                                .targetUserId!,
+                                          ))));
+                            }
+                          }},
+                        trailing: GestureDetector(
+                            onTap: () {
+                              showOptionsBottomSheet(
+                                  context, snapshot.data!.targetUser!);
+                              Provider.of<FollowerVM>(context, listen: false)
+                                  .getFollowingListof(userId: widget.userId);
+                            },
+                            child: const Icon(Icons.more_horiz)),
+                        title: Row(
+                          children: [
+
+                            GestureDetector(
+
+                              child: getAvatarImage(vm
+                                  .getFollowingList[index].targetUser!.metadata?['profilePublicImageUrl'] == null?vm.getFollowingList[index].targetUser?.avatarUrl : vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] ?? ''),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    vm.getFollowingList[index].targetUser!
+                                        .displayName ??
+                                        "displayname not found",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    else{
+                      return ListTile(
+                        onTap: () async {
+                          if (snapshot.data!.targetUserId! ==
+                              AmityCoreClient.getCurrentUser().userId &&
+                              Provider.of<AmityUIConfiguration>(context,
+                                  listen: false)
+                                  .customUserProfileNavigate) {
+                            Provider.of<AmityUIConfiguration>(context,
+                                listen: false)
+                                .onUserProfile(context);
+                          } else {
+                            if (snapshot.data!
+                                .targetUserId! == AmityCoreClient
+                                .getCurrentUser()
+                                .userId && Provider
+                                .of<AmityUIConfiguration>(context, listen: false)
+                                .customUserProfileNavigate) {
+                              Provider.of<AmityUIConfiguration>(
+                                  context, listen: false).onUserProfile(context);
+                            } else {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChangeNotifierProvider(
+                                          create: (context) => UserFeedVM(),
+                                          child: UserProfileScreen(
+                                            amityUser: snapshot.data!.targetUser,
+                                            amityUserId: snapshot.data!
+                                                .targetUserId!,
+                                          ))));
+                            }
+                          }},
+                        trailing: GestureDetector(
+                            onTap: () {
+                              showOptionsBottomSheet(
+                                  context, snapshot.data!.targetUser!);
+                              Provider.of<FollowerVM>(context, listen: false)
+                                  .getFollowingListof(userId: widget.userId);
+                            },
+                            child: const Icon(Icons.more_horiz)),
+                        title: Row(
+                          children: [
+                            GestureDetector(
+                              child: FutureBuilder<bool>(
+                                future: AmityUIConfiguration.isFollowing(vm.getFollowingList[index].targetUser!.userId ?? ''),
+                                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return getAvatarImage(''); // You can display a loading placeholder or empty avatarUrl
+                                  } else if (vm.getFollowingList[index].targetUser!.userId == AmityCoreClient.getCurrentUser().userId && vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] != null) {
+                                    return getAvatarImage(vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl']);
+                                  }
+                                  else if (vm.getFollowingList[index].targetUser!.userId == AmityCoreClient.getCurrentUser().userId && vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] == null) {
+                                    return getAvatarImage(vm.getFollowingList[index].targetUser?.avatarUrl);
+                                  } else if (snapshot.hasError) {
+                                    return getAvatarImage(''); // Handle error case, possibly by showing a default avatar
+                                  } else {
+                                    final isFollowing = snapshot.data ?? false;
+                                    final avatarUrl = isFollowing ? vm.getFollowingList[index].targetUser?.avatarUrl : vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] ?? '';
+
+                                    return getAvatarImage(avatarUrl);
+                                  }
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    vm.getFollowingList[index].targetUser!
+                                        .displayName ??
+                                        "displayname not found",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+
+                    }
+
                     // return Text(snapshot.data!.status.toString());
                   });
             },

@@ -37,7 +37,7 @@ class CommentCreatorBloc
       if (replyTo != null) {
         try {
           if(event.referenceType == AmityCommentReferenceType.POST){
-                    await AmitySocialClient.newCommentRepository()
+                     AmitySocialClient.newCommentRepository()
                       .createComment()
                       .post(event.referenceId)
                       .parentId(replyTo)
@@ -54,13 +54,22 @@ class CommentCreatorBloc
                       .send();
                   }
         } catch (error) {
-          if (error != null &&
-              error is AmityException &&
-              error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
-            event.toastBloc.add(AmityToastShort(
+
+          if(error!=null && error is AmityException){
+            if(error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)){
+              event.toastBloc.add( const AmityToastShort(
                 message:
                     "Your comment contains inappropriate word. Please review and delete it."));
+            }
+            if(error.code == error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)){
+              if(error.message.contains("Story")){
+                event.toastBloc.add( const AmityToastShort(
+                    message:
+                    "This story is no longer available"));
+              }
+            }
           }
+
         }
       } else {
         try {
@@ -80,12 +89,19 @@ class CommentCreatorBloc
                       .send();
                   }
         } catch (error) {
-          if (error != null &&
-              error is AmityException &&
-              error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
-            event.toastBloc.add(AmityToastShort(
+          if(error!=null && error is AmityException){
+            if(error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)){
+              event.toastBloc.add( const AmityToastShort(
                 message:
                     "Your comment contains inappropriate word. Please review and delete it."));
+            }
+            if(error.code == error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)){
+              if(error.message.contains("Story")){
+                event.toastBloc.add( const AmityToastShort(
+                    message:
+                    "This story is no longer available"));
+              }
+            }
           }
         }
       }

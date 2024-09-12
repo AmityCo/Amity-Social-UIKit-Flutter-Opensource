@@ -89,58 +89,15 @@ class CreateActionBottomSheet {
                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
                       return CreateStoryConfigProviderWidget(
                         targetType: AmityStoryTargetType.COMMUNITY,
-                        onStoryCreated: () {
-                          print('Story ---- Story Created ------------ Story Target Page');
-                          BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-                          AmityStorySingleSegmentTimerElement.currentValue = -1;
-                          // Navigator.of(context).pop();
-                        },
                         targetId: community.communityId!,
-                        storyTarget: AmityStoryTargetCommunity(
-                          targetId: community.communityId!,
-                        ),
                         pageId: 'create_story_page',
-                        createStory: (storytarget, mediaType, imageMode, hyperlionk) {
-                          if (mediaType is AmityStoryMediaTypeImage) {
-                            AmitySocialClient.newStoryRepository()
-                                .createImageStory(
-                              targetType: storytarget.targetType,
-                              targetId: storytarget.targetId,
-                              imageFile: (mediaType).file,
-                              storyItems: hyperlionk != null ? [hyperlionk] : [],
-                              imageDisplayMode: imageMode!,
-                            )
-                                .then((value) {
-                              if (storyCreated != null) {
-                                storyCreated();
-                              }
-                            }).onError((error, stackTrace) => null);
-                          } else if (mediaType is AmityStoryMediaTypeVideo) {
-                            AmitySocialClient.newStoryRepository()
-                                .createVideoStory(
-                              targetType: storytarget.targetType,
-                              targetId: storytarget.targetId,
-                              storyItems: hyperlionk != null ? [hyperlionk!] : [],
-                              videoFile: (mediaType).file,
-                            )
-                                .then((value) {
-                              if (storyCreated != null) {
-                                storyCreated();
-                              }
-                            }).onError((error, stackTrace) => null);
-                          }
-                          print('Story ---- Create Story ------------ Story Target Page');
-
-                          // Navigator.of(context).pop();
-                        },
                       );
                     }));
                   } else {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => Scaffold(
-                          body: ShareStoryToPage(
-                            storyCreated: storyCreated,
+                        builder: (context) => const Scaffold(
+                          body: AmityStoryTargetSelectionPage(
                           ),
                         ),
                       ),

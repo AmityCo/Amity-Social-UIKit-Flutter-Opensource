@@ -15,10 +15,12 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
     required this.comment,
     required this.isExpanded,
   }) : super(CommentItemState(
-            comment: comment,
-            isReacting: false,
-            isExpanded: isExpanded,
-            isEditing: false)) {
+      comment: comment,
+      isReacting: false,
+      isExpanded: isExpanded,
+      isEditing: false,
+      editedText: getTextComment(comment),
+    )) {
     on<CommentItemLoaded>((event, emit) async {
       emit(
           state.copyWith(comment: event.comment, isExpanded: event.isExpanded));
@@ -106,6 +108,10 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
       }
     });
 
+    on<CommentItemEditChanged>((event, emit) async {
+      emit(state.copyWith(editedText: event.text));
+    });
+
     on<CommentItemDelete>((event, emit) async {
       final delete = await event.comment.delete();
       if (delete) {
@@ -117,8 +123,15 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
             comment: event.comment,
             isReacting: false,
             isExpanded: false,
-            isEditing: false));
+            isEditing: false,
+            editedText: ""));
       }
     });
   }
+}
+
+String getTextComment(AmityComment comment) {
+  return comment.data is CommentTextData
+      ? (comment.data as CommentTextData).text ?? ""
+      : "";
 }

@@ -21,56 +21,39 @@ class ReactionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var buttonStyle = ButtonStyle(
-      padding: MaterialStateProperty.all<EdgeInsets>(
-          const EdgeInsets.only(top: 6, bottom: 6, left: 0, right: 0)),
-      minimumSize: MaterialStateProperty.all<Size>(Size.zero),
+      padding: WidgetStateProperty.all<EdgeInsets>(
+          const EdgeInsets.only(top: 6, bottom: 6, left: 0, right: 12)),
+      minimumSize: WidgetStateProperty.all<Size>(Size.zero),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              post.myReactions!.contains("like")
-                  ? TextButton(
-                      onPressed: () {
-                        print(post.myReactions);
-                        HapticFeedback.heavyImpact();
-                        Provider.of<PostVM>(context, listen: false)
-                            .removePostReaction(post);
-                      },
-                      style: buttonStyle,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Provider.of<AmityUIConfiguration>(context)
-                              .iconConfig
-                              .likedIcon(
-                                color:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .primaryColor,
-                              ),
-                          Text(
-                            ' Liked',
-                            style: TextStyle(
-                              color: Provider.of<AmityUIConfiguration>(context)
-                                  .primaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: feedReactionCountSize,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(
-                      child: TextButton(
+    return GestureDetector(
+      onTap: () {
+        if (post.myReactions!.contains("like")) {
+          print(post.myReactions);
+          HapticFeedback.heavyImpact();
+          Provider.of<PostVM>(context, listen: false).removePostReaction(post);
+        } else {
+          print(post.myReactions);
+          HapticFeedback.heavyImpact();
+          Provider.of<PostVM>(context, listen: false).addPostReaction(post);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 6, top: 4),
+        color: Colors.transparent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                post.myReactions!.contains("like")
+                    ? TextButton(
                         onPressed: () {
                           print(post.myReactions);
                           HapticFeedback.heavyImpact();
                           Provider.of<PostVM>(context, listen: false)
-                              .addPostReaction(post);
+                              .removePostReaction(post);
                         },
                         style: buttonStyle,
                         child: Row(
@@ -78,33 +61,67 @@ class ReactionWidget extends StatelessWidget {
                           children: [
                             Provider.of<AmityUIConfiguration>(context)
                                 .iconConfig
-                                .likeIcon(
+                                .likedIcon(
+                                  color:
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .primaryColor,
+                                ),
+                            Text(
+                              ' Liked',
+                              style: TextStyle(
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: feedReactionCountSize,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(
+                        child: TextButton(
+                          onPressed: () {
+                            print(post.myReactions);
+                            HapticFeedback.heavyImpact();
+                            Provider.of<PostVM>(context, listen: false)
+                                .addPostReaction(post);
+                          },
+                          style: buttonStyle,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Provider.of<AmityUIConfiguration>(context)
+                                  .iconConfig
+                                  .likeIcon(
+                                    color: feedType == FeedType.user
+                                        ? Provider.of<AmityUIConfiguration>(
+                                                context)
+                                            .appColors
+                                            .userProfileTextColor
+                                        : Colors.grey,
+                                  ),
+                              Text(
+                                ' Like',
+                                style: TextStyle(
                                   color: feedType == FeedType.user
                                       ? Provider.of<AmityUIConfiguration>(
                                               context)
                                           .appColors
                                           .userProfileTextColor
                                       : Colors.grey,
+                                  fontSize: feedReactionCountSize,
+                                  letterSpacing: 1,
                                 ),
-                            Text(
-                              ' Like',
-                              style: TextStyle(
-                                color: feedType == FeedType.user
-                                    ? Provider.of<AmityUIConfiguration>(context)
-                                        .appColors
-                                        .userProfileTextColor
-                                    : Colors.grey,
-                                fontSize: feedReactionCountSize,
-                                letterSpacing: 1,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

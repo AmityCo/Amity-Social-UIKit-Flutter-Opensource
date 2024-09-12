@@ -1,9 +1,8 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,9 +10,14 @@ import 'package:flutter_svg/svg.dart';
 class PostDisplayName extends StatelessWidget {
   final AmityPost post;
   final AmityThemeColor theme;
+  final bool hideTarget;
 
-  const PostDisplayName({Key? key, required this.post, required this.theme})
-      : super(key: key);
+  const PostDisplayName({
+    Key? key,
+    required this.post,
+    required this.theme,
+    required this.hideTarget,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class PostDisplayName extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: (post.target != null &&
+            children: (!hideTarget && post.target != null &&
                     ((post.target is CommunityTarget) ||
                         (post.target is UserTarget &&
                             (post.target as UserTarget).targetUserId !=
@@ -121,8 +125,7 @@ class PostDisplayName extends StatelessWidget {
       onTap = () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                CommunityScreen(community: target.targetCommunity!),
+            builder: (context) => AmityCommunityProfilePage(community: target.targetCommunity!),
           ),
         );
       };

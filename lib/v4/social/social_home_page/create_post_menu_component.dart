@@ -58,7 +58,7 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const Scaffold(
-                body: ShareStoryToPage(),
+                body: AmityStoryTargetSelectionPage(),
               ),
             ),
           );

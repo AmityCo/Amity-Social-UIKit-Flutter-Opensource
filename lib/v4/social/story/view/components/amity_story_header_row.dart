@@ -1,6 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_community_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_story_modal_bottom_sheet.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:video_player/video_player.dart';
 
 class AmityStoryHeaderRow extends StatelessWidget {
   final AmityStory? story;
@@ -46,20 +44,21 @@ class AmityStoryHeaderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ViewStoryBloc, ViewStoryState>(builder: (context, state) {
-      return Container(
+    return BlocBuilder<ViewStoryBloc, ViewStoryState>(
+      builder: (context, state) {
+        return Container(
           height: 100,
           padding: const EdgeInsets.all(15),
           width: double.infinity,
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 child: AmityStorySegmentTimerElement(
                   shouldPauseTimer: shouldPauseTimer,
                   shouldRestart: shouldRestartTimer,
                   totalSegments: totalSegments,
                   currentSegment: currentSegment,
-                  duration: story!.dataType == AmityStoryDataType.VIDEO ? (AmityStorySingleSegmentTimerElement.totalValue+1) : 7,
+                  duration: story!.dataType == AmityStoryDataType.VIDEO ? (AmityStorySingleSegmentTimerElement.totalValue + 1) : 7,
                   moveToNextSegment: () {
                     moveToNextSegment();
                   },
@@ -72,12 +71,16 @@ class AmityStoryHeaderRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   state.community != null
-                      ? Container(
+                      ? SizedBox(
                           height: 40,
                           width: 40,
                           child: Stack(
                             children: [
-                              SizedBox(width: 40, height: 40, child: getProfileIcon(state.community)),
+                              SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: getProfileIcon(state.community),
+                              ),
                               (state.hasManageStoryPermission)
                                   ? Positioned(
                                       right: 0,
@@ -99,12 +102,16 @@ class AmityStoryHeaderRow extends StatelessWidget {
                         )
                       : Shimmer.fromColors(
                           baseColor: const Color.fromARGB(255, 49, 49, 49),
-                          highlightColor: Color.fromARGB(255, 80, 80, 80),
+                          highlightColor: const Color.fromARGB(255, 80, 80, 80),
                           child: Container(
                             width: 40,
                             height: 40,
-                            decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(100)),
-                          )),
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                          ),
+                        ),
                   const SizedBox(
                     width: 10,
                   ),
@@ -119,12 +126,22 @@ class AmityStoryHeaderRow extends StatelessWidget {
                               children: [
                                 Text(
                                   state.community!.displayName ?? "",
-                                  style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600, fontFamily: "SF Pro Text"),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "SF Pro Text",
+                                  ),
                                 ),
+                                (state.community?.isOfficial != null && state.community?.isOfficial == true)?
+                                const SizedBox(
+                                  width: 5,
+                                ):const SizedBox(),
                                 (state.community?.isOfficial != null && state.community?.isOfficial == true)
                                     ? SvgPicture.asset(
                                         "assets/Icons/ic_verified_white.svg",
-                                        height: 12,
+                                        height: 16,
+                                        width: 16,
                                         package: 'amity_uikit_beta_service',
                                       )
                                     : const SizedBox(),
@@ -134,23 +151,38 @@ class AmityStoryHeaderRow extends StatelessWidget {
                               children: [
                                 Text(
                                   story!.createdAt!.toSocialTimestamp(),
-                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.white, fontFamily: "SF Pro Text"),
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                    fontFamily: "SF Pro Text",
+                                  ),
                                 ),
                                 Container(
                                   height: 3,
                                   width: 3,
-                                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                                  decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 5,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
                                 ),
                                 Text(
-                                  "By ${story?.creator?.displayName}" ?? "",
-                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, fontFamily: "SF Pro Text", color: Colors.white),
+                                  "By ${story?.creator?.displayName}",
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: "SF Pro Text",
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             )
                           ],
                         )
-                      : Container(
+                      : SizedBox(
                           width: 200,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -158,13 +190,15 @@ class AmityStoryHeaderRow extends StatelessWidget {
                             children: [
                               Shimmer.fromColors(
                                 baseColor: const Color.fromARGB(255, 49, 49, 49),
-                                highlightColor: Color.fromARGB(255, 80, 80, 80),
+                                highlightColor: const Color.fromARGB(255, 80, 80, 80),
                                 child: Container(
                                   height: 10,
                                   width: double.infinity,
                                   decoration: const BoxDecoration(
                                     color: Colors.black,
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -173,13 +207,15 @@ class AmityStoryHeaderRow extends StatelessWidget {
                               ),
                               Shimmer.fromColors(
                                 baseColor: const Color.fromARGB(255, 49, 49, 49),
-                                highlightColor: Color.fromARGB(255, 80, 80, 80),
+                                highlightColor: const Color.fromARGB(255, 80, 80, 80),
                                 child: Container(
                                   height: 10,
                                   width: 100,
                                   decoration: const BoxDecoration(
                                     color: Colors.black,
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -187,17 +223,17 @@ class AmityStoryHeaderRow extends StatelessWidget {
                           ),
                         ),
                   Expanded(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      (story?.creatorId == AmityCoreClient.getUserId() || state.hasManageStoryPermission)
-                          ? IconButton(
-                              onPressed: () {
-                                BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
-                                if (story!.dataType == AmityStoryDataType.VIDEO) {
-                                  BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
-                                }
-                                amityStoryModalBottomSheetOverFlowMenu(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        (story?.creatorId == AmityCoreClient.getUserId() || state.hasManageStoryPermission)
+                            ? IconButton(
+                                onPressed: () {
+                                  BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
+                                  if (story!.dataType == AmityStoryDataType.VIDEO) {
+                                    BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
+                                  }
+                                  amityStoryModalBottomSheetOverFlowMenu(
                                     context: context,
                                     storyId: story!.storyId!,
                                     onDeleted: onStoryDelete,
@@ -210,7 +246,6 @@ class AmityStoryHeaderRow extends StatelessWidget {
                                         leftButtonText: 'Cancel',
                                         rightButtonText: 'Delete',
                                         onConfirm: () {
-
                                           BlocProvider.of<ViewStoryBloc>(context).add(DeleteStoryEvent(storyId: storyId));
                                           BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
                                           if (story!.dataType == AmityStoryDataType.VIDEO) {
@@ -219,34 +254,39 @@ class AmityStoryHeaderRow extends StatelessWidget {
                                           onStoryDelete();
                                         },
                                       );
-                                    });
-                              },
-                              icon: SvgPicture.asset(
-                                "assets/Icons/ic_dots_horizontal.svg",
-                                package: 'amity_uikit_beta_service',
-                                width: 16,
-                              ))
-                          : Container(),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: SvgPicture.asset(
-                          "assets/Icons/ic_close_white.svg",
-                          package: 'amity_uikit_beta_service',
-                          width: 12,
+                                    },
+                                  );
+                                },
+                                icon: SvgPicture.asset(
+                                  "assets/Icons/ic_dots_horizontal.svg",
+                                  package: 'amity_uikit_beta_service',
+                                  width: 16,
+                                ),
+                              )
+                            : Container(),
+                        const SizedBox(
+                          width: 5,
                         ),
-                      )
-                    ],
-                  ))
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: SvgPicture.asset(
+                            "assets/Icons/ic_close_white.svg",
+                            package: 'amity_uikit_beta_service',
+                            width: 12,
+                          ),
+                        )
+                      ],
+                    ),
+                  )
                 ],
               )
             ],
-          ));
-    });
+          ),
+        );
+      },
+    );
   }
 
   Widget getProfileIcon(AmityCommunity? community) {

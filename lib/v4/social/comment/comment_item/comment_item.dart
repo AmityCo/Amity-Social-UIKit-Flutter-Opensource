@@ -40,9 +40,7 @@ class CommentItem extends BaseElement {
   Widget buildElement(BuildContext context) {
     return BlocBuilder<CommentItemBloc, CommentItemState>(
         builder: (context, state) {
-      controller.text = state.comment.data is CommentTextData
-          ? (state.comment.data as CommentTextData).text ?? ""
-          : "";
+      controller.text = state.editedText;
       return buildCommentItem(context, state.comment, state.isReacting,
           state.isExpanded, state.isEditing);
     });
@@ -60,6 +58,11 @@ class CommentItem extends BaseElement {
         isModerator = true;
       }
     }
+    controller.addListener(() {
+      context.read<CommentItemBloc>().add(
+            CommentItemEditChanged(text: controller.text),
+          );
+    });
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(left: 0, right: 0, top: 4, bottom: 12),
@@ -220,8 +223,8 @@ class CommentItem extends BaseElement {
                         ),
                       )
                     : Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.all(12),
+                        alignment: Alignment.topLeft,
+                        height: 120,
                         decoration: ShapeDecoration(
                           color: theme.baseColorShade4,
                           shape: const RoundedRectangleBorder(
@@ -232,7 +235,8 @@ class CommentItem extends BaseElement {
                             ),
                           ),
                         ),
-                        child: SizedBox(
+                        child: Container(
+                          alignment: Alignment.topLeft,
                           width: double.infinity,
                           child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -242,13 +246,16 @@ class CommentItem extends BaseElement {
                                 Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(12),
-                                  child: SizedBox(
+                                  child: Container(
+                                    alignment: Alignment.topLeft,
                                     width: double.infinity,
                                     child: MediaQuery.removePadding(
                                       // Remove padding to fix wrong scroll indicator position
                                       context: context,
                                       removeTop: true,
                                       removeBottom: true,
+                                      removeLeft: true,
+                                      removeRight: true,
                                       child: Scrollbar(
                                         controller: scrollController,
                                         child: TextField(
@@ -824,7 +831,7 @@ class CommentItem extends BaseElement {
                               ? "Delete comment"
                               : "Delete reply"),
                           content: Text(
-                              "This ${(comment.parentId == null) ? "comment" : "reply"} will be permanently deleted."),
+                              "This ${(comment.parentId == null) ? "comment" : "reply"} will be permanently removed."),
                           actions: [
                             CupertinoDialogAction(
                               child: Text("Cancel",
@@ -896,97 +903,112 @@ class CommentItem extends BaseElement {
   }
 
   Widget renderCommentEditAction(BuildContext context, AmityComment comment) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () =>
-              {context.read<CommentItemBloc>().add(CommentItemCancelEdit())},
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: theme.baseColorShade2),
-                borderRadius: BorderRadius.circular(4),
+    return BlocConsumer<CommentItemBloc, CommentItemState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        final commentText = getTextComment(comment);
+        final hasChanges = state.editedText.trim() != commentText.trim() && state.editedText.trim().isNotEmpty;
+        return Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () => {
+                context.read<CommentItemBloc>().add(CommentItemCancelEdit())
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: theme.baseColorShade2),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(2)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: theme.baseColorShade1,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: theme.baseColorShade1,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => {
+                if (hasChanges)
+                  {
+                    context.read<CommentItemBloc>().add(CommentItemUpdate(
+                        commentId: comment.commentId!, text: controller.text))
+                  }
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: ShapeDecoration(
+                  color: (hasChanges)
+                      ? theme.primaryColor
+                      : theme.primaryColor.withAlpha(100),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4)),
                 ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        GestureDetector(
-          onTap: () => {
-            context.read<CommentItemBloc>().add(CommentItemUpdate(
-                commentId: comment.commentId!, text: controller.text))
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: ShapeDecoration(
-              color: theme.primaryColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2)),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Save',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(2)),
                       ),
-                    ],
-                  ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Save',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

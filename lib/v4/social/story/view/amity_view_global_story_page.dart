@@ -1,5 +1,4 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_community_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
@@ -10,9 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AmityViewGlobalStoryPage extends StatefulWidget {
   final AmityStoryTarget selectedTarget;
   final List<AmityStoryTarget> targets;
-  final Function(AmityStoryTarget storytarget, AmityStoryMediaType mediaType, AmityStoryImageDisplayMode? imageMode, HyperLink? hyperlionk) createStory;
 
-  AmityViewGlobalStoryPage({super.key, required this.selectedTarget, required this.targets, required this.createStory});
+  AmityViewGlobalStoryPage({
+    super.key,
+    required this.selectedTarget,
+    required this.targets,
+  });
 
   @override
   State<AmityViewGlobalStoryPage> createState() => _AmityViewGlobalStoryPageState();
@@ -34,8 +36,6 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
       currentPage = widget.targets.indexOf(widget.selectedTarget);
       _pageController.jumpToPage(currentPage);
     });
-    // currentPage = widget.targets.indexOf(widget.selectedTarget);
-    // _pageController.jumpToPage(currentPage);
     super.initState();
   }
 
@@ -54,7 +54,7 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
               targetId: widget.targets[index].targetId,
               targetType: AmityStoryTargetType.COMMUNITY,
               isSingleTarget: false,
-              createStory: widget.createStory,
+              // createStory: widget.createStory,
               firstSegmentReached: () {
                 AmityStorySingleSegmentTimerElement.currentValue = -1;
                 BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
@@ -68,7 +68,6 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
                   lastTargetReached: () {
                     AmityStorySingleSegmentTimerElement.currentValue = -1;
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-
                   },
                 );
               },
@@ -79,7 +78,6 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
                   firstTargetReached: () {
                     AmityStorySingleSegmentTimerElement.currentValue = -1;
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-
                   },
                   lastTargetReached: () {
                     Navigator.of(context).pop();
@@ -101,8 +99,7 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
     required Function firstTargetReached,
     required Function lastTargetReached,
   }) {
-
-    var currentTarget = widget.targets[_pageController.page!.toInt()];
+    // var currentTarget = widget.targets[_pageController.page!.toInt()];
     if (shouldMoveToNext) {
       if (currentPage == totalTargets - 1) {
         //  last target
@@ -110,7 +107,11 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
       } else {
         currentPage = currentPage + 1;
         AmityStorySingleSegmentTimerElement.currentValue = -1;
-        _pageController.animateToPage(currentPage, duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+        _pageController.animateToPage(
+          currentPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
       }
     } else {
       if (currentPage == 0) {
@@ -120,7 +121,11 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
         AmityStorySingleSegmentTimerElement.currentValue = -1;
         //  move to previous segment
         currentPage = currentPage - 1;
-        _pageController.animateToPage(currentPage, duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+        _pageController.animateToPage(
+          currentPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
       }
     }
   }

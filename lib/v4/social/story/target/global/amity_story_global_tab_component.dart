@@ -1,33 +1,49 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_target_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/global/bloc/global_story_target_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_story_page_type.dart';
+import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 
-class AmityStoryGlobalTabComponent extends StatefulWidget {
-  final Function(AmityStoryTarget storytarget, AmityStoryMediaType mediaType, AmityStoryImageDisplayMode? imageMode, HyperLink? hyperlionk) createStory;
-  const AmityStoryGlobalTabComponent({super.key , required this.createStory});
-
+class AmityStoryGlobalTabComponent extends NewBaseComponent {
+  String? pageId;
+  AmityStoryGlobalTabComponent({
+    super.key,
+    this.pageId,
+  }) : super(pageId: pageId, componentId: "story_tab_component");
   @override
-  State<AmityStoryGlobalTabComponent> createState() => _AmityStoryGlobalTabComponentState();
+  Widget buildComponent(BuildContext context) {
+    return AmityStoryGlobalTabBuilder(
+      theme: theme,
+    );
+  }
 }
 
-class _AmityStoryGlobalTabComponentState extends State<AmityStoryGlobalTabComponent> {
+class AmityStoryGlobalTabBuilder extends StatefulWidget {
+  final AmityThemeColor theme;
+  const AmityStoryGlobalTabBuilder({
+    super.key,
+    required this.theme,
+  });
+
+  @override
+  State<AmityStoryGlobalTabBuilder> createState() => _AmityStoryGlobalTabBuilderState();
+}
+
+class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder> {
   final scrollcontroller = ScrollController();
 
   @override
   void initState() {
     BlocProvider.of<GlobalStoryTargetBloc>(context).add(ObserverGlobalStoryTarget());
-
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   BlocProvider.of<GlobalStoryTargetBloc>(context).add(LoadNextTargetStoriesEvent());
-    // });
-
     scrollcontroller.addListener(pagination);
     super.initState();
   }
@@ -40,16 +56,22 @@ class _AmityStoryGlobalTabComponentState extends State<AmityStoryGlobalTabCompon
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GlobalStoryTargetBloc, GlobalStoryTargetState>(
-      builder: (context, state) {
-        if (state is GlobalStoryTargetFetchedState) {
-          if (state.storyTargets.isEmpty) {
-            return Container();
-          }
-          return Container(
-            height: 90,
-            color: Colors.white,
-            child: Center(
+    return BlocListener<CreateStoryBloc, CreateStoryState>(
+      listener: (context, state) {
+        if (state is CreateStorySuccess) {
+          context.read<AmityToastBloc>().add(const AmityToastShort(message: "Successfully shared story", icon: AmityToastIcon.success));
+        }
+      },
+      child: BlocBuilder<GlobalStoryTargetBloc, GlobalStoryTargetState>(
+        builder: (context, state) {
+          if (state is GlobalStoryTargetFetchedState) {
+            if (state.storyTargets.isEmpty) {
+              return Container();
+            }
+            return Container(
+              height: 95,
+              color: widget.theme.backgroundColor,
+              padding: const EdgeInsets.only(left: 10, top: 5, bottom: 15),
               child: ListView.builder(
                 controller: scrollcontroller,
                 scrollDirection: Axis.horizontal,
@@ -63,7 +85,6 @@ class _AmityStoryGlobalTabComponentState extends State<AmityStoryGlobalTabCompon
                   if (target == null || community == null) {
                     return const SizedBox();
                   }
-                  //! Get the story Target.
                   return AmityStoryTargetElement(
                     avatarUrl: community.avatarImage?.getUrl(AmityImageSize.LARGE) ?? "",
                     isCommunityTarget: false,
@@ -75,28 +96,25 @@ class _AmityStoryGlobalTabComponentState extends State<AmityStoryGlobalTabCompon
                     targetId: community.communityId!,
                     target: target,
                     onClick: (targetId, storyTarget) {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                        return AmityViewStoryPage(
-                          createStory: widget.createStory,
-                          targets: state.storyTargets,
-                          selectedTarget: target,
-                          type: AmityViewStoryGlobalFeed(communityId: community!.communityId!),
-                        );
-                      }));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return AmityViewStoryPage(
+                            targets: state.storyTargets,
+                            selectedTarget: target,
+                            type: AmityViewStoryGlobalFeed(communityId: community!.communityId!),
+                          );
+                        }),
+                      );
                       // }
                     },
                   );
                 },
               ),
-            ),
-          );
-        }
-
-        if(state is GlobalStoryTargetFetchingState){
-          // return loadingSkeleton();
-        }
-        return const SizedBox();
-      },
+            );
+          }
+          return const SizedBox();
+        },
+      ),
     );
   }
 

@@ -168,31 +168,31 @@ class CommunitySettingPage extends StatelessWidget {
                         },
                       ),
                 //! DO NOT REMOVE 
-                // !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
-                //     ? const SizedBox()
-                //     : ListTile(
-                //         leading: Container(
-                //             padding: const EdgeInsets.all(5),
-                //             decoration: BoxDecoration(
-                //               borderRadius: BorderRadius.circular(4), // Adjust radius to your need
-                //               color: const Color(0xfff1f1f1), // Choose the color to fit your design
-                //             ),
-                //             child: SvgPicture.asset(
-                //               "assets/Icons/ic_create_stroy_black.svg",
-                //               package: 'amity_uikit_beta_service',
-                //               height: 24,
-                //               width: 24,
-                //             )),
-                //         title: Text("Story Comemnts",
-                //             style: TextStyle(
-                //               color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-                //             )),
-                //         trailing: Icon(Icons.chevron_right, color: Provider.of<AmityUIConfiguration>(context).appColors.base),
-                //         onTap: () {
-                //           // Navigate to Post Review Page or perform an action
-                //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => StoryCommentSettingPage(community: livecommunity)));
-                //         },
-                //       ),
+                !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                    ? const SizedBox()
+                    : ListTile(
+                        leading: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4), // Adjust radius to your need
+                              color: const Color(0xfff1f1f1), // Choose the color to fit your design
+                            ),
+                            child: SvgPicture.asset(
+                              "assets/Icons/ic_create_stroy_black.svg",
+                              package: 'amity_uikit_beta_service',
+                              height: 24,
+                              width: 24,
+                            )),
+                        title: Text("Story comments",
+                            style: TextStyle(
+                              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+                            )),
+                        trailing: Icon(Icons.chevron_right, color: Provider.of<AmityUIConfiguration>(context).appColors.base),
+                        onTap: () {
+                          // Navigate to Post Review Page or perform an action
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => StoryCommentSettingPage(community: livecommunity)));
+                        },
+                      ),
                 !community.isJoined!
                     ? const SizedBox()
                     : ListTile(

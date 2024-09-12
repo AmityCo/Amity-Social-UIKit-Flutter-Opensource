@@ -12,6 +12,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlink_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
+import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
@@ -24,8 +25,8 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -39,6 +40,8 @@ import 'viewmodel/feed_viewmodel.dart';
 import 'viewmodel/post_viewmodel.dart';
 import 'viewmodel/user_feed_viewmodel.dart';
 import 'viewmodel/user_viewmodel.dart';
+
+export 'package:amity_sdk/src/domain/model/session/session_state.dart';
 
 enum AmityEndpointRegion {
   sg,
@@ -180,6 +183,10 @@ class AmityUIKit {
     config(provider);
   }
 
+  Stream<SessionState> observeSessionState() {
+    return AmityCoreClient.observeSessionState();
+  }
+
   AmityUser getCurrentUser() {
     return AmityCoreClient.getCurrentUser();
   }
@@ -216,6 +223,7 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<CreateStoryPageBloc>(create: (context) => CreateStoryPageBloc()),
         BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
+        BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
         BlocProvider<StoryVideoPlayerBloc>(create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [

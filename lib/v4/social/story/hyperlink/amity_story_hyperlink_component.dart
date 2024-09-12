@@ -1,5 +1,8 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/elements/amity_hyper_link_text_field.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlink_bloc.dart';
 import 'package:flutter/material.dart';
@@ -27,17 +30,49 @@ void showHyperLinkBottomSheet({required BuildContext context, HyperLink? hyperLi
       });
 }
 
-class HyperLinkBottomSheetContent extends StatefulWidget {
+class HyperLinkBottomSheetContent extends NewBaseComponent {
   final HyperLink? hyperLink;
   final Function(HyperLink) onHyperLinkAdded;
   final Function() onHyperLinkRemoved;
-  const HyperLinkBottomSheetContent({super.key, this.hyperLink, required this.onHyperLinkAdded, required this.onHyperLinkRemoved});
+  HyperLinkBottomSheetContent({
+    super.key,
+    this.hyperLink,
+    required this.onHyperLinkAdded,
+    required this.onHyperLinkRemoved,
+    String? pageId,
+  }) : super(pageId: pageId, componentId: "hyperlink_bottom_sheet");
 
   @override
-  State<HyperLinkBottomSheetContent> createState() => _HyperLinkBottomSheetContentState();
+  Widget buildComponent(BuildContext context) {
+    return HyperLinkBottomSheetBuilder(
+      onHyperLinkAdded: onHyperLinkAdded,
+      onHyperLinkRemoved: onHyperLinkRemoved,
+      hyperLink: hyperLink,
+      theme: theme,
+    );
+  }
 }
 
-class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetContent> {
+class HyperLinkBottomSheetBuilder extends StatefulWidget {
+  final HyperLink? hyperLink;
+  final Function(HyperLink) onHyperLinkAdded;
+  final Function() onHyperLinkRemoved;
+  AmityThemeColor theme;
+  HyperLinkBottomSheetBuilder({
+    super.key,
+    this.hyperLink,
+    required this.theme,
+    required this.onHyperLinkAdded,
+    required this.onHyperLinkRemoved,
+  });
+
+  @override
+  State<HyperLinkBottomSheetBuilder> createState() => _HyperLinkBottomSheetBuilderState();
+}
+
+class AmityColorTheme {}
+
+class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilder> {
   TextEditingController urlTextController = TextEditingController();
   TextEditingController customizedTextController = TextEditingController();
 
@@ -68,9 +103,9 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
         return Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: widget.theme.backgroundColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
@@ -93,23 +128,19 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextButton(
-                    style: TextButton.styleFrom(foregroundColor: Colors.black, textStyle: const TextStyle(fontSize: 15, fontFamily: "SF Pro Text")),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      textStyle: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: "SF Pro Text",
+                      ),
+                    ),
                     onPressed: () {
-
-                      // if(urlTextController.text == widget.hyperLink?.url && customizedTextController.text == widget.hyperLink?.customText){
-                      //   Navigator.of(context).pop();
-                      //   return;
-                      // }
-
-                      // if ( state.hyperLink != null ) {
-                      //   Navigator.of(context).pop();
-                      // }else 
-                      if(widget.hyperLink==null && state.hyperLink==null && urlTextController.text.isEmpty && customizedTextController.text.isEmpty){
+                      if (widget.hyperLink == null && state.hyperLink == null && urlTextController.text.isEmpty && customizedTextController.text.isEmpty) {
                         Navigator.of(context).pop();
-                      }else if(urlTextController.text == (state.hyperLink?.url??"") && customizedTextController.text == (state.hyperLink?.customText??"")){
+                      } else if (urlTextController.text == (state.hyperLink?.url ?? "") && customizedTextController.text == (state.hyperLink?.customText ?? "")) {
                         Navigator.of(context).pop();
-                      } 
-                      else {
+                      } else {
                         ConfirmationDialog().show(
                           context: context,
                           title: 'Unsaved changes',
@@ -118,55 +149,61 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
                           rightButtonText: 'Yes',
                           confrimColor: Colors.blue,
                           onConfirm: () {
-                             Navigator.of(context).pop();
-                            // context.read<HyperlinkBloc>().add(OnRemoveHyperLink());
-                            // Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
                         );
                       }
                     },
-                    child: const Text(
+                    child: Text(
                       'Cancel',
                       style: TextStyle(
                         fontSize: 15,
+                        fontFamily: "SF Pro Text",
+                        color: widget.theme.baseColor,
                       ),
                     ),
                   ),
                   (state is LoadingStateHyperLink)
                       ? const CircularProgressIndicator()
-                      : const Text(
+                      : Text(
                           'Add Link',
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, fontFamily: "SF Pro Text"),
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: widget.theme.baseColor,
+                            fontFamily: "SF Pro Text",
+                          ),
                         ),
-                  TextButton(
-                    style: TextButton.styleFrom(foregroundColor: Colors.blue, textStyle: const TextStyle(fontSize: 15, fontFamily: "SF Pro Text") , disabledForegroundColor:const Color(0xffA0BDF8)),
-                    onPressed: (state is HyperlinkErrorState && ( state.urlError!=null || state.customizedError!=null ))? null : () {
-                      context.read<HyperlinkBloc>().add(VerifyAndSaveHyperLinkEvent(
-                            urlText: urlTextController.text,
-                            customizedText: customizedTextController.text,
-                          ));
-                    },
-                    child: const Text(
-                      'Done',
-                    ),
+                  DoneButton(
+                    componentId: "hyperlink_bottom_sheet",
+                    onPressed: (state is HyperlinkErrorState && (state.urlError != null || state.customizedError != null))
+                        ? null
+                        : () {
+                            context.read<HyperlinkBloc>().add(
+                                  VerifyAndSaveHyperLinkEvent(
+                                    urlText: urlTextController.text,
+                                    customizedText: customizedTextController.text,
+                                  ),
+                                );
+                          },
                   ),
                 ],
               ),
             ),
             Divider(
-              color: Colors.grey[300],
+              color: widget.theme.baseColorShade3,
               thickness: 1,
             ),
             const SizedBox(height: 24),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   Text(
                     "URL",
-                    style: TextStyle(fontFamily: "SF Pro Text", fontSize: 17, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontFamily: "SF Pro Text", fontSize: 17, color: widget.theme.baseColor, fontWeight: FontWeight.w600),
                   ),
-                  Text(
+                  const Text(
                     "*",
                     style: TextStyle(
                       color: Colors.red,
@@ -183,14 +220,16 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: AmityHyperlinkTextField(
                 hint: "Https://example.com",
+                textColor: widget.theme.baseColor,
+                hintColor: widget.theme.baseColorShade3,
+                borderColor: widget.theme.baseColorShade3,
                 textEditingController: urlTextController,
                 onChanged: (value) {
-                  var urlPattern = r"(https?|http)://([-A-Z0-9.]+)(/[-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[A-Z0-9+&@#/%=~_|!:‌​,.;]*)?";
                   setState(() {
-                    var isValid = isURL(value, requireTld: true , requireProtocol: false);
+                    var isValid = isURL(value, requireTld: true, requireProtocol: false);
                     if (!isValid) {
                       BlocProvider.of<HyperlinkBloc>(context).add(OnURLErrorEvent(error: "Please enter a valid URL."));
-                    }else{
+                    } else {
                       BlocProvider.of<HyperlinkBloc>(context).add(OnURLErrorEvent(error: null));
                     }
                     urlTextController.text = value;
@@ -202,15 +241,15 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Customize link text",
-                      style: TextStyle(fontFamily: "SF Pro Text", fontSize: 17, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontFamily: "SF Pro Text", color: widget.theme.baseColor, fontSize: 17, fontWeight: FontWeight.w600),
                     ),
                     Text(
                       "${customizedTextController.text.length}/30",
@@ -229,6 +268,9 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: AmityHyperlinkTextField(
                 hint: "Name your link",
+                textColor: widget.theme.baseColor,
+                hintColor: widget.theme.baseColorShade3,
+                borderColor: widget.theme.baseColorShade3,
                 textEditingController: customizedTextController,
                 error: state is HyperlinkErrorState ? (state).customizedError : null,
                 maxCharacters: 30,
@@ -285,13 +327,13 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
                                 height: 16,
                               ),
                               const SizedBox(width: 8),
-                              const Text(
+                              Text(
                                 "Remove link",
                                 style: TextStyle(
                                   fontFamily: "SF Pro Text",
                                   fontSize: 15,
                                   fontWeight: FontWeight.w400,
-                                  color: Colors.red,
+                                  color: widget.theme.alertColor,
                                 ),
                               ),
                             ],
@@ -311,6 +353,26 @@ class _HyperLinkBottomSheetContentState extends State<HyperLinkBottomSheetConten
           ]),
         );
       },
+    );
+  }
+}
+
+class DoneButton extends BaseElement {
+  final VoidCallback? onPressed;
+  DoneButton({super.key, required this.onPressed, String? pageId, String? componentId}) : super(pageId: pageId, componentId: componentId, elementId: "done_button");
+
+  @override
+  Widget buildElement(BuildContext context) {
+    return TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: theme.primaryColor,
+        textStyle: const TextStyle(fontSize: 15, fontFamily: "SF Pro Text"),
+        disabledForegroundColor: theme.primaryColor.blend(ColorBlendingOption.shade2),
+      ),
+      onPressed: onPressed,
+      child: const Text(
+        'Done',
+      ),
     );
   }
 }

@@ -8,7 +8,6 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/bloc/com
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/comment_skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommentList extends NewBaseComponent with ChangeNotifier {
@@ -26,8 +25,10 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
   Widget buildComponent(BuildContext context) {
     return BlocBuilder<CommentListBloc, CommentListState>(
       builder: (context, state) {
+        final commentCount = state.comments.length;
         if (state is CommentListStateInitial) {
-          context.read<CommentListBloc>().add(CommentListEventRefresh(toastBloc: context.read<AmityToastBloc>()));
+          context.read<CommentListBloc>().add(CommentListEventRefresh(
+              toastBloc: context.read<AmityToastBloc>()));
         }
         if (state.isFetching && state.comments.isEmpty) {
           return SliverList(
@@ -53,31 +54,50 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
           );
         } else {
           scrollController.addListener(() {
-            if ((scrollController.position.pixels == (scrollController.position.maxScrollExtent))) {
-              context.read<CommentListBloc>().add(CommentListEventLoadMore(toastBloc: context.read<AmityToastBloc>()));
+            if ((scrollController.position.pixels ==
+                (scrollController.position.maxScrollExtent))) {
+              context.read<CommentListBloc>().add(CommentListEventLoadMore(
+                  toastBloc: context.read<AmityToastBloc>()));
             }
           });
           return SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final comment = state.comments[index];
-                final isExpanded = state.expandedId.contains(comment.commentId);
-                return BlocProvider(
-                  key: ValueKey("${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}"),
-                  create: (context) => CommentItemBloc(
-                    comment: comment,
-                    isExpanded: isExpanded,
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: CommentItem(
-                      parentScrollController: scrollController,
-                      commentAction: commentAction,
+                if (index < state.comments.length) {
+                  final comment = state.comments[index];
+                  final isExpanded =
+                      state.expandedId.contains(comment.commentId);
+                  return BlocProvider(
+                    key: ValueKey(
+                        "${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}"),
+                    create: (context) => CommentItemBloc(
+                      comment: comment,
+                      isExpanded: isExpanded,
                     ),
-                  ),
-                );
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: CommentItem(
+                        parentScrollController: scrollController,
+                        commentAction: commentAction,
+                      ),
+                    ),
+                  );
+                } else {
+                  return state.isFetching && state.comments.isNotEmpty
+                      ? Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: theme.primaryColor,
+                            ),
+                          ),
+                        )
+                      : Container();
+                }
               },
-              childCount: state.comments.length,
+              // Add 1 more item to show loading indicator
+              childCount: (commentCount > 0) ? commentCount + 1 : commentCount,
             ),
           );
         }

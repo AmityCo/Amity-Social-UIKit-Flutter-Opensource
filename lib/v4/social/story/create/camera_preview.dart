@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:amity_uikit_beta_service/amity_sle_uikit.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class CameraPreviewWidget extends StatefulWidget {
   final Function(File) onVideoCaptured;
   final Function(File, bool) onImageCaptured;
   final Function() onCloseClicked;
+  final AmityThemeColor? themeColor;
 
   const CameraPreviewWidget({
     super.key,
@@ -24,6 +26,7 @@ class CameraPreviewWidget extends StatefulWidget {
     required this.onVideoCaptured,
     required this.onImageCaptured,
     required this.onCloseClicked,
+    this.themeColor,
   });
 
   @override
@@ -352,22 +355,6 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> with WidgetsB
                                           : Colors.red
                                       : Colors.white,
                                 ),
-                                // child: isRecording
-                                //     ? SizedBox(
-                                //         width: 38,
-                                //         height: 38,
-                                //         child: Container(
-                                //           width: 38,
-                                //           height: 38,
-                                //           decoration: BoxDecoration(
-                                //             color: Colors.red,
-                                //             borderRadius: BorderRadius.circular(
-                                //               10,
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       )
-                                //     : Container(),
                               ),
                       ),
                     ),
@@ -387,7 +374,7 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> with WidgetsB
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 100),
                           decoration: BoxDecoration(
-                            color: isRecording ? Colors.red : Colors.transparent,
+                            color: isRecording ? widget.themeColor?.alertColor ?? Colors.red : Colors.transparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Center(
@@ -415,9 +402,9 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> with WidgetsB
     } else {
       var camera = controller!.value;
       setFlashMode(isFlashOn ? FlashMode.always : FlashMode.off);
-      
+
       var scale = (width / height) * camera.aspectRatio;
-      
+
       if (scale < 1) scale = 1 / scale;
 
       return Listener(
@@ -605,7 +592,6 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> with WidgetsB
     }
 
     setFlashMode(isFlashOn ? FlashMode.torch : FlashMode.off);
-    
 
     if (cameraController.value.isRecordingVideo) {
       // A recording is already started, do nothing.
@@ -632,7 +618,7 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> with WidgetsB
     if (cameraController == null || !cameraController.value.isRecordingVideo) {
       return null;
     }
-    setFlashMode( FlashMode.off);
+    setFlashMode(FlashMode.off);
 
     try {
       setState(() {

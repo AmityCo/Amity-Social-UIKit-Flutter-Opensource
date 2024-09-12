@@ -109,7 +109,7 @@ class AmityEmptyNewsFeedComponent extends BaseElement {
                                     SizedBox(
                                       width: 20,
                                       child: SvgPicture.asset(
-                                        'assets/Icons/amity_ic_globe.svg.svg',
+                                        'assets/Icons/amity_ic_globe.svg',
                                         package: 'amity_uikit_beta_service',
                                         width: 20,
                                         height: 16,

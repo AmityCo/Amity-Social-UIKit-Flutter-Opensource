@@ -106,39 +106,6 @@ class AmityReactionListComponent extends NewBaseComponent {
     );
   }
 
-  Widget getSkeletonList() {
-    return Container(
-      decoration: BoxDecoration(color: theme.backgroundColor),
-      child: Column(children: [
-        bottomSheetHandle(),
-        reactionTab(),
-        Divider(
-          color: theme.baseColorShade4,
-          thickness: 0.5,
-          height: 0,
-        ),
-        Expanded(
-          child: Container(
-            alignment: Alignment.topCenter,
-            child: Shimmer(
-              linearGradient: configProvider.getShimmerGradient(),
-              child: ListView(
-                physics: true ? const NeverScrollableScrollPhysics() : null,
-                children: [
-                  skeletonItem(),
-                  skeletonItem(),
-                  skeletonItem(),
-                  skeletonItem(),
-                  skeletonItem(),
-                ],
-              ),
-            ),
-          ),
-        )
-      ]),
-    );
-  }
-
   Widget bottomSheetHandle() {
     return Container(
       margin: const EdgeInsets.only(top: 12, bottom: 15),
@@ -276,7 +243,7 @@ class AmityReactionListComponent extends NewBaseComponent {
           child: AmityNetworkImage(
               imageUrl: reaction.creator?.avatarUrl,
               placeHolderPath:
-                  "assets/Icons/amity_ic_community_avatar_placeholder.svg"),
+                  "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
         ),
       ),
     );
@@ -293,6 +260,39 @@ class AmityReactionListComponent extends NewBaseComponent {
           fontFamily: 'SF Pro Text',
         ),
       ),
+    );
+  }
+
+  Widget getSkeletonList() {
+    return Container(
+      decoration: BoxDecoration(color: theme.backgroundColor),
+      child: Column(children: [
+        bottomSheetHandle(),
+        reactionTab(),
+        Divider(
+          color: theme.baseColorShade4,
+          thickness: 0.5,
+          height: 0,
+        ),
+        Expanded(
+          child: Container(
+            alignment: Alignment.topCenter,
+            child: Shimmer(
+              linearGradient: configProvider.getShimmerGradient(),
+              child: ListView(
+                physics: true ? const NeverScrollableScrollPhysics() : null,
+                children: [
+                  skeletonItem(),
+                  skeletonItem(),
+                  skeletonItem(),
+                  skeletonItem(),
+                  skeletonItem(),
+                ],
+              ),
+            ),
+          ),
+        )
+      ]),
     );
   }
 

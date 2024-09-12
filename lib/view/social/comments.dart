@@ -1045,11 +1045,6 @@ class _CommentComponentState extends State<CommentComponent> {
                                                                           vm.deleteComment(
                                                                               comments);
 
-                                                                          // AmitySuccessDialog
-                                                                          //     .showTimedDialog(
-                                                                          //         "Success",
-                                                                          //         context:
-                                                                          //             context);
                                                                           Navigator.pop(
                                                                               context);
                                                                         });

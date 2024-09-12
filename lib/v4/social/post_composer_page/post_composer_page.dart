@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -17,13 +14,13 @@ import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_camer
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/utils/CustomBottomSheet/custom_buttom_sheet.dart';
 import 'package:amity_uikit_beta_service/v4/utils/SingleVideoPlayer/single_video_player.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -726,7 +723,6 @@ class PostComposerPage extends NewBasePage {
           .build()
           .update()
           .then((post) {
-        context.read<GlobalFeedBloc>().add(GlobalFeedReloadThePost(post: post));
         Navigator.pop(context);
       }).onError((error, stackTrace) {
         _showToast(context, "Failed to edit post. Please try again.",
@@ -740,7 +736,6 @@ class PostComposerPage extends NewBasePage {
       }
 
       postEditBuilder?.text(_controller.text).build().update().then((post) {
-        context.read<GlobalFeedBloc>().add(GlobalFeedReloadThePost(post: post));
         Navigator.pop(context);
       }).onError((error, stackTrace) {
         _showToast(context, "Failed to edit post. Please try again.",

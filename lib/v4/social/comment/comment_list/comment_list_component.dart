@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AmityCommentTrayComponent extends NewBaseComponent {
+class AmityCommentListComponent extends NewBaseComponent {
   final String referenceId;
   final AmityCommentReferenceType referenceType;
   final ScrollController parentScrollController;
   final CommentAction commentAction;
 
-  AmityCommentTrayComponent({
+  AmityCommentListComponent({
     Key? key,
     String? pageId,
     required this.referenceId,

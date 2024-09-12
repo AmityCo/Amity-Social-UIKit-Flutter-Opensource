@@ -26,6 +26,12 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
       }
     });
 
+    liveCollection.observeLoadingState().listen((event) {
+      if (!isClosed) {
+        add(CommentListEventLoadingStateUpdated(isFetching: event));
+      }
+    });
+
     on<CommentListEventRefresh>((event, emit) async {
       emit(CommentListStateChanged(
         referenceId: state.referenceId,
@@ -86,6 +92,10 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
               .add(AmityToastShort(message: "Couldn’t load comment"));
         }
       }
+    });
+
+    on<CommentListEventLoadingStateUpdated>((event, emit) async {
+      emit(state.copyWith(isFetching: event.isFetching));
     });
 
     on<CommentListEventDisposed>((event, emit) async {

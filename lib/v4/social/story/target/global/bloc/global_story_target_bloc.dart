@@ -16,7 +16,9 @@ class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTarg
       emit(GlobalStoryTargetFetchingState());
       liveCollection = GlobalStoryTargetLiveCollection(queryOption: selectedType);
       liveCollection.getStreamController().stream.listen((targets) {
-        add(GlobalStoryTargetsFetched(targets));
+        if (!isClosed) {
+          add(GlobalStoryTargetsFetched(targets));
+        }
       });
       liveCollection.getFirstPageRequest();
     });

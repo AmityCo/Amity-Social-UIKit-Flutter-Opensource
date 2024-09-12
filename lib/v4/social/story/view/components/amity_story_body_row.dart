@@ -57,88 +57,49 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
           children: [
             getContent(widget.dataType),
             Positioned.fill(
-                child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              child: Row(
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        widget.onTap(false);
-                      },
-                      onLongPressStart: (details) {
-                        widget.onHold(true);
-                      },
-                      onLongPressEnd: (details) {
-                        widget.onHold(false);
-                      },
-                      onVerticalDragStart: (details) {
-                        // onSwipeUp();
-                      },
-                      onVerticalDragUpdate: (details) {
-                        if (details.delta.dy > 0)
-                          {}
-                        //SWIPE DOWN
-                        else
-                          showBottomSheet = true;
-                        // SWIPE UP
-                      },
-                      onVerticalDragEnd: (details) {
-                        if (showBottomSheet) {
-                          widget.onSwipeUp();
-                          showBottomSheet = false;
-                        }
-                        // onSwipeDown();
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        color: Colors.transparent,
-                      ),
-                    ),
+              child: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: GestureDetector(
+                  onTapDown: (details) {
+                    var position = details.globalPosition;
+                    if (position.dx < MediaQuery.of(context).size.width / 2) {
+                      widget.onTap(false);
+                    } else {
+                      widget.onTap(true);
+                    }
+                  },
+                  onLongPressStart: (details) {
+                    widget.onHold(true);
+                  },
+                  onLongPressEnd: (details) {
+                    widget.onHold(false);
+                  },
+                  onVerticalDragStart: (details) {
+                    // onSwipeUp();
+                  },
+                  onVerticalDragUpdate: (details) {
+                    if (details.delta.dy > 0) {
+                    }
+                    else{
+                      showBottomSheet = true;
+                    }
+                  },
+                  onVerticalDragEnd: (details) {
+                    if (showBottomSheet) {
+                      widget.onSwipeUp();
+                      showBottomSheet = false;
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.transparent,
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        widget.onTap(true);
-                      },
-                      onLongPressStart: (details) {
-                        widget.onHold(true);
-                      },
-                      onLongPressEnd: (details) {
-                        widget.onHold(false);
-                      },
-                      onVerticalDragStart: (details) {
-                        // onSwipeUp();
-                      },
-                      onVerticalDragUpdate: (details) {
-                        if (details.delta.dy > 0)
-                          {}
-                        //SWIPE DOWN
-                        else
-                          showBottomSheet = true;
-                        // SWIPE UP
-                      },
-                      onVerticalDragEnd: (details) {
-                        if (showBottomSheet) {
-                          widget.onSwipeUp();
-                          showBottomSheet = false;
-                        }
-                        // onSwipeDown();
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        color: Colors.transparent,
-                      ),
-                    ),
-                  )
-                ],
+                ),
               ),
-            )),
+            ),
+            
             (widget.items.isNotEmpty && widget.items.first is HyperLink)
                 ? Align(
                     alignment: Alignment.bottomCenter,
@@ -148,38 +109,35 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
                     ),
                   )
                 : Container(),
-
-            (widget.dataType == AmityStoryDataType.VIDEO)?
-            
-            Positioned(
-                  top: 90,
-                  left: 16,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isVolumeOn = !isVolumeOn;
-                      });
-                      BlocProvider.of<StoryVideoPlayerBloc>(context).add(const VolumeChangedEvent());
-                    },
-                    child: Container(
-                      height: 32,
-                      width: 32,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.5),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                           isVolumeOn ? "assets/Icons/ic_volume_white.svg"  :  "assets/Icons/ic_volume_off_white.svg",
-                          package: 'amity_uikit_beta_service',
-                          height: 24,
+            (widget.dataType == AmityStoryDataType.VIDEO)
+                ? Positioned(
+                    top: 90,
+                    left: 16,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isVolumeOn = !isVolumeOn;
+                        });
+                        BlocProvider.of<StoryVideoPlayerBloc>(context).add(const VolumeChangedEvent());
+                      },
+                      child: Container(
+                        height: 32,
+                        width: 32,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            isVolumeOn ? "assets/Icons/ic_volume_white.svg" : "assets/Icons/ic_volume_off_white.svg",
+                            package: 'amity_uikit_beta_service',
+                            height: 24,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-            :Container()
-            
+                  )
+                : Container()
           ],
         ),
       ),
@@ -192,8 +150,7 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
         return AmityStoryBodyImageView(data: widget.data as ImageStoryData, syncState: widget.state);
 
       case AmityStoryDataType.VIDEO:
-        var videoData = widget.data as VideoStoryData;
-        if(!widget.isVisible){
+        if (!widget.isVisible) {
           BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
         }
         return AmityStoryBodyVideoView(data: widget.data as VideoStoryData, syncState: widget.state, videoPlayerController: AmityViewCommunityStoryPage.videoPlayerController);
@@ -218,10 +175,6 @@ class AmityStoryBodyImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-
-
-
-      
       children: [
         Container(
           width: double.infinity,
@@ -233,8 +186,8 @@ class AmityStoryBodyImageView extends StatelessWidget {
               imageUrl: data.image.getUrl(AmityImageSize.FULL),
               progressIndicatorBuilder: (context, url, progress) {
                 return Shimmer.fromColors(
-                  baseColor: Color(0xff292b32),
-                  highlightColor: Color(0xff3c3e48),
+                  baseColor:const  Color(0xff292b32),
+                  highlightColor: const Color(0xff3c3e48),
                   child: Container(
                     height: double.infinity,
                     width: double.infinity,

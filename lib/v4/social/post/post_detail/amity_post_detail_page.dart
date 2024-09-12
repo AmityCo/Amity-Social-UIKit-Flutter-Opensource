@@ -16,12 +16,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AmityPostDetailPage extends NewBasePage {
   final String postId;
   final AmityPost? post;
+  final AmityPostCategory category;
+  final bool hideMenu;
   final AmityPostAction? action;
 
   AmityPostDetailPage({
     Key? key,
     required this.postId,
     this.post,
+    this.category = AmityPostCategory.general,
+    this.hideMenu = false,
     this.action,
   }) : super(key: key, pageId: 'post_detail_page');
 
@@ -51,16 +55,19 @@ class AmityPostDetailPage extends NewBasePage {
       return Text(state.message);
     } else if (state is PostDetailStateLoaded) {
       return renderPage(
-          context: context, post: state.post, replyTo: state.replyTo);
+          context: context, post: state.post, replyTo: state.replyTo, category: category, hideMenu: hideMenu);
     } else {
       return Container();
     }
   }
 
-  Widget renderPage(
-      {required BuildContext context,
-      required AmityPost post,
-      AmityComment? replyTo}) {
+  Widget renderPage({
+    required BuildContext context,
+    required AmityPost post,
+    AmityComment? replyTo,
+    required AmityPostCategory category,
+    required bool hideMenu,
+  }) {
     ScrollController scrollController = ScrollController();
     return BlocProvider(
       create: (context) => PostItemBloc(),
@@ -86,13 +93,15 @@ class AmityPostDetailPage extends NewBasePage {
                     child: renderPost(
                       context: context,
                       post: post,
+                      category: category,
+                      hideMenu: hideMenu,
                       scrollController: scrollController,
                     ),
                   ),
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.only(left: 12, right: 16, top: 7),
-                  sliver: AmityCommentTrayComponent(
+                  sliver: AmityCommentListComponent(
                     referenceId: postId,
                     referenceType: AmityCommentReferenceType.POST,
                     parentScrollController: scrollController,
@@ -133,6 +142,8 @@ class AmityPostDetailPage extends NewBasePage {
   Widget renderPost({
     required BuildContext context,
     required AmityPost post,
+    required AmityPostCategory category,
+    required bool hideMenu,
     required ScrollController scrollController,
   }) {
     return Column(
@@ -140,6 +151,8 @@ class AmityPostDetailPage extends NewBasePage {
         AmityPostContentComponent(
           style: AmityPostContentComponentStyle.detail,
           post: post,
+          category: category,
+          hideMenu: hideMenu,
           action: action,
         ),
         getSectionDivider(),

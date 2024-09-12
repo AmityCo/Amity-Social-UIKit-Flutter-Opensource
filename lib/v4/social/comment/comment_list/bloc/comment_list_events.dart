@@ -31,6 +31,15 @@ class CommentListEventChanged extends CommentListEvent {
   List<Object> get props => [comments, isFetching];
 }
 
+class CommentListEventLoadingStateUpdated extends CommentListEvent {
+  final bool isFetching;
+
+  const CommentListEventLoadingStateUpdated({required this.isFetching});
+
+  @override
+  List<Object> get props => [isFetching];
+}
+
 class CommentListEventExpandItem extends CommentListEvent {
   final String commentId;
 

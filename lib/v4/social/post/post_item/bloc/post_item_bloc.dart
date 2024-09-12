@@ -23,12 +23,12 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
         await post.react().removeReaction(post.myReactions!.first);
       }
       await post.react().addReaction(event.reactionType);
-      var updatedPost = await AmitySocialClient.newPostRepository()
-          .getPost(event.post.postId!);
-      if (event.action?.onPostUpdated != null) {
-        event.action?.onPostUpdated(updatedPost);
-      }
-      emit(PostItemStateLoaded(post: updatedPost));
+      // var updatedPost = await AmitySocialClient.newPostRepository()
+      //     .getPost(event.post.postId!);
+      // if (event.action?.onPostUpdated != null) {
+      //   event.action?.onPostUpdated(updatedPost);
+      // }
+      // emit(PostItemStateLoaded(post: updatedPost));
     });
 
     on<RemoveReactionToPost>((event, emit) async {
@@ -37,12 +37,12 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       if (post.myReactions?.isNotEmpty ?? false) {
         await post.react().removeReaction(event.reactionType);
       }
-      var updatedPost = await AmitySocialClient.newPostRepository()
-          .getPost(event.post.postId!);
-      if (event.action?.onPostUpdated != null) {
-        event.action?.onPostUpdated(updatedPost);
-      }
-      emit(PostItemStateLoaded(post: updatedPost));
+      // var updatedPost = await AmitySocialClient.newPostRepository()
+      //     .getPost(event.post.postId!);
+      // if (event.action?.onPostUpdated != null) {
+      //   event.action?.onPostUpdated(updatedPost);
+      // }
+      // emit(PostItemStateLoaded(post: updatedPost));
     });
 
     on<PostItemFlag>((event, emit) async {

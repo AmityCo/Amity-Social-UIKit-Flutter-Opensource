@@ -7,7 +7,6 @@ import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_sto
 import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_story_view_count_element.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AmityStoryEngagementRow extends StatelessWidget {
   final String storyId;
@@ -61,7 +60,7 @@ class AmityStoryEngagementRow extends StatelessWidget {
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
                     openCommentTraySheet(context, amityStory, isAllowedComment);
                   },
-                  count: "${commentCount}"),
+                  count: "$commentCount"),
               const SizedBox(width: 10),
               AmityStoryReactionCountElement(
                 count: "$reactionCount",

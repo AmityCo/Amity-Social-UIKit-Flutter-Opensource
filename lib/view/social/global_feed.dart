@@ -733,7 +733,6 @@ class _PostWidgetState
                               )
                             : const SizedBox()
                         : Container(
-                            padding: const EdgeInsets.only(bottom: 12, top: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -742,9 +741,7 @@ class _PostWidgetState
                                     feedType: widget.feedType,
                                     feedReactionCountSize:
                                         feedReactionCountSize),
-                                const SizedBox(
-                                  width: 12,
-                                ),
+
                                 GestureDetector(
                                   onTap: () {
                                     if (widget.isFromFeed) {

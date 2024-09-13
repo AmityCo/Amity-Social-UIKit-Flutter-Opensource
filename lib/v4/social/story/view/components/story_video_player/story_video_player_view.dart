@@ -79,7 +79,6 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
                           aspectRatio: state.videoController!.value.aspectRatio,
                           child: Chewie(
                             controller: state.chewieController!,
-
                           ),
                         )
                       : const Column(

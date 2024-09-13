@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -9,6 +10,11 @@ part 'view_story_event.dart';
 part 'view_story_state.dart';
 
 class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
+  late StoryLiveCollection storyLiveCollection;
+    AmityStorySortingOrder _sortOption = AmityStorySortingOrder.FIRST_CREATED;
+    late StreamSubscription<List<AmityStory>> _subscription;
+    late StreamSubscription<AmityStoryTarget> _subscriptionTarget;
+
   ViewStoryBloc()
       : super(
           const ViewStoryInitial(
@@ -22,9 +28,7 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
             hasManageStoryPermission: false,
           ),
         ) {
-    late StoryLiveCollection storyLiveCollection;
-    AmityStorySortingOrder _sortOption = AmityStorySortingOrder.FIRST_CREATED;
-
+    
     on<ViewStoryEvent>(
       (event, emit) {},
     );
@@ -194,7 +198,7 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
 
     on<FetchStoryTarget>(
       (event, emit) {
-        AmitySocialClient.newStoryRepository()
+       _subscriptionTarget =  AmitySocialClient.newStoryRepository()
             .live
             .getStoryTaregt(
               targetType: AmityStoryTargetType.COMMUNITY,
@@ -232,7 +236,7 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
 
     on<FetchActiveStories>((event, emit) {
       storyLiveCollection = StoryLiveCollection(request: () => AmitySocialClient.newStoryRepository().getActiveStories(targetId: event.communityId, targetType: AmityStoryTargetType.COMMUNITY, orderBy: _sortOption).build());
-      storyLiveCollection.getStreamController().stream.asBroadcastStream().listen((stoies) {
+      _subscription =  storyLiveCollection.getStreamController().stream.asBroadcastStream().listen((stoies) {
         add(ActiveStoriesFetched(stories: stoies));
       });
       storyLiveCollection.getData();
@@ -271,5 +275,12 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
         }
       },
     );
+  }
+
+  @override
+  Future<void> close() {
+    _subscription.cancel();
+    _subscriptionTarget.cancel();
+    return super.close();
   }
 }

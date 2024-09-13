@@ -68,11 +68,14 @@ class AmityCommunityCategoriesName extends BaseElement {
 
 class CommunityImageAvatarElement extends BaseElement {
   final String? avatarUrl;
+  final String placeHolderPath;
 
   CommunityImageAvatarElement(
       {Key? key,
       String? pageId,
       String? componentId,
+      this.placeHolderPath =
+          "assets/Icons/amity_ic_community_avatar_placeholder.svg",
       required String elementId,
       required this.avatarUrl})
       : super(
@@ -84,9 +87,7 @@ class CommunityImageAvatarElement extends BaseElement {
   @override
   Widget buildElement(BuildContext context) {
     return AmityNetworkImage(
-        imageUrl: avatarUrl,
-        placeHolderPath:
-            "assets/Icons/amity_ic_community_avatar_placeholder.svg");
+        imageUrl: avatarUrl, placeHolderPath: placeHolderPath);
   }
 }
 

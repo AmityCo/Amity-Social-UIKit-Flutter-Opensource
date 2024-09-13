@@ -1,5 +1,4 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -45,7 +44,7 @@ class AmityStoryHyperlinkView extends StatelessWidget {
                   ),
                   Text(
                     getHyperlinkText(hyperlink).length > 30
-                        ? getHyperlinkText(hyperlink).substring(0, 30) + "..."
+                        ? "${getHyperlinkText(hyperlink).substring(0, 30)}..."
                         : getHyperlinkText(hyperlink),
                     maxLines: 1,
                     style: const TextStyle(

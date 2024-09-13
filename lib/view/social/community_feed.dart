@@ -1,25 +1,19 @@
 import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component_type.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_custom_snack_bar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_action_bottom_sheet.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intrinsic_dimension/intrinsic_dimension.dart';
 import 'package:provider/provider.dart';
-
 import '../../v4/social/story/target/amity_story_tab_component.dart';
 import '../../viewmodel/community_feed_viewmodel.dart';
 import '../../viewmodel/community_viewmodel.dart';
@@ -194,16 +188,8 @@ class CommunityScreenState extends State<CommunityScreen> {
                     ? FloatingActionButton(
                         shape: const CircleBorder(),
                         onPressed: () async {
+                          CreateActionBottomSheet.show(context, community: widget.community, storyCreated: () {});
 
-                          CreateActionBottomSheet.show(context , community: widget.community , storyCreated: (){
-                            
-                          });
-
-                          // await Navigator.of(context).push(MaterialPageRoute(
-                          //     builder: (context2) => AmityCreatePostV2Screen(
-                          //           community: snapshot.data!,
-                          //           feedType: FeedType.community,
-                          //         )));
                           Provider.of<CommuFeedVM>(context, listen: false).getPostCount(widget.community);
                           Provider.of<CommuFeedVM>(context, listen: false).getReviewingPostCount(widget.community);
                           Provider.of<CommuFeedVM>(context, listen: false).initAmityCommunityFeed(widget.community.communityId!);
@@ -677,44 +663,19 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
               ///
               AmityStoryTabComponent(
                 type: CommunityFeedStoryTab(communityId: widget.community.communityId!),
-                createStory: (storytarget, mediaType, imageMode, hyperlionk) {
-                  if (mediaType is AmityStoryMediaTypeImage) {
-                    AmitySocialClient.newStoryRepository()
-                        .createImageStory(
-                      targetType: storytarget.targetType,
-                      targetId: storytarget.targetId,
-                      imageFile: (mediaType).file,
-                      storyItems: hyperlionk != null ? [hyperlionk] : [],
-                      imageDisplayMode: imageMode!,
-                    )
-                        .then((value) {
-                      AmityCustomSnackBar.show(context, "Successfully shared story ", SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white), textColor: Colors.white);
-                    }).onError((error, stackTrace) => null);
-                  } else if (mediaType is AmityStoryMediaTypeVideo) {
-                    AmitySocialClient.newStoryRepository()
-                        .createVideoStory(
-                      targetType: storytarget.targetType,
-                      targetId: storytarget.targetId,
-                      storyItems: hyperlionk != null ? [hyperlionk!] : [],
-                      videoFile: (mediaType).file,
-                    )
-                        .then((value) {
-                      AmityCustomSnackBar.show(context, "Successfully shared story", SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white), textColor: Colors.white);
-                    }).onError((error, stackTrace) => null);
-                  }
-                },
               ),
               widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY)
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
-                            child: EditProfileButton(
-                          community: widget.community,
-                        )),
+                          child: EditProfileButton(
+                            community: widget.community,
+                          ),
+                        ),
                       ],
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               SizedBox(
                 height: widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY) ? 12 : 0,
               ),

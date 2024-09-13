@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -8,6 +10,7 @@ part 'global_story_target_state.dart';
 class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTargetState> {
   late GlobalStoryTargetLiveCollection liveCollection;
   var selectedType = AmityGlobalStoryTargetsQueryOption.SMART;
+  late StreamSubscription<List<AmityStoryTarget>> _subscription;
 
   GlobalStoryTargetBloc() : super(GlobalStoryTargetInitial()) {
     on<GlobalStoryTargetEvent>((event, emit) {});
@@ -15,8 +18,11 @@ class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTarg
     on<ObserverGlobalStoryTarget>((event, emit) {
       emit(GlobalStoryTargetFetchingState());
       liveCollection = GlobalStoryTargetLiveCollection(queryOption: selectedType);
-      liveCollection.getStreamController().stream.listen((targets) {
-        add(GlobalStoryTargetsFetched(targets));
+      _subscription =  liveCollection.getStreamController().stream.listen((targets) {
+        if(!isClosed){
+          add(GlobalStoryTargetsFetched(targets));
+        }
+        
       });
       liveCollection.getFirstPageRequest();
     });
@@ -31,5 +37,11 @@ class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTarg
       }
     });
     
+  }
+
+  @override
+  Future<void> close() {
+    _subscription.cancel();
+    return super.close();
   }
 }

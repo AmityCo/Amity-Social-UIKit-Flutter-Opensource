@@ -92,7 +92,7 @@ class AmityPostDetailPage extends NewBasePage {
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.only(left: 12, right: 16, top: 7),
-                  sliver: AmityCommentTrayComponent(
+                  sliver: AmityCommentListComponent(
                     referenceId: postId,
                     referenceType: AmityCommentReferenceType.POST,
                     parentScrollController: scrollController,

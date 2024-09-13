@@ -12,6 +12,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlink_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
+import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
@@ -216,6 +217,7 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<CreateStoryPageBloc>(create: (context) => CreateStoryPageBloc()),
         BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
+        BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
         BlocProvider<StoryVideoPlayerBloc>(create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [

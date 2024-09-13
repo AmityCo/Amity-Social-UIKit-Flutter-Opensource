@@ -7,6 +7,9 @@ class AmityHyperlinkTextField extends StatelessWidget {
   final String hint;
   final int maxCharacters;
   final String? error;
+  final Color borderColor;  
+  final Color hintColor;
+  final Color textColor;
   final Function(String) onChanged;
 
   const AmityHyperlinkTextField({
@@ -14,6 +17,9 @@ class AmityHyperlinkTextField extends StatelessWidget {
     required this.hint,
     required this.textEditingController,
     required this.onChanged,
+    required this.borderColor ,
+    required this.hintColor ,
+    required this.textColor,
     this.maxCharacters = -1,
     this.error,
   });
@@ -30,7 +36,7 @@ class AmityHyperlinkTextField extends StatelessWidget {
         }
       },
       maxLength: maxCharacters!=-1?maxCharacters:null,
-      cursorColor: Colors.black,
+      cursorColor: textColor,
       decoration: InputDecoration(
         hintText: hint,
         errorText: error,
@@ -38,21 +44,21 @@ class AmityHyperlinkTextField extends StatelessWidget {
         border: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
-                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
+                borderColor,
             width: 1,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
-                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
+                borderColor,
             width: 1,
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
-                Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
+                borderColor,
             width: 1,
           ),
         ),
@@ -64,10 +70,13 @@ class AmityHyperlinkTextField extends StatelessWidget {
         ),
         hintStyle:
             Provider.of<AmityUIConfiguration>(context).hintTextStyle.copyWith(
-                  color: Provider.of<AmityUIConfiguration>(context)
-                      .appColors
-                      .primaryShade3,
+                  color: hintColor,
                 ),
+      ),
+      style: TextStyle(
+        color : textColor,
+        fontSize: 16,
+        fontFamily: "SF Pro Text",
       ),
     );
   }

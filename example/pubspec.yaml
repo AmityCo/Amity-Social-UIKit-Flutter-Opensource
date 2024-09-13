@@ -1,6 +1,6 @@
 name: amity_uikit_beta_service_example
 description: Demonstrates how to use the amity_uikit_beta_service plugin.
-version: 1.0.4+6
+version: 1.0.7+9
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -33,6 +33,7 @@ dependencies:
   google_fonts: ^4.0.4
   flutter_colorpicker: ^1.0.3
   camera: ^0.11.0+1
+
 
   # firebase_messaging: ^14.7.9
   # firebase_core: ^2.24.2

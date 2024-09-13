@@ -39,7 +39,6 @@ class AmityStoryBottomRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Amity Story ----> $isReactedByMe");
     if (state == AmityStorySyncState.SYNCING) {
       return const AmityStoryUploadProgressRow();
     }
@@ -63,7 +62,7 @@ class AmityStoryBottomRow extends StatelessWidget {
     }
 
     if (state == AmityStorySyncState.FAILED) {
-      return Container(
+      return SizedBox(
         child: Align(
           alignment: Alignment.topCenter,
           child: AmityStoryUploadFailedRow(

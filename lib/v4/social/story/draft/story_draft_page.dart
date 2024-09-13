@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/amity_story_hyperlink_component.dart';
@@ -8,43 +10,63 @@ import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/elements/amit
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/story_video_player_view.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_custom_snack_bar.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_story_single_segment_timer_element.dart';
+import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:video_player/video_player.dart';
+import 'package:palette_generator/palette_generator.dart';
 
-class StoryDraftPage extends StatefulWidget {
+class StoryDraftPage extends NewBasePage {
   final AmityStoryMediaType mediaType;
   final String targetId;
   final AmityStoryTargetType targetType;
-  final AmityStoryTarget storyTarget;
-  final Function onClose;
-  final bool isFromGallery;
-  final Function(AmityStoryTarget storytarget, AmityStoryMediaType mediaType, AmityStoryImageDisplayMode? imageMode, HyperLink? hyperlionk) createStory;
+  bool? isFromGallery = false;
 
-  const StoryDraftPage({
+  StoryDraftPage({
     super.key,
     required this.mediaType,
     required this.targetId,
-    required this.createStory,
     required this.targetType,
-    required this.storyTarget,
-    required this.onClose,
-    required this.isFromGallery,
+    this.isFromGallery,
+  }) : super(pageId: 'create_story_page');
+
+  @override
+  Widget buildPage(BuildContext context) {
+    return StoryDarftPageBuilder(
+      mediaType: mediaType,
+      targetId: targetId,
+      targetType: targetType,
+      isFromGallery: isFromGallery,
+    );
+  }
+}
+
+class StoryDarftPageBuilder extends StatefulWidget {
+  final AmityStoryMediaType mediaType;
+  final String targetId;
+  final AmityStoryTargetType targetType;
+  bool? isFromGallery = false;
+
+  StoryDarftPageBuilder({
+    super.key,
+    required this.mediaType,
+    required this.targetId,
+    required this.targetType,
+    this.isFromGallery,
   });
 
   @override
-  State<StoryDraftPage> createState() => _StoryDraftPageState();
+  State<StoryDarftPageBuilder> createState() => _StoryDarftPageBuilderState();
 }
 
-class _StoryDraftPageState extends State<StoryDraftPage> {
+class _StoryDarftPageBuilderState extends State<StoryDarftPageBuilder> {
   @override
   void initState() {
     super.initState();
-    if (widget.isFromGallery) {
+    if (widget.isFromGallery ?? false) {
       context.read<StoryDraftBloc>().add(FillFitToggleEvent(
             imageDisplayMode: AmityStoryImageDisplayMode.FIT,
           ));
@@ -70,7 +92,7 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                 children: [
                   Flexible(
                     flex: 5,
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity,
                       height: double.infinity,
                       child: Stack(
@@ -98,7 +120,17 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                             child: GestureDetector(
                               onTap: () {
                                 if (state is HyperlinkAddedState && state.hyperlink != null) {
-                                  AmityCustomSnackBar.show(context, 'Can\'t add more than one link to your story.', SvgPicture.asset('assets/Icons/ic_warning_outline_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white), textColor: Colors.white);
+                                  AmityCustomSnackBar.show(
+                                    context,
+                                    'Can\'t add more than one link to your story.',
+                                    SvgPicture.asset(
+                                      'assets/Icons/ic_warning_outline_white.svg',
+                                      package: 'amity_uikit_beta_service',
+                                      height: 20,
+                                      color: Colors.white,
+                                    ),
+                                    textColor: Colors.white,
+                                  );
                                 } else {
                                   showHyperLinkBottomSheet(
                                       hyperLink: state is HyperlinkAddedState ? state.hyperlink : null,
@@ -128,7 +160,7 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                               ),
                             ),
                           ),
-                          (widget.mediaType is AmityStoryMediaTypeImage && widget.isFromGallery)
+                          (widget.mediaType is AmityStoryMediaTypeImage && (widget.isFromGallery ?? false))
                               ? Positioned(
                                   top: 16,
                                   right: 52,
@@ -160,20 +192,24 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                                   left: 0,
                                   right: 0,
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                      vertical: 16.0,
+                                    ),
                                     child: Center(
                                       child: AmityStoryHyperlinkView(
                                         hyperlink: state.hyperlink!,
                                         onClick: () {
                                           showHyperLinkBottomSheet(
-                                              hyperLink: state.hyperlink,
-                                              context: context,
-                                              onHyperLinkAdded: (hyperLink) {
-                                                context.read<StoryDraftBloc>().add(OnHyperlinkAddedEvent(hyperlink: hyperLink));
-                                              },
-                                              onHyperLinkRemoved: () {
-                                                context.read<StoryDraftBloc>().add(OnHyperlinkRemovedEvent());
-                                              });
+                                            hyperLink: state.hyperlink,
+                                            context: context,
+                                            onHyperLinkAdded: (hyperLink) {
+                                              context.read<StoryDraftBloc>().add(OnHyperlinkAddedEvent(hyperlink: hyperLink));
+                                            },
+                                            onHyperLinkRemoved: () {
+                                              context.read<StoryDraftBloc>().add(OnHyperlinkRemovedEvent());
+                                            },
+                                          );
                                         },
                                       ),
                                     ),
@@ -185,11 +221,10 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                             left: 16,
                             child: GestureDetector(
                               onTap: () {
-                                // TODO: Show the Dialog box
                                 ConfirmationDialog().show(
                                   context: context,
                                   title: 'Discard this Story?',
-                                  detailText: 'The story will be permanently deleted. It cannot be undone',
+                                  detailText: 'The story will be permanently deleted. It cannot be undone.',
                                   leftButtonText: 'Cancel',
                                   rightButtonText: 'Discard',
                                   onConfirm: () {
@@ -229,48 +264,22 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                               print('Story ---- GestureDetector ------------ Draft Story Page');
-                               print('Story ---- GestureDetector ------------ Story target ${state.storyTarget}');
-                               print('Story ---- GestureDetector ------------ Story target From widget ${widget.storyTarget}');
+                          ShareButton(
+                            storyTarget: state.storyTarget,
+                            pageId: 'create_story_page',
+                            onClick: () {
                               HapticFeedback.heavyImpact();
-                              widget.createStory(state.storyTarget ?? widget.storyTarget, widget.mediaType, state.imageDisplayMode, state.hyperlink);
-                              widget.onClose();
+                              BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
+                              AmityStorySingleSegmentTimerElement.currentValue = -1;
+                              BlocProvider.of<CreateStoryBloc>(context).add(CreateStory(
+                                mediaType: widget.mediaType,
+                                targetId: widget.targetId,
+                                targetType: widget.targetType,
+                                imageMode: state.imageDisplayMode,
+                                hyperlink: state.hyperlink,
+                              ));
                               Navigator.of(context).pop();
                             },
-                            child: Container(
-                              padding: const EdgeInsets.only(right: 8, left: 4),
-                              margin: const EdgeInsets.only(right: 16),
-                              height: 40,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: Colors.white),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    child: SizedBox(width: 32, height: 32, child: getProfileIcon(state.storyTarget)),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 8, right: 8),
-                                    child: const Text(
-                                      "Share Story",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: "SF Pro Text",
-                                      ),
-                                    ),
-                                  ),
-                                  SvgPicture.asset(
-                                    "assets/Icons/ic_arrow_right_black.svg",
-                                    package: 'amity_uikit_beta_service',
-                                    height: 16,
-                                    width: 16,
-                                  )
-                                ],
-                              ),
-                            ),
                           )
                         ],
                       ),
@@ -280,15 +289,7 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
               ),
             );
           },
-          listener: (BuildContext context, StoryDraftState state) {
-            if (state is StoryPostedState) {
-              print('Story ---- StoryPostedState ------------ Story Draft Page');
-              BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
-              widget.createStory(state.storyTarget!, widget.mediaType, state.imageDisplayMode, state.hyperlink);
-              widget.onClose();
-              Navigator.of(context).pop();
-            }
-          },
+          listener: (BuildContext context, StoryDraftState state) {},
         ),
       ),
     );
@@ -296,96 +297,191 @@ class _StoryDraftPageState extends State<StoryDraftPage> {
 
   Widget getContent(AmityStoryImageDisplayMode imageDisplayMode) {
     if (widget.mediaType is AmityStoryMediaTypeImage) {
-      return SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Colors.black,
-                    child: ImageFiltered(
-                      imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                      child: Image.file(
-                        (widget.mediaType as AmityStoryMediaTypeImage).file,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.transparent,
-                  child: Image.file(
-                    (widget.mediaType as AmityStoryMediaTypeImage).file,
-                    fit: imageDisplayMode == AmityStoryImageDisplayMode.FILL ? BoxFit.cover : BoxFit.contain,
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      );
+      return AmityStoryImageViewWidget(imageDisplayMode: imageDisplayMode, mediaType: widget.mediaType);
     }
     try {
       if (widget.mediaType is AmityStoryMediaTypeVideo) {
-        return Container(
+        return SizedBox(
           height: double.infinity,
           width: double.infinity,
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                height: double.infinity,
-                width: double.infinity,
-                child: AmityStoryVideoPlayer(
-                  video: (widget.mediaType as AmityStoryMediaTypeVideo).file,
-                  onInitializing: () {},
-                  showVolumeControl: false,
-                  url: null,
-                  onInitialize: () {},
-                  onPause: () {},
-                  onPlay: () {},
-                  onWidgetDispose: () {
-                    BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-                  },
-                ),
-              )),
+            borderRadius: BorderRadius.circular(20),
+            child: SizedBox(
+              height: double.infinity,
+              width: double.infinity,
+              child: AmityStoryVideoPlayer(
+                video: (widget.mediaType as AmityStoryMediaTypeVideo).file,
+                onInitializing: () {},
+                showVolumeControl: false,
+                url: null,
+                onInitialize: () {},
+                onPause: () {},
+                onPlay: () {},
+                onWidgetDispose: () {
+                  BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
+                },
+              ),
+            ),
+          ),
         );
       }
     } catch (ex) {
       rethrow;
     }
-
     return Container();
   }
+}
 
-  Widget getProfileIcon(AmityStoryTarget? storyTarget) {
-    if (storyTarget == null) {
-      return const AmityNetworkImage(imageUrl: "", placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg");
-    }
-    if (storyTarget is AmityStoryTargetCommunity) {
-      return storyTarget.community?.avatarImage != null
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: AmityNetworkImage(
-                imageUrl: storyTarget.community!.avatarImage!.fileUrl!,
-                placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
+class AmityStoryImageViewWidget extends StatefulWidget {
+  final AmityStoryImageDisplayMode imageDisplayMode;
+  final AmityStoryMediaType mediaType;
+  const AmityStoryImageViewWidget({
+    super.key,
+    required this.mediaType,
+    required this.imageDisplayMode,
+  });
+
+  @override
+  State<AmityStoryImageViewWidget> createState() => _AmityStoryImageViewWidgetState();
+}
+
+class _AmityStoryImageViewWidgetState extends State<AmityStoryImageViewWidget> {
+  Color _dominantColor = Colors.black; // Default color
+  Color _vibrantColor = Colors.white; // Default color 
+  late PaletteGenerator _paletteGenerator;
+
+  @override
+  void initState() {
+    super.initState();
+    _updatePalette();
+  }
+
+  Future<void> _updatePalette() async {
+    // Load the image from assets
+    final imageProvider = FileImage((widget.mediaType as AmityStoryMediaTypeImage).file);
+    _paletteGenerator = await PaletteGenerator.fromImageProvider(
+      imageProvider,
+      size: const Size(200, 200), // Set the size to reduce computation time
+    );
+    setState(() {
+      _dominantColor = _paletteGenerator.vibrantColor?.color.withOpacity(0.7) ?? Colors.black;
+      _vibrantColor = _paletteGenerator.darkVibrantColor?.color.withOpacity(0.7) ?? Colors.white;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        _dominantColor,
+                        _vibrantColor,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
               ),
-            )
-          : const AmityNetworkImage(
-              imageUrl: "",
-              placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
-            );
-    }
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.transparent,
+                child: Image.file(
+                  (widget.mediaType as AmityStoryMediaTypeImage).file,
+                  fit: widget.imageDisplayMode == AmityStoryImageDisplayMode.FILL ? BoxFit.cover : BoxFit.contain,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
+Widget getProfileIcon(AmityStoryTarget? storyTarget) {
+  if (storyTarget == null) {
     return const AmityNetworkImage(imageUrl: "", placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg");
+  }
+  if (storyTarget is AmityStoryTargetCommunity) {
+    return storyTarget.community?.avatarImage != null
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: AmityNetworkImage(
+              imageUrl: storyTarget.community!.avatarImage!.fileUrl!,
+              placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
+            ),
+          )
+        : const AmityNetworkImage(
+            imageUrl: "",
+            placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
+          );
+  }
+
+  return const AmityNetworkImage(
+    imageUrl: "",
+    placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
+  );
+}
+
+class ShareButton extends BaseElement {
+  final VoidCallback onClick;
+  final AmityStoryTarget? storyTarget;
+  final String? componentId;
+  final String? pageId;
+  ShareButton({super.key, required this.onClick, required this.storyTarget, this.componentId, this.pageId}) : super(pageId: pageId, componentId: componentId, elementId: "share_story_button");
+
+  @override
+  Widget buildElement(BuildContext context) {
+    return GestureDetector(
+      onTap: onClick,
+      child: Container(
+        padding: const EdgeInsets.only(right: 8, left: 4),
+        margin: const EdgeInsets.only(right: 16),
+        height: 40,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: theme.backgroundColor,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: 32, height: 32, child: getProfileIcon(storyTarget)),
+            Container(
+              margin: const EdgeInsets.only(left: 8, right: 8),
+              child: Text(
+                "Share Story",
+                style: TextStyle(
+                  color: theme.baseColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "SF Pro Text",
+                ),
+              ),
+            ),
+            SvgPicture.asset(
+              "assets/Icons/ic_arrow_right_black.svg",
+              package: 'amity_uikit_beta_service',
+              color: theme.baseColor,
+              height: 16,
+              width: 16,
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

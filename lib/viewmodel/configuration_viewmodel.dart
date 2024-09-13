@@ -29,8 +29,29 @@ class AmityUIConfiguration extends ChangeNotifier {
     color: Colors.black,
     fontWeight: FontWeight.w400,
   );
-  static Future<bool> isFollowing(String userId) async {
-    Future.delayed(const Duration(seconds: 1));
+
+  // Add a cache for the following status of each user
+  static Map<String, Future<bool>> isFollowingCache = {};
+
+  // ... existing methods ...
+
+  static Future<bool> isFollowing(String userId) {
+    // If the following status is in the cache, return it
+    if (isFollowingCache.containsKey(userId)) {
+      return isFollowingCache[userId]!;
+    }
+
+    // Otherwise, make the API call
+    final followingStatus = checkFollowingStatus(userId);
+
+    // Store the result in the cache
+    isFollowingCache[userId] = followingStatus;
+
+    return followingStatus;
+  }
+
+  static Future<bool> checkFollowingStatus(String userId) async {
+    await Future.delayed(const Duration(seconds: 1));
     final followingUsersPageList = await AmityCoreClient.newUserRepository()
         .relationship()
         .getMyFollowings()
@@ -40,9 +61,9 @@ class AmityUIConfiguration extends ChangeNotifier {
     final followingUsers = followingUsersPageList.data;
 
     for (var user in followingUsers) {
-      if (user.targetUserId== userId && user.status == AmityFollowStatus.ACCEPTED) {
+      if (user.targetUserId == userId && user.status == AmityFollowStatus.ACCEPTED) {
         print("user.sourceUserId${user.sourceUserId}");
-        print("userId$userId") ;
+        print("userId$userId");
         print('Following = true');
         return true;
       }

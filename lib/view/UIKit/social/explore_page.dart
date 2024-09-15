@@ -181,17 +181,15 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
                   ? FloatingActionButton(
                 shape: const CircleBorder(),
                 onPressed: () {
-                  print("widget.isExplorePage ${widget.isExplorePage}");
-                  exploreTab();
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const ThemeConfig(
-                  //       child: Scaffold(
-                  //         body: PostToPage(),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ThemeConfig(
+                        child: Scaffold(
+                          body: PostToPage(),
+                        ),
+                      ),
+                    ),
+                  );
                 },
                 backgroundColor:
                 Provider.of<AmityUIConfiguration>(context)

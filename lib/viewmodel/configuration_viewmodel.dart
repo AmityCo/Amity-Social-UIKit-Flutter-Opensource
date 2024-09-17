@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-
-import 'community_feed_viewmodel.dart';
 
 class AmityUIConfiguration extends ChangeNotifier {
   var appColors = AppColors();
@@ -61,7 +59,8 @@ class AmityUIConfiguration extends ChangeNotifier {
     final followingUsers = followingUsersPageList.data;
 
     for (var user in followingUsers) {
-      if (user.targetUserId == userId && user.status == AmityFollowStatus.ACCEPTED) {
+      if (user.targetUserId == userId &&
+          user.status == AmityFollowStatus.ACCEPTED) {
         print("user.sourceUserId${user.sourceUserId}");
         print("userId$userId");
         print('Following = true');
@@ -71,25 +70,46 @@ class AmityUIConfiguration extends ChangeNotifier {
     print('Following = false');
     return false;
   }
-  static  GlobalKey newFeedExploreKey = GlobalKey();
+
+  static GlobalKey newFeedExploreKey = GlobalKey();
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
   Widget Function(int) buildChatButton =
       (communityId) => const SizedBox.shrink();
-  Widget?Function(String) buildSocialRating  =(userId) => const SizedBox.shrink() ;
-  Widget?Function(String) buildOtherUserProfile =(userId) => const SizedBox.shrink() ;
+  Widget Function(
+    AmityUser? amityUser,
+    AmityCommunity? amityCommunity,
+    CreatePostVMV2 createPostVm2,
+  ) buildPostAsButton =
+      (amityUser, amityCommunity, createPostVm2) => const SizedBox.shrink();
+  Widget? Function(String) buildSocialRating =
+      (userId) => const SizedBox.shrink();
+  Widget? Function(String) buildOtherUserProfile =
+      (userId) => const SizedBox.shrink();
   bool currentUserImageUrl = false;
-  static Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost = (posts) async => posts;
-  static Future<List<AmityComment>> Function(List<AmityComment>) onCustomComment = (comments) async => comments;
-  static Future<List<AmityCommunityMember>> Function(List<AmityCommunityMember>) onCustomMember = (members) async => members;
-  static Future<List<AmityFollowRelationship>> Function(List<AmityFollowRelationship>) onCustomFollow = (follows) async => follows;
-  static Future<List<AmityFollowRelationship>> Function(List<AmityFollowRelationship>) onCustomFollower = (followers) async => followers;
-  static Future<void> Function(String) onRefreshSocialRating = (userId) async {};
+  static Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost =
+      (posts) async => posts;
+  static Future<List<AmityComment>> Function(List<AmityComment>)
+      onCustomComment = (comments) async => comments;
+  static Future<List<AmityCommunityMember>> Function(List<AmityCommunityMember>)
+      onCustomMember = (members) async => members;
+  static Future<List<AmityFollowRelationship>> Function(
+          List<AmityFollowRelationship>) onCustomFollow =
+      (follows) async => follows;
+  static Future<List<AmityFollowRelationship>> Function(
+          List<AmityFollowRelationship>) onCustomFollower =
+      (followers) async => followers;
+  static Future<void> Function(String) onRefreshSocialRating =
+      (userId) async {};
   Future<void> Function(BuildContext) onUserProfile = (context) async {};
-  static Future<void> Function(String communityId,BuildContext context,AmityCommunity community) onCustomCommunityProfile = (String communityId,BuildContext context,AmityCommunity community) async {};
+  static Future<void> Function(
+          String communityId, BuildContext context, AmityCommunity community)
+      onCustomCommunityProfile = (String communityId, BuildContext context,
+          AmityCommunity community) async {};
   bool customCommunityFeedPost = false;
   bool customUserProfileNavigate = false;
-  static Future<String> Function(String) onCustomUserProfileImage =(userId) async=>userId;
+  static Future<String> Function(String) onCustomUserProfileImage =
+      (userId) async => userId;
   void updateUI() {
     notifyListeners();
   }
@@ -160,8 +180,8 @@ class AppColors {
 class AmityIconConfig {
   Widget likeIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/like.svg",
       height: iconSize,
@@ -172,8 +192,8 @@ class AmityIconConfig {
 
   Widget commentIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/comment.svg",
       height: iconSize,
@@ -184,8 +204,8 @@ class AmityIconConfig {
 
   Widget officialIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/Checkmark.svg",
       height: iconSize,
@@ -196,8 +216,8 @@ class AmityIconConfig {
 
   Widget shareIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/share.svg",
       height: iconSize,
@@ -208,8 +228,8 @@ class AmityIconConfig {
 
   Widget replyIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/reply.svg",
       height: iconSize,
@@ -220,8 +240,8 @@ class AmityIconConfig {
 
   Widget postIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/post.svg",
       height: iconSize,
@@ -232,8 +252,8 @@ class AmityIconConfig {
 
   Widget editIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/edit.svg",
       height: iconSize,
@@ -244,8 +264,8 @@ class AmityIconConfig {
 
   Widget likedIcon(
       {double iconSize = 16,
-        Color color = Colors.grey,
-        BlendMode blendmode = BlendMode.srcIn}) {
+      Color color = Colors.grey,
+      BlendMode blendmode = BlendMode.srcIn}) {
     return SvgPicture.asset(
       "assets/Icons/liked.svg",
       height: iconSize,

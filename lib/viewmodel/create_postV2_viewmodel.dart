@@ -44,6 +44,8 @@ class CreatePostVMV2 with ChangeNotifier {
   List<UIKitFileSystem> files = [];
   bool isUploadComplete = false;
   MyFileType? selectedFileType;
+  bool postAsModerator = false;
+
   bool get isPostValid {
     // Check if there are any files
     bool hasFiles = files.isNotEmpty;
@@ -378,15 +380,19 @@ class CreatePostVMV2 with ChangeNotifier {
         if (textEditingController.text.isNotEmpty) {
           readyBuilder.text(textEditingController.text);
         }
-        await readyBuilder.post().then((post) async {
-          handleCreatePost(
-              post: post,
-              isCommunity: isCommunity,
-              context: context,
-              callback: callback);
-        }).onError((error, stackTrace) async {
-          callback(false, error.toString());
-        });
+        await readyBuilder
+            .metadata({'isCreateByAdmin': postAsModerator})
+            .post()
+            .then((post) async {
+              handleCreatePost(
+                  post: post,
+                  isCommunity: isCommunity,
+                  context: context,
+                  callback: callback);
+            })
+            .onError((error, stackTrace) async {
+              callback(false, error.toString());
+            });
       } else if (videos.isNotEmpty) {
         log("video was selected");
         List<AmityVideo> videos = [];
@@ -401,16 +407,20 @@ class CreatePostVMV2 with ChangeNotifier {
         if (textEditingController.text.isNotEmpty) {
           readyBuilder.text(textEditingController.text);
         }
-        await readyBuilder.post().then((post) async {
-          handleCreatePost(
-              post: post,
-              isCommunity: isCommunity,
-              context: context,
-              callback: callback);
-          notifyListeners();
-        }).onError((error, stackTrace) async {
-          callback(false, error.toString());
-        });
+        await readyBuilder
+            .metadata({'isCreateByAdmin': postAsModerator})
+            .post()
+            .then((post) async {
+              handleCreatePost(
+                  post: post,
+                  isCommunity: isCommunity,
+                  context: context,
+                  callback: callback);
+              notifyListeners();
+            })
+            .onError((error, stackTrace) async {
+              callback(false, error.toString());
+            });
       } else if (otherFiles.isNotEmpty) {
         log("file was selected");
 
@@ -421,28 +431,36 @@ class CreatePostVMV2 with ChangeNotifier {
           readyBuilder.text(textEditingController.text);
         }
 
-        await readyBuilder.post().then((AmityPost post) {
-          handleCreatePost(
-              post: post,
-              isCommunity: isCommunity,
-              context: context,
-              callback: callback);
-        }).onError((error, stackTrace) {
-          callback(false, error.toString());
-        });
+        await readyBuilder
+            .metadata({'isCreateByAdmin': postAsModerator})
+            .post()
+            .then((AmityPost post) {
+              handleCreatePost(
+                  post: post,
+                  isCommunity: isCommunity,
+                  context: context,
+                  callback: callback);
+            })
+            .onError((error, stackTrace) {
+              callback(false, error.toString());
+            });
       } else {
         print("creating.. text post");
         var readyBuilder = postBuilder.text(textEditingController.text);
-        await readyBuilder.createTextPost().then((AmityPost post) {
-          handleCreatePost(
-              post: post,
-              isCommunity: isCommunity,
-              context: context,
-              callback: callback);
-        }).onError((error, stackTrace) {
-          AmityDialog()
-              .showAlertErrorDialog(title: "Error", message: error.toString());
-        });
+        await readyBuilder
+            .metadata({'isCreateByAdmin': postAsModerator})
+            .post()
+            .then((AmityPost post) {
+              handleCreatePost(
+                  post: post,
+                  isCommunity: isCommunity,
+                  context: context,
+                  callback: callback);
+            })
+            .onError((error, stackTrace) {
+              AmityDialog().showAlertErrorDialog(
+                  title: "Error", message: error.toString());
+            });
       }
     }
   }

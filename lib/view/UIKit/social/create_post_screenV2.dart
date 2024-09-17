@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart
 import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 // import 'package:amity_uikit_beta_service/viewmodel/create_post_viewmodel.dart';
 // import 'package:amity_uikit_beta_service/viewmodel/media_viewmodel.dart';
 
@@ -19,12 +20,14 @@ class AmityCreatePostV2Screen extends StatefulWidget {
   final AmityUser? amityUser;
   final bool isFromPostToPage;
   final FeedType? feedType;
-  const AmityCreatePostV2Screen(
-      {super.key,
-      this.community,
-      this.amityUser,
-      this.isFromPostToPage = false,
-      this.feedType});
+
+  const AmityCreatePostV2Screen({
+    super.key,
+    this.community,
+    this.amityUser,
+    this.isFromPostToPage = false,
+    this.feedType,
+  });
 
   @override
   State<AmityCreatePostV2Screen> createState() =>
@@ -48,8 +51,9 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
     return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
       return ThemeConfig(
         child: Scaffold(
-          backgroundColor:
-              Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -66,8 +70,9 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
             ),
             leading: IconButton(
               icon: Icon(Icons.chevron_left,
-                  color:
-                      Provider.of<AmityUIConfiguration>(context).appColors.base),
+                  color: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .base),
               onPressed: () {
                 if (hasContent) {
                   ConfirmationDialog().show(
@@ -112,7 +117,7 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                                     listen: false);
                                 roleVM.checkCurrentUserRole(
                                     widget.community!.communityId!);
-        
+
                                 if (widget.community!.isPostReviewEnabled!) {
                                   if (!widget.community!.hasPermission(
                                       AmityPermission.REVIEW_COMMUNITY_POST)) {
@@ -127,12 +132,13 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                                   Navigator.of(context).pop();
                                 }
                                 if (widget.community!.isPostReviewEnabled!) {
-                                  Provider.of<CommuFeedVM>(context, listen: false)
+                                  Provider.of<CommuFeedVM>(context,
+                                          listen: false)
                                       .initAmityPendingCommunityFeed(
                                           widget.community!.communityId!,
                                           AmityFeedType.REVIEWING);
                                 }
-        
+
                                 // Navigator.of(context).push(MaterialPageRoute(
                                 //     builder: (context) => ChangeNotifierProvider(
                                 //           create: (context) => CommuFeedVM(),
@@ -159,6 +165,19 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
           body: SafeArea(
             child: Column(
               children: [
+                if (widget.feedType == FeedType.community &&
+                    widget.community != null &&
+                    widget.community!.communityId != null &&
+                    AmityCoreClient.hasPermission(
+                            AmityPermission.EDIT_COMMUNITY_POST)
+                        .atCommunity(widget.community!.communityId!)
+                        .check())
+                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                      .buildPostAsButton(
+                    AmityCoreClient.getCurrentUser(),
+                    widget.community,
+                    vm,
+                  ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -167,9 +186,10 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                         children: [
                           TextField(
                             style: TextStyle(
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .appColors
-                                    .base),
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base),
                             onChanged: (value) => vm.updatePostValidity(),
                             controller: vm.textEditingController,
                             scrollPhysics: const NeverScrollableScrollPhysics(),
@@ -202,8 +222,8 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                     children: [
                       _iconButton(
                         Icons.camera_alt_outlined,
-                        isEnable:
-                            vm.availableFileSelectionOptions()[MyFileType.image]!,
+                        isEnable: vm
+                            .availableFileSelectionOptions()[MyFileType.image]!,
                         label: "Photo",
                         // debugingText:
                         //     "${vm2.isNotSelectVideoYet()}&& ${vm2.isNotSelectedFileYet()}",
@@ -214,8 +234,8 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                       _iconButton(
                         Icons.image_outlined,
                         label: "Image",
-                        isEnable:
-                            vm.availableFileSelectionOptions()[MyFileType.image]!,
+                        isEnable: vm
+                            .availableFileSelectionOptions()[MyFileType.image]!,
                         onTap: () async {
                           _handleImageTap(context);
                         },
@@ -223,8 +243,8 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                       _iconButton(
                         Icons.play_circle_outline,
                         label: "Video",
-                        isEnable:
-                            vm.availableFileSelectionOptions()[MyFileType.video]!,
+                        isEnable: vm
+                            .availableFileSelectionOptions()[MyFileType.video]!,
                         onTap: () async {
                           _handleVideoTap(context);
                         },
@@ -232,8 +252,8 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                       _iconButton(
                         Icons.attach_file_outlined,
                         label: "File",
-                        isEnable:
-                            vm.availableFileSelectionOptions()[MyFileType.file]!,
+                        isEnable: vm
+                            .availableFileSelectionOptions()[MyFileType.file]!,
                         onTap: () async {
                           _handleFileTap(context);
                         },
@@ -378,8 +398,8 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                       ListTile(
                         leading: _iconButton(
                           Icons.play_circle_outline_outlined,
-                          isEnable: vm
-                              .availableFileSelectionOptions()[MyFileType.video]!,
+                          isEnable: vm.availableFileSelectionOptions()[
+                              MyFileType.video]!,
                           label: "Video",
                           onTap: () {},
                         ),

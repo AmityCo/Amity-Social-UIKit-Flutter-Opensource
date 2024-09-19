@@ -25,8 +25,8 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -111,7 +111,6 @@ class AmityUIKit {
             httpEndpoint: amityEndpoint!,
             mqttEndpoint: amityMqttEndpoint!,
             socketEndpoint: amitySocketEndpoint!),
-            
         sycInitialization: true);
     stopwatch.stop();
     log('setupAmityClient execution time: ${stopwatch.elapsedMilliseconds} ms');
@@ -190,6 +189,10 @@ class AmityUIKit {
     AmityCoreClient.logout();
   }
 
+  Stream<SessionState> observeSessionState() {
+    return AmityCoreClient.observeSessionState();
+  }
+
   Future<void> joinInitialCommunity(List<String> communityIds) async {
     for (var i = 0; i < communityIds.length; i++) {
       AmitySocialClient.newCommunityRepository()
@@ -214,11 +217,13 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<GlobalFeedBloc>(create: (context) => GlobalFeedBloc()),
         BlocProvider<AmityToastBloc>(create: (context) => AmityToastBloc()),
         BlocProvider<SocialHomeBloc>(create: (context) => SocialHomeBloc()),
-        BlocProvider<CreateStoryPageBloc>(create: (context) => CreateStoryPageBloc()),
+        BlocProvider<CreateStoryPageBloc>(
+            create: (context) => CreateStoryPageBloc()),
         BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
         BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
-        BlocProvider<StoryVideoPlayerBloc>(create: (context) => StoryVideoPlayerBloc()),
+        BlocProvider<StoryVideoPlayerBloc>(
+            create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [
             ChangeNotifierProvider<ReplyVM>(create: ((context) => ReplyVM())),

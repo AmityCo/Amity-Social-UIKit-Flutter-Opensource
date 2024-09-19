@@ -10,7 +10,6 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dar
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
-import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
@@ -439,8 +438,7 @@ class _PostWidgetState
                                             .post.postedUser!.userId !=
                                         AmityCoreClient.getCurrentUser().userId
                                     ? widget.post.postedUser?.avatarUrl
-                                    : Provider.of<AmityVM>(context)
-                                        .currentamityUser!
+                                    : AmityCoreClient.getCurrentUser()
                                         .avatarUrl))),
                         title: Wrap(
                           children: [
@@ -464,8 +462,7 @@ class _PostWidgetState
                                         AmityCoreClient.getCurrentUser().userId
                                     ? widget.post.postedUser?.displayName ??
                                         "Display name"
-                                    : Provider.of<AmityVM>(context)
-                                            .currentamityUser!
+                                    : AmityCoreClient.getCurrentUser()
                                             .displayName ??
                                         "",
                                 style: TextStyle(

@@ -5,17 +5,14 @@ import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart'
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
 import 'package:provider/provider.dart';
 
 class PostMedia extends StatelessWidget {
   final List<UIKitFileSystem> files;
   final bool isEditPost;
 
-  const PostMedia({
-    super.key,
-    required this.files,
-    this.isEditPost = false,
-  });
+  const PostMedia({super.key, required this.files, this.isEditPost = false});
 
   @override
   Widget build(BuildContext context) {
@@ -231,14 +228,14 @@ class PostMedia extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           var file = files[index];
-
+          print("file: ${file.fileInfo.toString()}");
+          print("path to render: ${file.file.path}");
           int rawprogress = isEditPost
               ? Provider.of<EditPostVM>(context).editPostMedie[index].progress
               : Provider.of<CreatePostVMV2>(context).files[index].progress;
           var progress = rawprogress / 100.0;
 
           String fileImage = getFileImage(file.file.path);
-          double listHeight = 75;
 
           return Container(
             decoration: BoxDecoration(
@@ -259,7 +256,7 @@ class PostMedia extends StatelessWidget {
                   value: progress,
                   backgroundColor: Colors.transparent,
                   color: Colors.grey.shade200,
-                  minHeight: listHeight,
+                  minHeight: 72,
                 ),
                 // ListTile content
                 rawprogress == 0
@@ -271,58 +268,53 @@ class PostMedia extends StatelessWidget {
                           color: Colors.grey,
                         )))
                     : const SizedBox(),
-                SizedBox(
-                  height: listHeight,
-                  child: ListTile(
-                    onTap: () {},
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: 14), // Reduced padding
-                    tileColor: Colors.white.withOpacity(0.0),
-                    leading: Container(
-                      height: 100, // Reduced height to make it slimmer
-                      width: 40, // Added width to align the image
-                      alignment: Alignment
-                          .centerLeft, // Center alignment for the image
-                      child: Image(
-                        image: AssetImage(fileImage,
-                            package: 'amity_uikit_beta_service'),
+                ListTile(
+                  onTap: () {},
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 8, horizontal: 14), // Reduced padding
+                  tileColor: Colors.white.withOpacity(0.0),
+                  leading: Container(
+                    height: 100, // Reduced height to make it slimmer
+                    width: 40, // Added width to align the image
+                    alignment:
+                        Alignment.centerLeft, // Center alignment for the image
+                    child: Image(
+                      image: AssetImage(fileImage,
+                          package: 'amity_uikit_beta_service'),
+                    ),
+                  ),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min, // Reduce extra space
+                    children: [
+                      Text(
+                        file.file.path.split('/').last,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min, // Reduce extra space
-                      children: [
-                        Text(
-                          file.file.path.split('/').last,
-                          style: const TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 16,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          isEditPost
-                              ? ""
-                              : '${(file.file.lengthSync() / 1024).toStringAsFixed(2)} KB',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: GestureDetector(
-                      onTap: () {
-                        log("delete file...");
+                      Text(
                         isEditPost
-                            ? Provider.of<EditPostVM>(context, listen: false)
-                                .deselectFileAt(index)
-                            : Provider.of<CreatePostVMV2>(context,
-                                    listen: false)
-                                .deselectFile(files[index]);
-                      },
-                      child: const Icon(Icons.close),
-                    ),
+                            ? ""
+                            : '${(file.file.lengthSync() / 1024).toStringAsFixed(2)} KB',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: GestureDetector(
+                    onTap: () {
+                      log("delete file...");
+                      isEditPost
+                          ? Provider.of<EditPostVM>(context, listen: false)
+                              .deselectFileAt(index)
+                          : Provider.of<CreatePostVMV2>(context, listen: false)
+                              .deselectFile(files[index]);
+                    },
+                    child: const Icon(Icons.close),
                   ),
                 )
               ],
@@ -333,34 +325,28 @@ class PostMedia extends StatelessWidget {
     }
 
     bool isNotImageOrVideo(UIKitFileSystem file) {
-      if (file.fileType == MyFileType.image ||
-          file.fileType == MyFileType.video) {
-        return false;
+      if (!isEditPost) {
+        final mimeType = lookupMimeType(file.file.path);
+
+        if (mimeType != null) {
+          final isImage = mimeType.startsWith('image/');
+          final isVideo = mimeType.startsWith('video/');
+
+          return !(isImage || isVideo);
+        } else {
+          // If the MIME type is unknown, consider it as not an image, video, or audio.
+          return true;
+        }
       } else {
-        return true;
+        if (file.postDataForEditMedie!.fileInfo.getFileProperties!.type ==
+                "image" ||
+            file.postDataForEditMedie!.fileInfo.getFileProperties!.type ==
+                "video") {
+          return false;
+        } else {
+          return true;
+        }
       }
-      // if (!isEditPost) {
-      //   final mimeType = lookupMimeType(file.file.path);
-
-      //   if (mimeType != null) {
-      //     final isImage = mimeType.startsWith('image/');
-      //     final isVideo = mimeType.startsWith('video/');
-
-      //     return !(isImage || isVideo);
-      //   } else {
-      //     // If the MIME type is unknown, consider it as not an image, video, or audio.
-      //     return true;
-      //   }
-      // } else {
-      //   if (file.postDataForEditMedie!.fileInfo.getFileProperties!.type ==
-      //           "image" ||
-      //       file.postDataForEditMedie!.fileInfo.getFileProperties!.type ==
-      //           "video") {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // }
     }
 
     if (files.isEmpty) {

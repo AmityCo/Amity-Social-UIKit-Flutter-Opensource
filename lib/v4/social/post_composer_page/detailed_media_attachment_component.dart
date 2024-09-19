@@ -17,7 +17,7 @@ class AmityDetailedMediaAttachmentComponent extends NewBaseComponent {
     this.onImageTap,
     this.onVideoTap,
     this.mediaType,
-  }) : super(key: key, componentId: "componentId");
+  }) : super(key: key, componentId: "detailed_media_attachment");
 
   Widget _buildListTile({
     required String assetPath,

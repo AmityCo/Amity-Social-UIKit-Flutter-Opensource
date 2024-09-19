@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_display_name.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
@@ -17,6 +18,8 @@ class AmityPostHeader extends StatelessWidget {
   final AmityPost post;
   final bool isShowOption;
   final AmityThemeColor theme;
+  final AmityPostCategory category;
+  final bool hideTarget;
   final AmityPostAction? action;
 
   const AmityPostHeader({
@@ -24,48 +27,114 @@ class AmityPostHeader extends StatelessWidget {
     required this.post,
     this.isShowOption = true,
     required this.theme,
+    required this.category,
+    required this.hideTarget,
     this.action,
   });
 
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 52,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+    return Column(
+      children: [
+        if (category == AmityPostCategory.announcement || category == AmityPostCategory.announcementAndPin)
           Container(
-            width: 48,
-            height: 48,
-            padding:
-                const EdgeInsets.only(top: 8, left: 12, right: 4, bottom: 8),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(color: theme.backgroundColor),
-            child: SizedBox(
-              width: 32,
-              height: 32,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(32),
-                child: AmityNetworkImage(
-                    imageUrl: post.postedUser?.avatarUrl,
-                    placeHolderPath:
-                        "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
+            width: double.infinity,
+            height: 42,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration: const BoxDecoration(color: Colors.white),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 26,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: ShapeDecoration(
+                    color: theme.baseColorShade4,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(4),
+                        bottomRight: Radius.circular(4),
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Featured',
+                        style: TextStyle(
+                          color: theme.baseColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        SizedBox(
+          height: 52,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 48,
+                height: 48,
+                padding: const EdgeInsets.only(
+                    top: 8, left: 12, right: 4, bottom: 8),
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(color: theme.backgroundColor),
+                child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(32),
+                    child: AmityNetworkImage(
+                        imageUrl: post.postedUser?.avatarUrl,
+                        placeHolderPath:
+                            "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
+                  ),
+                ),
               ),
-            ),
+              Expanded(
+                  child: PostDisplayName(
+                      post: post, theme: theme, hideTarget: hideTarget)),
+              if (category == AmityPostCategory.pin || category == AmityPostCategory.announcementAndPin)
+                Container(
+                  width: 33,
+                  height: double.infinity,
+                  padding: const EdgeInsets.only(
+                      top: 4, left: 2, right: 2, bottom: 8),
+                  child: SizedBox(
+                      width: 20,
+                      child: SvgPicture.asset(
+                        'assets/Icons/amity_ic_pin_badge.svg',
+                        package: 'amity_uikit_beta_service',
+                        width: 20,
+                        height: 20,
+                      )),
+                ),
+              GestureDetector(
+                onTap: () => showPostAction(context, post),
+                child: Container(
+                  width: 44,
+                  height: double.infinity,
+                  padding: const EdgeInsets.only(
+                      top: 8, left: 4, right: 16, bottom: 8),
+                  child: isShowOption ? getPostOptionIcon() : Container(),
+                ),
+              ),
+            ],
           ),
-          Expanded(child: PostDisplayName(post: post, theme: theme)),
-          GestureDetector(
-            onTap: () => showPostAction(context, post),
-            child: Container(
-              width: 44,
-              height: double.infinity,
-              padding:
-                  const EdgeInsets.only(top: 8, left: 4, right: 16, bottom: 8),
-              child: isShowOption ? getPostOptionIcon() : Container(),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -258,7 +327,7 @@ class AmityPostHeader extends StatelessWidget {
               fullscreenDialog: true,
               builder: (context) => ChangeNotifierProvider<EditPostVM>(
                   create: (context) => EditPostVM(),
-                  child: PostComposerPage(options: editOption))))
+                  child: AmityPostComposerPage(options: editOption))))
         };
     onDelete() {
       context

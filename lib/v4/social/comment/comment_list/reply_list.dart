@@ -12,10 +12,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReplyList extends NewBaseComponent with ChangeNotifier {
   final ScrollController scrollController;
+  final bool shouldAllowInteraction;
 
   ReplyList({
     Key? key,
     String? pageId,
+    required this.shouldAllowInteraction,
     required this.scrollController,
   }) : super(key: key, pageId: pageId, componentId: "comment_list_component");
 
@@ -63,6 +65,7 @@ class ReplyList extends NewBaseComponent with ChangeNotifier {
                   isExpanded: false,
                 ),
                 child: CommentItem(
+                  shouldAllowInteraction: shouldAllowInteraction,
                   parentScrollController: scrollController,
                   commentAction: CommentAction(
                     onReply: (commentId) => {},

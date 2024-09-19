@@ -347,7 +347,7 @@ class AmityStoryImageViewWidget extends StatefulWidget {
 
 class _AmityStoryImageViewWidgetState extends State<AmityStoryImageViewWidget> {
   Color _dominantColor = Colors.black; // Default color
-  Color _vibrantColor = Colors.white; // Default color 
+  Color _vibrantColor = Colors.white; // Default color
   late PaletteGenerator _paletteGenerator;
 
   @override

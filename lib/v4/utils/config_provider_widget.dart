@@ -23,7 +23,7 @@ class SocialHomePageConfigProviderWidget extends StatelessWidget {
         },
         child: Consumer<ConfigProvider>(
           builder: (context, configProvider, child) {
-            return SocialHomePage(pageId: "social_home_page");
+            return AmitySocialHomePage();
           },
         ),
       ),

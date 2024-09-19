@@ -203,7 +203,7 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
       _dominantColor = _paletteGenerator.vibrantColor?.color.withOpacity(0.7) ?? Colors.black;
       _vibrantColor = _paletteGenerator.darkVibrantColor?.color.withOpacity(0.7) ?? Colors.white;
     });
-    
+
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,9 +14,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       .live
       .getPost(postId)
       .listen((event) {
-        if(!isClosed) {
-          emit(PostDetailStateLoaded(post: event));
-        }
+        addEvent(PostDetailLoaded(post: event));
       });
 
       on<PostDetailLoad>((event, emit) async {
@@ -23,6 +22,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           .newPostRepository()
           .getPost(event.postId);
         emit(PostDetailStateLoaded(post: post));
+      });
+
+      on<PostDetailLoaded>((event, emit) async {
+        emit(PostDetailStateLoaded(post: event.post));
       });
 
       on<PostDetailReplyComment>((event, emit) async {

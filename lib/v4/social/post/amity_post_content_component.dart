@@ -7,9 +7,14 @@ import 'package:flutter/widgets.dart';
 
 enum AmityPostContentComponentStyle { feed, detail }
 
+enum AmityPostCategory { general, announcement, pin, announcementAndPin }
+
 class AmityPostContentComponent extends NewBaseComponent {
   final AmityPost post;
   final AmityPostContentComponentStyle style;
+  final AmityPostCategory category;
+  bool? hideMenu;
+  final bool hideTarget;
   final AmityPostAction? action;
 
   AmityPostContentComponent({
@@ -17,16 +22,37 @@ class AmityPostContentComponent extends NewBaseComponent {
     super.pageId,
     required this.post,
     required this.style,
+    this.category = AmityPostCategory.general,
+    this.hideMenu,
+    this.hideTarget = false,
     super.componentId = "post_content_component",
     this.action,
   });
 
   @override
   Widget buildComponent(BuildContext context) {
+    if (post.targetType == AmityPostTargetType.COMMUNITY) {
+      final target = post.target as CommunityTarget;
+      hideMenu = hideMenu ?? !(target.targetCommunity?.isJoined ?? true);
+    }
     if (style == AmityPostContentComponentStyle.feed) {
-      return PostItem(pageId: pageId, post: post, action: action);
+      return PostItem(
+        pageId: pageId,
+        post: post,
+        category: category,
+        hideMenu: hideMenu ?? false,
+        hideTarget: hideTarget,
+        action: action,
+      );
     } else {
-      return PostDetail(pageId: pageId, post: post, action: action);
+      return PostDetail(
+        pageId: pageId,
+        post: post,
+        category: category,
+        hideMenu: hideMenu ?? false,
+        hideTarget: hideTarget,
+        action: action,
+      );
     }
   }
 }

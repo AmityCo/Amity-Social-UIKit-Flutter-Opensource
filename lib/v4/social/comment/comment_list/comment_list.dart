@@ -13,10 +13,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CommentList extends NewBaseComponent with ChangeNotifier {
   final ScrollController scrollController;
   final CommentAction commentAction;
+  final bool shouldAllowInteraction;
 
   CommentList({
     Key? key,
     String? pageId,
+    required this.shouldAllowInteraction,
     required this.scrollController,
     required this.commentAction,
   }) : super(key: key, pageId: pageId, componentId: "comment_list_component");
@@ -77,6 +79,7 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
                     child: SizedBox(
                       width: double.infinity,
                       child: CommentItem(
+                        shouldAllowInteraction: shouldAllowInteraction,
                         parentScrollController: scrollController,
                         commentAction: commentAction,
                       ),

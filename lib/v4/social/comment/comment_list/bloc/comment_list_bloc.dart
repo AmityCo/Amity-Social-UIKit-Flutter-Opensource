@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,17 +20,13 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
         getNewLiveCollection(referenceId, referenceType, parentId);
 
     liveCollection.getStreamController().stream.listen((event) {
-      if (!isClosed) {
-        commentCount = event.length;
-        add(CommentListEventChanged(
-            comments: event, isFetching: liveCollection.isFetching));
-      }
+      commentCount = event.length;
+      addEvent(CommentListEventChanged(
+          comments: event, isFetching: liveCollection.isFetching));
     });
 
     liveCollection.observeLoadingState().listen((event) {
-      if (!isClosed) {
-        add(CommentListEventLoadingStateUpdated(isFetching: event));
-      }
+      addEvent(CommentListEventLoadingStateUpdated(isFetching: event));
     });
 
     on<CommentListEventRefresh>((event, emit) async {
@@ -47,8 +44,10 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
         Future.delayed(const Duration(seconds: 2), () {
           // Workaround after 2 second will emit empty events.
           if (!liveCollection.isFetching && commentCount == 0) {
-            add(CommentListEventChanged(
-                comments: const [], isFetching: liveCollection.isFetching));
+            addEvent(CommentListEventChanged(
+              comments: const [],
+              isFetching: liveCollection.isFetching,
+            ));
           }
         });
       } catch (e) {
@@ -63,7 +62,7 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
 
         if (e is AmityException) {
           event.toastBloc
-              .add(AmityToastShort(message: "Couldn’t load comment"));
+              .addEvent(AmityToastShort(message: "Couldn’t load comment"));
         }
       }
     });
@@ -124,8 +123,7 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
           .dataTypes(null)
           .includeDeleted(false)
           .getLiveCollection();
-    }
-    else {
+    } else {
       return AmitySocialClient.newCommentRepository()
           .getComments()
           .content(referenceId)

@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class PostTargetSelectionPage extends NewBasePage {
-  PostTargetSelectionPage({super.key, required super.pageId});
+class AmityPostTargetSelectionPage extends NewBasePage {
+  AmityPostTargetSelectionPage({Key? key})
+      : super(key: key, pageId: 'select_post_target_page');
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -95,7 +96,7 @@ class PostTargetSelectionPage extends NewBasePage {
                                 (context, animation, secondaryAnimation) =>
                                     PopScope(
                               canPop: true,
-                              child: PostComposerPage(
+                              child: AmityPostComposerPage(
                                 options: createOptions,
                                 onPopRequested: (shouldPopCaller) {
                                   if (shouldPopCaller) {
@@ -223,7 +224,7 @@ class PostTargetSelectionPage extends NewBasePage {
             reverseTransitionDuration: Duration.zero,
             pageBuilder: (context, animation, secondaryAnimation) => PopScope(
               canPop: true,
-              child: PostComposerPage(
+              child: AmityPostComposerPage(
                 options: createOptions,
                 onPopRequested: (shouldPopCaller) {
                   if (shouldPopCaller) {

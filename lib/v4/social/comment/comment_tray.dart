@@ -11,6 +11,8 @@ import 'package:flutter_svg/svg.dart';
 class AmityCommentTrayComponent extends NewBaseComponent {
   final String referenceId;
   final AmityCommentReferenceType referenceType;
+  final AmityCommunity? community;
+  final bool shouldAllowInteraction;
   final bool shouldAllowComments;
   final ScrollController scrollController;
   String? pageId;
@@ -19,6 +21,8 @@ class AmityCommentTrayComponent extends NewBaseComponent {
     required this.referenceId,
     required this.referenceType,
     this.pageId,
+    this.community,
+    required this.shouldAllowInteraction,
     required this.shouldAllowComments,
     required this.scrollController,
   }) : super(
@@ -31,6 +35,7 @@ class AmityCommentTrayComponent extends NewBaseComponent {
     return CommentTrayComponent(
       referenceId: referenceId,
       theme: theme,
+      shouldAllowInteraction: shouldAllowInteraction,
       shouldAllowComments: shouldAllowComments,
       scrollController: scrollController,
       referenceType: referenceType,
@@ -40,6 +45,7 @@ class AmityCommentTrayComponent extends NewBaseComponent {
 
 class CommentTrayComponent extends StatefulWidget {
   final String referenceId;
+  final bool shouldAllowInteraction;
   final bool shouldAllowComments;
   final AmityCommentReferenceType referenceType;
   final ScrollController scrollController;
@@ -49,6 +55,7 @@ class CommentTrayComponent extends StatefulWidget {
     required this.theme,
     required this.referenceId,
     required this.referenceType,
+    required this.shouldAllowInteraction,
     required this.shouldAllowComments,
     required this.scrollController,
   });
@@ -111,6 +118,7 @@ class _CommentTrayComponentState extends State<CommentTrayComponent> {
                       sliver: AmityCommentListComponent(
                         referenceId: widget.referenceId,
                         referenceType: widget.referenceType,
+                        shouldAllowInteraction: widget.shouldAllowInteraction,
                         parentScrollController: widget.scrollController,
                         commentAction: CommentAction(
                           onReply: (AmityComment? comment) {
@@ -126,51 +134,52 @@ class _CommentTrayComponentState extends State<CommentTrayComponent> {
                   ],
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  children: [
-                    getSectionDivider(widget.theme.baseColorShade4),
-                    (widget.shouldAllowComments)
-                        ? AmityCommentCreator(
-                            referenceType: widget.referenceType,
-                            referenceId: widget.referenceId,
-                            replyTo: replyToComment,
-                            action: CommentCreatorAction(
-                              onDissmiss: () {
-                                removeReplyToComment();
-                              },
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/Icons/ic_lock_gray.svg',
-                                  package: 'amity_uikit_beta_service',
-                                  height: 16,
-                                ),
-                                const SizedBox(width: 16),
-                                const Text(
-                                  "Comments are disabled for this story",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontFamily: "SF Pro Text",
-                                    color: Color(
-                                      0xff898E9E,
+              if (widget.shouldAllowInteraction)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    children: [
+                      getSectionDivider(widget.theme.baseColorShade4),
+                      (widget.shouldAllowComments)
+                          ? AmityCommentCreator(
+                              referenceType: widget.referenceType,
+                              referenceId: widget.referenceId,
+                              replyTo: replyToComment,
+                              action: CommentCreatorAction(
+                                onDissmiss: () {
+                                  removeReplyToComment();
+                                },
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/Icons/ic_lock_gray.svg',
+                                    package: 'amity_uikit_beta_service',
+                                    height: 16,
+                                  ),
+                                  const SizedBox(width: 16),
+                                  const Text(
+                                    "Comments are disabled for this story",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontFamily: "SF Pro Text",
+                                      color: Color(
+                                        0xff898E9E,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

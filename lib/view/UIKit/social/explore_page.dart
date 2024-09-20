@@ -39,6 +39,13 @@ class _CommunityPageState extends State<CommunityPage> {
   }
 
   @override
+  void dispose() {
+    FeedVM feedVM = Provider.of<FeedVM>(context, listen: false);
+    feedVM.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,

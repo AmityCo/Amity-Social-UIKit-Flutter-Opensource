@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
@@ -624,7 +623,7 @@ class ChatPage extends StatelessWidget {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Scaffold(
+                    builder: (context) => const Scaffold(
                       body: ChatRoomPage(
                         channelId: "65e6d0765b88b140f2e505ae",
                       ),

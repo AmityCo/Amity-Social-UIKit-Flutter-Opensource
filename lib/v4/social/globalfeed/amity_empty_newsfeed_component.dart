@@ -21,7 +21,7 @@ class AmityEmptyNewsFeedComponent extends BaseElement {
             width: 160,
             height: 160,
             clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(),
+            decoration: const BoxDecoration(),
             child: SvgPicture.asset(
               'assets/Icons/amity_ic_global_feed_empty.svg',
               package: 'amity_uikit_beta_service',

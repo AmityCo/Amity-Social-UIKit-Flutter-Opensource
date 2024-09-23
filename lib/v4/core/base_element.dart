@@ -11,6 +11,7 @@ abstract class BaseElement extends StatelessWidget {
   late final AmityThemeColor theme;
   late final ConfigProvider configProvider;
 
+  // ignore: prefer_const_constructors_in_immutables
   BaseElement(
       {super.key, this.pageId, this.componentId, required this.elementId});
 

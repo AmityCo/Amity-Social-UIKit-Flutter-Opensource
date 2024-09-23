@@ -57,7 +57,7 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
 
         if (e is AmityException) {
           event.toastBloc
-              .add(AmityToastShort(message: "Couldn’t load comment"));
+              .add(const AmityToastShort(message: "Couldn’t load comment"));
         }
       }
     });
@@ -83,7 +83,7 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
       } catch (e) {
         if (e is AmityException) {
           event.toastBloc
-              .add(AmityToastShort(message: "Couldn’t load comment"));
+              .add(const AmityToastShort(message: "Couldn’t load comment"));
         }
       }
     });

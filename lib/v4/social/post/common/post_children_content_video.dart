@@ -31,11 +31,11 @@ class PostContentVideo extends StatelessWidget {
               child:Container(
                 width: 40,
                 height: 40,
-                decoration: ShapeDecoration(
+                decoration: const ShapeDecoration(
                   color: Color(0x40000000),
                   shape: OvalBorder(side: BorderSide(color: Colors.transparent)),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.play_arrow,
                   size: 25.0,
                   color: Colors.white,

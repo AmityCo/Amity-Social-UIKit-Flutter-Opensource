@@ -24,6 +24,7 @@ class BasePage extends StatelessWidget {
 abstract class NewBasePage extends StatelessWidget {
   final String pageId;
 
+  // ignore: prefer_const_constructors_in_immutables
   NewBasePage({super.key, required this.pageId});
 
   late final ConfigProvider configProvider;

@@ -47,7 +47,7 @@ class CommentCreatorBloc
           if (error != null &&
               error is AmityException &&
               error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
-            event.toastBloc.add(AmityToastShort(
+            event.toastBloc.add(const AmityToastShort(
                 message:
                     "Your comment contains inappropriate word. Please review and delete it."));
           }
@@ -64,7 +64,7 @@ class CommentCreatorBloc
           if (error != null &&
               error is AmityException &&
               error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
-            event.toastBloc.add(AmityToastShort(
+            event.toastBloc.add(const AmityToastShort(
                 message:
                     "Your comment contains inappropriate word. Please review and delete it."));
           }

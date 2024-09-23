@@ -11,7 +11,7 @@ class CommunityModeratorBadge extends StatelessWidget {
       padding: const EdgeInsets.only(left: 4, right: 6),
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
-        color: Color(0xFFD9E5FC),
+        color: const Color(0xFFD9E5FC),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),

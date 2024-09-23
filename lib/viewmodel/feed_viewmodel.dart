@@ -2,10 +2,8 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../components/alert_dialog.dart';
-import 'configuration_viewmodel.dart';
 
 enum Feedtype { global, commu }
 

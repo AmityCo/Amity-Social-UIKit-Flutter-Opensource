@@ -26,6 +26,7 @@ abstract class NewBaseComponent extends StatelessWidget {
   late final AmityThemeColor theme;
   late final ConfigProvider configProvider;
 
+  // ignore: prefer_const_constructors_in_immutables
   NewBaseComponent({super.key, this.pageId, required this.componentId});
 
   @override

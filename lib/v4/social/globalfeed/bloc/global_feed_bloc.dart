@@ -28,9 +28,9 @@ class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
             emit(state.copyWith(isFetching: true));
           } else if (_controller.error == null) {
             // Distinct post list
-            List<AmityPost> _distinctList = _controller.loadedItems;
-            final postIds = _distinctList.map((post) => post.postId).toSet();
-            _distinctList.retainWhere((post) => postIds.remove(post.postId));
+            List<AmityPost> distinctList = _controller.loadedItems;
+            final postIds = distinctList.map((post) => post.postId).toSet();
+            distinctList.retainWhere((post) => postIds.remove(post.postId));
             emit(state.copyWith(
                 list: _controller.loadedItems,
                 hasMoreItems: _controller.hasMoreItems,

@@ -48,7 +48,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     on<PostItemFlag>((event, emit) async {
       final flag = await event.post.report().flag();
       if (flag) {
-        event.toastBloc.add(AmityToastShort(
+        event.toastBloc.add(const AmityToastShort(
             message: "Post reported", icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);
@@ -59,7 +59,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     on<PostItemUnFlag>((event, emit) async {
       final flag = await event.post.report().unflag();
       if (flag) {
-        event.toastBloc.add(AmityToastShort(
+        event.toastBloc.add(const AmityToastShort(
             message: "Post unreported", icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);

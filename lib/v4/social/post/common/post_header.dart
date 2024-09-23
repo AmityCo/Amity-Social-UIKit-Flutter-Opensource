@@ -6,7 +6,6 @@ import 'package:amity_uikit_beta_service/v4/social/post/common/post_display_name
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/edit_post_page.dart';
-import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +26,7 @@ class AmityPostHeader extends StatelessWidget {
     this.action,
   });
 
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 52,
@@ -128,7 +128,7 @@ class AmityPostHeader extends StatelessWidget {
                         width: 36,
                         height: 4,
                         decoration: ShapeDecoration(
-                          color: Color(0xFFA5A9B5),
+                          color: const Color(0xFFA5A9B5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -259,7 +259,7 @@ class AmityPostHeader extends StatelessWidget {
                         width: 36,
                         height: 4,
                         decoration: ShapeDecoration(
-                          color: Color(0xFFA5A9B5),
+                          color: const Color(0xFFA5A9B5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

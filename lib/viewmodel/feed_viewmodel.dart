@@ -173,6 +173,26 @@ class FeedVM extends ChangeNotifier {
     await _subscription.cancel();
   }
 
+  Future<void> reload() async {
+    if (isCustomPostRanking) {
+      customRankingLiveCollection.reset();
+      await customRankingLiveCollection.loadNext();
+    } else {
+      globalFeedLiveCollection.reset();
+      await globalFeedLiveCollection.loadNext();
+    }
+  }
+
+  void refresh() async {
+    if (isCustomPostRanking) {
+      customRankingLiveCollection.reset();
+      await customRankingLiveCollection.loadNext();
+    } else {
+      globalFeedLiveCollection.reset();
+      await globalFeedLiveCollection.loadNext();
+    }
+  }
+
   void loadnextpage() async {
     isLoading = true;
 

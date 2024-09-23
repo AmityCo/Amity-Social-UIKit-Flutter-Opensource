@@ -591,6 +591,10 @@ class SocialPage extends StatelessWidget {
               title: const Text('Newsfeed'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      const Scaffold(body: GlobalFeedScreen()),
+                ));
               },
             ),
             ListTile(

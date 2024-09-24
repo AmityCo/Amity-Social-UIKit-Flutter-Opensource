@@ -4,7 +4,6 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
@@ -38,7 +37,9 @@ class CommunityScreenState extends State<CommunityScreen>
 
   @override
   void initState() {
-    if (Provider.of<AmityUIConfiguration>(context,listen: false).customCommunityFeedPost==true) {
+    if (Provider.of<AmityUIConfiguration>(context, listen: false)
+            .customCommunityFeedPost ==
+        true) {
       AmityUIConfiguration.onCustomCommunityProfile(
           widget.community.communityId!, context, widget.community);
     } else {
@@ -479,16 +480,6 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
   }
 
   Widget communityInfo(AmityCommunity community) {
-    late final Widget chatButton;
-    if (community.metadata == null ||
-        community.metadata!['communityId'] == null ||
-        community.metadata!['communityId'] is! int) {
-      chatButton = const SizedBox.shrink();
-    } else {
-      chatButton = Provider.of<AmityUIConfiguration>(context)
-          .buildChatButton(community.metadata!['communityId'] as int);
-    }
-
     return Column(
       children: [
         Row(
@@ -553,8 +544,6 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 ],
               ),
             ),
-            const Spacer(),
-            chatButton,
           ],
         ),
       ],
@@ -568,6 +557,23 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
 
   @override
   Widget build(BuildContext context) {
+    late final Widget chatButton;
+    late final Widget missionButton;
+    if (widget.community.metadata == null ||
+        widget.community.metadata!['communityId'] == null ||
+        widget.community.metadata!['communityId'] is! int) {
+      chatButton = const SizedBox.shrink();
+      missionButton = const SizedBox.shrink();
+    } else {
+      chatButton = Provider.of<AmityUIConfiguration>(context)
+          .buildChatButton(widget.community.metadata!['communityId'] as int);
+      missionButton = Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: Provider.of<AmityUIConfiguration>(context).buildMissionButton(
+            widget.community.metadata!['communityId'] as int),
+      );
+    }
+
     return Container(
       color:
           Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
@@ -581,11 +587,11 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   Expanded(
                     child: Container(
                       width: double.infinity,
-                      height: MediaQuery.of(context).size.width * 0.7,
+                      height: MediaQuery.of(context).size.width * 0.85,
                       decoration: BoxDecoration(
-                        color: Provider.of<AmityUIConfiguration>(context)
-                            .appColors
-                            .primaryShade3,
+                        // color: Provider.of<AmityUIConfiguration>(context)
+                        //     .appColors
+                        //     .primaryShade3,
                         image: widget.community.avatarImage != null
                             ? DecorationImage(
                                 image: NetworkImage(widget
@@ -598,15 +604,48 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                     package: 'amity_uikit_beta_service'),
                                 fit: BoxFit.cover),
                       ),
+                      // child: DecoratedBox(
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.black.withOpacity(
+                      //         0.4), // Applying a 40% dark filter to the entire container
+                      //   ),
+                      // ),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(
-                              0.4), // Applying a 40% dark filter to the entire container
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              const Color(0xFF090D0F).withOpacity(0.3),
+                              const Color(0xFF090D0F).withOpacity(0),
+                              const Color(0xFF090D0F).withOpacity(0.3),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ],
+              ),
+              Positioned(
+                left: 0,
+                top: 44 + 12,
+                right: 16,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const Spacer(),
+                    chatButton,
+                    missionButton,
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.only(left: 16),
@@ -957,46 +996,46 @@ class AppScaffold extends StatelessWidget {
                       .postIcon(iconSize: 28, color: Colors.white),
                 )
               : null,
-          appBar: AppBar(
-            backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                .appColors
-                .baseBackground,
-            scrolledUnderElevation: 0,
-            title: Text(title),
-            leading: IconButton(
-              icon: Icon(
-                Icons.chevron_left,
-                color:
-                    Provider.of<AmityUIConfiguration>(context).appColors.base,
-                size: 30,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            actions: [
-              // Text(
-              //     "${sizeVM.getCommunityDetailSectionSize()}"),
-              if (Provider.of<AmityUIConfiguration>(context)
-                  .widgetConfig
-                  .showCommunityMoreButton)
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context2) => CommunitySettingPage(
-                          community: amityCommunity,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.more_horiz_rounded,
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .base,
-                  ),
-                ),
-            ],
-          ),
+          // appBar: AppBar(
+          //   backgroundColor: Provider.of<AmityUIConfiguration>(context)
+          //       .appColors
+          //       .baseBackground,
+          //   scrolledUnderElevation: 0,
+          //   title: Text(title),
+          //   leading: IconButton(
+          //     icon: Icon(
+          //       Icons.chevron_left,
+          //       color:
+          //           Provider.of<AmityUIConfiguration>(context).appColors.base,
+          //       size: 30,
+          //     ),
+          //     onPressed: () => Navigator.of(context).pop(),
+          //   ),
+          //   actions: [
+          //     // Text(
+          //     //     "${sizeVM.getCommunityDetailSectionSize()}"),
+          //     if (Provider.of<AmityUIConfiguration>(context)
+          //         .widgetConfig
+          //         .showCommunityMoreButton)
+          //       IconButton(
+          //         onPressed: () {
+          //           Navigator.of(context).push(
+          //             MaterialPageRoute(
+          //               builder: (context2) => CommunitySettingPage(
+          //                 community: amityCommunity,
+          //               ),
+          //             ),
+          //           );
+          //         },
+          //         icon: Icon(
+          //           Icons.more_horiz_rounded,
+          //           color: Provider.of<AmityUIConfiguration>(context)
+          //               .appColors
+          //               .base,
+          //         ),
+          //       ),
+          //   ],
+          // ),
           body: RefreshIndicator(
             color: Provider.of<AmityUIConfiguration>(context).primaryColor,
             onRefresh: () async {

@@ -76,6 +76,8 @@ class AmityUIConfiguration extends ChangeNotifier {
   AmityLogicConfig logicConfig = AmityLogicConfig();
   Widget Function(int) buildChatButton =
       (communityId) => const SizedBox.shrink();
+  Widget Function(int) buildMissionButton =
+      (communityId) => const SizedBox.shrink();
   Widget Function(
     AmityUser? amityUser,
     AmityCommunity? amityCommunity,

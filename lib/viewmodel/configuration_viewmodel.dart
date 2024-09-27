@@ -81,6 +81,11 @@ class AmityUIConfiguration extends ChangeNotifier {
     bool? tappable,
   ) buildPostAsButton = (amityUser, amityCommunity, createPostVm2, tappable) =>
       const SizedBox.shrink();
+  Widget Function(
+    CreatePostVMV2 createPostVm2,
+    void Function()? onPressed,
+  ) buildCustomPostButton =
+      (createPostVm2, onPressed) => const SizedBox.shrink();
   Widget? Function(String) buildSocialRating =
       (userId) => const SizedBox.shrink();
   Widget? Function(String) buildOtherUserProfile =

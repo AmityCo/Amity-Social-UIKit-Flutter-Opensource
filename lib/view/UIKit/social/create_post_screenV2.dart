@@ -96,8 +96,10 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
               },
             ),
             actions: [
-              TextButton(
-                onPressed: hasContent
+              Provider.of<AmityUIConfiguration>(context, listen: false)
+                  .buildCustomPostButton(
+                vm,
+                hasContent
                     ? () async {
                         if (vm.isUploadComplete) {
                           if (widget.community == null) {
@@ -158,12 +160,6 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                         }
                       }
                     : null,
-                child: Text("Post",
-                    style: TextStyle(
-                        color: vm.isPostValid
-                            ? Provider.of<AmityUIConfiguration>(context)
-                                .primaryColor
-                            : Colors.grey)),
               ),
             ],
           ),

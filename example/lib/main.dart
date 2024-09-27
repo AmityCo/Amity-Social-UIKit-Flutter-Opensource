@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
@@ -161,7 +159,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       await prefs.setString(
                           'customMqttUrl', _customMqttUrl.text);
                     }
-                    log("save pref");
 
                     await AmityUIKit().setup(
                       apikey: _apiKey.text,
@@ -259,20 +256,15 @@ class _UserListPageState extends State<UserListPage> {
                 return ListTile(
                   title: Text(_usernames[index]),
                   onLongPress: () async {
-                    log("login");
-
                     ///Step 3: login with Amity
                     await AmityUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
                       // authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
                       callback: (isSuccess, error) {
-                        log("callback:$isSuccess");
                         if (isSuccess) {
-                          log("success");
                           //ignore call back
                         } else {
-                          log("fail");
                           AmityDialog().showAlertErrorDialog(
                               title: "Error", message: error.toString());
                         }
@@ -284,17 +276,13 @@ class _UserListPageState extends State<UserListPage> {
                     ));
                   },
                   onTap: () async {
-                    log("login");
-
                     ///Step 3: login with Amity
                     await AmityUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
                       // authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
                       callback: (isSuccess, error) {
-                        log("callback:$isSuccess");
                         if (isSuccess) {
-                          log("success");
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
@@ -302,7 +290,6 @@ class _UserListPageState extends State<UserListPage> {
                             ),
                           );
                         } else {
-                          log("fail");
                           AmityDialog().showAlertErrorDialog(
                               title: "Error", message: error.toString());
                         }

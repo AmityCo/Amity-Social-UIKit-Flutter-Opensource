@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -16,11 +15,7 @@ Future<void> downloadFile(String url, String fileName) async {
     final response = await http.get(Uri.parse(url));
     final file = File(filePath);
     await file.writeAsBytes(response.bodyBytes);
-
-    log("File saved to $filePath");
-  } catch (e) {
-    log("An error occurred while downloading or saving the file: $e");
-  }
+  } catch (_) {}
 }
 
 Future<void> openFileFromUrl(String url) async {
@@ -31,20 +26,16 @@ Future<void> openFileFromUrl(String url) async {
 
     // Downloading the file
     final response = await http.get(Uri.parse(url));
-    log(url);
     final file = File(filePath);
     await file.writeAsBytes(response.bodyBytes);
 
     // Open the file
     OpenFile.open(filePath);
-  } catch (e) {
-    log("An error occurred while downloading or opening the file: $e");
-  }
+  } catch (_) {}
 }
 
 Future<void> launchURL(String url) async {
   if (await canLaunchUrl(Uri.parse(url))) {
-    log("launching...: $url");
     await launchURL(url);
   } else {
     throw 'Could not launch $url';

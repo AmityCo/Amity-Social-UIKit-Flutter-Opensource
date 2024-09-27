@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
@@ -249,8 +247,6 @@ class _MessageComponentState extends State<MessageComponent> {
                 shrinkWrap: true,
                 itemCount: vm.amityMessageList?.length,
                 itemBuilder: (context, index) {
-                  var data = vm.amityMessageList![index].data;
-                  log(data!.text.toString());
                   bool isSendbyCurrentUser =
                       vm.amityMessageList?[index].userId !=
                           AmityCoreClient.getCurrentUser().userId;

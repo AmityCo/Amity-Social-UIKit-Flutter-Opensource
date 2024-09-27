@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/link_preview.dart';
 import 'package:amity_uikit_beta_service/components/video_player.dart';
@@ -1266,11 +1264,9 @@ Future<Uint8List?> downloadFile(String url) async {
     if (response.statusCode == 200) {
       return response.bodyBytes;
     } else {
-      log('Failed to download file: ${response.statusCode}');
       return null;
     }
   } catch (e) {
-    log('Error occurred while downloading file: $e');
     return null;
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/post_profile.dart';
@@ -249,7 +247,6 @@ class _PostWidgetState
         switch (value) {
           case 'Report Post':
           case 'Unreport Post':
-            log("isflag by me $isFlaggedByMe");
             if (isFlaggedByMe) {
               Provider.of<PostVM>(context, listen: false)
                   .unflagPost(widget.post);

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
@@ -248,7 +246,6 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                         });
                       }).onError((error, stackTrace) {
                         //handle error
-                        log(error.toString());
                       });
                     } else {
                       AmitySocialClient.newCommunityRepository()
@@ -268,9 +265,7 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                               listen: false);
                           myCommunityList.initMyCommunity();
                         });
-                      }).onError((error, stackTrace) {
-                        log(error.toString());
-                      });
+                      }).onError((error, stackTrace) {});
                     }
                   }
                 },

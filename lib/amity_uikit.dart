@@ -1,7 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -65,9 +62,7 @@ class AmityUIKit {
               AmityRegionalMqttEndpoint.custom(customMqttEndpoint);
           amitySocketEndpoint =
               AmityRegionalSocketEndpoint.custom(customSocketEndpoint);
-        } else {
-          log("please provide custom Endpoint");
-        }
+        } else {}
 
         break;
       case AmityEndpointRegion.sg:
@@ -102,7 +97,6 @@ class AmityUIKit {
             socketEndpoint: amitySocketEndpoint!),
         sycInitialization: true);
     stopwatch.stop();
-    log('setupAmityClient execution time: ${stopwatch.elapsedMilliseconds} ms');
   }
 
   Future<void> registerDevice(
@@ -115,8 +109,6 @@ class AmityUIKit {
     await Provider.of<AmityVM>(context, listen: false)
         .login(userID: userId, displayName: displayName, authToken: authToken)
         .then((value) async {
-      log("login success");
-
       // await Provider.of<UserVM>(context, listen: false)
       //     .initAccessToken()
       //     .then((value) {
@@ -139,13 +131,11 @@ class AmityUIKit {
       //   }
       // });
     }).onError((error, stackTrace) {
-      log("registerDevice...Error:$error");
       if (callback != null) {
         callback(false, error.toString());
       }
     });
     stopwatch.stop();
-    log('registerDevice execution time: ${stopwatch.elapsedMilliseconds} ms');
   }
 
   Future<void> registerNotification(
@@ -156,7 +146,6 @@ class AmityUIKit {
     // await AmityCoreClient.unregisterDeviceNotification();
     // log("unregisterDeviceNotification");
     await AmityCoreClient.registerDeviceNotification(fcmToken).then((value) {
-      log("registerNotification succesfully ✅");
       callback(true, null);
     }).onError((error, stackTrace) {
       callback(false, error.toString());
@@ -182,11 +171,8 @@ class AmityUIKit {
     for (var i = 0; i < communityIds.length; i++) {
       AmitySocialClient.newCommunityRepository()
           .joinCommunity(communityIds[i])
-          .then((value) {
-        log("join community:${communityIds[i]} success");
-      }).onError((error, stackTrace) {
-        log(error.toString());
-      });
+          .then((value) {})
+          .onError((error, stackTrace) {});
     }
   }
 }

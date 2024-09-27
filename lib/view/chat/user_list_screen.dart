@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
@@ -43,7 +41,6 @@ class UserListState extends State<UserList> {
     }
     int length =
         Provider.of<UserVM>(context, listen: false).getUserList().length;
-    log("check length of user list $length");
     return length;
   }
 
@@ -99,8 +96,8 @@ class UserListState extends State<UserList> {
       return ThemeConfig(
         child: Scaffold(
           appBar: AppBar(
-            title:
-                const Text("Select Users", style: TextStyle(color: Colors.black)),
+            title: const Text("Select Users",
+                style: TextStyle(color: Colors.black)),
             leading: GestureDetector(
               onTap: () {
                 Navigator.of(context).pop();
@@ -127,7 +124,7 @@ class UserListState extends State<UserList> {
                 Expanded(
                   child: SizedBox(
                     height: bHeight,
-        
+
                     // color: ApplicationColors.lightGrey,
                     child: FadedSlideAnimation(
                       beginOffset: const Offset(0, 0.3),
@@ -139,9 +136,10 @@ class UserListState extends State<UserList> {
                               ? Expanded(
                                   child: Center(
                                     child: CircularProgressIndicator(
-                                        color: Provider.of<AmityUIConfiguration>(
-                                                context)
-                                            .primaryColor),
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .primaryColor),
                                   ),
                                 )
                               : Expanded(
@@ -198,7 +196,6 @@ class UserWidget extends StatelessWidget {
                     Provider.of<UserVM>(context, listen: false)
                         .getUserList()[index]
                         .userId!);
-                log("click index $index ${Provider.of<UserVM>(context, listen: false).selectedUserList}");
               },
               leading: FadeAnimation(child: getAvatarImage(user.avatarUrl!)),
               title: Text(

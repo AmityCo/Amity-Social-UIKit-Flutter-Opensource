@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
@@ -46,7 +44,6 @@ class CreateChatGroupState extends State<CreateChatGroup> {
     Provider.of<UserVM>(context, listen: false)
         .selectedUserList
         .add(AmityCoreClient.getUserId());
-    log("check user id list ${Provider.of<UserVM>(context, listen: false).selectedUserList}");
     Provider.of<ChannelVM>(context, listen: false).createGroupChannel(
         displayName,
         Provider.of<UserVM>(context, listen: false).selectedUserList,
@@ -80,8 +77,8 @@ class CreateChatGroupState extends State<CreateChatGroup> {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child:
-                    const Icon(Icons.chevron_left, color: Colors.black, size: 35),
+                child: const Icon(Icons.chevron_left,
+                    color: Colors.black, size: 35),
               ),
               actions: [
                 displayName != ""
@@ -111,16 +108,16 @@ class CreateChatGroupState extends State<CreateChatGroup> {
                           },
                           child: CircleAvatar(
                             radius: 60,
-                            backgroundImage:
-                                Provider.of<ImagePickerVM>(context, listen: true)
-                                            .amityImage !=
-                                        null
-                                    ? NetworkImage(Provider.of<ImagePickerVM>(
-                                            context,
-                                            listen: false)
-                                        .amityImage!
-                                        .fileUrl!)
-                                    : getImageProvider(null),
+                            backgroundImage: Provider.of<ImagePickerVM>(context,
+                                            listen: true)
+                                        .amityImage !=
+                                    null
+                                ? NetworkImage(Provider.of<ImagePickerVM>(
+                                        context,
+                                        listen: false)
+                                    .amityImage!
+                                    .fileUrl!)
+                                : getImageProvider(null),
                           ),
                         ),
                       ),

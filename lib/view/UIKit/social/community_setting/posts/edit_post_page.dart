@@ -118,11 +118,9 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                               vm.updatePostValidity();
 
                               if (value == originalText) {
-                                print("match");
                                 hasContent = false;
                                 setState(() {});
                               } else {
-                                print("unmatch");
                                 hasContent = true;
                                 setState(() {});
                               }

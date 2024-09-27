@@ -464,7 +464,6 @@ class SocialPage extends StatelessWidget {
   void configThemeColor(BuildContext context, AppColors appColors) {
     // Place your AmitySLEUIKit configuration code here
     // For demonstration, the primary color is being used. Adapt as needed.
-    print("configThemeColor");
     AmityUIKit().configAmityThemeColor(context, (config) {
       config.appColors = appColors;
     });

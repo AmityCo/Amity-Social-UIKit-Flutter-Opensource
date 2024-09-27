@@ -64,7 +64,6 @@ class CommentScreenState extends State<CommentScreen> {
     setState(() {
       userAvatarUrl = avatarUrl == "" ? currentUser?.avatarUrl : avatarUrl;
     });
-    print("User Avatar URL: $userAvatarUrl");
   }
 
   bool isMediaPosts() {
@@ -497,18 +496,16 @@ class CommentTextField extends StatelessWidget {
                       .createComment(postId, commentTextEditController.text);
                 } else {
                   ///Create Comment with Reply
-                  print("reply comment");
                   var replyingComment =
                       Provider.of<ReplyVM>(context, listen: false)
                           .replyToObject
                           ?.replyToComment
                           .commentId;
                   HapticFeedback.heavyImpact();
-                  print(replyingComment!);
                   Provider.of<ReplyVM>(context, listen: false)
                       .createReplyComment(
                           postId: postId,
-                          commentId: replyingComment,
+                          commentId: replyingComment!,
                           text: commentTextEditController.text);
                 }
 
@@ -685,7 +682,6 @@ class _EditCommentPageState extends State<EditCommentPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
-                print(textEditingController.text);
                 HapticFeedback.heavyImpact();
                 Provider.of<PostVM>(context, listen: false)
                     .updateComment(widget.comment, textEditingController.text);

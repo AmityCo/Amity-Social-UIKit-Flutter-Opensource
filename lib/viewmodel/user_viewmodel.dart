@@ -292,7 +292,6 @@ class UserVM extends ChangeNotifier {
         .relationship()
         .blockUser(userId)
         .then((value) {
-      print(value);
       AmitySuccessDialog.showTimedDialog("Blocked user");
       notifyListeners();
       onCallBack();
@@ -307,7 +306,6 @@ class UserVM extends ChangeNotifier {
         .relationship()
         .unblockUser(userId)
         .then((value) {
-      print(value);
       AmitySuccessDialog.showTimedDialog("Unblock user");
       notifyListeners();
     }).onError((error, stackTrace) {

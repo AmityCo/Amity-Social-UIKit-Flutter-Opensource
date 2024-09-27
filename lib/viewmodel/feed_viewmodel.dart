@@ -54,10 +54,7 @@ class FeedVM extends ChangeNotifier {
       {bool isCustomPostRanking = false,
       required Future<List<AmityPost>> Function(List<AmityPost>)
           onCustomPost}) async {
-
     isLoading = true;
-    print("isloading1: $isLoading");
-    print("isCustomPostRanking:$isCustomPostRanking");
 
     if (isCustomPostRanking) {
       _controllerGlobal = PagingController(

@@ -53,8 +53,6 @@ class NotificationVM extends ChangeNotifier {
 
   Future<void> mapActor(AmityNotificaion notification) async {
     if (actorMapper.containsKey(notification.actors![0].id)) {
-      print(">>>>>>>>${actorMapper[notification.actors![0].id]["avatarUrl"]}");
-      print(">>>>>>>>${actorMapper[notification.actors![0].id]["avatarUrl"]}");
       notification.actors?[0].imageUrl =
           actorMapper[notification.actors![0].id]["avatarUrl"];
       notification.actors?[0].name =

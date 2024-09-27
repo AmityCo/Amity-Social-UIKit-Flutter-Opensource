@@ -213,7 +213,6 @@ class UserProfileScreenState extends State<UserProfileScreen>
                 shrinkWrap: true,
                 itemCount: Provider.of<UserFeedVM>(context).amityPosts.length,
                 itemBuilder: (context, index) {
-                  print("XXXXXX");
                   return StreamBuilder<AmityPost>(
                     stream: vm.amityPosts[index].listen.stream,
                     initialData: vm.amityPosts[index],

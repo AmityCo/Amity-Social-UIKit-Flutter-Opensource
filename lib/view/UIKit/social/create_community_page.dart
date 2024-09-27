@@ -11,7 +11,6 @@ import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 enum CommunityListType { my, recommend, trending }
 
 enum CommunityFeedMenuOption { edit, members }
@@ -323,8 +322,6 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                         userIds: userIds,
                       );
                       if (createdCommunity != null) {
-                        print(
-                            "print create dcommunity page ${createdCommunity.displayName}");
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => ChangeNotifierProvider(
@@ -345,7 +342,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context,
+                      backgroundColor: Provider.of<AmityUIConfiguration>(
+                              context,
                               listen: false)
                           .primaryColor,
                       minimumSize: const Size(10, 50),
@@ -359,8 +357,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                                 height: 24,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(Colors.white),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
                                 ),
                               )
                             ]

@@ -61,13 +61,9 @@ class AmityUIConfiguration extends ChangeNotifier {
     for (var user in followingUsers) {
       if (user.targetUserId == userId &&
           user.status == AmityFollowStatus.ACCEPTED) {
-        print("user.sourceUserId${user.sourceUserId}");
-        print("userId$userId");
-        print('Following = true');
         return true;
       }
     }
-    print('Following = false');
     return false;
   }
 

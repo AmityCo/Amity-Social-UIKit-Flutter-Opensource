@@ -23,7 +23,7 @@ class PostVM extends ChangeNotifier {
     AmitySocialClient.newPostRepository()
         .getPostStream(postId)
         .stream
-        .asyncMap((event) async{
+        .asyncMap((event) async {
       final newPost = await AmityUIConfiguration.onCustomPost([event]);
       return newPost.first;
     }).listen((event) async {
@@ -52,33 +52,32 @@ class PostVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-          () async {
-        if (controller.error == null) {
-          // Instead of clearing and re-adding all items, directly append new items
-          // This assumes `amityComments` is a List that can be compared with controller.loadedItems for duplicates
-          var newComments = controller.loadedItems;
-          // Append only new comments
-          var currentIds = amityComments.map((e) => e.commentId).toSet();
-          var newItems = newComments
-              .where((item) => !currentIds.contains(item.commentId))
-              .toList();
-          if (newItems.isNotEmpty) {
-            final customComments =
-            await AmityUIConfiguration.onCustomComment(newItems);
+        () async {
+          if (controller.error == null) {
+            // Instead of clearing and re-adding all items, directly append new items
+            // This assumes `amityComments` is a List that can be compared with controller.loadedItems for duplicates
+            var newComments = controller.loadedItems;
+            // Append only new comments
+            var currentIds = amityComments.map((e) => e.commentId).toSet();
+            var newItems = newComments
+                .where((item) => !currentIds.contains(item.commentId))
+                .toList();
+            if (newItems.isNotEmpty) {
+              final customComments =
+                  await AmityUIConfiguration.onCustomComment(newItems);
 
-            amityComments.addAll(customComments);
-            print("parent comments added: ${customComments.length}");
-            successCallback?.call();
-            notifyListeners(); // Uncomment if you are using a listener-based state management
+              amityComments.addAll(customComments);
+              successCallback?.call();
+              notifyListeners(); // Uncomment if you are using a listener-based state management
+            }
+          } else {
+            // Error on pagination controller
+            log("error from Comment: ${controller.error.toString()}");
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: controller.error.toString());
           }
-        } else {
-          // Error on pagination controller
-          log("error from Comment: ${controller.error.toString()}");
-          // await AmityDialog().showAlertErrorDialog(
-          //     title: "Error!", message: controller.error.toString());
-        }
-      },
-    );
+        },
+      );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       controller.fetchNextPage();
@@ -89,7 +88,7 @@ class PostVM extends ChangeNotifier {
 
   void loadnextpage() {
     if ((scrollcontroller.position.pixels ==
-        scrollcontroller.position.maxScrollExtent) &&
+            scrollcontroller.position.maxScrollExtent) &&
         controller.hasMoreItems) {
       controller.fetchNextPage();
     }
@@ -105,7 +104,8 @@ class PostVM extends ChangeNotifier {
         .text(text)
         .send()
         .then((comment) async {
-      final customComments = await AmityUIConfiguration.onCustomComment([comment]);
+      final customComments =
+          await AmityUIConfiguration.onCustomComment([comment]);
       amityComments.insert(0, customComments.first);
       Future.delayed(const Duration(milliseconds: 500)).then((value) {
         scrollcontroller.jumpTo(0);
@@ -136,9 +136,7 @@ class PostVM extends ChangeNotifier {
   }
 
   Future<void> deleteComment(AmityComment comment) async {
-    print("delete commet...");
     comment.delete().then((value) {
-      print("delete commet success: $value");
       // amityComments
       //     .removeWhere((element) => element.commentId == comment.commentId);
       getPost(amityPost.postId!, amityPost);
@@ -157,8 +155,8 @@ class PostVM extends ChangeNotifier {
   void addPostReaction(AmityPost post) {
     HapticFeedback.heavyImpact();
     post.react().addReaction('like').then((value) => {
-      //success
-    });
+          //success
+        });
   }
 
   void flagPost(AmityPost post) {
@@ -188,12 +186,10 @@ class PostVM extends ChangeNotifier {
 
   void removePostReaction(AmityPost post) {
     HapticFeedback.heavyImpact();
-    print("removePostReaction");
 
     post.react().removeReaction('like').then((value) {
       // Handle success
     }).catchError((error) {
-      print(error);
       // Handle error
     });
   }
@@ -201,8 +197,8 @@ class PostVM extends ChangeNotifier {
   void removeCommentReaction(AmityComment comment) {
     HapticFeedback.heavyImpact();
     comment.react().removeReaction('like').then((value) => {
-      //success
-    });
+          //success
+        });
   }
 
   bool isliked(AmityComment comment) {

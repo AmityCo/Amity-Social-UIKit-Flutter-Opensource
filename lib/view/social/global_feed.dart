@@ -1390,7 +1390,6 @@ class CommentActionComponent extends StatelessWidget {
                           )
                         : GestureDetector(
                             onTap: () {
-                              print("addCommentReaction");
                               Provider.of<PostVM>(context, listen: false)
                                   .removeCommentReaction(comments);
                             },

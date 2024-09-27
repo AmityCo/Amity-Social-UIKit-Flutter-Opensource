@@ -1,7 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -235,17 +234,11 @@ class CommunityWidget extends StatelessWidget {
                                   callback: (bool isSuccess) {
                             var globalFeedProvider =
                                 Provider.of<FeedVM>(context, listen: false);
-                            var myCommunityList = Provider.of<MyCommunityVM>(
-                                context,
-                                listen: false);
 
-                            for (var i in myCommunityList.amityCommunities) {
-                              print(i.displayName);
-                            }
-                            print(myCommunityList.amityCommunities);
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               globalFeedProvider.initAmityGlobalfeed(
-                                  onCustomPost:AmityUIConfiguration.onCustomPost);
+                                  onCustomPost:
+                                      AmityUIConfiguration.onCustomPost);
                             });
                           });
                         } else {
@@ -254,20 +247,12 @@ class CommunityWidget extends StatelessWidget {
                             community.communityId ?? "",
                             type: communityType,
                             callback: (isSuccess) {
-                              print(">>>>>>>>>>>>>>>callback");
                               var globalFeedProvider =
                                   Provider.of<FeedVM>(context, listen: false);
-                              var myCommunityList = Provider.of<MyCommunityVM>(
-                                  context,
-                                  listen: false);
-
-                              for (var i in myCommunityList.amityCommunities) {
-                                print(">>>>>>>>>>>>>>>${i.displayName}");
-                              }
-                              print(myCommunityList.amityCommunities);
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 globalFeedProvider.initAmityGlobalfeed(
-                                    onCustomPost:AmityUIConfiguration.onCustomPost);
+                                    onCustomPost:
+                                        AmityUIConfiguration.onCustomPost);
                               });
                             },
                           );

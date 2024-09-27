@@ -185,7 +185,6 @@ class PostMedia extends StatelessWidget {
     String getFileImage(String filePath) {
       String extension = filePath.split('.').last;
 
-      print("getFileImage: $extension");
       switch (extension) {
         case 'audio':
           return 'assets/images/fileType/audio_large.png';

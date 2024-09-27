@@ -28,7 +28,6 @@ class MemberManagementVM extends ChangeNotifier {
           .roles([]).getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(_handleMemberControllerUpdates);
-    print("initMember");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _amityUsersController.fetchNextPage();
     });
@@ -49,7 +48,6 @@ class MemberManagementVM extends ChangeNotifier {
               token: token, limit: 20),
       pageSize: 20,
     )..addListener(_handleModeratorControllerUpdates);
-    print("initModerators");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _amityModeratorsController.fetchNextPage();
     });
@@ -64,10 +62,10 @@ class MemberManagementVM extends ChangeNotifier {
   Future<void> _handleMemberControllerUpdates() async {
     if (_amityUsersController.error == null) {
       // final newMember= await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems);
-      final users = await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems);
+      final users = await AmityUIConfiguration.onCustomMember(
+          _amityUsersController.loadedItems);
       _userList.clear();
       _userList.addAll(users);
-      print("userList: $_userList");
       notifyListeners();
     } else {
       // Handle the error appropriately
@@ -77,7 +75,8 @@ class MemberManagementVM extends ChangeNotifier {
 
   Future<void> _handleModeratorControllerUpdates() async {
     if (_amityModeratorsController.error == null) {
-      final users = await AmityUIConfiguration.onCustomMember(_amityModeratorsController.loadedItems);
+      final users = await AmityUIConfiguration.onCustomMember(
+          _amityModeratorsController.loadedItems);
       _moderatorList.clear();
       _moderatorList.addAll(users);
 
@@ -90,9 +89,7 @@ class MemberManagementVM extends ChangeNotifier {
 
   void loadNextPage() async {
     if (scrollController.position.pixels >
-        scrollController.position.maxScrollExtent - 800) {
-      print("hasMore: ${_amityUsersController.hasMoreItems}");
-    }
+        scrollController.position.maxScrollExtent - 800) {}
     if ((scrollController.position.pixels >
             scrollController.position.maxScrollExtent - 800) &&
         _amityUsersController.hasMoreItems &&
@@ -109,20 +106,16 @@ class MemberManagementVM extends ChangeNotifier {
   // Method to promote user(s) to moderator
   Future<void> promoteToModerator(
       String communityId, List<String> userIds) async {
-    print("promoteToModerator");
     AmityLoadingDialog.runWithLoadingDialog(() async {
       await AmitySocialClient.newCommunityRepository()
           .moderation(communityId)
           .addRole('community-moderator', userIds)
           .then((value) {
         // handle result
-        print("promoteToModerator: success");
       }).onError((error, stackTrace) async {
-        print("promoteToModerator: fail");
         AmityDialog()
             .showAlertErrorDialog(title: "Error!", message: error.toString());
       });
-      print("finish loading...");
     });
 
     notifyListeners();
@@ -132,7 +125,6 @@ class MemberManagementVM extends ChangeNotifier {
   Future<void> demoteFromModerator(
       String communityId, List<String> userIds) async {
     AmityLoadingDialog.showLoadingDialog();
-    print("demoteFromModerator");
     await AmitySocialClient.newCommunityRepository()
         .moderation(communityId)
         .removeRole('community-moderator', userIds)
@@ -167,7 +159,6 @@ class MemberManagementVM extends ChangeNotifier {
   // Method to report a user
   Future<void> reportUser(AmityUser user) async {
     await user.report().flag().then((value) {
-      print(value);
       AmitySuccessDialog.showTimedDialog("Report sent");
     }).onError((error, stackTrace) {
       AmityDialog()
@@ -179,7 +170,6 @@ class MemberManagementVM extends ChangeNotifier {
   // Method to report a user
   Future<void> undoReportUser(AmityUser user) async {
     await user.report().unflag().then((value) {
-      print(value);
       AmitySuccessDialog.showTimedDialog("Unreport sent");
     }).onError((error, stackTrace) {
       AmityDialog()
@@ -191,7 +181,6 @@ class MemberManagementVM extends ChangeNotifier {
   // Method to block a user
   Future<void> blockUser(AmityUser user) async {
     await user.blockUser().then((value) {
-      print(value);
       AmitySuccessDialog.showTimedDialog("Block user");
     }).onError((error, stackTrace) {
       AmityDialog()
@@ -203,7 +192,6 @@ class MemberManagementVM extends ChangeNotifier {
   // Method to block a user
   Future<void> unBlockUser(AmityUser user) async {
     await user.unblockUser().then((value) {
-      print(value);
       AmitySuccessDialog.showTimedDialog("Unblock user");
     }).onError((error, stackTrace) {
       AmityDialog()
@@ -225,7 +213,6 @@ class MemberManagementVM extends ChangeNotifier {
 
       notifyListeners();
     }).onError((error, stackTrace) {
-      print("$error,$stackTrace");
       // AmityDialog()
       //     .showAlertErrorDialog(title: "Error!", message: error.toString());
     });

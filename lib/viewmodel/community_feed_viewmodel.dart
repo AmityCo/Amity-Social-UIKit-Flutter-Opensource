@@ -69,14 +69,11 @@ class CommuFeedVM extends ChangeNotifier {
     await AmitySocialClient.newCommunityRepository()
         .getCommunity(community.communityId!)
         .then((value) {
-      print("get community");
       notifyListeners();
     });
     community.getPostCount(AmityFeedType.PUBLISHED).then((value) async {
       //success
       postCount = value;
-      print("postCount $postCount");
-
       // Update UI
     }).onError((error, stackTrace) {
       // Handle error
@@ -88,7 +85,6 @@ class CommuFeedVM extends ChangeNotifier {
     community.getPostCount(AmityFeedType.REVIEWING).then((value) {
       //success
       reviewingPostCount = value;
-      print(reviewingPostCount);
       // Update UI
     }).onError((error, stackTrace) {
       // Handle error
@@ -100,31 +96,32 @@ class CommuFeedVM extends ChangeNotifier {
     _controllerCommu = PagingController(
       pageFuture: (token) => AmitySocialClient.newFeedRepository()
           .getCommunityFeed(communityId)
-      //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
+          //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
           .feedType(AmityFeedType.PUBLISHED)
           .includeDeleted(false)
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-          () async {
-        log("initAmityCommunityFeed ID: $communityId");
-        if (_controllerCommu.error == null) {
-          //handle results, we suggest to clear the previous items
-          //and add with the latest _controller.loadedItems
-          // notifyListeners();
+        () async {
+          log("initAmityCommunityFeed ID: $communityId");
+          if (_controllerCommu.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+            // notifyListeners();
 
-          final newPost = await AmityUIConfiguration.onCustomPost(_controllerCommu.loadedItems);
-          _amityCommunityFeedPosts.clear();
-          _amityCommunityFeedPosts.addAll(newPost);
-          notifyListeners();
-        } else {
-          //error on pagination controller
-          // await AmityDialog().showAlertErrorDialog(
-          //     title: "Error!", message: _controllerCommu.error.toString());
-          //update widgets
-        }
-      },
-    );
+            final newPost = await AmityUIConfiguration.onCustomPost(
+                _controllerCommu.loadedItems);
+            _amityCommunityFeedPosts.clear();
+            _amityCommunityFeedPosts.addAll(newPost);
+            notifyListeners();
+          } else {
+            //error on pagination controller
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controllerCommu.error.toString());
+            //update widgets
+          }
+        },
+      );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controllerCommu.fetchNextPage();
@@ -138,7 +135,6 @@ class CommuFeedVM extends ChangeNotifier {
         .includeDeleted(false)
         .getPagingData()
         .then((value) async {
-
       final newPost = await AmityUIConfiguration.onCustomPost(value.data);
       _amityCommunityFeedPosts = newPost;
       notifyListeners();
@@ -153,32 +149,32 @@ class CommuFeedVM extends ChangeNotifier {
     _controllerPendingPost = PagingController(
       pageFuture: (token) => AmitySocialClient.newFeedRepository()
           .getCommunityFeed(communityId)
-      //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
+          //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
           .feedType(amityFeedType)
           .includeDeleted(false)
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-          () async {
-        log(">>>PENDINGListener");
-        if (_controllerPendingPost.error == null) {
-          //handle results, we suggest to clear the previous items
-          //and add with the latest _controller.loadedItems
-          _amityCommunityPendingFeedPosts.clear();
-          _amityCommunityPendingFeedPosts
-              .addAll(_controllerPendingPost.loadedItems);
+        () async {
+          log(">>>PENDINGListener");
+          if (_controllerPendingPost.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+            _amityCommunityPendingFeedPosts.clear();
+            _amityCommunityPendingFeedPosts
+                .addAll(_controllerPendingPost.loadedItems);
 
-          //update widgets
-          notifyListeners();
-        } else {
-          _amityCommunityPendingFeedPosts.clear();
-          //error on pagination controller
-          // await AmityDialog().showAlertErrorDialog(
-          //     title: "Error!", message: _controllerPendingPost.error.toString());
-          //update widgets
-        }
-      },
-    );
+            //update widgets
+            notifyListeners();
+          } else {
+            _amityCommunityPendingFeedPosts.clear();
+            //error on pagination controller
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controllerPendingPost.error.toString());
+            //update widgets
+          }
+        },
+      );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controllerPendingPost.fetchNextPage();
@@ -207,31 +203,30 @@ class CommuFeedVM extends ChangeNotifier {
           .getPosts()
           .targetCommunity(communityId)
           .types([AmityDataType.VIDEO])
-      //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
+          //feedType could be AmityFeedType.PUBLISHED, AmityFeedType.REVIEWING, AmityFeedType.DECLINED
           .feedType(AmityFeedType.PUBLISHED)
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-          () async {
-        log("communityListener");
-        if (_controllerVideoCommu.error == null) {
-          //handle results, we suggest to clear the previous items
-          //and add with the latest _controller.loadedItems
-          print(">>> video ${_controllerVideoCommu.loadedItems.length}");
-          _amityCommunityVideoFeedPosts.clear();
-          _amityCommunityVideoFeedPosts
-              .addAll(_controllerVideoCommu.loadedItems);
+        () async {
+          log("communityListener");
+          if (_controllerVideoCommu.error == null) {
+            //handle results, we suggest to clear the previous items
+            //and add with the latest _controller.loadedItems
+            _amityCommunityVideoFeedPosts.clear();
+            _amityCommunityVideoFeedPosts
+                .addAll(_controllerVideoCommu.loadedItems);
 
-          //update widgets
-          notifyListeners();
-        } else {
-          //error on pagination controller
-          // await AmityDialog().showAlertErrorDialog(
-          //     title: "Error!", message: _controllerPendingPost.error.toString());
-          //update widgets
-        }
-      },
-    );
+            //update widgets
+            notifyListeners();
+          } else {
+            //error on pagination controller
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controllerPendingPost.error.toString());
+            //update widgets
+          }
+        },
+      );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controllerVideoCommu.fetchNextPage();
@@ -247,8 +242,8 @@ class CommuFeedVM extends ChangeNotifier {
         .types([AmityDataType.VIDEO])
         .getPagingData()
         .then((value) {
-      _amityCommunityVideoFeedPosts = value.data;
-    });
+          _amityCommunityVideoFeedPosts = value.data;
+        });
     notifyListeners();
     await checkIsCurrentUserIsAdmin(communityId);
   }
@@ -267,23 +262,23 @@ class CommuFeedVM extends ChangeNotifier {
           .getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(
-          () async {
-        log("communityListener");
-        if (_controllerImageCommu.error == null) {
-          _amityCommunityImageFeedPosts.clear();
-          _amityCommunityImageFeedPosts
-              .addAll(_controllerImageCommu.loadedItems);
+        () async {
+          log("communityListener");
+          if (_controllerImageCommu.error == null) {
+            _amityCommunityImageFeedPosts.clear();
+            _amityCommunityImageFeedPosts
+                .addAll(_controllerImageCommu.loadedItems);
 
-          //update widgets
-          notifyListeners();
-        } else {
-          //error on pagination controller
-          // await AmityDialog().showAlertErrorDialog(
-          //     title: "Error!", message: _controllerImageCommu.error.toString());
-          //update widgets
-        }
-      },
-    );
+            //update widgets
+            notifyListeners();
+          } else {
+            //error on pagination controller
+            // await AmityDialog().showAlertErrorDialog(
+            //     title: "Error!", message: _controllerImageCommu.error.toString());
+            //update widgets
+          }
+        },
+      );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controllerImageCommu.fetchNextPage();
@@ -299,16 +294,15 @@ class CommuFeedVM extends ChangeNotifier {
         .types([AmityDataType.IMAGE])
         .getPagingData()
         .then((value) {
-      _amityCommunityImageFeedPosts = value.data;
-    });
+          _amityCommunityImageFeedPosts = value.data;
+        });
     notifyListeners();
     await checkIsCurrentUserIsAdmin(communityId);
   }
 
   void loadnextpage() {
-    print("load next page");
     if ((scrollcontroller.position.pixels ==
-        scrollcontroller.position.maxScrollExtent) &&
+            scrollcontroller.position.maxScrollExtent) &&
         _controllerCommu.hasMoreItems) {
       _controllerCommu.fetchNextPage();
     }
@@ -323,7 +317,7 @@ class CommuFeedVM extends ChangeNotifier {
         .then((value) {
       // Find the post by postId and remove it
       int postIndex =
-      _amityCommunityFeedPosts.indexWhere((p) => p.postId == post.postId);
+          _amityCommunityFeedPosts.indexWhere((p) => p.postId == post.postId);
       if (postIndex != -1) {
         _amityCommunityFeedPosts.removeAt(postIndex);
         notifyListeners();
@@ -371,8 +365,8 @@ class CommuFeedVM extends ChangeNotifier {
 
   void acceptPost(
       {required String postId,
-        required String communityId,
-        required Function(bool) callback}) {
+      required String communityId,
+      required Function(bool) callback}) {
     AmitySocialClient.newPostRepository()
         .reviewPost(postId: postId)
         .approve()
@@ -385,15 +379,14 @@ class CommuFeedVM extends ChangeNotifier {
       notifyListeners();
       initAmityCommunityFeed(communityId);
     }).onError((error, stackTrace) {
-      print(error);
       //handle error
     });
   }
 
   void declinePost(
       {required String postId,
-        required String communityId,
-        required Function(bool) callback}) {
+      required String communityId,
+      required Function(bool) callback}) {
     AmitySocialClient.newPostRepository()
         .reviewPost(postId: postId)
         .decline()
@@ -406,7 +399,6 @@ class CommuFeedVM extends ChangeNotifier {
       notifyListeners();
       initAmityCommunityFeed(communityId);
     }).onError((error, stackTrace) {
-      print(error);
       //handle error
     });
   }

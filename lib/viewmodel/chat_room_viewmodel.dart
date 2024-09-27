@@ -94,8 +94,6 @@ class ChatRoomVM extends ChangeNotifier {
         .getLiveCollection(pageSize: 20);
 
     messageLiveCollection.getStreamController().stream.listen((event) {
-      print("evemt triggered");
-      print("event length: ${event.length}");
       amitymessage.clear();
 
       amitymessage.addAll(event.reversed);

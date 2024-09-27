@@ -115,24 +115,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   Future<void> _initializeControllers() async {
-    print("_initializeControllers");
     _controllers = await Future.wait(
       widget.files.map((file) async {
         var videoData = file.data
             as VideoData; // Assuming VideoData is a type from your code
         var fileURL = await videoData.getVideo(AmityVideoQuality.MEDIUM);
-        print(fileURL);
 
-        print("  ");
         var controller =
             VideoPlayerController.networkUrl(Uri.parse(fileURL.fileUrl!));
         await controller.initialize();
         return controller;
       }),
     );
-    setState(() {
-      print("success");
-    });
+    setState(() {});
   }
 
   @override

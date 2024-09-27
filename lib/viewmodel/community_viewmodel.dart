@@ -82,7 +82,6 @@ class CommunityVM extends ChangeNotifier {
       }
 
       AmityCommunity createdCommunity = await communityBuilder.create();
-      print("Created community ${createdCommunity.displayName}");
       notifyListeners();
       Navigator.of(context).pop();
       final userProvider = Provider.of<UserVM>(context, listen: false);
@@ -90,7 +89,6 @@ class CommunityVM extends ChangeNotifier {
 
       return createdCommunity;
     } catch (error) {
-      print("Failed to create community: $error");
       return null;
     }
   }

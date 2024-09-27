@@ -36,7 +36,6 @@ class ReactionWidget extends StatelessWidget {
               post.myReactions!.contains("like")
                   ? TextButton(
                       onPressed: () {
-                        print(post.myReactions);
                         HapticFeedback.heavyImpact();
                         Provider.of<PostVM>(context, listen: false)
                             .removePostReaction(post);
@@ -67,7 +66,6 @@ class ReactionWidget extends StatelessWidget {
                   : Container(
                       child: TextButton(
                         onPressed: () {
-                          print(post.myReactions);
                           HapticFeedback.heavyImpact();
                           Provider.of<PostVM>(context, listen: false)
                               .addPostReaction(post);

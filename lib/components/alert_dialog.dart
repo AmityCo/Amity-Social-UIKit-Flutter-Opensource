@@ -72,9 +72,7 @@ class AmityLoadingDialog {
   static bool _isDialogShowing = false;
 
   static Future<void> showLoadingDialog() {
-    print("show AmityLoadingDialog");
     _isDialogShowing = true;
-    print("set _isDialogShowing: $_isDialogShowing");
     return showDialog<void>(
       context: NavigationService.navigatorKey.currentContext!,
       barrierColor: Colors.transparent,
@@ -120,10 +118,7 @@ class AmityLoadingDialog {
   }
 
   static void hideLoadingDialog() {
-    print("Hide Loading!");
-    print(_isDialogShowing);
     if (_isDialogShowing) {
-      print("close...");
       Navigator.of(loadingContext!).pop();
 
       _isDialogShowing = false;

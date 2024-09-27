@@ -200,7 +200,6 @@ class CreatePostVMV2 with ChangeNotifier {
             int progress = uploadInfo.getProgressPercentage();
             if (progress < 100) {
               uikitFile.progress = progress;
-              print("progress: $progress");
               notifyListeners();
             }
           },
@@ -208,8 +207,6 @@ class CreatePostVMV2 with ChangeNotifier {
             uikitFile.status = FileStatus.complete;
             uikitFile.fileInfo = amityFile;
             uikitFile.amityFile = amityFile;
-            print(
-                "file type ${uikitFile.fileType} ${uikitFile.fileInfo.toString()}");
             uikitFile.progress = 100;
             checkAllFilesUploaded();
             notifyListeners();
@@ -445,7 +442,6 @@ class CreatePostVMV2 with ChangeNotifier {
               callback(false, error.toString());
             });
       } else {
-        print("creating.. text post");
         var readyBuilder = postBuilder.text(textEditingController.text);
         await readyBuilder
             .metadata({'isCreateByAdmin': postAsModerator})
@@ -471,7 +467,6 @@ class CreatePostVMV2 with ChangeNotifier {
       required BuildContext context,
       required Function callback}) {
     if (isCommunity) {
-      print("refreshing commu feed");
       // print((post.target as CommunityTarget).targetCommunityId!);
       // Provider.of<CommuFeedVM>(context, listen: false).initAmityCommunityFeed(
       //     (post.target as CommunityTarget).targetCommunityId!);

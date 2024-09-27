@@ -42,15 +42,11 @@ class ReplyVM extends PostVM {
   Future<void> initReplyComment(String postId, BuildContext context) async {
     _controllersMap.clear();
     amityReplyCommentsMap.clear();
-    print("initReplyComment>>>>>>>>>>>>>>>>>>>>>");
     replyToObject = null;
-    print(amityComments.length);
 
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;
     for (var comment in comments) {
       // Check if the comment ID does not exist in the amityReplyCommentsMap
-
-      print("comment: ${comment.data}");
       await listenForReplyComments(
           postID: postId, commentId: comment.commentId!);
     }
@@ -75,8 +71,6 @@ class ReplyVM extends PostVM {
     required String postID,
     required String commentId,
   }) async {
-    print("$postID:look reply: commentId:$commentId");
-
     // Check if the comments for the given commentId already exist to append new comments instead of clearing the list.
     final amityComments = amityReplyCommentsMap[commentId] ?? <AmityComment>[];
 
@@ -102,7 +96,8 @@ class ReplyVM extends PostVM {
                 .where((item) => !currentIds.contains(item.commentId))
                 .toList();
             if (newItems.isNotEmpty) {
-          final newPost = await AmityUIConfiguration.onCustomComment(newItems);
+              final newPost =
+                  await AmityUIConfiguration.onCustomComment(newItems);
               amityComments.addAll(newPost);
               amityReplyCommentsMap[commentId] = amityComments;
             }
@@ -144,17 +139,12 @@ class ReplyVM extends PostVM {
     if (_controllersMap[commentId] != null) {
       _controllersMap[commentId]!.fetchNextPage();
       notifyListeners();
-    } else {
-      print("Cannot find comment ID in map");
-    }
+    } else {}
   }
 
   @override
   Future<void> deleteComment(AmityComment comment) async {
-    print("delete commet...");
     comment.delete().then((value) {
-      print("delete commet success: $value");
-
       notifyListeners();
     }).onError((error, stackTrace) async {
       await AmityDialog()

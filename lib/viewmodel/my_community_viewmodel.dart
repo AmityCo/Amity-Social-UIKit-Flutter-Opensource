@@ -69,9 +69,7 @@ class MyCommunityVM with ChangeNotifier {
 
   void loadNextPage() async {
     if ((scrollcontroller.position.pixels >
-        scrollcontroller.position.maxScrollExtent - 800)) {
-      print("hasMore: ${communityLiveCollection.hasNextPage()}");
-    }
+        scrollcontroller.position.maxScrollExtent - 800)) {}
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&
         communityLiveCollection.hasNextPage() &&
@@ -144,9 +142,7 @@ class SearchCommunityVM with ChangeNotifier {
 
   void loadNextPage() async {
     if ((scrollcontroller.position.pixels >
-        scrollcontroller.position.maxScrollExtent - 800)) {
-      print("hasMore: ${communityController.hasMoreItems}");
-    }
+        scrollcontroller.position.maxScrollExtent - 800)) {}
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&
         communityController.hasMoreItems &&

@@ -46,6 +46,12 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tappablePostAsButton = widget.feedType == FeedType.community &&
+        widget.community != null &&
+        widget.community!.communityId != null &&
+        AmityCoreClient.hasPermission(AmityPermission.EDIT_COMMUNITY_POST)
+            .atCommunity(widget.community!.communityId!)
+            .check();
 
     return Consumer<CreatePostVMV2>(builder: (consumerContext, vm, _) {
       return ThemeConfig(
@@ -164,19 +170,13 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
           body: SafeArea(
             child: Column(
               children: [
-                if (widget.feedType == FeedType.community &&
-                    widget.community != null &&
-                    widget.community!.communityId != null &&
-                    AmityCoreClient.hasPermission(
-                            AmityPermission.EDIT_COMMUNITY_POST)
-                        .atCommunity(widget.community!.communityId!)
-                        .check())
-                  Provider.of<AmityUIConfiguration>(context, listen: false)
-                      .buildPostAsButton(
-                    AmityCoreClient.getCurrentUser(),
-                    widget.community,
-                    vm,
-                  ),
+                Provider.of<AmityUIConfiguration>(context, listen: false)
+                    .buildPostAsButton(
+                  AmityCoreClient.getCurrentUser(),
+                  widget.community,
+                  vm,
+                  tappablePostAsButton,
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(

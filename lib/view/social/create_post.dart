@@ -84,8 +84,8 @@ class CreatePostScreenState extends State<CreatePostScreen> {
                     alignment: Alignment.center,
                     padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
                     decoration: BoxDecoration(
-                      color:
-                          Provider.of<AmityUIConfiguration>(context).primaryColor,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(

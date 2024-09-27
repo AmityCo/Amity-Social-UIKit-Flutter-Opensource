@@ -6,6 +6,7 @@ abstract class GlobalFeedEvent {}
 class GlobalFeedInit extends GlobalFeedEvent {}
 
 class GlobalFeedFetch extends GlobalFeedEvent {}
+
 class GlobalFeedFetched extends GlobalFeedEvent {
   final List<AmityPost> list;
 
@@ -30,5 +31,5 @@ class GlobalFeedReactToPost extends GlobalFeedEvent {
 class GlobalFeedReloadThePost extends GlobalFeedEvent {
   final String postId;
 
-  GlobalFeedReloadThePost({ required this.postId });
+  GlobalFeedReloadThePost({required this.postId});
 }

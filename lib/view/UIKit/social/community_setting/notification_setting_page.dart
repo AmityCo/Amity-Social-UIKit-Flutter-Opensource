@@ -65,8 +65,9 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                           .appColors
                           .base)),
               trailing: Switch(
-                activeColor:
-                    Provider.of<AmityUIConfiguration>(context).appColors.primary,
+                activeColor: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .primary,
                 value: isNotificationEnabled,
                 onChanged: (value) {
                   setState(() {
@@ -76,9 +77,9 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
               ),
             ),
             const Divider(),
-      
+
             // Section 2: Post and Comment
-      
+
             !isNotificationEnabled
                 ? const SizedBox()
                 : Column(
@@ -90,8 +91,8 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
                                 8), // Adjust radius to your need
-                            color: Colors
-                                .grey[200], // Choose the color to fit your design
+                            color: Colors.grey[
+                                200], // Choose the color to fit your design
                           ),
                           child: Icon(Icons.newspaper_outlined,
                               color: Provider.of<AmityUIConfiguration>(context)
@@ -100,9 +101,10 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         ), // You may want to replace with your icon
                         title: Text('Posts',
                             style: TextStyle(
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .appColors
-                                    .base)),
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base)),
                         trailing: Icon(Icons.chevron_right,
                             color: Provider.of<AmityUIConfiguration>(context)
                                 .appColors

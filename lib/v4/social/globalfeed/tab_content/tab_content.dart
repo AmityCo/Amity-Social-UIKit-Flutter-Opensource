@@ -15,28 +15,29 @@ class TabContent extends StatelessWidget {
       builder: (context, state) {
         final tabIndex = state is TabState ? state.selectedIndex : 0;
         if (tabIndex == 0) {
-          return const NewsFeedComponentConfigProviderWidget(pageId: 'social_home_page');
+          return const NewsFeedComponentConfigProviderWidget(
+              pageId: 'social_home_page');
         } else if (tabIndex == 1) {
           return ExploreComponent(
               pageId: 'pageId2', componentId: 'explorePage');
         } else {
-          return AmityMyCommunitiesComponent(pageId: 'social_home_page',);
+          return AmityMyCommunitiesComponent(
+            pageId: 'social_home_page',
+          );
         }
       },
     );
   }
 }
 
-// Test 
+// Test
 class ExploreComponent extends NewBaseComponent {
   ExploreComponent(
       {Key? key, required String pageId, required String componentId})
       : super(key: key, pageId: pageId, componentId: componentId);
 
   @override
-  Widget buildComponent(
-      BuildContext context) {
+  Widget buildComponent(BuildContext context) {
     return const Center(child: Text('Explore Content'));
   }
 }
-

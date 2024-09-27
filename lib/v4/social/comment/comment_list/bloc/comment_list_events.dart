@@ -16,16 +16,17 @@ class CommentListEventRefresh extends CommentListEvent {
 class CommentListEventLoadMore extends CommentListEvent {
   final AmityToastBloc toastBloc;
 
-  const CommentListEventLoadMore({required this.toastBloc});}
+  const CommentListEventLoadMore({required this.toastBloc});
+}
 
 class CommentListEventDisposed extends CommentListEvent {}
 
 class CommentListEventChanged extends CommentListEvent {
-
   final List<AmityComment> comments;
   final bool isFetching;
 
-  const CommentListEventChanged({required this.comments, required this.isFetching});
+  const CommentListEventChanged(
+      {required this.comments, required this.isFetching});
 
   @override
   List<Object> get props => [comments, isFetching];

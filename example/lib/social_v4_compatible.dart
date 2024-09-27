@@ -24,8 +24,8 @@ class _CommunityPageState extends State<AmitySocialV4Compatible> {
     var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
     explorePageVM.getRecommendedCommunities();
     explorePageVM.getTrendingCommunities();
-    explorePageVM
-        .queryCommunityCategories(sortOption: AmityCommunityCategorySortOption.NAME);
+    explorePageVM.queryCommunityCategories(
+        sortOption: AmityCommunityCategorySortOption.NAME);
   }
 
   @override
@@ -134,7 +134,9 @@ class _CommunityPageState extends State<AmitySocialV4Compatible> {
                     .iconConfig
                     .postIcon(iconSize: 28, color: Colors.white),
               ),
-              body: const NewsFeedComponentConfigProviderWidget(pageId: 'global_feed_compat',),
+              body: const NewsFeedComponentConfigProviderWidget(
+                pageId: 'global_feed_compat',
+              ),
             ),
             const ExplorePage(),
           ],
@@ -665,7 +667,8 @@ class _CommunityListPageState extends State<CommunityListPage> {
   void initState() {
     super.initState();
     _viewModel = Provider.of<ExplorePageVM>(context, listen: false);
-    _viewModel.getCommunitiesInCategory(categoryId: widget.category.categoryId!);
+    _viewModel.getCommunitiesInCategory(
+        categoryId: widget.category.categoryId!);
   }
 
   @override

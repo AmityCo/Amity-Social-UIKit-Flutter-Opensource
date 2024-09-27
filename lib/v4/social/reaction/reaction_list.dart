@@ -15,7 +15,6 @@ class AmityReactionListComponent extends NewBaseComponent {
   final AmityReactionReferenceType referenceType;
   late int? reactionCount = 0;
 
-
   AmityReactionListComponent({
     Key? key,
     String? pageId,
@@ -26,7 +25,8 @@ class AmityReactionListComponent extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     return BlocProvider(
-      create: (context) => ReactionListBloc(referenceId: referenceId, referenceType: referenceType),
+      create: (context) => ReactionListBloc(
+          referenceId: referenceId, referenceType: referenceType),
       child: Builder(
         builder: (context) {
           context.read<ReactionListBloc>().add(ReactionListEventInit());

@@ -13,17 +13,19 @@ class PostContentText extends StatelessWidget {
     if (post.data is TextData) {
       textContent = (post.data as TextData).text ?? "";
     }
-    return textContent.isNotEmpty ? Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Text(
-        textContent,
-        style: TextStyle(
-          color: theme.baseColor,
-          fontSize: 15,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    ) : Container();
+    return textContent.isNotEmpty
+        ? Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              textContent,
+              style: TextStyle(
+                color: theme.baseColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          )
+        : Container();
   }
 }

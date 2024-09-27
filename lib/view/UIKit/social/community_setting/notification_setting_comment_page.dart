@@ -79,7 +79,7 @@ class _CommentsNotificationSettingPageState
               },
             ),
             const Divider(),
-      
+
             // Section 2: New Comments
             _buildSectionHeader('New Comments'),
             _buildDescriptionTile(
@@ -115,7 +115,7 @@ class _CommentsNotificationSettingPageState
               },
             ),
             const Divider(),
-      
+
             // Section 3: Replies
             _buildSectionHeader('Replies'),
             _buildDescriptionTile(

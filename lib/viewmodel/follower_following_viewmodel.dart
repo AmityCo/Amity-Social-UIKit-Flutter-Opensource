@@ -49,7 +49,7 @@ class FollowerVM extends ChangeNotifier {
     if (followingScrollController != null) {
       _followingController.addListener((() {
         if ((followingScrollController!.position.pixels ==
-            followingScrollController!.position.maxScrollExtent) &&
+                followingScrollController!.position.maxScrollExtent) &&
             _followingController.hasMoreItems) {
           _followingController.fetchNextPage();
         }
@@ -66,7 +66,8 @@ class FollowerVM extends ChangeNotifier {
           .getPagingData()
           .then((value) async {
         log("getFollowerListOf....Successs");
-        var customFollowings = await AmityUIConfiguration.onCustomFollow(value.data);
+        var customFollowings =
+            await AmityUIConfiguration.onCustomFollow(value.data);
         _followingList = customFollowings;
         // _followingList = value.data;
       }).onError((error, stackTrace) {
@@ -83,7 +84,8 @@ class FollowerVM extends ChangeNotifier {
           .then((value) async {
         log("getFollowerListOf....Successs");
         followingScrollController = ScrollController();
-        var customFollowings = await AmityUIConfiguration.onCustomFollow(value.data);
+        var customFollowings =
+            await AmityUIConfiguration.onCustomFollow(value.data);
         _followingList = customFollowings;
         // _followingList = value.data;
       }).onError((error, stackTrace) {
@@ -126,7 +128,7 @@ class FollowerVM extends ChangeNotifier {
     if (followerScrollController != null) {
       _followerController.addListener((() {
         if ((followerScrollController!.position.pixels ==
-            followerScrollController!.position.maxScrollExtent) &&
+                followerScrollController!.position.maxScrollExtent) &&
             _followerController.hasMoreItems) {
           _followerController.fetchNextPage();
         }
@@ -143,8 +145,9 @@ class FollowerVM extends ChangeNotifier {
           .getPagingData()
           .then((value) async {
         log("getFollowerListOf....Successs");
-        var customFollowers = await AmityUIConfiguration.onCustomFollower(value.data);
-        _followerList = customFollowers ;
+        var customFollowers =
+            await AmityUIConfiguration.onCustomFollower(value.data);
+        _followerList = customFollowers;
 
         // _followerList = value.data;
       }).onError((error, stackTrace) {
@@ -161,8 +164,9 @@ class FollowerVM extends ChangeNotifier {
           .then((value) async {
         log("getFollowerListOf....Successs");
         followerScrollController = ScrollController();
-        var customFollowers = await AmityUIConfiguration.onCustomFollower(value.data);
-        _followerList = customFollowers ;
+        var customFollowers =
+            await AmityUIConfiguration.onCustomFollower(value.data);
+        _followerList = customFollowers;
         // _followerList = value.data;
       }).onError((error, stackTrace) {
         AmityDialog()
@@ -229,8 +233,9 @@ class FollowerVM extends ChangeNotifier {
       if (_followerController.error == null) {
         //handle _followerController, we suggest to clear the previous items
         //and add with the latest _controller.loadedItems
-        var customFollowers = await AmityUIConfiguration.onCustomFollower(_followerList);
-        _followerList = customFollowers ;
+        var customFollowers =
+            await AmityUIConfiguration.onCustomFollower(_followerList);
+        _followerList = customFollowers;
         _followerList.clear();
 
         _followerList.addAll(customFollowers);

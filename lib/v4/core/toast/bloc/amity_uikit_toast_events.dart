@@ -11,10 +11,13 @@ class AmityToastShort extends AmityToastEvent {
   final String message;
   final AmityToastIcon? icon;
 
-  const AmityToastShort({required this.message, this.icon,});
+  const AmityToastShort({
+    required this.message,
+    this.icon,
+  });
 
   @override
-  List<Object> get props => [message,icon ?? ''];
+  List<Object> get props => [message, icon ?? ''];
 }
 
 class AmityUIKitToastLong extends AmityToastEvent {

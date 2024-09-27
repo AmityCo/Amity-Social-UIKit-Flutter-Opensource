@@ -102,7 +102,8 @@ class EditCommunityScreenState extends State<EditCommunityScreen> {
                         children: [
                           GestureDetector(
                               onTap: () {
-                                Provider.of<ImagePickerVM>(context, listen: false)
+                                Provider.of<ImagePickerVM>(context,
+                                        listen: false)
                                     .showBottomSheet(context);
                               },
                               child: FadedScaleAnimation(
@@ -118,8 +119,9 @@ class EditCommunityScreenState extends State<EditCommunityScreen> {
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .primaryColor,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .primaryColor,
                               ),
                               child: const Icon(
                                 Icons.camera_alt,

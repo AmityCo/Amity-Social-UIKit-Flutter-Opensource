@@ -12,7 +12,6 @@ class SkeletonText extends StatelessWidget {
       this.borderRadius = const BorderRadius.all(Radius.circular(16))})
       : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Container(

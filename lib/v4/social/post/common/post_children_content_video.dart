@@ -28,12 +28,13 @@ class PostContentVideo extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.center,
-              child:Container(
+              child: Container(
                 width: 40,
                 height: 40,
                 decoration: const ShapeDecoration(
                   color: Color(0x40000000),
-                  shape: OvalBorder(side: BorderSide(color: Colors.transparent)),
+                  shape:
+                      OvalBorder(side: BorderSide(color: Colors.transparent)),
                 ),
                 child: const Icon(
                   Icons.play_arrow,
@@ -42,7 +43,6 @@ class PostContentVideo extends StatelessWidget {
                 ),
               ),
             ),
-            
           ],
         ),
       );

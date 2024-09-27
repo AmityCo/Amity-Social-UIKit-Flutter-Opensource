@@ -54,8 +54,8 @@ class ImagePickerVM extends ChangeNotifier {
                       title: const Text('Gallery'),
                       onTap: () async {
                         Navigator.pop(context);
-                        final XFile? image =
-                            await _picker.pickImage(source: ImageSource.gallery);
+                        final XFile? image = await _picker.pickImage(
+                            source: ImageSource.gallery);
                         if (image != null) {
                           AmityCoreClient.newFileRepository()
                               .uploadImage(File(image.path))
@@ -65,7 +65,8 @@ class ImagePickerVM extends ChangeNotifier {
                               progress: (uploadInfo, cancelToken) {
                                 imageState = ImageState.loading;
                                 notifyListeners();
-                                int progress = uploadInfo.getProgressPercentage();
+                                int progress =
+                                    uploadInfo.getProgressPercentage();
                                 log(progress.toString());
                               },
                               complete: (file) {
@@ -75,7 +76,7 @@ class ImagePickerVM extends ChangeNotifier {
                                 final AmityImage uploadedImage = file;
                                 amityImage = uploadedImage;
                                 //proceed result with uploadedImage
-            
+
                                 log("check amity image ${amityImage!.fileId}");
                                 imageState = ImageState.hasImage;
                                 notifyListeners();
@@ -123,7 +124,7 @@ class ImagePickerVM extends ChangeNotifier {
                               final AmityImage uploadedImage = file;
                               amityImage = uploadedImage;
                               //proceed result with uploadedImage
-            
+
                               log("check amity image ${amityImage!.fileId}");
                               imageState = ImageState.hasImage;
                               notifyListeners();

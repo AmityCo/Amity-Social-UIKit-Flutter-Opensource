@@ -23,7 +23,8 @@ class AmityToast extends BaseElement {
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
-            content: renderToastContent(message: state.message, icon: state.icon),
+            content:
+                renderToastContent(message: state.message, icon: state.icon),
             elevation: 0,
             backgroundColor: const Color(0x00000000),
             onVisible: () => Future.delayed(const Duration(seconds: 5), () {

@@ -36,7 +36,8 @@ class _PostNotificationSettingPageState
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(Icons.chevron_left,
-                color: Provider.of<AmityUIConfiguration>(context).appColors.base,
+                color:
+                    Provider.of<AmityUIConfiguration>(context).appColors.base,
                 size: 30),
           ),
           title: Text(
@@ -54,7 +55,7 @@ class _PostNotificationSettingPageState
         body: ListView(
           children: [
             // Section 1: React Posts
-      
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
@@ -67,7 +68,7 @@ class _PostNotificationSettingPageState
                 ),
               ),
             ),
-      
+
             const Padding(
               padding: EdgeInsets.only(left: 16.0, bottom: 16, right: 16),
               child: Text(
@@ -78,7 +79,7 @@ class _PostNotificationSettingPageState
                 ),
               ),
             ),
-      
+
             _buildRadioTile<ReactPostNotificationSetting>(
               title: 'Everyone',
               value: ReactPostNotificationSetting.everyone,
@@ -115,7 +116,7 @@ class _PostNotificationSettingPageState
                 thickness: 1,
               ),
             ),
-      
+
             // Section 2: New Posts
             const Padding(
               padding: EdgeInsets.all(16.0),

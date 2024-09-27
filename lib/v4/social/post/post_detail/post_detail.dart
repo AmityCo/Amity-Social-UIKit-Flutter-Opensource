@@ -26,21 +26,18 @@ class PostDetail extends NewBaseComponent {
   Widget buildComponent(BuildContext context) {
     return BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
       onAddReaction(reactionType) {
-        context
-            .read<PostItemBloc>()
-            .add(AddReactionToPost(post: post, reactionType: reactionType, action: action));
+        context.read<PostItemBloc>().add(AddReactionToPost(
+            post: post, reactionType: reactionType, action: action));
       }
 
       onRemoveReaction(reactionType) {
-        context
-            .read<PostItemBloc>()
-            .add(RemoveReactionToPost(post: post, reactionType: reactionType, action: action));
+        context.read<PostItemBloc>().add(RemoveReactionToPost(
+            post: post, reactionType: reactionType, action: action));
       }
 
       var postAction = (action != null)
           ? action!.copyWith(
-              onAddReaction: onAddReaction,
-              onRemoveReaction: onRemoveReaction)
+              onAddReaction: onAddReaction, onRemoveReaction: onRemoveReaction)
           : AmityPostAction(
               onAddReaction: onAddReaction,
               onRemoveReaction: onRemoveReaction,

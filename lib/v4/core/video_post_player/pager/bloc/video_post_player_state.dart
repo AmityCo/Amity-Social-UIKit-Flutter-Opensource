@@ -1,13 +1,12 @@
 part of 'video_post_player_bloc.dart';
 
-
 class VideoPostPlayerState extends Equatable {
   final List<AmityPost> posts;
   final List<String> urls;
   final List<String> thumbnails;
   final int currentIndex;
   final VideoPlayerController? videoController;
-  
+
   const VideoPostPlayerState({
     required this.posts,
     required this.urls,
@@ -37,11 +36,12 @@ class VideoPostPlayerState extends Equatable {
 }
 
 class VideoPostPlayerStateInitial extends VideoPostPlayerState {
-  VideoPostPlayerStateInitial(List<AmityPost> posts, int initialIndex) : super(posts: posts, urls: [], thumbnails: [], currentIndex: initialIndex);
+  VideoPostPlayerStateInitial(List<AmityPost> posts, int initialIndex)
+      : super(
+            posts: posts, urls: [], thumbnails: [], currentIndex: initialIndex);
 }
 
 class VideoPostPlayerStateLoaded extends VideoPostPlayerState {
-
   const VideoPostPlayerStateLoaded({
     posts,
     urls,
@@ -50,11 +50,10 @@ class VideoPostPlayerStateLoaded extends VideoPostPlayerState {
     videoController,
     initializeVideoPlayerFuture,
   }) : super(
-    posts: posts,
-    urls: urls,
-    thumbnails: thumbnails,
-    currentIndex: currentIndex,
-    videoController: videoController,
-  );
+          posts: posts,
+          urls: urls,
+          thumbnails: thumbnails,
+          currentIndex: currentIndex,
+          videoController: videoController,
+        );
 }
-

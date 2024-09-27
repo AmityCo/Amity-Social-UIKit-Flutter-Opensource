@@ -1,13 +1,11 @@
 import 'package:intl/intl.dart';
 
 extension DateTimeExtension on DateTime {
-
-
   String toSocialTimestamp() {
     final currentDateTime = DateTime.now();
     final difference = currentDateTime.difference(this);
     final yearDiff = (difference.inDays / 365).floor();
-    final weekDiff = (difference.inDays / 7).floor();  
+    final weekDiff = (difference.inDays / 7).floor();
     if (yearDiff >= 1) {
       return DateFormat('d MMM yyyy').format(this);
     } else if (weekDiff >= 1) {

@@ -31,19 +31,23 @@ class CustomListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-      if (userId ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
-        Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
-      }else{
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (context) =>
-                UserFeedVM(), // Assuming UserFeedVM is your ViewModel
-            child: UserProfileScreen(
-              amityUserId: userId,
-              amityUser: user,
+        if (userId == AmityCoreClient.getCurrentUser().userId &&
+            Provider.of<AmityUIConfiguration>(context, listen: false)
+                .customUserProfileNavigate) {
+          Provider.of<AmityUIConfiguration>(context, listen: false)
+              .onUserProfile(context);
+        } else {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (context) =>
+                  UserFeedVM(), // Assuming UserFeedVM is your ViewModel
+              child: UserProfileScreen(
+                amityUserId: userId,
+                amityUser: user,
+              ),
             ),
-          ),
-        ));}
+          ));
+        }
       },
       child: Container(
         padding: const EdgeInsets.only(bottom: 2, top: 2),
@@ -52,19 +56,23 @@ class CustomListTile extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () async {
-                if (userId ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
-                  Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
-                }else{
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider(
-                    create: (context) =>
-                        UserFeedVM(), // Assuming UserFeedVM is your ViewModel
-                    child: UserProfileScreen(
-                      amityUserId: userId,
-                      amityUser: user,
+                if (userId == AmityCoreClient.getCurrentUser().userId &&
+                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                        .customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                      .onUserProfile(context);
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (context) =>
+                          UserFeedVM(), // Assuming UserFeedVM is your ViewModel
+                      child: UserProfileScreen(
+                        amityUserId: userId,
+                        amityUser: user,
+                      ),
                     ),
-                  ),
-                ));}
+                  ));
+                }
               },
               child: GestureDetector(child: getAvatarImage(avatarUrl)
                   // If avatarUrl can be null, consider handling it with a placeholder image

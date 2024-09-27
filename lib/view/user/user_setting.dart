@@ -31,8 +31,9 @@ class UserSettingPage extends StatelessWidget {
                 leading: IconButton(
                   icon: Icon(
                     Icons.chevron_left,
-                    color:
-                        Provider.of<AmityUIConfiguration>(context).appColors.base,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
                     size: 30,
                   ),
                   onPressed: () => Navigator.of(context).pop(),

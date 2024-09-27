@@ -11,7 +11,7 @@ class PostChildrenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final noChildrenPost = post.children?.isEmpty ?? true;
-    if(noChildrenPost) {
+    if (noChildrenPost) {
       return Container();
     } else if (post.children!.first.data is ImageData) {
       return PostContentImage(posts: post.children!);

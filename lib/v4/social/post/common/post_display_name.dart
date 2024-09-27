@@ -11,14 +11,17 @@ class PostDisplayName extends StatelessWidget {
   final AmityPost post;
   final AmityThemeColor theme;
 
-  const PostDisplayName({Key? key, required this.post, required this.theme}) : super(key: key);
+  const PostDisplayName({Key? key, required this.post, required this.theme})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var isModerator = false;
     if (post.target is CommunityTarget) {
       var roles = (post.target as CommunityTarget).postedCommunityMember?.roles;
-      if (roles != null && (roles.contains("moderator") || roles.contains("community-moderator"))) {
+      if (roles != null &&
+          (roles.contains("moderator") ||
+              roles.contains("community-moderator"))) {
         isModerator = true;
       }
     }
@@ -43,7 +46,8 @@ class PostDisplayName extends StatelessWidget {
                             (post.target as UserTarget).targetUserId !=
                                 post.postedUserId)))
                 ? [
-                    IntrinsicWidth(child: DisplayName(context, post.postedUser)),
+                    IntrinsicWidth(
+                        child: DisplayName(context, post.postedUser)),
                     Expanded(child: PostTarget(context, post.target!)),
                   ]
                 : [Expanded(child: DisplayName(context, post.postedUser))],
@@ -53,8 +57,7 @@ class PostDisplayName extends StatelessWidget {
               if (isModerator) const CommunityModeratorBadge(),
               if (isModerator)
                 Container(
-                    padding:
-                        const EdgeInsets.only(left: 2),
+                    padding: const EdgeInsets.only(left: 2),
                     child: Text(
                       "• ",
                       style: TextStyle(
@@ -67,7 +70,7 @@ class PostDisplayName extends StatelessWidget {
                 alignment: Alignment.topLeft,
                 child: Text(
                   timestampText,
-                  style:  TextStyle(
+                  style: TextStyle(
                     color: theme.baseColor,
                     fontSize: 13,
                     fontWeight: FontWeight.w400,

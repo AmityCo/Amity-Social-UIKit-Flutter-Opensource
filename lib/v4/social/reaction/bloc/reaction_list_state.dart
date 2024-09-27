@@ -5,6 +5,7 @@ abstract class ReactionListState extends Equatable {
   @override
   List<Object> get props => [];
 }
+
 class ReactionListLoading extends ReactionListState {}
 
 class ReactionListLoaded extends ReactionListState {

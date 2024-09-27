@@ -33,7 +33,7 @@ class _SingleChatRoomState extends State<SingleChatRoom> {
   Widget build(BuildContext context) {
     return Provider.of<ChannelVM>(context).amitySingleChannel == null
         ? const ThemeConfig(
-          child: Scaffold(
+            child: Scaffold(
               body: Row(
                 children: [
                   Expanded(
@@ -44,7 +44,7 @@ class _SingleChatRoomState extends State<SingleChatRoom> {
                 ],
               ),
             ),
-        )
+          )
         : ChangeNotifierProvider(
             create: (context) => ChatRoomVM(),
             child: ChatSingleScreen(

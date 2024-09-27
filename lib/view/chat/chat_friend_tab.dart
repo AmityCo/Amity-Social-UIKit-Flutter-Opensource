@@ -94,7 +94,7 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                         itemBuilder: (context, index) {
                           var messageCount =
                               vm.getChannelList()[index].unreadCount;
-          
+
                           bool rand = messageCount > 0 ? true : false;
                           // if ((Random().nextInt(10)) % 2 == 0) {
                           //   _rand = true;
@@ -105,7 +105,8 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                             child: ListTile(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => ChangeNotifierProvider(
+                                    builder: (context) =>
+                                        ChangeNotifierProvider(
                                           create: (context) => MessageVM(),
                                           child: ChatSingleScreen(
                                             key: UniqueKey(),
@@ -145,7 +146,8 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                                                     .getChannelList()[index]
                                                     .unreadCount
                                                     .toString(),
-                                                style: theme.textTheme.bodyLarge!
+                                                style: theme
+                                                    .textTheme.bodyLarge!
                                                     .copyWith(
                                                         color: Colors.white,
                                                         fontSize: 8),
@@ -161,9 +163,11 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                                     "Display name",
                                 style: TextStyle(
                                   color: rand
-                                      ? Provider.of<AmityUIConfiguration>(context)
+                                      ? Provider.of<AmityUIConfiguration>(
+                                              context)
                                           .primaryColor
-                                      : Provider.of<AmityUIConfiguration>(context)
+                                      : Provider.of<AmityUIConfiguration>(
+                                              context)
                                           .channelListConfig
                                           .channelDisplayname,
                                   fontSize: 13.3,
@@ -180,15 +184,17 @@ class AmitySLEChannelScreenState extends State<AmitySLEChannelScreen> {
                                 ),
                               ),
                               trailing: Text(
-                                (vm.getChannelList()[index].lastActivity == null)
+                                (vm.getChannelList()[index].lastActivity ==
+                                        null)
                                     ? ""
-                                    : getDateTime(
-                                        vm.getChannelList()[index].lastActivity!),
+                                    : getDateTime(vm
+                                        .getChannelList()[index]
+                                        .lastActivity!),
                                 style: theme.textTheme.bodyLarge!.copyWith(
-                                    color:
-                                        Provider.of<AmityUIConfiguration>(context)
-                                            .channelListConfig
-                                            .latestTimeColor,
+                                    color: Provider.of<AmityUIConfiguration>(
+                                            context)
+                                        .channelListConfig
+                                        .latestTimeColor,
                                     fontSize: 9.3),
                               ),
                             ),

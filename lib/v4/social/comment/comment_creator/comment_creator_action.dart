@@ -4,5 +4,4 @@ class CommentCreatorAction {
   CommentCreatorAction({
     required this.onDissmiss,
   });
-  
 }

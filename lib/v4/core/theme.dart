@@ -76,7 +76,6 @@ class AmityThemeColor {
   });
 }
 
-
 // Enum to define theme styles
 enum AmityThemeStyle { light, dark, system }
 

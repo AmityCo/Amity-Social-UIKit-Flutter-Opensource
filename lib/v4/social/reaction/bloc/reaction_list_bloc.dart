@@ -12,16 +12,16 @@ class ReactionListBloc extends Bloc<ReactionListEvent, ReactionListState> {
   late ReactionLiveCollection reactionLiveCollection;
   late StreamSubscription<List<AmityReaction>> _subscription;
 
-  ReactionListBloc({required String referenceId, required AmityReactionReferenceType referenceType}) : super(ReactionListStateInitial()) {
-    
+  ReactionListBloc(
+      {required String referenceId,
+      required AmityReactionReferenceType referenceType})
+      : super(ReactionListStateInitial()) {
     if (referenceType == AmityReactionReferenceType.POST) {
-
       reactionLiveCollection = AmitySocialClient.newPostRepository()
           .getReaction(postId: referenceId)
           .reactionName("like")
           .getLiveCollection();
     } else if (referenceType == AmityReactionReferenceType.COMMENT) {
-
       reactionLiveCollection = AmitySocialClient.newCommentRepository()
           .getReaction(commentId: referenceId)
           .reactionName("like")
@@ -32,9 +32,7 @@ class ReactionListBloc extends Bloc<ReactionListEvent, ReactionListState> {
         .getStreamController()
         .stream
         .listen((reactions) async {
-
       if (reactionLiveCollection.isFetching == true && reactions.isEmpty) {
-
         emit(ReactionListLoading());
       } else if (reactions.isNotEmpty) {
         var state = ReactionListLoaded(

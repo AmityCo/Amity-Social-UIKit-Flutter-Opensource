@@ -24,11 +24,11 @@ class AmityMessage {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if ( messages != null) {
-      data['messages'] =  messages!.map((v) => v.toJson()).toList();
+    if (messages != null) {
+      data['messages'] = messages!.map((v) => v.toJson()).toList();
     }
-    if ( users != null) {
-      data['users'] =  users!.map((v) => v.toJson()).toList();
+    if (users != null) {
+      data['users'] = users!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -80,27 +80,27 @@ class Messages {
     flagCount = json['flagCount'];
     reactionsCount = json['reactionsCount'];
     reactions = json['reactions'] != null
-        ?  Reactions.fromJson(json['reactions'])
+        ? Reactions.fromJson(json['reactions'])
         : null;
     data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['type'] =  type;
-    data['isDeleted'] =  isDeleted;
-    data['createdAt'] =  createdAt;
-    data['editedAt'] =  editedAt;
-    data['channelSegment'] =  channelSegment;
-    data['updatedAt'] =  updatedAt;
-    data['childrenNumber'] =  childrenNumber;
-    data['channelId'] =  channelId;
-    data['userId'] =  userId;
-    data['messageId'] =  messageId;
-    data['flagCount'] =  flagCount;
-    data['reactionsCount'] =  reactionsCount;
-    if ( reactions != null) {
-      data['reactions'] =  reactions!.toJson();
+    data['type'] = type;
+    data['isDeleted'] = isDeleted;
+    data['createdAt'] = createdAt;
+    data['editedAt'] = editedAt;
+    data['channelSegment'] = channelSegment;
+    data['updatedAt'] = updatedAt;
+    data['childrenNumber'] = childrenNumber;
+    data['channelId'] = channelId;
+    data['userId'] = userId;
+    data['messageId'] = messageId;
+    data['flagCount'] = flagCount;
+    data['reactionsCount'] = reactionsCount;
+    if (reactions != null) {
+      data['reactions'] = reactions!.toJson();
     }
     if (this.data != null) {
       data['data'] = this.data!.toJson();
@@ -120,7 +120,7 @@ class Reactions {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['Like'] =  like;
+    data['Like'] = like;
     return data;
   }
 }
@@ -175,14 +175,14 @@ class Users {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] =  sId;
-    data['path'] =  path;
-    data['displayName'] =  displayName;
-    data['updatedAt'] =  updatedAt;
-    data['createdAt'] =  createdAt;
-    data['userId'] =  userId;
-    data['roles'] =  roles;
-    data['flagCount'] =  flagCount;
+    data['_id'] = sId;
+    data['path'] = path;
+    data['displayName'] = displayName;
+    data['updatedAt'] = updatedAt;
+    data['createdAt'] = createdAt;
+    data['userId'] = userId;
+    data['roles'] = roles;
+    data['flagCount'] = flagCount;
 
     return data;
   }
@@ -201,8 +201,8 @@ class Paging {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['next'] =  next;
-    data['previous'] =  previous;
+    data['next'] = next;
+    data['previous'] = previous;
     return data;
   }
 }

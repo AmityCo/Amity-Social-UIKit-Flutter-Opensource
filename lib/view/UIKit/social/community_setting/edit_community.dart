@@ -86,7 +86,8 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                       await Provider.of<CommunityVM>(context, listen: false)
                           .updateCommunity(
                               community.communityId ?? "",
-                              imageProvider.amityImages ?? community.avatarImage,
+                              imageProvider.amityImages ??
+                                  community.avatarImage,
                               _displayNameController.text,
                               _descriptionController.text,
                               Provider.of<CategoryVM>(context, listen: false)
@@ -125,9 +126,10 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
                             width: double.infinity,
                             height: MediaQuery.of(context).size.width * 0.7,
                             decoration: BoxDecoration(
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .appColors
-                                    .primaryShade3,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .primaryShade3,
                                 image: DecorationImage(
                                   image: getCustomImageProvider(widget
                                       .community.avatarImage

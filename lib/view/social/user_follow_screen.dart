@@ -15,9 +15,9 @@ class FollowScreen extends StatefulWidget {
   final FollowScreenType followScreenType;
   const FollowScreen(
       {super.key,
-        required this.userId,
-        this.displayName,
-        required this.followScreenType});
+      required this.userId,
+      this.displayName,
+      required this.followScreenType});
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();

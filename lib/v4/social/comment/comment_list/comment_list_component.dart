@@ -32,5 +32,4 @@ class AmityCommentTrayComponent extends NewBaseComponent {
       ),
     );
   }
-  
 }

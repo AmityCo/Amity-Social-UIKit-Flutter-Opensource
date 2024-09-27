@@ -98,8 +98,9 @@ class PostDetailInfo extends NewBaseComponent {
 
   Widget getReactionCount(AmityPost post) {
     final reactionCount = post.reactionCount ?? 0;
-    final text =
-        (reactionCount != 1) ? "${reactionCount.formattedCompactString()} likes" : "$reactionCount like";
+    final text = (reactionCount != 1)
+        ? "${reactionCount.formattedCompactString()} likes"
+        : "$reactionCount like";
     return Text(text,
         style: TextStyle(
           color: theme.baseColorShade2,
@@ -110,8 +111,9 @@ class PostDetailInfo extends NewBaseComponent {
 
   Widget getCommentCount(AmityPost post) {
     final commentCount = post.commentCount ?? 0;
-    final text =
-        (commentCount != 1) ? "${commentCount.formattedCompactString()} comments" : "$commentCount comment";
+    final text = (commentCount != 1)
+        ? "${commentCount.formattedCompactString()} comments"
+        : "$commentCount comment";
     return Text(text,
         style: TextStyle(
           color: theme.baseColorShade2,

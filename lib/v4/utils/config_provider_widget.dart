@@ -3,10 +3,9 @@ import 'package:amity_uikit_beta_service/v4/social/social_home_page/social_home_
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'config_provider.dart'; 
+import 'config_provider.dart';
 
 class SocialHomePageConfigProviderWidget extends StatelessWidget {
-
   const SocialHomePageConfigProviderWidget({super.key});
 
   @override
@@ -27,11 +26,11 @@ class SocialHomePageConfigProviderWidget extends StatelessWidget {
   }
 }
 
-
 class NewsFeedComponentConfigProviderWidget extends StatelessWidget {
   final String pageId;
 
-  const NewsFeedComponentConfigProviderWidget({super.key, required this.pageId});
+  const NewsFeedComponentConfigProviderWidget(
+      {super.key, required this.pageId});
 
   @override
   Widget build(BuildContext context) {

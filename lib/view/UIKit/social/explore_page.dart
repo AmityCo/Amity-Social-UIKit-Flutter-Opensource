@@ -34,7 +34,8 @@ class CommunityPage extends StatefulWidget {
   State<CommunityPage> createState() => CommunityPageState();
 }
 
-class CommunityPageState extends State<CommunityPage> with SingleTickerProviderStateMixin {
+class CommunityPageState extends State<CommunityPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -61,11 +62,13 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
       onCustomPost: AmityUIConfiguration.onCustomPost,
     );
   }
+
   void exploreTab() {
     setState(() {
       _tabController.index = 1;
     });
   }
+
   @override
   void didUpdateWidget(CommunityPage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -87,7 +90,7 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
       child: Scaffold(
         key: AmityUIConfiguration.newFeedExploreKey,
         backgroundColor:
-        Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
+            Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
         appBar: AppBar(
           toolbarHeight: widget.showAppBarTop ? kToolbarHeight : 0,
           elevation: 0.05,
@@ -96,46 +99,45 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
               .baseBackground,
           leading: widget.showAppBarTop
               ? IconButton(
-            icon: Icon(
-              Icons.close,
-              color: Provider.of<AmityUIConfiguration>(context)
-                  .appColors
-                  .base,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          )
+                  icon: Icon(
+                    Icons.close,
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .base,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
               : null,
           title: widget.showAppBarTop
               ? Text(
-            "Community",
-            style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle
-                .copyWith(
-              color: Provider.of<AmityUIConfiguration>(context)
-                  .appColors
-                  .base,
-            ),
-          )
+                  "Community",
+                  style: Provider.of<AmityUIConfiguration>(context)
+                      .titleTextStyle
+                      .copyWith(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
+                      ),
+                )
               : null,
           actions: widget.showAppBarTop
               ? [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                color: Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .base,
-              ),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                    const SearchCommunitiesScreen(),
-                  ),
-                );
-              },
-            )
-          ]
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SearchCommunitiesScreen(),
+                        ),
+                      );
+                    },
+                  )
+                ]
               : null,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48.0),
@@ -153,8 +155,7 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
                           .appColors
                           .primary,
                       unselectedLabelColor: Colors.grey,
-                      indicatorColor:
-                      Provider.of<AmityUIConfiguration>(context)
+                      indicatorColor: Provider.of<AmityUIConfiguration>(context)
                           .appColors
                           .primary,
                       labelStyle: const TextStyle(
@@ -179,26 +180,26 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
             Scaffold(
               floatingActionButton: widget.showPostToButton
                   ? FloatingActionButton(
-                shape: const CircleBorder(),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ThemeConfig(
-                        child: Scaffold(
-                          body: PostToPage(),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                backgroundColor:
-                Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .primary,
-                child: Provider.of<AmityUIConfiguration>(context)
-                    .iconConfig
-                    .postIcon(iconSize: 28, color: Colors.white),
-              )
+                      shape: const CircleBorder(),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ThemeConfig(
+                              child: Scaffold(
+                                body: PostToPage(),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primary,
+                      child: Provider.of<AmityUIConfiguration>(context)
+                          .iconConfig
+                          .postIcon(iconSize: 28, color: Colors.white),
+                    )
                   : null,
               body: GlobalFeedScreen(
                 isShowMyCommunity: widget.isShowMyCommunity,
@@ -209,7 +210,7 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
             RefreshIndicator(
               onRefresh: () async {
                 var explorePageVM =
-                Provider.of<ExplorePageVM>(context, listen: false);
+                    Provider.of<ExplorePageVM>(context, listen: false);
                 explorePageVM.getRecommendedCommunities();
                 explorePageVM.getTrendingCommunities();
                 explorePageVM.queryCommunityCategories(
@@ -223,7 +224,6 @@ class CommunityPageState extends State<CommunityPage> with SingleTickerProviderS
     );
   }
 }
-
 
 class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});

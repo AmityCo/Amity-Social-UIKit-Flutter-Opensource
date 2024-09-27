@@ -25,7 +25,6 @@ class AmitySocialHomeTopNavigationComponent extends NewBaseComponent {
       backgroundColor: theme.backgroundColor,
       elevation: 0,
       actions: [
-        
         IconButton(
           icon: SvgPicture.asset(
             'assets/Icons/amity_ic_search_button.svg',

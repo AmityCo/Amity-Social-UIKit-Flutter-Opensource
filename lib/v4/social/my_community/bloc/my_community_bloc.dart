@@ -23,12 +23,9 @@ class MyCommunityBloc extends Bloc<MyCommunityEvent, MyCommunityState> {
         .getStreamController()
         .stream
         .listen((communities) async {
-
       if (communityLiveCollection.isFetching == true && communities.isEmpty) {
-
         emit(MyCommunityLoading());
       } else if (communities.isNotEmpty) {
-
         var state = MyCommunityLoaded(
           list: communities,
           hasMoreItems: communityLiveCollection.hasNextPage(),

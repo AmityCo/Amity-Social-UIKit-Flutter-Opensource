@@ -97,8 +97,8 @@ class PostContentImage extends StatelessWidget {
             },
             child: backgroundImage(getURL(posts[1].data!), 1,
                 borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8))),
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8))),
           ))
         ]),
       );
@@ -124,8 +124,8 @@ class PostContentImage extends StatelessWidget {
               },
               child: backgroundImage(getURL(posts[0].data!), 0,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8))),
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8))),
             )),
             Expanded(
               child: Row(

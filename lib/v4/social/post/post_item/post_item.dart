@@ -58,17 +58,19 @@ class PostItem extends NewBaseComponent {
 
     var postAction = (action != null)
         ? action!.copyWith(
-            onAddReaction: onAddReaction, onRemoveReaction: onRemoveReaction, onPostUpdated: onPostUpdated)
+            onAddReaction: onAddReaction,
+            onRemoveReaction: onRemoveReaction,
+            onPostUpdated: onPostUpdated)
         : AmityPostAction(
             onAddReaction: onAddReaction,
             onRemoveReaction: onRemoveReaction,
             onPostDeleted: (String) {},
             onPostUpdated: onPostUpdated);
 
-            var page = AmityPostDetailPage(
-              postId: post.postId!,
-              action: postAction,
-            );
+    var page = AmityPostDetailPage(
+      postId: post.postId!,
+      action: postAction,
+    );
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(

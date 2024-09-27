@@ -22,7 +22,7 @@ class CommentCreatorState extends Equatable {
     return CommentCreatorState(
       text: text ?? this.text,
       currentHeight: currentHeight ?? this.currentHeight,
-      replyTo: replyTo ?? this.replyTo, 
+      replyTo: replyTo ?? this.replyTo,
     );
   }
 }

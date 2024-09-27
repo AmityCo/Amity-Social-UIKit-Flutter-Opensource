@@ -5,7 +5,10 @@ class GlobalFeedState extends Equatable {
   final bool hasMoreItems;
   final bool isFetching;
 
-  const GlobalFeedState({required this.list, required this.hasMoreItems, required this.isFetching});
+  const GlobalFeedState(
+      {required this.list,
+      required this.hasMoreItems,
+      required this.isFetching});
 
   GlobalFeedState copyWith({
     List<AmityPost>? list,

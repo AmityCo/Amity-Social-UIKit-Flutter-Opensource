@@ -24,5 +24,3 @@ abstract class BaseElement extends StatelessWidget {
 
   Widget buildElement(BuildContext context);
 }
-
-

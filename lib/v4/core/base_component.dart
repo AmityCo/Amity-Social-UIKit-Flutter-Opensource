@@ -36,7 +36,5 @@ abstract class NewBaseComponent extends StatelessWidget {
     return buildComponent(context);
   }
 
-  Widget buildComponent(
-      BuildContext context);
+  Widget buildComponent(BuildContext context);
 }
-

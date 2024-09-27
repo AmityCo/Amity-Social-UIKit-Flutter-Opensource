@@ -2,7 +2,6 @@
 
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 
-
 enum AmityRegion {
   sg,
   eu,
@@ -25,15 +24,14 @@ enum AmityRegion {
 
 @Deprecated("Use AmityUIKit instead")
 class AmitySLEUIKit extends AmityUIKit {
-
   @Deprecated("Use AmityUIKit.setup() instead")
-  Future<void> initUIKit(
-      {required String apikey,
-      required AmityRegion region,
-      String? customEndpoint,
-      String? customSocketEndpoint,
-      String? customMqttEndpoint,
-      }) {
+  Future<void> initUIKit({
+    required String apikey,
+    required AmityRegion region,
+    String? customEndpoint,
+    String? customSocketEndpoint,
+    String? customMqttEndpoint,
+  }) {
     return super.setup(
       apikey: apikey,
       region: region.toEndpointRegion(),
@@ -42,7 +40,6 @@ class AmitySLEUIKit extends AmityUIKit {
       customMqttEndpoint: customMqttEndpoint,
     );
   }
-
 }
 
 @Deprecated("Use AmityUIKitProvider instead")

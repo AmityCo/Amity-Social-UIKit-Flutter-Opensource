@@ -80,7 +80,8 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                           children: [
                             TextField(
                               controller: vm.textEditingController,
-                              scrollPhysics: const NeverScrollableScrollPhysics(),
+                              scrollPhysics:
+                                  const NeverScrollableScrollPhysics(),
                               maxLines: null,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
@@ -119,11 +120,13 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                                                 alignment: Alignment.topRight,
                                                 child: GestureDetector(
                                                     onTap: () {
-                                                      vm.deleteImageAt(index: i);
+                                                      vm.deleteImageAt(
+                                                          index: i);
                                                     },
                                                     child: Icon(
                                                       Icons.cancel,
-                                                      color: Colors.grey.shade100,
+                                                      color:
+                                                          Colors.grey.shade100,
                                                     ))),
                                           ],
                                         ),
@@ -132,7 +135,8 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                                         child: Container(
                                           color: theme.highlightColor,
                                           child: const Center(
-                                              child: CircularProgressIndicator()),
+                                              child:
+                                                  CircularProgressIndicator()),
                                         ),
                                       );
                               },
@@ -214,8 +218,9 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircularProgressIndicator(
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .primaryColor,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .primaryColor,
                               ),
                             ],
                           )
@@ -231,7 +236,7 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                                     communityId: widget.communityID,
                                     callback: (isSuccess, error) {});
                               }
-        
+
                               // ignore: use_build_context_synchronously
                               Navigator.of(context).pop();
                               // Navigator.of(context).pop();
@@ -241,8 +246,9 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                               alignment: Alignment.center,
                               padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                               decoration: BoxDecoration(
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .primaryColor,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .primaryColor,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(

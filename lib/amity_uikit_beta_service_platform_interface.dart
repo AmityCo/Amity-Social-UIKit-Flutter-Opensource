@@ -8,7 +8,8 @@ abstract class AmityUikitBetaServicePlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static AmityUikitBetaServicePlatform _instance = MethodChannelAmityUikitBetaService();
+  static AmityUikitBetaServicePlatform _instance =
+      MethodChannelAmityUikitBetaService();
 
   /// The default instance of [AmityUikitBetaServicePlatform] to use.
   ///

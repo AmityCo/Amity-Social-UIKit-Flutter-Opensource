@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/viewmodel/post_viewmodel.dart';
@@ -103,7 +101,6 @@ class ReplyVM extends PostVM {
             }
             notifyListeners();
           } else {
-            log("error: ${_controllersMap[commentId]!.error.toString()}");
             // await AmityDialog().showAlertErrorDialog(
             //     title: "Error!",
             //     message: _controllersMap[commentId]!.error.toString());
@@ -178,7 +175,6 @@ class ReplyVM extends PostVM {
       //   scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
       // });
     }).onError((error, stackTrace) async {
-      log(error.toString());
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });

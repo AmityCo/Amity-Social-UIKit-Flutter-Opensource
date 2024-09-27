@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
@@ -126,9 +124,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                                             communityId: widget.communityId,
                                           );
                                           Navigator.of(context).pop();
-                                        } else {
-                                          log('Failed to add members');
-                                        }
+                                        } else {}
                                       },
                                     )));
                       },
@@ -213,52 +209,105 @@ class MemberList extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
-                if (viewModel.userList[index].user!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
-                  Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
-                }else{
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
-                        create: (context) => UserFeedVM(),
-                        child: UserProfileScreen(
-                          amityUser: viewModel.userList[index].user!,
-                          amityUserId: viewModel.userList[index].user!.userId!,
-                        ))));}
+                if (viewModel.userList[index].user!.userId! ==
+                        AmityCoreClient.getCurrentUser().userId &&
+                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                        .customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                      .onUserProfile(context);
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                          create: (context) => UserFeedVM(),
+                          child: UserProfileScreen(
+                            amityUser: viewModel.userList[index].user!,
+                            amityUserId:
+                                viewModel.userList[index].user!.userId!,
+                          ))));
+                }
               },
               leading: FutureBuilder<bool>(
-                future: AmityUIConfiguration.isFollowing(viewModel.userList[index].user?.userId ?? ''),
+                future: AmityUIConfiguration.isFollowing(
+                    viewModel.userList[index].user?.userId ?? ''),
                 builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      child: const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      child: const Icon(Icons.person,
+                          size: 20, color: Colors.white),
                     ); // You can display a loading placeholder or empty avatarUrl
-                  } else if (viewModel.userList[index].user?.userId == AmityCoreClient.getCurrentUser().userId && viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] == null) {
+                  } else if (viewModel.userList[index].user?.userId ==
+                          AmityCoreClient.getCurrentUser().userId &&
+                      viewModel.userList[index].user
+                              ?.metadata?['profilePublicImageUrl'] ==
+                          null) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      backgroundImage: NetworkImage(viewModel.userList[index].user?.avatarUrl ?? ''),
-                      child: viewModel.userList[index].user?.avatarUrl != null && viewModel.userList[index].user?.avatarUrl != "" ? null : const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      backgroundImage: NetworkImage(
+                          viewModel.userList[index].user?.avatarUrl ?? ''),
+                      child: viewModel.userList[index].user?.avatarUrl !=
+                                  null &&
+                              viewModel.userList[index].user?.avatarUrl != ""
+                          ? null
+                          : const Icon(Icons.person,
+                              size: 20, color: Colors.white),
                     );
-                  }
-                  else if (viewModel.userList[index].user?.userId == AmityCoreClient.getCurrentUser().userId && viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] != null) {
+                  } else if (viewModel.userList[index].user?.userId ==
+                          AmityCoreClient.getCurrentUser().userId &&
+                      viewModel.userList[index].user
+                              ?.metadata?['profilePublicImageUrl'] !=
+                          null) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      backgroundImage: NetworkImage(viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] ?? ''),
-                      child: viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] != null && viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] != "" ? null : const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      backgroundImage: NetworkImage(viewModel.userList[index]
+                              .user?.metadata?['profilePublicImageUrl'] ??
+                          ''),
+                      child: viewModel.userList[index].user
+                                      ?.metadata?['profilePublicImageUrl'] !=
+                                  null &&
+                              viewModel.userList[index].user
+                                      ?.metadata?['profilePublicImageUrl'] !=
+                                  ""
+                          ? null
+                          : const Icon(Icons.person,
+                              size: 20, color: Colors.white),
                     );
-                  }
-                  else if (snapshot.hasError) {
+                  } else if (snapshot.hasError) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      child: const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      child: const Icon(Icons.person,
+                          size: 20, color: Colors.white),
                     ); // Handle error case, possibly by showing a default avatar
                   } else {
                     final isFollowing = snapshot.data ?? false;
-                    final avatarUrl = isFollowing ? viewModel.userList[index].user?.avatarUrl : viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] ?? '';
+                    final avatarUrl = isFollowing
+                        ? viewModel.userList[index].user?.avatarUrl
+                        : viewModel.userList[index].user
+                                ?.metadata?['profilePublicImageUrl'] ??
+                            '';
 
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
                       backgroundImage: NetworkImage(avatarUrl),
-                      child: avatarUrl != "" ? null : const Icon(Icons.person, size: 20, color: Colors.white),
+                      child: avatarUrl != ""
+                          ? null
+                          : const Icon(Icons.person,
+                              size: 20, color: Colors.white),
                     );
                   }
                 },
@@ -304,61 +353,112 @@ class ModeratorList extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
-                if (viewModel.moderatorList[index].user!.userId! ==  AmityCoreClient.getCurrentUser().userId&&Provider.of<AmityUIConfiguration>(context,listen: false).customUserProfileNavigate) {
-                  Provider.of<AmityUIConfiguration>(context,listen: false).onUserProfile(context);
-                }else {
+                if (viewModel.moderatorList[index].user!.userId! ==
+                        AmityCoreClient.getCurrentUser().userId &&
+                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                        .customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                      .onUserProfile(context);
+                } else {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          ChangeNotifierProvider(
-                              create: (context) => UserFeedVM(),
-                              child: UserProfileScreen(
-                                amityUser: viewModel.moderatorList[index].user!,
-                                amityUserId: viewModel.moderatorList[index].user!
-                                    .userId!,
-                              ))));
+                      builder: (context) => ChangeNotifierProvider(
+                          create: (context) => UserFeedVM(),
+                          child: UserProfileScreen(
+                            amityUser: viewModel.moderatorList[index].user!,
+                            amityUserId:
+                                viewModel.moderatorList[index].user!.userId!,
+                          ))));
                 }
               },
-              leading:
-              FutureBuilder<bool>(
-                future: AmityUIConfiguration.isFollowing(viewModel.moderatorList[index].user?.userId ?? ''),
+              leading: FutureBuilder<bool>(
+                future: AmityUIConfiguration.isFollowing(
+                    viewModel.moderatorList[index].user?.userId ?? ''),
                 builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      child: const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      child: const Icon(Icons.person,
+                          size: 20, color: Colors.white),
                     ); // You can display a loading placeholder or empty avatarUrl
-                  } else if (viewModel.moderatorList[index].user?.userId == AmityCoreClient.getCurrentUser().userId && viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] == null) {
+                  } else if (viewModel.moderatorList[index].user?.userId ==
+                          AmityCoreClient.getCurrentUser().userId &&
+                      viewModel.moderatorList[index].user
+                              ?.metadata?['profilePublicImageUrl'] ==
+                          null) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      backgroundImage: NetworkImage(viewModel.moderatorList[index].user?.avatarUrl ?? ''),
-                      child: viewModel.moderatorList[index].user?.avatarUrl != null && viewModel.moderatorList[index].user?.avatarUrl != "" ? null : const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      backgroundImage: NetworkImage(
+                          viewModel.moderatorList[index].user?.avatarUrl ?? ''),
+                      child: viewModel.moderatorList[index].user?.avatarUrl !=
+                                  null &&
+                              viewModel.moderatorList[index].user?.avatarUrl !=
+                                  ""
+                          ? null
+                          : const Icon(Icons.person,
+                              size: 20, color: Colors.white),
                     );
-                  }
-                  else if (viewModel.moderatorList[index].user?.userId == AmityCoreClient.getCurrentUser().userId &&viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] != null) {
+                  } else if (viewModel.moderatorList[index].user?.userId ==
+                          AmityCoreClient.getCurrentUser().userId &&
+                      viewModel.moderatorList[index].user
+                              ?.metadata?['profilePublicImageUrl'] !=
+                          null) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      backgroundImage: NetworkImage(viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] ?? ''),
-                      child: viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] != null && viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] != "" ? null : const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      backgroundImage: NetworkImage(viewModel
+                              .moderatorList[index]
+                              .user
+                              ?.metadata?['profilePublicImageUrl'] ??
+                          ''),
+                      child: viewModel.moderatorList[index].user
+                                      ?.metadata?['profilePublicImageUrl'] !=
+                                  null &&
+                              viewModel.moderatorList[index].user
+                                      ?.metadata?['profilePublicImageUrl'] !=
+                                  ""
+                          ? null
+                          : const Icon(Icons.person,
+                              size: 20, color: Colors.white),
                     );
-                  }
-                  else if (snapshot.hasError) {
+                  } else if (snapshot.hasError) {
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
-                      child: const Icon(Icons.person, size: 20, color: Colors.white),
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
+                      child: const Icon(Icons.person,
+                          size: 20, color: Colors.white),
                     ); // Handle error case, possibly by showing a default avatar
                   } else {
                     final isFollowing = snapshot.data ?? false;
-                    final avatarUrl = isFollowing ? viewModel.moderatorList[index].user?.avatarUrl : viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] ?? '';
+                    final avatarUrl = isFollowing
+                        ? viewModel.moderatorList[index].user?.avatarUrl
+                        : viewModel.moderatorList[index].user
+                                ?.metadata?['profilePublicImageUrl'] ??
+                            '';
 
                     return CircleAvatar(
-                      backgroundColor: Provider.of<AmityUIConfiguration>(context).appColors.primaryShade3,
+                      backgroundColor:
+                          Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .primaryShade3,
                       backgroundImage: NetworkImage(avatarUrl),
-                      child: avatarUrl != "" ? null : const Icon(Icons.person, size: 20, color: Colors.white),
+                      child: avatarUrl != ""
+                          ? null
+                          : const Icon(Icons.person,
+                              size: 20, color: Colors.white),
                     );
                   }
                 },
               ),
-
               title: Text(
                 viewModel.moderatorList[index].user?.displayName ?? '',
                 style:

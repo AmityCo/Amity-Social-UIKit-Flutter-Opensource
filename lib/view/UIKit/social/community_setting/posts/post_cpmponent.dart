@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
@@ -82,8 +80,6 @@ class PostMedia extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.close, color: Colors.white),
                         onPressed: () {
-                          log("delete file...");
-
                           Provider.of<CreatePostVMV2>(context, listen: false)
                               .deselectFile(files[index]);
                         },
@@ -312,7 +308,6 @@ class PostMedia extends StatelessWidget {
                     ),
                     trailing: GestureDetector(
                       onTap: () {
-                        log("delete file...");
                         isEditPost
                             ? Provider.of<EditPostVM>(context, listen: false)
                                 .deselectFileAt(index)

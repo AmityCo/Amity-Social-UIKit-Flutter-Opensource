@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
@@ -35,7 +33,8 @@ class CommunitySettingPage extends StatelessWidget {
                     .appColors
                     .baseBackground,
                 elevation: 0.0,
-                title: Text(snapshot.data?.displayName ?? community.displayName!,
+                title: Text(
+                    snapshot.data?.displayName ?? community.displayName!,
                     style: Provider.of<AmityUIConfiguration>(context)
                         .titleTextStyle
                         .copyWith(
@@ -78,9 +77,10 @@ class CommunitySettingPage extends StatelessWidget {
                               ),
                               child: Icon(
                                 Icons.edit,
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .appColors
-                                    .base,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base,
                               )),
                           title: Text(
                             "Edit Profile",
@@ -188,7 +188,7 @@ class CommunitySettingPage extends StatelessWidget {
                             thickness: 1,
                           ),
                         ),
-            
+
                   // Section 2: Community Permission
                   (!Provider.of<AmityUIConfiguration>(context)
                               .widgetConfig
@@ -229,9 +229,10 @@ class CommunitySettingPage extends StatelessWidget {
                                           .base)),
                           title: Text("Post Review",
                               style: TextStyle(
-                                color: Provider.of<AmityUIConfiguration>(context)
-                                    .appColors
-                                    .base,
+                                color:
+                                    Provider.of<AmityUIConfiguration>(context)
+                                        .appColors
+                                        .base,
                               )),
                           trailing: Icon(Icons.chevron_right,
                               color: Provider.of<AmityUIConfiguration>(context)
@@ -274,7 +275,7 @@ class CommunitySettingPage extends StatelessWidget {
                                       Provider.of<MyCommunityVM>(context,
                                               listen: false)
                                           .initMyCommunity();
-            
+
                                       Provider.of<ExplorePageVM>(context,
                                               listen: false)
                                           .getRecommendedCommunities();
@@ -292,7 +293,7 @@ class CommunitySettingPage extends StatelessWidget {
                       thickness: 1,
                     ),
                   ),
-            
+
                   // Section 3: Close Community
                   !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
                       ? const SizedBox()
@@ -318,7 +319,7 @@ class CommunitySettingPage extends StatelessWidget {
                           ),
                           onTap: () {
                             // handle tap
-            
+
                             ConfirmationDialog().show(
                               context: context,
                               title: 'Close community?',
@@ -333,7 +334,6 @@ class CommunitySettingPage extends StatelessWidget {
                                 communityVm
                                     .deleteCommunity(community.communityId!,
                                         callback: (bool isSuccess) {
-                                  log("onConfirm");
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pop();
                                   Provider.of<MyCommunityVM>(context,
@@ -344,7 +344,7 @@ class CommunitySettingPage extends StatelessWidget {
                             );
                           },
                         ),
-            
+
                   !community.hasPermission(AmityPermission.EDIT_COMMUNITY)
                       ? const SizedBox()
                       : Padding(

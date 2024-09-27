@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -25,7 +23,6 @@ class _UserListPageState extends State<UserListPage> {
   @override
   void initState() {
     if (widget.preSelectMember != null) {
-      log(widget.preSelectMember.toString());
       Provider.of<UserVM>(context, listen: false)
           .setSelectedUsersList(widget.preSelectMember!);
       Provider.of<UserVM>(context, listen: false).initUserList("");
@@ -41,8 +38,9 @@ class _UserListPageState extends State<UserListPage> {
         backgroundColor:
             Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
         appBar: AppBar(
-          backgroundColor:
-              Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+          backgroundColor: Provider.of<AmityUIConfiguration>(context)
+              .appColors
+              .baseBackground,
           shadowColor: Colors.transparent,
           leading: IconButton(
             icon: const Icon(
@@ -107,7 +105,8 @@ class _UserListPageState extends State<UserListPage> {
                       enabledBorder: OutlineInputBorder(
                         borderRadius:
                             BorderRadius.circular(10.0), // Rounded edges
-                        borderSide: BorderSide.none, // Removes default underline
+                        borderSide:
+                            BorderSide.none, // Removes default underline
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(
@@ -140,7 +139,8 @@ class _UserListPageState extends State<UserListPage> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      Provider.of<UserVM>(context, listen: false)
+                                      Provider.of<UserVM>(context,
+                                              listen: false)
                                           .toggleUserSelection(user);
                                     },
                                     child: Stack(
@@ -152,7 +152,8 @@ class _UserListPageState extends State<UserListPage> {
                                                       context)
                                                   .appColors
                                                   .primaryShade3,
-                                          backgroundImage: user.avatarUrl == null
+                                          backgroundImage: user.avatarUrl ==
+                                                  null
                                               ? null
                                               : NetworkImage(user.avatarUrl!),
                                           child: user.avatarUrl != null
@@ -178,7 +179,7 @@ class _UserListPageState extends State<UserListPage> {
                                                     Icons
                                                         .close_rounded, // "X" mark
                                                     size: 10,
-      
+
                                                     color: Colors.white,
                                                   ),
                                                 ),
@@ -188,7 +189,8 @@ class _UserListPageState extends State<UserListPage> {
                                     ),
                                   ),
                                   const SizedBox(
-                                      height: 5), // Space between avatar and name
+                                      height:
+                                          5), // Space between avatar and name
                                   SizedBox(
                                     width: 70,
                                     child: Center(
@@ -196,11 +198,11 @@ class _UserListPageState extends State<UserListPage> {
                                         user.displayName ?? "",
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                            color:
-                                                Provider.of<AmityUIConfiguration>(
-                                                        context)
-                                                    .appColors
-                                                    .base),
+                                            color: Provider.of<
+                                                        AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base),
                                       ),
                                     ),
                                   ) // Display user's name, replace 'name' with the appropriate attribute for the user's name
@@ -242,7 +244,8 @@ class _UserListPageState extends State<UserListPage> {
                                       vertical: 4.0, horizontal: 16.0),
                                   leading: CircleAvatar(
                                     backgroundColor:
-                                        Provider.of<AmityUIConfiguration>(context)
+                                        Provider.of<AmityUIConfiguration>(
+                                                context)
                                             .appColors
                                             .primaryShade3,
                                     backgroundImage: user.avatarUrl == null
@@ -255,14 +258,15 @@ class _UserListPageState extends State<UserListPage> {
                                             color: Colors
                                                 .white), // Adjust to use the correct attribute for avatar URL
                                   ),
-      
+
                                   title: Text(
                                     user.displayName ?? 'No name',
                                     style: TextStyle(
-                                        color: Provider.of<AmityUIConfiguration>(
-                                                context)
-                                            .appColors
-                                            .base),
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .appColors
+                                                .base),
                                   ), // Fallback for a null displayName
                                   trailing: Checkbox(
                                     activeColor: Provider.of<
@@ -275,7 +279,8 @@ class _UserListPageState extends State<UserListPage> {
                                         .any((selectedUser) =>
                                             selectedUser.id == user.id),
                                     onChanged: (bool? value) {
-                                      Provider.of<UserVM>(context, listen: false)
+                                      Provider.of<UserVM>(context,
+                                              listen: false)
                                           .toggleUserSelection(user);
                                     },
                                   ),

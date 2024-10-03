@@ -1,4 +1,4 @@
-package com.ekoenterprise.example
+package com.ekoenterprise.flutter_social_app
 
 import io.flutter.embedding.android.FlutterActivity
 

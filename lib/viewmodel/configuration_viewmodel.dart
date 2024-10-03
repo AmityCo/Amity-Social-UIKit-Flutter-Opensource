@@ -70,9 +70,7 @@ class AmityUIConfiguration extends ChangeNotifier {
   static GlobalKey newFeedExploreKey = GlobalKey();
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
-  Widget Function(int) buildChatButton =
-      (communityId) => const SizedBox.shrink();
-  Widget Function(int) buildMissionButton =
+  Widget Function(int) buildChatAndMissionButtons =
       (communityId) => const SizedBox.shrink();
   Widget Function(
     AmityUser? amityUser,

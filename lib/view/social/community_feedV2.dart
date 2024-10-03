@@ -546,21 +546,15 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
 
   @override
   Widget build(BuildContext context) {
-    late final Widget chatButton;
-    late final Widget missionButton;
+    late final Widget chatAndMissionButtons;
     if (widget.community.metadata == null ||
         widget.community.metadata!['communityId'] == null ||
         widget.community.metadata!['communityId'] is! int) {
-      chatButton = const SizedBox.shrink();
-      missionButton = const SizedBox.shrink();
+      chatAndMissionButtons = const SizedBox.shrink();
     } else {
-      chatButton = Provider.of<AmityUIConfiguration>(context)
-          .buildChatButton(widget.community.metadata!['communityId'] as int);
-      missionButton = Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: Provider.of<AmityUIConfiguration>(context).buildMissionButton(
-            widget.community.metadata!['communityId'] as int),
-      );
+      chatAndMissionButtons = Provider.of<AmityUIConfiguration>(context)
+          .buildChatAndMissionButtons(
+              widget.community.metadata!['communityId'] as int);
     }
 
     return Container(
@@ -631,8 +625,7 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                     const Spacer(),
-                    chatButton,
-                    missionButton,
+                    chatAndMissionButtons,
                   ],
                 ),
               ),

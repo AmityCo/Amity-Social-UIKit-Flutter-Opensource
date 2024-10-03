@@ -943,6 +943,10 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCommunityModerator =
+        AmityCoreClient.hasPermission(AmityPermission.EDIT_COMMUNITY_POST)
+            .atCommunity(amityCommunity.communityId!)
+            .check();
     return DefaultStickyHeaderController(
       child: ThemeConfig(
         child: Scaffold(
@@ -951,8 +955,9 @@ class AppScaffold extends StatelessWidget {
           floatingActionButton: (Provider.of<AmityUIConfiguration>(context)
                       .widgetConfig
                       .showCommunityPostButton &&
-                  (amityCommunity.onlyAdminCanPost == false) &&
-                  amityCommunity.isJoined!)
+                  amityCommunity.isJoined! &&
+                  (amityCommunity.onlyAdminCanPost == false ||
+                      isCommunityModerator))
               ? FloatingActionButton(
                   shape: const CircleBorder(),
                   onPressed: () async {

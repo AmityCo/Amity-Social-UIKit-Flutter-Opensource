@@ -114,12 +114,15 @@ class _PostToPageState extends State<PostToPage> {
                               .userProfileTextColor),
                     ),
                   ),
-                  ...viewModel.amityCommunities
-                      .where(
-                    (amityCommunity) =>
-                        amityCommunity.onlyAdminCanPost == false,
-                  )
-                      .map((community) {
+                  ...viewModel.amityCommunities.where((amityCommunity) {
+                    final showCommunity =
+                        amityCommunity.onlyAdminCanPost == false ||
+                            AmityCoreClient.hasPermission(
+                                    AmityPermission.EDIT_COMMUNITY_POST)
+                                .atCommunity(amityCommunity.communityId!)
+                                .check();
+                    return showCommunity;
+                  }).map((community) {
                     return StreamBuilder<AmityCommunity>(
                         stream: community.listen.stream,
                         builder: (context, snapshot) {
@@ -129,7 +132,9 @@ class _PostToPageState extends State<PostToPage> {
                                 ? CircleAvatar(
                                     backgroundColor: Colors.transparent,
                                     backgroundImage: NetworkImage(
-                                        communityStream.avatarImage!.fileUrl!),
+                                      communityStream.avatarImage?.fileUrl ??
+                                          '',
+                                    ),
                                   )
                                 : Container(
                                     height: 40,
@@ -148,7 +153,7 @@ class _PostToPageState extends State<PostToPage> {
                                   ),
                             title: Row(
                               children: [
-                                !community.isPublic!
+                                !(community.isPublic ?? false)
                                     ? Padding(
                                         padding:
                                             const EdgeInsets.only(left: 7.0),
@@ -175,7 +180,7 @@ class _PostToPageState extends State<PostToPage> {
                                           .appColors
                                           .base),
                                 ),
-                                community.isOfficial!
+                                (community.isOfficial ?? false)
                                     ? Padding(
                                         padding:
                                             const EdgeInsets.only(left: 7.0),

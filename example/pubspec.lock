@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: amity_sdk
-      sha256: "52431fef6ec92957605d9133edb38a5bef603a307e696ece41db1ff613afd0f0"
+      sha256: "6f6e3727e24e93731338551db05098ad0b20a0cc21c5ee348699d5999d76ac29"
       url: "https://pub.dev"
     source: hosted
-    version: "0.51.0-beta.1"
+    version: "0.51.0"
   amity_sdk_api:
     dependency: transitive
     description:
@@ -23,7 +23,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "4.0.0-beta05"
+    version: "3.0.5"
   animation_wrappers:
     dependency: transitive
     description:
@@ -160,6 +160,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  change_app_package_name:
+    dependency: "direct dev"
+    description:
+      name: change_app_package_name
+      sha256: "1d6ca5fbaba7264f70857941543337b2efe48f19ae2eef29b89927541b52a787"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   characters:
     dependency: transitive
     description:

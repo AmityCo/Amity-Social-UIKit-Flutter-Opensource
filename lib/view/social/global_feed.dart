@@ -225,7 +225,7 @@ class _PostWidgetState
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
     List<String> otherPostMenu = [
       isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-      'Block User'
+      // 'Block User'
     ];
 
     return IconButton(
@@ -313,7 +313,7 @@ class _PostWidgetState
         Provider.of<UserVM>(context, listen: false)
             .blockUser(widget.post.postedUserId!, () {
           if (widget.feedType == FeedType.global) {
-            Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed();
+            Provider.of<FeedVM>(context, listen: false).reload();
           } else if (widget.feedType == FeedType.community) {
             Provider.of<CommuFeedVM>(context, listen: false)
                 .initAmityCommunityFeed(

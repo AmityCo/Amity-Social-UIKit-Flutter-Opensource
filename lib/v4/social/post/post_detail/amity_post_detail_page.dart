@@ -92,7 +92,7 @@ class AmityPostDetailPage extends NewBasePage {
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.only(left: 12, right: 16, top: 7),
-                  sliver: AmityCommentTrayComponent(
+                  sliver: AmityCommentListComponent(
                     referenceId: postId,
                     referenceType: AmityCommentReferenceType.POST,
                     parentScrollController: scrollController,
@@ -114,13 +114,13 @@ class AmityPostDetailPage extends NewBasePage {
                 getSectionDivider(),
                 AmityCommentCreator(
                   referenceId: postId,
+                  referenceType: AmityCommentReferenceType.POST,
                   replyTo: replyTo,
                   action: CommentCreatorAction(onDissmiss: () {
                     context
                         .read<PostDetailBloc>()
                         .add(const PostDetailReplyComment(replyTo: null));
                   }),
-                  theme: theme,
                 ),
               ],
             ),

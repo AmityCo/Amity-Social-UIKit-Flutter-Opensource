@@ -7,7 +7,12 @@ import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/create_story_page_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlink_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
+import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
@@ -20,6 +25,7 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +49,8 @@ enum AmityEndpointRegion {
 }
 
 class AmityUIKit {
+  static List<CameraDescription> cameras = <CameraDescription>[];
+
   Future<void> setup({
     required String apikey,
     required AmityEndpointRegion region,
@@ -94,9 +102,12 @@ class AmityUIKit {
         }
     }
 
+    cameras = await availableCameras();
+
     await AmityCoreClient.setup(
         option: AmityCoreClientOption(
             apiKey: apikey,
+            showLogs: true,
             httpEndpoint: amityEndpoint!,
             mqttEndpoint: amityMqttEndpoint!,
             socketEndpoint: amitySocketEndpoint!),
@@ -178,6 +189,10 @@ class AmityUIKit {
     AmityCoreClient.logout();
   }
 
+  Stream<SessionState> observeSessionState() {
+    return AmityCoreClient.observeSessionState();
+  }
+
   Future<void> joinInitialCommunity(List<String> communityIds) async {
     for (var i = 0; i < communityIds.length; i++) {
       AmitySocialClient.newCommunityRepository()
@@ -202,6 +217,13 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<GlobalFeedBloc>(create: (context) => GlobalFeedBloc()),
         BlocProvider<AmityToastBloc>(create: (context) => AmityToastBloc()),
         BlocProvider<SocialHomeBloc>(create: (context) => SocialHomeBloc()),
+        BlocProvider<CreateStoryPageBloc>(
+            create: (context) => CreateStoryPageBloc()),
+        BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
+        BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
+        BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
+        BlocProvider<StoryVideoPlayerBloc>(
+            create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [
             ChangeNotifierProvider<ReplyVM>(create: ((context) => ReplyVM())),

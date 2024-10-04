@@ -23,7 +23,7 @@ import 'edit_community.dart';
 class CommunityScreen extends StatefulWidget {
   final AmityCommunity community;
   final bool isFromFeed;
-
+  static const routeName = '/CommunityScreen';
   const CommunityScreen(
       {Key? key, required this.community, this.isFromFeed = false})
       : super(key: key);

@@ -2,10 +2,11 @@ import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/dynamicSilverAppBar.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component_type.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/edit_community.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/create_action_bottom_sheet.dart';
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:intrinsic_dimension/intrinsic_dimension.dart';
 import 'package:provider/provider.dart';
 
+import '../../v4/social/story/target/amity_story_tab_component.dart';
 import '../../viewmodel/community_feed_viewmodel.dart';
 import '../../viewmodel/community_viewmodel.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
@@ -24,6 +26,8 @@ import 'global_feed.dart';
 class CommunityScreen extends StatefulWidget {
   final AmityCommunity community;
   final bool isFromFeed;
+
+  static const routeName = '/CommunityScreen2';
 
   const CommunityScreen(
       {Key? key, required this.community, this.isFromFeed = false})
@@ -219,11 +223,9 @@ class CommunityScreenState extends State<CommunityScreen> {
                     ? FloatingActionButton(
                         shape: const CircleBorder(),
                         onPressed: () async {
-                          await Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context2) => AmityCreatePostV2Screen(
-                                    community: snapshot.data!,
-                                    feedType: FeedType.community,
-                                  )));
+                          CreateActionBottomSheet.show(context,
+                              community: widget.community, storyCreated: () {});
+
                           Provider.of<CommuFeedVM>(context, listen: false)
                               .getPostCount(widget.community);
                           Provider.of<CommuFeedVM>(context, listen: false)
@@ -610,20 +612,15 @@ class CommunityDetailComponent extends StatefulWidget {
 
 class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
   Widget communityDescription(AmityCommunity community) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(
-          height: 5.0,
+    return Container(
+      margin: const EdgeInsets.only(top: 5),
+      child: Text(
+        community.description ?? "",
+        style: TextStyle(
+          fontSize: 15,
+          color: Provider.of<AmityUIConfiguration>(context).appColors.base,
         ),
-        Text(
-          community.description ?? "",
-          style: TextStyle(
-            fontSize: 15,
-            color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -816,21 +813,35 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
               const SizedBox(
                 height: 16,
               ),
-              communityDescription(widget.community),
-              const SizedBox(
-                height: 16,
+              (widget.community.description != null)
+                  ? communityDescription(widget.community)
+                  : const SizedBox(),
+              SizedBox(
+                height: (widget.community.description != null) ? 16 : 0,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: EditProfileButton(
-                    community: widget.community,
-                  )),
-                ],
+
+              ///
+              AmityStoryTabComponent(
+                type: CommunityFeedStoryTab(
+                    communityId: widget.community.communityId!),
               ),
-              const SizedBox(
-                height: 12,
+              widget.community.hasPermission(AmityPermission.EDIT_COMMUNITY)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: EditProfileButton(
+                            community: widget.community,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
+              SizedBox(
+                height: widget.community
+                        .hasPermission(AmityPermission.EDIT_COMMUNITY)
+                    ? 12
+                    : 0,
               ),
               !widget.community.isJoined!
                   ? const SizedBox()
@@ -852,7 +863,7 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                   community: widget.community,
                                 )),
                               ],
-                            )
+                            ),
             ],
           ),
         ),

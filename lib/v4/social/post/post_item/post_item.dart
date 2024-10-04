@@ -80,7 +80,7 @@ class PostItem extends NewBaseComponent {
                 {
                   context
                       .read<GlobalFeedBloc>()
-                      .add(GlobalFeedReloadThePost(postId: post.postId!))
+                      .add(GlobalFeedReloadThePost(post: post))
                 }
             },
           ),

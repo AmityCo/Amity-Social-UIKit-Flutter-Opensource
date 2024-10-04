@@ -14,10 +14,12 @@ import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service_example/sample_v4.dart';
 import 'package:amity_uikit_beta_service_example/social_v4_compatible.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+List<CameraDescription> camera = <CameraDescription>[];
 void main() async {
   ///Step 1: Initialize amity SDK with the following function
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,8 +57,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _customHttpUrl = TextEditingController();
   final TextEditingController _customSocketUrl = TextEditingController();
   final TextEditingController _customMqttUrl = TextEditingController();
+  bool _isCheckboxChecked = false;
+
   @override
   void initState() {
+    _customHttpUrl.text = "https://api.staging.amity.co/";
+    _customSocketUrl.text = "https://api.staging.amity.co/";
+    _customMqttUrl.text = "ssq.staging.amity.co";
+    _apiKey.text = "b0efe90c3bdda2304d628918520c1688845889e4bc363d2c";
     super.initState();
     _loadPreferences();
   }
@@ -65,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _apiKey.text = prefs.getString('apiKey') ?? "";
+      _isCheckboxChecked = prefs.getBool('isCheckboxChecked') ?? false;
 
       String? selectedRegionString = prefs.getString('selectedRegion');
       if (selectedRegionString != null) {
@@ -145,40 +154,55 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: _customMqttUrl,
               ),
             ],
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
+            CheckboxListTile(
+              title: const Text('load old session cache'),
+              value: _isCheckboxChecked,
+              onChanged: (bool? value) {
+                setState(() {
+                  _isCheckboxChecked = value ?? false;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
-                child: const Text('Initialize'),
-                onPressed: () async {
-                  if (_selectedRegion != null) {
-                    final prefs = await SharedPreferences.getInstance();
+              child: const Text('Initialize'),
+              onPressed: () async {
+                if (_selectedRegion != null) {
+                  final prefs = await SharedPreferences.getInstance();
 
-                    await prefs.setString('apiKey', _apiKey.text);
+                  await prefs.setString('apiKey', _apiKey.text);
+                  await prefs.setString(
+                      'selectedRegion', _selectedRegion.toString());
+                  await prefs.setBool('isCheckboxChecked', _isCheckboxChecked);
+
+                  if (_selectedRegion == AmityEndpointRegion.custom) {
+                    await prefs.setString('customUrl', _customHttpUrl.text);
                     await prefs.setString(
-                        'selectedRegion', _selectedRegion.toString());
-
-                    if (_selectedRegion == AmityEndpointRegion.custom) {
-                      await prefs.setString('customUrl', _customHttpUrl.text);
-                      await prefs.setString(
-                          'customSocketUrl', _customSocketUrl.text);
-                      await prefs.setString(
-                          'customMqttUrl', _customMqttUrl.text);
-                    }
-                    log("save pref");
-
-                    await AmityUIKit().setup(
-                      apikey: _apiKey.text,
-                      region: _selectedRegion!,
-                      customEndpoint: _customHttpUrl.text,
-                      customSocketEndpoint: _customSocketUrl.text,
-                      customMqttEndpoint: _customMqttUrl.text,
-                    );
-                    // Navigate to the nextx page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const AmityApp()),
-                    );
+                        'customSocketUrl', _customSocketUrl.text);
+                    await prefs.setString('customMqttUrl', _customMqttUrl.text);
                   }
-                }),
+                  log("save pref");
+
+                  await AmityUIKit().setup(
+                    apikey: _apiKey.text,
+                    region: _selectedRegion!,
+                    customEndpoint: _customHttpUrl.text,
+                    customSocketEndpoint: _customSocketUrl.text,
+                    customMqttEndpoint: _customMqttUrl.text,
+                  );
+                  // Navigate to the next page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AmityApp(
+                        isCheckboxChecked: _isCheckboxChecked,
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -187,19 +211,23 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class AmityApp extends StatelessWidget {
-  const AmityApp({super.key});
+  final bool isCheckboxChecked;
+  const AmityApp({super.key, required this.isCheckboxChecked});
   @override
   Widget build(BuildContext context) {
     return AmityUIKitProvider(
       child: Builder(builder: (context2) {
-        return const UserListPage();
+        return UserListPage(
+          isCheckboxChecked: isCheckboxChecked,
+        );
       }),
     );
   }
 }
 
 class UserListPage extends StatefulWidget {
-  const UserListPage({super.key});
+  final bool isCheckboxChecked;
+  const UserListPage({super.key, required this.isCheckboxChecked});
 
   @override
   _UserListPageState createState() => _UserListPageState();
@@ -213,6 +241,22 @@ class _UserListPageState extends State<UserListPage> {
   void initState() {
     super.initState();
     _loadUsernames();
+    if (widget.isCheckboxChecked) {
+      _checkSession();
+    }
+  }
+
+  _checkSession() async {
+    AmityUIKit().observeSessionState().listen((event) {
+      if (event == SessionState.Established) {
+        final username = AmityUIKit().getCurrentUser().displayName ??
+            AmityUIKit().getCurrentUser().userId ??
+            "";
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => const Scaffold(body: CommunityPage()),
+        ));
+      }
+    });
   }
 
   _loadUsernames() async {
@@ -328,6 +372,13 @@ class SecondPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          color: Colors.black,
+          onPressed: () {
+            AmityUIKit().unRegisterDevice();
+            Navigator.of(context).pop();
+          },
+        ),
         title: Text('Welcome, $username'),
       ),
       body: Center(
@@ -540,6 +591,10 @@ class SocialPage extends StatelessWidget {
               title: const Text('Newsfeed'),
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      const Scaffold(body: GlobalFeedScreen()),
+                ));
               },
             ),
             ListTile(

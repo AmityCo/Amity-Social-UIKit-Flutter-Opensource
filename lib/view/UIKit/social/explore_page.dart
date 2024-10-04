@@ -39,6 +39,13 @@ class _CommunityPageState extends State<CommunityPage> {
   }
 
   @override
+  void dispose() {
+    FeedVM feedVM = Provider.of<FeedVM>(context, listen: false);
+    feedVM.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
@@ -132,7 +139,6 @@ class _CommunityPageState extends State<CommunityPage> {
               floatingActionButton: FloatingActionButton(
                 shape: const CircleBorder(),
                 onPressed: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const Scaffold(body: PostToPage()),
                   ));
@@ -681,18 +687,10 @@ class _CategoryListPageState extends State<CategoryListPage> {
                         .primaryShade3,
                     shape: BoxShape.circle,
                   ),
-                  child: category.avatar != null
-                      ? CircleAvatar(
-                        backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .primaryShade3,
-                          backgroundImage: NetworkImage(
-                              category.avatar?.fileUrl ?? ''),
-                        )
-                      : const Icon(
-                          Icons.people,
-                          color: Colors.white,
-                        ),
+                  child: const Icon(
+                    Icons.category,
+                    color: Colors.white,
+                  ),
                 ),
                 title: Text(category.name ?? ''),
               );

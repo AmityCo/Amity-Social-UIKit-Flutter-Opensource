@@ -225,7 +225,7 @@ class _PostWidgetState
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
     List<String> otherPostMenu = [
       isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-      'Block User'
+      // 'Block User'
     ];
 
     return IconButton(
@@ -258,7 +258,10 @@ class _PostWidgetState
                 children: [
                   if (isPostOwner)
                     ...postOwnerMenu.map((option) => ListTile(
-                          title: Text(option),
+                          title: Text(
+                            option,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           onTap: () {
                             Navigator.pop(context);
                             handleMenuOption(context, option, isFlaggedByMe);
@@ -266,7 +269,10 @@ class _PostWidgetState
                         )),
                   if (!isPostOwner)
                     ...otherPostMenu.map((option) => ListTile(
-                          title: Text(option),
+                          title: Text(
+                            option,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           onTap: () {
                             Navigator.pop(context);
                             handleMenuOption(context, option, isFlaggedByMe);

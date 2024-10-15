@@ -553,6 +553,7 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
       chatAndMissionButtons = const SizedBox.shrink();
     } else {
       chatAndMissionButtons = Provider.of<AmityUIConfiguration>(context)
+          .widgetBuilders
           .buildChatAndMissionButtons(
               widget.community.metadata!['communityId'] as int);
     }

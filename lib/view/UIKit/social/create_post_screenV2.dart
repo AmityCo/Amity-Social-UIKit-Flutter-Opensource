@@ -97,82 +97,87 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
             ),
             actions: [
               Provider.of<AmityUIConfiguration>(context, listen: false)
+                  .widgetBuilders
                   .buildCustomPostButton(
-                vm,
-                hasContent
-                    ? () async {
-                        if (vm.isUploadComplete) {
-                          if (widget.community == null) {
-                            //creat post in user Timeline
-                            await vm.createPost(context,
-                                callback: (isSuccess, error) {
-                              if (isSuccess) {
-                                Navigator.of(context).pop();
-                                if (widget.isFromPostToPage) {
-                                  Navigator.of(context).pop();
-                                }
-                              } else {}
-                            });
-                          } else {
-                            //create post in Community
-                            await vm.createPost(context,
-                                communityId: widget.community?.communityId!,
-                                callback: (isSuccess, error) async {
-                              if (isSuccess) {
-                                var roleVM = Provider.of<MemberManagementVM>(
-                                    context,
-                                    listen: false);
-                                roleVM.checkCurrentUserRole(
-                                    widget.community!.communityId!);
+                    vm,
+                    hasContent
+                        ? () async {
+                            if (vm.isUploadComplete) {
+                              if (widget.community == null) {
+                                //creat post in user Timeline
+                                await vm.createPost(context,
+                                    callback: (isSuccess, error) {
+                                  if (isSuccess) {
+                                    Navigator.of(context).pop();
+                                    if (widget.isFromPostToPage) {
+                                      Navigator.of(context).pop();
+                                    }
+                                  } else {}
+                                });
+                              } else {
+                                //create post in Community
+                                await vm.createPost(context,
+                                    communityId: widget.community?.communityId!,
+                                    callback: (isSuccess, error) async {
+                                  if (isSuccess) {
+                                    var roleVM =
+                                        Provider.of<MemberManagementVM>(context,
+                                            listen: false);
+                                    roleVM.checkCurrentUserRole(
+                                        widget.community!.communityId!);
 
-                                if (widget.community!.isPostReviewEnabled!) {
-                                  if (!widget.community!.hasPermission(
-                                      AmityPermission.REVIEW_COMMUNITY_POST)) {
-                                    await AmityDialog().showAlertErrorDialog(
-                                        title: "Post submitted",
-                                        message:
-                                            "Your post has been submitted to the pending list. It will be reviewed by community moderator");
+                                    if (widget
+                                        .community!.isPostReviewEnabled!) {
+                                      if (!widget.community!.hasPermission(
+                                          AmityPermission
+                                              .REVIEW_COMMUNITY_POST)) {
+                                        await AmityDialog().showAlertErrorDialog(
+                                            title: "Post submitted",
+                                            message:
+                                                "Your post has been submitted to the pending list. It will be reviewed by community moderator");
+                                      }
+                                    }
+                                    Navigator.of(context).pop();
+                                    if (widget.isFromPostToPage) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    if (widget
+                                        .community!.isPostReviewEnabled!) {
+                                      Provider.of<CommuFeedVM>(context,
+                                              listen: false)
+                                          .initAmityPendingCommunityFeed(
+                                              widget.community!.communityId!,
+                                              AmityFeedType.REVIEWING);
+                                    }
+
+                                    // Navigator.of(context).push(MaterialPageRoute(
+                                    //     builder: (context) => ChangeNotifierProvider(
+                                    //           create: (context) => CommuFeedVM(),
+                                    //           child: CommunityScreen(
+                                    //             isFromFeed: true,
+                                    //             community: widget.community!,
+                                    //           ),
+                                    //         )));
                                   }
-                                }
-                                Navigator.of(context).pop();
-                                if (widget.isFromPostToPage) {
-                                  Navigator.of(context).pop();
-                                }
-                                if (widget.community!.isPostReviewEnabled!) {
-                                  Provider.of<CommuFeedVM>(context,
-                                          listen: false)
-                                      .initAmityPendingCommunityFeed(
-                                          widget.community!.communityId!,
-                                          AmityFeedType.REVIEWING);
-                                }
-
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (context) => ChangeNotifierProvider(
-                                //           create: (context) => CommuFeedVM(),
-                                //           child: CommunityScreen(
-                                //             isFromFeed: true,
-                                //             community: widget.community!,
-                                //           ),
-                                //         )));
+                                });
                               }
-                            });
+                            }
                           }
-                        }
-                      }
-                    : null,
-              ),
+                        : null,
+                  ),
             ],
           ),
           body: SafeArea(
             child: Column(
               children: [
                 Provider.of<AmityUIConfiguration>(context, listen: false)
+                    .widgetBuilders
                     .buildPostAsButton(
-                  AmityCoreClient.getCurrentUser(),
-                  widget.community,
-                  vm,
-                  tappablePostAsButton,
-                ),
+                      AmityCoreClient.getCurrentUser(),
+                      widget.community,
+                      vm,
+                      tappablePostAsButton,
+                    ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(

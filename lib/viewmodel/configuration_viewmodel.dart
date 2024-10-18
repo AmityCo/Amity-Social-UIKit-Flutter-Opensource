@@ -323,6 +323,12 @@ class AmityWidgetBuilders {
   ) buildCustomPostButton = (_, __) => _defaultWidget;
 
   late Widget Function(
+    int? communityId,
+    String? communityName,
+    bool? isJoined,
+  ) buildJoinUnjoinButton = (_, __, ___) => _defaultWidget;
+
+  late Widget Function(
     AmityUser? amityUser,
     AmityCommunity? amityCommunity,
     CreatePostVMV2 createPostVm2,

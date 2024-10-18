@@ -533,6 +533,14 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 ],
               ),
             ),
+            const Spacer(),
+            Provider.of<AmityUIConfiguration>(context)
+                .widgetBuilders
+                .buildJoinUnjoinButton(
+                  community.metadata?['communityId'] as int?,
+                  community.displayName,
+                  community.isJoined,
+                ),
           ],
         ),
       ],

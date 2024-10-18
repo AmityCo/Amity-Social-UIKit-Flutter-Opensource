@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
@@ -540,6 +541,14 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   community.metadata?['communityId'] as int?,
                   community.displayName,
                   community.isJoined,
+                  Provider.of<FeedVM>(
+                    context,
+                    listen: false,
+                  ),
+                  Provider.of<ExplorePageVM>(
+                    context,
+                    listen: false,
+                  ),
                 ),
           ],
         ),

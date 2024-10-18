@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
+import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -326,7 +328,9 @@ class AmityWidgetBuilders {
     int? communityId,
     String? communityName,
     bool? isJoined,
-  ) buildJoinUnjoinButton = (_, __, ___) => _defaultWidget;
+    FeedVM feedVm,
+    ExplorePageVM explorePageVm,
+  ) buildJoinUnjoinButton = (_, __, ___, ____, _____) => _defaultWidget;
 
   late Widget Function(
     AmityUser? amityUser,

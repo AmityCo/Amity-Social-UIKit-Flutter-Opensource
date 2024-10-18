@@ -70,20 +70,6 @@ class AmityUIConfiguration extends ChangeNotifier {
   static GlobalKey newFeedExploreKey = GlobalKey();
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
-  Widget Function(int) buildChatAndMissionButtons =
-      (communityId) => const SizedBox.shrink();
-  Widget Function(
-    AmityUser? amityUser,
-    AmityCommunity? amityCommunity,
-    CreatePostVMV2 createPostVm2,
-    bool? tappable,
-  ) buildPostAsButton = (amityUser, amityCommunity, createPostVm2, tappable) =>
-      const SizedBox.shrink();
-  Widget Function(
-    CreatePostVMV2 createPostVm2,
-    void Function()? onPressed,
-  ) buildCustomPostButton =
-      (createPostVm2, onPressed) => const SizedBox.shrink();
   Widget? Function(String) buildSocialRating =
       (userId) => const SizedBox.shrink();
   Widget? Function(String) buildOtherUserProfile =
@@ -115,6 +101,9 @@ class AmityUIConfiguration extends ChangeNotifier {
   void updateUI() {
     notifyListeners();
   }
+
+  // Build custom widgets:
+  final widgetBuilders = AmityWidgetBuilders();
 }
 
 class AppColors {
@@ -322,4 +311,29 @@ class AmityLogicConfig {
     this.replaceModeratorProfile = false,
     this.replaceModeratorProfileNavigation = false,
   });
+}
+
+class AmityWidgetBuilders {
+  late Widget Function(int communityId) buildChatAndMissionButtons =
+      (_) => _defaultWidget;
+
+  late Widget Function(
+    CreatePostVMV2 createPostVm2,
+    void Function()? onPressed,
+  ) buildCustomPostButton = (_, __) => _defaultWidget;
+
+  late Widget Function(
+    int? communityId,
+    String? communityName,
+    bool? isJoined,
+  ) buildJoinUnjoinButton = (_, __, ___) => _defaultWidget;
+
+  late Widget Function(
+    AmityUser? amityUser,
+    AmityCommunity? amityCommunity,
+    CreatePostVMV2 createPostVm2,
+    bool? tappable,
+  ) buildPostAsButton = (_, __, ___, ____) => _defaultWidget;
+
+  Widget get _defaultWidget => const SizedBox.shrink();
 }

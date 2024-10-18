@@ -533,6 +533,14 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 ],
               ),
             ),
+            const Spacer(),
+            Provider.of<AmityUIConfiguration>(context)
+                .widgetBuilders
+                .buildJoinUnjoinButton(
+                  community.metadata?['communityId'] as int?,
+                  community.displayName,
+                  community.isJoined,
+                ),
           ],
         ),
       ],
@@ -553,6 +561,7 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
       chatAndMissionButtons = const SizedBox.shrink();
     } else {
       chatAndMissionButtons = Provider.of<AmityUIConfiguration>(context)
+          .widgetBuilders
           .buildChatAndMissionButtons(
               widget.community.metadata!['communityId'] as int);
     }

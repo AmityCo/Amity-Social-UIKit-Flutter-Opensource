@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:amity_uikit_beta_service/amity_sle_uikit.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:camera/camera.dart';
@@ -9,9 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:image/image.dart' as img;
 
 class CameraPreviewWidget extends StatefulWidget {
   final bool isVideoMode;

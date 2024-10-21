@@ -1,7 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/create_post_menu_component.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/search_communities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 

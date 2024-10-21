@@ -4,7 +4,6 @@ import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_s
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 

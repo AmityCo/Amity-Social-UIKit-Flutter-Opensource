@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:amity_sdk/amity_sdk.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chewie/chewie.dart';
 import 'package:equatable/equatable.dart';

@@ -80,6 +80,8 @@ class CommunityPageState extends State<CommunityPage>
 
   @override
   void dispose() {
+    FeedVM feedVM = Provider.of<FeedVM>(context, listen: false);
+    feedVM.close();
     _tabController.dispose();
     super.dispose();
   }

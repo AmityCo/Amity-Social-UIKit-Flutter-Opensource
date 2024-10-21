@@ -4,8 +4,9 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_display_name.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/posts/edit_post_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -83,17 +84,32 @@ class AmityPostHeader extends StatelessWidget {
     );
   }
 
-  void showPostAction(BuildContext context, AmityPost post) {
+  void showPostAction(BuildContext context, AmityPost post) async {
     final currentUserId = AmityCoreClient.getUserId();
 
+    var isModerator = false;
+
+    var postTarget = post.target;
+    if (postTarget is CommunityTarget) {
+      var roles = await AmitySocialClient.newCommunityRepository()
+          .getCurrentUserRoles(postTarget.targetCommunityId ?? "");
+
+      if (roles != null &&
+          (roles.contains("moderator") ||
+              roles.contains("community-moderator"))) {
+        isModerator = true;
+      }
+    }
+
     if (post.postedUserId == currentUserId) {
-      showPostModerationAction(context, post);
+      showPostOwnerAction(context, post, theme, isModerator);
     } else {
-      showPostGeneralAction(context, post);
+      showPostGeneralAction(context, post, isModerator);
     }
   }
 
-  void showPostGeneralAction(BuildContext context, AmityPost post) {
+  void showPostGeneralAction(
+      BuildContext context, AmityPost post, bool isModerator) {
     onReport() => {
           context.read<PostItemBloc>().add(PostItemFlag(
               post: post, toastBloc: context.read<AmityToastBloc>()))
@@ -102,6 +118,21 @@ class AmityPostHeader extends StatelessWidget {
           context.read<PostItemBloc>().add(PostItemUnFlag(
               post: post, toastBloc: context.read<AmityToastBloc>()))
         };
+
+    onDelete() {
+      context
+          .read<PostItemBloc>()
+          .add(PostItemDelete(post: post, action: action));
+    }
+
+    double height = 0;
+    double baseHeight = 80;
+    double itemHeight = 48;
+    if (isModerator) {
+      itemHeight += 48;
+    }
+    height = baseHeight + itemHeight;
+
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -112,7 +143,7 @@ class AmityPostHeader extends StatelessWidget {
         ),
         builder: (BuildContext context) {
           return SizedBox(
-            height: 140,
+            height: height,
             child: Column(
               children: [
                 Container(
@@ -201,7 +232,7 @@ class AmityPostHeader extends StatelessWidget {
                               ),
                               const SizedBox(width: 12),
                               const Text(
-                                'UnReport post',
+                                'Unreport post',
                                 style: TextStyle(
                                   color: Color(0xFF292B32),
                                   fontSize: 15,
@@ -212,26 +243,34 @@ class AmityPostHeader extends StatelessWidget {
                           ),
                         ),
                       ),
+                if (isModerator) _getDeletetedPost(context, post, onDelete)
               ],
             ),
           );
         });
   }
 
-  void showPostModerationAction(BuildContext context, AmityPost post) {
+  void showPostOwnerAction(BuildContext context, AmityPost post,
+      AmityThemeColor theme, bool isModerator) {
+  final editOption = AmityPostComposerOptions.editOptions(post: post);
+
     onEdit() => {
           Navigator.of(context).push(MaterialPageRoute(
+              fullscreenDialog: true,
               builder: (context) => ChangeNotifierProvider<EditPostVM>(
                   create: (context) => EditPostVM(),
-                  child: AmityEditPostScreen(
-                    amityPost: post,
-                  ))))
+                  child: PostComposerPage(options: editOption))))
         };
     onDelete() {
       context
           .read<PostItemBloc>()
           .add(PostItemDelete(post: post, action: action));
     }
+
+    double height = 0;
+    double baseHeight = 80;
+    double itemsHeight = 96;
+    height = baseHeight + itemsHeight;
 
     showModalBottomSheet(
         context: context,
@@ -243,7 +282,7 @@ class AmityPostHeader extends StatelessWidget {
         ),
         builder: (BuildContext context) {
           return SizedBox(
-            height: 196,
+            height: height,
             child: Column(
               children: [
                 Container(
@@ -304,81 +343,86 @@ class AmityPostHeader extends StatelessWidget {
                     ),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CupertinoAlertDialog(
-                          title: const Text("Delete post"),
-                          content: const Text(
-                              "This post will be permanently deleted."),
-                          actions: [
-                            CupertinoDialogAction(
-                              child: const Text("Cancel",
-                                  style: TextStyle(
-                                    color: Color(0xFF007AFF),
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w400,
-                                  )),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: const Text(
-                                "Delete",
-                                style: TextStyle(
-                                  color: Color(0xFFFA4D30),
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                onDelete();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(top: 2, bottom: 2),
-                          child: SvgPicture.asset(
-                            'assets/Icons/amity_ic_delete.svg',
-                            package: 'amity_uikit_beta_service',
-                            width: 24,
-                            height: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Text(
-                          'Delete post',
-                          style: TextStyle(
-                            color: Color(0xFF292B32),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                _getDeletetedPost(context, post, onDelete),
               ],
             ),
           );
         });
+  }
+
+  Widget _getDeletetedPost(
+      BuildContext context, AmityPost post, Function onDelete) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: const Text("Delete post"),
+              content: const Text("This post will be permanently deleted."),
+              actions: [
+                CupertinoDialogAction(
+                  child: const Text("Cancel",
+                      style: TextStyle(
+                        color: Color(0xFF007AFF),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w400,
+                      )),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(
+                      color: theme.alertColor,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onDelete();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 2, bottom: 2),
+              child: SvgPicture.asset(
+                'assets/Icons/amity_ic_delete.svg',
+                package: 'amity_uikit_beta_service',
+                width: 24,
+                height: 20,
+                colorFilter:
+                    ColorFilter.mode(theme.alertColor, BlendMode.srcIn),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Delete post',
+              style: TextStyle(
+                color: theme.alertColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

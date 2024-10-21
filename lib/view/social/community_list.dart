@@ -1,5 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
+import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
@@ -159,15 +159,19 @@ class CommunityWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        await Navigator.of(context).push(MaterialPageRoute(
+        await Navigator.of(context).push(
+          MaterialPageRoute(
             builder: (context) => ChangeNotifierProvider(
-                  create: (context) => CommuFeedVM(),
-                  child: Builder(builder: (context) {
-                    return CommunityScreen(
-                      community: community,
-                    );
-                  }),
-                )));
+              create: (context) => CommuFeedVM(),
+              child: Builder(builder: (context) {
+                return CommunityScreen(
+                  community: community,
+                );
+              }),
+            ),
+            settings: const RouteSettings(name: CommunityScreen.routeName),
+          ),
+        );
         switch (communityType) {
           case CommunityListType.my:
             // ignore: use_build_context_synchronously

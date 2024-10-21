@@ -10,3 +10,14 @@ abstract class MyCommunityEvent extends Equatable {
 class MyCommunityEventInitial extends MyCommunityEvent {}
 
 class MyCommunityEventLoadMore extends MyCommunityEvent {}
+
+class MyCommunityEventLoading extends MyCommunityEvent {}
+
+class MyCommunityEventLoaded extends MyCommunityEvent {
+  final MyCommunityLoaded loadedState;
+
+  const MyCommunityEventLoaded(this.loadedState);
+
+  @override
+  List<Object> get props => [loadedState];
+}

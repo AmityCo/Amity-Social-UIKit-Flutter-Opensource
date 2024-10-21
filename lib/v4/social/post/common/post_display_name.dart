@@ -61,7 +61,7 @@ class PostDisplayName extends StatelessWidget {
                     child: Text(
                       "• ",
                       style: TextStyle(
-                        color: theme.baseColor,
+                        color: theme.baseColorShade2,
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
@@ -71,7 +71,7 @@ class PostDisplayName extends StatelessWidget {
                 child: Text(
                   timestampText,
                   style: TextStyle(
-                    color: theme.baseColor,
+                    color: theme.baseColorShade2,
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
                   ),

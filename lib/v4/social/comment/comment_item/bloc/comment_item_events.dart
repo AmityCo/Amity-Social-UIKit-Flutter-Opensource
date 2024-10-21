@@ -59,6 +59,12 @@ class CommentItemEdit extends CommentItemEvent {}
 
 class CommentItemCancelEdit extends CommentItemEvent {}
 
+class CommentItemEditChanged extends CommentItemEvent {
+  final String text;
+
+  const CommentItemEditChanged({required this.text});
+}
+
 class CommentItemUpdate extends CommentItemEvent {
   final String commentId;
   final String text;

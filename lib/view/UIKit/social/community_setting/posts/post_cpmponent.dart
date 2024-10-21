@@ -302,7 +302,6 @@ class PostMedia extends StatelessWidget {
                   ),
                   trailing: GestureDetector(
                     onTap: () {
-                      log("delete file...");
                       isEditPost
                           ? Provider.of<EditPostVM>(context, listen: false)
                               .deselectFileAt(index)

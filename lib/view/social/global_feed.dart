@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/post_profile.dart';
@@ -8,6 +10,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dar
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
+import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
@@ -60,7 +63,9 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
         myCommunityList.initMyCommunityFeed();
 
-        globalFeedProvider.initAmityGlobalfeed();
+        globalFeedProvider.initAmityGlobalfeed(
+          onCustomPost: AmityUIConfiguration.onCustomPost,
+        );
       });
     }
   }
@@ -331,10 +336,9 @@ class _PostWidgetState
           if (widget.feedType == FeedType.global) {
             // Provider.of<FeedVM>(context, listen: false).reload();
             WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Provider.of<FeedVM>(context, listen: false)
-                      .initAmityGlobalfeed(
-                          onCustomPost: AmityUIConfiguration.onCustomPost);
-                });
+              Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed(
+                  onCustomPost: AmityUIConfiguration.onCustomPost);
+            });
           } else if (widget.feedType == FeedType.community) {
             Provider.of<CommuFeedVM>(context, listen: false)
                 .initAmityCommunityFeed(
@@ -541,41 +545,12 @@ class _PostWidgetState
                                 },
                               )),
                         ),
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChangeNotifierProvider(
-                                        create: (context) => UserFeedVM(),
-                                        child: UserProfileScreen(
-                                          amityUser: widget.post.postedUser!,
-                                          amityUserId:
-                                              widget.post.postedUser!.userId!,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: getAvatarImage(widget
-                                            .post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.avatarUrl
-                                    : AmityCoreClient.getCurrentUser()
-                                        .avatarUrl))),
                         title: Wrap(
                           children: [
                             GestureDetector(
                               onTap: _onUserProfile,
                               child: Text(
                                 _displayName,
-                                widget.post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.displayName ??
-                                        "Display name"
-                                    : AmityCoreClient.getCurrentUser()
-                                            .displayName ??
-                                        "",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Provider.of<AmityUIConfiguration>(

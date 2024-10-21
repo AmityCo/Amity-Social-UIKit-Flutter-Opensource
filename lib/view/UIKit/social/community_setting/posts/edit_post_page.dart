@@ -91,7 +91,7 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                               Navigator.of(context).pop();
                               context.read<GlobalFeedBloc>().add(
                                   GlobalFeedReloadThePost(
-                                      postId: widget.amityPost.postId!));
+                                      post: widget.amityPost));
                             });
                       }
                     : null,

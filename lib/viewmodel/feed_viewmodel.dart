@@ -11,6 +11,7 @@ enum Feedtype { global, commu }
 class FeedVM extends ChangeNotifier {
   final _amityGlobalFeedPosts = <AmityPost>[];
   bool isCustomPostRanking = false;
+  PagingController<AmityPost>? _controllerGlobal;
   bool isLoading = true;
   final scrollcontroller = ScrollController();
   late GlobalFeedLiveCollection globalFeedLiveCollection;
@@ -24,9 +25,9 @@ class FeedVM extends ChangeNotifier {
   }
 
   Future<void> addPostToFeed(AmityPost post) async {
-    // if (_controllerGlobal == null) {
-    //   _controllerGlobal?.addAtIndex(0, post);
-    // }
+    if (_controllerGlobal == null) {
+      _controllerGlobal?.addAtIndex(0, post);
+    }
     notifyListeners();
   }
 

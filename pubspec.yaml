@@ -32,7 +32,7 @@ dependencies:
   get_time_ago: ^1.1.5
   shimmer: ^3.0.0
   dio:
-  sign_in_with_apple: ^6.1.2
+  sign_in_with_apple: ^4.1.0
   any_link_preview: ^3.0.1
   linkwell: ^2.0.6
   linkify: ^5.0.0

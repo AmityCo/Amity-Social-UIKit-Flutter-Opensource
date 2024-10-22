@@ -53,6 +53,7 @@ class _MyCommunityPageState extends State<MyCommunityPage> {
               .appColors
               .baseBackground,
           appBar: AppBar(
+            centerTitle: true,
             scrolledUnderElevation: 0,
             elevation: 0.0,
             backgroundColor: Provider.of<AmityUIConfiguration>(context)

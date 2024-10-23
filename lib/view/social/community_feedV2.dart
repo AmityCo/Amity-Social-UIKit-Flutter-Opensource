@@ -1117,6 +1117,11 @@ class Header extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           fontFamily: 'SF Pro Text',
                         ),
+                        unselectedLabelStyle: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'SF Pro Text',
+                        ),
                         tabs: const [
                           Tab(text: "Timeline"),
                           Tab(text: "Gallery"),

@@ -192,6 +192,11 @@ class _SearchCommunitiesScreenState extends State<SearchCommunitiesScreen> {
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'SF Pro Text',
                                 ),
+                                unselectedLabelStyle: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'SF Pro Text',
+                                ),
                                 tabs: const [
                                   Tab(
                                     text: "Community",

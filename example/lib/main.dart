@@ -549,150 +549,153 @@ class SocialPage extends StatelessWidget {
               child: const Text("config"))
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ListTile(
-              title: const Text('Register push notification'),
-              onTap: () async {},
-            ),
-            ListTile(
-              title: const Text('unregister'),
-              onTap: () {
-                // Navigate or perform action based on 'Global Feed' tap
-                AmityUIKit().unRegisterDevice();
-              },
-            ),
-            ListTile(
-              title: const Text('Custom Post Ranking Feed'),
-              onTap: () {
-                // Navigate or perform action based on 'Global Feed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(
-                      body: GlobalFeedScreen(
-                          //isCustomPostRanking: true,
-                          )),
-                ));
-              },
-            ),
-            ListTile(
-              title: const Text('User Profile'),
-              onTap: () {
-                // Navigate or perform action based on 'User Profile' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => UserProfileScreen(
-                          amityUserId: username,
-                          amityUser: null,
-                        )));
-              },
-            ),
-            ListTile(
-              title: const Text('Newsfeed'),
-              onTap: () {
-                // Navigate or perform action based on 'Newsfeed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      const Scaffold(body: GlobalFeedScreen()),
-                ));
-              },
-            ),
-            ListTile(
-              title: const Text('Create Community'),
-              onTap: () {
-                // Navigate or perform action based on 'Newsfeed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      const Scaffold(body: CreateCommunityPage()),
-                ));
-              },
-            ),
-            ListTile(
-              title: const Text('Create Post'),
-              onTap: () {
-                // Navigate or perform action based on 'Newsfeed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(body: PostToPage()),
-                ));
-              },
-            ),
-            ListTile(
-              title: const Text('My Community'),
-              onTap: () {
-                // Navigate or perform action based on 'Newsfeed' tap
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Scaffold(
-                      body: MyCommunityPage(
-                        canCreateCommunity: false,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Community'),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Community ID',
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (value) {
-                        // Handle the community ID input
-                        amityCommunityTextCon.text = value;
-                      },
-                    ),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ListTile(
+                title: const Text('Register push notification'),
+                onTap: () async {},
               ),
-              onTap: () async {
-                CommunityGetQueryBuilder communityGetQueryBuilder =
-                    AmitySocialClient.newCommunityRepository().getCommunities();
-                AmityCommunity amityCommunity = await communityGetQueryBuilder
-                    .useCase.communityRepo
-                    .getCommunity(amityCommunityTextCon.text);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => CommunityScreen(
-                        isFromFeed: true, community: amityCommunity),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Explore'),
-              onTap: () {
-                // Navigate or perform action based on 'Newsfeed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(body: CommunityPage()),
-                ));
-              },
-            ),
-            ListTile(
-              title: const Text('Version 4'),
-              onTap: () {
-                // Navigate or perform action based on 'Global Feed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const SampleV4(),
-                ));
-              },
-            ),
-            ListTile(
-              title: const Text('Community v4 compatible'),
-              onTap: () {
-                // Navigate or perform action based on 'Global Feed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const AmitySocialV4Compatible(),
-                ));
-              },
-            ),
-          ],
+              ListTile(
+                title: const Text('unregister'),
+                onTap: () {
+                  // Navigate or perform action based on 'Global Feed' tap
+                  AmityUIKit().unRegisterDevice();
+                },
+              ),
+              ListTile(
+                title: const Text('Custom Post Ranking Feed'),
+                onTap: () {
+                  // Navigate or perform action based on 'Global Feed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const Scaffold(
+                        body: GlobalFeedScreen(
+                            //isCustomPostRanking: true,
+                            )),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('User Profile'),
+                onTap: () {
+                  // Navigate or perform action based on 'User Profile' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => UserProfileScreen(
+                            amityUserId: username,
+                            amityUser: null,
+                          )));
+                },
+              ),
+              ListTile(
+                title: const Text('Newsfeed'),
+                onTap: () {
+                  // Navigate or perform action based on 'Newsfeed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        const Scaffold(body: GlobalFeedScreen()),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('Create Community'),
+                onTap: () {
+                  // Navigate or perform action based on 'Newsfeed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        const Scaffold(body: CreateCommunityPage()),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('Create Post'),
+                onTap: () {
+                  // Navigate or perform action based on 'Newsfeed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const Scaffold(body: PostToPage()),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('My Community'),
+                onTap: () {
+                  // Navigate or perform action based on 'Newsfeed' tap
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const Scaffold(
+                        body: MyCommunityPage(
+                          canCreateCommunity: false,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Community'),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Community ID',
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          // Handle the community ID input
+                          amityCommunityTextCon.text = value;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () async {
+                  CommunityGetQueryBuilder communityGetQueryBuilder =
+                      AmitySocialClient.newCommunityRepository()
+                          .getCommunities();
+                  AmityCommunity amityCommunity = await communityGetQueryBuilder
+                      .useCase.communityRepo
+                      .getCommunity(amityCommunityTextCon.text);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CommunityScreen(
+                          isFromFeed: true, community: amityCommunity),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('Explore'),
+                onTap: () {
+                  // Navigate or perform action based on 'Newsfeed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const Scaffold(body: CommunityPage()),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('Version 4'),
+                onTap: () {
+                  // Navigate or perform action based on 'Global Feed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SampleV4(),
+                  ));
+                },
+              ),
+              ListTile(
+                title: const Text('Community v4 compatible'),
+                onTap: () {
+                  // Navigate or perform action based on 'Global Feed' tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AmitySocialV4Compatible(),
+                  ));
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

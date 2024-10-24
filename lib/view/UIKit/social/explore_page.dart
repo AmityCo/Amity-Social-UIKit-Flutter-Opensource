@@ -90,47 +90,28 @@ class _CommunityPageState extends State<CommunityPage> {
               },
             )
           ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(
-                48.0), // Provide a height for the AppBar's bottom
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    TabBar(
-                      tabAlignment: TabAlignment.start,
-                      isScrollable:
-                          true, // Ensure that the TabBar is scrollable
-                      dividerColor: Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .baseBackground,
-                      labelColor: Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .primary,
-                      unselectedLabelColor: Colors.grey,
-                      indicatorColor: Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .primary,
-                      labelStyle: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'SF Pro Text',
-                      ),
-                      tabs: const [
-                        Tab(
-                          text: "Newsfeed",
-                        ),
-                        Tab(text: "Explore"),
-                      ],
-                    ),
-                  ],
-                ),
-                // Divider(
-                //   color: Colors.grey,
-                //   height: 0,
-                // )
-              ],
+          bottom: TabBar(
+            tabAlignment: TabAlignment.start,
+            isScrollable: true, // Ensure that the TabBar is scrollable
+            dividerColor: Provider.of<AmityUIConfiguration>(context)
+                .appColors
+                .baseBackground,
+            labelColor:
+                Provider.of<AmityUIConfiguration>(context).appColors.primary,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor:
+                Provider.of<AmityUIConfiguration>(context).appColors.primary,
+            labelStyle: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'SF Pro Text',
             ),
+            tabs: const [
+              Tab(
+                text: "Newsfeed",
+              ),
+              Tab(text: "Explore"),
+            ],
           ),
         ),
         body: TabBarView(

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
@@ -37,8 +36,6 @@ class EditPostVM extends CreatePostVMV2 {
               file: File(""));
           editPostMedie.add(uikitFile);
         }
-
-        log("ImageData: $editPostMedie");
       } else if (children[0].type == AmityDataType.VIDEO) {
         var videoData = children[0].data as VideoData;
 

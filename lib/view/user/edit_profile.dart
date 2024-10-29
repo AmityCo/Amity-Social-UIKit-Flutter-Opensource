@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/custom_textfield.dart';
@@ -31,13 +29,6 @@ class ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   Widget imageWidgetBuilder(ImageState imageState) {
-    log("image state$imageState");
-    log("ImagePickerVM:${Provider.of<ImagePickerVM>(
-      context,
-    ).amityImage?.fileUrl}");
-    log("AmityVM:${Provider.of<AmityVM>(
-      context,
-    ).currentamityUser?.avatarUrl}");
     var avatarWidget = const CircleAvatar();
     switch (imageState) {
       case ImageState.loading:
@@ -132,8 +123,6 @@ class ProfileScreenState extends State<ProfileScreen> {
               if (Provider.of<ImagePickerVM>(context, listen: false)
                       .amityImage !=
                   null) {
-                log("Image was selected and will be adding to user profile...");
-
                 await Provider.of<UserFeedVM>(context, listen: false)
                     .editCurrentUserInfo(
                         displayName: _displayNameController.text,
@@ -143,7 +132,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 .amityImage
                                 ?.fileId);
               } else {
-                log("No Image was selected and current avatarImage will be adding to user profile...");
                 await Provider.of<UserFeedVM>(context, listen: false)
                     .editCurrentUserInfo(
                         displayName: _displayNameController.text,

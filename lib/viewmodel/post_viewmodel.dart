@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +27,6 @@ class PostVM extends ChangeNotifier {
     }).listen((event) async {
       amityPost = event;
     }).onError((error, stackTrace) async {
-      log(error.toString());
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -72,7 +69,6 @@ class PostVM extends ChangeNotifier {
             }
           } else {
             // Error on pagination controller
-            log("error from Comment: ${controller.error.toString()}");
             // await AmityDialog().showAlertErrorDialog(
             //     title: "Error!", message: controller.error.toString());
           }
@@ -111,7 +107,6 @@ class PostVM extends ChangeNotifier {
         scrollcontroller.jumpTo(0);
       });
     }).onError((error, stackTrace) async {
-      log(error.toString());
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -161,11 +156,9 @@ class PostVM extends ChangeNotifier {
 
   void flagPost(AmityPost post) {
     post.report().flag().then((value) {
-      log("flag success $value");
       AmitySuccessDialog.showTimedDialog("Report success");
       notifyListeners();
     }).onError((error, stackTrace) async {
-      log("flag error ${error.toString()}");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -174,11 +167,9 @@ class PostVM extends ChangeNotifier {
   void unflagPost(AmityPost post) {
     post.report().unflag().then((value) {
       //success
-      log("unflag success $value");
       AmitySuccessDialog.showTimedDialog("Undo report success");
       notifyListeners();
     }).onError((error, stackTrace) async {
-      log("unflag error ${error.toString()}");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -209,7 +200,6 @@ class PostVM extends ChangeNotifier {
     comment.edit().text(text).build().update().then((value) {
       //handle result
     }).onError((error, stackTrace) async {
-      log("unflag error ${error.toString()}");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });

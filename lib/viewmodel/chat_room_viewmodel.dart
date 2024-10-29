@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +83,6 @@ class ChatRoomVM extends ChangeNotifier {
 
       notifyListeners();
     }).onError((error, stackTrace) async {
-      log("error from channel");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -122,14 +119,12 @@ class ChatRoomVM extends ChangeNotifier {
       textEditingController.clear();
     }).onError((error, stackTrace) async {
       // Error on pagination controller
-      log("error from send message");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
   }
 
   void scrollToBottom() {
-    log("scrollToBottom ");
     // scrollController!.animateTo(
     //   1000000,
     //   curve: Curves.easeOut,

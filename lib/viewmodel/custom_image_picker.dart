@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
@@ -23,10 +22,8 @@ class ImagePickerVM extends ChangeNotifier {
   checkUserImage(String? url) {
     if (url != null && url != "" && url != "null") {
       imageState = ImageState.hasImage;
-      log("has image:$url");
     } else {
       imageState = ImageState.noImage;
-      log("no image");
     }
   }
 
@@ -65,24 +62,18 @@ class ImagePickerVM extends ChangeNotifier {
                               progress: (uploadInfo, cancelToken) {
                                 imageState = ImageState.loading;
                                 notifyListeners();
-                                int progress =
-                                    uploadInfo.getProgressPercentage();
-                                log(progress.toString());
                               },
                               complete: (file) {
                                 //check if the upload result is complete
-                                log("complete");
                                 AmityLoadingDialog.hideLoadingDialog();
                                 final AmityImage uploadedImage = file;
                                 amityImage = uploadedImage;
                                 //proceed result with uploadedImage
 
-                                log("check amity image ${amityImage!.fileId}");
                                 imageState = ImageState.hasImage;
                                 notifyListeners();
                               },
                               error: (error) async {
-                                log("error: $error");
                                 await AmityDialog().showAlertErrorDialog(
                                     title: "Error!", message: error.toString());
                                 imageState = ImageState.hasImage;
@@ -114,23 +105,18 @@ class ImagePickerVM extends ChangeNotifier {
                             progress: (uploadInfo, cancelToken) {
                               imageState = ImageState.loading;
                               notifyListeners();
-                              int progress = uploadInfo.getProgressPercentage();
-                              log(progress.toString());
                             },
                             complete: (file) {
                               //check if the upload result is complete
-                              log("complete");
                               AmityLoadingDialog.hideLoadingDialog();
                               final AmityImage uploadedImage = file;
                               amityImage = uploadedImage;
                               //proceed result with uploadedImage
 
-                              log("check amity image ${amityImage!.fileId}");
                               imageState = ImageState.hasImage;
                               notifyListeners();
                             },
                             error: (error) async {
-                              log("error: $error");
                               await AmityDialog().showAlertErrorDialog(
                                   title: "Error!", message: error.toString());
                               imageState = ImageState.hasImage;

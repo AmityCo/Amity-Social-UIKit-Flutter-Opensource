@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/post_profile.dart';
@@ -168,8 +166,6 @@ class CommentScreenState extends State<CommentScreen> {
                                   )
                                 : GestureDetector(
                                     onTap: () {
-                                      log(widget.amityPost.myReactions!
-                                          .toString());
                                       Provider.of<PostVM>(context,
                                               listen: false)
                                           .addPostReaction(widget.amityPost);

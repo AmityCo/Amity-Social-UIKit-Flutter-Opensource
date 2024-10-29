@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/view/user/medie_component.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +9,6 @@ class CommuFeedVM extends ChangeNotifier {
   MediaType _selectedMediaType = MediaType.photos;
   void doSelectMedieType(MediaType mediaType) {
     _selectedMediaType = mediaType;
-    log(_selectedMediaType.toString());
     notifyListeners();
   }
 
@@ -103,7 +100,6 @@ class CommuFeedVM extends ChangeNotifier {
       pageSize: 20,
     )..addListener(
         () async {
-          log("initAmityCommunityFeed ID: $communityId");
           if (_controllerCommu.error == null) {
             //handle results, we suggest to clear the previous items
             //and add with the latest _controller.loadedItems
@@ -156,7 +152,6 @@ class CommuFeedVM extends ChangeNotifier {
       pageSize: 20,
     )..addListener(
         () async {
-          log(">>>PENDINGListener");
           if (_controllerPendingPost.error == null) {
             //handle results, we suggest to clear the previous items
             //and add with the latest _controller.loadedItems
@@ -209,7 +204,6 @@ class CommuFeedVM extends ChangeNotifier {
       pageSize: 20,
     )..addListener(
         () async {
-          log("communityListener");
           if (_controllerVideoCommu.error == null) {
             //handle results, we suggest to clear the previous items
             //and add with the latest _controller.loadedItems
@@ -263,7 +257,6 @@ class CommuFeedVM extends ChangeNotifier {
       pageSize: 20,
     )..addListener(
         () async {
-          log("communityListener");
           if (_controllerImageCommu.error == null) {
             _amityCommunityImageFeedPosts.clear();
             _amityCommunityImageFeedPosts
@@ -334,7 +327,6 @@ class CommuFeedVM extends ChangeNotifier {
   }
 
   void deletePendingPost(AmityPost post, int postIndex) async {
-    log("deleting post....");
     AmitySocialClient.newPostRepository()
         .deletePost(postId: post.postId!)
         .then((value) {
@@ -347,20 +339,16 @@ class CommuFeedVM extends ChangeNotifier {
   }
 
   Future<void> checkIsCurrentUserIsAdmin(String communityId) async {
-    log("LOG1 :checkIsCurrentUserIsAdmin");
     await AmitySocialClient.newCommunityRepository()
         .getCurentUserRoles(communityId)
         .then((value) {
-      log("LOG1$value");
       for (var role in value!) {
         if (role == "community-moderator") {
           isCurrentUserIsAdmin = true;
         }
       }
       notifyListeners();
-    }).onError((error, stackTrace) {
-      log("LOG1:$error");
-    });
+    }).onError((error, stackTrace) {});
   }
 
   void acceptPost(

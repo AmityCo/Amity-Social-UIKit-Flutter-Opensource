@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +62,6 @@ class FeedVM extends ChangeNotifier {
         pageSize: 5,
       )..addListener(
           () async {
-            log("getCustomRankingGlobalFeed listener...");
             if (_controllerGlobal?.error == null) {
               final feedItems =
                   await onCustomPost(_controllerGlobal!.loadedItems);
@@ -79,7 +76,6 @@ class FeedVM extends ChangeNotifier {
               notifyListeners();
               _amityGlobalFeedPosts.clear();
               _amityGlobalFeedPosts.addAll([]);
-              log("error: ${_controllerGlobal!.error.toString()}");
               // await AmityDialog().showAlertErrorDialog(
               //     title: "Error!",
               //     message: _controllerGlobal!.error.toString());
@@ -94,7 +90,6 @@ class FeedVM extends ChangeNotifier {
         pageSize: 5,
       )..addListener(
           () async {
-            log("initAmityGlobalfeed listener...");
             if (_controllerGlobal?.error == null) {
               final feedItems =
                   await onCustomPost(_controllerGlobal!.loadedItems);
@@ -106,7 +101,6 @@ class FeedVM extends ChangeNotifier {
             } else {
               _amityGlobalFeedPosts.clear();
               // Handle pagination controller error
-              log("error: ${_controllerGlobal!.error.toString()}");
               // notifyListeners();
               // Optionally show an error dialog
               // await AmityDialog().showAlertErrorDialog(
@@ -137,7 +131,6 @@ class FeedVM extends ChangeNotifier {
         !loadingNexPage) {
       loadingNexPage = true;
       notifyListeners();
-      log("loading Next Page...");
       await _controllerGlobal!.fetchNextPage().then((value) {
         loadingNexPage = false;
         notifyListeners();

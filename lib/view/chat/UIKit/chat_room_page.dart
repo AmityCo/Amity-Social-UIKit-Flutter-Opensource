@@ -223,8 +223,6 @@ class MessageComponent extends StatelessWidget {
           shrinkWrap: true,
           itemCount: vm.amitymessage.length,
           itemBuilder: (context, index) {
-            var data = vm.amitymessage[index].data;
-
             bool isSendbyCurrentUser = vm.amitymessage[index].userId !=
                 AmityCoreClient.getCurrentUser().userId;
             return Column(

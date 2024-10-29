@@ -86,7 +86,6 @@ class ReplyVM extends PostVM {
         () async {
           if (_controllersMap[commentId]!.error == null) {
             var loadedItems = _controllersMap[commentId]!.loadedItems;
-            for (var item in loadedItems) {}
 
             // Append only new comments by checking against existing ones.
             var currentIds = amityComments.map((e) => e.commentId).toSet();
@@ -153,7 +152,6 @@ class ReplyVM extends PostVM {
       {required String postId,
       required String commentId,
       required String text}) async {
-    final amityComments = <AmityComment>[];
     await AmitySocialClient.newCommentRepository()
         .createComment()
         .post(postId)

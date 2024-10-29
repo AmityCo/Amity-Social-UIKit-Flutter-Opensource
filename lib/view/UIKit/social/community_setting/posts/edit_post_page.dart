@@ -37,8 +37,6 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Consumer<EditPostVM>(builder: (context, vm, _) {
       return ThemeConfig(
         child: Scaffold(

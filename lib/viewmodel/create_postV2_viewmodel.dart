@@ -97,7 +97,7 @@ class CreatePostVMV2 with ChangeNotifier {
     };
 
     // Check the type of the first file (assuming all files are of the same type)
-    MyFileType currentType = files.first.fileType ?? MyFileType.file;
+    MyFileType currentType = files.first.fileType;
 
     if (files.length < 10) {
       selectionOptions[currentType] = true;
@@ -321,8 +321,6 @@ class CreatePostVMV2 with ChangeNotifier {
 
   List<File> convertToFileList(List<UIKitFileSystem> uikitFiles) {
     return uikitFiles
-        // Ensure that fileInfo is not null and has a valid file path
-        .where((uikitFile) => uikitFile.file != null)
         // Map each UIKitFileSystem to a File
         .map((uikitFile) => uikitFile.file)
         .toList();

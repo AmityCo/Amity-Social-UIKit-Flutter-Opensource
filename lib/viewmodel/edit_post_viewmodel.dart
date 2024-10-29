@@ -37,8 +37,6 @@ class EditPostVM extends CreatePostVMV2 {
           editPostMedie.add(uikitFile);
         }
       } else if (children[0].type == AmityDataType.VIDEO) {
-        var videoData = children[0].data as VideoData;
-
         editPostMedie = [];
         for (var child in children) {
           var uikitFile = UIKitFileSystem(

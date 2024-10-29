@@ -45,7 +45,6 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final tappablePostAsButton = widget.feedType == FeedType.community &&
         widget.community != null &&
         widget.community!.communityId != null &&

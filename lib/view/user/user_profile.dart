@@ -498,97 +498,95 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                   radius: 32)),
                                       const SizedBox(width: 10),
                                       Expanded(
-                                        child: Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              // Text(vm.amityMyFollowInfo.status
-                                              //     .toString()),
-                                              Text(
-                                                getAmityUser().displayName ??
-                                                    "",
-                                                style: TextStyle(
-                                                  color: Provider.of<
-                                                              AmityUIConfiguration>(
-                                                          context)
-                                                      .appColors
-                                                      .base,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: -0.4,
-                                                ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            // Text(vm.amityMyFollowInfo.status
+                                            //     .toString()),
+                                            Text(
+                                              getAmityUser().displayName ??
+                                                  "",
+                                              style: TextStyle(
+                                                color: Provider.of<
+                                                            AmityUIConfiguration>(
+                                                        context)
+                                                    .appColors
+                                                    .base,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700,
+                                                letterSpacing: -0.4,
                                               ),
-                                              vm.amityMyFollowInfo.id == null
-                                                  ? const SizedBox()
-                                                  : StreamBuilder<
-                                                          AmityUserFollowInfo>(
-                                                      stream: vm
-                                                          .amityMyFollowInfo
-                                                          .listen
-                                                          .stream,
-                                                      initialData:
-                                                          vm.amityMyFollowInfo,
-                                                      builder:
-                                                          (context, snapshot) {
-                                                        return Row(
-                                                          children: [
-                                                            // Text('${  vm.amityMyFollowInfo.followerCount
-                                                            //     .toString()} Posts  '),
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.of(context).push(MaterialPageRoute(
-                                                                    builder: (context) => ChangeNotifierProvider(
-                                                                        create: (context) =>
-                                                                            FollowerVM(),
-                                                                        child: FollowScreen(
-                                                                            followScreenType: FollowScreenType
-                                                                                .following,
-                                                                            key:
-                                                                                UniqueKey(),
-                                                                            userId:
-                                                                                widget.amityUserId,
-                                                                            displayName: getAmityUser().displayName))));
-                                                              },
-                                                              child: Text(
-                                                                  '${snapshot.data!.followingCount} following  ',
-                                                                  style: TextStyle(
-                                                                      color: Provider.of<AmityUIConfiguration>(
-                                                                              context)
-                                                                          .appColors
-                                                                          .base)),
-                                                            ),
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.of(context).push(MaterialPageRoute(
-                                                                    builder: (context) => ChangeNotifierProvider(
-                                                                        create: (context) =>
-                                                                            FollowerVM(),
-                                                                        child: FollowScreen(
-                                                                            followScreenType: FollowScreenType
-                                                                                .follower,
-                                                                            key:
-                                                                                UniqueKey(),
-                                                                            userId:
-                                                                                widget.amityUserId,
-                                                                            displayName: getAmityUser().displayName))));
-                                                              },
-                                                              child: Text(
-                                                                '${snapshot.data!.followerCount} followers',
+                                            ),
+                                            vm.amityMyFollowInfo.id == null
+                                                ? const SizedBox()
+                                                : StreamBuilder<
+                                                        AmityUserFollowInfo>(
+                                                    stream: vm
+                                                        .amityMyFollowInfo
+                                                        .listen
+                                                        .stream,
+                                                    initialData:
+                                                        vm.amityMyFollowInfo,
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      return Row(
+                                                        children: [
+                                                          // Text('${  vm.amityMyFollowInfo.followerCount
+                                                          //     .toString()} Posts  '),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.of(context).push(MaterialPageRoute(
+                                                                  builder: (context) => ChangeNotifierProvider(
+                                                                      create: (context) =>
+                                                                          FollowerVM(),
+                                                                      child: FollowScreen(
+                                                                          followScreenType: FollowScreenType
+                                                                              .following,
+                                                                          key:
+                                                                              UniqueKey(),
+                                                                          userId:
+                                                                              widget.amityUserId,
+                                                                          displayName: getAmityUser().displayName))));
+                                                            },
+                                                            child: Text(
+                                                                '${snapshot.data!.followingCount} following  ',
                                                                 style: TextStyle(
                                                                     color: Provider.of<AmityUIConfiguration>(
                                                                             context)
                                                                         .appColors
-                                                                        .base),
-                                                              ),
+                                                                        .base)),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.of(context).push(MaterialPageRoute(
+                                                                  builder: (context) => ChangeNotifierProvider(
+                                                                      create: (context) =>
+                                                                          FollowerVM(),
+                                                                      child: FollowScreen(
+                                                                          followScreenType: FollowScreenType
+                                                                              .follower,
+                                                                          key:
+                                                                              UniqueKey(),
+                                                                          userId:
+                                                                              widget.amityUserId,
+                                                                          displayName: getAmityUser().displayName))));
+                                                            },
+                                                            child: Text(
+                                                              '${snapshot.data!.followerCount} followers',
+                                                              style: TextStyle(
+                                                                  color: Provider.of<AmityUIConfiguration>(
+                                                                          context)
+                                                                      .appColors
+                                                                      .base),
                                                             ),
-                                                          ],
-                                                        );
-                                                      })
-                                            ],
-                                          ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    })
+                                          ],
                                         ),
                                       ),
                                     ],

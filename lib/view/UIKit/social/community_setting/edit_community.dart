@@ -34,7 +34,6 @@ class AmityEditCommunityScreenState extends State<AmityEditCommunityScreen> {
     communityProvider.pickedFile = null;
     _displayNameController.text = widget.community.displayName ?? "";
     _descriptionController.text = widget.community.description ?? "";
-    var category = widget.community.categories!;
     var categories = widget.community.categories;
     if (categories != null && categories.isNotEmpty) {
       _categoryController.text = categories[0]!.name ?? "No Name";

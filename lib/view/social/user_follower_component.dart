@@ -38,7 +38,6 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<FollowerVM>(builder: (context, vm, _) {
-      final theme = Theme.of(context);
       return FadedSlideAnimation(
         beginOffset: const Offset(0, 0.3),
         endOffset: const Offset(0, 0),

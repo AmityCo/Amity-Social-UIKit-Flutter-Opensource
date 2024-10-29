@@ -108,8 +108,6 @@ class PostDisplayName extends StatelessWidget {
   }
 
   Widget PostTarget(BuildContext context, AmityPostTarget target) {
-    Future<dynamic> targetNavigation;
-
     VoidCallback? onTap;
     var targetName = '';
     if (target is CommunityTarget && target.targetCommunity != null) {

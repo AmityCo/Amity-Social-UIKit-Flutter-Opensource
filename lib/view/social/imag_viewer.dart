@@ -43,7 +43,6 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     final position = details.localPosition;
     final RenderBox box = context.findRenderObject() as RenderBox;
     final Offset localPosition = box.globalToLocal(position);
-    final size = box.size;
     final scale = _transformationController.value.getMaxScaleOnAxis();
 
     if (scale > _baseScale) {

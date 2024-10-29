@@ -122,7 +122,7 @@ class AmityReactionListComponent extends NewBaseComponent {
             child: Shimmer(
               linearGradient: configProvider.getShimmerGradient(),
               child: ListView(
-                physics: true ? const NeverScrollableScrollPhysics() : null,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   skeletonItem(),
                   skeletonItem(),

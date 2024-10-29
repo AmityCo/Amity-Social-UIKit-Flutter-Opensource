@@ -62,11 +62,6 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final bHeight = mediaQuery.size.height -
-        mediaQuery.padding.top -
-        AppBar().preferredSize.height;
-
     final theme = Theme.of(context);
     return Consumer<FeedVM>(builder: (context, vm, _) {
       return RefreshIndicator(

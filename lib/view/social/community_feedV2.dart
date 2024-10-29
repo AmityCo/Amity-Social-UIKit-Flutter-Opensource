@@ -169,38 +169,31 @@ class CommunityScreenState extends State<CommunityScreen>
     final bheight = mediaQuery.size.height -
         mediaQuery.padding.top -
         myAppBar.preferredSize.height;
-    if (true) {
-      return StreamBuilder<AmityCommunity>(
-          stream: widget.community.listen.stream,
-          initialData: widget.community,
-          builder: (context, snapshot) {
-            return AppScaffold(
-              title: '',
-              slivers: [
-                Consumer<CommuFeedVM>(builder: (context, vm, _) {
-                  return _StickyHeaderList(
-                      index: 0,
-                      theme: theme,
-                      bheight: bheight,
-                      profileSectionWidget: CommunityDetailComponent(
-                        community: snapshot.data!,
-                      ));
-                }),
-                _StickyHeaderList(
-                  index: 1,
-                  theme: theme,
-                  bheight: bheight,
-                ),
-              ],
-              amityCommunity: snapshot.data!,
-            );
-          });
-    } else {
-      return Scaffold(
-        backgroundColor:
-            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-      );
-    }
+    return StreamBuilder<AmityCommunity>(
+        stream: widget.community.listen.stream,
+        initialData: widget.community,
+        builder: (context, snapshot) {
+          return AppScaffold(
+            title: '',
+            slivers: [
+              Consumer<CommuFeedVM>(builder: (context, vm, _) {
+                return _StickyHeaderList(
+                    index: 0,
+                    theme: theme,
+                    bheight: bheight,
+                    profileSectionWidget: CommunityDetailComponent(
+                      community: snapshot.data!,
+                    ));
+              }),
+              _StickyHeaderList(
+                index: 1,
+                theme: theme,
+                bheight: bheight,
+              ),
+            ],
+            amityCommunity: snapshot.data!,
+          );
+        });
   }
 }
 

@@ -247,7 +247,6 @@ class CommunityVM extends ChangeNotifier {
             //proceed result with uploadedImage
           },
           error: (error) async {
-            final AmityException amityException = error;
             //handle error
             await AmityDialog().showAlertErrorDialog(
                 title: "Error!", message: error.toString());
@@ -289,7 +288,6 @@ class CommunityVM extends ChangeNotifier {
               completer.complete();
             },
             error: (error) async {
-              final AmityException amityException = error;
               //handle error
               await AmityDialog().showAlertErrorDialog(
                 title: "Error!",

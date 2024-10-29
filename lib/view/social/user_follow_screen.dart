@@ -28,7 +28,6 @@ class _FollowScreenState extends State<FollowScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return ThemeConfig(
       child: Scaffold(
         backgroundColor:

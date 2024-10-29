@@ -11,7 +11,6 @@ import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
@@ -109,8 +108,8 @@ class CommentScreenState extends State<CommentScreen> {
     var postData =
         Provider.of<PostVM>(context, listen: false).amityPost.data as TextData;
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
-    final bHeight = mediaQuery.size.height - mediaQuery.padding.top;
+    // final mediaQuery = MediaQuery.of(context);
+    // final bHeight = mediaQuery.size.height - mediaQuery.padding.top;
 
     return Consumer<PostVM>(builder: (context, vm, _) {
       return StreamBuilder<AmityPost>(
@@ -121,120 +120,120 @@ class CommentScreenState extends State<CommentScreen> {
           }),
           initialData: vm.amityPost,
           builder: (context, snapshot) {
-            var snapshotPostData = snapshot.data?.data as TextData;
-            var actionSection = Column(
-              children: [
-                Container(
-                  color: widget.feedType == FeedType.user
-                      ? Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .userProfileBGColor
-                      : Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(width: 20), // Spacing between buttons
-                      // Like Button
-                      GestureDetector(
-                        onTap: () {
-                          // Logic to handle like action
-                        },
-                        child: Row(
-                          children: [
-                            snapshot.data!.myReactions!.isNotEmpty
-                                ? GestureDetector(
-                                    onTap: () {
-                                      Provider.of<PostVM>(context,
-                                              listen: false)
-                                          .removePostReaction(widget.amityPost);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          "assets/Icons/like.svg",
-                                          package: 'amity_uikit_beta_service',
-                                        ),
-                                        const Text(
-                                          "Like",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xff898E9E),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      Provider.of<PostVM>(context,
-                                              listen: false)
-                                          .addPostReaction(widget.amityPost);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.thumb_up_off_alt,
-                                          color: Colors.grey,
-                                          size: 16,
-                                        ),
-                                        Text(
-                                          "Like",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Provider.of<
-                                                        AmityUIConfiguration>(
-                                                    context)
-                                                .appColors
-                                                .baseShade4,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                            const SizedBox(width: 4),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 20), // Spacing between buttons
+            // var snapshotPostData = snapshot.data?.data as TextData;
+            // var actionSection = Column(
+            //   children: [
+            //     Container(
+            //       color: widget.feedType == FeedType.user
+            //           ? Provider.of<AmityUIConfiguration>(context)
+            //               .appColors
+            //               .userProfileBGColor
+            //           : Colors.white,
+            //       child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.start,
+            //         children: [
+            //           const SizedBox(width: 20), // Spacing between buttons
+            //           // Like Button
+            //           GestureDetector(
+            //             onTap: () {
+            //               // Logic to handle like action
+            //             },
+            //             child: Row(
+            //               children: [
+            //                 snapshot.data!.myReactions!.isNotEmpty
+            //                     ? GestureDetector(
+            //                         onTap: () {
+            //                           Provider.of<PostVM>(context,
+            //                                   listen: false)
+            //                               .removePostReaction(widget.amityPost);
+            //                         },
+            //                         child: Row(
+            //                           children: [
+            //                             SvgPicture.asset(
+            //                               "assets/Icons/like.svg",
+            //                               package: 'amity_uikit_beta_service',
+            //                             ),
+            //                             const Text(
+            //                               "Like",
+            //                               style: TextStyle(
+            //                                 fontWeight: FontWeight.bold,
+            //                                 color: Color(0xff898E9E),
+            //                               ),
+            //                             ),
+            //                           ],
+            //                         ),
+            //                       )
+            //                     : GestureDetector(
+            //                         onTap: () {
+            //                           Provider.of<PostVM>(context,
+            //                                   listen: false)
+            //                               .addPostReaction(widget.amityPost);
+            //                         },
+            //                         child: Row(
+            //                           children: [
+            //                             const Icon(
+            //                               Icons.thumb_up_off_alt,
+            //                               color: Colors.grey,
+            //                               size: 16,
+            //                             ),
+            //                             Text(
+            //                               "Like",
+            //                               style: TextStyle(
+            //                                 fontWeight: FontWeight.bold,
+            //                                 color: Provider.of<
+            //                                             AmityUIConfiguration>(
+            //                                         context)
+            //                                     .appColors
+            //                                     .baseShade4,
+            //                               ),
+            //                             ),
+            //                           ],
+            //                         ),
+            //                       ),
+            //                 const SizedBox(width: 4),
+            //               ],
+            //             ),
+            //           ),
+            //           const SizedBox(width: 20), // Spacing between buttons
 
-                      // Comment Button
-                      GestureDetector(
-                        onTap: () {
-                          // Logic to navigate to comments section
-                        },
-                        child: const Row(
-                          children: [
-                            Icon(Icons.chat_bubble_outline, color: Colors.grey),
-                            SizedBox(width: 4),
-                            Text(
-                              "Comment",
-                              // snapshot.data!.commentCount.toString(),
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 20), // Spacing between buttons
+            //           // Comment Button
+            //           GestureDetector(
+            //             onTap: () {
+            //               // Logic to navigate to comments section
+            //             },
+            //             child: const Row(
+            //               children: [
+            //                 Icon(Icons.chat_bubble_outline, color: Colors.grey),
+            //                 SizedBox(width: 4),
+            //                 Text(
+            //                   "Comment",
+            //                   // snapshot.data!.commentCount.toString(),
+            //                   style: TextStyle(color: Colors.grey),
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
+            //           const SizedBox(width: 20), // Spacing between buttons
 
-                      // Share Button
-                      // GestureDetector(
-                      //   onTap: () {},
-                      //   child: const Row(
-                      //     children: [
-                      //       Icon(Icons.ios_share_outlined, color: Colors.grey),
-                      //       SizedBox(width: 4),
-                      //       Text(
-                      //         "Share",
-                      //         style: TextStyle(color: Colors.grey),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ),
-              ],
-            );
+            //           // Share Button
+            //           // GestureDetector(
+            //           //   onTap: () {},
+            //           //   child: const Row(
+            //           //     children: [
+            //           //       Icon(Icons.ios_share_outlined, color: Colors.grey),
+            //           //       SizedBox(width: 4),
+            //           //       Text(
+            //           //         "Share",
+            //           //         style: TextStyle(color: Colors.grey),
+            //           //       ),
+            //           //     ],
+            //           //   ),
+            //           // ),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // );
 
             return ThemeConfig(
               child: Scaffold(
@@ -577,20 +576,16 @@ class FullCommentPage extends StatelessWidget {
               color: Colors.black,
             ),
             onPressed: () {
-              if (true) {
-                ConfirmationDialog().show(
-                  context: context,
-                  title: 'Discard Post?',
-                  detailText: 'Do you want to discard your post?',
-                  leftButtonText: 'Cancel',
-                  rightButtonText: 'Discard',
-                  onConfirm: () {
-                    Navigator.of(context).pop();
-                  },
-                );
-              } else {
-                Navigator.of(context).pop();
-              }
+              ConfirmationDialog().show(
+                context: context,
+                title: 'Discard Post?',
+                detailText: 'Do you want to discard your post?',
+                leftButtonText: 'Cancel',
+                rightButtonText: 'Discard',
+                onConfirm: () {
+                  Navigator.of(context).pop();
+                },
+              );
             },
           ),
           title: Text(
@@ -742,7 +737,6 @@ class _CommentComponentState extends State<CommentComponent> {
     return comments.myReactions?.isNotEmpty ?? false;
   }
 
-  final _editcommentTextEditController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Consumer<PostVM>(builder: (context, vm, _) {

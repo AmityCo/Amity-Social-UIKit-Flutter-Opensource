@@ -46,12 +46,6 @@ class PostReactionButton extends StatelessWidget {
               height: 20,
             );
     }
-    var iconAsset = 'assets/Icons/amity_ic_post_quick_reaction.svg';
-    if (post.myReactions?.isNotEmpty ?? false) {
-      iconAsset = post.myReactions!.first == 'like'
-          ? 'assets/Icons/amity_ic_post_reaction_like.svg'
-          : 'assets/Icons/amity_ic_post_reaction_heart.svg';
-    }
     return GestureDetector(
       onTap: () {
         if (!isReacting) {

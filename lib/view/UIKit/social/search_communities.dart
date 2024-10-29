@@ -286,7 +286,7 @@ class CommunityWidget extends StatelessWidget {
                 communityStream.categories == null ||
                         communityStream.categories!.isEmpty
                     ? ""
-                    : "${communityStream.categories![0]!.name}" ?? "Community",
+                    : "${communityStream.categories![0]!.name}",
                 style: const TextStyle(
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -430,7 +430,7 @@ class CommunityIconList extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Container(child: const Icon(Icons.chevron_right))),
+                    child: const Icon(Icons.chevron_right)),
               ],
             ),
           ),

@@ -1058,8 +1058,11 @@ class _CommentComponentState extends State<CommentComponent> {
                                               onTap: () {
                                                 final communityId = (comments
                                                             .target
-                                                        as CommunityCommentTarget?)
-                                                    ?.communityId;
+                                                        is CommunityCommentTarget)
+                                                    ? (comments.target
+                                                            as CommunityCommentTarget)
+                                                        .communityId
+                                                    : null;
                                                 final isCommunityModerator =
                                                     communityId != null &&
                                                         AmityCoreClient.hasPermission(
@@ -1665,8 +1668,11 @@ class ReplyCommentComponent extends StatelessWidget {
                                 ),
                                 onTap: () {
                                   final communityId = (comments.target
-                                          as CommunityCommentTarget?)
-                                      ?.communityId;
+                                          is CommunityCommentTarget)
+                                      ? (comments.target
+                                              as CommunityCommentTarget)
+                                          .communityId
+                                      : null;
                                   final isCommunityModerator =
                                       communityId != null &&
                                           AmityCoreClient.hasPermission(

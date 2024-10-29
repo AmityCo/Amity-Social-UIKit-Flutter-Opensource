@@ -1309,8 +1309,9 @@ class CommentActionComponent extends StatelessWidget {
         initialData: amityComment,
         builder: (context, snapshot) {
           var comments = snapshot.data!;
-          final communityId =
-              (comments.target as CommunityCommentTarget?)?.communityId;
+          final communityId = (comments.target is CommunityCommentTarget)
+              ? (comments.target as CommunityCommentTarget).communityId
+              : null;
           final isCommunityModerator = communityId != null &&
               AmityCoreClient.hasPermission(
                       AmityPermission.DELETE_COMMUNITY_COMMENT)

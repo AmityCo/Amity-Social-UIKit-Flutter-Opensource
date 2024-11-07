@@ -35,15 +35,12 @@ class FeedVM extends ChangeNotifier {
         .deletePost(postId: post.postId!)
         .then((value) {
       // Find the post by postId and remove it
-      int postIndex =
-          _amityGlobalFeedPosts.indexWhere((p) => p.postId == post.postId);
-      if (postIndex != -1) {
-        _amityGlobalFeedPosts.removeAt(postIndex);
-        notifyListeners();
-        callback(true, "Post deleted successfully.");
-      } else {
-        callback(false, "Post not found in the list.");
-      }
+      // int postIndex =
+      //     _amityGlobalFeedPosts.indexWhere((p) => p.postId == post.postId);
+
+      _amityGlobalFeedPosts.removeAt(postIndex);
+      notifyListeners();
+      callback(true, "Post deleted successfully.");
     }).onError((error, stackTrace) async {
       String errorMessage = error.toString();
       await AmityDialog()
@@ -68,6 +65,7 @@ class FeedVM extends ChangeNotifier {
           .listen((posts) async {
         if (globalFeedLiveCollection.isFetching == true && posts.isEmpty) {
           isLoading = true;
+
           notifyListeners();
         } else if (posts.isNotEmpty) {
           _amityGlobalFeedPosts.clear();

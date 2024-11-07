@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: amity_sdk
-      sha256: "6f6e3727e24e93731338551db05098ad0b20a0cc21c5ee348699d5999d76ac29"
+      sha256: ef70f7f8ed4b7cd49ad6be478d9c4b1a763829fbcf46e03067617c2a1ef664d6
       url: "https://pub.dev"
     source: hosted
-    version: "0.51.0"
+    version: "0.52.1"
   amity_sdk_api:
     dependency: transitive
     description:
@@ -161,7 +161,7 @@ packages:
     source: hosted
     version: "5.0.0"
   change_app_package_name:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: change_app_package_name
       sha256: "1d6ca5fbaba7264f70857941543337b2efe48f19ae2eef29b89927541b52a787"
@@ -545,14 +545,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
-  google_fonts:
-    dependency: "direct main"
-    description:
-      name: google_fonts
-      sha256: "2776c66b3e97c6cdd58d1bd3281548b074b64f1fd5c8f82391f7456e38849567"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.5"
   gradient_widgets:
     dependency: transitive
     description:

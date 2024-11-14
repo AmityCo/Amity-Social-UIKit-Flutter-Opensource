@@ -29,4 +29,16 @@ class AmityUIKitToastLong extends AmityToastEvent {
   List<Object> get props => [message];
 }
 
+
+class AmityToastLoading extends AmityToastEvent {
+  final String message;
+  final AmityToastIcon? icon;
+
+  const AmityToastLoading({required this.message, required this.icon});
+
+  @override
+  List<Object> get props => [message, icon ?? ''];
+}
+
+
 class AmityToastDismiss extends AmityToastEvent {}

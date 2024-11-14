@@ -49,7 +49,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       final flag = await event.post.report().flag();
       if (flag) {
         event.toastBloc.add(const AmityToastShort(
-            message: "Post reported", icon: AmityToastIcon.success));
+            message: "Post reported.", icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);
         emit(PostItemStateLoaded(post: updatedPost));
@@ -60,7 +60,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
       final flag = await event.post.report().unflag();
       if (flag) {
         event.toastBloc.add(const AmityToastShort(
-            message: "Post unreported", icon: AmityToastIcon.success));
+            message: "Post unreported.", icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);
         emit(PostItemStateLoaded(post: updatedPost));
@@ -70,9 +70,9 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     on<PostItemDelete>((event, emit) async {
       final delete = await event.post.delete();
       if (delete) {
-        event.action?.onPostDeleted(event.post.postId!);
-        var updatedPost = await AmitySocialClient.newPostRepository()
-            .getPost(event.post.postId!);
+        event.action?.onPostDeleted(event.post);
+        var updatedPost = event.post;
+        updatedPost.isDeleted = true;
         emit(PostItemStateLoaded(post: updatedPost));
       }
     });

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/bloc/comment_creator_bloc.dart';
@@ -8,33 +9,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class AmityCommentCreator extends StatelessWidget {
+class AmityCommentCreator extends BaseElement {
   final String referenceId;
+  final AmityCommentReferenceType referenceType;
   final AmityComment? replyTo;
   final CommentCreatorAction action;
-  final AmityThemeColor theme;
+  AmityThemeColor? localTheme;
 
-  const AmityCommentCreator({
+  AmityCommentCreator({
     Key? key,
     required this.referenceId,
     this.replyTo,
     required this.action,
-    required this.theme,
-  }) : super(key: key);
-
+    this.localTheme,
+    required this.referenceType,
+    elementId = "comment_creator",
+  }) : super(key: key, elementId: elementId);
+  
   @override
-  Widget build(BuildContext context) {
-    return AmityCommentCreatorInternal(
+  Widget buildElement(BuildContext context) {
+     return AmityCommentCreatorInternal(
       referenceId: referenceId,
+      referenceType: referenceType,
       replyTo: replyTo,
       action: action,
-      theme: theme,
+      theme: localTheme ?? theme,
     );
   }
 }
 
 class AmityCommentCreatorInternal extends StatefulWidget {
   final String referenceId;
+  final AmityCommentReferenceType referenceType;
   final AmityComment? replyTo;
   final CommentCreatorAction action;
   final AmityThemeColor theme;
@@ -42,6 +48,7 @@ class AmityCommentCreatorInternal extends StatefulWidget {
   const AmityCommentCreatorInternal({
     Key? key,
     required this.referenceId,
+    required this.referenceType,
     this.replyTo,
     required this.action,
     required this.theme,
@@ -84,7 +91,7 @@ class _AmityCommentCreatorInternalState
               if (state.replyTo != null) renderReplyPanel(state.replyTo!),
               SafeArea(
                 top: false,
-                child: renderComposer(context, state),
+                child: renderComposer(context, state, widget.referenceId, widget.referenceType),
               ),
             ],
           );
@@ -93,7 +100,7 @@ class _AmityCommentCreatorInternalState
     );
   }
 
-  Widget renderComposer(BuildContext context, CommentCreatorState state) {
+  Widget renderComposer(BuildContext context, CommentCreatorState state, String referenceId, AmityCommentReferenceType referenceType) {
     String? avatarUrl = AmityCoreClient.getCurrentUser().avatarUrl;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
@@ -170,7 +177,8 @@ class _AmityCommentCreatorInternalState
               GestureDetector(
                 onTap: () {
                   context.read<CommentCreatorBloc>().add(CommentCreatorCreated(
-                        referenceId: widget.referenceId,
+                        referenceId: referenceId,
+                        referenceType: referenceType,
                         text: controller.text,
                         toastBloc: context.read<AmityToastBloc>(),
                       ));

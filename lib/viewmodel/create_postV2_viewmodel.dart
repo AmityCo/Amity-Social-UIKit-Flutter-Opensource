@@ -200,6 +200,8 @@ class CreatePostVMV2 with ChangeNotifier {
             uikitFile.status = FileStatus.complete;
             uikitFile.fileInfo = amityFile;
             uikitFile.amityFile = amityFile;
+            print(
+                "file type ${uikitFile.fileType} ${uikitFile.fileInfo.toString()}");
             uikitFile.progress = 100;
             checkAllFilesUploaded();
             notifyListeners();
@@ -235,7 +237,7 @@ class CreatePostVMV2 with ChangeNotifier {
 
   Future<void> pickMultipleImages() async {
     try {
-      List<XFile>? pickedImages = await _picker.pickMultiImage(limit: 2);
+      List<XFile>? pickedImages = await _picker.pickMultiImage();
 
       if (pickedImages.isNotEmpty) {
         selectFiles(pickedImages, MyFileType.image);
@@ -291,13 +293,7 @@ class CreatePostVMV2 with ChangeNotifier {
               .where((file) => file.path != null)
               .map((file) => XFile(file.path!))
               .toList();
-          if (pickedFiles.length + files.length > 10) {
-            AmityDialog().showAlertErrorDialog(
-                title: "Error",
-                message: "You can only select a maximum of 10 images");
-          } else {
-            selectFiles(pickedFiles, MyFileType.file);
-          }
+          selectFiles(pickedFiles, MyFileType.file);
         }
       }
     } catch (e) {
@@ -314,8 +310,6 @@ class CreatePostVMV2 with ChangeNotifier {
 
   // Method to deselect a file
   void deselectFile(UIKitFileSystem file) {
-    files.remove(file);
-    checkAllFilesUploaded();
     notifyListeners();
   }
 

@@ -220,8 +220,11 @@ class CommunityWidget extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        CommunityScreen(community: communityStream)));
+                  builder: (context) =>
+                      CommunityScreen(community: communityStream),
+                  settings:
+                      const RouteSettings(name: CommunityScreen.routeName),
+                ));
               },
             ),
           );

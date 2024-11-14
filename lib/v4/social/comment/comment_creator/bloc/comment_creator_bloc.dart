@@ -18,7 +18,7 @@ class CommentCreatorBloc
   CommentCreatorBloc({
     required this.replyTo,
   }) : super(CommentCreatorState(
-            text: "asdfsad", currentHeight: defaultHeight, replyTo: replyTo)) {
+            text: "", currentHeight: defaultHeight, replyTo: replyTo)) {
     on<CommentCreatorTextChage>((event, emit) {
       // Approximate height of one line of text
       final numLines = '\n'.allMatches(event.text).length + 1;
@@ -36,37 +36,72 @@ class CommentCreatorBloc
           text: "", currentHeight: defaultHeight, replyTo: null));
       if (replyTo != null) {
         try {
-          await AmitySocialClient.newCommentRepository()
-              .createComment()
-              .post(event.referenceId)
-              .parentId(replyTo)
-              .create()
-              .text(event.text)
-              .send();
+          if(event.referenceType == AmityCommentReferenceType.POST){
+                     AmitySocialClient.newCommentRepository()
+                      .createComment()
+                      .post(event.referenceId)
+                      .parentId(replyTo)
+                      .create()
+                      .text(event.text)
+                      .send();
+                  } else if(event.referenceType == AmityCommentReferenceType.STORY){
+                    await AmitySocialClient.newCommentRepository()
+                      .createComment()
+                      .story(event.referenceId)
+                      .parentId(replyTo)
+                      .create()
+                      .text(event.text)
+                      .send();
+                  }
         } catch (error) {
-          if (error != null &&
-              error is AmityException &&
-              error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
-            event.toastBloc.add(const AmityToastShort(
+
+          if(error!=null && error is AmityException){
+            if(error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)){
+              event.toastBloc.add( const AmityToastShort(
                 message:
                     "Your comment contains inappropriate word. Please review and delete it."));
+            }
+            if(error.code == error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)){
+              if(error.message.contains("Story")){
+                event.toastBloc.add( const AmityToastShort(
+                    message:
+                    "This story is no longer available"));
+              }
+            }
           }
+
         }
       } else {
         try {
-          await AmitySocialClient.newCommentRepository()
-              .createComment()
-              .post(event.referenceId)
-              .create()
-              .text(event.text)
-              .send();
+          if(event.referenceType == AmityCommentReferenceType.POST){
+                   await AmitySocialClient.newCommentRepository()
+                      .createComment()
+                      .post(event.referenceId)
+                      .create()
+                      .text(event.text)
+                      .send();
+                  }else if(event.referenceType == AmityCommentReferenceType.STORY){
+                    await AmitySocialClient.newCommentRepository()
+                      .createComment()
+                      .story(event.referenceId)
+                      .create()
+                      .text(event.text)
+                      .send();
+                  }
         } catch (error) {
-          if (error != null &&
-              error is AmityException &&
-              error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
-            event.toastBloc.add(const AmityToastShort(
+          if(error!=null && error is AmityException){
+            if(error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)){
+              event.toastBloc.add( const AmityToastShort(
                 message:
                     "Your comment contains inappropriate word. Please review and delete it."));
+            }
+            if(error.code == error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)){
+              if(error.message.contains("Story")){
+                event.toastBloc.add( const AmityToastShort(
+                    message:
+                    "This story is no longer available"));
+              }
+            }
           }
         }
       }

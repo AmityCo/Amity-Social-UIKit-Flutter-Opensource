@@ -147,7 +147,10 @@ class UserProfileScreenState extends State<UserProfileScreen>
               index: 0,
               profileSectionWidget: Column(
                 children: [
-                  Padding(
+                  Container(
+                    color: Provider.of<AmityUIConfiguration>(context)
+                        .appColors
+                        .baseBackground,
                     padding: widget.customProfile != null &&
                             mediaQuery.size.height < 800
                         ? const EdgeInsets.only(left: 16, right: 16, top: 13)
@@ -531,7 +534,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 0),
                 ],
               ),
               theme: theme,
@@ -850,6 +853,7 @@ class AppScaffold extends StatelessWidget {
             AmityUIConfiguration.onRefreshSocialRating(amityUser.userId!);
           },
           child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             controller: Provider.of<UserFeedVM>(context).scrollcontroller,
             slivers: slivers,
             reverse: reverse,

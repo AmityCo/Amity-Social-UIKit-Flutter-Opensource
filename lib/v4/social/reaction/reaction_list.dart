@@ -275,7 +275,7 @@ class AmityReactionListComponent extends NewBaseComponent {
           child: AmityNetworkImage(
               imageUrl: reaction.creator?.avatarUrl,
               placeHolderPath:
-                  "assets/Icons/amity_ic_community_avatar_placeholder.svg"),
+                  "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
         ),
       ),
     );

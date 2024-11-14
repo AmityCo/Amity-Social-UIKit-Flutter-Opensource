@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/components/post_profile.dart';
@@ -29,11 +31,13 @@ class GlobalFeedScreen extends StatefulWidget {
   final bool isShowMyCommunity;
   final bool canCreateCommunity;
   final bool canSearchCommunities;
+  final bool isInit;
 
   const GlobalFeedScreen({
     super.key,
     this.isShowMyCommunity = true,
     this.canCreateCommunity = true,
+    this.isInit = false,
     this.canSearchCommunities = true,
     // this.isCustomPostRanking = false
   });
@@ -51,13 +55,19 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
   @override
   void initState() {
     super.initState();
-    var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
-    var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
-    myCommunityList.initMyCommunity();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      globalFeedProvider.initAmityGlobalfeed(
-          onCustomPost: AmityUIConfiguration.onCustomPost);
-    });
+    if (!widget.isInit) {
+      Future.delayed(Duration.zero, () {
+        var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
+        var myCommunityList =
+            Provider.of<MyCommunityVM>(context, listen: false);
+
+        myCommunityList.initMyCommunityFeed();
+
+        globalFeedProvider.initAmityGlobalfeed(
+          onCustomPost: AmityUIConfiguration.onCustomPost,
+        );
+      });
+    }
   }
 
   @override
@@ -226,129 +236,16 @@ class _PostWidgetState
             .check();
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
-    List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
     final isFlaggedByMe = widget.post.isFlaggedByMe;
+    List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
     List<String> otherPostMenu = [
-      widget.post.isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-      'Block User',
+      isFlaggedByMe ? 'Unreport Post' : 'Report Post',
+      // 'Block User',
       if (isCommunityModerator) 'Delete Post',
     ];
 
-    return PopupMenuButton(
-      color:
-          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-      surfaceTintColor: Colors.white,
-      onSelected: (value) {
-        switch (value) {
-          case 'Report Post':
-          case 'Unreport Post':
-            if (isFlaggedByMe) {
-              Provider.of<PostVM>(context, listen: false)
-                  .unflagPost(widget.post);
-            } else {
-              Provider.of<PostVM>(context, listen: false).flagPost(widget.post);
-            }
-
-            break;
-          case 'Edit Post':
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ChangeNotifierProvider<EditPostVM>(
-                    create: (context) => EditPostVM(),
-                    child: AmityEditPostScreen(
-                      amityPost: widget.post,
-                    ))));
-            break;
-          case 'Delete Post':
-            if (widget.feedType == FeedType.global) {
-              ConfirmationDialog().show(
-                context: context,
-                title: 'Delete Post?',
-                detailText: 'Do you want to Delete your post?',
-                leftButtonText: 'Cancel',
-                rightButtonText: 'Delete',
-                onConfirm: () {
-                  Provider.of<FeedVM>(context, listen: false).deletePost(
-                      widget.post, widget.postIndex, (isSuccess, error) {
-                    if (isSuccess) {
-                      if (widget.isPostDetail) {
-                        Navigator.of(context).pop();
-                      }
-                    }
-                  });
-                },
-              );
-            } else if (widget.feedType == FeedType.community) {
-              ConfirmationDialog().show(
-                context: context,
-                title: 'Delete Post?',
-                detailText: 'Do you want to Delete your post?',
-                leftButtonText: 'Cancel',
-                rightButtonText: 'Delete',
-                onConfirm: () {
-                  Provider.of<CommuFeedVM>(context, listen: false).deletePost(
-                      widget.post, widget.postIndex, (isSuccess, error) {
-                    if (isSuccess) {
-                      if (widget.isPostDetail) {
-                        Navigator.of(context).pop();
-                      }
-                    }
-                  });
-                },
-              );
-            } else if (widget.feedType == FeedType.user) {
-              ConfirmationDialog().show(
-                context: context,
-                title: 'Delete Post?',
-                detailText: 'Do you want to Delete your post?',
-                leftButtonText: 'Cancel',
-                rightButtonText: 'Delete',
-                onConfirm: () {
-                  Provider.of<UserFeedVM>(context, listen: false)
-                      .deletePost(widget.post, (isSuccess, error) {
-                    if (isSuccess) {
-                      if (widget.isPostDetail) {
-                        Navigator.of(context).pop();
-                      }
-                    }
-                  });
-                },
-              );
-            } else if (widget.feedType == FeedType.pending) {
-              ConfirmationDialog().show(
-                context: context,
-                title: 'Delete Post?',
-                detailText: 'Do you want to Delete your post?',
-                leftButtonText: 'Cancel',
-                rightButtonText: 'Delete',
-                onConfirm: () {
-                  Provider.of<CommuFeedVM>(context, listen: false)
-                      .deletePendingPost(widget.post, widget.postIndex);
-                },
-              );
-            } else {}
-            break;
-          case 'Block User':
-            Provider.of<UserVM>(context, listen: false)
-                .blockUser(widget.post.postedUserId!, () {
-              if (widget.feedType == FeedType.global) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Provider.of<FeedVM>(context, listen: false)
-                      .initAmityGlobalfeed(
-                          onCustomPost: AmityUIConfiguration.onCustomPost);
-                });
-              } else if (widget.feedType == FeedType.community) {
-                Provider.of<CommuFeedVM>(context, listen: false)
-                    .initAmityCommunityFeed(
-                        (widget.post.target as CommunityTarget)
-                            .targetCommunityId!);
-              }
-            });
-
-            break;
-          default:
-        }
-      },
-      child: Icon(
+    return IconButton(
+      icon: Icon(
         Icons.more_horiz_rounded,
         size: 24,
         color: widget.feedType == FeedType.user
@@ -357,50 +254,132 @@ class _PostWidgetState
                 .userProfileTextColor
             : Colors.grey,
       ),
-      itemBuilder: (context) {
-        List<PopupMenuEntry<String>> menuItems = [];
-        // Add post owner options
-        if (isPostOwner) {
-          menuItems.addAll(postOwnerMenu.map((option) => PopupMenuItem(
-                value: option,
-                child: Builder(builder: (context) {
-                  return Text(
-                    option,
-                    style: TextStyle(
-                      color: Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .base,
-                    ),
-                  );
-                }),
-              )));
-        }
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .baseBackground,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              padding: const EdgeInsets.only(
+                  top: 16, left: 16, right: 16, bottom: 32),
+              child: Wrap(
+                children: [
+                  if (isPostOwner)
+                    ...postOwnerMenu.map((option) => ListTile(
+                          title: Text(
+                            option,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            handleMenuOption(context, option, isFlaggedByMe);
+                          },
+                        )),
+                  if (!isPostOwner)
+                    ...otherPostMenu.map((option) => ListTile(
+                          title: Text(
+                            option,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            handleMenuOption(context, option, isFlaggedByMe);
+                          },
+                        )),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
-        // Add report/unreport option
-        if (!isPostOwner) {
-          menuItems.addAll(otherPostMenu.map((option) => PopupMenuItem(
-                value: option,
-                child: Builder(builder: (context) {
-                  return Text(
-                    option,
-                    style: TextStyle(
-                      color: Provider.of<AmityUIConfiguration>(context)
-                          .appColors
-                          .base,
-                    ),
-                  );
-                }),
-              )));
+  void handleMenuOption(_, String option, bool isFlaggedByMe) {
+    switch (option) {
+      case 'Report Post':
+      case 'Unreport Post':
+        log("isflag by me $isFlaggedByMe");
+        if (isFlaggedByMe) {
+          Provider.of<PostVM>(context, listen: false).unflagPost(widget.post);
+        } else {
+          Provider.of<PostVM>(context, listen: false).flagPost(widget.post);
         }
-        // Add block user option
-        // if (!isPostOwner) {
-        //   menuItems.add(const PopupMenuItem(
-        //     value: 'Block User',
-        //     child: Text('Block User'),
-        //   ));
-        // }
+        break;
+      case 'Edit Post':
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider<EditPostVM>(
+                create: (context) => EditPostVM(),
+                child: AmityEditPostScreen(
+                  amityPost: widget.post,
+                ))));
+        break;
+      case 'Delete Post':
+        showDeleteConfirmationDialog(context);
+        break;
+      case 'Block User':
+        Provider.of<UserVM>(context, listen: false)
+            .blockUser(widget.post.postedUserId!, () {
+          if (widget.feedType == FeedType.global) {
+            // Provider.of<FeedVM>(context, listen: false).reload();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed(
+                  onCustomPost: AmityUIConfiguration.onCustomPost);
+            });
+          } else if (widget.feedType == FeedType.community) {
+            Provider.of<CommuFeedVM>(context, listen: false)
+                .initAmityCommunityFeed(
+                    (widget.post.target as CommunityTarget).targetCommunityId!);
+          }
+        });
+        break;
+      default:
+    }
+  }
 
-        return menuItems;
+  void showDeleteConfirmationDialog(BuildContext context) {
+    ConfirmationDialog().show(
+      context: context,
+      title: 'Delete Post?',
+      detailText: 'Do you want to Delete your post?',
+      leftButtonText: 'Cancel',
+      rightButtonText: 'Delete',
+      onConfirm: () {
+        if (widget.feedType == FeedType.global) {
+          Provider.of<FeedVM>(context, listen: false)
+              .deletePost(widget.post, widget.postIndex, (isSuccess, error) {
+            if (isSuccess && widget.isPostDetail) {
+              Navigator.of(context).pop();
+            }
+          });
+        } else if (widget.feedType == FeedType.community) {
+          Provider.of<CommuFeedVM>(context, listen: false)
+              .deletePost(widget.post, widget.postIndex, (isSuccess, error) {
+            if (isSuccess && widget.isPostDetail) {
+              Navigator.of(context).pop();
+            }
+          });
+        } else if (widget.feedType == FeedType.user) {
+          Provider.of<UserFeedVM>(context, listen: false)
+              .deletePost(widget.post, (isSuccess, error) {
+            if (isSuccess && widget.isPostDetail) {
+              Navigator.of(context).pop();
+            }
+          });
+        } else if (widget.feedType == FeedType.pending) {
+          Provider.of<CommuFeedVM>(context, listen: false)
+              .deletePendingPost(widget.post, widget.postIndex);
+        } else {
+          print("unhandled postType");
+        }
       },
     );
   }
@@ -834,7 +813,6 @@ class _PostWidgetState
                               )
                             : const SizedBox()
                         : Container(
-                            padding: const EdgeInsets.only(bottom: 12, top: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -843,9 +821,7 @@ class _PostWidgetState
                                     feedType: widget.feedType,
                                     feedReactionCountSize:
                                         feedReactionCountSize),
-                                const SizedBox(
-                                  width: 12,
-                                ),
+
                                 GestureDetector(
                                   onTap: () {
                                     if (widget.isFromFeed) {

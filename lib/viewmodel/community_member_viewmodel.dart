@@ -25,6 +25,7 @@ class MemberManagementVM extends ChangeNotifier {
           .membership(communityId)
           .getMembers()
           .filter(AmityCommunityMembershipFilter.MEMBER)
+          .includeDeleted(false)
           .roles([]).getPagingData(token: token, limit: 20),
       pageSize: 20,
     )..addListener(_handleMemberControllerUpdates);
@@ -44,6 +45,7 @@ class MemberManagementVM extends ChangeNotifier {
           .membership(communityId)
           .getMembers()
           .filter(AmityCommunityMembershipFilter.MEMBER)
+          .includeDeleted(false)
           .roles(["community-moderator"]).getPagingData(
               token: token, limit: 20),
       pageSize: 20,

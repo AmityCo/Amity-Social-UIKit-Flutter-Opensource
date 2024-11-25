@@ -244,62 +244,65 @@ class _PostWidgetState
       if (isCommunityModerator) 'Delete Post',
     ];
 
-    return IconButton(
-      icon: Icon(
-        Icons.more_horiz_rounded,
-        size: 24,
-        color: widget.feedType == FeedType.user
-            ? Provider.of<AmityUIConfiguration>(context)
-                .appColors
-                .userProfileTextColor
-            : Colors.grey,
-      ),
-      onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .baseBackground,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
+    return Semantics(
+      identifier: 'amityFeedMore',
+      child: IconButton(
+        icon: Icon(
+          Icons.more_horiz_rounded,
+          size: 24,
+          color: widget.feedType == FeedType.user
+              ? Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .userProfileTextColor
+              : Colors.grey,
+        ),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .baseBackground,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
                 ),
-              ),
-              padding: const EdgeInsets.only(
-                  top: 16, left: 16, right: 16, bottom: 32),
-              child: Wrap(
-                children: [
-                  if (isPostOwner)
-                    ...postOwnerMenu.map((option) => ListTile(
-                          title: Text(
-                            option,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            handleMenuOption(context, option, isFlaggedByMe);
-                          },
-                        )),
-                  if (!isPostOwner)
-                    ...otherPostMenu.map((option) => ListTile(
-                          title: Text(
-                            option,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            handleMenuOption(context, option, isFlaggedByMe);
-                          },
-                        )),
-                ],
-              ),
-            );
-          },
-        );
-      },
+                padding: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 32),
+                child: Wrap(
+                  children: [
+                    if (isPostOwner)
+                      ...postOwnerMenu.map((option) => ListTile(
+                            title: Text(
+                              option,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              handleMenuOption(context, option, isFlaggedByMe);
+                            },
+                          )),
+                    if (!isPostOwner)
+                      ...otherPostMenu.map((option) => ListTile(
+                            title: Text(
+                              option,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              handleMenuOption(context, option, isFlaggedByMe);
+                            },
+                          )),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

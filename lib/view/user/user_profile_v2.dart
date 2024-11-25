@@ -787,22 +787,25 @@ class AppScaffold extends StatelessWidget {
         floatingActionButton:
             amityUserId != AmityCoreClient.getCurrentUser().userId
                 ? null
-                : FloatingActionButton(
-                    shape: const CircleBorder(),
-                    onPressed: () async {
-                      await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => AmityCreatePostV2Screen(
-                          amityUser: amityUser,
-                        ),
-                      ));
-                      Provider.of<UserFeedVM>(context, listen: false)
-                          .initUserFeed(userId: amityUserId);
-                    },
-                    backgroundColor: AmityUIConfiguration().primaryColor,
-                    child: Provider.of<AmityUIConfiguration>(context)
-                        .iconConfig
-                        .postIcon(iconSize: 28, color: Colors.white),
-                  ),
+                : Semantics(
+              identifier: 'amityUserProfileCreatePost',
+                  child: FloatingActionButton(
+                      shape: const CircleBorder(),
+                      onPressed: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AmityCreatePostV2Screen(
+                            amityUser: amityUser,
+                          ),
+                        ));
+                        Provider.of<UserFeedVM>(context, listen: false)
+                            .initUserFeed(userId: amityUserId);
+                      },
+                      backgroundColor: AmityUIConfiguration().primaryColor,
+                      child: Provider.of<AmityUIConfiguration>(context)
+                          .iconConfig
+                          .postIcon(iconSize: 28, color: Colors.white),
+                    ),
+                ),
         appBar: AppBar(
           scrolledUnderElevation: 0,
           backgroundColor: isEnableAppbar

@@ -592,8 +592,7 @@ class _PostWidgetState
                                               .targetCommunity!
                                               .displayName ??
                                           "Community name",
-                                      style: widget.theme.textTheme.bodyLarge!
-                                          .copyWith(
+                                      style: TextStyle(
                                         color:
                                             Provider.of<AmityUIConfiguration>(
                                                     context)

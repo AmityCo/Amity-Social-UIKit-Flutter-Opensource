@@ -219,52 +219,67 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _iconButton(
-                        Icons.camera_alt_outlined,
-                        isEnable: vm
-                            .availableFileSelectionOptions()[MyFileType.image]!,
-                        label: "Photo",
-                        // debugingText:
-                        //     "${vm2.isNotSelectVideoYet()}&& ${vm2.isNotSelectedFileYet()}",
-                        onTap: () {
-                          _handleCameraTap(context);
-                        },
+                      Semantics(
+                        identifier: 'amityCameraPostButton',
+                        child: _iconButton(
+                          Icons.camera_alt_outlined,
+                          isEnable: vm
+                              .availableFileSelectionOptions()[MyFileType.image]!,
+                          label: "Photo",
+                          // debugingText:
+                          //     "${vm2.isNotSelectVideoYet()}&& ${vm2.isNotSelectedFileYet()}",
+                          onTap: () {
+                            _handleCameraTap(context);
+                          },
+                        ),
                       ),
-                      _iconButton(
-                        Icons.image_outlined,
-                        label: "Image",
-                        isEnable: vm
-                            .availableFileSelectionOptions()[MyFileType.image]!,
-                        onTap: () async {
-                          _handleImageTap(context);
-                        },
+                      Semantics(
+                        identifier: 'amityImagePostButton',
+                        child: _iconButton(
+                          Icons.image_outlined,
+                          label: "Image",
+                          isEnable: vm
+                              .availableFileSelectionOptions()[MyFileType.image]!,
+                          onTap: () async {
+                            _handleImageTap(context);
+                          },
+                        ),
                       ),
-                      _iconButton(
-                        Icons.play_circle_outline,
-                        label: "Video",
-                        isEnable: vm
-                            .availableFileSelectionOptions()[MyFileType.video]!,
-                        onTap: () async {
-                          _handleVideoTap(context);
-                        },
+                      Semantics(
+                        identifier: 'amityVideoPostButton',
+                        child: _iconButton(
+                          Icons.play_circle_outline,
+                          label: "Video",
+                          isEnable: vm
+                              .availableFileSelectionOptions()[MyFileType.video]!,
+                          onTap: () async {
+                            _handleVideoTap(context);
+                          },
+                        ),
                       ),
-                      _iconButton(
-                        Icons.attach_file_outlined,
-                        label: "File",
-                        isEnable: vm
-                            .availableFileSelectionOptions()[MyFileType.file]!,
-                        onTap: () async {
-                          _handleFileTap(context);
-                        },
+                      Semantics(
+                        identifier: 'amityFilePostButton',
+                        child: _iconButton(
+                          Icons.attach_file_outlined,
+                          label: "File",
+                          isEnable: vm
+                              .availableFileSelectionOptions()[MyFileType.file]!,
+                          onTap: () async {
+                            _handleFileTap(context);
+                          },
+                        ),
                       ),
-                      _iconButton(
-                        Icons.more_horiz,
-                        isEnable: true,
-                        label: "More",
-                        onTap: () {
-                          // TODO: Implement more options logic
-                          _showMoreOptions(context);
-                        },
+                      Semantics(
+                        identifier: 'amityMorePostButton',
+                        child: _iconButton(
+                          Icons.more_horiz,
+                          isEnable: true,
+                          label: "More",
+                          onTap: () {
+                            // TODO: Implement more options logic
+                            _showMoreOptions(context);
+                          },
+                        ),
                       ),
                     ],
                   ),

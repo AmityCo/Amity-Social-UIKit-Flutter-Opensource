@@ -102,17 +102,52 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                         title: Row(
                           children: [
                             GestureDetector(
-                              child: getAvatarImage(vm
-                                          .getFollowingList[index]
-                                          .targetUser!
-                                          .metadata?['profilePublicImageUrl'] ==
-                                      null
-                                  ? vm.getFollowingList[index].targetUser
-                                      ?.avatarUrl
-                                  : vm.getFollowingList[index].targetUser
-                                              ?.metadata?[
-                                          'profilePublicImageUrl'] ??
-                                      ''),
+                              child: FutureBuilder<bool>(
+                                future:
+                                AmityUIConfiguration.isFollowing(
+                                    vm.getFollowingList[index]
+                                        .targetUser!.userId ??
+                                        ''),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<bool> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return getAvatarImage(
+                                        ''); // You can display a loading placeholder or empty avatarUrl
+                                  } else if (vm.getFollowingList[index]
+                                      .targetUser!.userId ==
+                                      AmityCoreClient
+                                          .getCurrentUser()
+                                          .userId &&
+                                      vm.getFollowingList[index]
+                                          .targetUser?.metadata?[
+                                      'profilePublicImageUrl'] ==
+                                          null) {
+                                    return getAvatarImage(vm
+                                        .getFollowingList[index]
+                                        .targetUser
+                                        ?.avatarUrl);
+                                  } else if (snapshot.hasError) {
+                                    return getAvatarImage(
+                                        ''); // Handle error case, possibly by showing a default avatar
+                                  } else {
+                                    final isFollowing =
+                                        snapshot.data ?? false;
+                                    final avatarUrl = isFollowing
+                                        ? vm.getFollowingList[index]
+                                        .targetUser?.avatarUrl
+                                        : vm
+                                        .getFollowingList[
+                                    index]
+                                        .targetUser
+                                        ?.metadata?[
+                                    'profilePublicImageUrl'] ??
+                                        '';
+
+                                    return getAvatarImage(avatarUrl);
+                                  }
+                                },
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),

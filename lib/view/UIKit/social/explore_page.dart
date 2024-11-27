@@ -186,27 +186,30 @@ class CommunityPageState extends State<CommunityPage>
           children: [
             Scaffold(
               floatingActionButton: widget.showPostToButton
-                  ? FloatingActionButton(
-                      shape: const CircleBorder(),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const ThemeConfig(
-                              child: Scaffold(
-                                body: PostToPage(),
+                  ? Semantics(
+                identifier: 'amityPostButton',
+                    child: FloatingActionButton(
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ThemeConfig(
+                                child: Scaffold(
+                                  body: PostToPage(),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      backgroundColor:
-                          Provider.of<AmityUIConfiguration>(context)
-                              .appColors
-                              .primary,
-                      child: Provider.of<AmityUIConfiguration>(context)
-                          .iconConfig
-                          .postIcon(iconSize: 28, color: Colors.white),
-                    )
+                          );
+                        },
+                        backgroundColor:
+                            Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .primary,
+                        child: Provider.of<AmityUIConfiguration>(context)
+                            .iconConfig
+                            .postIcon(iconSize: 28, color: Colors.white),
+                      ),
+                  )
                   : null,
               body: GlobalFeedScreen(
                 isShowMyCommunity: widget.isShowMyCommunity,

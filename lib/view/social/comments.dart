@@ -930,14 +930,14 @@ class _CommentComponentState extends State<CommentComponent> {
                                         ),
                                         child: Text(
                                           commentData.text!,
-                                          style: widget
-                                              .theme.textTheme.bodyMedium!
-                                              .copyWith(
-                                                  color: Provider.of<
-                                                              AmityUIConfiguration>(
-                                                          context)
-                                                      .appColors
-                                                      .base),
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                context)
+                                                .appColors
+                                                .base,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(

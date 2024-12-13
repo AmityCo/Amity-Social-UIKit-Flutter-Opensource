@@ -148,7 +148,8 @@ class CommunityPageState extends State<CommunityPage>
                 Row(
                   children: [
                     TabBar(
-                      controller: _tabController, // Attach the TabController
+                      controller: _tabController,
+                      // Attach the TabController
                       isScrollable: true,
                       dividerColor: Provider.of<AmityUIConfiguration>(context)
                           .appColors
@@ -187,8 +188,10 @@ class CommunityPageState extends State<CommunityPage>
             Scaffold(
               floatingActionButton: widget.showPostToButton
                   ? Semantics(
-                identifier: 'amityPostButton',
-                    child: FloatingActionButton(
+                      identifier: 'amityPostButton',
+                      label: 'amityPostButton',
+                      child: FloatingActionButton(
+                        key: Key('amityPostButton'),
                         shape: const CircleBorder(),
                         onPressed: () {
                           Navigator.of(context).push(
@@ -209,7 +212,7 @@ class CommunityPageState extends State<CommunityPage>
                             .iconConfig
                             .postIcon(iconSize: 28, color: Colors.white),
                       ),
-                  )
+                    )
                   : null,
               body: GlobalFeedScreen(
                 isShowMyCommunity: widget.isShowMyCommunity,
@@ -465,7 +468,8 @@ class TrendingSection extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: vm.trendingCommunities.length,
-                itemExtent: 60.0, // <-- Set this to your desired height
+                itemExtent: 60.0,
+                // <-- Set this to your desired height
                 itemBuilder: (context, index) {
                   final community = vm.trendingCommunities[index];
                   return ListTile(
@@ -625,8 +629,8 @@ class CategorySection extends StatelessWidget {
                 ),
                 itemCount: vm.amityCategories.length > 8
                     ? 8
-                    : vm.amityCategories
-                        .length, // Limit to maximum 8 items (2x4 grid)
+                    : vm.amityCategories.length,
+                // Limit to maximum 8 items (2x4 grid)
                 itemBuilder: (context, index) {
                   final category = vm.amityCategories[index];
                   return GestureDetector(

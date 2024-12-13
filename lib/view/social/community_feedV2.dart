@@ -986,37 +986,42 @@ class AppScaffold extends StatelessWidget {
                   amityCommunity.isJoined! &&
                   (amityCommunity.onlyAdminCanPost == false ||
                       isCommunityModerator))
-              ? FloatingActionButton(
-                  shape: const CircleBorder(),
-                  onPressed: () async {
-                    await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context2) => AmityCreatePostV2Screen(
-                              community: amityCommunity,
-                              feedType: FeedType.community,
-                            )));
-                    Provider.of<CommuFeedVM>(context, listen: false)
-                        .getPostCount(amityCommunity);
-                    Provider.of<CommuFeedVM>(context, listen: false)
-                        .getReviewingPostCount(amityCommunity);
-                    Provider.of<CommuFeedVM>(context, listen: false)
-                        .initAmityCommunityFeed(amityCommunity.communityId!);
-                    Provider.of<CommuFeedVM>(context, listen: false)
-                        .initAmityCommunityImageFeed(
-                            amityCommunity.communityId!);
-                    Provider.of<CommuFeedVM>(context, listen: false)
-                        .initAmityCommunityVideoFeed(
-                            amityCommunity.communityId!);
-                    Provider.of<CommuFeedVM>(context, listen: false)
-                        .initAmityPendingCommunityFeed(
-                            amityCommunity.communityId!,
-                            AmityFeedType.REVIEWING);
-                  },
-                  backgroundColor:
-                      Provider.of<AmityUIConfiguration>(context).primaryColor,
-                  child: Provider.of<AmityUIConfiguration>(context)
-                      .iconConfig
-                      .postIcon(iconSize: 28, color: Colors.white),
-                )
+              ? Semantics(
+            identifier: 'amityCommunityPostButton',
+            label: 'amityCommunityPostButton',
+            child: FloatingActionButton(
+              key: Key('amityCommunityPostButton'),
+                    shape: const CircleBorder(),
+                    onPressed: () async {
+                      await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context2) => AmityCreatePostV2Screen(
+                                community: amityCommunity,
+                                feedType: FeedType.community,
+                              )));
+                      Provider.of<CommuFeedVM>(context, listen: false)
+                          .getPostCount(amityCommunity);
+                      Provider.of<CommuFeedVM>(context, listen: false)
+                          .getReviewingPostCount(amityCommunity);
+                      Provider.of<CommuFeedVM>(context, listen: false)
+                          .initAmityCommunityFeed(amityCommunity.communityId!);
+                      Provider.of<CommuFeedVM>(context, listen: false)
+                          .initAmityCommunityImageFeed(
+                              amityCommunity.communityId!);
+                      Provider.of<CommuFeedVM>(context, listen: false)
+                          .initAmityCommunityVideoFeed(
+                              amityCommunity.communityId!);
+                      Provider.of<CommuFeedVM>(context, listen: false)
+                          .initAmityPendingCommunityFeed(
+                              amityCommunity.communityId!,
+                              AmityFeedType.REVIEWING);
+                    },
+                    backgroundColor:
+                        Provider.of<AmityUIConfiguration>(context).primaryColor,
+                    child: Provider.of<AmityUIConfiguration>(context)
+                        .iconConfig
+                        .postIcon(iconSize: 28, color: Colors.white),
+                  ),
+              )
               : null,
           // appBar: AppBar(
           //   backgroundColor: Provider.of<AmityUIConfiguration>(context)

@@ -297,10 +297,9 @@ class MemberList extends StatelessWidget {
                   } else {
                     final isFollowing = snapshot.data ?? false;
                     final avatarUrl = isFollowing
-                        ? viewModel.userList[index].user?.avatarUrl
-                        : viewModel.userList[index].user
-                                ?.metadata?['profilePublicImageUrl'] ??
-                            '';
+                        ? (viewModel.userList[index].user?.avatarUrl ??
+                        (viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] ?? ''))
+                        : (viewModel.userList[index].user?.metadata?['profilePublicImageUrl'] ?? '');
 
                     return CircleAvatar(
                       backgroundColor:
@@ -444,10 +443,10 @@ class ModeratorList extends StatelessWidget {
                   } else {
                     final isFollowing = snapshot.data ?? false;
                     final avatarUrl = isFollowing
-                        ? viewModel.moderatorList[index].user?.avatarUrl
-                        : viewModel.moderatorList[index].user
-                                ?.metadata?['profilePublicImageUrl'] ??
-                            '';
+                        ? (viewModel.moderatorList[index].user?.avatarUrl ??
+                        (viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] ?? ''))
+                        : (viewModel.moderatorList[index].user?.metadata?['profilePublicImageUrl'] ?? '');
+
 
                     return CircleAvatar(
                       backgroundColor:

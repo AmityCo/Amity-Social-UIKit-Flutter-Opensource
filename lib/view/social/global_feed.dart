@@ -1196,13 +1196,11 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                             user: comments.user!,
                                           ); // Handle error case, possibly by showing a default avatar
                                         } else {
-                                          final isFollowing =
-                                              snapshot.data ?? false;
+                                          final isFollowing = snapshot.data ?? false;
                                           final avatarUrl = isFollowing
-                                              ? comments.user?.avatarUrl
-                                              : comments.user?.metadata?[
-                                                      'profilePublicImageUrl'] ??
-                                                  '';
+                                              ? (comments.user?.avatarUrl ??
+                                              (comments.user?.metadata?['profilePublicImageUrl'] ?? ''))
+                                              : (comments.user?.metadata?['profilePublicImageUrl'] ?? '');
 
                                           return CustomListTile(
                                             avatarUrl: avatarUrl,

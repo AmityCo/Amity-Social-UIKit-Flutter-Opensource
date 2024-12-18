@@ -130,20 +130,13 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                                   } else if (snapshot.hasError) {
                                     return getAvatarImage(
                                         ''); // Handle error case, possibly by showing a default avatar
-                                  } else {
-                                    final isFollowing =
-                                        snapshot.data ?? false;
+                                  }
+                                  else {
+                                    final isFollowing = snapshot.data ?? false;
                                     final avatarUrl = isFollowing
-                                        ? vm.getFollowingList[index]
-                                        .targetUser?.avatarUrl
-                                        : vm
-                                        .getFollowingList[
-                                    index]
-                                        .targetUser
-                                        ?.metadata?[
-                                    'profilePublicImageUrl'] ??
-                                        '';
-
+                                        ? (vm.getFollowingList[index].targetUser?.avatarUrl ??
+                                        (vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] ?? ''))
+                                        : (vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] ?? '');
                                     return getAvatarImage(avatarUrl);
                                   }
                                 },
@@ -252,12 +245,9 @@ class _AmityFollowingScreenScreenState extends State<AmityFollowingScreen> {
                                   } else {
                                     final isFollowing = snapshot.data ?? false;
                                     final avatarUrl = isFollowing
-                                        ? vm.getFollowingList[index].targetUser
-                                            ?.avatarUrl
-                                        : vm.getFollowingList[index].targetUser
-                                                    ?.metadata?[
-                                                'profilePublicImageUrl'] ??
-                                            '';
+                                        ? (vm.getFollowingList[index].targetUser?.avatarUrl ??
+                                        (vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] ?? ''))
+                                        : (vm.getFollowingList[index].targetUser?.metadata?['profilePublicImageUrl'] ?? '');
 
                                     return getAvatarImage(avatarUrl);
                                   }

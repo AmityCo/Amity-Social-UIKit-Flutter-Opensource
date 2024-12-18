@@ -887,13 +887,12 @@ class _CommentComponentState extends State<CommentComponent> {
                                                   user: comments.user!,
                                                 ); // Handle error case, possibly by showing a default avatar
                                               } else {
-                                                final isFollowing =
-                                                    snapshot.data ?? false;
+                                                final isFollowing = snapshot.data ?? false;
                                                 final avatarUrl = isFollowing
-                                                    ? comments.user?.avatarUrl
-                                                    : comments.user?.metadata?[
-                                                            'profilePublicImageUrl'] ??
-                                                        '';
+                                                    ? (comments.user?.avatarUrl ??
+                                                    (comments.user?.metadata?['profilePublicImageUrl'] ?? ''))
+                                                    : (comments.user?.metadata?['profilePublicImageUrl'] ?? '');
+
 
                                                 return CustomListTile(
                                                   avatarUrl: avatarUrl,
@@ -1545,10 +1544,10 @@ class ReplyCommentComponent extends StatelessWidget {
                             } else {
                               final isFollowing = snapshot.data ?? false;
                               final avatarUrl = isFollowing
-                                  ? comments.user?.avatarUrl
-                                  : comments.user?.metadata?[
-                                          'profilePublicImageUrl'] ??
-                                      '';
+                                  ? (comments.user?.avatarUrl ??
+                                  (comments.user?.metadata?['profilePublicImageUrl'] ?? ''))
+                                  : (comments.user?.metadata?['profilePublicImageUrl'] ?? '');
+
 
                               return CustomListTile(
                                 avatarUrl: avatarUrl,

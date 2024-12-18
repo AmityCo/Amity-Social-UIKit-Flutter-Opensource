@@ -152,15 +152,10 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                                               final isFollowing =
                                                   snapshot.data ?? false;
                                               final avatarUrl = isFollowing
-                                                  ? vm.getFollowerList[index]
-                                                      .sourceUser?.avatarUrl
-                                                  : vm
-                                                              .getFollowerList[
-                                                                  index]
-                                                              .sourceUser
-                                                              ?.metadata?[
-                                                          'profilePublicImageUrl'] ??
-                                                      '';
+                                                  ? (vm.getFollowerList[index].sourceUser?.avatarUrl ??
+                                                  (vm.getFollowerList[index].sourceUser?.metadata?['profilePublicImageUrl'] ?? ''))
+                                                  : (vm.getFollowerList[index].sourceUser?.metadata?['profilePublicImageUrl'] ?? '');
+
 
                                               return getAvatarImage(avatarUrl);
                                             }

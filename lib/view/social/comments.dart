@@ -462,10 +462,9 @@ class CommentTextField extends StatelessWidget {
                     ),
                     keyboardType: TextInputType.multiline,
                     maxLines: null, // Allows for any number of lines
-
-                    style: TextStyle(
-                      height:
-                          Provider.of<AmityUIConfiguration>(context).textheight,
+                    cursorHeight: 19,
+                    style: const TextStyle(
+                      height: 1.1,
                     ),
                   ),
                 ),

@@ -113,7 +113,6 @@ class AmityUIKit {
             httpEndpoint: amityEndpoint!,
             mqttEndpoint: amityMqttEndpoint!,
             socketEndpoint: amitySocketEndpoint!),
-            
         sycInitialization: true);
     stopwatch.stop();
     log('setupAmityClient execution time: ${stopwatch.elapsedMilliseconds} ms');
@@ -220,11 +219,13 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<GlobalFeedBloc>(create: (context) => GlobalFeedBloc()),
         BlocProvider<AmityToastBloc>(create: (context) => AmityToastBloc()),
         BlocProvider<SocialHomeBloc>(create: (context) => SocialHomeBloc()),
-        BlocProvider<CreateStoryPageBloc>(create: (context) => CreateStoryPageBloc()),
+        BlocProvider<CreateStoryPageBloc>(
+            create: (context) => CreateStoryPageBloc()),
         BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
         BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
-        BlocProvider<StoryVideoPlayerBloc>(create: (context) => StoryVideoPlayerBloc()),
+        BlocProvider<StoryVideoPlayerBloc>(
+            create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [
             ChangeNotifierProvider<ReplyVM>(create: ((context) => ReplyVM())),
@@ -274,14 +275,19 @@ class AmityUIKitProvider extends StatelessWidget {
           ],
         ),
       ],
-      child: Builder(
-        builder: (context) => MaterialApp(
-          theme: ThemeData(),
-          debugShowCheckedModeBanner: false,
-          navigatorKey: NavigationService.navigatorKey,
-          home: child,
-        ),
-      ),
+      child: Builder(builder: (context) {
+        return Consumer<ConfigProvider>(builder: (context, configProvider, _) {
+          configProvider.loadConfig();
+          return MaterialApp(
+            theme: ThemeData(),
+            debugShowCheckedModeBanner: false,
+            navigatorKey: NavigationService.navigatorKey,
+            home: Builder(builder: (context2) {
+              return child;
+            }),
+          );
+        });
+      }),
     );
   }
 }

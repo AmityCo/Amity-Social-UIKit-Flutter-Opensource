@@ -5,7 +5,7 @@ import 'package:amity_uikit_beta_service/v4/social/community/community_feed/bloc
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/amity_global_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
-import 'package:amity_uikit_beta_service/v4/utils/Shimmer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

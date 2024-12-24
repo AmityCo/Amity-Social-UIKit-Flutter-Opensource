@@ -6,7 +6,7 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/comment_
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/comment_item.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/bloc/comment_list_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/comment_skeleton.dart';
-import 'package:amity_uikit_beta_service/v4/utils/shimmer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

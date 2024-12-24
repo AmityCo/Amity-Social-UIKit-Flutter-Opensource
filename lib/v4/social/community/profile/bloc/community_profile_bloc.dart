@@ -14,7 +14,7 @@ class CommunityProfileBloc extends Bloc<CommunityProfileEvent, CommunityProfileS
     ScrollController scrollController,
   ) : super(CommunityProfileState(
     communityId: communityId,
-    scrollController: scrollController, 
+    scrollController: scrollController,
   )) {
         on<CommunityProfileEventUpdated>((event, emit) async {
           if (event.community != null) {
@@ -50,7 +50,7 @@ class CommunityProfileBloc extends Bloc<CommunityProfileEvent, CommunityProfileS
           try {
             emit(state.copyWith(isJoined: true));
             await AmitySocialClient.newCommunityRepository().joinCommunity(event.communityId);
-          } catch (e) { 
+          } catch (e) {
             emit(state.copyWith(isJoined: false));
           }
         });
@@ -64,7 +64,7 @@ class CommunityProfileBloc extends Bloc<CommunityProfileEvent, CommunityProfileS
         on<CommunityProfileEventExpandDetail>((event, emit) async {
           emit(state.copyWith(isDetailExpanded: true));
         });
-    
+
     try {
         final communityStream = AmitySocialClient.newCommunityRepository().live.getCommunity(communityId);
         communityStream.listen((community) {
@@ -82,7 +82,7 @@ class CommunityProfileBloc extends Bloc<CommunityProfileEvent, CommunityProfileS
         });
 
       } catch (e) {
-        
+
       }
   }
 }

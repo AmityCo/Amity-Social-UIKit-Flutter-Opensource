@@ -1,7 +1,5 @@
-import 'package:amity_uikit_beta_service/v4/social/social_home_page/social_home_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SampleV4 extends StatelessWidget {
   const SampleV4({super.key});

@@ -7,7 +7,7 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/comment_
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/bloc/post_detail_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/utils/Shimmer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +49,7 @@ class AmityPostDetailPage extends NewBasePage {
       return Container(
           padding: const EdgeInsets.only(top: 74),
           decoration: BoxDecoration(color: theme.backgroundColor),
-          child: showShimmerContent());
+          child: showShimmerContent(context));
     } else if (state is PostDetailStateError) {
       return Text(state.message);
     } else if (state is PostDetailStateLoaded) {
@@ -172,7 +172,7 @@ class AmityPostDetailPage extends NewBasePage {
     );
   }
 
-  Widget showShimmerContent() {
+  Widget showShimmerContent(BuildContext context) {
     return Shimmer(
       linearGradient: configProvider.getShimmerGradient(),
       child: ShimmerLoading(

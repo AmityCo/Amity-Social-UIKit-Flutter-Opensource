@@ -7,7 +7,7 @@ import 'package:amity_uikit_beta_service/v4/social/post/common/post_display_name
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
-import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
+import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,8 @@ class AmityPostHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (category == AmityPostCategory.announcement || category == AmityPostCategory.announcementAndPin)
+        if (category == AmityPostCategory.announcement ||
+            category == AmityPostCategory.announcementAndPin)
           Container(
             width: double.infinity,
             height: 42,
@@ -95,18 +96,20 @@ class AmityPostHeader extends StatelessWidget {
                   width: 32,
                   height: 32,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(32),
-                    child: AmityNetworkImage(
-                        imageUrl: post.postedUser?.avatarUrl,
-                        placeHolderPath:
-                            "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
+                      borderRadius: BorderRadius.circular(32),
+                      child: AmityUserImage(
+                        user: post.postedUser,
+                        theme: theme,
+                        size: 32,
+                      )
                   ),
                 ),
               ),
               Expanded(
                   child: PostDisplayName(
                       post: post, theme: theme, hideTarget: hideTarget)),
-              if (category == AmityPostCategory.pin || category == AmityPostCategory.announcementAndPin)
+              if (category == AmityPostCategory.pin ||
+                  category == AmityPostCategory.announcementAndPin)
                 Container(
                   width: 33,
                   height: double.infinity,
@@ -320,7 +323,7 @@ class AmityPostHeader extends StatelessWidget {
 
   void showPostOwnerAction(BuildContext context, AmityPost post,
       AmityThemeColor theme, bool isModerator) {
-  final editOption = AmityPostComposerOptions.editOptions(post: post);
+    final editOption = AmityPostComposerOptions.editOptions(post: post);
 
     onEdit() => {
           Navigator.of(context).push(MaterialPageRoute(

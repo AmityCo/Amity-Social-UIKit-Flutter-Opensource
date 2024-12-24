@@ -3,11 +3,11 @@ import 'dart:developer';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/v4/chat/home/chat_home_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
-import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -228,9 +228,12 @@ class _UserListPageState extends State<UserListPage> {
   _checkSession() async {
     AmityUIKit().observeSessionState().listen((event) {
       if (event == SessionState.Established) {
-        final username = AmityUIKit().getCurrentUser().displayName ?? AmityUIKit().getCurrentUser().userId ?? "";
-         NavigationService.navigatorKey.currentState!.pushReplacement(
-          MaterialPageRoute(builder: (context) => SecondPage(username: username) ),
+        final username = AmityUIKit().getCurrentUser().displayName ??
+            AmityUIKit().getCurrentUser().userId ??
+            "";
+        NavigationService.navigatorKey.currentState!.pushReplacement(
+          MaterialPageRoute(
+              builder: (context) => SecondPage(username: username)),
         );
       }
     });
@@ -660,14 +663,12 @@ class ChatPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ListTile(
-              title: const Text('Single Chat Room'),
+              title: const Text('Chat V4'),
               onTap: () async {
-                // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(
-                      body: ChatRoomPage(
-                    channelId: "65e6d0765b88b140f2e505ae",
-                  )),
+                  builder: (context) => Scaffold(
+                    body: AmityChatHomePage(),
+                  ),
                 ));
               },
             ),

@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityCreatePostMenuComponent extends NewBaseComponent {
-
-  AmityCreatePostMenuComponent({Key? key, String? pageId}) : super(key: key, pageId: pageId, componentId: 'componentId');
+  AmityCreatePostMenuComponent({Key? key, String? pageId})
+      : super(key: key, pageId: pageId, componentId: 'componentId');
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -40,29 +40,26 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
             padding: const EdgeInsets.all(5),
             onSelected: (int result) {
               if (result == 1) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  fullscreenDialog: true,
-                  builder: (context) => PopScope(
-                    canPop: true,
-                    child: PostTargetSelectionPage(
-                      pageId: '',
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) => PopScope(
+                      canPop: true,
+                      child: AmityPostTargetSelectionPage(),
                     ),
                   ),
-                ),
-              );
+                );
               }
 
-
               if (result == 2) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const Scaffold(
-                body: AmityStoryTargetSelectionPage(),
-              ),
-            ),
-          );
-        }
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Scaffold(
+                      body: AmityStoryTargetSelectionPage(),
+                    ),
+                  ),
+                );
+              }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
               PopupMenuItem<int>(
@@ -70,10 +67,10 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
                 child: getMenu(
                     text: "Post", iconPath: "amity_ic_create_post_button.svg"),
               ),
-
               PopupMenuItem<int>(
                 value: 2,
-                child: getMenu(text: "Story", iconPath: "ic_create_stroy_black.svg"),
+                child: getMenu(
+                    text: "Story", iconPath: "ic_create_stroy_black.svg"),
               ),
             ],
           ),
@@ -84,7 +81,6 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
       ],
     );
   }
-
 
   Widget getMenu({required String text, required String iconPath}) {
     return SizedBox(

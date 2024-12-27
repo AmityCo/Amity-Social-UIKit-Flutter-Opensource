@@ -334,15 +334,9 @@ class _EditProfileButtonState extends State<EditProfileButton> {
                           var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
                           explorePageVM.getRecommendedCommunities();
                           explorePageVM.getTrendingCommunities();
-                          print(">>>>>>>>>>>>>>>callback");
 
                           var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
                           myCommunityList.initMyCommunity();
-
-                          for (var i in myCommunityList.amityCommunities) {
-                            print(">>>>>>>>>>>>>>>${i.displayName}");
-                          }
-                          print(myCommunityList.amityCommunities);
                         });
                       }).onError((error, stackTrace) {
                         log(error.toString());

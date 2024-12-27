@@ -50,7 +50,7 @@ class PostDetailInfo extends NewBaseComponent {
                     topRight: Radius.circular(25),
                   ),
                 ),
-                child: AmityReactionListComponent(
+                child: AmityReactionList(
                   pageId: 'post_detail_page',
                   referenceId: post.postId ?? "",
                   referenceType: AmityReactionReferenceType.POST,

@@ -11,7 +11,8 @@
             "base_shade4_color": "#EBECEF",
             "alert_color": "#FA4D30",
             "background_color": "#FFFFFF",
-            "base_inverse_color": "#000000"
+            "base_inverse_color": "#000000",
+            "highlight_color": "#1054DE"
         },
         "dark": {
             "primary_color": "#1054DE",
@@ -23,7 +24,8 @@
             "base_shade4_color": "#292B32",
             "alert_color": "#FA4D30",
             "background_color": "#191919",
-            "base_inverse_color": "#FFFFFF"
+            "base_inverse_color": "#FFFFFF",
+            "highlight_color": "#1054DE"
         }
     },
     "excludes": [],
@@ -301,6 +303,76 @@
             "icon": "officalBadgeIcon"
         },
         "social_global_search_page/community_search_result/community_category_name": {},
-        "social_global_search_page/community_search_result/community_members_count": {}
+        "social_global_search_page/community_search_result/community_members_count": {},
+        "chat_page/*/*": {
+            "theme": {
+                "light": {
+                    "primary_color": "#1054DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "background_shade_color": "#FFFFFF",
+                    "highlight_color": "#1054DE"
+                },
+                "dark": {
+                    "primary_color": "#FF7500",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "highlight_color": "#FF7500"
+                }
+            }
+        },
+        "chat_page/message_bubble/*": {
+            "theme": {
+                "light": {
+                    "primary_color": "#1054DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "highlight_color": "#1054DE"
+                },
+                "dark": {
+                    "primary_color": "#10F4DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "highlight_color": "#10F4DE"
+                }
+            },
+            "left_bubble_color": "#EBECEF",
+            "left_bubble_pressed_color": "#A5A9b5",
+            "left_bubble_text_color": "#292B32",
+            "left_bubble_subtle_text_color": "#636878",
+            "right_bubble_color": "#1054DE",
+            "right_bubble_pressed_color": "#1A4499",
+            "right_bubble_text_color": "#FFFFFF",
+            "right_bubble_subtle_text_color": "#A9C4F9",
+            "bubble_divider_color": "#C1C1C1"
+        }
     }
 }

@@ -25,8 +25,8 @@ import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +40,8 @@ import 'viewmodel/feed_viewmodel.dart';
 import 'viewmodel/post_viewmodel.dart';
 import 'viewmodel/user_feed_viewmodel.dart';
 import 'viewmodel/user_viewmodel.dart';
+
+export 'package:amity_sdk/src/domain/model/session/session_state.dart';
 
 enum AmityEndpointRegion {
   sg,
@@ -111,7 +113,6 @@ class AmityUIKit {
             httpEndpoint: amityEndpoint!,
             mqttEndpoint: amityMqttEndpoint!,
             socketEndpoint: amitySocketEndpoint!),
-            
         sycInitialization: true);
     stopwatch.stop();
     log('setupAmityClient execution time: ${stopwatch.elapsedMilliseconds} ms');
@@ -181,6 +182,10 @@ class AmityUIKit {
     config(provider);
   }
 
+  Stream<SessionState> observeSessionState() {
+    return AmityCoreClient.observeSessionState();
+  }
+
   AmityUser getCurrentUser() {
     return AmityCoreClient.getCurrentUser();
   }
@@ -214,11 +219,13 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<GlobalFeedBloc>(create: (context) => GlobalFeedBloc()),
         BlocProvider<AmityToastBloc>(create: (context) => AmityToastBloc()),
         BlocProvider<SocialHomeBloc>(create: (context) => SocialHomeBloc()),
-        BlocProvider<CreateStoryPageBloc>(create: (context) => CreateStoryPageBloc()),
+        BlocProvider<CreateStoryPageBloc>(
+            create: (context) => CreateStoryPageBloc()),
         BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
         BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
-        BlocProvider<StoryVideoPlayerBloc>(create: (context) => StoryVideoPlayerBloc()),
+        BlocProvider<StoryVideoPlayerBloc>(
+            create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [
             ChangeNotifierProvider<ReplyVM>(create: ((context) => ReplyVM())),
@@ -268,14 +275,19 @@ class AmityUIKitProvider extends StatelessWidget {
           ],
         ),
       ],
-      child: Builder(
-        builder: (context) => MaterialApp(
-          theme: ThemeData(),
-          debugShowCheckedModeBanner: false,
-          navigatorKey: NavigationService.navigatorKey,
-          home: child,
-        ),
-      ),
+      child: Builder(builder: (context) {
+        return Consumer<ConfigProvider>(builder: (context, configProvider, _) {
+          configProvider.loadConfig();
+          return MaterialApp(
+            theme: ThemeData(),
+            debugShowCheckedModeBanner: false,
+            navigatorKey: NavigationService.navigatorKey,
+            home: Builder(builder: (context2) {
+              return child;
+            }),
+          );
+        });
+      }),
     );
   }
 }

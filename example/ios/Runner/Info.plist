@@ -65,5 +65,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need to save images to your photo library.</string>
+
 </dict>
 </plist>

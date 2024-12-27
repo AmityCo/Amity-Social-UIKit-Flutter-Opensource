@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AmityCommentListComponent extends NewBaseComponent {
   final String referenceId;
   final AmityCommentReferenceType referenceType;
+  final bool shouldAllowInteraction;
   final ScrollController parentScrollController;
   final CommentAction commentAction;
 
@@ -18,6 +19,7 @@ class AmityCommentListComponent extends NewBaseComponent {
     String? pageId,
     required this.referenceId,
     required this.referenceType,
+    required this.shouldAllowInteraction,
     required this.parentScrollController,
     required this.commentAction,
   }) : super(key: key, pageId: pageId, componentId: "comment_tray_component");
@@ -28,6 +30,7 @@ class AmityCommentListComponent extends NewBaseComponent {
       create: (context) => CommentListBloc(referenceId, referenceType, null),
       child: CommentList(
         scrollController: parentScrollController,
+        shouldAllowInteraction: shouldAllowInteraction,
         commentAction: commentAction,
       ),
     );

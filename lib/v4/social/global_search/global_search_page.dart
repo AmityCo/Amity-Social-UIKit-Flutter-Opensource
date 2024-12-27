@@ -67,6 +67,7 @@ class AmitySocialGlobalSearchPage extends NewBasePage {
                     Column(
                       children: [
                         AmityTopSearchBarComponent(
+                          pageId: pageId,
                           textcontroller: textcontroller,
                           hintText: 'Search community and user',
                           onTextChanged: (value) {
@@ -122,8 +123,10 @@ class AmitySocialGlobalSearchPage extends NewBasePage {
                             child: TabBarView(
                               children: [
                                 AmityCommunitySearchResultComponent(
+                                    pageId: pageId,
                                     viewModel: communitySearchViewModel),
                                 AmityUserSearchResultComponent(
+                                    pageId: pageId,
                                     viewModel: userSearchViewModel)
                               ],
                             ),

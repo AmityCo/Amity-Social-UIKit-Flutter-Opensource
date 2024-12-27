@@ -2,17 +2,19 @@ import 'dart:developer';
 
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/v4/chat/home/chat_home_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
-import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
-import 'package:camera/camera.dart';
 import 'package:amity_uikit_beta_service_example/sample_v4.dart';
 import 'package:amity_uikit_beta_service_example/social_v4_compatible.dart';
+import 'package:amity_uikit_beta_service_example/splash_screen.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +29,8 @@ void main() async {
   runApp(const MyApp());
 }
 
+final GlobalKey<NavigatorState> MyAppNavigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -37,7 +41,8 @@ class MyApp extends StatelessWidget {
           // textTheme: GoogleFonts.almendraDisplayTextTheme(),
           ),
       title: 'Flutter Demo',
-      home: const MyHomePage(),
+      navigatorKey: MyAppNavigatorKey,
+      home: SplashScreen(),
     );
   }
 }
@@ -216,7 +221,22 @@ class _UserListPageState extends State<UserListPage> {
   @override
   void initState() {
     super.initState();
+    _checkSession();
     _loadUsernames();
+  }
+
+  _checkSession() async {
+    AmityUIKit().observeSessionState().listen((event) {
+      if (event == SessionState.Established) {
+        final username = AmityUIKit().getCurrentUser().displayName ??
+            AmityUIKit().getCurrentUser().userId ??
+            "";
+        NavigationService.navigatorKey.currentState!.pushReplacement(
+          MaterialPageRoute(
+              builder: (context) => SecondPage(username: username)),
+        );
+      }
+    });
   }
 
   _loadUsernames() async {
@@ -241,6 +261,16 @@ class _UserListPageState extends State<UserListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User List'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              MyAppNavigatorKey.currentState!.pushReplacement(
+                MaterialPageRoute(builder: (context) => const MyHomePage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -336,7 +366,9 @@ class SecondPage extends StatelessWidget {
           color: Colors.black,
           onPressed: () {
             AmityUIKit().unRegisterDevice();
-            Navigator.of(context).pop();
+            MyAppNavigatorKey.currentState!.pushReplacement(
+              MaterialPageRoute(builder: (context) => const MyHomePage()),
+            );
           },
         ),
         title: Text('Welcome, $username'),
@@ -631,14 +663,12 @@ class ChatPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ListTile(
-              title: const Text('Single Chat Room'),
+              title: const Text('Chat V4'),
               onTap: () async {
-                // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(
-                      body: ChatRoomPage(
-                    channelId: "65e6d0765b88b140f2e505ae",
-                  )),
+                  builder: (context) => Scaffold(
+                    body: AmityChatHomePage(),
+                  ),
                 ));
               },
             ),

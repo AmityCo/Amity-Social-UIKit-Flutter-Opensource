@@ -22,7 +22,7 @@ class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTarg
         if(!isClosed){
           add(GlobalStoryTargetsFetched(targets));
         }
-        
+
       });
       liveCollection.getFirstPageRequest();
     });
@@ -36,7 +36,7 @@ class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTarg
         liveCollection.loadNext();
       }
     });
-    
+
   }
 
   @override

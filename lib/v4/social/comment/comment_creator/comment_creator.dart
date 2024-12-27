@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/bloc/comment_creator_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator_action.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
+import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,10 +26,10 @@ class AmityCommentCreator extends BaseElement {
     required this.referenceType,
     elementId = "comment_creator",
   }) : super(key: key, elementId: elementId);
-  
+
   @override
   Widget buildElement(BuildContext context) {
-     return AmityCommentCreatorInternal(
+    return AmityCommentCreatorInternal(
       referenceId: referenceId,
       referenceType: referenceType,
       replyTo: replyTo,
@@ -91,7 +92,8 @@ class _AmityCommentCreatorInternalState
               if (state.replyTo != null) renderReplyPanel(state.replyTo!),
               SafeArea(
                 top: false,
-                child: renderComposer(context, state, widget.referenceId, widget.referenceType),
+                child: renderComposer(
+                    context, state, widget.referenceId, widget.referenceType),
               ),
             ],
           );
@@ -100,8 +102,9 @@ class _AmityCommentCreatorInternalState
     );
   }
 
-  Widget renderComposer(BuildContext context, CommentCreatorState state, String referenceId, AmityCommentReferenceType referenceType) {
-    String? avatarUrl = AmityCoreClient.getCurrentUser().avatarUrl;
+  Widget renderComposer(BuildContext context, CommentCreatorState state,
+      String referenceId, AmityCommentReferenceType referenceType) {
+    AmityUser user = AmityCoreClient.getCurrentUser();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       child: Column(
@@ -118,10 +121,11 @@ class _AmityCommentCreatorInternalState
                   height: 32,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: AmityNetworkImage(
-                        imageUrl: avatarUrl,
-                        placeHolderPath:
-                            "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
+                    child: AmityUserImage(
+                      user: user,
+                      theme: widget.theme,
+                      size: 32,
+                    ),
                   ),
                 ),
               ),

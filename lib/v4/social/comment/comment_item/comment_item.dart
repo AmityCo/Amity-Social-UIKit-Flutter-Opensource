@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_extention.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/bloc/comment_item_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
+import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +25,13 @@ class CommentItem extends BaseElement {
   final CommentAction commentAction;
   final TextEditingController controller = TextEditingController();
   final ScrollController scrollController = ScrollController();
+  final bool shouldAllowInteraction;
 
   CommentItem({
     Key? key,
     String? pageId,
     String? componentId,
+    required this.shouldAllowInteraction,
     required this.parentScrollController,
     required this.commentAction,
   }) : super(
@@ -46,8 +50,13 @@ class CommentItem extends BaseElement {
     });
   }
 
-  Widget buildCommentItem(BuildContext context, AmityComment comment,
-      bool isReacting, bool isExpanded, bool isEditing) {
+  Widget buildCommentItem(
+      BuildContext context,
+      AmityComment comment,
+      bool isReacting,
+      bool isExpanded,
+      bool isEditing
+      ) {
     var isModerator = false;
     if (comment.target is CommunityCommentTarget) {
       var roles =
@@ -76,10 +85,10 @@ class CommentItem extends BaseElement {
             height: 32,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(32),
-              child: AmityNetworkImage(
-                  imageUrl: comment.user?.avatarUrl,
-                  placeHolderPath:
-                      "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
+              child: AmityUserImage(
+                  user: comment.user,
+                  theme: theme,
+                  size: 32,),
             ),
           ),
           const SizedBox(width: 8),
@@ -305,7 +314,8 @@ class CommentItem extends BaseElement {
 
   Widget renderCommentBottom(
       BuildContext context, AmityComment comment, bool isReacting) {
-    return Row(
+    return shouldAllowInteraction
+      ? Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -355,7 +365,15 @@ class CommentItem extends BaseElement {
             ),
           ),
         ),
-        renderReactionPreview(context, comment, isReacting),
+        renderReactionPreview(context, comment, isReacting, shouldAllowInteraction),
+      ],
+    )
+    : Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        renderReactionPreview(context, comment, isReacting, shouldAllowInteraction),
       ],
     );
   }
@@ -503,7 +521,7 @@ class CommentItem extends BaseElement {
           children: [
             SizedBox(
               width: double.infinity,
-              child: ReplyList(scrollController: scrollController),
+              child: ReplyList(shouldAllowInteraction: shouldAllowInteraction, scrollController: scrollController),
             ),
           ],
         ),
@@ -512,7 +530,7 @@ class CommentItem extends BaseElement {
   }
 
   Widget renderReactionPreview(
-      BuildContext context, AmityComment comment, bool isReacting) {
+      BuildContext context, AmityComment comment, bool isReacting, bool shouldAllowInteraction) {
     final hasMyReactions = comment.hasMyReactions();
     var reactionCount = comment.reactionCount ?? 0;
     if (isReacting) {
@@ -521,7 +539,7 @@ class CommentItem extends BaseElement {
     if (reactionCount > 0) {
       return Expanded(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: shouldAllowInteraction ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             getReactionPreview(
               context,
@@ -584,7 +602,7 @@ class CommentItem extends BaseElement {
                     topRight: Radius.circular(25),
                   ),
                 ),
-                child: AmityReactionListComponent(
+                child: AmityReactionList(
                   pageId: 'reactions_page',
                   referenceId: commentId,
                   referenceType: AmityReactionReferenceType.COMMENT,

@@ -9,40 +9,36 @@ part 'post_item_events.dart';
 part 'post_item_state.dart';
 
 class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
-  PostItemBloc() : super(PostItemStateInitial()) {
+  AmityPost post;
+
+  PostItemBloc(this.post) : super(PostItemState(post: post)) {
     on<PostItemLoading>((event, emit) async {
       var post =
           await AmitySocialClient.newPostRepository().getPost(event.postId);
-      emit(PostItemStateLoaded(post: post));
+      emit(state.copyWith(post: post));
+    });
+
+    on<PostItemReacted>((event, emit) async {
+      emit(state.copyWith(isReacting: false));
     });
 
     on<AddReactionToPost>((event, emit) async {
       AmityPost post = event.post;
-      emit(PostItemStateReacting(post: post));
+      emit(state.copyWith(isReacting: true));
       if (post.myReactions?.isNotEmpty ?? false) {
         await post.react().removeReaction(post.myReactions!.first);
       }
       await post.react().addReaction(event.reactionType);
-      var updatedPost = await AmitySocialClient.newPostRepository()
-          .getPost(event.post.postId!);
-      if (event.action?.onPostUpdated != null) {
-        event.action?.onPostUpdated(updatedPost);
-      }
-      emit(PostItemStateLoaded(post: updatedPost));
+      emit(state.copyWith(isReacting: false));
     });
 
     on<RemoveReactionToPost>((event, emit) async {
       AmityPost post = event.post;
-      emit(PostItemStateReacting(post: post));
+      emit(state.copyWith(isReacting: true));
       if (post.myReactions?.isNotEmpty ?? false) {
         await post.react().removeReaction(event.reactionType);
       }
-      var updatedPost = await AmitySocialClient.newPostRepository()
-          .getPost(event.post.postId!);
-      if (event.action?.onPostUpdated != null) {
-        event.action?.onPostUpdated(updatedPost);
-      }
-      emit(PostItemStateLoaded(post: updatedPost));
+      emit(state.copyWith(isReacting: false));
     });
 
     on<PostItemFlag>((event, emit) async {
@@ -52,7 +48,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
             message: "Post reported.", icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);
-        emit(PostItemStateLoaded(post: updatedPost));
+        emit(state.copyWith(post: updatedPost));
       }
     });
 
@@ -63,7 +59,7 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
             message: "Post unreported.", icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);
-        emit(PostItemStateLoaded(post: updatedPost));
+        emit(state.copyWith(post: updatedPost));
       }
     });
 
@@ -73,13 +69,13 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
         event.action?.onPostDeleted(event.post);
         var updatedPost = event.post;
         updatedPost.isDeleted = true;
-        emit(PostItemStateLoaded(post: updatedPost));
+        emit(state.copyWith(post: updatedPost));
       }
     });
 
     on<PostItemLoaded>((event, emit) async {
       AmityPost post = event.post;
-      emit(PostItemStateLoaded(post: post));
+      emit(state.copyWith(post: post));
     });
   }
 }

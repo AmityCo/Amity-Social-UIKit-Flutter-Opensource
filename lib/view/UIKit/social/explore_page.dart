@@ -188,10 +188,10 @@ class CommunityPageState extends State<CommunityPage>
             Scaffold(
               floatingActionButton: widget.showPostToButton
                   ? Semantics(
-                      identifier: 'amityPostButton',
-                      label: 'amityPostButton',
+                      identifier: 'amityGlobalPage',
+                      label: 'amityGlobalPage',
                       child: FloatingActionButton(
-                        key: Key('amityPostButton'),
+                        key: Key('amityGlobalPage'),
                         shape: const CircleBorder(),
                         onPressed: () {
                           Navigator.of(context).push(
@@ -208,9 +208,13 @@ class CommunityPageState extends State<CommunityPage>
                             Provider.of<AmityUIConfiguration>(context)
                                 .appColors
                                 .primary,
-                        child: Provider.of<AmityUIConfiguration>(context)
-                            .iconConfig
-                            .postIcon(iconSize: 28, color: Colors.white),
+                        child: Semantics(
+                          identifier: 'amityPostButton',
+                          label: 'amityPostButton',
+                          child: Provider.of<AmityUIConfiguration>(context)
+                              .iconConfig
+                              .postIcon(iconSize: 28, color: Colors.white),
+                        ),
                       ),
                     )
                   : null,

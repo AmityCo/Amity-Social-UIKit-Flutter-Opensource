@@ -54,7 +54,11 @@ class AmityPostDetailPage extends NewBasePage {
       return Text(state.message);
     } else if (state is PostDetailStateLoaded) {
       return renderPage(
-          context: context, post: state.post, replyTo: state.replyTo, category: category, hideMenu: hideMenu);
+          context: context,
+          post: state.post,
+          replyTo: state.replyTo,
+          category: category,
+          hideMenu: hideMenu);
     } else {
       return Container();
     }
@@ -75,51 +79,52 @@ class AmityPostDetailPage extends NewBasePage {
       isJoinedCommunity = community?.isJoined ?? true;
     }
     return Column(
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: theme.backgroundColor,
-                  title: const Text('Post'),
-                  titleTextStyle: TextStyle(
-                    color: theme.baseColor,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  pinned: true,
-                  centerTitle: true,
+      children: [
+        Expanded(
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              SliverAppBar(
+                backgroundColor: theme.backgroundColor,
+                title: const Text('Post'),
+                titleTextStyle: TextStyle(
+                  color: theme.baseColor,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                 ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    child: renderPost(
-                      context: context,
-                      post: post,
-                      category: category,
-                      hideMenu: hideMenu,
-                      scrollController: scrollController,
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.only(left: 12, right: 16, top: 7),
-                  sliver: AmityCommentListComponent(
-                    referenceId: postId,
-                    referenceType: AmityCommentReferenceType.POST,
-                    shouldAllowInteraction: isJoinedCommunity,
-                    parentScrollController: scrollController,
-                    commentAction:
-                        CommentAction(onReply: (AmityComment? comment) {
-                      context
-                          .read<PostDetailBloc>()
-                          .add(PostDetailReplyComment(replyTo: comment));
-                    }),
+                pinned: true,
+                centerTitle: true,
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  child: renderPost(
+                    context: context,
+                    post: post,
+                    category: category,
+                    hideMenu: hideMenu,
+                    scrollController: scrollController,
                   ),
                 ),
-              ],
-            ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.only(left: 12, right: 16, top: 7),
+                sliver: AmityCommentListComponent(
+                  referenceId: postId,
+                  referenceType: AmityCommentReferenceType.POST,
+                  shouldAllowInteraction: isJoinedCommunity,
+                  parentScrollController: scrollController,
+                  commentAction:
+                      CommentAction(onReply: (AmityComment? comment) {
+                    context
+                        .read<PostDetailBloc>()
+                        .add(PostDetailReplyComment(replyTo: comment));
+                  }),
+                ),
+              ),
+            ],
           ),
+        ),
+        if (!hideMenu) ...[
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(
@@ -139,7 +144,7 @@ class AmityPostDetailPage extends NewBasePage {
             ),
           ),
         ],
-      
+      ],
     );
   }
 

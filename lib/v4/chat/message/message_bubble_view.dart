@@ -10,6 +10,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/image_info_manager.dart';
 import 'package:amity_uikit_beta_service/v4/utils/media_permission_handler.dart';
 import 'package:amity_uikit_beta_service/v4/utils/message_color.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
@@ -127,7 +128,9 @@ class MessageBubbleView extends NewBaseComponent {
         return TextSpan(
           text: element.text,
           style: TextStyle(
-            color: isUser ? messageColor.rightBubbleText : messageColor.leftBubbleText,
+            color: isUser
+                ? messageColor.rightBubbleText
+                : messageColor.leftBubbleText,
             fontSize: 15.0,
             fontWeight: FontWeight.w400,
           ),
@@ -290,7 +293,9 @@ class MessageBubbleView extends NewBaseComponent {
                 text: TextSpan(
                   text: text,
                   style: TextStyle(
-                    color: isUser ? messageColor.rightBubbleText : messageColor.leftBubbleText,
+                    color: isUser
+                        ? messageColor.rightBubbleText
+                        : messageColor.leftBubbleText,
                     fontSize: 15.0,
                     fontWeight: FontWeight.w400,
                   ),
@@ -735,23 +740,48 @@ class MessageBubbleView extends NewBaseComponent {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final Size imageSize = snapshot.data!.size;
-                final double aspectRatio = imageSize.width / imageSize.height;
+                double thumbnailHeight = 50;
+                double thumbnailWidth = 50;
+
+                if (imageSize.height >= imageSize.width) {
+                  thumbnailHeight = 240;
+
+                  double imageRatio = imageSize.height / imageSize.width;
+
+                  if (imageRatio > 3) {
+                    thumbnailWidth = 80;
+                  } else {
+                    thumbnailWidth = 240 / imageRatio;
+                  }
+
+                } else {
+                  thumbnailWidth = 240;
+                  double imageRatio = imageSize.width / imageSize.height;
+
+                  if (imageRatio > 3) {
+                    thumbnailHeight = 80;
+                  } else {
+                    thumbnailHeight = 240 / imageRatio;
+                  }
+                }
+
+                if (fileUrl != null && !ImageInfoManager().contains(fileUrl)) {
+                  ImageInfoManager()
+                      .addImageData(fileUrl, thumbnailHeight, thumbnailWidth);
+                }
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 240,
-                      maxHeight: 240,
+                    constraints: BoxConstraints(
+                      maxWidth: thumbnailWidth,
+                      maxHeight: thumbnailHeight,
                     ),
-                    child: AspectRatio(
-                      aspectRatio: aspectRatio,
-                      child: Stack(
-                        children: [
-                          snapshot.data!.image,
-                          if (shouldShowOverlay || onLongPress)
-                            _buildMediaOverlay(),
-                        ],
-                      ),
+                    child: Stack(
+                      children: [
+                        snapshot.data!.image,
+                        if (shouldShowOverlay || onLongPress)
+                          _buildMediaOverlay(),
+                      ],
                     ),
                   ),
                 );
@@ -772,8 +802,11 @@ class MessageBubbleView extends NewBaseComponent {
                 );
               }
               return Container(
-                height: 240,
-                width: 240,
+                height:
+                    ImageInfoManager().messageImageCaches[fileUrl]?.height ??
+                        240,
+                width: ImageInfoManager().messageImageCaches[fileUrl]?.width ??
+                    240,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: theme.baseColorShade4,

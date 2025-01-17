@@ -90,9 +90,9 @@ class AmityGlobalFeedComponent extends NewBaseComponent {
                                       style:
                                           AmityPostContentComponentStyle.feed,
                                       post: amityPost,
-                                      category: AmityPostCategory.general,
+                                      category: (state.pinnedPostIds.contains(amityPost.postId)) ? AmityPostCategory.globalFeatured : AmityPostCategory.general,
                                       key: uniqueKey,
-                                      hideTarget: true,
+                                      hideTarget: false,
                                       action: AmityPostAction(
                                         onAddReaction: (String) {},
                                         onRemoveReaction: (String) {},

@@ -1,10 +1,17 @@
 part of 'channel_create_conversation_bloc.dart';
 
 class ChannelCreateConversationState extends Equatable {
-  const ChannelCreateConversationState();
+  final List<AmityUser> list;
+  final bool hasMoreItems;
+  final bool isFetching;
+
+  const ChannelCreateConversationState(
+      {this.list = const [],
+      this.hasMoreItems = false,
+      this.isFetching = false});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [list, hasMoreItems, isFetching];
 }
 
 class UserSearchTextChange extends ChannelCreateConversationState {
@@ -19,14 +26,15 @@ class UserSearchTextChange extends ChannelCreateConversationState {
 class ChannelCreateConversationLoading extends ChannelCreateConversationState {}
 
 class ChannelCreateConversationLoaded extends ChannelCreateConversationState {
-  final List<AmityUser> list;
-  final bool hasMoreItems;
-  final bool isFetching;
-
-  const ChannelCreateConversationLoaded(
-      {required this.list,
-      required this.hasMoreItems,
-      required this.isFetching});
+  const ChannelCreateConversationLoaded({
+    required List<AmityUser> list,
+    required bool isFetching,
+    required bool hasMoreItems,
+  }) : super(
+          list: list,
+          isFetching: isFetching,
+          hasMoreItems: hasMoreItems,
+        );
 
   ChannelCreateConversationLoaded copyWith({
     List<AmityUser>? list,

@@ -103,13 +103,13 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
       for (var message in event.messages) {
         if (message.createdAt != null) {
           if (lastCreatedDate == null) {
-            lastCreatedDate = message.createdAt!;
+            lastCreatedDate = message.createdAt!.toLocal();
           } else {
-            if (lastCreatedDate.difference(message.createdAt!).inDays > 0) {
+            if (lastCreatedDate.difference(message.createdAt!.toLocal()).inDays > 0) {
               String dateString =
                   DateFormat('EEE, d MMM').format(lastCreatedDate);
               groupedMessages.add(ChatItem.date(dateString));
-              lastCreatedDate = message.createdAt!;
+              lastCreatedDate = message.createdAt!.toLocal();
             }
           }
 
@@ -124,7 +124,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
                 : DateFormat('EEE, d MMM yyyy').format(lastCreatedDate);
 
             groupedMessages.add(ChatItem.date(dateString));
-            lastCreatedDate = message.createdAt!;
+            lastCreatedDate = message.createdAt!.toLocal();
           }
         }
       }
@@ -134,13 +134,6 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
         hasNextPage: liveCollection?.hasNextPage(),
       ));
     });
-
-    // on<CommentListEventExpandItem>((event, emit) async {
-    //   if (!state.expandedId.contains(event.commentId)) {
-    //     emit(
-    //         state.copyWith(expandedId: [...state.expandedId, event.commentId]));
-    //   }
-    // });
 
     on<ChatPageEventLoadMore>((event, emit) async {
       try {

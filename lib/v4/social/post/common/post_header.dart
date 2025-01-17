@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_display_name.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/featured_badge.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
@@ -36,48 +37,12 @@ class AmityPostHeader extends StatelessWidget {
     return Column(
       children: [
         if (category == AmityPostCategory.announcement ||
-            category == AmityPostCategory.announcementAndPin)
-          Container(
-            width: double.infinity,
-            height: 42,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: const BoxDecoration(color: Colors.white),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 26,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: ShapeDecoration(
-                    color: theme.baseColorShade4,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(4),
-                        bottomRight: Radius.circular(4),
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Featured',
-                        style: TextStyle(
-                          color: theme.baseColor,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            category == AmityPostCategory.announcementAndPin ||
+            category == AmityPostCategory.globalFeatured)
+          Row(
+            children: [
+              FeaturedBadge(text: "Featured"),
+            ],
           ),
         SizedBox(
           height: 52,
@@ -101,13 +66,13 @@ class AmityPostHeader extends StatelessWidget {
                         user: post.postedUser,
                         theme: theme,
                         size: 32,
-                      )
-                  ),
+                      )),
                 ),
               ),
               Expanded(
-                  child: PostDisplayName(
-                      post: post, theme: theme, hideTarget: hideTarget)),
+                child: PostDisplayName(
+                    post: post, theme: theme, hideTarget: hideTarget),
+              ),
               if (category == AmityPostCategory.pin ||
                   category == AmityPostCategory.announcementAndPin)
                 Container(
@@ -380,8 +345,51 @@ class AmityPostHeader extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
-                    onEdit();
+                    if (category == AmityPostCategory.globalFeatured) {
+                      Navigator.pop(context);
+
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CupertinoAlertDialog(
+                            title: const Text("Edit globally featured post?"),
+                            content: const Text(
+                                "The post you're editing has been featured globally. If you edit your post, it would need to be re-approved, and will no longer be globally featured."),
+                            actions: [
+                              CupertinoDialogAction(
+                                child: const Text("Cancel",
+                                    style: TextStyle(
+                                      color: Color(0xFF007AFF),
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w400,
+                                    )),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              CupertinoDialogAction(
+                                child: Text(
+                                  "Edit",
+                                  style: TextStyle(
+                                    color: theme.alertColor,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+
+                                  onEdit();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      Navigator.pop(context);
+                      onEdit();
+                    }
                   },
                   child: Container(
                     width: double.infinity,

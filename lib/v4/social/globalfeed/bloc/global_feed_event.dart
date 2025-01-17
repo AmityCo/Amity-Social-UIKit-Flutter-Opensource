@@ -36,3 +36,11 @@ class GlobalFeedError extends GlobalFeedEvent {
 
   GlobalFeedError({required this.message});
 }
+
+// Pinned Post State
+class GlobalFeedPinPostUpdated extends GlobalFeedEvent {
+  final List<AmityPinnedPost> pinnedPosts;
+  
+  GlobalFeedPinPostUpdated({required this.pinnedPosts});
+}
+

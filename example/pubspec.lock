@@ -17,11 +17,10 @@ packages:
   amity_sdk:
     dependency: transitive
     description:
-      name: amity_sdk
-      sha256: "312fe3d2a19c167d3c65c822a089df1d96c65b99cd5b2347a9aa46039a4fe276"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.54.0"
+      path: "../../Amity-Social-Cloud-SDK-Flutter-Internal"
+      relative: true
+    source: path
+    version: "0.54.2"
   amity_sdk_api:
     dependency: transitive
     description:

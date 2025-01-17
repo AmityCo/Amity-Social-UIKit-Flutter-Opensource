@@ -6,15 +6,14 @@ import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:flutter/material.dart';
 
-Widget userList({
-    required BuildContext context,
+Widget userList(
+    {required BuildContext context,
     required ScrollController scrollController,
     required List<AmityUser> users,
     required AmityThemeColor theme,
     required void Function() loadMore,
     required void Function(AmityUser) onTap,
-    bool excludeCurrentUser = false
-    }) {
+    bool excludeCurrentUser = false}) {
   scrollController.addListener(() {
     if (scrollController.position.pixels ==
         scrollController.position.maxScrollExtent) {
@@ -56,7 +55,8 @@ Widget userList({
   );
 }
 
-Widget userRow(BuildContext context, AmityUser user, AmityThemeColor theme, void Function(AmityUser) onTap) {
+Widget userRow(BuildContext context, AmityUser user, AmityThemeColor theme,
+    void Function(AmityUser) onTap) {
   return GestureDetector(
     onTap: () {
       onTap(user);
@@ -87,11 +87,7 @@ Widget avatarImage(AmityUser user, AmityThemeColor theme) {
       child: SizedBox(
         width: 40,
         height: 40,
-        child: AmityUserImage(
-            user: user,
-            theme: theme,
-            size: 40
-        ),
+        child: AmityUserImage(user: user, theme: theme, size: 40),
       ),
     ),
   );
@@ -111,29 +107,29 @@ Widget displayName(String displayName, AmityThemeColor theme) {
   );
 }
 
-Widget userSkeletonList(AmityThemeColor theme, ConfigProvider configProvider) {
+Widget userSkeletonList(AmityThemeColor theme, ConfigProvider configProvider,
+    {int itemCount = 5}) {
   return Container(
     decoration: BoxDecoration(color: theme.backgroundColor),
-    child: Column(children: [
-      Expanded(
-        child: Container(
-          alignment: Alignment.topCenter,
-          child: Shimmer(
-            linearGradient: configProvider.getShimmerGradient(),
-            child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                skeletonItem(),
-                skeletonItem(),
-                skeletonItem(),
-                skeletonItem(),
-                skeletonItem(),
-              ],
+    child: Column(
+      children: [
+        Expanded(
+          child: Container(
+            alignment: Alignment.topCenter,
+            child: Shimmer(
+              linearGradient: configProvider.getShimmerGradient(),
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: itemCount,
+                itemBuilder: (context, index) {
+                  return skeletonItem();
+                },
+              ),
             ),
           ),
         ),
-      )
-    ]),
+      ],
+    ),
   );
 }
 
@@ -148,7 +144,8 @@ Widget skeletonItem() {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.only(top: 8, left: 16, right: 12, bottom: 8),
+            padding:
+                const EdgeInsets.only(top: 8, left: 16, right: 12, bottom: 8),
             child: const SkeletonImage(
               height: 40,
               width: 40,

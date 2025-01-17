@@ -45,7 +45,8 @@ class PostDisplayName extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: (!hideTarget && post.target != null &&
+            children: (!hideTarget &&
+                    post.target != null &&
                     ((post.target is CommunityTarget) ||
                         (post.target is UserTarget &&
                             (post.target as UserTarget).targetUserId !=
@@ -125,7 +126,8 @@ class PostDisplayName extends StatelessWidget {
       onTap = () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AmityCommunityProfilePage(communityId: target.targetCommunityId!),
+            builder: (context) => AmityCommunityProfilePage(
+                communityId: target.targetCommunityId!),
           ),
         );
       };
@@ -178,14 +180,14 @@ class PostDisplayName extends StatelessWidget {
 
   Widget TargetArrow() {
     return Container(
-      width: 16,
-      height: 16,
+      width: 14,
+      height: 14,
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: SvgPicture.asset(
         'assets/Icons/amity_ic_post_target_arrow.svg',
         package: 'amity_uikit_beta_service',
-        width: 16,
-        height: 12,
+        width: 14,
+        height: 14,
       ),
     );
   }

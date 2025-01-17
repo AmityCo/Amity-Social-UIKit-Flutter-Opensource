@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 
 enum AmityPostContentComponentStyle { feed, detail }
 
-enum AmityPostCategory { general, announcement, pin, announcementAndPin }
+enum AmityPostCategory { general, announcement, pin, announcementAndPin, globalFeatured }
 
 class AmityPostContentComponent extends NewBaseComponent {
   final AmityPost post;

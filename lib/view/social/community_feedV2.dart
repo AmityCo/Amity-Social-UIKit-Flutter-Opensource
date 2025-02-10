@@ -58,7 +58,7 @@ class CommunityScreenState extends State<CommunityScreen>
               widget.community.communityId!, AmityFeedType.REVIEWING);
     }
 
-    Provider.of<AmityUIConfiguration>(context)
+    Provider.of<AmityUIConfiguration>(context, listen: false)
         .logicConfig
         .onCommunityScreen
         ?.call(

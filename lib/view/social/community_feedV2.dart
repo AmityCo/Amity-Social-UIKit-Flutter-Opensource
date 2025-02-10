@@ -58,6 +58,12 @@ class CommunityScreenState extends State<CommunityScreen>
               widget.community.communityId!, AmityFeedType.REVIEWING);
     }
 
+    Provider.of<AmityUIConfiguration>(context)
+        .logicConfig
+        .onCommunityScreen
+        ?.call(
+          communityId: widget.community.metadata?['communityId'],
+        );
     super.initState();
     Provider.of<CommuFeedVM>(context, listen: false).userFeedTabController =
         TabController(
@@ -987,10 +993,10 @@ class AppScaffold extends StatelessWidget {
                   (amityCommunity.onlyAdminCanPost == false ||
                       isCommunityModerator))
               ? Semantics(
-            identifier: 'amityCommunityPostButton',
-            label: 'amityCommunityPostButton',
-            child: FloatingActionButton(
-              key: Key('amityCommunityPostButton'),
+                  identifier: 'amityCommunityPostButton',
+                  label: 'amityCommunityPostButton',
+                  child: FloatingActionButton(
+                    key: Key('amityCommunityPostButton'),
                     shape: const CircleBorder(),
                     onPressed: () async {
                       await Navigator.of(context).push(MaterialPageRoute(
@@ -1021,7 +1027,7 @@ class AppScaffold extends StatelessWidget {
                         .iconConfig
                         .postIcon(iconSize: 28, color: Colors.white),
                   ),
-              )
+                )
               : null,
           // appBar: AppBar(
           //   backgroundColor: Provider.of<AmityUIConfiguration>(context)

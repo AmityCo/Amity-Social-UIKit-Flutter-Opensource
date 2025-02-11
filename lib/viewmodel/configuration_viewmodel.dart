@@ -308,10 +308,12 @@ class AmityWidgetConfig {
 class AmityLogicConfig {
   final bool replaceModeratorProfile;
   final bool replaceModeratorProfileNavigation;
+  final void Function({dynamic communityId})? onCommunityScreen;
 
   AmityLogicConfig({
     this.replaceModeratorProfile = false,
     this.replaceModeratorProfileNavigation = false,
+    this.onCommunityScreen,
   });
 }
 

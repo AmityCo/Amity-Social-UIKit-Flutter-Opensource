@@ -1,5 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/my_community/bloc/my_community_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/shared/community_list.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
@@ -13,7 +14,7 @@ part 'my_community_ui_ids.dart';
 
 class AmityMyCommunitiesComponent extends NewBaseComponent {
   ScrollController scrollController = ScrollController();
-  AmityMyCommunitiesComponent({Key? key, required String pageId})
+  AmityMyCommunitiesComponent({Key? key, String? pageId})
       : super(
             key: key,
             pageId: pageId,

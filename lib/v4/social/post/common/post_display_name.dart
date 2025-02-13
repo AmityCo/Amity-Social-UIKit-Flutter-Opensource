@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
@@ -10,9 +11,14 @@ import 'package:flutter_svg/svg.dart';
 class PostDisplayName extends StatelessWidget {
   final AmityPost post;
   final AmityThemeColor theme;
+  final bool hideTarget;
 
-  const PostDisplayName({Key? key, required this.post, required this.theme})
-      : super(key: key);
+  const PostDisplayName({
+    Key? key,
+    required this.post,
+    required this.theme,
+    required this.hideTarget,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,8 @@ class PostDisplayName extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: (post.target != null &&
+            children: (!hideTarget &&
+                    post.target != null &&
                     ((post.target is CommunityTarget) ||
                         (post.target is UserTarget &&
                             (post.target as UserTarget).targetUserId !=
@@ -118,8 +125,8 @@ class PostDisplayName extends StatelessWidget {
       onTap = () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                CommunityScreen(community: target.targetCommunity!),
+            builder: (context) => AmityCommunityProfilePage(
+                communityId: target.targetCommunityId!),
           ),
         );
       };
@@ -172,14 +179,14 @@ class PostDisplayName extends StatelessWidget {
 
   Widget TargetArrow() {
     return Container(
-      width: 16,
-      height: 16,
+      width: 14,
+      height: 14,
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: SvgPicture.asset(
         'assets/Icons/amity_ic_post_target_arrow.svg',
         package: 'amity_uikit_beta_service',
-        width: 16,
-        height: 12,
+        width: 14,
+        height: 14,
       ),
     );
   }

@@ -2,20 +2,22 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/bloc/reaction_list_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
-import 'package:amity_uikit_beta_service/v4/utils/shimmer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
+import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class AmityReactionListComponent extends NewBaseComponent {
+class AmityReactionList extends NewBaseComponent {
   final String referenceId;
   final AmityReactionReferenceType referenceType;
   late int? reactionCount = 0;
 
-  AmityReactionListComponent({
+
+  AmityReactionList({
     Key? key,
     String? pageId,
     required this.referenceId,
@@ -272,10 +274,10 @@ class AmityReactionListComponent extends NewBaseComponent {
         child: SizedBox(
           width: 32,
           height: 32,
-          child: AmityNetworkImage(
-              imageUrl: reaction.creator?.avatarUrl,
-              placeHolderPath:
-                  "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
+          child: AmityUserImage(
+              user: reaction.creator,
+              theme: theme,
+              size: 32),
         ),
       ),
     );

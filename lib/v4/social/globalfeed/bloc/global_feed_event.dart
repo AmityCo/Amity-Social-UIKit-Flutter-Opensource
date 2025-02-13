@@ -3,12 +3,18 @@ part of 'global_feed_bloc.dart';
 @immutable
 abstract class GlobalFeedEvent {}
 
-class GlobalFeedInit extends GlobalFeedEvent {}
+class GlobalFeedRefresh extends GlobalFeedEvent {}
 
-class GlobalFeedNotify extends GlobalFeedEvent {
+class GlobalFeedListUpdated extends GlobalFeedEvent {
   final List<AmityPost> posts;
 
-  GlobalFeedNotify({required this.posts});
+  GlobalFeedListUpdated({required this.posts});
+}
+
+class GlobalFeedLoadingStateUpdated extends GlobalFeedEvent {
+  final bool isLoading;
+
+  GlobalFeedLoadingStateUpdated({required this.isLoading});
 }
 
 class GlobalFeedAddLocalPost extends GlobalFeedEvent {
@@ -25,23 +31,29 @@ class GlobalFeedFetched extends GlobalFeedEvent {
   GlobalFeedFetched({required this.list});
 }
 
+class GlobalFeedLocalPostUpdated extends GlobalFeedEvent {
+  final AmityPost post;
+
+  GlobalFeedLocalPostUpdated({required this.post});
+}
+
+class GlobalFeedLoadNext extends GlobalFeedEvent {}
+
 class GlobalFeedError extends GlobalFeedEvent {
   final String message;
 
   GlobalFeedError({required this.message});
 }
 
-class GlobalFeedRefresh extends GlobalFeedEvent {}
+// Pinned Post State
+class GlobalFeedPinPostUpdated extends GlobalFeedEvent {
+  final List<AmityPinnedPost> pinnedPosts;
 
-class GlobalFeedReactToPost extends GlobalFeedEvent {
-  final AmityPost post;
-  final String reactionType;
-
-  GlobalFeedReactToPost({required this.post, required this.reactionType});
+  GlobalFeedPinPostUpdated({required this.pinnedPosts});
 }
 
 class GlobalFeedReloadThePost extends GlobalFeedEvent {
   final AmityPost post;
 
-  GlobalFeedReloadThePost({ required this.post });
+  GlobalFeedReloadThePost({required this.post});
 }

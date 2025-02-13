@@ -1,5 +1,5 @@
-import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,7 @@ abstract class NewBasePage extends StatelessWidget {
 
   // ignore: prefer_const_constructors_in_immutables
   NewBasePage({super.key, required this.pageId});
-
+  
   late final ConfigProvider configProvider;
   late final AmityThemeColor theme;
 
@@ -34,11 +34,21 @@ abstract class NewBasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    configProvider = ConfigProvider();
-    theme = configProvider.getTheme(pageId, '');
     return Consumer<ConfigProvider>(
-      builder: (context, configProvider, child) {
-        return buildPage(context);
+      builder: (context, provider, child) {
+        configProvider = provider;
+        theme = configProvider.getTheme(pageId, '');
+        return Theme(
+          data: Theme.of(context)
+            .copyWith(
+              textSelectionTheme: TextSelectionThemeData(
+                cursorColor: theme.primaryColor,
+                selectionColor: theme.primaryColor.withOpacity(0.3),
+                selectionHandleColor: theme.primaryColor,
+              )
+            ),
+          child: buildPage(context)
+        );
       },
     );
     // return ChangeNotifierProvider<ConfigProvider>(

@@ -38,6 +38,8 @@ import 'viewmodel/post_viewmodel.dart';
 import 'viewmodel/user_feed_viewmodel.dart';
 import 'viewmodel/user_viewmodel.dart';
 
+export 'package:amity_sdk/src/domain/model/session/session_state.dart';
+
 enum AmityEndpointRegion {
   sg,
   eu,
@@ -169,6 +171,10 @@ class AmityUIKit {
     config(provider);
   }
 
+  Stream<SessionState> observeSessionState() {
+    return AmityCoreClient.observeSessionState();
+  }
+
   AmityUser getCurrentUser() {
     return AmityCoreClient.getCurrentUser();
   }
@@ -259,14 +265,19 @@ class AmityUIKitProvider extends StatelessWidget {
           ],
         ),
       ],
-      child: Builder(
-        builder: (context) => MaterialApp(
-          theme: ThemeData(),
-          debugShowCheckedModeBanner: false,
-          navigatorKey: NavigationService.navigatorKey,
-          home: child,
-        ),
-      ),
+      child: Builder(builder: (context) {
+        return Consumer<ConfigProvider>(builder: (context, configProvider, _) {
+          configProvider.loadConfig();
+          return MaterialApp(
+            theme: ThemeData(),
+            debugShowCheckedModeBanner: false,
+            navigatorKey: NavigationService.navigatorKey,
+            home: Builder(builder: (context2) {
+              return child;
+            }),
+          );
+        });
+      }),
     );
   }
 }

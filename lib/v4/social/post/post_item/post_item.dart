@@ -1,6 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
-import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_image.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_video.dart';
@@ -8,38 +8,52 @@ import 'package:amity_uikit_beta_service/v4/social/post/common/post_header.dart'
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/amity_post_detail_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom_nonmember.dart';
+import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PostItem extends NewBaseComponent {
   final AmityPost post;
+  final AmityPostCategory category;
+  final bool hideMenu;
+  final bool hideTarget;
   final AmityPostAction? action;
 
   PostItem({
     Key? key,
     String? pageId,
     required this.post,
+    required this.category,
+    required this.hideMenu,
+    required this.hideTarget,
     this.action,
   }) : super(key: key, pageId: pageId, componentId: "post_item_component");
 
   @override
   Widget buildComponent(BuildContext context) {
-    return BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
-      if (state is PostItemStateLoaded) {
-        return renderPost(context: context, post: state.post);
-      } else if (state is PostItemStateReacting) {
-        return renderPost(context: context, post: state.post, isReacting: true);
-      } else {
-        return renderPost(context: context, post: post);
-      }
-    });
+    return BlocProvider(
+      create: (context) => PostItemBloc(post),
+      child:
+          BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
+        return renderPost(
+            context: context,
+            post: state.post,
+            category: category,
+            hideTarget: hideTarget,
+            isReacting: state.isReacting);
+      }),
+    );
   }
 
-  Widget renderPost(
-      {required BuildContext context,
-      required AmityPost post,
-      bool isReacting = false}) {
+  Widget renderPost({
+    required BuildContext context,
+    required AmityPost post,
+    required AmityPostCategory category,
+    required bool hideTarget,
+    bool isReacting = false,
+  }) {
     onAddReaction(reactionType) {
       context
           .read<PostItemBloc>()
@@ -69,23 +83,14 @@ class PostItem extends NewBaseComponent {
 
     var page = AmityPostDetailPage(
       postId: post.postId!,
+      category: category,
+      hideMenu: hideMenu,
       action: postAction,
     );
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PopScope(
-            canPop: true,
-            child: page,
-            onPopInvoked: (didPop) => {
-              if (didPop)
-                {
-                  context
-                      .read<GlobalFeedBloc>()
-                      .add(GlobalFeedReloadThePost(post: post))
-                }
-            },
-          ),
+          builder: (context) => page,
         ));
       },
       child: Container(
@@ -100,6 +105,8 @@ class PostItem extends NewBaseComponent {
             AmityPostHeader(
               post: post,
               theme: theme,
+              category: category,
+              hideTarget: hideTarget,
               action: postAction,
             ),
             getTextPostContent(post),
@@ -108,8 +115,13 @@ class PostItem extends NewBaseComponent {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: getChildrenPostContent(context, post),
             ),
-            getPostBottom(
-                post: post, action: postAction, isReacting: isReacting),
+            hideMenu
+                ? PostBottomNonMember()
+                : getPostBottom(
+                    post: post,
+                    action: postAction,
+                    isReacting: isReacting,
+                  ),
           ],
         ),
       ),
@@ -146,7 +158,9 @@ class PostItem extends NewBaseComponent {
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: Image.network(imageUrl),
+        child: AmityNetworkImage(
+            imageUrl: imageUrl,
+            placeHolderPath: 'assets/Icons/amity_ic_image_placeholder.svg'),
       ),
     );
   }
@@ -177,7 +191,7 @@ class PostItem extends NewBaseComponent {
       action: action,
       isReacting: isReacting,
       componentId: '',
-      isOptimisticUi: true,
+      isOptimisticUi: false,
     );
   }
 

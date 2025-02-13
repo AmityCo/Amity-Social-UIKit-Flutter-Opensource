@@ -14,10 +14,14 @@ class ConfigRepository {
 
   late Map<String, dynamic> _config;
   late Set<String> excludedList;
+  bool _isConfigInitialized = false;
 
   Future<void> loadConfig() async {
-    _config = await _loadConfigFile('config');
-    excludedList = Set<String>.from(_config['excludes'] ?? []);
+    if (!_isConfigInitialized) {
+      _config = await _loadConfigFile('config');
+      excludedList = Set<String>.from(_config['excludes'] ?? []);
+      _isConfigInitialized = true;
+    }
   }
 
   Map<String, dynamic> getConfig(String configId) {
@@ -34,9 +38,14 @@ class ConfigRepository {
     }
 
     final variations = [
-      '*/${id[1]}/${id[2]}',
+      '*/*/*',
       '*/${id[1]}/*',
       '*/*/${id[2]}',
+      '*/${id[1]}/${id[2]}',
+      '${id[0]}/*/*',
+      '${id[0]}/${id[1]}/*',
+      '${id[0]}/*/${id[2]}',
+      '${id[0]}/${id[1]}/${id[2]}',
     ];
 
     for (var variation in variations) {
@@ -97,19 +106,22 @@ extension ThemeConfig on ConfigRepository {
       return _getThemeColor(globalTheme, fallbackTheme);
     }
 
+    final style = _getCurrentThemeStyle();
     final pageTheme =
         customizationConfig?['${id[0]}/*/*'] as Map<String, dynamic>?;
     final componentTheme =
-        customizationConfig?['*/${id[1]}/*'] as Map<String, dynamic>?;
+        customizationConfig?['*/${id[1]}/*'] as Map<String, dynamic>? 
+        ?? customizationConfig?['${id[0]}/${id[1]}/*'] as Map<String, dynamic>?;
+
     try {
       if (componentTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(componentTheme["theme"]), fallbackTheme);
+            AmityTheme.fromJson(componentTheme["theme"]?[style.toString().split('.').last]), fallbackTheme);
       }
 
       if (pageTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(pageTheme["theme"]), fallbackTheme);
+            AmityTheme.fromJson(pageTheme["theme"]?[style.toString().split('.').last]), fallbackTheme);
       }
     } catch (error) {
       return _getThemeColor(globalTheme, fallbackTheme);

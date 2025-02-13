@@ -184,10 +184,6 @@ class AmityUIKit {
     AmityCoreClient.logout();
   }
 
-  Stream<SessionState> observeSessionState() {
-    return AmityCoreClient.observeSessionState();
-  }
-
   Future<void> joinInitialCommunity(List<String> communityIds) async {
     for (var i = 0; i < communityIds.length; i++) {
       AmitySocialClient.newCommunityRepository()

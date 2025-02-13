@@ -198,9 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AmityApp(
-                        isCheckboxChecked: _isCheckboxChecked,
-                      ),
+                      builder: (context) => AmityApp(),
                     ),
                   );
                 }
@@ -214,23 +212,19 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class AmityApp extends StatelessWidget {
-  final bool isCheckboxChecked;
-  const AmityApp({super.key, required this.isCheckboxChecked});
+  const AmityApp({super.key});
   @override
   Widget build(BuildContext context) {
     return AmityUIKitProvider(
       child: Builder(builder: (context2) {
-        return UserListPage(
-          isCheckboxChecked: isCheckboxChecked,
-        );
+        return UserListPage();
       }),
     );
   }
 }
 
 class UserListPage extends StatefulWidget {
-  final bool isCheckboxChecked;
-  const UserListPage({super.key, required this.isCheckboxChecked});
+  const UserListPage({super.key});
 
   @override
   _UserListPageState createState() => _UserListPageState();
@@ -245,22 +239,6 @@ class _UserListPageState extends State<UserListPage> {
     super.initState();
     _checkSession();
     _loadUsernames();
-    if (widget.isCheckboxChecked) {
-      _checkSession();
-    }
-  }
-
-  _checkSession() async {
-    AmityUIKit().observeSessionState().listen((event) {
-      if (event == SessionState.Established) {
-        final username = AmityUIKit().getCurrentUser().displayName ??
-            AmityUIKit().getCurrentUser().userId ??
-            "";
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const Scaffold(body: CommunityPage()),
-        ));
-      }
-    });
   }
 
   _checkSession() async {

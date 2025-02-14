@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_compos
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
@@ -97,7 +98,7 @@ class AmityChatPage extends NewBasePage {
                                 );
                               }
                             },
-                            child: AmityChatAvatar(
+                            child: AmityUserAvatar.withChannelMember(
                                 channelMember: state.channelMember),
                           ),
                           const SizedBox(width: 12),

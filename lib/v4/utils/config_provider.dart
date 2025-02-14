@@ -7,7 +7,7 @@ class ConfigProvider extends ChangeNotifier {
   bool _isConfigInitialized = false;
 
   Future<void> loadConfig() async {
-    if(!_isConfigInitialized) {
+    if (!_isConfigInitialized) {
       await _configRepository.loadConfig();
       notifyListeners();
       _isConfigInitialized = true;
@@ -23,7 +23,8 @@ class ConfigProvider extends ChangeNotifier {
     String? componentId,
     String? elementId,
   ) {
-    String configId = '${getId(pageId)}/${getId(componentId)}/${getId(elementId)}';
+    String configId =
+        '${getId(pageId)}/${getId(componentId)}/${getId(elementId)}';
     return _configRepository.getConfig(configId);
   }
 
@@ -33,7 +34,8 @@ class ConfigProvider extends ChangeNotifier {
     String? elementId,
     String configName,
   ) {
-    String configId = '${getId(pageId)}/${getId(componentId)}/${getId(elementId)}';
+    String configId =
+        '${getId(pageId)}/${getId(componentId)}/${getId(elementId)}';
     try {
       return _configRepository.getConfig(configId)[configName] as String;
     } catch (e) {
@@ -70,5 +72,48 @@ class ConfigProvider extends ChangeNotifier {
 
   void updateTheme(String configId) {
     notifyListeners();
+  }
+
+  AmityUIConfig getUIConfig(
+      String? pageId, String? componentId, String? elementId) {
+    return AmityUIConfig(_configRepository, pageId, componentId, elementId);
+  }
+}
+
+class AmityUIConfig {
+  late final String? _pageId;
+  late final String? _componentId;
+  late final String? _elementId;
+  late final ConfigRepository _repository;
+
+  late final String? text;
+  late final String? icon;
+
+  AmityUIConfig(
+    ConfigRepository repository,
+    String? pageId,
+    String? componentId,
+    String? elementId,
+  ) {
+    _repository = repository;
+    _pageId = pageId;
+    _componentId = componentId;
+    _elementId = elementId;
+
+    final config = _repository.getConfig(_getConfigId());
+    text = config['text'] as String?;
+    icon = config['image'] as String? ?? config['icon'] as String?;
+  }
+
+// For those elements used inside component / page which are not standalone
+// Ex. Text element inside a component (which is not a standalone widget extending from BaseElement)
+  AmityUIConfig getConfig(String elementId) {
+    return AmityUIConfig(_repository, _pageId, _componentId, elementId);
+  }
+
+  String _getConfigId() {
+    String configId =
+        '${_pageId ?? "*"}/${_componentId ?? "*"}/${_elementId ?? "*"}';
+    return configId;
   }
 }

@@ -24,7 +24,7 @@ void showOptionsBottomSheet(
             children: [
               user.isFlaggedByMe
                   ? ListTile(
-                      title: const Text('Unreport User'),
+                      title: const Text('Unreport user'),
                       onTap: () {
                         Provider.of<UserVM>(context, listen: false)
                             .reportOrUnReportUser(user);
@@ -32,7 +32,7 @@ void showOptionsBottomSheet(
                       },
                     )
                   : ListTile(
-                      title: const Text('Report User'),
+                      title: const Text('Report user'),
                       onTap: () {
                         Provider.of<UserVM>(context, listen: false)
                             .reportOrUnReportUser(user);

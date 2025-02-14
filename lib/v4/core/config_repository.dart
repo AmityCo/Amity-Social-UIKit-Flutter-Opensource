@@ -69,7 +69,6 @@ class ConfigRepository {
 }
 
 extension ThemeConfig on ConfigRepository {
-
   AmityThemeStyle _getCurrentThemeStyle() {
     final systemStyle =
         SchedulerBinding.instance.platformDispatcher.platformBrightness;
@@ -90,9 +89,11 @@ extension ThemeConfig on ConfigRepository {
   }
 
   AmityThemeColor getTheme(String? configId) {
-    final fallbackTheme =
-        _getCurrentThemeStyle() == AmityThemeStyle.light ? lightTheme : darkTheme;
-    final globalTheme = _getGlobalTheme(_getCurrentThemeStyle()) ?? fallbackTheme;
+    final fallbackTheme = _getCurrentThemeStyle() == AmityThemeStyle.light
+        ? lightTheme
+        : darkTheme;
+    final globalTheme =
+        _getGlobalTheme(_getCurrentThemeStyle()) ?? fallbackTheme;
 
     if (configId == null) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -108,19 +109,23 @@ extension ThemeConfig on ConfigRepository {
     final style = _getCurrentThemeStyle();
     final pageTheme =
         customizationConfig?['${id[0]}/*/*'] as Map<String, dynamic>?;
-    final componentTheme =
-        customizationConfig?['*/${id[1]}/*'] as Map<String, dynamic>? 
-        ?? customizationConfig?['${id[0]}/${id[1]}/*'] as Map<String, dynamic>?;
+    final componentTheme = customizationConfig?['*/${id[1]}/*']
+            as Map<String, dynamic>? ??
+        customizationConfig?['${id[0]}/${id[1]}/*'] as Map<String, dynamic>?;
 
     try {
       if (componentTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(componentTheme["theme"]?[style.toString().split('.').last]), fallbackTheme);
+            AmityTheme.fromJson(
+                componentTheme["theme"]?[style.toString().split('.').last]),
+            fallbackTheme);
       }
 
       if (pageTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(pageTheme["theme"]?[style.toString().split('.').last]), fallbackTheme);
+            AmityTheme.fromJson(
+                pageTheme["theme"]?[style.toString().split('.').last]),
+            fallbackTheme);
       }
     } catch (error) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -157,9 +162,10 @@ extension ThemeConfig on ConfigRepository {
   }
 
   LinearGradient getShimmerGradient() {
-    final style = _getCurrentThemeStyle() == AmityThemeStyle.light ? lightTheme : darkTheme;
+    final style = _getCurrentThemeStyle() == AmityThemeStyle.light
+        ? lightTheme
+        : darkTheme;
     if (style == lightTheme) {
-       
       return const LinearGradient(
         colors: [
           Color(0xFFEBEBF4),
@@ -176,7 +182,6 @@ extension ThemeConfig on ConfigRepository {
         tileMode: TileMode.clamp,
       );
     } else {
-
       return const LinearGradient(
         colors: [
           Color.fromARGB(255, 167, 167, 167),

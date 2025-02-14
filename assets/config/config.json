@@ -304,6 +304,158 @@
         },
         "social_global_search_page/community_search_result/community_category_name": {},
         "social_global_search_page/community_search_result/community_members_count": {},
+        "user_profile_page/*/*": {},
+        "user_profile_page/*/back_button": {
+            "image": "backIcon"
+        },
+        "user_profile_page/*/menu_button": {
+            "image": "menuIcon"
+        },
+        "user_profile_page/*/user_feed_tab_button": {
+            "image": "profileFeedIcon"
+        },
+        "user_profile_page/*/user_image_feed_tab_button": {
+            "image": "profileImageFeedIcon"
+        },
+        "user_profile_page/*/user_video_feed_tab_button": {
+            "image": "profileVideoFeedIcon"
+        },
+        "user_profile_page/user_profile_header/*": {},
+        "user_profile_page/user_feed/*": {},
+        "user_profile_page/user_image_feed/*": {},
+        "user_profile_page/user_video_feed/*": {},
+        "user_relationship_page/*/*": {},
+        "user_pending_follow_request_page/*/*": {},
+        "user_profile_page/user_profile_header/follow_user_button": {
+            "text": "Follow",
+            "image": "plusIcon"
+        },
+        "user_profile_page/user_profile_header/following_user_button": {
+            "text": "Following",
+            "image": "followingIcon"
+        },
+        "user_profile_page/user_profile_header/pending_user_button": {
+            "text": "Cancel request",
+            "image": "pendingIcon"
+        },
+        "user_profile_page/user_profile_header/unblock_user_button": {
+            "text": "Unblock",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_profile_header/user_avatar": {},
+        "user_profile_page/user_profile_header/user_name": {},
+        "user_profile_page/user_profile_header/user_description": {},
+        "user_profile_page/user_profile_header/user_following": {
+            "text": "following"
+        },
+        "user_profile_page/user_profile_header/user_follower": {
+            "text": "followers"
+        },
+        "user_profile_page/user_feed/empty_user_feed": {
+            "text": "No post yet",
+            "image": "emptyProfileFeedIcon"
+        },
+        "user_profile_page/user_feed/private_user_feed": {
+            "text": "This account is private",
+            "image": "lockIcon"
+        },
+        "user_profile_page/user_feed/private_user_feed_info": {
+            "text": "Follow this user to see their posts."
+        },
+        "user_profile_page/user_feed/blocked_user_feed": {
+            "text": "You've blocked this user",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_feed/blocked_user_feed_info": {
+            "text": "Unblock to see their posts."
+        },
+        "user_profile_page/user_image_feed/empty_user_image_feed": {
+            "text": "No photo yet",
+            "image": "emptyPhotoIcon"
+        },
+        "user_profile_page/user_image_feed/private_user_image_feed": {
+            "text": "This account is private",
+            "image": "lockIcon"
+        },
+        "user_profile_page/user_image_feed/private_user_image_feed_info": {
+            "text": "Follow this user to see their posts."
+        },
+        "user_profile_page/user_image_feed/blocked_user_image_feed": {
+            "text": "You've blocked this user",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_image_feed/blocked_user_image_feed_info": {
+            "text": "Unblock to see their posts."
+        },
+        "user_profile_page/user_video_feed/empty_user_video_feed": {
+            "text": "No videos yet",
+            "image": "emptyVideoIcon"
+        },
+        "user_profile_page/user_video_feed/private_user_video_feed": {
+            "text": "This account is private",
+            "image": "lockIcon"
+        },
+        "user_profile_page/user_video_feed/private_user_video_feed_info": {
+            "text": "Follow this user to see their posts."
+        },
+        "user_profile_page/user_video_feed/blocked_user_video_feed": {
+            "text": "You've blocked this user",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_video_feed/blocked_user_video_feed_info": {
+            "text": "Unblock to see their posts."
+        },
+        "edit_user_profile_page/*/*": {},
+        "edit_user_profile_page/*/back_button": {
+            "image": "backIcon"
+        },
+        "edit_user_profile_page/*/title": {
+            "text": "Edit profile"
+        },
+        "edit_user_profile_page/*/user_display_name_title": {
+            "text": "Display name"
+        },
+        "edit_user_profile_page/*/user_about_title": {
+            "text": "About"
+        },
+        "edit_user_profile_page/*/update_user_profile_button": {
+            "text": "Save"
+        },
+        "blocked_users_page/*/*": {},
+        "blocked_users_page/*/back_button": {
+            "image": "backIcon"
+        },
+        "blocked_users_page/*/title": {
+            "text": "Manage blocked users"
+        },
+        "blocked_users_page/*/unblock_user_button": {
+            "text": "Unblock"
+        },
+        "community_setting_page/*/*": {},
+        "community_setting_page/*/edit_profile": {
+            "text": "Edit profile"
+        },
+        "community_setting_page/*/members": {
+            "text": "Members"
+        },
+        "community_setting_page/*/notifications": {
+            "text": "Notifications"
+        },
+        "community_setting_page/*/post_permission": {
+            "text": "Post permission"
+        },
+        "community_setting_page/*/story_setting": {
+            "text": "Story comments"
+        },
+        "community_setting_page/*/leave_community": {
+            "text": "Leave community"
+        },
+        "community_setting_page/*/close_community": {
+            "text": "Close community"
+        },
+        "community_setting_page/*/close_community_description": {
+            "text": "Closing this community will remove the community  page and all its content and comments."
+        },
         "chat_page/*/*": {
             "theme": {
                 "light": {

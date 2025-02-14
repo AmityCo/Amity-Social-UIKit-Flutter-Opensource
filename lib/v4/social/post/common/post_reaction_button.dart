@@ -99,7 +99,7 @@ class PostReactionButton extends StatelessWidget {
     bool hasMyReaction = post.myReactions?.isNotEmpty ?? false;
     var text = (post.reactionCount ?? 0).formattedCompactString();
     if (showLabel) {
-      text = hasMyReaction ? 'Liked' : 'Like';
+      text = hasMyReaction ? 'Like' : 'Like';
     }
     return Text(
       text,
@@ -124,7 +124,7 @@ class PostReactionButton extends StatelessWidget {
     }
     var text = count.formattedCompactString();
     if (showLabel) {
-      text = hasMyReaction ? 'Liked' : 'Like';
+      text = hasMyReaction ? 'Like' : 'Like';
     }
     return Text(
       text,

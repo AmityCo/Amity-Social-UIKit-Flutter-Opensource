@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../common/post_poll.dart';
+
 class PostItem extends NewBaseComponent {
   final AmityPost post;
   final AmityPostCategory category;
@@ -87,11 +89,16 @@ class PostItem extends NewBaseComponent {
       hideMenu: hideMenu,
       action: postAction,
     );
+
+    goToDetail() {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => page,
+      ));
+    }
+
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => page,
-        ));
+        goToDetail();
       },
       child: Container(
         width: double.infinity,
@@ -113,7 +120,8 @@ class PostItem extends NewBaseComponent {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: getChildrenPostContent(context, post),
+              child:
+                  getChildrenPostContent(context, post, hideMenu, goToDetail),
             ),
             hideMenu
                 ? PostBottomNonMember()
@@ -169,7 +177,8 @@ class PostItem extends NewBaseComponent {
     return Container();
   }
 
-  Widget getChildrenPostContent(BuildContext context, AmityPost post) {
+  Widget getChildrenPostContent(BuildContext context, AmityPost post,
+      bool hideMenu, Function goToDetail) {
     final noChildrenPost = post.children?.isEmpty ?? true;
     if (noChildrenPost) {
       return Container();
@@ -177,6 +186,13 @@ class PostItem extends NewBaseComponent {
       return PostContentImage(posts: post.children!);
     } else if (post.children!.first.data is VideoData) {
       return PostContentVideo(posts: post.children!);
+    } else if (post.children!.first.data is PollData) {
+      return PostPollContent(
+          post: post.children!.first,
+          style: AmityPostContentComponentStyle.feed,
+          theme: theme,
+          hideMenu: hideMenu,
+          goToDetail: goToDetail);
     } else {
       return Container();
     }
@@ -228,8 +244,9 @@ class PostItem extends NewBaseComponent {
                     files[index].data!.fileInfo.fileUrl!,
                   );
                 },
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8, horizontal: 14), // Reduced padding
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                // Reduced padding
                 tileColor: Colors.white.withOpacity(0.0),
                 leading: Container(
                   height: 100, // Reduced height to make it slimmer

@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_feed/community_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_pin/community_pin_component.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/bloc/community_profile_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/component/community_header_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/element/community_cover_view.dart';
@@ -17,10 +18,11 @@ import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_compo
 import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component_type.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../post_poll_composer_page/post_poll_composer_page.dart';
 
 class AmityCommunityProfilePage extends NewBasePage {
   final String communityId;
@@ -135,9 +137,8 @@ class AmityCommunityProfilePage extends NewBasePage {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context2) =>
-                                                  CommunitySettingPage(
-                                                    community: state.community!,
-                                                  )))
+                                              AmityCommunitySettingPage(community: state.community!)
+                                          ))
                                     }
                                 },
                                 child: Container(
@@ -221,7 +222,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                   SliverToBoxAdapter(
                     child: (state.community != null &&
                             state.isJoined &&
-                            state.pendingPostCount > 0)
+                            state.pendingPostCount > 0 && (state.community!.isPostReviewEnabled ?? false))
                         ? Container(
                             color: theme.backgroundColor,
                             padding: const EdgeInsets.all(16),
@@ -341,7 +342,7 @@ class AmityCommunityProfilePage extends NewBasePage {
     double height = 0;
     double baseHeight = 80;
     double itemHeight = 48;
-    double itemCount = 2;
+    double itemCount = 3;
     height = baseHeight + (itemHeight * itemCount);
 
     showModalBottomSheet(
@@ -499,6 +500,75 @@ class AmityCommunityProfilePage extends NewBasePage {
                       ),
                     ),
                   ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          final tween = Tween(begin: begin, end: end);
+                          final curvedAnimation = CurvedAnimation(
+                            parent: animation,
+                            curve: curve,
+                          );
+
+                          return SlideTransition(
+                            position: tween.animate(curvedAnimation),
+                            child: child,
+                          );
+                        },
+                        reverseTransitionDuration: Duration.zero,
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            PopScope(
+                              canPop: true,
+                              child: AmityPollPostComposerPage(
+                                targetId: communityId,
+                                targetType: AmityPostTargetType.COMMUNITY,
+                                onPopRequested: (shouldPopCaller) {
+                                  if (shouldPopCaller) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                              ),
+                            ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 20),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(top: 2, bottom: 2),
+                          child: SvgPicture.asset(
+                            'assets/Icons/amity_ic_create_poll_button.svg',
+                            package: 'amity_uikit_beta_service',
+                            width: 24,
+                            height: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Poll',
+                          style: TextStyle(
+                            color: theme.baseColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           );

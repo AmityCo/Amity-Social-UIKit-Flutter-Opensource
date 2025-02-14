@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/component/community_header_component.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
@@ -61,9 +62,7 @@ class AmityCommunityCoverView extends BaseElement {
                         if (community != null)
                           {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context2) => CommunitySettingPage(
-                                      community: community!,
-                                    )))
+                                builder: (context2) => AmityCommunitySettingPage(community: community!)))
                           }
                       },
                       child: Container(
@@ -105,9 +104,14 @@ class AmityCommunityCoverView extends BaseElement {
   Widget renderAvatarImage() {
     final url = community?.avatarImage?.getUrl(AmityImageSize.LARGE);
     return (url != null)
-        ? AmityNetworkImage(
-            imageUrl: url,
-            placeHolderPath: '',
+        ? Container(width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(url),
+                fit: BoxFit.cover,
+              ),
+            )
           )
         : Container(
             width: double.infinity,

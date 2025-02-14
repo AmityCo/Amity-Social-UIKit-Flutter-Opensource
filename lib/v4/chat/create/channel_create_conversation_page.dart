@@ -78,31 +78,60 @@ class AmityChannelCreateConversationPage extends NewBasePage {
 
   Widget userContainer(
       BuildContext context, ChannelCreateConversationState state) {
-    if (state is ChannelCreateConversationLoading) {
-      return userSkeletonList(theme, configProvider);
-    } else if (state is ChannelCreateConversationLoaded) {
-      return userList(
-        context: context,
-        scrollController: scrollController,
-        users: state.list,
-        theme: theme,
-        loadMore: () {
-          context
-              .read<ChannelCreateConversationBloc>()
-              .add(ChannelCreateConversationEventLoadMore());
-        },
-        onTap: (user) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => AmityChatPage(
-              key: Key("${user.userId}"),
-              userId: user.userId,
-              userDisplayName: user.displayName,
-              avatarUrl: user.avatarUrl ?? "",
+    if (state is ChannelCreateConversationLoaded) {
+      if (state.isFetching) {
+        return userSkeletonList(theme, configProvider, itemCount: 10);
+      } else {
+        if (state.list.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  'assets/Icons/amity_ic_search_not_found.svg',
+                  package: 'amity_uikit_beta_service',
+                  colorFilter:
+                      ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
+                  width: 47,
+                  height: 47,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'No results found',
+                  style: TextStyle(
+                    color: theme.baseColorShade3,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17,
+                  ),
+                ),
+              ],
             ),
-          ));
-        },
-        excludeCurrentUser: true,
-      );
+          );
+        } else {
+          return userList(
+            context: context,
+            scrollController: scrollController,
+            users: state.list,
+            theme: theme,
+            loadMore: () {
+              context
+                  .read<ChannelCreateConversationBloc>()
+                  .add(ChannelCreateConversationEventLoadMore());
+            },
+            onTap: (user) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => AmityChatPage(
+                  key: Key("${user.userId}"),
+                  userId: user.userId,
+                  userDisplayName: user.displayName,
+                  avatarUrl: user.avatarUrl ?? "",
+                ),
+              ));
+            },
+            excludeCurrentUser: true,
+          );
+        }
+      }
     } else {
       return Container();
     }

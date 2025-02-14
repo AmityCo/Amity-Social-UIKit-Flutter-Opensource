@@ -66,8 +66,6 @@ class AmityGlobalFeedComponent extends NewBaseComponent {
                           if (((amityPost.children?.isNotEmpty ?? false) &&
                                   (amityPost.children!.first.type ==
                                           AmityDataType.FILE ||
-                                      (amityPost.children!.first.type ==
-                                          AmityDataType.POLL) ||
                                       amityPost.children!.first.type ==
                                           AmityDataType.LIVESTREAM)) ||
                               (amityPost.isDeleted ?? false)) {
@@ -90,9 +88,12 @@ class AmityGlobalFeedComponent extends NewBaseComponent {
                                       style:
                                           AmityPostContentComponentStyle.feed,
                                       post: amityPost,
-                                      category: AmityPostCategory.general,
+                                      category: (state.pinnedPostIds
+                                              .contains(amityPost.postId))
+                                          ? AmityPostCategory.globalFeatured
+                                          : AmityPostCategory.general,
                                       key: uniqueKey,
-                                      hideTarget: true,
+                                      hideTarget: false,
                                       action: AmityPostAction(
                                         onAddReaction: (String) {},
                                         onRemoveReaction: (String) {},
@@ -190,42 +191,59 @@ Widget FeedSkeleton(AmityThemeColor theme, ConfigProvider configProvider) {
 }
 
 Widget skeletonRow() {
-  return SizedBox(
-    height: 180,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 19),
+  return Container(
+    height: 200,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Padding(
+      padding: const EdgeInsets.only(top: 16.0, bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(
-                width: 48,
-                height: 60,
-                padding: const EdgeInsets.only(
-                    top: 12, left: 0, right: 8, bottom: 8),
-                child: const SkeletonImage(
-                  height: 40,
-                  width: 40,
-                  borderRadius: 40,
-                ),
+              SkeletonCircle(
+                size: 32,
               ),
-              const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 6.0),
-                    SkeletonText(width: 120),
-                    SizedBox(height: 12.0),
-                    SkeletonText(width: 88),
-                  ]),
+              const SizedBox(
+                width: 8,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonRectangle(
+                    height: 8,
+                    width: 180,
+                  ),
+                  const SizedBox(height: 8),
+                  SkeletonRectangle(
+                    height: 8,
+                    width: 64,
+                  ),
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 14.0),
-          const SkeletonText(width: 240),
-          const SizedBox(height: 12.0),
-          const SkeletonText(width: 297),
-          const SizedBox(height: 12.0),
-          const SkeletonText(width: 180),
+          const SizedBox(
+            height: 20,
+          ),
+          SkeletonRectangle(
+            height: 8,
+            width: 240,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          SkeletonRectangle(
+            height: 8,
+            width: 180,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          SkeletonRectangle(
+            height: 8,
+            width: 290,
+          )
         ],
       ),
     ),

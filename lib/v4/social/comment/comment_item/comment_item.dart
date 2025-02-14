@@ -9,6 +9,7 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/bloc/com
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/reply_list.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
@@ -50,13 +51,8 @@ class CommentItem extends BaseElement {
     });
   }
 
-  Widget buildCommentItem(
-      BuildContext context,
-      AmityComment comment,
-      bool isReacting,
-      bool isExpanded,
-      bool isEditing
-      ) {
+  Widget buildCommentItem(BuildContext context, AmityComment comment,
+      bool isReacting, bool isExpanded, bool isEditing) {
     var isModerator = false;
     if (comment.target is CommunityCommentTarget) {
       var roles =
@@ -80,15 +76,26 @@ class CommentItem extends BaseElement {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 32,
-            height: 32,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(32),
-              child: AmityUserImage(
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      AmityUserProfilePage(userId: comment.user?.userId ?? ""),
+                ),
+              );
+            },
+            child: SizedBox(
+              width: 32,
+              height: 32,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: AmityUserImage(
                   user: comment.user,
                   theme: theme,
-                  size: 32,),
+                  size: 32,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -126,11 +133,10 @@ class CommentItem extends BaseElement {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  UserProfileScreen(
-                                                amityUserId:
-                                                    comment.user?.userId ?? '',
-                                                amityUser: null,
-                                              ),
+                                                  AmityUserProfilePage(
+                                                      userId: comment
+                                                              .user?.userId ??
+                                                          ""),
                                             ),
                                           );
                                         },
@@ -315,67 +321,69 @@ class CommentItem extends BaseElement {
   Widget renderCommentBottom(
       BuildContext context, AmityComment comment, bool isReacting) {
     return shouldAllowInteraction
-      ? Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "${comment.createdAt?.toSocialTimestamp() ?? ""}${(comment.editedAt != comment.createdAt) ? " (edited)" : ""}",
-          style: TextStyle(
-            color: theme.baseColorShade2,
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        const SizedBox(width: 8),
-        renderReactionButton(context, comment, isReacting),
-        const SizedBox(width: 8),
-        (comment.parentId == null)
-            ? GestureDetector(
-                onTap: () => {commentAction.onReply(comment)},
-                child: Text(
-                  'Reply',
-                  style: TextStyle(
-                    color: theme.baseColorShade2,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "${comment.createdAt?.toSocialTimestamp() ?? ""}${(comment.editedAt != comment.createdAt) ? " (edited)" : ""}",
+                style: TextStyle(
+                  color: theme.baseColorShade2,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 8),
+              renderReactionButton(context, comment, isReacting),
+              const SizedBox(width: 8),
+              (comment.parentId == null)
+                  ? GestureDetector(
+                      onTap: () => {commentAction.onReply(comment)},
+                      child: Text(
+                        'Reply',
+                        style: TextStyle(
+                          color: theme.baseColorShade2,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () {
+                  showCommentAction(context, comment);
+                },
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: SvgPicture.asset(
+                    'assets/Icons/amity_ic_post_item_option.svg',
+                    package: 'amity_uikit_beta_service',
+                    width: 20,
+                    height: 20,
+                    colorFilter: ColorFilter.mode(
+                      theme.baseColorShade2,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
-              )
-            : Container(),
-        const SizedBox(width: 8),
-        GestureDetector(
-          onTap: () {
-            showCommentAction(context, comment);
-          },
-          child: Container(
-            width: 20,
-            height: 20,
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: SvgPicture.asset(
-              'assets/Icons/amity_ic_post_item_option.svg',
-              package: 'amity_uikit_beta_service',
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(
-                theme.baseColorShade2,
-                BlendMode.srcIn,
               ),
-            ),
-          ),
-        ),
-        renderReactionPreview(context, comment, isReacting, shouldAllowInteraction),
-      ],
-    )
-    : Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        renderReactionPreview(context, comment, isReacting, shouldAllowInteraction),
-      ],
-    );
+              renderReactionPreview(
+                  context, comment, isReacting, shouldAllowInteraction),
+            ],
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              renderReactionPreview(
+                  context, comment, isReacting, shouldAllowInteraction),
+            ],
+          );
   }
 
   Widget renderReactionButton(
@@ -392,7 +400,7 @@ class CommentItem extends BaseElement {
               ),
             )
           : Text(
-              'Liked',
+              'Like',
               style: TextStyle(
                 color: theme.primaryColor,
                 fontSize: 13,
@@ -421,7 +429,7 @@ class CommentItem extends BaseElement {
         },
         child: (hasMyReaction)
             ? Text(
-                'Liked',
+                'Like',
                 style: TextStyle(
                   color: theme.primaryColor,
                   fontSize: 13,
@@ -521,7 +529,9 @@ class CommentItem extends BaseElement {
           children: [
             SizedBox(
               width: double.infinity,
-              child: ReplyList(shouldAllowInteraction: shouldAllowInteraction, scrollController: scrollController),
+              child: ReplyList(
+                  shouldAllowInteraction: shouldAllowInteraction,
+                  scrollController: scrollController),
             ),
           ],
         ),
@@ -529,8 +539,8 @@ class CommentItem extends BaseElement {
     );
   }
 
-  Widget renderReactionPreview(
-      BuildContext context, AmityComment comment, bool isReacting, bool shouldAllowInteraction) {
+  Widget renderReactionPreview(BuildContext context, AmityComment comment,
+      bool isReacting, bool shouldAllowInteraction) {
     final hasMyReactions = comment.hasMyReactions();
     var reactionCount = comment.reactionCount ?? 0;
     if (isReacting) {
@@ -539,7 +549,9 @@ class CommentItem extends BaseElement {
     if (reactionCount > 0) {
       return Expanded(
         child: Row(
-          mainAxisAlignment: shouldAllowInteraction ? MainAxisAlignment.end : MainAxisAlignment.start,
+          mainAxisAlignment: shouldAllowInteraction
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           children: [
             getReactionPreview(
               context,
@@ -925,7 +937,8 @@ class CommentItem extends BaseElement {
       listener: (context, state) {},
       builder: (context, state) {
         final commentText = getTextComment(comment);
-        final hasChanges = state.editedText.trim() != commentText.trim() && state.editedText.trim().isNotEmpty;
+        final hasChanges = state.editedText.trim() != commentText.trim() &&
+            state.editedText.trim().isNotEmpty;
         return Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,

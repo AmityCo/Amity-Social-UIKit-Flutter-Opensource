@@ -2,6 +2,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/social/newsfeed/amity_news_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/social_home_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/amity_create_story_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +16,10 @@ class SocialHomePageConfigProviderWidget extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Consumer<ConfigProvider>(
-          builder: (context, configProvider, child) {
-            return AmitySocialHomePage();
-          },
-        ),
+        builder: (context, configProvider, child) {
+          return AmitySocialHomePage();
+        },
+      ),
     );
   }
 }
@@ -26,7 +27,8 @@ class SocialHomePageConfigProviderWidget extends StatelessWidget {
 class NewsFeedComponentConfigProviderWidget extends StatelessWidget {
   final String pageId;
 
-  const NewsFeedComponentConfigProviderWidget({super.key, required this.pageId});
+  const NewsFeedComponentConfigProviderWidget(
+      {super.key, required this.pageId});
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,21 @@ class CreateStoryConfigProviderWidget extends StatelessWidget {
           targetType: AmityStoryTargetType.COMMUNITY,
           targetId: targetId,
         );
+      },
+    );
+  }
+}
+
+class UserProfilePageConfigProviderWidget extends StatelessWidget {
+  const UserProfilePageConfigProviderWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ConfigProvider>(
+      builder: (context, configProvider, child) {
+        return AmityUserProfilePage(userId: "victimIOS");
+
+        //return AmityUserProfilePage(userId: AmityCoreClient.getUserId());
       },
     );
   }

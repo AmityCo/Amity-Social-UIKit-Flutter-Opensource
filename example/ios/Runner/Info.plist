@@ -2,30 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
- <!-- Camera -->
-    <key>NSCameraUsageDescription</key>
-    <string>This app requires access to the camera to take photos.</string>
-
-    <!-- Microphone -->
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app requires access to the microphone for audio recording.</string>
-
-    <!-- Photos -->
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app requires access to the photo library to select photos.</string>
-
-    <!-- Location When In Use -->
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>This app requires access to your location to improve the user experience.</string>
-
-    <!-- Location Always -->
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>This app requires always access to your location for background location tracking.</string>
-
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Example</string>
+	<string>UIKit Sample</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -44,6 +26,20 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to the camera to take photos.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app requires always access to your location for background location tracking.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires access to your location to improve the user experience.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires access to the microphone for audio recording.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need to save images to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library to select photos.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -61,12 +57,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need to save images to your photo library.</string>
-
 </dict>
 </plist>

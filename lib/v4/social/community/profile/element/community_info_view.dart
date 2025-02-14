@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_membership/community_membership_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class AmityCommunityInfoView extends BaseElement {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
-                    MemberManagementPage(communityId: community.communityId!),
+                    AmityCommunityMembershipPage(community: community),
               ),
             ),
           },

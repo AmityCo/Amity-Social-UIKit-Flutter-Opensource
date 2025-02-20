@@ -100,6 +100,8 @@ class AmityUIConfiguration extends ChangeNotifier {
   bool customUserProfileNavigate = false;
   static Future<String> Function(String) onCustomUserProfileImage =
       (userId) async => userId;
+  static String? globalAdminId;
+
   void updateUI() {
     notifyListeners();
   }

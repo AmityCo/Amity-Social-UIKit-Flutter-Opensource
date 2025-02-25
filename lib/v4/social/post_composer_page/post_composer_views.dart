@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/bloc/post_composer_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/SingleVideoPlayer/single_video_player.dart';
@@ -61,18 +62,39 @@ extension PostComposerView on AmityPostComposerPage {
     );
   }
 
-  Widget buildTextField() {
-    return TextFormField(
-      controller: controller,
+  Widget buildTextField(BuildContext context,
+      String? communityId,
+      double minBottomSheetSize,
+      double maxBottomSheetSize) {
+
+    return MentionTextField(
+      controller: textController,
+      theme: theme,
+      communityId: communityId,
+      suggestionDisplayMode: SuggestionDisplayMode.inline,
+      mentionContentType: MentionContentType.post,
+      suggestionMaxRow: 2,
       maxLines: null,
-      textCapitalization: TextCapitalization.sentences,
+      enabled: true,
       decoration: InputDecoration(
         hintText: "What’s going on...",
         border: InputBorder.none,
         focusedBorder: InputBorder.none,
         enabledBorder: InputBorder.none,
-        hintStyle: TextStyle(color: theme.baseColorShade3),
+        hintStyle: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.normal,
+            color: theme.baseColorShade3)
+        ,
       ),
+      style: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.normal,
+        color: theme.baseColor,
+      ),
+      onChanged: (value) {
+      },
+
     );
   }
 

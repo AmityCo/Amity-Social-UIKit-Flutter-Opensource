@@ -74,12 +74,14 @@ class CommunitySetupPageBloc
     });
 
     on<CommunitySetupPagePrivacyChangedEvent>((event, emit) {
+      final hasDataChanged = event.privacy !=
+          (community?.isPublic ?? true
+              ? CommunityPrivacy.public
+              : CommunityPrivacy.private);
       emit(state.copyWith(
           communityPrivacy: event.privacy,
-          hasExistingDataChanged: event.privacy !=
-              (community?.isPublic ?? true
-                  ? CommunityPrivacy.public
-                  : CommunityPrivacy.private)));
+          hasExistingDataChanged: hasDataChanged,
+          isCommunityPrivacyUpdatedToPrivate: hasDataChanged && event.privacy == CommunityPrivacy.private));
     });
 
     on<CommunitySetupPageAddMemberEvent>((event, emit) {

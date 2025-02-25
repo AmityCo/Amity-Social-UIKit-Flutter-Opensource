@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../core/toast/amity_uikit_toast.dart';
 import '../../core/toast/bloc/amity_uikit_toast_bloc.dart';
+import '../../core/ui/mention/mention_text_editing_controller.dart';
 import '../../utils/amity_dialog.dart';
 import '../globalfeed/bloc/global_feed_bloc.dart';
 import 'bloc/poll_post_composer_bloc.dart';
@@ -17,8 +19,8 @@ class AmityPollPostComposerPage extends NewBasePage {
   final AmityPostTargetType targetType;
   final String? targetCommunityName;
   final void Function(bool shouldPopCaller)? onPopRequested;
-  final TextEditingController _questionController = TextEditingController(text: '');
 
+  final MentionTextEditingController _questionController = MentionTextEditingController();
 
   static const int maxQuestionLength = 500;
   static const int maxOptionLength = 60;
@@ -35,9 +37,13 @@ class AmityPollPostComposerPage extends NewBasePage {
 
   @override
   Widget buildPage(BuildContext context) {
-
+    String? communityId = (targetType == AmityPostTargetType.COMMUNITY)
+        ? targetId
+        : null;
     return BlocProvider(
-      create: (context) => PollComposerBloc()..add(UpdateOptionsEvent(options: ['', ''])),
+      create: (context) =>
+      PollComposerBloc()
+        ..add(UpdateOptionsEvent(options: ['', ''])),
       child: BlocBuilder<PollComposerBloc, PollComposerState>(
         builder: (context, state) {
           final bloc = context.read<PollComposerBloc>();
@@ -63,8 +69,15 @@ class AmityPollPostComposerPage extends NewBasePage {
               actions: [
                 TextButton(
                   onPressed: state.isPosting ||
-                      state.question.trim().isEmpty ||
-                      state.options.where((o) => o.trim().isNotEmpty).length < minOptionsRequired
+                      state.question
+                          .trim()
+                          .isEmpty ||
+                      state.options
+                          .where((o) =>
+                      o
+                          .trim()
+                          .isNotEmpty)
+                          .length < minOptionsRequired
                       ? null
                       : () => _createPollPost(state, bloc, context),
                   child: Text(
@@ -73,8 +86,15 @@ class AmityPollPostComposerPage extends NewBasePage {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: state.isPosting ||
-                          state.question.trim().isEmpty ||
-                          state.options.where((o) => o.trim().isNotEmpty).length < minOptionsRequired
+                          state.question
+                              .trim()
+                              .isEmpty ||
+                          state.options
+                              .where((o) =>
+                          o
+                              .trim()
+                              .isNotEmpty)
+                              .length < minOptionsRequired
                           ? theme.primaryColor.blend(ColorBlendingOption.shade3)
                           : theme.primaryColor,
                     ),
@@ -86,10 +106,11 @@ class AmityPollPostComposerPage extends NewBasePage {
             body: ListView(
               padding: const EdgeInsets.all(16.0),
               children: [
-                _buildPollQuestionSection(state, bloc, _questionController),
+                _buildPollQuestionSection(state, bloc, _questionController, communityId),
                 const SizedBox(height: 24),
 
-                _buildSectionTitle('Options', description: 'Poll must contain at least $minOptionsRequired options.'),
+                _buildSectionTitle('Options',
+                    description: 'Poll must contain at least $minOptionsRequired options.'),
                 ..._buildOptionFields(state, bloc),
                 _buildAddOptionButton(state, bloc),
                 Divider(color: theme.baseColorShade4, height: 32),
@@ -106,10 +127,15 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  Widget _buildPollQuestionSection(PollComposerState state, PollComposerBloc bloc, TextEditingController controller) {
+  Widget _buildPollQuestionSection(
+      PollComposerState state,
+      PollComposerBloc bloc,
+      TextEditingController controller,
+      String? communityId,
+      ) {
     const int maxQuestionLength = 500;
     // Only set the controller's text if the state.question differs to prevent cursor reset.
-    if (controller.text != state.question) {
+    if (controller.text.isEmpty && state.question.isNotEmpty) {
       controller.text = state.question;
       controller.selection = TextSelection.fromPosition(
         TextPosition(offset: controller.text.length),
@@ -140,37 +166,46 @@ class AmityPollPostComposerPage extends NewBasePage {
           ],
         ),
         const SizedBox(height: 4),
-        TextField(
-          maxLines: null, // Allows for multiline input
-          controller: controller,
+        MentionTextField(
+          theme: theme,
+          controller: _questionController,
+          suggestionDisplayMode: SuggestionDisplayMode.inline,
+          mentionContentType: MentionContentType.post,
+          suggestionMaxRow: 2,
+          communityId: communityId,
+          maxLines: null,
           enabled: !state.isPosting,
-          onChanged: (value) {
-            bloc.add(UpdateQuestionEvent(question: value));
-          },
           decoration: InputDecoration(
             hintText: "What's your poll question?",
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
             hintStyle: TextStyle(
-              fontSize: 14,
+              fontSize: 15,
               fontWeight: FontWeight.normal,
               color: theme.baseColorShade3,
             ),
           ),
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.normal,
             color: theme.baseColor,
           ),
+          onChanged: (value) {
+            bloc.add(UpdateQuestionEvent(question: value));
+          },
         ),
-        if (state.question.trim().length <= maxQuestionLength) ...[
+        if (state.question
+            .trim()
+            .length <= maxQuestionLength) ...[
           Divider(
             color: theme.baseColorShade4,
           ),
         ],
-        if (state.question.trim().length > maxQuestionLength) ...[
+        if (state.question
+            .trim()
+            .length > maxQuestionLength) ...[
           Divider(
-            color: theme.alertColor
+              color: theme.alertColor
           ),
           Text(
             "Poll question cannot exceed $maxQuestionLength characters.",
@@ -216,8 +251,12 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  List<Widget> _buildOptionFields(PollComposerState state, PollComposerBloc bloc) {
-    return state.options.asMap().entries.map((entry) {
+  List<Widget> _buildOptionFields(PollComposerState state,
+      PollComposerBloc bloc) {
+    return state.options
+        .asMap()
+        .entries
+        .map((entry) {
       final index = entry.key;
       final option = entry.value;
 
@@ -228,17 +267,20 @@ class AmityPollPostComposerPage extends NewBasePage {
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start, // Align items to the start
+              mainAxisAlignment: MainAxisAlignment.start,
+              // Align items to the start
               children: [
                 // Expanded TextField to support multiple lines
                 Expanded(
                   child: TextField(
-                    maxLines: null, // Allows the field to expand to multiple lines
+                    maxLines: null,
+                    // Allows the field to expand to multiple lines
                     enabled: !state.isPosting,
                     controller: TextEditingController(text: option)
                       ..selection = TextSelection.fromPosition(
                         TextPosition(offset: option.length),
-                      ), // Preserve cursor position
+                      ),
+                    // Preserve cursor position
                     onChanged: (value) {
                       if (!state.isPosting) {
                         final updatedOptions = [...state.options];
@@ -247,7 +289,8 @@ class AmityPollPostComposerPage extends NewBasePage {
                       }
                     },
                     decoration: InputDecoration(
-                      hintText: 'Option ${index + 1}', // Dynamic hint text
+                      hintText: 'Option ${index + 1}',
+                      // Dynamic hint text
                       hintStyle: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
@@ -261,7 +304,9 @@ class AmityPollPostComposerPage extends NewBasePage {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: option.trim().length > maxOptionLength
+                          color: option
+                              .trim()
+                              .length > maxOptionLength
                               ? theme.alertColor
                               : theme.baseColorShade4,
                           width: 1,
@@ -270,7 +315,9 @@ class AmityPollPostComposerPage extends NewBasePage {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: option.trim().length > maxOptionLength
+                          color: option
+                              .trim()
+                              .length > maxOptionLength
                               ? theme.alertColor
                               : theme.baseColorShade4,
                           width: 1,
@@ -296,7 +343,8 @@ class AmityPollPostComposerPage extends NewBasePage {
                         ? null
                         : () {
                       final updatedOptions = [...state.options];
-                      updatedOptions.removeAt(index); // Remove the tapped option
+                      updatedOptions.removeAt(
+                          index); // Remove the tapped option
                       if (updatedOptions.isEmpty) {
                         // Ensure at least one empty row remains
                         updatedOptions.add('');
@@ -315,7 +363,9 @@ class AmityPollPostComposerPage extends NewBasePage {
               ],
             ),
             // Error text for exceeding max length
-            if (option.trim().length > maxOptionLength)
+            if (option
+                .trim()
+                .length > maxOptionLength)
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
@@ -349,7 +399,8 @@ class AmityPollPostComposerPage extends NewBasePage {
                 height: 40.0, // Consistent with text field height
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: state.isPosting? theme.secondaryColor.blend(ColorBlendingOption.shade3): theme.baseColorShade3,
+                    color: state.isPosting ? theme.secondaryColor.blend(
+                        ColorBlendingOption.shade3) : theme.baseColorShade3,
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -357,14 +408,17 @@ class AmityPollPostComposerPage extends NewBasePage {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.add, size: 16, color: state.isPosting? theme.secondaryColor: theme.baseColor),
+                    Icon(Icons.add, size: 16,
+                        color: state.isPosting ? theme.secondaryColor : theme
+                            .baseColor),
                     const SizedBox(width: 8),
                     Text(
                       'Add option',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
-                        color: state.isPosting? theme.secondaryColor: theme.baseColor,
+                        color: state.isPosting ? theme.secondaryColor : theme
+                            .baseColor,
                       ),
                     ),
                   ],
@@ -373,7 +427,8 @@ class AmityPollPostComposerPage extends NewBasePage {
             ),
           ),
           // Right padding to align with delete button space
-          const SizedBox(width: 32.0), // Adjust width to match delete button's width
+          const SizedBox(width: 32.0),
+          // Adjust width to match delete button's width
         ],
       ),
     )
@@ -381,8 +436,8 @@ class AmityPollPostComposerPage extends NewBasePage {
   }
 
 
-  Widget buildPollOptionsSection(
-      PollComposerState state, PollComposerBloc bloc, BuildContext context, AmityThemeColor theme) {
+  Widget buildPollOptionsSection(PollComposerState state, PollComposerBloc bloc,
+      BuildContext context, AmityThemeColor theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -424,7 +479,8 @@ class AmityPollPostComposerPage extends NewBasePage {
   }
 
 
-  Widget _buildMultipleSelectionRow(PollComposerState state, PollComposerBloc bloc) {
+  Widget _buildMultipleSelectionRow(PollComposerState state,
+      PollComposerBloc bloc) {
     return Row(
       children: [
         Expanded(
@@ -453,7 +509,8 @@ class AmityPollPostComposerPage extends NewBasePage {
         ),
         Switch(
           value: state.isMultipleChoice,
-          onChanged: state.isPosting? null : (value) => bloc.add(UpdateMultipleChoiceEvent(isMultipleChoice: value)),
+          onChanged: state.isPosting ? null : (value) =>
+              bloc.add(UpdateMultipleChoiceEvent(isMultipleChoice: value)),
           activeColor: theme.backgroundColor,
           activeTrackColor: theme.primaryColor,
           inactiveThumbColor: theme.backgroundColor,
@@ -463,8 +520,8 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  Widget _buildPollDurationSection(
-      PollComposerState state, PollComposerBloc bloc, BuildContext context) {
+  Widget _buildPollDurationSection(PollComposerState state,
+      PollComposerBloc bloc, BuildContext context) {
     final DateFormat formatter = DateFormat("dd MMM 'at' hh:mm a");
     final bool isCustomSelected = state.selectedPollDurationIndex == -1;
 
@@ -488,7 +545,10 @@ class AmityPollPostComposerPage extends NewBasePage {
                   shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   children: [
-                    ...state.durationOptions.asMap().entries.map((entry) {
+                    ...state.durationOptions
+                        .asMap()
+                        .entries
+                        .map((entry) {
                       final index = entry.key;
                       final option = entry.value;
 
@@ -512,12 +572,15 @@ class AmityPollPostComposerPage extends NewBasePage {
                               : (value) {
                             Navigator.pop(context, value);
                           },
-                          activeColor: theme.primaryColor, // Customize color
+                          activeColor: theme.primaryColor,
+                          // Customize color
                           visualDensity: const VisualDensity(
                             horizontal: VisualDensity.minimumDensity,
                             vertical: VisualDensity.minimumDensity,
-                          ), // Remove extra padding
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // Shrink tap area
+                          ),
+                          // Remove extra padding
+                          materialTapTargetSize: MaterialTapTargetSize
+                              .shrinkWrap, // Shrink tap area
                         ),
                         onTap: state.isPosting
                             ? null
@@ -546,12 +609,15 @@ class AmityPollPostComposerPage extends NewBasePage {
                             : (value) {
                           Navigator.pop(context, value);
                         },
-                        activeColor: theme.primaryColor, // Customize color
+                        activeColor: theme.primaryColor,
+                        // Customize color
                         visualDensity: const VisualDensity(
                           horizontal: VisualDensity.minimumDensity,
                           vertical: VisualDensity.minimumDensity,
-                        ), // Remove extra padding
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // Shrink tap area
+                        ),
+                        // Remove extra padding
+                        materialTapTargetSize: MaterialTapTargetSize
+                            .shrinkWrap, // Shrink tap area
                       ),
                       onTap: state.isPosting
                           ? null
@@ -616,7 +682,8 @@ class AmityPollPostComposerPage extends NewBasePage {
                     child: Text(
                       isCustomSelected
                           ? 'Custom end date'
-                          : state.durationOptions[state.selectedPollDurationIndex],
+                          : state.durationOptions[state
+                          .selectedPollDurationIndex],
                       style: TextStyle(
                         fontSize: 14,
                         color: theme.baseColor,
@@ -638,23 +705,27 @@ class AmityPollPostComposerPage extends NewBasePage {
 
         //const SizedBox(height: 16),
         if (isCustomSelected && state.customDate != null) ...[
-    _buildCustomDatePicker(context, state, bloc),
+          _buildCustomDatePicker(context, state, bloc),
 
-        ] else if (!isCustomSelected && state.selectedPollDurationIndex >= 0) ...[
-          Text(
-            'Ends on ${formatter.format(DateTime.now().add(Duration(days: int.parse(state.durationOptions[state.selectedPollDurationIndex].split(" ")[0]))))}',
-            style: TextStyle(
-              fontSize: 12,
-              color: theme.baseColorShade1,
+        ] else
+          if (!isCustomSelected && state.selectedPollDurationIndex >= 0) ...[
+            Text(
+              'Ends on ${formatter.format(DateTime.now().add(Duration(
+                  days: int.parse(
+                      state.durationOptions[state.selectedPollDurationIndex]
+                          .split(" ")[0]))))}',
+              style: TextStyle(
+                fontSize: 12,
+                color: theme.baseColorShade1,
+              ),
             ),
-          ),
-        ],
+          ],
       ],
     );
   }
 
-  Widget _buildCustomDatePicker(
-      BuildContext context, PollComposerState state, PollComposerBloc bloc) {
+  Widget _buildCustomDatePicker(BuildContext context, PollComposerState state,
+      PollComposerBloc bloc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -669,7 +740,7 @@ class AmityPollPostComposerPage extends NewBasePage {
         const SizedBox(width: 8),
         // Date Picker Trigger
         GestureDetector(
-          onTap: state.isPosting? null : () async {
+          onTap: state.isPosting ? null : () async {
             final DateTime? customDate = await showDatePicker(
               context: context,
               initialDate: state.customDate ?? DateTime.now(),
@@ -714,7 +785,7 @@ class AmityPollPostComposerPage extends NewBasePage {
         const SizedBox(width: 8),
         // Time Picker Trigger
         GestureDetector(
-          onTap: state.isPosting? null : () async {
+          onTap: state.isPosting ? null : () async {
             final TimeOfDay? customTime = await showTimePicker(
               context: context,
               initialTime: state.customDate != null
@@ -723,19 +794,25 @@ class AmityPollPostComposerPage extends NewBasePage {
                 minute: state.customDate!.minute,
               )
                   : TimeOfDay.now(),
-                builder: (BuildContext context, Widget? child) {
-                  return Theme(
-                    data: getTimePickerTheme(context, theme),
-                    child: child!,
-                  );
-                },
+              builder: (BuildContext context, Widget? child) {
+                return Theme(
+                  data: getTimePickerTheme(context, theme),
+                  child: child!,
+                );
+              },
             );
 
             if (customTime != null) {
               final updatedDate = DateTime(
-                state.customDate?.year ?? DateTime.now().year,
-                state.customDate?.month ?? DateTime.now().month,
-                state.customDate?.day ?? DateTime.now().day,
+                state.customDate?.year ?? DateTime
+                    .now()
+                    .year,
+                state.customDate?.month ?? DateTime
+                    .now()
+                    .month,
+                state.customDate?.day ?? DateTime
+                    .now()
+                    .day,
                 customTime.hour,
                 customTime.minute,
               );
@@ -763,7 +840,8 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  void _createPollPost(PollComposerState state, PollComposerBloc bloc, BuildContext context) {
+  void _createPollPost(PollComposerState state, PollComposerBloc bloc,
+      BuildContext context) {
     bloc.add(UpdatePostingStateEvent(isPosting: true));
 
     context.read<AmityToastBloc>().add(const AmityToastLoading(
@@ -782,24 +860,33 @@ class AmityPollPostComposerPage extends NewBasePage {
     AmitySocialClient.newPollRepository()
         .createPoll(question: state.question.trim())
         .answers(answers:
-      state.options
-          .where((option) => option.trim().isNotEmpty)
-          .map((option) => AmityPollAnswer.text(option))
-          .toList(),
+    state.options
+        .where((option) =>
+    option
+        .trim()
+        .isNotEmpty)
+        .map((option) => AmityPollAnswer.text(option))
+        .toList(),
     )
-        .answerType( answerType:
-      state.isMultipleChoice
-          ? AmityPollAnswerType.MULTIPLE
-          : AmityPollAnswerType.SINGLE,
+        .answerType(answerType:
+    state.isMultipleChoice
+        ? AmityPollAnswerType.MULTIPLE
+        : AmityPollAnswerType.SINGLE,
     )
-        .closedIn(  closedIn: Duration(
+        .closedIn(closedIn: Duration(
         milliseconds: state.pollDurationInMilliseconds))
         .create()
         .then((amityPoll) {
-      // After creating the poll, create the post
+
+      final mentionMetadataList = _questionController.getAmityMentionMetadata();
+      final mentionUserIds = _questionController.getMentionUserIds();
+      final mentionMetadataJson =
+      AmityMentionMetadataCreator(mentionMetadataList).create();
       dataTypeSelector
           .poll(amityPoll.pollId!)
           .text(amityPoll.question!)
+          .mentionUsers(mentionUserIds)
+          .metadata(mentionMetadataJson)
           .post()
           .then((post) {
         _onPostSuccess(context, post);
@@ -834,7 +921,8 @@ class AmityPollPostComposerPage extends NewBasePage {
   ThemeData getTimePickerTheme(BuildContext context, AmityThemeColor theme) {
     return Theme.of(context).copyWith(
       colorScheme: ColorScheme.light(
-        primary: theme.primaryColor.blend(ColorBlendingOption.shade2), // Clock dial and selected text color
+        primary: theme.primaryColor.blend(ColorBlendingOption.shade2),
+        // Clock dial and selected text color
         onPrimary: theme.primaryColor,
         secondary: theme.primaryColor.blend(ColorBlendingOption.shade2),
         onSecondary: theme.primaryColor,

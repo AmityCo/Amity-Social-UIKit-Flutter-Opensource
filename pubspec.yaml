@@ -20,8 +20,8 @@ dependencies:
   flutter_phoenix: ^1.0.0
   flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
-  amity_sdk: ^0.57.0
-   ## path: ../Amity-Social-Cloud-SDK-Flutter-Internal
+  amity_sdk: ^0.57.2
+   #path: ../Amity-Social-Cloud-SDK-Flutter-Internal
   image_gallery_saver: ^2.0.3
   dio: ^5.0.0
   provider: ^6.0.3
@@ -63,7 +63,10 @@ dependencies:
   palette_generator: ^0.3.3+4
   connectivity_plus: ^6.1.0
   photo_manager: ^3.6.3
-
+  diff_match_patch: ^0.4.1
+  flutter_markdown: ^0.6.14
+  markdown: ^7.0.0
+  diacritic: ^0.1.3
 
 dev_dependencies:
   flutter_test:

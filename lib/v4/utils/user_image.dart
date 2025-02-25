@@ -35,7 +35,7 @@ class AmityUserImage extends StatelessWidget {
       color: theme.primaryColor.blend(ColorBlendingOption.shade2),
       child: Center(
         child: Text(
-          displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
+          displayName.trim().isNotEmpty ? displayName.trim()[0].toUpperCase() : '?',
           style: TextStyle(
             color: Colors.white,
             fontSize: _mapSizeToFontSize(size),

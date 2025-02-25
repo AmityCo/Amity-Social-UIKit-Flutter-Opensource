@@ -11,6 +11,7 @@ class CommunitySetupPageState extends Equatable {
   List<AmityUser> communityMembers = [];
   CommunityPrivacy communityPrivacy = CommunityPrivacy.public;
   bool hasExistingDataChanged = false;
+  bool isCommunityPrivacyUpdatedToPrivate = false;
 
   CommunitySetupPageState copyWith(
       {File? pickedImage,
@@ -20,7 +21,8 @@ class CommunitySetupPageState extends Equatable {
       List<CommunityCategory>? communityCategories,
       CommunityPrivacy? communityPrivacy,
       List<AmityUser>? communityMembers,
-      bool? hasExistingDataChanged}) {
+      bool? hasExistingDataChanged,
+      bool? isCommunityPrivacyUpdatedToPrivate}) {
     return CommunitySetupPageState()
       ..pickedImage = pickedImage ?? this.pickedImage
       ..avatar = avatar ?? this.avatar
@@ -29,7 +31,10 @@ class CommunitySetupPageState extends Equatable {
       ..communityDescription = communityDescription ?? this.communityDescription
       ..communityPrivacy = communityPrivacy ?? this.communityPrivacy
       ..communityMembers = communityMembers ?? this.communityMembers
-      ..hasExistingDataChanged = hasExistingDataChanged ?? this.hasExistingDataChanged;
+      ..hasExistingDataChanged =
+          hasExistingDataChanged ?? this.hasExistingDataChanged
+      ..isCommunityPrivacyUpdatedToPrivate =
+          isCommunityPrivacyUpdatedToPrivate ?? this.isCommunityPrivacyUpdatedToPrivate;
   }
 
   @override
@@ -40,6 +45,7 @@ class CommunitySetupPageState extends Equatable {
         communityCategories,
         communityPrivacy,
         communityMembers,
-        hasExistingDataChanged
+        hasExistingDataChanged,
+        isCommunityPrivacyUpdatedToPrivate
       ];
 }

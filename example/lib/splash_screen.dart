@@ -37,20 +37,13 @@ class _SplashScreenState extends State<SplashScreen> {
     _cachedSocketUrl = prefs.getString('customSocketUrl') ?? "";
     _cachedMqttUrl = prefs.getString('customMqttUrl') ?? "";
 
-    print('cachedApiKey: $_cachedApiKey');
-    print('cachedRegion: $_cachedRegion');
-    print('cachedHttpUrl: $_cachedHttpUrl');
-    print('cachedSocketUrl: $_cachedSocketUrl');
-    print('cachedMqttUrl: $_cachedMqttUrl');
-
-
     if (_cachedApiKey.isNotEmpty) {
       if (_cachedRegion != AmityEndpointRegion.custom) {
         await AmityUIKit().setup(
           apikey: _cachedApiKey,
           region: _cachedRegion,
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp(isCheckboxChecked: true,)));
       } else if (_cachedRegion == AmityEndpointRegion.custom
           && _cachedHttpUrl.isNotEmpty
           && _cachedSocketUrl.isNotEmpty
@@ -62,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           customSocketEndpoint: _cachedSocketUrl,
           customMqttEndpoint: _cachedMqttUrl,
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp(isCheckboxChecked: true,)));
       }
       else {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));

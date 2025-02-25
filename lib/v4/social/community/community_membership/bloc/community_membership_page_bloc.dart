@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -41,6 +42,9 @@ class CommunityMembershipPageBloc
 
     memberStreamSubscription =
         memberLiveCollection.getStreamController().stream.listen((event) {
+          var count = event.length;
+          log("pageCount: $count");
+          log("1st member: ${event[0].user?.displayName}");
       add(CommunityMembershipPageMemberLoadedEvent(event));
     });
 
@@ -123,6 +127,9 @@ class CommunityMembershipPageBloc
       memberStreamSubscription?.cancel();
       memberStreamSubscription =
           memberLiveCollection.getStreamController().stream.listen((event) {
+            var count = event.length;
+            log("pageCount: $count");
+            log("1st member: ${event[0].user?.displayName}");
         add(CommunityMembershipPageMemberLoadedEvent(event));
       });
 

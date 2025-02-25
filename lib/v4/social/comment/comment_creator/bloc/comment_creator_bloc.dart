@@ -5,13 +5,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'comment_creator_events.dart';
+
 part 'comment_creator_state.dart';
 
 class CommentCreatorBloc
     extends Bloc<CommentCreatorEvent, CommentCreatorState> {
   static const double defaultHeight = 45;
   static const double lineHeight = 25;
-  static const double maxHeight = 200;
+  static const double maxHeight = 135;
 
   final AmityComment? replyTo;
 
@@ -34,72 +35,86 @@ class CommentCreatorBloc
       final replyTo = state.replyTo?.commentId;
       emit(const CommentCreatorState(
           text: "", currentHeight: defaultHeight, replyTo: null));
+
+      final mentionMetadataList = event.mentionMetadataList;
+      final mentionUserIds = event.mentionUserIds;
+      final mentionMetadataJson =
+          AmityMentionMetadataCreator(mentionMetadataList).create();
+
       if (replyTo != null) {
         try {
-          if(event.referenceType == AmityCommentReferenceType.POST){
-                     AmitySocialClient.newCommentRepository()
-                      .createComment()
-                      .post(event.referenceId)
-                      .parentId(replyTo)
-                      .create()
-                      .text(event.text)
-                      .send();
-                  } else if(event.referenceType == AmityCommentReferenceType.STORY){
-                    await AmitySocialClient.newCommentRepository()
-                      .createComment()
-                      .story(event.referenceId)
-                      .parentId(replyTo)
-                      .create()
-                      .text(event.text)
-                      .send();
-                  }
+          if (event.referenceType == AmityCommentReferenceType.POST) {
+            AmitySocialClient.newCommentRepository()
+                .createComment()
+                .post(event.referenceId)
+                .parentId(replyTo)
+                .create()
+                .text(event.text)
+                .mentionUsers(mentionUserIds)
+                .metadata(mentionMetadataJson)
+                .send();
+          } else if (event.referenceType == AmityCommentReferenceType.STORY) {
+            await AmitySocialClient.newCommentRepository()
+                .createComment()
+                .story(event.referenceId)
+                .parentId(replyTo)
+                .create()
+                .text(event.text)
+                .mentionUsers(mentionUserIds)
+                .metadata(mentionMetadataJson)
+                .send();
+          }
         } catch (error) {
-
-          if(error!=null && error is AmityException){
-            if(error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)){
-              event.toastBloc.add( const AmityToastShort(
-                message:
-                    "Your comment contains inappropriate word. Please review and delete it."));
+          if (error != null && error is AmityException) {
+            if (error.code ==
+                error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
+              event.toastBloc.add(const AmityToastShort(
+                  message:
+                      "Your comment contains inappropriate word. Please review and delete it."));
             }
-            if(error.code == error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)){
-              if(error.message.contains("Story")){
-                event.toastBloc.add( const AmityToastShort(
-                    message:
-                    "This story is no longer available"));
+            if (error.code ==
+                error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)) {
+              if (error.message.contains("Story")) {
+                event.toastBloc.add(const AmityToastShort(
+                    message: "This story is no longer available"));
               }
             }
           }
-
         }
       } else {
         try {
-          if(event.referenceType == AmityCommentReferenceType.POST){
-                   await AmitySocialClient.newCommentRepository()
-                      .createComment()
-                      .post(event.referenceId)
-                      .create()
-                      .text(event.text)
-                      .send();
-                  }else if(event.referenceType == AmityCommentReferenceType.STORY){
-                    await AmitySocialClient.newCommentRepository()
-                      .createComment()
-                      .story(event.referenceId)
-                      .create()
-                      .text(event.text)
-                      .send();
-                  }
+          if (event.referenceType == AmityCommentReferenceType.POST) {
+            await AmitySocialClient.newCommentRepository()
+                .createComment()
+                .post(event.referenceId)
+                .create()
+                .text(event.text)
+                .mentionUsers(mentionUserIds)
+                .metadata(mentionMetadataJson)
+                .send();
+          } else if (event.referenceType == AmityCommentReferenceType.STORY) {
+            await AmitySocialClient.newCommentRepository()
+                .createComment()
+                .story(event.referenceId)
+                .create()
+                .text(event.text)
+                .mentionUsers(mentionUserIds)
+                .metadata(mentionMetadataJson)
+                .send();
+          }
         } catch (error) {
-          if(error!=null && error is AmityException){
-            if(error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)){
-              event.toastBloc.add( const AmityToastShort(
-                message:
-                    "Your comment contains inappropriate word. Please review and delete it."));
+          if (error != null && error is AmityException) {
+            if (error.code ==
+                error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
+              event.toastBloc.add(const AmityToastShort(
+                  message:
+                      "Your comment contains inappropriate word. Please review and delete it."));
             }
-            if(error.code == error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)){
-              if(error.message.contains("Story")){
-                event.toastBloc.add( const AmityToastShort(
-                    message:
-                    "This story is no longer available"));
+            if (error.code ==
+                error.getErrorCode(AmityErrorCode.TARGET_NOT_FOUND)) {
+              if (error.message.contains("Story")) {
+                event.toastBloc.add(const AmityToastShort(
+                    message: "This story is no longer available"));
               }
             }
           }

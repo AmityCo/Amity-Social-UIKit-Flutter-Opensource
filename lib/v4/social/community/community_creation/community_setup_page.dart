@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
@@ -206,10 +207,7 @@ class AmityCommunitySetupPage extends NewBasePage {
       children: [
         Text(
           'Categories',
-          style: TextStyle(
-              color: theme.baseColorShade1,
-              fontSize: 17,
-              fontWeight: FontWeight.w600),
+          style: AmityTextStyle.titleBold(theme.baseColor),
         ),
         const SizedBox(height: 22),
         Row(
@@ -254,10 +252,7 @@ class AmityCommunitySetupPage extends NewBasePage {
       children: [
         Text(
           'Privacy',
-          style: TextStyle(
-              color: theme.baseColorShade1,
-              fontSize: 17,
-              fontWeight: FontWeight.w600),
+          style: AmityTextStyle.titleBold(theme.baseColor),
         ),
         const SizedBox(height: 16),
         _getRadioButtonTile(
@@ -294,10 +289,7 @@ class AmityCommunitySetupPage extends NewBasePage {
       children: [
         Text(
           'Members',
-          style: TextStyle(
-              color: theme.baseColorShade1,
-              fontSize: 17,
-              fontWeight: FontWeight.w600),
+          style: AmityTextStyle.titleBold(theme.baseColor),
         ),
         const SizedBox(height: 16),
         Wrap(
@@ -391,13 +383,11 @@ class AmityCommunitySetupPage extends NewBasePage {
           Expanded(
               child: GestureDetector(
             onTap: () {
-              if (state.communityName.isNotEmpty && state.hasExistingDataChanged) {
-                context
-                    .read<CommunitySetupPageBloc>()
-                    .add(CommunitySetupPageSaveCommunityEvent(onSuccess: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                }, toastBloc: context.read<AmityToastBloc>()));
+              if (state.communityName.isNotEmpty &&
+                  state.hasExistingDataChanged) {
+                state.isCommunityPrivacyUpdatedToPrivate
+                    ? _showPrivacyChangedDialog(context, _saveAction)
+                    : _saveAction(context);
               }
             },
             child: Container(
@@ -739,6 +729,17 @@ class AmityCommunitySetupPage extends NewBasePage {
     );
   }
 
+  void _saveAction(BuildContext context) {
+    context
+        .read<CommunitySetupPageBloc>()
+        .add(CommunitySetupPageSaveCommunityEvent(
+            onSuccess: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            toastBloc: context.read<AmityToastBloc>()));
+  }
+
   void _backAction(BuildContext context) {
     ConfirmationV4Dialog().show(
         context: context,
@@ -748,6 +749,18 @@ class AmityCommunitySetupPage extends NewBasePage {
         rightButtonText: 'Leave',
         onConfirm: () {
           Navigator.pop(context);
+        });
+  }
+
+  void _showPrivacyChangedDialog(BuildContext context, Function onConfirm) {
+    ConfirmationV4Dialog().show(
+        context: context,
+        title: 'Change community privacy settings?',
+        detailText:
+            'This community has globally featured posts. Changing the community from public to private will remove these posts from being featured globally.',
+        leftButtonColor: Colors.blueAccent,
+        onConfirm: () {
+          onConfirm(context);
         });
   }
 

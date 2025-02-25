@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'comment_item_events.dart';
+
 part 'comment_item_state.dart';
 
 class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
@@ -15,12 +16,12 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
     required this.comment,
     required this.isExpanded,
   }) : super(CommentItemState(
-      comment: comment,
-      isReacting: false,
-      isExpanded: isExpanded,
-      isEditing: false,
-      editedText: getTextComment(comment),
-    )) {
+          comment: comment,
+          isReacting: false,
+          isExpanded: isExpanded,
+          isEditing: false,
+          editedText: getTextComment(comment),
+        )) {
     on<CommentItemLoaded>((event, emit) async {
       emit(
           state.copyWith(comment: event.comment, isExpanded: event.isExpanded));
@@ -64,9 +65,16 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
     on<CommentItemUpdate>((event, emit) async {
       emit(state.copyWith(isEditing: false));
 
+      final mentionMetadataList = event.mentionMetadataList;
+      final mentionUserIds = event.mentionUserIds;
+      final mentionMetadataJson =
+          AmityMentionMetadataCreator(mentionMetadataList).create();
+
       await AmitySocialClient.newCommentRepository()
           .updateComment(commentId: event.commentId)
           .text(event.text)
+          .metadata(mentionMetadataJson)
+          .mentionUsers(mentionUserIds)
           .build()
           .update();
       emit(state.copyWith(

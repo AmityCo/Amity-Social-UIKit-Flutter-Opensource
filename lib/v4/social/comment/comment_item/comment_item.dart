@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_text_editing_controller.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_extention.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/bloc/comment_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/comment_action.dart';
@@ -24,7 +28,7 @@ import 'package:flutter_svg/svg.dart';
 class CommentItem extends BaseElement {
   final ScrollController parentScrollController;
   final CommentAction commentAction;
-  final TextEditingController controller = TextEditingController();
+  final MentionTextEditingController controller = MentionTextEditingController();
   final ScrollController scrollController = ScrollController();
   final bool shouldAllowInteraction;
 
@@ -45,7 +49,20 @@ class CommentItem extends BaseElement {
   Widget buildElement(BuildContext context) {
     return BlocBuilder<CommentItemBloc, CommentItemState>(
         builder: (context, state) {
-      controller.text = state.editedText;
+          final plainText = state.editedText;
+          var mentionList = <AmityUserMentionMetadata>[];
+
+          if (state.comment.metadata != null) {
+            final mentionedGetter = AmityMentionMetadataGetter(
+                metadata: state.comment.metadata!);
+            mentionList = mentionedGetter.getMentionedUsers();
+          }
+
+          // Only call populate if the incoming plainText is different.
+          if (plainText != controller.text) {
+            controller.populate(plainText, mentionList);
+          }
+
       return buildCommentItem(context, state.comment, state.isReacting,
           state.isExpanded, state.isEditing);
     });
@@ -54,6 +71,7 @@ class CommentItem extends BaseElement {
   Widget buildCommentItem(BuildContext context, AmityComment comment,
       bool isReacting, bool isExpanded, bool isEditing) {
     var isModerator = false;
+    var communityId = null;
     if (comment.target is CommunityCommentTarget) {
       var roles =
           (comment.target as CommunityCommentTarget).creatorMember?.roles;
@@ -62,6 +80,7 @@ class CommentItem extends BaseElement {
               roles.contains("community-moderator"))) {
         isModerator = true;
       }
+      communityId = (comment.target as CommunityCommentTarget).communityId;
     }
     controller.addListener(() {
       context.read<CommentItemBloc>().add(
@@ -159,22 +178,8 @@ class CommentItem extends BaseElement {
                                         : Container(),
                                     Flexible(
                                       fit: FlexFit.loose,
-                                      child: Text(
-                                        // "To make a SizedBox in Flutter wrap its content in terms of height, you cannot directly achieve this because SizedBox requires explicit width and height values. However, you can use alternative widgets like Wrap, FittedBox, or FractionallySizedBox to achieve similar effects based on the content size or parent constraints.",
-                                        comment.data is CommentTextData
-                                            ? (comment.data as CommentTextData)
-                                                    .text ??
-                                                ""
-                                            : "",
-
-                                        softWrap: true,
-                                        overflow: TextOverflow.visible,
-                                        style: TextStyle(
-                                          color: theme.baseColor,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
+                                      // "To make a SizedBox in Flutter wrap its content in terms of height, you cannot directly achieve this because SizedBox requires explicit width and height values. However, you can use alternative widgets like Wrap, FittedBox, or FractionallySizedBox to achieve similar effects based on the content size or parent constraints.",
+                                      child: getCommentTextContent(comment, theme)
                                     ),
                                   ],
                                 )
@@ -199,7 +204,12 @@ class CommentItem extends BaseElement {
                                               removeBottom: true,
                                               child: Scrollbar(
                                                 controller: scrollController,
-                                                child: TextField(
+                                                child: MentionTextField(
+                                                  theme: theme,
+                                                  suggestionMaxRow: 2,
+                                                  suggestionDisplayMode: SuggestionDisplayMode.inline,
+                                                  mentionContentType: MentionContentType.comment,
+                                                  communityId: communityId,
                                                   controller: controller,
                                                   scrollController:
                                                       scrollController,
@@ -273,7 +283,12 @@ class CommentItem extends BaseElement {
                                       removeRight: true,
                                       child: Scrollbar(
                                         controller: scrollController,
-                                        child: TextField(
+                                        child: MentionTextField(
+                                          theme: theme,
+                                          suggestionMaxRow: 2,
+                                          suggestionDisplayMode: SuggestionDisplayMode.inline,
+                                          mentionContentType: MentionContentType.comment,
+                                          communityId: communityId,
                                           controller: controller,
                                           scrollController: scrollController,
                                           onChanged: (value) {},
@@ -315,6 +330,85 @@ class CommentItem extends BaseElement {
           )
         ],
       ),
+    );
+  }
+
+  Widget getCommentTextContent(AmityComment comment, AmityThemeColor theme) {
+    // Get the text content from the comment.
+    final String textContent = comment.data is CommentTextData
+        ? (comment.data as CommentTextData).text ?? ""
+        : "";
+
+    // Define normal and mention styles.
+    final normalStyle = TextStyle(
+      color: theme.baseColor,
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+    );
+    final mentionStyle = TextStyle(
+      color: theme.highlightColor,
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+    );
+
+    // If there is no metadata, simply return a normal Text widget.
+    if (comment.metadata == null) {
+      return Text(
+        textContent,
+        softWrap: true,
+        overflow: TextOverflow.visible,
+        style: normalStyle,
+      );
+    }
+
+    // Obtain the mention metadata from the comment.
+    final mentionedGetter = AmityMentionMetadataGetter(metadata: comment.metadata!);
+    final List<AmityUserMentionMetadata> mentionedUsers =
+    mentionedGetter.getMentionedUsers();
+
+    // Sort mention metadata by starting index.
+    mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
+
+    List<TextSpan> spans = [];
+    int currentIndex = 0;
+
+    for (var mention in mentionedUsers) {
+      // Skip mention if its start is beyond available text.
+      if (mention.index >= textContent.length) continue;
+
+      // Add text before the mention.
+      if (mention.index > currentIndex) {
+        spans.add(TextSpan(
+          text: textContent.substring(currentIndex, mention.index),
+          style: normalStyle,
+        ));
+      }
+      // Calculate the raw end index.
+      // Assuming the mention metadata length does not include the '@', we add 1.
+      int rawEndIndex = mention.index + mention.length + 1;
+      // Clamp the end index to the text length.
+      int safeEndIndex = min(rawEndIndex, textContent.length);
+
+      spans.add(TextSpan(
+        text: textContent.substring(mention.index, safeEndIndex),
+        style: mentionStyle,
+      ));
+
+      currentIndex = safeEndIndex;
+    }
+    // Append any remaining text after the last mention.
+    if (currentIndex < textContent.length) {
+      spans.add(TextSpan(
+        text: textContent.substring(currentIndex),
+        style: normalStyle,
+      ));
+    }
+
+    // Return a RichText widget to render the styled text.
+    return RichText(
+      softWrap: true,
+      overflow: TextOverflow.visible,
+      text: TextSpan(children: spans),
     );
   }
 
@@ -994,7 +1088,11 @@ class CommentItem extends BaseElement {
                 if (hasChanges)
                   {
                     context.read<CommentItemBloc>().add(CommentItemUpdate(
-                        commentId: comment.commentId!, text: controller.text))
+                        commentId: comment.commentId!,
+                        text: controller.text,
+                        mentionMetadataList: controller.getAmityMentionMetadata(),
+                        mentionUserIds: controller.getMentionUserIds()
+                    ))
                   }
               },
               child: Container(

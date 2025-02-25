@@ -528,6 +528,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                               child: AmityPollPostComposerPage(
                                 targetId: communityId,
                                 targetType: AmityPostTargetType.COMMUNITY,
+                                targetCommunityName: community?.displayName ?? '',
                                 onPopRequested: (shouldPopCaller) {
                                   if (shouldPopCaller) {
                                     Navigator.of(context).pop();

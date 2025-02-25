@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -19,9 +20,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../core/ui/mention/mention_text_editing_controller.dart';
+
 class AmityPostComposerPage extends NewBasePage {
   final AmityPostComposerOptions options;
-  final TextEditingController controller = TextEditingController(text: '');
+  final MentionTextEditingController textController =
+      MentionTextEditingController();
   final void Function(bool shouldPopCaller)? onPopRequested;
   ImagePicker imagePicker = ImagePicker();
   late String currentPostText = '';
@@ -43,6 +47,11 @@ class AmityPostComposerPage extends NewBasePage {
   @override
   Widget buildPage(BuildContext context) {
     _getAppName();
+    String? communityId = (options.targetType == AmityPostTargetType.COMMUNITY &&
+        options.targetId != null)
+        ? options.targetId
+        : null;
+
     if (options.mode == AmityPostComposerMode.edit) {
       AmityPost post = options.post!;
       currentPostText = (post.data as TextData).text ?? '';
@@ -95,7 +104,7 @@ class AmityPostComposerPage extends NewBasePage {
             }
 
             if (state is PostComposerTextChangeState) {
-              controller.text = state.text;
+              textController.text = state.text;
               if (currentPostText != state.text) {
                 isTextChanged = true;
               } else {
@@ -151,6 +160,7 @@ class AmityPostComposerPage extends NewBasePage {
             }
 
             double maxBottomSheetSize = 0.3;
+            double minBottomSheetSize = 0.125;
             if (selectedMediaType != null) {
               // 0.8 per item
               maxBottomSheetSize = 0.22;
@@ -170,7 +180,7 @@ class AmityPostComposerPage extends NewBasePage {
                             child: Column(
                               children: [
                                 const SizedBox(height: 20),
-                                buildTextField(),
+                                buildTextField(context, communityId, minBottomSheetSize, maxBottomSheetSize),
                                 const SizedBox(height: 20),
                                 Container(
                                   color: Colors.transparent,
@@ -187,7 +197,7 @@ class AmityPostComposerPage extends NewBasePage {
                   if (options.mode == AmityPostComposerMode.create)
                     CustomBottomSheet(
                       maxSize: maxBottomSheetSize,
-                      minSize: 0.125,
+                      minSize: minBottomSheetSize,
                       theme: theme,
                       collapsedContent: AmityMediaAttachmentComponent(
                         onCameraTap: () async {
@@ -287,12 +297,21 @@ class AmityPostComposerPage extends NewBasePage {
   void _initializeController(BuildContext context) {
     if (options.mode == AmityPostComposerMode.edit &&
         options.post?.data is TextData) {
-      controller.text = (options.post!.data as TextData).text ?? '';
+      final text = (options.post!.data as TextData).text ?? '';
+      var mentionList = List<AmityUserMentionMetadata>.empty();
+
+      if(options.post!.metadata != null) {
+        final mentionedGetter = AmityMentionMetadataGetter(
+            metadata: options.post!.metadata!);
+        mentionList = mentionedGetter.getMentionedUsers();
+      }
+
+      textController.populate(text, mentionList);
     }
-    controller.addListener(() {
+    textController.addListener(() {
       context
           .read<PostComposerBloc>()
-          .add(PostComposerTextChangeEvent(text: controller.text));
+          .add(PostComposerTextChangeEvent(text: textController.text));
     });
   }
 
@@ -324,7 +343,7 @@ class AmityPostComposerPage extends NewBasePage {
       options.post
           ?.edit()
           .image(images)
-          .text(controller.text)
+          .text(textController.text)
           .build()
           .update()
           .then((post) {
@@ -339,7 +358,11 @@ class AmityPostComposerPage extends NewBasePage {
       if (currentVideos != null) {
         postEditBuilder?.video(currentVideos!);
       }
-      postEditBuilder?.text(controller.text).build().update().then((post) {
+      postEditBuilder
+          ?.text(textController.text)
+          .build()
+          .update()
+          .then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
         _showToast(context, "Failed to edit post. Please try again.",
@@ -375,22 +398,33 @@ class AmityPostComposerPage extends NewBasePage {
               AmityVideo(amityVideo.value.fileInfo!.getFileProperties!);
           videos.add(video);
         }
-        postCreatorBuilder =
-            dataTypeSelector.video(videos).text(controller.text);
+        postCreatorBuilder = dataTypeSelector
+            .video(videos)
+            .text(textController.text);
       } else {
         List<AmityImage> images = [];
         var imageList = selectedFiles.entries;
         for (var image in imageList) {
           images.add(AmityImage(image.value.fileInfo!.getFileProperties!));
         }
-        postCreatorBuilder =
-            dataTypeSelector.image(images).text(controller.text);
+        postCreatorBuilder = dataTypeSelector
+            .image(images)
+            .text(textController.text);
       }
     } else {
-      postCreatorBuilder = dataTypeSelector.text(controller.text);
+      postCreatorBuilder = dataTypeSelector
+          .text(textController.text);
     }
+    final mentionMetadataList = textController.getAmityMentionMetadata();
+    final mentionUserIds = textController.getMentionUserIds();
+    final mentionMetadataJson =
+        AmityMentionMetadataCreator(mentionMetadataList).create();
 
-    postCreatorBuilder.post().then((post) {
+    postCreatorBuilder
+        .mentionUsers(mentionUserIds)
+        .metadata(mentionMetadataJson)
+        .post()
+        .then((post) {
       _onPostSuccess(context, post);
     }).onError((error, stackTrace) {
       _showToast(context, "Failed to create post. Please try again.",

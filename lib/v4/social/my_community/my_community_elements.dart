@@ -92,10 +92,13 @@ class CommunityImageAvatarElement extends BaseElement {
 }
 
 class AmityPrivateBadgeElement extends BaseElement {
+   ColorFilter? colorFilter;
+
   AmityPrivateBadgeElement({
     Key? key,
     String? pageId,
     String? componentId,
+    this.colorFilter,
   }) : super(
             key: key,
             pageId: pageId,
@@ -106,6 +109,7 @@ class AmityPrivateBadgeElement extends BaseElement {
   @override
   Widget buildElement(BuildContext context) {
     return SvgPicture.asset("assets/Icons/amity_ic_private_badge.svg",
+        colorFilter: colorFilter,
         package: 'amity_uikit_beta_service');
   }
 }

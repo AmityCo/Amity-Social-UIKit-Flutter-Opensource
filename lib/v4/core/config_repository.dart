@@ -14,10 +14,14 @@ class ConfigRepository {
 
   late Map<String, dynamic> _config;
   late Set<String> excludedList;
+  bool _isConfigInitialized = false;
 
   Future<void> loadConfig() async {
-    _config = await _loadConfigFile('config');
-    excludedList = Set<String>.from(_config['excludes'] ?? []);
+    if (!_isConfigInitialized) {
+      _config = await _loadConfigFile('config');
+      excludedList = Set<String>.from(_config['excludes'] ?? []);
+      _isConfigInitialized = true;
+    }
   }
 
   Map<String, dynamic> getConfig(String configId) {
@@ -34,9 +38,14 @@ class ConfigRepository {
     }
 
     final variations = [
-      '*/${id[1]}/${id[2]}',
+      '*/*/*',
       '*/${id[1]}/*',
       '*/*/${id[2]}',
+      '*/${id[1]}/${id[2]}',
+      '${id[0]}/*/*',
+      '${id[0]}/${id[1]}/*',
+      '${id[0]}/*/${id[2]}',
+      '${id[0]}/${id[1]}/${id[2]}',
     ];
 
     for (var variation in variations) {
@@ -60,7 +69,6 @@ class ConfigRepository {
 }
 
 extension ThemeConfig on ConfigRepository {
-
   AmityThemeStyle _getCurrentThemeStyle() {
     final systemStyle =
         SchedulerBinding.instance.platformDispatcher.platformBrightness;
@@ -81,9 +89,11 @@ extension ThemeConfig on ConfigRepository {
   }
 
   AmityThemeColor getTheme(String? configId) {
-    final fallbackTheme =
-        _getCurrentThemeStyle() == AmityThemeStyle.light ? lightTheme : darkTheme;
-    final globalTheme = _getGlobalTheme(_getCurrentThemeStyle()) ?? fallbackTheme;
+    final fallbackTheme = _getCurrentThemeStyle() == AmityThemeStyle.light
+        ? lightTheme
+        : darkTheme;
+    final globalTheme =
+        _getGlobalTheme(_getCurrentThemeStyle()) ?? fallbackTheme;
 
     if (configId == null) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -96,19 +106,26 @@ extension ThemeConfig on ConfigRepository {
       return _getThemeColor(globalTheme, fallbackTheme);
     }
 
+    final style = _getCurrentThemeStyle();
     final pageTheme =
         customizationConfig?['${id[0]}/*/*'] as Map<String, dynamic>?;
-    final componentTheme =
-        customizationConfig?['*/${id[1]}/*'] as Map<String, dynamic>?;
+    final componentTheme = customizationConfig?['*/${id[1]}/*']
+            as Map<String, dynamic>? ??
+        customizationConfig?['${id[0]}/${id[1]}/*'] as Map<String, dynamic>?;
+
     try {
       if (componentTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(componentTheme["theme"]), fallbackTheme);
+            AmityTheme.fromJson(
+                componentTheme["theme"]?[style.toString().split('.').last]),
+            fallbackTheme);
       }
 
       if (pageTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(pageTheme["theme"]), fallbackTheme);
+            AmityTheme.fromJson(
+                pageTheme["theme"]?[style.toString().split('.').last]),
+            fallbackTheme);
       }
     } catch (error) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -145,9 +162,10 @@ extension ThemeConfig on ConfigRepository {
   }
 
   LinearGradient getShimmerGradient() {
-    final style = _getCurrentThemeStyle() == AmityThemeStyle.light ? lightTheme : darkTheme;
+    final style = _getCurrentThemeStyle() == AmityThemeStyle.light
+        ? lightTheme
+        : darkTheme;
     if (style == lightTheme) {
-       
       return const LinearGradient(
         colors: [
           Color(0xFFEBEBF4),
@@ -164,7 +182,6 @@ extension ThemeConfig on ConfigRepository {
         tileMode: TileMode.clamp,
       );
     } else {
-
       return const LinearGradient(
         colors: [
           Color.fromARGB(255, 167, 167, 167),

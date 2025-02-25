@@ -67,7 +67,7 @@ class AmityStoryTargetElement extends BaseElement {
       badge = "assets/Icons/ic_warning_circle_red.svg";
     } else if (hasManageStoryPermission) {
       badge = "assets/Icons/ic_add_circle_blue.svg";
-    } else if (isOfficialCommunity) {
+    } else if (isOfficialCommunity && !isCommunityTarget) {
       badge = "assets/Icons/ic_verified_blue.svg";
     } else {
       badge = null;

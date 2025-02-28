@@ -66,6 +66,9 @@ class MemberManagementVM extends ChangeNotifier {
       // final newMember= await AmityUIConfiguration.onCustomMember(_amityUsersController.loadedItems);
       final users = await AmityUIConfiguration.onCustomMember(
           _amityUsersController.loadedItems);
+      users.removeWhere(
+        (user) => user.userId == AmityUIConfiguration.globalAdminId,
+      );
       _userList.clear();
       _userList.addAll(users);
       notifyListeners();
@@ -79,6 +82,9 @@ class MemberManagementVM extends ChangeNotifier {
     if (_amityModeratorsController.error == null) {
       final users = await AmityUIConfiguration.onCustomMember(
           _amityModeratorsController.loadedItems);
+      users.removeWhere(
+        (user) => user.userId == AmityUIConfiguration.globalAdminId,
+      );
       _moderatorList.clear();
       _moderatorList.addAll(users);
 

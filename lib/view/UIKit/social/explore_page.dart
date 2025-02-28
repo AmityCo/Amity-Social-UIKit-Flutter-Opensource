@@ -69,6 +69,12 @@ class CommunityPageState extends State<CommunityPage>
     });
   }
 
+  void newsFeedTab() {
+    setState(() {
+      _tabController.index = 0;
+    });
+  }
+
   @override
   void didUpdateWidget(CommunityPage oldWidget) {
     super.didUpdateWidget(oldWidget);

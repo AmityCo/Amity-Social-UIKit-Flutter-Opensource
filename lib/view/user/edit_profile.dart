@@ -145,6 +145,11 @@ class ProfileScreenState extends State<ProfileScreen> {
               await Provider.of<AmityVM>(context, listen: false)
                   .refreshCurrentUserData()
                   .then((value) {
+                Provider.of<AmityUIConfiguration>(context, listen: false)
+                    .logicConfig
+                    .onEditProfileSaved
+                    ?.call();
+
                 Navigator.of(context).pop();
                 AmityDialog().showAlertErrorDialog(
                     title: "Success!",

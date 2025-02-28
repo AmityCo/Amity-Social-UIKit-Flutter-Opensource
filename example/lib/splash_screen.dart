@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
           apikey: _cachedApiKey,
           region: _cachedRegion,
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp(isCheckboxChecked: true,)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp()));
       } else if (_cachedRegion == AmityEndpointRegion.custom
           && _cachedHttpUrl.isNotEmpty
           && _cachedSocketUrl.isNotEmpty
@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           customSocketEndpoint: _cachedSocketUrl,
           customMqttEndpoint: _cachedMqttUrl,
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp(isCheckboxChecked: true,)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmityApp()));
       }
       else {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));

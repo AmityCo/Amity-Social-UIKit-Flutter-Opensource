@@ -6,6 +6,8 @@ import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../post_poll_target_selection_page/post_poll_target_selection_page.dart';
+
 class AmityCreatePostMenuComponent extends NewBaseComponent {
   AmityCreatePostMenuComponent({Key? key, String? pageId})
       : super(key: key, pageId: pageId, componentId: 'componentId');
@@ -60,6 +62,16 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
                   ),
                 );
               }
+
+              if (result == 3) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      body: AmityPostPollTargetSelectionPage(),
+                    ),
+                  ),
+                );
+              }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
               PopupMenuItem<int>(
@@ -71,6 +83,11 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
                 value: 2,
                 child: getMenu(
                     text: "Story", iconPath: "ic_create_stroy_black.svg"),
+              ),
+              PopupMenuItem<int>(
+                value: 3,
+                child: getMenu(
+                    text: "Poll", iconPath: "amity_ic_create_poll_button.svg"),
               ),
             ],
           ),

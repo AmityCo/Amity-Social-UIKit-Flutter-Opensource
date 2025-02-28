@@ -16,8 +16,9 @@ class ScrollableTabs extends NewBaseComponent {
         final selectedIndex = state is TabState ? state.selectedIndex : 0;
 
         return Container(
+          alignment: AlignmentDirectional.centerStart,
           color: theme.backgroundColor,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

@@ -26,9 +26,10 @@ abstract class NewBasePage extends StatelessWidget {
 
   // ignore: prefer_const_constructors_in_immutables
   NewBasePage({super.key, required this.pageId});
-  
+
   late final ConfigProvider configProvider;
   late final AmityThemeColor theme;
+  late final AmityUIConfig uiConfig;
 
   Widget buildPage(BuildContext context);
 
@@ -38,17 +39,15 @@ abstract class NewBasePage extends StatelessWidget {
       builder: (context, provider, child) {
         configProvider = provider;
         theme = configProvider.getTheme(pageId, '');
+        uiConfig = configProvider.getUIConfig(pageId, null, null);
         return Theme(
-          data: Theme.of(context)
-            .copyWith(
-              textSelectionTheme: TextSelectionThemeData(
-                cursorColor: theme.primaryColor,
-                selectionColor: theme.primaryColor.withOpacity(0.3),
-                selectionHandleColor: theme.primaryColor,
-              )
-            ),
-          child: buildPage(context)
-        );
+            data: Theme.of(context).copyWith(
+                textSelectionTheme: TextSelectionThemeData(
+              cursorColor: theme.primaryColor,
+              selectionColor: theme.primaryColor.withOpacity(0.3),
+              selectionHandleColor: theme.primaryColor,
+            )),
+            child: buildPage(context));
       },
     );
     // return ChangeNotifierProvider<ConfigProvider>(

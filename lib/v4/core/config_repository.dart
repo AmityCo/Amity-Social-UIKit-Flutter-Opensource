@@ -109,19 +109,23 @@ extension ThemeConfig on ConfigRepository {
     final style = _getCurrentThemeStyle();
     final pageTheme =
         customizationConfig?['${id[0]}/*/*'] as Map<String, dynamic>?;
-    final componentTheme =
-        customizationConfig?['*/${id[1]}/*'] as Map<String, dynamic>? 
-        ?? customizationConfig?['${id[0]}/${id[1]}/*'] as Map<String, dynamic>?;
+    final componentTheme = customizationConfig?['*/${id[1]}/*']
+            as Map<String, dynamic>? ??
+        customizationConfig?['${id[0]}/${id[1]}/*'] as Map<String, dynamic>?;
 
     try {
       if (componentTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(componentTheme["theme"]?[style.toString().split('.').last]), fallbackTheme);
+            AmityTheme.fromJson(
+                componentTheme["theme"]?[style.toString().split('.').last]),
+            fallbackTheme);
       }
 
       if (pageTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(pageTheme["theme"]?[style.toString().split('.').last]), fallbackTheme);
+            AmityTheme.fromJson(
+                pageTheme["theme"]?[style.toString().split('.').last]),
+            fallbackTheme);
       }
     } catch (error) {
       return _getThemeColor(globalTheme, fallbackTheme);

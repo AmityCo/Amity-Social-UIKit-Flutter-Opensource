@@ -64,13 +64,11 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     });
 
     on<PostItemDelete>((event, emit) async {
-      final delete = await event.post.delete();
-      if (delete) {
         event.action?.onPostDeleted(event.post);
         var updatedPost = event.post;
         updatedPost.isDeleted = true;
         emit(state.copyWith(post: updatedPost));
-      }
+
     });
 
     on<PostItemLoaded>((event, emit) async {

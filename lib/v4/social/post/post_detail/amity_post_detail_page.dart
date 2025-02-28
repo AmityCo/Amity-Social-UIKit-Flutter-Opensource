@@ -1,3 +1,6 @@
+
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator.dart';
@@ -73,10 +76,13 @@ class AmityPostDetailPage extends NewBasePage {
   }) {
     ScrollController scrollController = ScrollController();
     var isJoinedCommunity = true;
+    String? communityId;
     if (post.target is CommunityTarget) {
       final target = post.target as CommunityTarget;
       final community = target.targetCommunity;
       isJoinedCommunity = community?.isJoined ?? true;
+      communityId = target.targetCommunityId;
+      log("communityId: $communityId");
     }
     return Column(
       children: [
@@ -133,6 +139,7 @@ class AmityPostDetailPage extends NewBasePage {
                 AmityCommentCreator(
                   referenceId: postId,
                   referenceType: AmityCommentReferenceType.POST,
+                  communityId: communityId,
                   replyTo: replyTo,
                   action: CommentCreatorAction(onDissmiss: () {
                     context

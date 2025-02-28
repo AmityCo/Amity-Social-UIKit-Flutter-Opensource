@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
@@ -96,13 +97,10 @@ Widget avatarImage(AmityUser user, AmityThemeColor theme) {
 Widget displayName(String displayName, AmityThemeColor theme) {
   return Expanded(
     child: Text(
+      overflow: TextOverflow.ellipsis,
       displayName,
-      style: TextStyle(
-        color: theme.baseColor,
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-        fontFamily: 'SF Pro Text',
-      ),
+      maxLines: 1,
+      style: AmityTextStyle.bodyBold(theme.baseColor),
     ),
   );
 }

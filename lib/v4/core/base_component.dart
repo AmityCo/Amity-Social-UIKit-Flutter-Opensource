@@ -26,6 +26,7 @@ abstract class NewBaseComponent extends StatelessWidget {
   late final AmityThemeColor theme;
   late final ConfigProvider configProvider;
   late final Map<String, dynamic> config;
+  late final AmityUIConfig uiConfig;
 
   // ignore: prefer_const_constructors_in_immutables
   NewBaseComponent({super.key, this.pageId, required this.componentId});
@@ -35,28 +36,27 @@ abstract class NewBaseComponent extends StatelessWidget {
     if (!isInitialized()) {
       configProvider = context.watch<ConfigProvider>();
       theme = configProvider.getTheme(pageId, componentId);
-      config = configProvider.getMapConfig(pageId,componentId, null);
+      config = configProvider.getMapConfig(pageId, componentId, null);
+      uiConfig = configProvider.getUIConfig(pageId, componentId, null);
     }
     return Theme(
-      data: Theme.of(context)
-        .copyWith(
-          textSelectionTheme: TextSelectionThemeData(
-            cursorColor: theme.primaryColor,
-            selectionColor: theme.primaryColor.withOpacity(0.3),
-            selectionHandleColor: theme.primaryColor,
-          )
-        ),
-      child: buildComponent(context)
-    );
+        data: Theme.of(context).copyWith(
+            textSelectionTheme: TextSelectionThemeData(
+          cursorColor: theme.primaryColor,
+          selectionColor: theme.primaryColor.withOpacity(0.3),
+          selectionHandleColor: theme.primaryColor,
+        )),
+        child: buildComponent(context));
   }
 
   Widget buildComponent(BuildContext context);
 
   bool isInitialized() {
     try {
-      configProvider; 
-      theme; 
+      configProvider;
+      theme;
       config;
+      uiConfig;
       return true;
     } catch (e) {
       return false;

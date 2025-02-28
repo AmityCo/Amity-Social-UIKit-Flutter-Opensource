@@ -47,8 +47,9 @@ class CommunityFeedComponent extends NewBaseComponent {
             );
           } else if (state.posts.isEmpty && state.announcements.isEmpty) {
             return Container(
+              padding: const EdgeInsets.only(bottom:  120),
               width: double.infinity,
-              height: 400,
+              height: 550,
               color: theme.backgroundColor,
               child: getEmptyFeed(theme),
             );
@@ -68,8 +69,6 @@ class CommunityFeedComponent extends NewBaseComponent {
                     if (((amityPost.children?.isNotEmpty ?? false) &&
                             (amityPost.children!.first.type ==
                                     AmityDataType.FILE ||
-                                (amityPost.children!.first.type ==
-                                    AmityDataType.POLL) ||
                                 amityPost.children!.first.type ==
                                     AmityDataType.LIVESTREAM)) ||
                         (amityPost.isDeleted ?? false)) {
@@ -121,8 +120,6 @@ class CommunityFeedComponent extends NewBaseComponent {
                     if (((amityPost.children?.isNotEmpty ?? false) &&
                             (amityPost.children!.first.type ==
                                     AmityDataType.FILE ||
-                                (amityPost.children!.first.type ==
-                                    AmityDataType.POLL) ||
                                 amityPost.children!.first.type ==
                                     AmityDataType.LIVESTREAM)) ||
                         (amityPost.isDeleted ?? false) ||
@@ -253,7 +250,7 @@ class CommunityFeedComponent extends NewBaseComponent {
           SizedBox(
             width: 252,
             child: Text(
-              'No post yet',
+              'No posts yet',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.baseColorShade3,

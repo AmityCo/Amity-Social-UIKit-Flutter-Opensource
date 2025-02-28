@@ -142,9 +142,9 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
       width: 200,
       child: Row(
         children: [
-         Padding(
-           padding: const EdgeInsets.only(left: 16.0),
-           child: SvgPicture.asset(
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: SvgPicture.asset(
               "assets/Icons/$iconPath",
               package: 'amity_uikit_beta_service',
               width: 20,
@@ -152,12 +152,10 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
               colorFilter:
                   ColorFilter.mode(theme.secondaryColor, BlendMode.srcIn),
             ),
-         ),
-      
+          ),
           const SizedBox(
             width: 8,
           ),
-      
           Text(text, style: AmityTextStyle.bodyBold(theme.baseColor)),
         ],
       ),

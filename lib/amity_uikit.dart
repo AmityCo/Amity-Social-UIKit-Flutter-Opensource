@@ -104,7 +104,7 @@ class AmityUIKit {
     await AmityCoreClient.setup(
         option: AmityCoreClientOption(
             apiKey: apikey,
-            showLogs: true,
+            showLogs: false,
             httpEndpoint: amityEndpoint!,
             mqttEndpoint: amityMqttEndpoint!,
             socketEndpoint: amitySocketEndpoint!),

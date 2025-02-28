@@ -28,7 +28,6 @@ class AmityUIKitToastLong extends AmityToastEvent {
   List<Object> get props => [message, bottomPadding ?? 0.0];
 }
 
-
 class AmityToastLoading extends AmityToastEvent {
   final String message;
   final AmityToastIcon? icon;

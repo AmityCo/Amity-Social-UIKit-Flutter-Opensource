@@ -1,7 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/shared/user/user_list.dart';
 import 'package:amity_uikit_beta_service/v4/social/global_search/view_model/global_search_view_model.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -59,16 +59,12 @@ class AmityUserSearchResultComponent extends NewBaseComponent {
             onTap: (user) {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => UserProfileScreen(
-                    amityUserId: user.userId ?? '',
-                    amityUser: null,
-                  ),
+                  builder: (context) =>
+                      AmityUserProfilePage(userId: user.userId ?? ""),
                 ),
               );
-            }
-        ),
+            }),
       );
     }
   }
-
 }

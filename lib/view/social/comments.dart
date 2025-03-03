@@ -22,6 +22,7 @@ class CommentScreen extends StatefulWidget {
   final ThemeData theme;
   final bool isFromFeed;
   final FeedType feedType;
+
   const CommentScreen({
     Key? key,
     required this.amityPost,
@@ -44,6 +45,7 @@ class Comments {
 class CommentScreenState extends State<CommentScreen> {
   final _commentTextEditController = TextEditingController();
   String? userAvatarUrl;
+
   @override
   void initState() {
     Provider.of<ReplyVM>(context, listen: false).clearReply();
@@ -403,6 +405,7 @@ class CommentTextField extends StatelessWidget {
   final VoidCallback navigateToFullCommentPage;
   final FeedType feedType;
   final String userAvatarUrl;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -463,9 +466,10 @@ class CommentTextField extends StatelessWidget {
                         onPressed: navigateToFullCommentPage,
                       ),
                       hintText: 'Say something nice...',
-                      fillColor:
-                          Colors.grey[300], // Set the background color to grey
-                      filled: true, // Enable the fill color
+                      fillColor: Colors.grey[300],
+                      // Set the background color to grey
+                      filled: true,
+                      // Enable the fill color
                       border: OutlineInputBorder(
                         borderRadius:
                             BorderRadius.circular(20.0), // Rounded border
@@ -557,6 +561,7 @@ class FullCommentPage extends StatelessWidget {
   final String postId;
   final VoidCallback postCallback;
   final FeedType feedType;
+
   const FullCommentPage({
     super.key,
     required this.commentTextEditController,
@@ -564,6 +569,7 @@ class FullCommentPage extends StatelessWidget {
     required this.postCallback,
     required this.feedType,
   });
+
   @override
   Widget build(BuildContext context) {
     return ThemeConfig(
@@ -628,6 +634,7 @@ class EditCommentPage extends StatefulWidget {
   final VoidCallback postCallback;
   final String initailText;
   final FeedType feedType;
+
   const EditCommentPage({
     super.key,
     required this.initailText,
@@ -642,6 +649,7 @@ class EditCommentPage extends StatefulWidget {
 
 class _EditCommentPageState extends State<EditCommentPage> {
   TextEditingController textEditingController = TextEditingController();
+
   @override
   void initState() {
     textEditingController.text = widget.initailText;
@@ -887,12 +895,18 @@ class _CommentComponentState extends State<CommentComponent> {
                                                   user: comments.user!,
                                                 ); // Handle error case, possibly by showing a default avatar
                                               } else {
-                                                final isFollowing = snapshot.data ?? false;
+                                                final isFollowing =
+                                                    snapshot.data ?? false;
                                                 final avatarUrl = isFollowing
-                                                    ? (comments.user?.avatarUrl ??
-                                                    (comments.user?.metadata?['profilePublicImageUrl'] ?? ''))
-                                                    : (comments.user?.metadata?['profilePublicImageUrl'] ?? '');
-
+                                                    ? (comments
+                                                            .user?.avatarUrl ??
+                                                        (comments.user
+                                                                    ?.metadata?[
+                                                                'profilePublicImageUrl'] ??
+                                                            ''))
+                                                    : (comments.user?.metadata?[
+                                                            'profilePublicImageUrl'] ??
+                                                        '');
 
                                                 return CustomListTile(
                                                   avatarUrl: avatarUrl,
@@ -930,10 +944,10 @@ class _CommentComponentState extends State<CommentComponent> {
                                         child: Text(
                                           commentData.text!,
                                           style: TextStyle(
-                                            fontSize: 15,
-                                            color:
-                                            Provider.of<AmityUIConfiguration>(
-                                                context)
+                                            fontSize: 12,
+                                            color: Provider.of<
+                                                        AmityUIConfiguration>(
+                                                    context)
                                                 .appColors
                                                 .base,
                                           ),
@@ -1012,12 +1026,15 @@ class _CommentComponentState extends State<CommentComponent> {
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
+                                                                  fontSize: 12,
                                                                   color: Color(
-                                                                      0xff898E9E),
+                                                                    0xff898E9E,
+                                                                  ),
                                                                 ),
                                                               ),
                                                       ],
-                                                    )),
+                                                    ),
+                                                  ),
 
                                             const SizedBox(width: 8),
                                             // Reply Button
@@ -1040,11 +1057,11 @@ class _CommentComponentState extends State<CommentComponent> {
                                                   const Text(
                                                     "Reply",
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color:
-                                                            Color(0xff898E9E),
-                                                        fontSize: 15),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Color(0xff898E9E),
+                                                      fontSize: 12,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -1418,11 +1435,13 @@ class _CommentComponentState extends State<CommentComponent> {
 class ReplyCommentComponent extends StatelessWidget {
   final AmityComment comment;
   final FeedType feedType;
+
   const ReplyCommentComponent({
     super.key,
     required this.comment,
     required this.feedType,
   });
+
   bool isLiked(AsyncSnapshot<AmityComment> snapshot) {
     var comments = snapshot.data!;
     return comments.myReactions?.isNotEmpty ?? false;
@@ -1545,9 +1564,12 @@ class ReplyCommentComponent extends StatelessWidget {
                               final isFollowing = snapshot.data ?? false;
                               final avatarUrl = isFollowing
                                   ? (comments.user?.avatarUrl ??
-                                  (comments.user?.metadata?['profilePublicImageUrl'] ?? ''))
-                                  : (comments.user?.metadata?['profilePublicImageUrl'] ?? '');
-
+                                      (comments.user?.metadata?[
+                                              'profilePublicImageUrl'] ??
+                                          ''))
+                                  : (comments.user?.metadata?[
+                                          'profilePublicImageUrl'] ??
+                                      '');
 
                               return CustomListTile(
                                 avatarUrl: avatarUrl,

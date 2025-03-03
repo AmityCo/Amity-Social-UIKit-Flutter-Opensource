@@ -41,6 +41,7 @@ class TimeAgoWidget extends StatelessWidget {
       _formatDate(createdAt),
       style: TextStyle(
         color: textColor ?? Colors.grey,
+        fontSize: 12,
       ),
     );
   }

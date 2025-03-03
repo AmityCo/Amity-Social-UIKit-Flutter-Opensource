@@ -14,8 +14,12 @@ enum GalleryFeed { user, community }
 class MediaGalleryPage extends StatelessWidget {
   final GalleryFeed galleryFeed;
   final Function() onRefresh;
-  const MediaGalleryPage(
-      {super.key, required this.galleryFeed, required this.onRefresh});
+
+  const MediaGalleryPage({
+    super.key,
+    required this.galleryFeed,
+    required this.onRefresh,
+  });
 
   @override
   Widget build(BuildContext context) {

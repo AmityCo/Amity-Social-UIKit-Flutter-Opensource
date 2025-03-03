@@ -24,6 +24,7 @@ class AmityPostWidget extends StatefulWidget {
   final bool haveChildrenPost;
   final bool shouldShowTextPost;
   final FeedType feedType;
+
   const AmityPostWidget(
     this.posts,
     this.isChildrenPost,
@@ -33,6 +34,7 @@ class AmityPostWidget extends StatefulWidget {
     this.haveChildrenPost = false,
     this.shouldShowTextPost = true,
   });
+
   @override
   AmityPostWidgetState createState() => AmityPostWidgetState();
 }
@@ -42,6 +44,7 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
   String? videoUrl;
   bool isLoading = true;
   Map<String, PreviewData> datas = {};
+
   @override
   void initState() {
     super.initState();
@@ -140,9 +143,9 @@ class AmityPostWidgetState extends State<AmityPostWidget> {
 
             !urlValidation(widget.posts[0])
                 ? const SizedBox()
-                : CustomLinkPreview(url: url.toLowerCase())
-
-            // )
+                : CustomLinkPreview(
+                    url: url.toLowerCase(),
+                  )
           ],
         );
       }
@@ -1030,8 +1033,9 @@ Widget _listMediaGrid(List<AmityPost> files) {
                   files[index].data!.fileInfo.fileUrl!,
                 );
               },
-              contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8, horizontal: 14), // Reduced padding
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+              // Reduced padding
               tileColor: Colors.white.withOpacity(0.0),
               leading: Container(
                 height: 100, // Reduced height to make it slimmer
@@ -1122,13 +1126,14 @@ class _TextPostState extends State<TextPost> {
 
     TextStyle textStyle = TextStyle(
       color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-      fontSize: 15,
+      fontSize: 12,
     );
     TextStyle linkStyle = TextStyle(
       color: Provider.of<AmityUIConfiguration>(context, listen: false)
           .appColors
           .primary,
-      fontSize: 15,
+      fontSize: 12,
+      height: 45 / 12,
     );
 
     return Column(
@@ -1146,8 +1151,11 @@ class _TextPostState extends State<TextPost> {
                               ? RichText(
                                   text: TextSpan(
                                     children: [
-                                      ..._buildTextSpans(text.substring(0, 180),
-                                          textStyle, linkStyle),
+                                      ..._buildTextSpans(
+                                        text.substring(0, 180),
+                                        textStyle,
+                                        linkStyle,
+                                      ),
                                       TextSpan(
                                         text: " ... Load more",
                                         style: linkStyle,
@@ -1172,7 +1180,10 @@ class _TextPostState extends State<TextPost> {
                                   child: RichText(
                                     text: TextSpan(
                                       children: _buildTextSpans(
-                                          text, textStyle, linkStyle),
+                                        text,
+                                        textStyle,
+                                        linkStyle,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -1192,12 +1203,13 @@ class ImagePost extends StatelessWidget {
   final List<AmityPost> posts;
   final List<String> imageURLs;
   final bool isCornerRadiusEnabled;
-  const ImagePost(
-      {Key? key,
-      required this.posts,
-      required this.imageURLs,
-      required this.isCornerRadiusEnabled})
-      : super(key: key);
+
+  const ImagePost({
+    Key? key,
+    required this.posts,
+    required this.imageURLs,
+    required this.isCornerRadiusEnabled,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_post_screenV2.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/user_follow_screen.dart';
@@ -300,7 +301,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                             ],
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 24),
                         AmityCoreClient.getCurrentUser().userId ==
                                 Provider.of<UserFeedVM>(context)
                                     .amityUser!
@@ -367,166 +368,149 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                     ),
                                   ],
                                 )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // GestureDetector(
-                                  //   onTap: () {},
-                                  //   child: Container(
-                                  //     width: constraints.maxWidth * 0.35,
-                                  //     decoration: BoxDecoration(
-                                  //         border: Border.all(
-                                  //             color: Provider.of<
-                                  //                         AmityUIConfiguration>(
-                                  //                     context)
-                                  //                 .primaryColor,
-                                  //             style: BorderStyle.solid,
-                                  //             width: 1),
-                                  //         borderRadius:
-                                  //             BorderRadius.circular(10),
-                                  //         color: Colors.white),
-                                  //     padding: const EdgeInsets.fromLTRB(
-                                  //         10, 10, 10, 10),
-                                  //     child: Text(
-                                  //       "Messages",
-                                  //       style: theme.textTheme.subtitle2!
-                                  //           .copyWith(
-                                  //         color: Provider.of<
-                                  //                     AmityUIConfiguration>(
-                                  //                 context)
-                                  //             .primaryColor,
-                                  //         fontSize: 12,
-                                  //       ),
-                                  //       textAlign: TextAlign.center,
-                                  //     ),
-                                  //   ),
-                                  // ),
-
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(),
-                                      child: vm.amityMyFollowInfo.id == null
-                                          ? Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Provider.of<
-                                                                AmityUIConfiguration>(
-                                                            context)
-                                                        .primaryColor,
-                                                    style: BorderStyle.solid,
-                                                    width: 1),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      10, 10, 10, 10),
-                                              child: Text(
-                                                "",
-                                                textAlign: TextAlign.center,
-                                                style: theme
-                                                    .textTheme.titleSmall!
-                                                    .copyWith(
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            )
-                                          : StreamBuilder<AmityUserFollowInfo>(
-                                              stream: vm.amityMyFollowInfo
-                                                  .listen.stream,
-                                              initialData: vm.amityMyFollowInfo,
-                                              builder: (context, snapshot) {
-                                                return FadeAnimation(
-                                                    child: snapshot
-                                                                .data!.status ==
-                                                            AmityFollowStatus
-                                                                .ACCEPTED
-                                                        ? const SizedBox()
-                                                        : GestureDetector(
-                                                            onTap: () {
-                                                              vm.followButtonAction(
-                                                                  vm.amityUser!,
-                                                                  snapshot.data!
-                                                                      .status);
-                                                            },
-                                                            child: Semantics(
-                                                              identifier: 'amityUserProfileFollow',
-                                                              child: Container(
-                                                                decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                        color: getFollowingStatusTextColor(snapshot
-                                                                            .data!
-                                                                            .status),
-                                                                        style: BorderStyle
-                                                                            .solid,
-                                                                        width: 1),
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
+                            : (vm.amityMyFollowInfo.status ==
+                                    AmityFollowStatus.ACCEPTED)
+                                ? Provider.of<AmityUIConfiguration>(
+                                    context,
+                                    listen: false,
+                                  )
+                                    .widgetBuilders
+                                    .buildMessageButton(widget.amityUser)
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(),
+                                          child: vm.amityMyFollowInfo.id == null
+                                              ? Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Provider.of<
+                                                                    AmityUIConfiguration>(
+                                                                context)
+                                                            .primaryColor,
+                                                        style:
+                                                            BorderStyle.solid,
+                                                        width: 1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          10, 10, 10, 10),
+                                                  child: Text(
+                                                    "",
+                                                    textAlign: TextAlign.center,
+                                                    style: theme
+                                                        .textTheme.titleSmall!
+                                                        .copyWith(
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                )
+                                              : StreamBuilder<
+                                                      AmityUserFollowInfo>(
+                                                  stream: vm.amityMyFollowInfo
+                                                      .listen.stream,
+                                                  initialData:
+                                                      vm.amityMyFollowInfo,
+                                                  builder: (context, snapshot) {
+                                                    return FadeAnimation(
+                                                        child: snapshot.data!
+                                                                    .status ==
+                                                                AmityFollowStatus
+                                                                    .ACCEPTED
+                                                            ? const SizedBox()
+                                                            : GestureDetector(
+                                                                onTap: () {
+                                                                  vm.followButtonAction(
+                                                                      vm
+                                                                          .amityUser!,
+                                                                      snapshot
+                                                                          .data!
+                                                                          .status);
+                                                                },
+                                                                child:
+                                                                    Semantics(
+                                                                  identifier:
+                                                                      'amityUserProfileFollow',
+                                                                  child:
+                                                                      Container(
+                                                                    decoration: BoxDecoration(
+                                                                        border: Border.all(
+                                                                            color: getFollowingStatusTextColor(snapshot
+                                                                                .data!.status),
+                                                                            style: BorderStyle
+                                                                                .solid,
+                                                                            width:
+                                                                                1),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
                                                                                 4),
-                                                                    color: getFollowingStatusColor(
-                                                                        snapshot
+                                                                        color: getFollowingStatusColor(snapshot
                                                                             .data!
                                                                             .status)),
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .fromLTRB(
-                                                                        10,
-                                                                        10,
-                                                                        10,
-                                                                        10),
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons.add,
-                                                                      size: 16,
-                                                                      color: Provider.of<AmityUIConfiguration>(
-                                                                              context)
-                                                                          .appColors
-                                                                          .userProfileBGColor,
-                                                                      weight: 4,
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 2,
-                                                                    ),
-                                                                    Text(
-                                                                      getFollowingStatusString(
-                                                                          snapshot
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .fromLTRB(
+                                                                            10,
+                                                                            10,
+                                                                            10,
+                                                                            10),
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .add,
+                                                                          size:
+                                                                              16,
+                                                                          color: Provider.of<AmityUIConfiguration>(context)
+                                                                              .appColors
+                                                                              .userProfileBGColor,
+                                                                          weight:
+                                                                              4,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              2,
+                                                                        ),
+                                                                        Text(
+                                                                          getFollowingStatusString(snapshot
                                                                               .data!
                                                                               .status),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: theme
-                                                                          .textTheme
-                                                                          .titleSmall!
-                                                                          .copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w700,
-                                                                        color: getFollowingStatusTextColor(snapshot
-                                                                            .data!
-                                                                            .status),
-                                                                        fontSize:
-                                                                            15,
-                                                                      ),
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: theme
+                                                                              .textTheme
+                                                                              .titleSmall!
+                                                                              .copyWith(
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                            color:
+                                                                                getFollowingStatusTextColor(snapshot.data!.status),
+                                                                            fontSize:
+                                                                                15,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                  ],
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                            ),
-                                                          ));
-                                              }),
-                                    ),
+                                                              ));
+                                                  }),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: widget.customActions == null ? 15.0 : 6),
+                            top: widget.customActions == null ? 24 : 6,
+                          ),
                           child: Provider.of<AmityUIConfiguration>(context)
                                   .buildSocialRating(isCurrentUser
                                       ? Provider.of<AmityVM>(
@@ -788,8 +772,8 @@ class AppScaffold extends StatelessWidget {
             amityUserId != AmityCoreClient.getCurrentUser().userId
                 ? null
                 : Semantics(
-              identifier: 'amityUserProfileCreatePost',
-                  child: FloatingActionButton(
+                    identifier: 'amityUserProfileCreatePost',
+                    child: FloatingActionButton(
                       shape: const CircleBorder(),
                       onPressed: () async {
                         await Navigator.of(context).push(MaterialPageRoute(
@@ -805,7 +789,7 @@ class AppScaffold extends StatelessWidget {
                           .iconConfig
                           .postIcon(iconSize: 28, color: Colors.white),
                     ),
-                ),
+                  ),
         appBar: AppBar(
           scrolledUnderElevation: 0,
           backgroundColor: isEnableAppbar
@@ -848,8 +832,9 @@ class AppScaffold extends StatelessWidget {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (_) => UserSettingPage(
                                       amityMyFollowInfo: snapshot.data!,
-                                      amityUser: Provider.of<UserFeedVM>(context)
-                                          .amityUser!,
+                                      amityUser:
+                                          Provider.of<UserFeedVM>(context)
+                                              .amityUser!,
                                     )));
                           },
                         ),

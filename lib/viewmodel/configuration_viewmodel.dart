@@ -341,6 +341,10 @@ class AmityWidgetBuilders {
 
   late Widget Function(
     AmityUser? amityUser,
+  ) buildMessageButton = (_) => _defaultWidget;
+
+  late Widget Function(
+    AmityUser? amityUser,
     AmityCommunity? amityCommunity,
     CreatePostVMV2 createPostVm2,
     bool? tappable,

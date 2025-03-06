@@ -291,9 +291,7 @@ class CommentScreenState extends State<CommentScreen> {
                                           isFromFeed: false,
                                         ),
 
-                                        const Divider(
-                                          height: 0,
-                                        ),
+                                        const Divider(),
                                         CommentComponent(
                                           postId: widget.amityPost.postId!,
                                           theme: theme,
@@ -462,10 +460,6 @@ class CommentTextField extends StatelessWidget {
                     ),
                     keyboardType: TextInputType.multiline,
                     maxLines: null, // Allows for any number of lines
-                    cursorHeight: 19,
-                    style: const TextStyle(
-                      height: 1.1,
-                    ),
                   ),
                 ),
               ],

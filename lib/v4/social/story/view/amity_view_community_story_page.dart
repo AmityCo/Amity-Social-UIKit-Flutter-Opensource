@@ -359,7 +359,11 @@ class _AmityViewCommunityStoryPageState extends State<AmityViewCommunityStoryPag
 
 // Widget of the comments tray in the bottomSheet
 
-void openCommentTraySheet(BuildContext context, AmityStory story, bool shouldAllowInteraction, bool shouldAllowComments) {
+void openCommentTraySheet(
+    BuildContext context,
+    AmityStory story,
+    bool shouldAllowInteraction,
+    bool shouldAllowComments) {
   BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
   if (story.dataType == AmityStoryDataType.VIDEO) {
     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
@@ -391,6 +395,7 @@ void openCommentTraySheet(BuildContext context, AmityStory story, bool shouldAll
                       scrollController: scrollController,
                       referenceId: story.storyId!,
                       referenceType: AmityCommentReferenceType.STORY,
+                      community: story.target is AmityStoryTargetCommunity ? (story.target as AmityStoryTargetCommunity).community : null,
                       shouldAllowInteraction: shouldAllowInteraction,
                       shouldAllowComments: shouldAllowComments,
                     ),

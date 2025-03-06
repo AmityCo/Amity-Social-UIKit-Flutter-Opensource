@@ -65,7 +65,6 @@ class MyCommunityVM with ChangeNotifier {
       //     title: "Error!",
       //     message: _communityController.error.toString());
     });
-    communityFeedLiveCollection.loadNext();
   }
 
   void loadNextPage() async {

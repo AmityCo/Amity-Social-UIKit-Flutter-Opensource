@@ -37,6 +37,7 @@ class AmityPostHeader extends StatelessWidget {
     required this.hideTarget,
     this.action,
   });
+  
 
   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
     context
@@ -332,7 +333,9 @@ class AmityPostHeader extends StatelessWidget {
             //success
           }).onError((error, stackTrace) {
             _showToast(
-                context, "Oops, something went wrong", AmityToastIcon.warning);
+                 context,
+                 "Oops, something went wrong", 
+                 AmityToastIcon.warning);
           })
         };
 
@@ -345,7 +348,9 @@ class AmityPostHeader extends StatelessWidget {
             .add(PostItemDelete(post: post, action: action));
         //success
       }).onError((error, stackTrace) {
-        _showToast(context, "Failed to delete post. Please try again.",
+        _showToast(
+            context,
+            "Failed to delete post. Please try again.",
             AmityToastIcon.warning);
       });
     }

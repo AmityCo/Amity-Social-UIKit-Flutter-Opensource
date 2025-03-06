@@ -47,7 +47,7 @@ class MessageComposerBloc
       emit(state.copyWith(text: "", replyTo: null));
       try {
         await AmityChatClient.newMessageRepository()
-            .newCreateMessage(subChannelId)
+            .createMessage(subChannelId)
             .text(event.text.trim())
             .send();
       } catch (error) {
@@ -83,7 +83,7 @@ class MessageComposerBloc
             final uri = Uri(path: imagePath);
             try {
               await AmityChatClient.newMessageRepository()
-                  .newCreateMessage(subChannelId)
+                  .createMessage(subChannelId)
                   .image(uri)
                   .send();
             } catch (error) {
@@ -99,7 +99,7 @@ class MessageComposerBloc
               final uri = Uri(path: videoPath);
               try {
                 await AmityChatClient.newMessageRepository()
-                    .newCreateMessage(subChannelId)
+                    .createMessage(subChannelId)
                     .video(uri)
                     .send();
               } catch (error) {

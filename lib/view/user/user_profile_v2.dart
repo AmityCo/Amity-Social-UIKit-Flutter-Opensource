@@ -142,10 +142,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
               index: 0,
               profileSectionWidget: Column(
                 children: [
-                  Container(
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .baseBackground,
+                  Padding(
                     padding: const EdgeInsets.only(left: 16, right: 16),
                     child: Column(
                       children: [
@@ -501,7 +498,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 0),
+                  const SizedBox(height: 10),
                 ],
               ),
               theme: theme,
@@ -757,9 +754,6 @@ class AppScaffold extends StatelessWidget {
                   ),
         appBar: AppBar(
           scrolledUnderElevation: 0,
-          backgroundColor: Provider.of<AmityUIConfiguration>(context)
-              .appColors
-              .baseBackground,
           title: Text(title),
           leading: IconButton(
             icon: Icon(
@@ -804,7 +798,6 @@ class AppScaffold extends StatelessWidget {
                 .initUserFeed(amityUser: amityUser, userId: amityUser.userId!);
           },
           child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
             controller: Provider.of<UserFeedVM>(context).scrollcontroller,
             slivers: slivers,
             reverse: reverse,

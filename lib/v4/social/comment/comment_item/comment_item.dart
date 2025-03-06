@@ -249,7 +249,7 @@ class CommentItem extends BaseElement {
                       )
                     : Container(
                         alignment: Alignment.topLeft,
-                        height: 120,
+                        height: 120, // Maintain fixed height for edit bubble
                         decoration: ShapeDecoration(
                           color: theme.baseColorShade4,
                           shape: const RoundedRectangleBorder(
@@ -260,62 +260,54 @@ class CommentItem extends BaseElement {
                             ),
                           ),
                         ),
-                        child: Container(
-                          alignment: Alignment.topLeft,
-                          width: double.infinity,
-                          child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(12),
-                                  child: Container(
-                                    alignment: Alignment.topLeft,
-                                    width: double.infinity,
-                                    child: MediaQuery.removePadding(
-                                      // Remove padding to fix wrong scroll indicator position
-                                      context: context,
-                                      removeTop: true,
-                                      removeBottom: true,
-                                      removeLeft: true,
-                                      removeRight: true,
-                                      child: Scrollbar(
-                                        controller: scrollController,
-                                        child: MentionTextField(
-                                          theme: theme,
-                                          suggestionMaxRow: 2,
-                                          suggestionDisplayMode: SuggestionDisplayMode.inline,
-                                          mentionContentType: MentionContentType.comment,
-                                          communityId: communityId,
-                                          controller: controller,
-                                          scrollController: scrollController,
-                                          onChanged: (value) {},
-                                          keyboardType: TextInputType.multiline,
-                                          maxLines: null,
-                                          minLines: 1,
-                                          textAlignVertical:
-                                              TextAlignVertical.bottom,
-                                          decoration: InputDecoration(
-                                            isDense: true,
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 0, vertical: 0),
-                                            hintText: 'Say something nice...',
-                                            border: InputBorder.none,
-                                            hintStyle: TextStyle(
-                                              color: theme.baseColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                            ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded( // Wrap in Expanded to constrain the child within available space
+                              child: Container(
+                                alignment: Alignment.topLeft,
+                                width: double.infinity,
+                                child: Scrollbar(
+                                  controller: scrollController,
+                                  thumbVisibility: true,
+                                  child: SingleChildScrollView( // Add SingleChildScrollView for scrolling
+                                    controller: scrollController,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: MentionTextField(
+                                        theme: theme,
+                                        suggestionMaxRow: 2,
+                                        suggestionDisplayMode: SuggestionDisplayMode.inline,
+                                        mentionContentType: MentionContentType.comment,
+                                        communityId: communityId,
+                                        controller: controller,
+                                        scrollController: null, // Remove the scrollController from TextField as we're using it on the SingleChildScrollView
+                                        onChanged: (value) {},
+                                        keyboardType: TextInputType.multiline,
+                                        maxLines: null,
+                                        minLines: 1,
+                                        textAlignVertical: TextAlignVertical.top, // Align text at the top
+                                        decoration: InputDecoration(
+                                          isDense: true,
+                                          contentPadding: const EdgeInsets.symmetric(
+                                              horizontal: 0, vertical: 0),
+                                          hintText: 'Say something nice...',
+                                          border: InputBorder.none,
+                                          hintStyle: TextStyle(
+                                            color: theme.baseColor,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ]),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                 const SizedBox(height: 8),

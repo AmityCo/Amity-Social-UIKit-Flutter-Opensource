@@ -4,7 +4,10 @@ import 'dart:developer' as dev;
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../utils/amity_social_behaviour_helper.dart';
@@ -240,13 +243,21 @@ class _PostPollContentState extends State<PostPollContent> {
       setState(() {
         isVoting = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Failed to vote: ${error.toString()}"),
-          backgroundColor: widget.theme.alertColor,
-        ),
-      );
+      _showToast(context, "Failed to vote poll. Please try again.",
+            AmityToastIcon.warning);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text("Failed to vote: ${error.toString()}"),
+      //     backgroundColor: widget.theme.alertColor,
+      //   ),
+      // );
     });
+  }
+
+   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
+    context
+        .read<AmityToastBloc>()
+        .add(AmityToastShort(message: message, icon: icon));
   }
 
   String readableTimeLeft(DateTime targetTime, {DateTime? startTime}) {

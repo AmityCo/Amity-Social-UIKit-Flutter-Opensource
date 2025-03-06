@@ -197,7 +197,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
             return;
           }
           await message.delete();
-          await messageRepo.newCreateMessage(subChannelId).text(text).send();
+          await messageRepo.createMessage(subChannelId).text(text).send();
         } else if (message.data is MessageImageData) {
           final localPath =
               (message.data as MessageImageData).image?.getFilePath;
@@ -206,7 +206,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
           }
           final uri = Uri.file(localPath);
           await message.delete();
-          await messageRepo.newCreateMessage(subChannelId).image(uri).send();
+          await messageRepo.createMessage(subChannelId).image(uri).send();
         } else if (message.data is MessageVideoData) {
           final localPath =
               (message.data as MessageVideoData).getVideo().getFilePath;
@@ -215,7 +215,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
           }
           final uri = Uri.file(localPath);
           await message.delete();
-          await messageRepo.newCreateMessage(subChannelId).video(uri).send();
+          await messageRepo.createMessage(subChannelId).video(uri).send();
         }
       } catch (e) {}
     });
@@ -252,7 +252,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
       await liveCollection?.dispose();
     }
     liveCollection = AmityChatClient.newMessageRepository()
-        .newGetMessages(channelId)
+        .getMessages(channelId)
         .stackFromEnd(true)
         .includingTags([])
         .excludingTags([])

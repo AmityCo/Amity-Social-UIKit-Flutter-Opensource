@@ -316,7 +316,7 @@ class AmityChatPage extends NewBasePage {
                           }),
                         ),
                         AmityMessageComposer(
-                          key: UniqueKey(),
+                          // key: UniqueKey(),
                           pageId: pageId,
                           subChannelId: state.channelId,
                           avatarUrl: avatarUrl,

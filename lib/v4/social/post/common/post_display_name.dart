@@ -2,6 +2,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
@@ -53,14 +54,29 @@ class PostDisplayName extends StatelessWidget {
                             (post.target as UserTarget).targetUserId !=
                                 post.postedUserId)))
                 ? [
-                    Flexible(child: DisplayName(context, post.postedUser)),
+                    Flexible(
+                        flex: 4, child: DisplayName(context, post.postedUser)),
+                    if (post.postedUser?.isBrand ?? false) brandBadge(),
                     TargetArrow(),
-                    Expanded(flex: 2, child: PostTarget(context, post.target!)),
+                    Expanded(
+                      flex: 5,
+                      child: Row(
+                        children: [
+                          Flexible(child: PostTarget(context, post.target!)),
+                          if ((post.target as CommunityTarget)
+                                  .targetCommunity
+                                  ?.isOfficial ==
+                              true)
+                            verifiedBadge(),
+                        ],
+                      ),
+                    )
                   ]
                 : [
                     Flexible(
                         fit: FlexFit.loose,
-                        child: DisplayName(context, post.postedUser))
+                        child: DisplayName(context, post.postedUser)),
+                    if (post.postedUser?.isBrand ?? false) brandBadge(),
                   ],
           ),
           Row(
@@ -169,5 +185,26 @@ class PostDisplayName extends StatelessWidget {
         height: 10,
       ),
     );
+  }
+
+  Widget brandBadge() {
+    return Container(
+      padding: const EdgeInsets.only(left: 4),
+      child: SvgPicture.asset(
+        'assets/Icons/amity_ic_brand.svg',
+        package: 'amity_uikit_beta_service',
+        fit: BoxFit.fill,
+        width: 18,
+        height: 18,
+      ),
+    );
+  }
+
+  Widget verifiedBadge() {
+    return Container(
+        width: 23,
+        height: 23,
+        margin: const EdgeInsets.only(top: 2),
+        child: AmityOfficialBadgeElement());
   }
 }

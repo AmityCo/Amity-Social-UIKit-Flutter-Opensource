@@ -91,16 +91,34 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                           const SizedBox(
                             width: 12,
                           ),
-                          Flexible(
-                            flex: 1,
-                            fit: FlexFit.loose,
-                            child: Text(
-                              user?.displayName ?? "",
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                              style: AmityTextStyle.headline(theme.baseColor),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: RichText(
+                                    maxLines: 4,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: user?.displayName ?? "",
+                                          style: AmityTextStyle.headline(
+                                              theme.baseColor),
+                                        ),
+                                        if (user?.isBrand ?? false)
+                                          WidgetSpan(
+                                            child: brandBadge(),
+                                            alignment:
+                                                PlaceholderAlignment.middle,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                          )
                         ],
                       ),
 
@@ -454,6 +472,19 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget brandBadge() {
+    return Container(
+      padding: const EdgeInsets.only(left: 4),
+      child: SvgPicture.asset(
+        'assets/Icons/amity_ic_brand.svg',
+        package: 'amity_uikit_beta_service',
+        fit: BoxFit.fill,
+        width: 24,
+        height: 24,
       ),
     );
   }

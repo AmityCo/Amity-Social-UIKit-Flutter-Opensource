@@ -82,15 +82,23 @@ class UserFollowListComponent extends NewBaseComponent {
                         : state.followUsers[index].sourceUser;
 
                 return ListTile(
+                  contentPadding: const EdgeInsets.only(left: 16, right: 8),
                   leading: AmityUserAvatar(
                       avatarUrl: user?.avatarUrl,
                       displayName: user?.displayName ?? "",
                       isDeletedUser: user?.isDeleted ?? false),
-                  title: Text(
-                    user?.displayName ?? "",
-                    style: AmityTextStyle.bodyBold(theme.baseColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  title: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          user?.displayName ?? "",
+                          style: AmityTextStyle.bodyBold(theme.baseColor),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (user?.isBrand ?? false) brandBadge()
+                    ],
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.more_horiz),
@@ -206,4 +214,17 @@ class UserFollowListComponent extends NewBaseComponent {
 
     BottomSheetMenu(options: options).show(context, theme);
   }
+}
+
+Widget brandBadge() {
+  return Container(
+    padding: const EdgeInsets.only(left: 4),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
+    ),
+  );
 }

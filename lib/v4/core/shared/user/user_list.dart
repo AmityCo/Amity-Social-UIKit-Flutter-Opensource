@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 Widget userList(
     {required BuildContext context,
@@ -72,7 +73,7 @@ Widget userRow(BuildContext context, AmityUser user, AmityThemeColor theme,
           const SizedBox(width: 12),
           avatarImage(user, theme),
           const SizedBox(width: 8),
-          displayName(user.displayName ?? "", theme),
+          displayNameWithBrandIcon(user, theme),
           const SizedBox(width: 16),
         ],
       ),
@@ -101,6 +102,25 @@ Widget displayName(String displayName, AmityThemeColor theme) {
       displayName,
       maxLines: 1,
       style: AmityTextStyle.bodyBold(theme.baseColor),
+    ),
+  );
+}
+
+Widget displayNameWithBrandIcon(AmityUser user, AmityThemeColor theme) {
+  return Expanded(
+    child: Row(
+      children: [
+        Flexible(
+          child: Text(
+            user.displayName ?? "",
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: AmityTextStyle.bodyBold(theme.baseColor),
+          ),
+        ),
+        if (user.isBrand ?? false) 
+          brandBadge(),
+      ],
     ),
   );
 }
@@ -159,6 +179,19 @@ Widget skeletonItem() {
           ),
         ],
       ),
+    ),
+  );
+}
+
+Widget brandBadge() {
+  return Container(
+    padding: const EdgeInsets.only(left: 4),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
     ),
   );
 }

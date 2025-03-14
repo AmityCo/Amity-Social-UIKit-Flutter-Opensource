@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_image.dart';
@@ -11,6 +12,7 @@ import 'package:amity_uikit_beta_service/v4/social/post/post_detail/amity_post_d
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom_nonmember.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -118,7 +120,7 @@ class PostItem extends NewBaseComponent {
               hideTarget: hideTarget,
               action: postAction,
             ),
-            getTextPostContent(post),
+            getTextPostContent(context, post),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -138,7 +140,7 @@ class PostItem extends NewBaseComponent {
     );
   }
 
-  Widget getTextPostContent(AmityPost post) {
+  Widget getTextPostContent(BuildContext context, AmityPost post) {
     // Get the text content from the post.
     String textContent = "";
     if (post.data is TextData) {
@@ -157,70 +159,30 @@ class PostItem extends NewBaseComponent {
       fontWeight: FontWeight.w400,
     );
 
-    // If there is no metadata, return the text with normal style.
-    if (post.metadata == null ||
-        post.metadata!['mentioned'] == null ||
-        post.metadata!['mentioned'] is! List) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Text(
-          textContent,
-          style: normalStyle,
-        ),
-      );
-    }
+    List<AmityUserMentionMetadata>? mentionedUsers;
 
-    // Obtain the mention metadata from the post.
-    final mentionedGetter = AmityMentionMetadataGetter(metadata: post.metadata!);
-    final List<AmityUserMentionMetadata> mentionedUsers = mentionedGetter.getMentionedUsers();
+    if (post.metadata != null && post.metadata!['mentioned'] != null) {
+      // Obtain the mention metadata from the post.
+      final mentionedGetter =
+          AmityMentionMetadataGetter(metadata: post.metadata!);
+      mentionedUsers = mentionedGetter.getMentionedUsers();
 
-    // Sort mention metadata by starting index (if not already sorted).
-    mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
-
-    List<TextSpan> spans = [];
-    int currentIndex = 0;
-
-    // Iterate over each mention metadata and build spans.
-    for (var mention in mentionedUsers) {
-      // If the mention's start index is beyond our text, skip it.
-      if (mention.index >= textContent.length) continue;
-
-      // Add text before the mention, if any.
-      if (mention.index > currentIndex) {
-        spans.add(TextSpan(
-          text: textContent.substring(currentIndex, mention.index),
-          style: normalStyle,
-        ));
-      }
-      // Calculate the raw end index (the mention text length might include a prefix, e.g. '@')
-      int rawEndIndex = mention.index + mention.length + 1;
-      // Clamp the end index to the text length.
-      int safeEndIndex = min(rawEndIndex, textContent.length);
-
-      spans.add(TextSpan(
-        text: textContent.substring(mention.index, safeEndIndex),
-        style: mentionStyle,
-      ));
-
-      currentIndex = safeEndIndex;
-    }
-    // Append any remaining text after the last mention.
-    if (currentIndex < textContent.length) {
-      spans.add(TextSpan(
-        text: textContent.substring(currentIndex),
-        style: normalStyle,
-      ));
+      // Sort mention metadata by starting index (if not already sorted).
+      mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
     }
 
     // Return a RichText widget with the computed spans.
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: RichText(
-        text: TextSpan(children: spans),
-      ),
-    );
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: ExpandableText(
+            text: textContent,
+            mentionedUsers: mentionedUsers,
+            maxLines: 8,
+            style: normalStyle,
+            linkStyle: mentionStyle,
+            onMentionTap: (userId) => _goToUserProfilePage(context, userId)
+            ));
   }
 
   Widget getImagePostContent(List<ImageData> images) {
@@ -390,5 +352,10 @@ class PostItem extends NewBaseComponent {
       default:
         return 'assets/images/fileType/default.png';
     }
+  }
+
+  void _goToUserProfilePage(BuildContext context, String userId) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => AmityUserProfilePage(userId: userId)));
   }
 }

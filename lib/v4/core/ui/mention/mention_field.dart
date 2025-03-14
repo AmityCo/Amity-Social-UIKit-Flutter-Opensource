@@ -614,13 +614,20 @@ class _MentionTextFieldState extends State<MentionTextField>
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                user.displayName ?? '',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: AmityTextStyle.bodyBold(widget.theme.baseColor),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      user.displayName ?? '',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: AmityTextStyle.bodyBold(widget.theme.baseColor),
+                    ),
+                  ),
+                  if(user.isBrand ?? false) brandBadge(),
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -760,4 +767,17 @@ class _MentionTextFieldState extends State<MentionTextField>
     }
     return textField;
   }
+}
+
+Widget brandBadge() {
+  return Container(
+    padding: const EdgeInsets.only(left: 4),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
+    ),
+  );
 }

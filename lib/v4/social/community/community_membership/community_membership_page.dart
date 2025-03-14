@@ -188,7 +188,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color:
-                          theme.primaryColor.blend(ColorBlendingOption.shade2),
+                          theme.primaryColor.blend(ColorBlendingOption.shade3),
                     ),
                     child: Center(
                       child: SvgPicture.asset(
@@ -205,29 +205,35 @@ class AmityCommunityMembershipPage extends NewBasePage {
             const SizedBox(
                 width: 8), // Add some spacing between the icon and text
             Expanded(
-              child: GestureDetector(
-                child: Text(
-                  member.user?.displayName ?? 'Unknown',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: theme.baseColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                child: Row(
+              children: [
+                Flexible(
+                  child: GestureDetector(
+                    child: Text(
+                      member.user?.displayName ?? 'Unknown',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: theme.baseColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return AmityUserProfilePage(
+                                userId: member.user?.userId ?? "");
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return AmityUserProfilePage(
-                            userId: member.user?.userId ?? "");
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
+                if(member.user?.isBrand ?? false) brandBadge() 
+              ],
+            )),
 
             if (member.user != null &&
                 member.user!.userId != AmityCoreClient.getUserId())
@@ -419,4 +425,17 @@ extension on AmityCommunityMember {
 
     return false;
   }
+}
+
+Widget brandBadge() {
+  return Container(
+    padding: const EdgeInsets.only(left: 4),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
+    ),
+  );
 }

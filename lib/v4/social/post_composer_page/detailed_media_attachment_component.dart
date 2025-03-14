@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -54,19 +55,19 @@ class AmityDetailedMediaAttachmentComponent extends NewBaseComponent {
           children: [
             _buildListTile(
               assetPath: 'assets/Icons/amity_ic_camera_button.svg',
-              title: 'Camera',
+              title: context.l10n.general_camera,
               onTap: onCameraTap,
             ),
             if (mediaType == FileType.image || mediaType == null)
               _buildListTile(
                 assetPath: 'assets/Icons/amity_ic_image_button.svg',
-                title: 'Photo',
+                title: context.l10n.general_photo,
                 onTap: onImageTap,
               ),
             if (mediaType == FileType.video || mediaType == null)
               _buildListTile(
                 assetPath: 'assets/Icons/amity_ic_video_button.svg',
-                title: 'Video',
+                title: context.l10n.general_video,
                 onTap: onVideoTap,
               ),
           ],

@@ -33,7 +33,7 @@ class PostDetail extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     return BlocProvider(
-      create: (context) => PostItemBloc(post),
+      create: (context) => PostItemBloc(context, post),
       child:
           BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
         onAddReaction(reactionType) {

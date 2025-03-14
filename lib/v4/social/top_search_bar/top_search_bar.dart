@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -110,7 +111,7 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Cancel",
+                    context.l10n.general_cancel,
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 15,

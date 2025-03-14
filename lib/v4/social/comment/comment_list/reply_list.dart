@@ -61,6 +61,7 @@ class ReplyList extends NewBaseComponent with ChangeNotifier {
                 key: ValueKey(
                     "${comment.commentId}_${comment.childrenNumber}}_${comment.isFlaggedByMe}"),
                 create: (context) => CommentItemBloc(
+                  context: context,
                   comment: comment,
                   isExpanded: false,
                 ),

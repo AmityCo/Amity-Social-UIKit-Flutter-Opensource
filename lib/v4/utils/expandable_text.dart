@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -61,7 +62,7 @@ class AmityExpandableText extends StatelessWidget {
                   )
                 : exceeded && !isDetailExpanded
                     ? _seeMoreLess(
-                        theme, span, "...See more", style, maxLines, onExpand)
+                        theme, span, context.l10n.general_see_more, style, maxLines, onExpand)
                     : Text.rich(
                         span,
                         overflow: TextOverflow.visible,

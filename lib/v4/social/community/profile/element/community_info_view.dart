@@ -1,8 +1,8 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/community_membership_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
 import 'package:flutter/material.dart';
 
 class AmityCommunityInfoView extends BaseElement {
@@ -29,7 +29,7 @@ class AmityCommunityInfoView extends BaseElement {
         ),
         const SizedBox(width: 4),
         Text(
-          (postCount == 1) ? 'post' : 'posts',
+          context.l10n.profile_posts_count(postCount),
           style: TextStyle(
             color: theme.baseColorShade2,
             fontSize: 13,
@@ -64,7 +64,7 @@ class AmityCommunityInfoView extends BaseElement {
               ),
               const SizedBox(width: 4),
               Text(
-                (memberCount == 1) ? 'member' : 'members',
+                context.l10n.profile_members_count(memberCount),
                 style: TextStyle(
                   color: theme.baseColorShade2,
                   fontSize: 13,

@@ -1,6 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
-import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +53,7 @@ class AmityCommunityPendingPost extends BaseElement {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Pending posts',
+                    context.l10n.community_pending_posts,
                     style: TextStyle(
                       color: theme.baseColor,
                       fontSize: 15,
@@ -63,9 +63,10 @@ class AmityCommunityPendingPost extends BaseElement {
                 ],
               ),
               Text(
+                
                 isModerator
-                    ? '${pendingPostCount.formattedCompactString()} ${(pendingPostCount == 1) ? 'post' : 'posts'} need approval'
-                    : 'Your posts are pending for review',
+                    ? context.l10n.commnuity_pending_post_count(pendingPostCount)
+                    : context.l10n.commnuity_pending_post_reviewing,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Color(0xFF636878),

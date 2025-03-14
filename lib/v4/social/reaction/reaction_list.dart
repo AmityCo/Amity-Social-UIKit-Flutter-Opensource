@@ -1,13 +1,11 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/bloc/reaction_list_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
-import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
-import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -195,11 +193,13 @@ class AmityReactionList extends NewBaseComponent {
   Widget reactionRow(BuildContext context, AmityReaction reaction) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AmityUserProfilePage(userId: reaction.creator?.userId ?? ''),
-          ),
-        );
+        final userId = reaction.creator?.userId;
+        if (userId != null && userId.isNotEmpty) {
+          AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+            context,
+            userId,
+          );
+        }
       },
       child: SizedBox(
         height: 56,

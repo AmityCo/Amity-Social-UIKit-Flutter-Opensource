@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/community_setup_page.dart';
@@ -21,8 +22,7 @@ class AmitySocialHomeTopNavigationComponent extends NewBaseComponent {
     return AppBar(
       automaticallyImplyLeading: false,
       title: Text(
-        configProvider.getStringConfig(
-            pageId, componentId, "header_label", "text"),
+        context.l10n.community_title,
         style: TextStyle(
           fontSize: 20,
           color: theme.baseColor,

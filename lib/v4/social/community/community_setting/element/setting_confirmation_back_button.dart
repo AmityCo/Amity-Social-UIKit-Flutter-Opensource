@@ -1,4 +1,5 @@
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -19,9 +20,9 @@ class SettingConfirmationBackButton extends StatelessWidget {
         if (shouldShowConfirmationDialog) {
           ConfirmationDialog().show(
               context: context,
-              title: "Leave without finishing?",
-              detailText: "Your changes that you made may not be saved.",
-              rightButtonText: 'Leave',
+              title: context.l10n.settings_leave_confirmation,
+              detailText: context.l10n.settings_leave_description,
+              rightButtonText: context.l10n.general_leave,
               onConfirm: () {
                 Navigator.pop(context);
               });

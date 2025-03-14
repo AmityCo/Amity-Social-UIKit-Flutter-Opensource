@@ -1,0 +1,226 @@
+{
+  "@@locale": "es",
+  "community_title": "Comunidad",
+  "@community_title": {
+    "description": "Title for the homepage"
+  },
+  "tab_newsfeed": "Noticias",
+  "@tab_newsfeed": {
+    "description": "Label for the newsfeed tab in the main navigation"
+  },
+  "tab_explore": "Explorar",
+  "@tab_explore": {
+    "description": "Label for the explore tab in the main navigation"
+  },
+  "tab_my_communities": "Mis Comunidades",
+  "@tab_my_communities": {
+    "description": "Label for the my communities tab in the main navigation"
+  },
+  "global_search_hint": "Buscar comunidad y usuario",
+  "@global_search_hint": {
+    "description": "Hint text for the search communities and users field on the homepage"
+  },
+  "search_no_results": "No se encontraron resultados",
+  "@search_no_results": {
+    "description": "Message displayed when no search results are found"
+  },
+  "title_communities": "Comunidades",
+  "@title_communities": {
+    "description": "Title for the communities section"
+  },
+  "title_users": "Usuarios",
+  "@title_users": {
+    "description": "Title for the users section"
+  },
+  "general_cancel": "Cancelar",
+  "@general_cancel": {
+    "description": "Label for the cancel button"
+  },
+  "general_featured": "Destacado",
+  "@general_featured": {
+    "description": "Label for the featured posts"
+  },
+  "profile_edit": "Editar perfil",
+  "@profile_edit": {
+    "description": "Label for edit profile button"
+  },
+  "profile_followers": "Seguidores",
+  "@profile_followers": {
+    "description": "Label for followers count"
+  },
+  "profile_following": "Siguiendo",
+  "@profile_following": {
+    "description": "Label for following count"
+  },
+  "profile_posts": "Publicaciones",
+  "@profile_posts": {
+    "description": "Label for user posts"
+  },
+  "post_create": "Crear publicación",
+  "@post_create": {
+    "description": "Label for create post button"
+  },
+  "post_edit": "Editar publicación",
+  "@post_edit": {
+    "description": "Label for edit post button"
+  },
+  "post_delete": "Eliminar publicación",
+  "@post_delete": {
+    "description": "Label for delete post button"
+  },
+  "post_delete_description": "Esta publicación se eliminará permanentemente.",
+  "@post_delete_description": {
+    "description": "Confirmation message for deleting a post"
+  },
+  "post_delete_confirmation": "¿Eliminar publicación?",
+  "@post_delete_confirmation": {
+    "description": "Confirmation title for deleting a post"
+  },
+  "post_delete_confirmation_description": "¿Quieres eliminar tu publicación?",
+  "@post_delete_confirmation_description": {
+    "description": "Confirmation description for deleting a post"
+  },
+  "post_report": "Reportar publicación",
+  "@post_report": {
+    "description": "Label for report post button"
+  },
+  "post_unreport": "Desreportar publicación",
+  "@post_unreport": {
+    "description": "Label for unreport post button"
+  },
+  "post_like": "Me gusta",
+  "@post_like": {
+    "description": "Label for like action"
+  },
+  "post_comment": "Comentar",
+  "@post_comment": {
+    "description": "Label for comment action"
+  },
+  "post_share": "Compartir",
+  "@post_share": {
+    "description": "Label for share action"
+  },
+  "post_discard": "¿Descartar esta publicación?",
+  "@post_discard": {
+    "description": "Label for discard button"
+  },
+  "post_discard_description": "La publicación se eliminará permanentemente. No se puede deshacer.",
+  "@post_discard_description": {
+    "description": "Description for discard button"
+  },
+  "post_write_comment": "Escribe un comentario...",
+  "@post_write_comment": {
+    "description": "Placeholder for comment input"
+  },
+  "poll_duration": "Duración de la encuesta",
+  "@poll_duration": {
+    "description": "Label for poll duration"
+  },
+  "poll_duration_hint": "Siempre puedes cerrar la encuesta antes de la duración establecida.",
+  "@poll_duration_hint": {
+    "description": "Hint text for poll duration select field"
+  },
+  "poll_custom_edn_date": "Fecha de finalización personalizada",
+  "@poll_custom_edn_date": {
+    "description": "Label for custom end date"
+  },
+  "poll_close": "Cerrar encuesta",
+  "@poll_close": {
+    "description": "Label for close poll button"
+  },
+  "poll_close_description": "Esta encuesta está cerrada. Ya no puedes votar.",
+  "@poll_close_description": {
+    "description": "Description for closed poll"
+  },
+  "poll_vote": "Votar",
+  "@poll_vote": {
+    "description": "Label for vote button"
+  },
+  "poll_results": "Ver resultados",
+  "@poll_results": {
+    "description": "Label for poll results"
+  },
+  "poll_back_to_vote": "Volver a votar",
+  "@poll_back_to_vote": {
+    "description": "Label for back to vote button"
+  },
+  "poll_vote_count": "{count, plural, =1{1 voto} other{{count} votos}}",
+  "@poll_vote_count": {
+    "description": "Plural form for poll vote count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_total_votes": "{count, plural, =0{Sin votos} =1{Votado por 1 participante} other{Votado por {count}{plusSign} participantes}}",
+  "@poll_total_votes": {
+    "description": "Plural form for poll total votes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plusSign": {
+        "type": "String"
+      }
+    }
+  },
+  "poll_see_more_options": "{count, plural, =1{Ver 1 opción más} other{Ver {count} opciones más}}",
+  "@poll_see_more_options": {
+    "description": "Plural form for poll see more options",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_see_full_results": "Ver resultados completos",
+  "@poll_see_full_results": {
+    "description": "Label for see full results button"
+  },
+  "poll_voted": "Votado por ti",
+  "@poll_voted": {
+    "description": "Label for voted poll"
+  },
+  "poll_and_you": " y tú",
+  "@poll_and_you": {
+    "description": "Suffix for voted poll and you"
+  },
+  "poll_remaining_time": "restante",
+  "@poll_remaining_time": {
+    "description": "Label for remaining time in poll"
+  },
+  "poll_vote_error": "Error al votar en la encuesta. Por favor, inténtalo de nuevo.",
+  "@poll_vote_error": {
+    "description": "Error message when voting fails"
+  },
+  "poll_ended": "Finalizado",
+  "@poll_ended": {
+    "description": "Label for ended poll"
+  },
+  "poll_single_choice": "Selecciona una opción",
+  "@poll_single_choice": {
+    "description": "Label for single choice poll"
+  },
+  "poll_multiple_choice": "Selecciona una o más opciones",
+  "@poll_multiple_choice": {
+    "description": "Label for multiple choice poll"
+  },
+  "poll_options_description": "La encuesta debe contener al menos {minOptions} opciones.",
+  "@poll_options_description": {
+    "description": "Description for poll options",
+    "placeholders": {
+      "minOptions": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_question": "Pregunta de la encuesta",
+  "@poll_question": {
+    "description": "Label for poll question"
+  },
+  "poll_question_hint": "¿Cuál es tu pregunta de la encuesta?",
+  "@poll_question_hint": {
+    "description": "Hint text for poll question input"
+  }
+}

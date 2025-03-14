@@ -4,6 +4,13 @@ import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_home_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/comment/comment_tray_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_membership/community_membership_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/globalfeed/global_feed_component_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/post_detail/post_content_component_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/follow/pending_requests/user_pending_follow_request_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user_search_result/user_search_result_behavior.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
@@ -204,6 +211,16 @@ class AmityApp extends StatelessWidget {
         return const UserListPage();
       }),
     );
+  }
+
+  void applyCustomBehavior() {
+    AmityUIKit4Manager.behavior.postContentComponentBehavior = CustomPostContentComponentBehavior();
+    AmityUIKit4Manager.behavior.globalFeedComponentBehavior = CustomGlobalFeedComponentBehavior();
+    AmityUIKit4Manager.behavior.commentTrayBehavior = CustomCommentTrayBehavior();
+    AmityUIKit4Manager.behavior.communityMembershipPageBehavior = CustomCommunityMembershipPageBehavior();
+    AmityUIKit4Manager.behavior.userSearchResultBehavior = CustomUserSearchResultBehavior();
+    AmityUIKit4Manager.behavior.userPendingFollowRequestsPageBehavior = CustomUserPendingFollowRequestsPageBehavior();
+    AmityUIKit4Manager.behavior.userRelationshipPageBehavior = CustomUserRelationshipPageBehavior();
   }
 }
 
@@ -678,3 +695,53 @@ class ChatPage extends StatelessWidget {
     );
   }
 }
+
+class CustomPostContentComponentBehavior extends AmityPostContentComponentBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomGlobalFeedComponentBehavior extends AmityGlobalFeedComponentBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomCommentTrayBehavior extends AmityCommentTrayBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomCommunityMembershipPageBehavior extends AmityCommunityMembershipPageBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomUserSearchResultBehavior extends AmityUserSearchResultBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomUserPendingFollowRequestsPageBehavior extends AmityUserPendingFollowRequestsPageBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomUserRelationshipPageBehavior extends AmityUserRelationshipPageBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+

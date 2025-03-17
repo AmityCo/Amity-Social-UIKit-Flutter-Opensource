@@ -40,14 +40,18 @@ class MyCommunitySearchBloc
           .listen((communities) async {
         if (communities.isNotEmpty) {
           amityCommunities = communities;
-          add(NotifyEvent(amityCommunities, isFetching));
+          if (!isClosed) {
+            add(NotifyEvent(amityCommunities, isFetching));
+          }
         } else {
           amityCommunities.clear();
         }
       });
 
       communityLiveCollection.observeLoadingState().listen((event) {
-        add(NotifyEvent(amityCommunities, event));
+        if (!isClosed) {
+          add(NotifyEvent(amityCommunities, event));
+        }
       });
 
       communityLiveCollection.reset();

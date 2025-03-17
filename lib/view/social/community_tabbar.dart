@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,29 +13,31 @@ class CommunityTabbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      child: Scaffold(
-        appBar: TabBar(
-          tabAlignment: TabAlignment.start,
-          physics: const BouncingScrollPhysics(),
-          isScrollable: true,
-          indicatorColor:
-              Provider.of<AmityUIConfiguration>(context).primaryColor,
-          labelColor: Provider.of<AmityUIConfiguration>(context).primaryColor,
-          unselectedLabelColor: Colors.black,
-          indicatorSize: TabBarIndicatorSize.label,
-          tabs: const [
-            Tab(text: "Recommended"),
-            Tab(text: "Trending"),
-            Tab(text: "Joined"),
-          ],
-        ),
-        body: const TabBarView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            CommunityList(CommunityListType.recommend),
-            CommunityList(CommunityListType.trending),
-            CommunityList(CommunityListType.my),
-          ],
+      child: ThemeConfig(
+        child: Scaffold(
+          appBar: TabBar(
+            tabAlignment: TabAlignment.start,
+            physics: const BouncingScrollPhysics(),
+            isScrollable: true,
+            indicatorColor:
+                Provider.of<AmityUIConfiguration>(context).primaryColor,
+            labelColor: Provider.of<AmityUIConfiguration>(context).primaryColor,
+            unselectedLabelColor: Colors.black,
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: const [
+              Tab(text: "Recommended"),
+              Tab(text: "Trending"),
+              Tab(text: "Joined"),
+            ],
+          ),
+          body: const TabBarView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              CommunityList(CommunityListType.recommend),
+              CommunityList(CommunityListType.trending),
+              CommunityList(CommunityListType.my),
+            ],
+          ),
         ),
       ),
     );

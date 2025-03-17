@@ -5,7 +5,9 @@ extension CompactStringFormatter on int {
     String sign = n < 0 ? "-" : "";
 
     String reduceScale(double number, int scale) {
-      return number.toStringAsFixed(scale).replaceAll(RegExp(r"([.]*0)(?!.*\d)"), "");
+      return number
+          .toStringAsFixed(scale)
+          .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), "");
     }
 
     if (num >= 1000000000) {

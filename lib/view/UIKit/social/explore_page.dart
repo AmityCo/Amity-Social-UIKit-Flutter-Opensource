@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/search_communities.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
@@ -12,19 +13,42 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPage extends StatefulWidget {
+  final bool showAppBarTop;
   final bool isShowMyCommunity;
-  const CommunityPage({super.key, this.isShowMyCommunity = true});
+  final bool showPostToButton;
+  final bool canCreateCommunity;
+  final bool canSearchCommunities;
+  final bool isExplorePage;
+
+  const CommunityPage({
+    super.key,
+    this.showAppBarTop = true,
+    this.isShowMyCommunity = true,
+    this.showPostToButton = true,
+    this.canCreateCommunity = true,
+    this.canSearchCommunities = true,
+    this.isExplorePage = false,
+  });
 
   @override
-  State<CommunityPage> createState() => _CommunityPageState();
+  State<CommunityPage> createState() => CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> {
+class CommunityPageState extends State<CommunityPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
-    var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
 
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: AmityUIConfiguration.isExplorePage ? 1 : 0,
+    );
+
+    var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
     explorePageVM.getRecommendedCommunities();
     explorePageVM.getTrendingCommunities();
     explorePageVM.queryCommunityCategories(
@@ -32,121 +56,192 @@ class _CommunityPageState extends State<CommunityPage> {
 
     var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
     var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
-
     myCommunityList.initMyCommunityFeed();
 
-    globalFeedProvider.initAmityGlobalfeed();
+    globalFeedProvider.initAmityGlobalfeed(
+      onCustomPost: AmityUIConfiguration.onCustomPost,
+    );
+  }
+
+  void exploreTab() {
+    setState(() {
+      _tabController.index = 1;
+    });
+  }
+
+  void newsFeedTab() {
+    setState(() {
+      _tabController.index = 0;
+    });
+  }
+
+  @override
+  void didUpdateWidget(CommunityPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Change the tab if isExplorePage has changed
+    if (oldWidget.isExplorePage != AmityUIConfiguration.isExplorePage) {
+      _tabController.index = AmityUIConfiguration.isExplorePage ? 1 : 0;
+    }
   }
 
   @override
   void dispose() {
     FeedVM feedVM = Provider.of<FeedVM>(context, listen: false);
     feedVM.close();
+    _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
+    return ThemeConfig(
       child: Scaffold(
+        key: AmityUIConfiguration.newFeedExploreKey,
         backgroundColor:
             Provider.of<AmityUIConfiguration>(context).appColors.baseShade4,
         appBar: AppBar(
-          elevation: 0.05, // Add this line to remove the shadow
+          toolbarHeight: widget.showAppBarTop ? kToolbarHeight : 0,
+          elevation: 0.05,
           backgroundColor: Provider.of<AmityUIConfiguration>(context)
               .appColors
               .baseBackground,
-
-          leading: IconButton(
-            icon: Icon(
-              Icons.close,
-              color: Provider.of<AmityUIConfiguration>(context).appColors.base,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          // centerTitle: false,
-          automaticallyImplyLeading: false,
-          title: Text(
-            "Community",
-            style: Provider.of<AmityUIConfiguration>(context)
-                .titleTextStyle
-                .copyWith(
+          leading: widget.showAppBarTop
+              ? IconButton(
+                  icon: Icon(
+                    Icons.close,
                     color: Provider.of<AmityUIConfiguration>(context)
                         .appColors
-                        .base),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                color:
-                    Provider.of<AmityUIConfiguration>(context).appColors.base,
-              ),
-              onPressed: () {
-                // Implement search functionality
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SearchCommunitiesScreen()));
-              },
-            )
-          ],
-          bottom: TabBar(
-            tabAlignment: TabAlignment.start,
-            isScrollable: true, // Ensure that the TabBar is scrollable
-            dividerColor: Provider.of<AmityUIConfiguration>(context)
-                .appColors
-                .baseBackground,
-            labelColor:
-                Provider.of<AmityUIConfiguration>(context).appColors.primary,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor:
-                Provider.of<AmityUIConfiguration>(context).appColors.primary,
-            labelStyle: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'SF Pro Text',
+                        .base,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
+          title: widget.showAppBarTop
+              ? Text(
+                  "Community",
+                  style: Provider.of<AmityUIConfiguration>(context)
+                      .titleTextStyle
+                      .copyWith(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
+                      ),
+                )
+              : null,
+          actions: widget.showAppBarTop
+              ? [
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .base,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SearchCommunitiesScreen(),
+                        ),
+                      );
+                    },
+                  )
+                ]
+              : null,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(48.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    TabBar(
+                      controller: _tabController,
+                      // Attach the TabController
+                      tabAlignment: TabAlignment.start,
+                      isScrollable: true,
+                      dividerColor: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .baseBackground,
+                      labelColor: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
+                      labelStyle: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'SF Pro Text',
+                      ),
+                      unselectedLabelStyle: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'SF Pro Text',
+                      ),
+                      tabs: const [
+                        Tab(text: "Newsfeed"),
+                        Tab(text: "Explore"),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-            tabs: const [
-              Tab(
-                text: "Newsfeed",
-              ),
-              Tab(text: "Explore"),
-            ],
           ),
         ),
         body: TabBarView(
+          controller: _tabController, // Attach the TabController
           children: [
             Scaffold(
-              floatingActionButton: FloatingActionButton(
-                shape: const CircleBorder(),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const Scaffold(body: PostToPage()),
-                  ));
-                },
-                backgroundColor: Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .primary,
-                child: Provider.of<AmityUIConfiguration>(context)
-                    .iconConfig
-                    .postIcon(iconSize: 28, color: Colors.white),
-              ),
+              floatingActionButton: widget.showPostToButton
+                  ? Semantics(
+                      identifier: 'amityGlobalPage',
+                      label: 'amityGlobalPage',
+                      child: FloatingActionButton(
+                        key: Key('amityGlobalPage'),
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ThemeConfig(
+                                child: Scaffold(
+                                  body: PostToPage(),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        backgroundColor:
+                            Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .primary,
+                        child: Semantics(
+                          identifier: 'amityPostButton',
+                          label: 'amityPostButton',
+                          child: Provider.of<AmityUIConfiguration>(context)
+                              .iconConfig
+                              .postIcon(iconSize: 28, color: Colors.white),
+                        ),
+                      ),
+                    )
+                  : null,
               body: GlobalFeedScreen(
                 isShowMyCommunity: widget.isShowMyCommunity,
+                canCreateCommunity: widget.canCreateCommunity,
+                canSearchCommunities: widget.canSearchCommunities,
               ),
             ),
             RefreshIndicator(
-                onRefresh: () async {
-                  var explorePageVM =
-                      Provider.of<ExplorePageVM>(context, listen: false);
-
-                  explorePageVM.getRecommendedCommunities();
-                  explorePageVM.getTrendingCommunities();
-                  explorePageVM.queryCommunityCategories(
-                      sortOption:
-                          AmityCommunityCategorySortOption.FIRST_CREATED);
-                },
-                child: const ExplorePage()),
+              onRefresh: () async {
+                var explorePageVM =
+                    Provider.of<ExplorePageVM>(context, listen: false);
+                explorePageVM.getRecommendedCommunities();
+                explorePageVM.getTrendingCommunities();
+                explorePageVM.queryCommunityCategories(
+                    sortOption: AmityCommunityCategorySortOption.FIRST_CREATED);
+              },
+              child: const ExplorePage(),
+            ),
           ],
         ),
       ),
@@ -384,7 +479,8 @@ class TrendingSection extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: vm.trendingCommunities.length,
-                itemExtent: 60.0, // <-- Set this to your desired height
+                itemExtent: 60.0,
+                // <-- Set this to your desired height
                 itemBuilder: (context, index) {
                   final community = vm.trendingCommunities[index];
                   return ListTile(
@@ -544,8 +640,8 @@ class CategorySection extends StatelessWidget {
                 ),
                 itemCount: vm.amityCategories.length > 8
                     ? 8
-                    : vm.amityCategories
-                        .length, // Limit to maximum 8 items (2x4 grid)
+                    : vm.amityCategories.length,
+                // Limit to maximum 8 items (2x4 grid)
                 itemBuilder: (context, index) {
                   final category = vm.amityCategories[index];
                   return GestureDetector(
@@ -629,55 +725,55 @@ class _CategoryListPageState extends State<CategoryListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:
-          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0, // Remove shadow
-        title: Text(
-          "Category",
-          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+    return ThemeConfig(
+      child: Scaffold(
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0, // Remove shadow
+          title: Text(
+            "Category",
+            style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+          ),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: Consumer<ExplorePageVM>(
-        builder: (context, vm, _) {
-          return ListView.builder(
-            itemCount: vm.amityCategories.length,
-            controller: vm.categoryScrollcontroller,
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              final category = vm.amityCategories[index];
-              return ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CommunityListPage(
-                              category: category,
-                            )),
-                  );
-                },
-                leading: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .primaryShade3,
-                    shape: BoxShape.circle,
+        body: Consumer<ExplorePageVM>(
+          builder: (context, vm, _) {
+            return ListView.builder(
+              itemCount: vm.amityCategories.length,
+              itemBuilder: (context, index) {
+                final category = vm.amityCategories[index];
+                return ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CommunityListPage(
+                                category: category,
+                              )),
+                    );
+                  },
+                  leading: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primaryShade3,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.category,
+                      color: Colors.white,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.category,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text(category.name ?? ''),
-              );
-            },
-          );
-        },
+                  title: Text(category.name ?? ''),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -707,57 +803,59 @@ class _CommunityListPageState extends State<CommunityListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:
-          Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0, // Remove shadow
+    return ThemeConfig(
+      child: Scaffold(
+        backgroundColor:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0, // Remove shadow
 
-        title: Text(
-          widget.category.name ?? "Community",
-          style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+          title: Text(
+            widget.category.name ?? "Community",
+            style: Provider.of<AmityUIConfiguration>(context).titleTextStyle,
+          ),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: Consumer<ExplorePageVM>(
-        builder: (context, vm, _) {
-          return ListView.builder(
-            padding: EdgeInsets.zero,
-            itemCount: vm.amityCommunities.length,
-            controller: vm.communityScrollcontroller,
-            itemBuilder: (context, index) {
-              final community = vm.amityCommunities[index];
-              return ListTile(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          CommunityScreen(community: community)));
-                },
-                leading: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .primaryShade3,
-                    shape: BoxShape.circle,
+        body: Consumer<ExplorePageVM>(
+          builder: (context, vm, _) {
+            return ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: vm.amityCommunities.length,
+              controller: vm.communityScrollcontroller,
+              itemBuilder: (context, index) {
+                final community = vm.amityCommunities[index];
+                return ListTile(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            CommunityScreen(community: community)));
+                  },
+                  leading: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primaryShade3,
+                      shape: BoxShape.circle,
+                    ),
+                    child: community.avatarImage != null
+                        ? CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                community.avatarImage?.fileUrl ?? ''),
+                          )
+                        : const Icon(
+                            Icons.people,
+                            color: Colors.white,
+                          ),
                   ),
-                  child: community.avatarImage != null
-                      ? CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              community.avatarImage?.fileUrl ?? ''),
-                        )
-                      : const Icon(
-                          Icons.people,
-                          color: Colors.white,
-                        ),
-                ),
-                title: Text(community.displayName ?? ''),
-              );
-            },
-          );
-        },
+                  title: Text(community.displayName ?? ''),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

@@ -58,7 +58,7 @@ class AmityStoryEngagementRow extends StatelessWidget {
                   onClick: () {
                     BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
-                    openCommentTraySheet(context, amityStory, isAllowedComment);
+                    openCommentTraySheet(context, amityStory, isCommunityJoined, isAllowedComment);
                   },
                   count: "$commentCount"),
               const SizedBox(width: 10),

@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,39 +66,41 @@ class ChatSingleScreen extends StatelessWidget {
         myAppBar.preferredSize.height;
 
     const textfielHeight = 60.0;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: myAppBar,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            FadedSlideAnimation(
-              beginOffset: const Offset(0, 0.3),
-              endOffset: const Offset(0, 0),
-              slideCurve: Curves.linearToEaseOut,
-              child: SingleChildScrollView(
-                reverse: true,
-                controller: Provider.of<MessageVM>(context, listen: false)
-                    .scrollController,
-                child: MessageComponent(
-                  bheight: bHeight - textfielHeight,
-                  theme: theme,
-                  mediaQuery: mediaQuery,
-                  channelId: channel.channelId!,
-                  channel: channel,
+    return ThemeConfig(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: myAppBar,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              FadedSlideAnimation(
+                beginOffset: const Offset(0, 0.3),
+                endOffset: const Offset(0, 0),
+                slideCurve: Curves.linearToEaseOut,
+                child: SingleChildScrollView(
+                  reverse: true,
+                  controller: Provider.of<MessageVM>(context, listen: false)
+                      .scrollController,
+                  child: MessageComponent(
+                    bheight: bHeight - textfielHeight,
+                    theme: theme,
+                    mediaQuery: mediaQuery,
+                    channelId: channel.channelId!,
+                    channel: channel,
+                  ),
                 ),
               ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ChatTextFieldComponent(
-                    theme: theme,
-                    textfielHeight: textfielHeight,
-                    mediaQuery: mediaQuery),
-              ],
-            ),
-          ],
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ChatTextFieldComponent(
+                      theme: theme,
+                      textfielHeight: textfielHeight,
+                      mediaQuery: mediaQuery),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -246,8 +247,6 @@ class _MessageComponentState extends State<MessageComponent> {
                 shrinkWrap: true,
                 itemCount: vm.amityMessageList?.length,
                 itemBuilder: (context, index) {
-                  var data = vm.amityMessageList![index].data;
-                  log(data!.text.toString());
                   bool isSendbyCurrentUser =
                       vm.amityMessageList?[index].userId !=
                           AmityCoreClient.getCurrentUser().userId;

@@ -1,9 +1,12 @@
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_feed_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../viewmodel/configuration_viewmodel.dart';
 
 // Custom Widget that mimics ListTile but without padding
 class CustomListTile extends StatelessWidget {
@@ -28,16 +31,23 @@ class CustomListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (context) =>
-                UserFeedVM(), // Assuming UserFeedVM is your ViewModel
-            child: UserProfileScreen(
-              amityUserId: userId,
-              amityUser: user,
+        if (userId == AmityCoreClient.getCurrentUser().userId &&
+            Provider.of<AmityUIConfiguration>(context, listen: false)
+                .customUserProfileNavigate) {
+          Provider.of<AmityUIConfiguration>(context, listen: false)
+              .onUserProfile(context);
+        } else {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (context) =>
+                  UserFeedVM(), // Assuming UserFeedVM is your ViewModel
+              child: UserProfileScreen(
+                amityUserId: userId,
+                amityUser: user,
+              ),
             ),
-          ),
-        ));
+          ));
+        }
       },
       child: Container(
         padding: const EdgeInsets.only(bottom: 2, top: 2),
@@ -46,16 +56,23 @@ class CustomListTile extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () async {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider(
-                    create: (context) =>
-                        UserFeedVM(), // Assuming UserFeedVM is your ViewModel
-                    child: UserProfileScreen(
-                      amityUserId: userId,
-                      amityUser: user,
+                if (userId == AmityCoreClient.getCurrentUser().userId &&
+                    Provider.of<AmityUIConfiguration>(context, listen: false)
+                        .customUserProfileNavigate) {
+                  Provider.of<AmityUIConfiguration>(context, listen: false)
+                      .onUserProfile(context);
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (context) =>
+                          UserFeedVM(), // Assuming UserFeedVM is your ViewModel
+                      child: UserProfileScreen(
+                        amityUserId: userId,
+                        amityUser: user,
+                      ),
                     ),
-                  ),
-                ));
+                  ));
+                }
               },
               child: GestureDetector(child: getAvatarImage(avatarUrl)
                   // If avatarUrl can be null, consider handling it with a placeholder image

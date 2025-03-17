@@ -4,7 +4,6 @@ import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_s
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -67,7 +66,7 @@ class AmityStoryTargetElement extends BaseElement {
       badge = "assets/Icons/ic_warning_circle_red.svg";
     } else if (hasManageStoryPermission) {
       badge = "assets/Icons/ic_add_circle_blue.svg";
-    } else if (isOfficialCommunity) {
+    } else if (isOfficialCommunity && !isCommunityTarget) {
       badge = "assets/Icons/ic_verified_blue.svg";
     } else {
       badge = null;

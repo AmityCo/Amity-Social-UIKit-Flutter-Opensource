@@ -5,11 +5,13 @@ import 'package:amity_uikit_beta_service/amity_uikit_beta_service_method_channel
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelAmityUikitBetaService platform = MethodChannelAmityUikitBetaService();
+  MethodChannelAmityUikitBetaService platform =
+      MethodChannelAmityUikitBetaService();
   const MethodChannel channel = MethodChannel('amity_uikit_beta_service');
 
   setUp(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
       channel,
       (MethodCall methodCall) async {
         return '42';
@@ -18,7 +20,8 @@ void main() {
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
 
   test('getPlatformVersion', () async {

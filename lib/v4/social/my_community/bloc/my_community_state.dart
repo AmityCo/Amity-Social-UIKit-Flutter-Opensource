@@ -1,9 +1,8 @@
 part of 'my_community_bloc.dart';
 
-
 class MyCommunityState extends Equatable {
   const MyCommunityState();
-  
+
   @override
   List<Object?> get props => [];
 }

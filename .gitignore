@@ -44,3 +44,6 @@ example/lib/firebase_options.dart
 .vscode/settings.json
 example/pubspec.lock
 example/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# FVM Version Cache
+.fvm/

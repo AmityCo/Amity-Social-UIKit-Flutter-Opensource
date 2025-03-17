@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
+import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/follower_following_viewmodel.dart';
 
 class AmityFollowerScreen extends StatefulWidget {
   final String userId;
+
   const AmityFollowerScreen({
     Key? key,
     required this.userId,
@@ -36,7 +38,6 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<FollowerVM>(builder: (context, vm, _) {
-      final theme = Theme.of(context);
       return FadedSlideAnimation(
         beginOffset: const Offset(0, 0.3),
         endOffset: const Offset(0, 0),
@@ -79,18 +80,31 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                               builder: (context, snapshot) {
                                 return ListTile(
                                   onTap: () async {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ChangeNotifierProvider(
-                                                    create: (context) =>
-                                                        UserFeedVM(),
-                                                    child: UserProfileScreen(
-                                                        amityUser: snapshot
-                                                            .data!.sourceUser!,
-                                                        amityUserId: snapshot
-                                                            .data!
-                                                            .sourceUserId!))));
+                                    if (snapshot.data!.sourceUserId! ==
+                                            AmityCoreClient.getCurrentUser()
+                                                .userId &&
+                                        Provider.of<AmityUIConfiguration>(
+                                                context,
+                                                listen: false)
+                                            .customUserProfileNavigate) {
+                                      Provider.of<AmityUIConfiguration>(context,
+                                              listen: false)
+                                          .onUserProfile(context);
+                                    } else {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ChangeNotifierProvider(
+                                                      create: (context) =>
+                                                          UserFeedVM(),
+                                                      child: UserProfileScreen(
+                                                          amityUser:
+                                                              snapshot.data!
+                                                                  .sourceUser!,
+                                                          amityUserId: snapshot
+                                                              .data!
+                                                              .sourceUserId!))));
+                                    }
                                   },
                                   trailing: GestureDetector(
                                       onTap: () {
@@ -105,11 +119,49 @@ class _AmityFollowerScreenState extends State<AmityFollowerScreen> {
                                   title: Row(
                                     children: [
                                       GestureDetector(
-                                        child: getAvatarImage(vm
-                                            .getFollowerList[index]
-                                            .sourceUser!
-                                            .avatarUrl),
-                                      ),
+                                          child: GestureDetector(
+                                        child: FutureBuilder<bool>(
+                                          future:
+                                              AmityUIConfiguration.isFollowing(
+                                                  vm.getFollowerList[index]
+                                                          .sourceUser!.userId ??
+                                                      ''),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<bool> snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return getAvatarImage(
+                                                  ''); // You can display a loading placeholder or empty avatarUrl
+                                            } else if (vm.getFollowerList[index]
+                                                        .sourceUser!.userId ==
+                                                    AmityCoreClient
+                                                            .getCurrentUser()
+                                                        .userId &&
+                                                vm.getFollowerList[index]
+                                                            .sourceUser?.metadata?[
+                                                        'profilePublicImageUrl'] ==
+                                                    null) {
+                                              return getAvatarImage(vm
+                                                  .getFollowerList[index]
+                                                  .sourceUser
+                                                  ?.avatarUrl);
+                                            } else if (snapshot.hasError) {
+                                              return getAvatarImage(
+                                                  ''); // Handle error case, possibly by showing a default avatar
+                                            } else {
+                                              final isFollowing =
+                                                  snapshot.data ?? false;
+                                              final avatarUrl = isFollowing
+                                                  ? (vm.getFollowerList[index].sourceUser?.avatarUrl ??
+                                                  (vm.getFollowerList[index].sourceUser?.metadata?['profilePublicImageUrl'] ?? ''))
+                                                  : (vm.getFollowerList[index].sourceUser?.metadata?['profilePublicImageUrl'] ?? '');
+
+
+                                              return getAvatarImage(avatarUrl);
+                                            }
+                                          },
+                                        ),
+                                      )),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(

@@ -1,37 +1,18 @@
 part of 'post_item_bloc.dart';
 
 class PostItemState extends Equatable {
-  const PostItemState();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class PostItemStateInitial extends PostItemState {}
-
-class PostItemStateLoaded extends PostItemState {
   final AmityPost post;
+  final bool isReacting;
 
-  const PostItemStateLoaded({required this.post});
-
-  @override
-  List<Object?> get props => [post];
-}
-
-class PostItemStateDeleted extends PostItemState {
-  final AmityPost post;
-
-  const PostItemStateDeleted({required this.post});
+  const PostItemState({required this.post, this.isReacting = false});
 
   @override
-  List<Object?> get props => [post];
-}
+  List<Object?> get props => [post, isReacting];
 
-class PostItemStateReacting extends PostItemState {
-  final AmityPost post;
-
-  const PostItemStateReacting({required this.post});
-
-  @override
-  List<Object?> get props => [post];
+  PostItemState copyWith({AmityPost? post, bool? isReacting}) {
+    return PostItemState(
+      post: post ?? this.post,
+      isReacting: isReacting ?? this.isReacting,
+    );
+  }
 }

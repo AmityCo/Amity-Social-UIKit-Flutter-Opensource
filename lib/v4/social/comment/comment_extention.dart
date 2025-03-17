@@ -4,7 +4,8 @@ extension AmityCommentExtension on AmityComment {
   bool hasReactions() {
     return reactions?.reactions?.entries
             .where((element) => element.value > 0)
-            .isNotEmpty ?? false;
+            .isNotEmpty ??
+        false;
   }
 
   bool hasMyReactions() {

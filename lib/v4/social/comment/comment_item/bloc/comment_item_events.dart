@@ -11,7 +11,8 @@ class AddReactionToComment extends CommentItemEvent {
   final AmityComment comment;
   final String reactionType;
 
-  const AddReactionToComment({required this.comment, required this.reactionType});
+  const AddReactionToComment(
+      {required this.comment, required this.reactionType});
 
   @override
   List<Object> get props => [comment, reactionType];
@@ -21,7 +22,8 @@ class RemoveReactionToComment extends CommentItemEvent {
   final AmityComment comment;
   final String reactionType;
 
-  const RemoveReactionToComment({required this.comment, required this.reactionType});
+  const RemoveReactionToComment(
+      {required this.comment, required this.reactionType});
 
   @override
   List<Object> get props => [comment, reactionType];
@@ -38,7 +40,6 @@ class CommentItemLoaded extends CommentItemEvent {
 }
 
 class CommentItemExpanded extends CommentItemEvent {}
-
 
 class CommentItemFlag extends CommentItemEvent {
   final AmityComment comment;
@@ -67,8 +68,15 @@ class CommentItemEditChanged extends CommentItemEvent {
 class CommentItemUpdate extends CommentItemEvent {
   final String commentId;
   final String text;
+  final List<AmityMentionMetadata> mentionMetadataList;
+  final List<String> mentionUserIds;
 
-  const CommentItemUpdate({required this.commentId, required this.text});
+  const CommentItemUpdate({
+    required this.commentId,
+    required this.text,
+    required this.mentionMetadataList,
+    required this.mentionUserIds
+  });
 }
 
 class CommentItemDelete extends CommentItemEvent {

@@ -1,5 +1,3 @@
-
-
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:flutter/material.dart';
 

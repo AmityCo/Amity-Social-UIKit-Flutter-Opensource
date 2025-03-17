@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 
 part 'community_feed_story_event.dart';
 part 'community_feed_story_state.dart';

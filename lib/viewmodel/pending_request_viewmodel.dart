@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import '../components/alert_dialog.dart';
 
 class PendingVM extends ChangeNotifier {
   var _pendingList = <AmityFollowRelationship>[];
+
   List<AmityFollowRelationship> get pendingRequestList => _pendingList;
 
   ScrollController? scrollController;
@@ -14,8 +15,6 @@ class PendingVM extends ChangeNotifier {
   late PagingController<AmityFollowRelationship> _pendingListController;
 
   Future<void> getMyPendingRequestList() async {
-    log("getMyFollowingList....");
-
     _pendingListController = PagingController(
       pageFuture: (token) => AmityCoreClient.newUserRepository()
           .relationship()
@@ -47,7 +46,6 @@ class PendingVM extends ChangeNotifier {
         .status(AmityFollowStatusFilter.PENDING)
         .getPagingData()
         .then((value) {
-      log("getFollowerListOf....Successs");
       _pendingList = value.data;
     }).onError((error, stackTrace) {
       AmityDialog()
@@ -65,6 +63,7 @@ class PendingVM extends ChangeNotifier {
         _pendingList.clear();
 
         _pendingList.addAll(_pendingListController.loadedItems);
+
         //update widgets
       } else {
         //error on pagination controller
@@ -73,15 +72,15 @@ class PendingVM extends ChangeNotifier {
     };
   }
 
-  void acceptFollowRequest(String userId, int index) {
+  void acceptFollowRequest(String userId, int index,
+      {bool skipUpdate = false}) {
     AmityCoreClient.newUserRepository()
         .relationship()
         .me()
         .accept(userId = userId)
         .then((value) {
       //success
-      log("acceptFollowRequest: Success");
-      _pendingList.removeAt(index);
+      if (!skipUpdate) _pendingList.removeAt(index);
       notifyListeners();
     }).onError((error, stackTrace) {
       //handle error
@@ -90,15 +89,15 @@ class PendingVM extends ChangeNotifier {
     });
   }
 
-  void declineFollowRequest(String userId, int index) {
+  void declineFollowRequest(String userId, int index,
+      {bool skipUpdate = false}) {
     AmityCoreClient.newUserRepository()
         .relationship()
         .me()
         .decline(userId = userId)
         .then((value) {
       //success
-      log("declineFollowRequest: Success");
-      _pendingList.removeAt(index);
+      if (!skipUpdate) _pendingList.removeAt(index);
       notifyListeners();
     }).onError((error, stackTrace) {
       //handle error

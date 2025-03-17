@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +13,11 @@ class AmityMediaAttachmentComponent extends NewBaseComponent {
 
   AmityMediaAttachmentComponent({
     Key? key,
-    required this.onCameraTap,
-    required this.onImageTap,
-    required this.onVideoTap,
+    this.onCameraTap,
+    this.onImageTap,
+    this.onVideoTap,
     this.mediaType,
-  }) : super(key: key, componentId: "componentId");
+  }) : super(key: key, componentId: "media_attachment");
 
   @override
   Widget buildComponent(BuildContext context) {

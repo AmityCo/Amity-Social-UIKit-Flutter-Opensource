@@ -11,6 +11,7 @@ enum Feedtype { global, commu }
 class FeedVM extends ChangeNotifier {
   final _amityGlobalFeedPosts = <AmityPost>[];
   bool isCustomPostRanking = false;
+  // PagingController<AmityPost>? _controllerGlobal;
   bool isLoading = true;
   final scrollcontroller = ScrollController();
   late GlobalFeedLiveCollection globalFeedLiveCollection;
@@ -18,6 +19,7 @@ class FeedVM extends ChangeNotifier {
   late StreamSubscription<List<AmityPost>> _subscription;
 
   bool loadingNexPage = false;
+
   List<AmityPost> get getAmityPosts {
     return _amityGlobalFeedPosts;
   }
@@ -49,7 +51,10 @@ class FeedVM extends ChangeNotifier {
     });
   }
 
-  Future<void> initAmityGlobalfeed({bool isCustomPostRanking = false}) async {
+  Future<void> initAmityGlobalfeed({
+    bool isCustomPostRanking = false,
+    required Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost,
+  }) async {
     isCustomPostRanking = isCustomPostRanking;
     isLoading = true;
     print("isloading1: $isLoading");
@@ -68,8 +73,10 @@ class FeedVM extends ChangeNotifier {
 
           notifyListeners();
         } else if (posts.isNotEmpty) {
+          final feedItems =
+                  await onCustomPost(posts);
           _amityGlobalFeedPosts.clear();
-          _amityGlobalFeedPosts.addAll(posts);
+          _amityGlobalFeedPosts.addAll(feedItems);
           isLoading = false;
           notifyListeners();
         }
@@ -91,8 +98,10 @@ class FeedVM extends ChangeNotifier {
           isLoading = true;
           notifyListeners();
         } else if (posts.isNotEmpty) {
+          final feedItems =
+                  await onCustomPost(posts);
           _amityGlobalFeedPosts.clear();
-          _amityGlobalFeedPosts.addAll(posts);
+          _amityGlobalFeedPosts.addAll(feedItems);
           isLoading = false;
           notifyListeners();
         }

@@ -45,18 +45,17 @@ class _ImagePostViewerState extends State<ImagePostViewer> {
           ),
           centerTitle: true,
           leading: Container(
-            padding: EdgeInsets.only(left: 16),
-            child:IconButton(
-              icon: SvgPicture.asset(
-                'assets/Icons/amity_ic_close_viewer.svg',
-                package: 'amity_uikit_beta_service',
-                width: 32,
-                height: 32,
-              ),
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ),
+              padding: EdgeInsets.only(left: 16),
+              child: IconButton(
+                icon: SvgPicture.asset(
+                  'assets/Icons/amity_ic_close_viewer.svg',
+                  package: 'amity_uikit_beta_service',
+                  width: 32,
+                  height: 32,
+                ),
+                color: Colors.white,
+                onPressed: () => Navigator.of(context).pop(),
+              )),
         ),
         body: PageView.builder(
           controller: PageController(initialPage: widget.initialIndex),
@@ -70,20 +69,21 @@ class _ImagePostViewerState extends State<ImagePostViewer> {
             var imageData = widget.posts[index].data as ImageData;
             return GestureDetector(
               child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              imageData.image!.getUrl(AmityImageSize.LARGE)),
-                          fit: BoxFit.fitWidth,
-                        ),
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(
+                            imageData.image!.getUrl(AmityImageSize.LARGE)),
+                        fit: BoxFit.fitWidth,
                       ),
                     ),
-                  ],
+                  ),
+                ],
               ),
             );
           },
         ));
   }
 }
+

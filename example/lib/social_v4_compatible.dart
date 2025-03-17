@@ -1,9 +1,8 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_action_bottom_sheet.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/search_communities.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
+import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
@@ -25,8 +24,8 @@ class _CommunityPageState extends State<AmitySocialV4Compatible> {
     var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
     explorePageVM.getRecommendedCommunities();
     explorePageVM.getTrendingCommunities();
-    explorePageVM
-        .queryCommunityCategories(sortOption: AmityCommunityCategorySortOption.NAME);
+    explorePageVM.queryCommunityCategories(
+        sortOption: AmityCommunityCategorySortOption.NAME);
   }
 
   @override
@@ -100,6 +99,11 @@ class _CommunityPageState extends State<AmitySocialV4Compatible> {
                         fontWeight: FontWeight.w600,
                         fontFamily: 'SF Pro Text',
                       ),
+                      unselectedLabelStyle: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'SF Pro Text',
+                      ),
                       tabs: const [
                         Tab(
                           text: "Newfeed",
@@ -136,7 +140,9 @@ class _CommunityPageState extends State<AmitySocialV4Compatible> {
                     .iconConfig
                     .postIcon(iconSize: 28, color: Colors.white),
               ),
-              body: const NewsFeedComponentConfigProviderWidget(pageId: 'global_feed_compat',),
+              body: const NewsFeedComponentConfigProviderWidget(
+                pageId: 'global_feed_compat',
+              ),
             ),
             const ExplorePage(),
           ],
@@ -667,7 +673,8 @@ class _CommunityListPageState extends State<CommunityListPage> {
   void initState() {
     super.initState();
     _viewModel = Provider.of<ExplorePageVM>(context, listen: false);
-    _viewModel.getCommunitiesInCategory(categoryId: widget.category.categoryId!);
+    _viewModel.getCommunitiesInCategory(
+        categoryId: widget.category.categoryId!);
   }
 
   @override

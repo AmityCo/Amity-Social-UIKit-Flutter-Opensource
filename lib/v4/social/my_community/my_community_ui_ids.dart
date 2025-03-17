@@ -1,6 +1,5 @@
 part of 'my_community_component.dart';
 
-
 enum AmityComponent { myCommunities }
 
 extension AmityComponentExtension on AmityComponent {
@@ -11,7 +10,6 @@ extension AmityComponentExtension on AmityComponent {
     }
   }
 }
-
 
 enum AmityMyCommunityElement {
   communityAvatar,

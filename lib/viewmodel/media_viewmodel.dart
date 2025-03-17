@@ -33,7 +33,6 @@ class MediaPickerVM with ChangeNotifier {
       // print(fileInfo.file?.path);
       if (fileInfo.file?.path == filePath) {
         // The file's path matches the given filePath, meaning the upload did not fail
-        print("MATCH");
         return false;
       }
     }
@@ -53,7 +52,6 @@ class MediaPickerVM with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print("Error picking images: $e");
       // Handle the error as appropriate for your app
     }
   }
@@ -69,7 +67,6 @@ class MediaPickerVM with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print("Error picking images: $e");
       // Handle the error as appropriate for your app
     }
   }
@@ -82,7 +79,6 @@ class MediaPickerVM with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print("Error picking video: $e");
       // Handle the error as appropriate for your app
     }
   }
@@ -105,7 +101,6 @@ class MediaPickerVM with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print("Error picking files: $e");
       // Handle the error as appropriate for your app
     }
   }

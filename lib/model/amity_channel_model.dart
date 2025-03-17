@@ -288,9 +288,8 @@ class Users {
     avatarCustomUrl = json['avatarCustomUrl'];
     flagCount = json['flagCount'];
 
-    metadata = json['metadata'] != null
-        ? Metadata.fromJson(json['metadata'])
-        : null;
+    metadata =
+        json['metadata'] != null ? Metadata.fromJson(json['metadata']) : null;
     isGlobalBan = json['isGlobalBan'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -299,22 +298,22 @@ class Users {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = sId;
-    data['path'] =  path;
-    data['userId'] =  userId;
-    data['roles'] =  roles;
-    data['permissions'] =  permissions;
-    data['displayName'] =  displayName;
-    data['description'] =  description;
-    data['avatarFileId'] =  avatarFileId;
-    data['avatarCustomUrl'] =  avatarCustomUrl;
-    data['flagCount'] =  flagCount;
+    data['path'] = path;
+    data['userId'] = userId;
+    data['roles'] = roles;
+    data['permissions'] = permissions;
+    data['displayName'] = displayName;
+    data['description'] = description;
+    data['avatarFileId'] = avatarFileId;
+    data['avatarCustomUrl'] = avatarCustomUrl;
+    data['flagCount'] = flagCount;
 
-    if ( metadata != null) {
-      data['metadata'] =  metadata!.toJson();
+    if (metadata != null) {
+      data['metadata'] = metadata!.toJson();
     }
-    data['isGlobalBan'] =  isGlobalBan;
-    data['createdAt'] =  createdAt;
-    data['updatedAt'] =  updatedAt;
+    data['isGlobalBan'] = isGlobalBan;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
     return data;
   }
 }
@@ -346,11 +345,11 @@ class Files {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['fileId'] =  fileId;
-    data['fileUrl'] =  fileUrl;
-    data['type'] =  type;
-    data['createdAt'] =  createdAt;
-    data['updatedAt'] =  updatedAt;
+    data['fileId'] = fileId;
+    data['fileUrl'] = fileUrl;
+    data['type'] = type;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
     // if (this.attributes != null) {
     //   data['attributes'] = this.attributes!.toJson();
     // }
@@ -373,19 +372,18 @@ class Attributes {
     extension = json['extension'];
     size = json['size'];
     mimeType = json['mimeType'];
-    metadata = json['metadata'] != null
-        ? Metadata.fromJson(json['metadata'])
-        : null;
+    metadata =
+        json['metadata'] != null ? Metadata.fromJson(json['metadata']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] =  name;
-    data['extension'] =  extension;
-    data['size'] =  size;
-    data['mimeType'] =  mimeType;
-    if ( metadata != null) {
-      data['metadata'] =  metadata!.toJson();
+    data['name'] = name;
+    data['extension'] = extension;
+    data['size'] = size;
+    data['mimeType'] = mimeType;
+    if (metadata != null) {
+      data['metadata'] = metadata!.toJson();
     }
     return data;
   }
@@ -401,8 +399,7 @@ class FileMetadata {
   FileMetadata({this.exif, this.gps, this.height, this.width, this.isFull});
 
   FileMetadata.fromJson(Map<String, dynamic> json) {
-    exif =
-        json['exif'] != null ? FileMetadata.fromJson(json['exif']) : null;
+    exif = json['exif'] != null ? FileMetadata.fromJson(json['exif']) : null;
     gps = json['gps'] != null ? FileMetadata.fromJson(json['gps']) : null;
     height = json['height'];
     width = json['width'];
@@ -411,15 +408,15 @@ class FileMetadata {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if ( exif != null) {
-      data['exif'] =  exif!.toJson();
+    if (exif != null) {
+      data['exif'] = exif!.toJson();
     }
-    if ( gps != null) {
-      data['gps'] =  gps!.toJson();
+    if (gps != null) {
+      data['gps'] = gps!.toJson();
     }
-    data['height'] =  height;
-    data['width'] =  width;
-    data['isFull'] =  isFull;
+    data['height'] = height;
+    data['width'] = width;
+    data['isFull'] = isFull;
     return data;
   }
 }

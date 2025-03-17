@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +34,6 @@ class MyCommunityVM with ChangeNotifier {
 
       notifyListeners();
     }).onError((error, stackTrace) {
-      log("error:${error.error.toString()}");
       // await AmityDialog().showAlertErrorDialog(
       //     title: "Error!",
       //     message: _communityController.error.toString());
@@ -70,16 +67,13 @@ class MyCommunityVM with ChangeNotifier {
 
   void loadNextPage() async {
     if ((scrollcontroller.position.pixels >
-        scrollcontroller.position.maxScrollExtent - 800)) {
-      print("hasMore: ${communityLiveCollection.hasNextPage()}");
-    }
+        scrollcontroller.position.maxScrollExtent - 800)) {}
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&
         communityLiveCollection.hasNextPage() &&
         !loadingNextPage) {
       loadingNextPage = true;
       notifyListeners();
-      log("loading Next Page...");
 
       await communityLiveCollection.loadNext().then((value) {
         loadingNextPage = false;
@@ -128,7 +122,6 @@ class SearchCommunityVM with ChangeNotifier {
             // Call any additional methods like sortedUserListWithHeaders here if needed.
             notifyListeners();
           } else {
-            log("error: ${communityController.error.toString()}");
             // await AmityDialog().showAlertErrorDialog(
             //     title: "Error!", message: communityController.error.toString());
           }
@@ -145,16 +138,13 @@ class SearchCommunityVM with ChangeNotifier {
 
   void loadNextPage() async {
     if ((scrollcontroller.position.pixels >
-        scrollcontroller.position.maxScrollExtent - 800)) {
-      print("hasMore: ${communityController.hasMoreItems}");
-    }
+        scrollcontroller.position.maxScrollExtent - 800)) {}
     if ((scrollcontroller.position.pixels >
             scrollcontroller.position.maxScrollExtent - 800) &&
         communityController.hasMoreItems &&
         !loadingNextPage) {
       loadingNextPage = true;
       notifyListeners();
-      log("loading Next Page...");
       // Call any additional methods like sortedUserListWithHeaders here if needed.
       await communityController.fetchNextPage().then((value) {
         loadingNextPage = false;

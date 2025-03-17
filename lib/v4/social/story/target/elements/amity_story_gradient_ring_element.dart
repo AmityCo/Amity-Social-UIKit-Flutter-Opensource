@@ -1,4 +1,3 @@
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 
 class AmityStoryGradientRingElement extends StatefulWidget {

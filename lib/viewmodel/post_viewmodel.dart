@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../components/alert_dialog.dart';
+import 'configuration_viewmodel.dart';
 
 class PostVM extends ChangeNotifier {
   late AmityPost amityPost;
@@ -22,10 +21,12 @@ class PostVM extends ChangeNotifier {
     AmitySocialClient.newPostRepository()
         .getPostStream(postId)
         .stream
-        .listen((event) {
+        .asyncMap((event) async {
+      final newPost = await AmityUIConfiguration.onCustomPost([event]);
+      return newPost.first;
+    }).listen((event) async {
       amityPost = event;
     }).onError((error, stackTrace) async {
-      log(error.toString());
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -51,7 +52,7 @@ class PostVM extends ChangeNotifier {
         () async {
           if (controller.error == null) {
             // Instead of clearing and re-adding all items, directly append new items
-            // This assumes `amityComments` is a List that can be compared with _controller.loadedItems for duplicates
+            // This assumes `amityComments` is a List that can be compared with controller.loadedItems for duplicates
             var newComments = controller.loadedItems;
             // Append only new comments
             var currentIds = amityComments.map((e) => e.commentId).toSet();
@@ -59,16 +60,17 @@ class PostVM extends ChangeNotifier {
                 .where((item) => !currentIds.contains(item.commentId))
                 .toList();
             if (newItems.isNotEmpty) {
-              amityComments.addAll(newItems);
-              print("parent comments added: ${newItems.length}");
+              final customComments =
+                  await AmityUIConfiguration.onCustomComment(newItems);
+
+              amityComments.addAll(customComments);
               successCallback?.call();
               notifyListeners(); // Uncomment if you are using a listener-based state management
             }
           } else {
             // Error on pagination controller
-            log("error from Comment: ${controller.error.toString()}");
             // await AmityDialog().showAlertErrorDialog(
-            //     title: "Error!", message: _controller.error.toString());
+            //     title: "Error!", message: controller.error.toString());
           }
         },
       );
@@ -98,12 +100,13 @@ class PostVM extends ChangeNotifier {
         .text(text)
         .send()
         .then((comment) async {
-      amityComments.insert(0, comment);
+      final customComments =
+          await AmityUIConfiguration.onCustomComment([comment]);
+      amityComments.insert(0, customComments.first);
       Future.delayed(const Duration(milliseconds: 500)).then((value) {
         scrollcontroller.jumpTo(0);
       });
     }).onError((error, stackTrace) async {
-      log(error.toString());
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -128,9 +131,7 @@ class PostVM extends ChangeNotifier {
   }
 
   Future<void> deleteComment(AmityComment comment) async {
-    print("delete commet...");
     comment.delete().then((value) {
-      print("delete commet success: $value");
       // amityComments
       //     .removeWhere((element) => element.commentId == comment.commentId);
       getPost(amityPost.postId!, amityPost);
@@ -155,11 +156,9 @@ class PostVM extends ChangeNotifier {
 
   void flagPost(AmityPost post) {
     post.report().flag().then((value) {
-      log("flag success $value");
       AmitySuccessDialog.showTimedDialog("Report success");
       notifyListeners();
     }).onError((error, stackTrace) async {
-      log("flag error ${error.toString()}");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -168,11 +167,9 @@ class PostVM extends ChangeNotifier {
   void unflagPost(AmityPost post) {
     post.report().unflag().then((value) {
       //success
-      log("unflag success $value");
       AmitySuccessDialog.showTimedDialog("Undo report success");
       notifyListeners();
     }).onError((error, stackTrace) async {
-      log("unflag error ${error.toString()}");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });
@@ -180,12 +177,10 @@ class PostVM extends ChangeNotifier {
 
   void removePostReaction(AmityPost post) {
     HapticFeedback.heavyImpact();
-    print("removePostReaction");
 
     post.react().removeReaction('like').then((value) {
       // Handle success
     }).catchError((error) {
-      print(error);
       // Handle error
     });
   }
@@ -205,7 +200,6 @@ class PostVM extends ChangeNotifier {
     comment.edit().text(text).build().update().then((value) {
       //handle result
     }).onError((error, stackTrace) async {
-      log("unflag error ${error.toString()}");
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });

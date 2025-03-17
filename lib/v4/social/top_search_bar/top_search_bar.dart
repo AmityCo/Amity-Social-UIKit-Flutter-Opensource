@@ -1,4 +1,3 @@
-
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +6,7 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
   final void Function(String)? onTextChanged;
   TextEditingController textcontroller;
   String hintText;
+  final bool showCancelButton;
 
   AmityTopSearchBarComponent({
     Key? key,
@@ -14,12 +14,14 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
     required this.textcontroller,
     this.hintText = '',
     this.onTextChanged,
+    this.showCancelButton = true,
   }) : super(key: key, pageId: pageId, componentId: 'top_search_bar');
 
   @override
   Widget buildComponent(BuildContext context) {
+    const borderRadius = 8.0;
     return Container(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Row(
         children: [
           Expanded(
@@ -51,11 +53,15 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
                 fillColor: theme.baseColorShade4,
                 focusColor: Colors.white,
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(borderRadius),
                   borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4.0),
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  borderSide: BorderSide.none,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius),
                   borderSide: BorderSide.none,
                 ),
                 suffixIconColor: theme.baseColorShade3,
@@ -96,22 +102,23 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
               },
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Cancel",
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 15,
-                  color: theme.primaryColor,
+          if (showCancelButton)
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 15,
+                      color: theme.primaryColor,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )
+              )
         ],
       ),
     );

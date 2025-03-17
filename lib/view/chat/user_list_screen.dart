@@ -1,16 +1,12 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/custom_user_avatar.dart';
-import '../../viewmodel/channel_list_viewmodel.dart';
-import '../../viewmodel/channel_viewmodel.dart';
 import '../../viewmodel/configuration_viewmodel.dart';
 import '../../viewmodel/user_viewmodel.dart';
-import 'chat_screen.dart';
 import 'create_group_chat_screen.dart';
 
 class UserList extends StatefulWidget {
@@ -42,7 +38,6 @@ class UserListState extends State<UserList> {
     }
     int length =
         Provider.of<UserVM>(context, listen: false).getUserList().length;
-    log("check length of user list $length");
     return length;
   }
 
@@ -57,33 +52,12 @@ class UserListState extends State<UserList> {
   }
 
   void onNextTap() async {
-    if (true
-        // getSelectedLength() > 1
-        ) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => CreateChatGroup(
-          key: UniqueKey(),
-          userIds: Provider.of<UserVM>(context, listen: false).selectedUserList,
-        ),
-      ));
-    } else {
-      Provider.of<ChannelVM>(context, listen: false).createConversationChannel([
-        AmityCoreClient.getUserId(),
-        Provider.of<UserVM>(context, listen: false).selectedUserList[0]
-      ], (channel, error) {
-        Provider.of<UserVM>(context, listen: false).clearSelectedUser();
-        if (channel != null) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider(
-                    create: (context) => MessageVM(),
-                    child: ChatSingleScreen(
-                      key: UniqueKey(),
-                      channel: channel.channels![0],
-                    ),
-                  )));
-        }
-      });
-    }
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => CreateChatGroup(
+        key: UniqueKey(),
+        userIds: Provider.of<UserVM>(context, listen: false).selectedUserList,
+      ),
+    ));
   }
 
   @override
@@ -95,75 +69,75 @@ class UserListState extends State<UserList> {
 
     final theme = Theme.of(context);
     return Consumer<UserVM>(builder: (context, vm, _) {
-      return Scaffold(
-        appBar: AppBar(
-          title:
-              const Text("Select Users", style: TextStyle(color: Colors.black)),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child:
-                const Icon(Icons.chevron_left, color: Colors.black, size: 35),
+      return ThemeConfig(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Select Users",
+                style: TextStyle(color: Colors.black)),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child:
+                  const Icon(Icons.chevron_left, color: Colors.black, size: 35),
+            ),
+            actions: [
+              getSelectedLength() > 0
+                  ? TextButton(
+                      onPressed: () {
+                        onNextTap();
+                      },
+                      child: const Text("Next"))
+                  : Container()
+            ],
           ),
-          actions: [
-            getSelectedLength() > 0
-                ? TextButton(
-                    onPressed: () {
-                      onNextTap();
-                    },
-                    child: const Text(true
-                        // getSelectedLength() > 1
-                        ? "Next"
-                        : "Create"))
-                : Container()
-          ],
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: bHeight,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: bHeight,
 
-                  // color: ApplicationColors.lightGrey,
-                  child: FadedSlideAnimation(
-                    beginOffset: const Offset(0, 0.3),
-                    endOffset: const Offset(0, 0),
-                    slideCurve: Curves.linearToEaseOut,
-                    child: Column(
-                      children: [
-                        getLength() < 1
-                            ? Expanded(
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                      color: Provider.of<AmityUIConfiguration>(
-                                              context)
-                                          .primaryColor),
+                    // color: ApplicationColors.lightGrey,
+                    child: FadedSlideAnimation(
+                      beginOffset: const Offset(0, 0.3),
+                      endOffset: const Offset(0, 0),
+                      slideCurve: Curves.linearToEaseOut,
+                      child: Column(
+                        children: [
+                          getLength() < 1
+                              ? Expanded(
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                        color:
+                                            Provider.of<AmityUIConfiguration>(
+                                                    context)
+                                                .primaryColor),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    // shrinkWrap: true,
+                                    itemCount: getLength(),
+                                    itemBuilder: (context, index) {
+                                      return UserWidget(
+                                        theme: theme,
+                                        index: index,
+                                        user: Provider.of<UserVM>(context,
+                                                listen: false)
+                                            .getUserList()[index],
+                                      );
+                                    },
+                                  ),
                                 ),
-                              )
-                            : Expanded(
-                                child: ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  // shrinkWrap: true,
-                                  itemCount: getLength(),
-                                  itemBuilder: (context, index) {
-                                    return UserWidget(
-                                      theme: theme,
-                                      index: index,
-                                      user: Provider.of<UserVM>(context,
-                                              listen: false)
-                                          .getUserList()[index],
-                                    );
-                                  },
-                                ),
-                              ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
@@ -195,7 +169,6 @@ class UserWidget extends StatelessWidget {
                     Provider.of<UserVM>(context, listen: false)
                         .getUserList()[index]
                         .userId!);
-                log("click index $index ${Provider.of<UserVM>(context, listen: false).selectedUserList}");
               },
               leading: FadeAnimation(child: getAvatarImage(user.avatarUrl!)),
               title: Text(

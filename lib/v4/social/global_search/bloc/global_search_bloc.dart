@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -30,7 +31,7 @@ class GlobalSearchBloc extends Bloc<GlobalSearchEvent, GlobalSearchState> {
         pageSize: 20,
       )..addListener(
           () {
-            if (_amityUsersController.error == null) {
+            if (_amityUsersController.error == null && !isClosed) {
               List<AmityUser> amityUsers = [];
               amityUsers.addAll(_amityUsersController.loadedItems);
               add(NotifyUsersEvent(amityUsers, _amityUsersController.isFetching));
@@ -56,7 +57,7 @@ class GlobalSearchBloc extends Bloc<GlobalSearchEvent, GlobalSearchState> {
       }
       communityLiveCollection.observeLoadingState().listen((event) {
         isFetching = event;
-        add(NotifyCommunitiesEvent(amityCommunities, isFetching));
+        addEvent(NotifyCommunitiesEvent(amityCommunities, isFetching));
       });
 
       subscription = communityLiveCollection
@@ -65,7 +66,7 @@ class GlobalSearchBloc extends Bloc<GlobalSearchEvent, GlobalSearchState> {
           .listen((communities) async {
         if (communities.isNotEmpty) {
           amityCommunities = communities;
-          add(NotifyCommunitiesEvent(amityCommunities, isFetching));
+          addEvent(NotifyCommunitiesEvent(amityCommunities, isFetching));
         } else {
           amityCommunities.clear();
         }

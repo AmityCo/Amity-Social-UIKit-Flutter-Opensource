@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/components/theme_config.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
@@ -114,24 +115,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   Future<void> _initializeControllers() async {
-    print("_initializeControllers");
     _controllers = await Future.wait(
       widget.files.map((file) async {
         var videoData = file.data
             as VideoData; // Assuming VideoData is a type from your code
         var fileURL = await videoData.getVideo(AmityVideoQuality.MEDIUM);
-        print(fileURL);
 
-        print("  ");
         var controller =
             VideoPlayerController.networkUrl(Uri.parse(fileURL.fileUrl!));
         await controller.initialize();
         return controller;
       }),
     );
-    setState(() {
-      print("success");
-    });
+    setState(() {});
   }
 
   @override
@@ -156,87 +152,91 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ? _controllers != null && _controllers!.isNotEmpty
             ? FullScreenVideoPlayerWidget(
                 videoPlayerController: _controllers![0])
-            : Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.black,
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.white,
+            : ThemeConfig(
+                child: Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Colors.black,
+                      leading: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                backgroundColor: Colors.black,
-                body: Center(
-                    child: CircularProgressIndicator(
-                  color: Provider.of<AmityUIConfiguration>(context)
-                      .appColors
-                      .primary,
-                )))
-        : Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
+                    backgroundColor: Colors.black,
+                    body: Center(
+                        child: CircularProgressIndicator(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
+                    ))),
+              )
+        : ThemeConfig(
+            child: Scaffold(
               backgroundColor: Colors.black,
-              title: Text('${_currentIndex + 1}/${widget.files.length}'),
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                title: Text('${_currentIndex + 1}/${widget.files.length}'),
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
               ),
-            ),
-            body: _controllers != null && _controllers!.isNotEmpty
-                ? PageView.builder(
-                    controller:
-                        PageController(initialPage: widget.initialIndex),
-                    itemCount: widget.files.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      var controller = _controllers![index];
-                      var videoData = widget.files[index].data as VideoData;
-                      return GestureDetector(
-                        onTap: () {
-                          _openFullScreenVideo(controller);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        videoData.thumbnail!.fileUrl!),
-                                    fit: BoxFit.fitWidth,
+              body: _controllers != null && _controllers!.isNotEmpty
+                  ? PageView.builder(
+                      controller:
+                          PageController(initialPage: widget.initialIndex),
+                      itemCount: widget.files.length,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        var controller = _controllers![index];
+                        var videoData = widget.files[index].data as VideoData;
+                        return GestureDetector(
+                          onTap: () {
+                            _openFullScreenVideo(controller);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          videoData.thumbnail!.fileUrl!),
+                                      fit: BoxFit.fitWidth,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const Align(
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  size: 70.0,
-                                  color: Colors.white,
+                                const Align(
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    size: 70.0,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-                : Center(
-                    child: CircularProgressIndicator(
-                    color: Provider.of<AmityUIConfiguration>(context)
-                        .appColors
-                        .primary,
-                  )),
+                        );
+                      },
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(
+                      color: Provider.of<AmityUIConfiguration>(context)
+                          .appColors
+                          .primary,
+                    )),
+            ),
           );
   }
 }
@@ -276,21 +276,23 @@ class _FullScreenVideoPlayerWidgetState
         minChildSize: 0.5,
         initialChildSize: 1.0,
         builder: (BuildContext context, ScrollController scrollController) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
+          return ThemeConfig(
+            child: Scaffold(
               backgroundColor: Colors.black,
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
               ),
-            ),
-            body: SafeArea(
-              child: Chewie(
-                controller: _chewieController,
+              body: SafeArea(
+                child: Chewie(
+                  controller: _chewieController,
+                ),
               ),
             ),
           );

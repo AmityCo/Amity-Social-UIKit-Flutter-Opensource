@@ -1,10 +1,10 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/viewmodel/post_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'configuration_viewmodel.dart';
 
 class ReplyTo {
   ReplyTo(this._replyToComment, this._replyingToUser);
@@ -40,15 +40,11 @@ class ReplyVM extends PostVM {
   Future<void> initReplyComment(String postId, BuildContext context) async {
     _controllersMap.clear();
     amityReplyCommentsMap.clear();
-    print("initReplyComment>>>>>>>>>>>>>>>>>>>>>");
     replyToObject = null;
-    print(amityComments.length);
 
     var comments = Provider.of<PostVM>(context, listen: false).amityComments;
     for (var comment in comments) {
       // Check if the comment ID does not exist in the amityReplyCommentsMap
-
-      print("comment: ${comment.data}");
       await listenForReplyComments(
           postID: postId, commentId: comment.commentId!);
     }
@@ -73,8 +69,6 @@ class ReplyVM extends PostVM {
     required String postID,
     required String commentId,
   }) async {
-    print("$postID:look reply: commentId:$commentId");
-
     // Check if the comments for the given commentId already exist to append new comments instead of clearing the list.
     final amityComments = amityReplyCommentsMap[commentId] ?? <AmityComment>[];
 
@@ -92,7 +86,6 @@ class ReplyVM extends PostVM {
         () async {
           if (_controllersMap[commentId]!.error == null) {
             var loadedItems = _controllersMap[commentId]!.loadedItems;
-            for (var item in loadedItems) {}
 
             // Append only new comments by checking against existing ones.
             var currentIds = amityComments.map((e) => e.commentId).toSet();
@@ -100,12 +93,13 @@ class ReplyVM extends PostVM {
                 .where((item) => !currentIds.contains(item.commentId))
                 .toList();
             if (newItems.isNotEmpty) {
-              amityComments.addAll(newItems);
+              final newPost =
+                  await AmityUIConfiguration.onCustomComment(newItems);
+              amityComments.addAll(newPost);
               amityReplyCommentsMap[commentId] = amityComments;
             }
             notifyListeners();
           } else {
-            log("error: ${_controllersMap[commentId]!.error.toString()}");
             // await AmityDialog().showAlertErrorDialog(
             //     title: "Error!",
             //     message: _controllersMap[commentId]!.error.toString());
@@ -141,17 +135,12 @@ class ReplyVM extends PostVM {
     if (_controllersMap[commentId] != null) {
       _controllersMap[commentId]!.fetchNextPage();
       notifyListeners();
-    } else {
-      print("Cannot find comment ID in map");
-    }
+    } else {}
   }
 
   @override
   Future<void> deleteComment(AmityComment comment) async {
-    print("delete commet...");
     comment.delete().then((value) {
-      print("delete commet success: $value");
-
       notifyListeners();
     }).onError((error, stackTrace) async {
       await AmityDialog()
@@ -163,7 +152,6 @@ class ReplyVM extends PostVM {
       {required String postId,
       required String commentId,
       required String text}) async {
-    final amityComments = <AmityComment>[];
     await AmitySocialClient.newCommentRepository()
         .createComment()
         .post(postId)
@@ -185,7 +173,6 @@ class ReplyVM extends PostVM {
       //   scrollcontroller.jumpTo(scrollcontroller.position.maxScrollExtent);
       // });
     }).onError((error, stackTrace) async {
-      log(error.toString());
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
     });

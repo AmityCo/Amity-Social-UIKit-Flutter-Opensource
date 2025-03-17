@@ -67,7 +67,6 @@ class MediaGalleryPage extends StatelessWidget {
   Widget _mediaButton(BuildContext context, String text, MediaType type) {
     return TextButton(
       onPressed: () {
-        print(type);
         if (galleryFeed == GalleryFeed.user) {
           Provider.of<UserFeedVM>(context, listen: false)
               .doSelectMedieType(type);
@@ -208,14 +207,11 @@ class MediaGalleryPage extends StatelessWidget {
         },
       );
     } else {
-      print("galleryFeed == GalleryFeed.community === CommuFeedVM");
       return Consumer<CommuFeedVM>(
         builder: (context, vm, child) {
           if (vm.getCommunityImagePosts().isEmpty) {
-            print("empty");
             return noPostWidget;
           } else {
-            print("not Empty");
             return gridView; // Placeholder for tab bar can be integrated here
           }
         },

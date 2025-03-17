@@ -10,7 +10,9 @@ abstract class BaseElement extends StatelessWidget {
 
   late final AmityThemeColor theme;
   late final ConfigProvider configProvider;
+  late final AmityUIConfig uiConfig;
 
+  // ignore: prefer_const_constructors_in_immutables
   BaseElement(
       {super.key, this.pageId, this.componentId, required this.elementId});
 
@@ -18,10 +20,9 @@ abstract class BaseElement extends StatelessWidget {
   Widget build(BuildContext context) {
     configProvider = context.watch<ConfigProvider>();
     theme = configProvider.getTheme(pageId, componentId);
+    uiConfig = configProvider.getUIConfig(pageId, componentId, elementId);
     return buildElement(context);
   }
 
   Widget buildElement(BuildContext context);
 }
-
-

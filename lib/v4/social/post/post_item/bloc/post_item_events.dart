@@ -21,7 +21,8 @@ class AddReactionToPost extends PostItemEvent {
   final String reactionType;
   final AmityPostAction? action;
 
-  const AddReactionToPost({required this.post, required this.reactionType, this.action});
+  const AddReactionToPost(
+      {required this.post, required this.reactionType, this.action});
 
   @override
   List<Object> get props => [post, reactionType];
@@ -32,7 +33,8 @@ class RemoveReactionToPost extends PostItemEvent {
   final String reactionType;
   final AmityPostAction? action;
 
-  const RemoveReactionToPost({required this.post, required this.reactionType, this.action});
+  const RemoveReactionToPost(
+      {required this.post, required this.reactionType, this.action});
 
   @override
   List<Object> get props => [post, reactionType];
@@ -67,3 +69,5 @@ class PostItemDelete extends PostItemEvent {
 
   const PostItemDelete({required this.post, this.action});
 }
+
+class PostItemReacted extends PostItemEvent {}

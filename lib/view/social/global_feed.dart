@@ -10,6 +10,7 @@ import 'package:amity_uikit_beta_service/view/UIKit/social/general_component.dar
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
+import 'package:amity_uikit_beta_service/viewmodel/amity_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/user_viewmodel.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
@@ -27,8 +28,9 @@ import 'comments.dart';
 import 'post_content_widget.dart';
 
 class GlobalFeedScreen extends StatefulWidget {
-  final isShowMyCommunity;
+  final bool isShowMyCommunity;
   final bool canCreateCommunity;
+  final bool canSearchCommunities;
   final bool isInit;
 
   const GlobalFeedScreen({
@@ -36,6 +38,7 @@ class GlobalFeedScreen extends StatefulWidget {
     this.isShowMyCommunity = true,
     this.canCreateCommunity = true,
     this.isInit = false,
+    this.canSearchCommunities = true,
     // this.isCustomPostRanking = false
   });
 
@@ -60,18 +63,15 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
         myCommunityList.initMyCommunityFeed();
 
-        globalFeedProvider.initAmityGlobalfeed();
+        globalFeedProvider.initAmityGlobalfeed(
+          onCustomPost: AmityUIConfiguration.onCustomPost,
+        );
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final bHeight = mediaQuery.size.height -
-        mediaQuery.padding.top -
-        AppBar().preferredSize.height;
-
     final theme = Theme.of(context);
     return Consumer<FeedVM>(builder: (context, vm, _) {
       return RefreshIndicator(
@@ -83,9 +83,10 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
 
           myCommunityList.initMyCommunityFeed();
 
-          globalFeedProvider.initAmityGlobalfeed(
-              // isCustomPostRanking: widget.isCustomPostRanking
-              isCustomPostRanking: false);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            globalFeedProvider.initAmityGlobalfeed(
+                onCustomPost: AmityUIConfiguration.onCustomPost);
+          });
         },
         child: Container(
           color:
@@ -108,7 +109,13 @@ class GlobalFeedScreenState extends State<GlobalFeedScreen> {
                           itemBuilder: (context, index) {
                             return StreamBuilder<AmityPost>(
                               key: Key(vm.getAmityPosts[index].postId!),
-                              stream: vm.getAmityPosts[index].listen.stream,
+                              stream: vm.getAmityPosts[index].listen.stream
+                                  .asyncMap((event) async {
+                                final newPost =
+                                    await AmityUIConfiguration.onCustomPost(
+                                        [event]);
+                                return newPost.first;
+                              }),
                               initialData: vm.getAmityPosts[index],
                               builder: (context, snapshot) {
                                 return Column(
@@ -219,71 +226,83 @@ class _PostWidgetState
   }
 
   Widget postOptions(BuildContext context) {
+    String? targetCommunityId =
+        (widget.post.targetType == AmityPostTargetType.COMMUNITY)
+            ? (widget.post.target as CommunityTarget?)?.targetCommunityId
+            : null;
+    bool isCommunityModerator = targetCommunityId != null &&
+        AmityCoreClient.hasPermission(AmityPermission.DELETE_COMMUNITY_POST)
+            .atCommunity(targetCommunityId)
+            .check();
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
     final isFlaggedByMe = widget.post.isFlaggedByMe;
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
     List<String> otherPostMenu = [
       isFlaggedByMe ? 'Unreport Post' : 'Report Post',
-      // 'Block User'
+      // 'Block User',
+      if (isCommunityModerator) 'Delete Post',
     ];
 
-    return IconButton(
-      icon: Icon(
-        Icons.more_horiz_rounded,
-        size: 24,
-        color: widget.feedType == FeedType.user
-            ? Provider.of<AmityUIConfiguration>(context)
-                .appColors
-                .userProfileTextColor
-            : Colors.grey,
-      ),
-      onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Provider.of<AmityUIConfiguration>(context)
-                    .appColors
-                    .baseBackground,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
+    return Semantics(
+      identifier: 'amityFeedMore',
+      child: IconButton(
+        icon: Icon(
+          Icons.more_horiz_rounded,
+          size: 24,
+          color: widget.feedType == FeedType.user
+              ? Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .userProfileTextColor
+              : Colors.grey,
+        ),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Provider.of<AmityUIConfiguration>(context)
+                      .appColors
+                      .baseBackground,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
                 ),
-              ),
-              padding: const EdgeInsets.only(
-                  top: 16, left: 16, right: 16, bottom: 32),
-              child: Wrap(
-                children: [
-                  if (isPostOwner)
-                    ...postOwnerMenu.map((option) => ListTile(
-                          title: Text(
-                            option,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            handleMenuOption(context, option, isFlaggedByMe);
-                          },
-                        )),
-                  if (!isPostOwner)
-                    ...otherPostMenu.map((option) => ListTile(
-                          title: Text(
-                            option,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            handleMenuOption(context, option, isFlaggedByMe);
-                          },
-                        )),
-                ],
-              ),
-            );
-          },
-        );
-      },
+                padding: const EdgeInsets.only(
+                    top: 16, left: 16, right: 16, bottom: 32),
+                child: Wrap(
+                  children: [
+                    if (isPostOwner)
+                      ...postOwnerMenu.map((option) => ListTile(
+                            title: Text(
+                              option,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              handleMenuOption(context, option, isFlaggedByMe);
+                            },
+                          )),
+                    if (!isPostOwner)
+                      ...otherPostMenu.map((option) => ListTile(
+                            title: Text(
+                              option,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              handleMenuOption(context, option, isFlaggedByMe);
+                            },
+                          )),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -313,7 +332,11 @@ class _PostWidgetState
         Provider.of<UserVM>(context, listen: false)
             .blockUser(widget.post.postedUserId!, () {
           if (widget.feedType == FeedType.global) {
-            Provider.of<FeedVM>(context, listen: false).reload();
+            // Provider.of<FeedVM>(context, listen: false).reload();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed(
+                  onCustomPost: AmityUIConfiguration.onCustomPost);
+            });
           } else if (widget.feedType == FeedType.community) {
             Provider.of<CommuFeedVM>(context, listen: false)
                 .initAmityCommunityFeed(
@@ -364,6 +387,108 @@ class _PostWidgetState
     );
   }
 
+  void _onUserProfile() {
+    final replaceModeratorProfileNavigation = Provider.of<AmityUIConfiguration>(
+      context,
+      listen: false,
+    ).logicConfig.replaceModeratorProfileNavigation;
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfileNavigation &&
+        _isModerator &&
+        targetingCommunity) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) => CommuFeedVM(),
+            child: CommunityScreen(
+              isFromFeed: true,
+              community:
+                  (widget.post.target as CommunityTarget).targetCommunity!,
+            ),
+          ),
+        ),
+      );
+    } else {
+      if (widget.post.postedUser!.userId! ==
+              AmityCoreClient.getCurrentUser().userId &&
+          Provider.of<AmityUIConfiguration>(context, listen: false)
+              .customUserProfileNavigate) {
+        Provider.of<AmityUIConfiguration>(context, listen: false)
+            .onUserProfile(context);
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (context) => UserFeedVM(),
+              child: UserProfileScreen(
+                amityUser: widget.post.postedUser!,
+                amityUserId: widget.post.postedUser!.userId!,
+              ),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<String> get _avatarUrl async {
+    final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
+        .logicConfig
+        .replaceModeratorProfile;
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfile && _isModerator && targetingCommunity) {
+      return (widget.post.target as CommunityTarget)
+              .targetCommunity
+              ?.avatarImage
+              ?.fileUrl ??
+          "";
+    } else {
+      return (widget.post.postedUser!.userId !=
+              AmityCoreClient.getCurrentUser().userId)
+          ? (await AmityUIConfiguration.isFollowing(
+                  widget.post.postedUser?.userId ?? '')
+              ? widget.post.postedUser?.avatarUrl
+              : widget.post.postedUser?.metadata?['profilePublicImageUrl'] ??
+                  "")
+          : widget.post.postedUser?.metadata?['profilePublicImageUrl'] == null
+              ? Provider.of<AmityVM>(context).currentamityUser?.avatarUrl
+              : widget.post.postedUser?.metadata?['profilePublicImageUrl'] ??
+                  "";
+    }
+  }
+
+  String get _displayName {
+    final replaceModeratorProfile = Provider.of<AmityUIConfiguration>(context)
+        .logicConfig
+        .replaceModeratorProfile;
+    final targetingCommunity =
+        widget.post.targetType == AmityPostTargetType.COMMUNITY;
+
+    if (replaceModeratorProfile && _isModerator && targetingCommunity) {
+      return ((widget.post.target as CommunityTarget)
+              .targetCommunity
+              ?.displayName) ??
+          "Display name";
+    } else {
+      return (widget.post.postedUser!.userId !=
+              AmityCoreClient.getCurrentUser().userId)
+          ? (widget.post.postedUser?.displayName ?? "Display name")
+          : (Provider.of<AmityVM>(context).currentamityUser!.displayName ?? "");
+    }
+  }
+
+  bool get _isModerator {
+    final postMetadata = widget.post.metadata;
+    final isModerator =
+        postMetadata != null && postMetadata['isCreateByAdmin'] == true;
+
+    return isModerator;
+  }
+
   // @override
   @override
   Widget build(BuildContext context) {
@@ -396,53 +521,34 @@ class _PostWidgetState
                         contentPadding: const EdgeInsets.only(
                             left: 0, top: 0, right: 0, bottom: 0),
                         leading: FadeAnimation(
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChangeNotifierProvider(
-                                        create: (context) => UserFeedVM(),
-                                        child: UserProfileScreen(
-                                          amityUser: widget.post.postedUser!,
-                                          amityUserId:
-                                              widget.post.postedUser!.userId!,
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                          child: GestureDetector(
+                              onTap: _onUserProfile,
+                              child: FutureBuilder<String>(
+                                future: _avatarUrl,
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return getAvatarImage(snapshot
+                                        .data); // Show a loading spinner while waiting
+                                  } else {
+                                    if (snapshot.hasError) {
+                                      return getAvatarImage(
+                                          ''); // Show error message if there's an error
+                                    } else {
+                                      return getAvatarImage(snapshot
+                                          .data); // Call getAvatarImage with the result of the Future
+                                    }
+                                  }
                                 },
-                                child: getAvatarImage(widget
-                                            .post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.avatarUrl
-                                    : AmityCoreClient.getCurrentUser()
-                                        .avatarUrl))),
+                              )),
+                        ),
                         title: Wrap(
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangeNotifierProvider(
-                                      create: (context) => UserFeedVM(),
-                                      child: UserProfileScreen(
-                                          amityUser: widget.post.postedUser!,
-                                          amityUserId:
-                                              widget.post.postedUser!.userId!),
-                                    ),
-                                  ),
-                                );
-                              },
+                              onTap: _onUserProfile,
                               child: Text(
-                                widget.post.postedUser!.userId !=
-                                        AmityCoreClient.getCurrentUser().userId
-                                    ? widget.post.postedUser?.displayName ??
-                                        "Display name"
-                                    : AmityCoreClient.getCurrentUser()
-                                            .displayName ??
-                                        "",
+                                _displayName,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Provider.of<AmityUIConfiguration>(
@@ -451,9 +557,10 @@ class _PostWidgetState
                                         .base),
                               ),
                             ),
-                            widget.showCommunity &&
+                            (widget.showCommunity &&
                                     widget.post.targetType ==
-                                        AmityPostTargetType.COMMUNITY
+                                        AmityPostTargetType.COMMUNITY &&
+                                    !_isModerator)
                                 ? Icon(
                                     Icons.arrow_right_rounded,
                                     color: Provider.of<AmityUIConfiguration>(
@@ -462,9 +569,10 @@ class _PostWidgetState
                                         .base,
                                   )
                                 : Container(),
-                            widget.showCommunity &&
+                            (widget.showCommunity &&
                                     widget.post.targetType ==
-                                        AmityPostTargetType.COMMUNITY
+                                        AmityPostTargetType.COMMUNITY &&
+                                    !_isModerator)
                                 ? GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).push(
@@ -487,8 +595,7 @@ class _PostWidgetState
                                               .targetCommunity!
                                               .displayName ??
                                           "Community name",
-                                      style: widget.theme.textTheme.bodyLarge!
-                                          .copyWith(
+                                      style: TextStyle(
                                         color:
                                             Provider.of<AmityUIConfiguration>(
                                                     context)
@@ -967,7 +1074,12 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
         itemBuilder: (context, index) {
           return StreamBuilder<AmityComment>(
             key: Key(widget.comments[index].commentId!),
-            stream: widget.comments[index].listen.stream,
+            stream:
+                widget.comments[index].listen.stream.asyncMap((event) async {
+              final newPost =
+                  await AmityUIConfiguration.onCustomComment([event]);
+              return newPost.first;
+            }),
             initialData: widget.comments[index],
             builder: (context, snapshot) {
               var comments = snapshot.data!;
@@ -1026,14 +1138,82 @@ class _LatestCommentComponentState extends State<LatestCommentComponent> {
                                   Container(
                                     padding: const EdgeInsets.only(
                                         top: 14, left: 16, bottom: 8),
-                                    child: CustomListTile(
-                                        avatarUrl: comments.user!.avatarUrl,
-                                        displayName:
-                                            comments.user!.displayName!,
-                                        createdAt: comments.createdAt!,
-                                        editedAt: comments.editedAt!,
-                                        userId: comments.user!.userId!,
-                                        user: comments.user!),
+                                    child: FutureBuilder<bool>(
+                                      future: AmityUIConfiguration.isFollowing(
+                                          comments.userId ?? ''),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<bool> snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return CustomListTile(
+                                            avatarUrl: '',
+                                            displayName:
+                                                comments.user!.displayName!,
+                                            createdAt: comments.createdAt!,
+                                            editedAt: comments.editedAt!,
+                                            userId: comments.user!.userId!,
+                                            user: comments.user!,
+                                          ); // You can display a loading placeholder or empty avatarUrl
+                                        } else if (comments.user!.userId ==
+                                                AmityCoreClient.getCurrentUser()
+                                                    .userId &&
+                                            comments.user?.metadata?[
+                                                    'profilePublicImageUrl'] !=
+                                                null) {
+                                          return CustomListTile(
+                                            avatarUrl: comments.user?.metadata?[
+                                                'profilePublicImageUrl'],
+                                            displayName:
+                                                comments.user!.displayName!,
+                                            createdAt: comments.createdAt!,
+                                            editedAt: comments.editedAt!,
+                                            userId: comments.user!.userId!,
+                                            user: comments.user!,
+                                          );
+                                        } else if (comments.user!.userId ==
+                                                AmityCoreClient.getCurrentUser()
+                                                    .userId &&
+                                            comments.user?.metadata?[
+                                                    'profilePublicImageUrl'] ==
+                                                null) {
+                                          return CustomListTile(
+                                            avatarUrl: comments.user?.avatarUrl,
+                                            displayName:
+                                                comments.user!.displayName!,
+                                            createdAt: comments.createdAt!,
+                                            editedAt: comments.editedAt!,
+                                            userId: comments.user!.userId!,
+                                            user: comments.user!,
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return CustomListTile(
+                                            avatarUrl: '',
+                                            displayName:
+                                                comments.user!.displayName!,
+                                            createdAt: comments.createdAt!,
+                                            editedAt: comments.editedAt!,
+                                            userId: comments.user!.userId!,
+                                            user: comments.user!,
+                                          ); // Handle error case, possibly by showing a default avatar
+                                        } else {
+                                          final isFollowing = snapshot.data ?? false;
+                                          final avatarUrl = isFollowing
+                                              ? (comments.user?.avatarUrl ??
+                                              (comments.user?.metadata?['profilePublicImageUrl'] ?? ''))
+                                              : (comments.user?.metadata?['profilePublicImageUrl'] ?? '');
+
+                                          return CustomListTile(
+                                            avatarUrl: avatarUrl,
+                                            displayName:
+                                                comments.user!.displayName!,
+                                            createdAt: comments.createdAt!,
+                                            editedAt: comments.editedAt!,
+                                            userId: comments.user!.userId!,
+                                            user: comments.user!,
+                                          );
+                                        }
+                                      },
+                                    ),
                                   ),
                                   Container(
                                     padding: const EdgeInsets.all(10.0),
@@ -1097,10 +1277,23 @@ class CommentActionComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AmityComment>(
-        stream: amityComment.listen.stream,
+        stream: amityComment.listen.stream
+          ..asyncMap((event) async {
+            final newPost = await AmityUIConfiguration.onCustomComment([event]);
+            return newPost.first;
+          }),
         initialData: amityComment,
         builder: (context, snapshot) {
           var comments = snapshot.data!;
+          final communityId = (comments.target is CommunityCommentTarget)
+              ? (comments.target as CommunityCommentTarget).communityId
+              : null;
+          final isCommunityModerator = communityId != null &&
+              AmityCoreClient.hasPermission(
+                      AmityPermission.DELETE_COMMUNITY_COMMENT)
+                  .atCommunity(communityId)
+                  .check();
+
           return Padding(
             padding: const EdgeInsets.only(left: 70.0, top: 5.0),
             child: Row(
@@ -1166,7 +1359,6 @@ class CommentActionComponent extends StatelessWidget {
                           )
                         : GestureDetector(
                             onTap: () {
-                              print("addCommentReaction");
                               Provider.of<PostVM>(context, listen: false)
                                   .removeCommentReaction(comments);
                             },
@@ -1251,8 +1443,9 @@ class CommentActionComponent extends StatelessWidget {
                                         )));
                               },
                             ),
-                      comments.user?.userId! !=
-                              AmityCoreClient.getCurrentUser().userId
+                      (comments.user?.userId! !=
+                                  AmityCoreClient.getCurrentUser().userId &&
+                              !isCommunityModerator)
                           ? const SizedBox()
                           : ListTile(
                               title: const Text(
@@ -1266,13 +1459,13 @@ class CommentActionComponent extends StatelessWidget {
                                     detailText:
                                         " This comment will be permanently deleted. You'll no longer to see and find this comment",
                                     onConfirm: () {
-                                      Provider.of<PostVM>(context)
-                                          .deleteComment(comments);
-                                      // AmitySuccessDialog
-                                      //     .showTimedDialog(
-                                      //         "Success",
-                                      //         context:
-                                      //             context);
+                                      Provider.of<PostVM>(
+                                        context,
+                                        listen: false,
+                                      ).deleteComment(comments);
+                                      AmitySuccessDialog.showTimedDialog(
+                                          "Success",
+                                          context: context);
                                       Navigator.pop(context);
                                     });
                               },

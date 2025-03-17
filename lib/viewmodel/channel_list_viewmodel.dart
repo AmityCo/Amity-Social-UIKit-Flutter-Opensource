@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +19,6 @@ class ChannelVM extends ChangeNotifier {
   }
 
   Future<void> initVM() async {
-    log("initVM");
     var accessToken = Provider.of<UserVM>(
             NavigationService.navigatorKey.currentContext!,
             listen: false)
@@ -33,7 +30,6 @@ class ChannelVM extends ChangeNotifier {
         ///get channel where channel id == new message channelId
         var channel = _amityChannelList.firstWhere((amityMessage) =>
             amityMessage.channelId == messages.messages?[0].channelId);
-        log("${channel.channelId} got new message from ${messages.messages![0].userId}");
         channel.lastActivity = messages.messages![0].createdAt;
 
         channel.setLatestMessage(
@@ -57,13 +53,10 @@ class ChannelVM extends ChangeNotifier {
       });
 
       await refreshChannels();
-    } else {
-      log("accessToken is null");
-    }
+    } else {}
   }
 
   Future<void> refreshChannels() async {
-    log("refreshChannels...");
     await channelRepoImp.fetchChannelsList((data, error) async {
       if (error == null && data != null) {
         _amityChannelList.clear();
@@ -84,7 +77,6 @@ class ChannelVM extends ChangeNotifier {
           }
         }
       } else {
-        log(error.toString());
         await AmityDialog()
             .showAlertErrorDialog(title: "Error!", message: error!);
       }
@@ -106,7 +98,6 @@ class ChannelVM extends ChangeNotifier {
         channelId: channelId,
         callback: (data, error) async {
           if (data != null) {
-            log(">>>>>>>>>>>>>${data.channels![0].channelId}");
             amitySingleChannel = data.channels!.first;
             notifyListeners();
           } else {
@@ -115,9 +106,7 @@ class ChannelVM extends ChangeNotifier {
           }
         },
       );
-    } else {
-      log("accessToken is null");
-    }
+    } else {}
   }
 
   Future<void> _addLatestMessage(Channels channel) async {
@@ -129,17 +118,13 @@ class ChannelVM extends ChangeNotifier {
           if (data.messages!.isNotEmpty) {
             var latestMessage =
                 data.messages![0].data?.text ?? "Not Text message: 📷";
-            log("get latest message from ${channel.channelId} as $latestMessage");
             channel.setLatestMessage(latestMessage);
             notifyListeners();
           } else {
-            log("No latest message");
             channel.setLatestMessage("No message yet");
             notifyListeners();
           }
-        } else {
-          log("error from : _addLatestMessage => $error");
-        }
+        } else {}
       },
     );
   }
@@ -150,10 +135,8 @@ class ChannelVM extends ChangeNotifier {
     await channelRepoImp.createGroupChannel(displayName, userIds,
         (data, error) async {
       if (data != null) {
-        log("createGroupChannel: success");
         callback(data, null);
       } else {
-        log(error.toString());
         await AmityDialog()
             .showAlertErrorDialog(title: "Error!", message: error!);
         callback(null, error);
@@ -166,11 +149,8 @@ class ChannelVM extends ChangeNotifier {
     await channelRepoImp.createConversationChannel(userIds,
         (data, error) async {
       if (data != null) {
-        log("createConversationChannel: success $data");
-
         callback(data, null);
       } else {
-        log(error.toString());
         await AmityDialog()
             .showAlertErrorDialog(title: "Error!", message: error!);
         callback(null, error);
@@ -183,7 +163,6 @@ class ChannelVM extends ChangeNotifier {
       channelUserMap[channelUser.channelId! + channelUser.userId!] =
           channelUser;
     }
-    log("mapReadSegment complete");
   }
 
   void removeUnreadCount(String channelId) async {
@@ -202,7 +181,6 @@ class ChannelVM extends ChangeNotifier {
     } catch (error) {
       await AmityDialog()
           .showAlertErrorDialog(title: "Error!", message: error.toString());
-      log(error.toString());
     }
   }
 }

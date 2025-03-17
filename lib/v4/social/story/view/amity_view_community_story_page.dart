@@ -173,9 +173,10 @@ class _AmityViewCommunityStoryPageState extends State<AmityViewCommunityStoryPag
                                                     if (stories[index].dataType == AmityStoryDataType.VIDEO) {
                                                       BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
                                                     }
-                                                    var shouldAllowComment = BlocProvider.of<ViewStoryBloc>(context).state.community?.allowCommentInStory ?? false;
 
-                                                    openCommentTraySheet(context, stories[index], shouldAllowComment);
+                                                    var shouldAllowComment = (BlocProvider.of<ViewStoryBloc>(context).state.community?.allowCommentInStory ?? false) && (state.isCommunityJoined ?? true);
+
+                                                    openCommentTraySheet(context, stories[index], state.isCommunityJoined ?? true, shouldAllowComment);
                                                   },
                                                   onSwipeDown: () {
                                                     Navigator.of(context).pop();
@@ -358,7 +359,7 @@ class _AmityViewCommunityStoryPageState extends State<AmityViewCommunityStoryPag
 
 // Widget of the comments tray in the bottomSheet
 
-void openCommentTraySheet(BuildContext context, AmityStory story, bool shouldAllowComments) {
+void openCommentTraySheet(BuildContext context, AmityStory story, bool shouldAllowInteraction, bool shouldAllowComments) {
   BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
   if (story.dataType == AmityStoryDataType.VIDEO) {
     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
@@ -390,6 +391,7 @@ void openCommentTraySheet(BuildContext context, AmityStory story, bool shouldAll
                       scrollController: scrollController,
                       referenceId: story.storyId!,
                       referenceType: AmityCommentReferenceType.STORY,
+                      shouldAllowInteraction: shouldAllowInteraction,
                       shouldAllowComments: shouldAllowComments,
                     ),
                   );

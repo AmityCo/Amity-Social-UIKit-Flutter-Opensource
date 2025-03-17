@@ -25,8 +25,7 @@ class PostItemBottom extends NewBaseComponent {
   }) : super(key: key, pageId: pageId, componentId: componentId);
 
   @override
-  Widget buildComponent(
-      BuildContext context) {
+  Widget buildComponent(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -42,19 +41,25 @@ class PostItemBottom extends NewBaseComponent {
           ),
         ),
         Container(
-          width: double.infinity,
-          padding: const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              PostReactionButton(post: post, action: action, isReacting: isReacting, showLabel: hideReactionCount, isOptimisticUi: isOptimisticUi,),
-              const SizedBox(width: 12),
-              getCommentButton(hideReactionCount),
-            ],
-          )
-        )
+            width: double.infinity,
+            padding:
+                const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                PostReactionButton(
+                  post: post,
+                  action: action,
+                  isReacting: isReacting,
+                  showLabel: hideReactionCount,
+                  isOptimisticUi: isOptimisticUi,
+                ),
+                const SizedBox(width: 12),
+                getCommentButton(hideReactionCount),
+              ],
+            ))
       ],
     );
   }
@@ -73,7 +78,9 @@ class PostItemBottom extends NewBaseComponent {
         ),
         const SizedBox(width: 4),
         Text(
-          hideCommentCount ? "Comment" : (post.commentCount ?? 0).formattedCompactString(),
+          hideCommentCount
+              ? "Comment"
+              : (post.commentCount ?? 0).formattedCompactString(),
           style: TextStyle(
             color: theme.baseColorShade2,
             fontSize: 15,

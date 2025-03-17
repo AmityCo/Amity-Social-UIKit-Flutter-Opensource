@@ -18,7 +18,14 @@ class CommentListState extends Equatable {
   final List<String> expandedId;
 
   @override
-  List<Object?> get props => [referenceId, referenceType, comments, isFetching, hasNextPage, expandedId];
+  List<Object?> get props => [
+        referenceId,
+        referenceType,
+        comments,
+        isFetching,
+        hasNextPage,
+        expandedId
+      ];
 
   CommentListState copyWith({
     String? referenceId,
@@ -44,13 +51,13 @@ class CommentListStateInitial extends CommentListState {
     required String referenceId,
     required AmityCommentReferenceType referenceType,
   }) : super(
-    referenceId: referenceId,
-    referenceType: referenceType,
-    comments: const [],
-    isFetching: false,
-    hasNextPage: true,
-    expandedId: const [],
-  );
+          referenceId: referenceId,
+          referenceType: referenceType,
+          comments: const [],
+          isFetching: false,
+          hasNextPage: true,
+          expandedId: const [],
+        );
 }
 
 class CommentListStateChanged extends CommentListState {
@@ -62,11 +69,11 @@ class CommentListStateChanged extends CommentListState {
     required bool hasNextPage,
     required List<String> expandedId,
   }) : super(
-    referenceId: referenceId,
-    referenceType: referenceType,
-    comments: comments,
-    isFetching: isFetching,
-    hasNextPage: hasNextPage,
-    expandedId: expandedId,
-  );
+          referenceId: referenceId,
+          referenceType: referenceType,
+          comments: comments,
+          isFetching: isFetching,
+          hasNextPage: hasNextPage,
+          expandedId: expandedId,
+        );
 }

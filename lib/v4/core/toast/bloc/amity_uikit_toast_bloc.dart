@@ -20,6 +20,7 @@ class AmityToastBloc extends Bloc<AmityToastEvent, AmityToastState> {
           style: AmityToastStyle.short,
           icon: event.icon,
           key: UniqueKey(),
+          bottomPadding: event.bottomPadding ?? 0.0,
         ),
       ),
     );
@@ -30,6 +31,7 @@ class AmityToastBloc extends Bloc<AmityToastEvent, AmityToastState> {
           message: "",
           style: AmityToastStyle.hidden,
           key: null,
+          bottomPadding: 0.0,
         ),
       ),
     );
@@ -41,6 +43,7 @@ class AmityToastBloc extends Bloc<AmityToastEvent, AmityToastState> {
           style: AmityToastStyle.loading,
           icon: event.icon,
           key: UniqueKey(),
+          bottomPadding: event.bottomPadding ?? 0.0,
         ),
       );
     });

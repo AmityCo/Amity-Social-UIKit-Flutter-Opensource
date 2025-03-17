@@ -1,97 +1,166 @@
+import 'dart:async';
+
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:bloc/bloc.dart';
+import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 part 'global_feed_event.dart';
 part 'global_feed_state.dart';
 
 class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
-  late PagingController<AmityPost> _controller;
-
-  late List<AmityPost> posts = [];
-  late List<AmityPost> localCreatedPost = [];
-
+  late CustomRankingLiveCollection liveCollection;
+  late GlobalPinnedPostLiveCollection pinnedPostCollection;
   final int pageSize = 20;
+
   GlobalFeedBloc()
       : super(const GlobalFeedState(
           list: [],
+          localList: [],
           hasMoreItems: true,
-          isFetching: true,
+          isFetching: false,
+          pinnedPosts: [],
+          pinnedPostIds: {},
         )) {
-    _controller = PagingController(
-      pageFuture: (token) => AmitySocialClient.newFeedRepository()
-          .getCustomRankingGlobalFeed()
-          .getPagingData(token: token, limit: pageSize),
-      pageSize: pageSize,
-    )..addListener(
-        () {
-          if (_controller.isFetching == true &&
-              _controller.loadedItems.isEmpty) {
-            emit(state.copyWith(isFetching: true));
-          } else if (_controller.error == null) {
-            // Distinct post list
-            posts.addAll(_controller.loadedItems);
+    List<StreamSubscription> subscriptions = [];
 
-            add(GlobalFeedNotify(posts: []));
-          }
-        },
-      );
+    liveCollection = AmitySocialClient.newFeedRepository()
+        .getCustomRankingGlobalFeed()
+        .getLiveCollection();
 
-    on<GlobalFeedNotify>((event, emit) async {
-      List<AmityPost> allPost = [];
-      allPost.addAll(localCreatedPost);
+    pinnedPostCollection = AmitySocialClient.newPostRepository().getGlobalPinnedPosts();
 
-      allPost.addAll(posts);
+    on<GlobalFeedListUpdated>((event, emit) async {
+      updateFeed(event.posts, state.pinnedPosts, emit);
+    });
 
-      final postIds = allPost.map((post) => post.postId).toSet();
-      allPost.retainWhere((post) => postIds.remove(post.postId));
-
-      emit(state.copyWith(
-          list: allPost,
-          hasMoreItems: _controller.hasMoreItems,
-          isFetching: _controller.isFetching));
+    on<GlobalFeedLocalPostUpdated>((event, emit) async {
+      final post = event.post;
+      final localList = state.localList.toList();
+      if (localList.isNotEmpty) {
+        final index =
+            localList.indexWhere((element) => element.postId == post.postId);
+        if (index != -1) {
+          localList[index] = post;
+          emit(state.copyWith(localList: localList));
+          addEvent(GlobalFeedListUpdated(posts: state.list));
+        }
+      }
     });
 
     on<GlobalFeedAddLocalPost>((event, emit) async {
       final post = event.post;
-      localCreatedPost.insert(0, post);
-      add(GlobalFeedNotify(posts: []));
+      final localList = state.localList.toList();
+      localList.insert(0, post);
+      final list = state.list.toList();
+      list.insertAll(0, localList);
+      emit(state.copyWith(localList: localList, list: list));
+      await Future.delayed(const Duration(seconds: 1));
+      final subscription = AmitySocialClient.newPostRepository()
+          .live
+          .getPost(post.postId!)
+          .listen((event) {
+        addEvent(GlobalFeedLocalPostUpdated(post: event));
+      });
+      subscriptions.add(subscription);
     });
 
-    on<GlobalFeedInit>((event, emit) async {
-      _controller.reset();
-      _controller.fetchNextPage();
-      localCreatedPost.clear();
-      posts.clear();
+    on<GlobalFeedRefresh>((event, emit) async {
+      emit(const GlobalFeedState(
+        list: [],
+        localList: [],
+        hasMoreItems: true,
+        isFetching: false,
+        pinnedPosts: [],
+        pinnedPostIds: {},
+      ));
+      for (var subscription in subscriptions) {
+        subscription.cancel();
+      }
+      liveCollection.reset();
+      liveCollection.loadNext();
     });
 
-    on<GlobalFeedFetch>((event, emit) async {
-      if (_controller.hasMoreItems && !_controller.isFetching) {
-        _controller.fetchNextPage();
+    on<GlobalFeedLoadNext>((event, emit) async {
+      if (liveCollection.hasNextPage()) {
+        liveCollection.loadNext();
       }
     });
 
-    on<GlobalFeedReactToPost>((event, emit) async {
-      AmityPost post = event.post;
-      if (post.myReactions?.isNotEmpty ?? false) {
-        await post.react().removeReaction(post.myReactions!.first);
-      }
-      await post.react().addReaction(event.reactionType);
+    on<GlobalFeedLoadingStateUpdated>((event, emit) async {
+      emit(state.copyWith(isFetching: event.isLoading));
     });
 
-    on<GlobalFeedReloadThePost>((event, emit) async {
-      var updatedPost = event.post;
-      List<AmityPost> updatedList = [];
-      for (var element in state.list) {
-        if (element.postId == updatedPost.postId) {
-          updatedList.add(updatedPost);
-        } else {
-          updatedList.add(element);
-        }
-      }
-      emit(state.copyWith(list: []));
-      emit(state.copyWith(list: updatedList));
+    liveCollection.getStreamController().stream.listen((event) {
+      addEvent(GlobalFeedListUpdated(posts: event));
     });
+
+    liveCollection.observeLoadingState().listen((isLoading) {
+      addEvent(GlobalFeedLoadingStateUpdated(isLoading: isLoading));
+    });
+
+    // Global Pinned Posts
+    on<GlobalFeedPinPostUpdated>((event, emit) async {
+      // First we collect pinned post ids
+      final pinnedPosts = event.pinnedPosts;
+      updateFeed(state.list, pinnedPosts, emit);
+    });
+
+    pinnedPostCollection.getStreamController().stream.listen((pinnedPosts) {
+      addEvent(GlobalFeedPinPostUpdated(pinnedPosts: pinnedPosts));
+    });
+
+    // Load live collection
+    pinnedPostCollection.loadNext();
+    liveCollection.loadNext();
+  }
+
+  @override
+  Future<void> close() {
+    liveCollection.dispose();
+    pinnedPostCollection.dispose();
+    return super.close();
+  }
+
+  // We want to render the feed from here instead.
+  void updateFeed(
+    List<AmityPost> posts,
+    List<AmityPinnedPost> pinnedPosts,
+    Emitter<GlobalFeedState> emit,
+  ) {
+    final pinnedPostIds = pinnedPosts.map((e) => e.postId).toSet();
+    final mappedPinnedPosts =
+        pinnedPosts.map((e) => e.post).whereType<AmityPost>().toList();
+
+    final localIds = state.localList.map((e) => e.postId).toList();
+
+    // Remove duplicated local post
+    var list = posts
+        .where((element) =>
+            !localIds.contains(element.postId))
+            .toList(); // remove duplicates
+
+    // Remove duplicated pinned post
+    list = posts
+        .where((element) =>
+            !pinnedPostIds.contains(element.postId))
+        .toList();
+
+    // Local post would be below pinned post
+    if (state.localList.isNotEmpty) {
+      list.insertAll(0, state.localList);
+    }
+
+    // Pinned post will be at the top
+    if (mappedPinnedPosts.isNotEmpty) {
+      list.insertAll(0, mappedPinnedPosts);
+    }
+    
+    emit(state.copyWith(
+        list: list,
+        hasMoreItems: liveCollection.hasNextPage(),
+        pinnedPostIds: pinnedPostIds,
+        pinnedPosts: pinnedPosts));
   }
 }

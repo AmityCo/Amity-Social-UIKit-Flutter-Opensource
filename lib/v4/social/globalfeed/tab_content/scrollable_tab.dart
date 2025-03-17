@@ -1,11 +1,9 @@
-import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_event.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class ScrollableTabs extends NewBaseComponent {
   ScrollableTabs({Key? key, required String pageId})
@@ -18,8 +16,9 @@ class ScrollableTabs extends NewBaseComponent {
         final selectedIndex = state is TabState ? state.selectedIndex : 0;
 
         return Container(
+          alignment: AlignmentDirectional.centerStart,
           color: theme.backgroundColor,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

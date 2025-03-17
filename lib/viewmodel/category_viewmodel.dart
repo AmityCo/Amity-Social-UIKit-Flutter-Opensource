@@ -57,7 +57,6 @@ class CategoryVM extends ChangeNotifier {
   final scrollcontroller = ScrollController();
 
   void initCategoryList({List<String>? ids}) async {
-    print("initCategoryList");
     _communityCategoryController = PagingController(
       pageFuture: (token) => AmitySocialClient.newCommunityRepository()
           .getCategories()
@@ -73,8 +72,6 @@ class CategoryVM extends ChangeNotifier {
             _amityCategories.clear();
             _amityCategories.addAll(_communityCategoryController.loadedItems);
             //update widgets
-            print(
-                "has more item: ${_communityCategoryController.hasMoreItems}");
             notifyListeners();
           } else {
             //error on pagination controller
@@ -100,7 +97,6 @@ class CategoryVM extends ChangeNotifier {
     // print(_communityCategoryController.hasMoreItems);
     if ((scrollcontroller.position.pixels >=
         (scrollcontroller.position.maxScrollExtent - 100))) {
-      print("load more");
       _communityCategoryController.fetchNextPage();
       notifyListeners();
     }

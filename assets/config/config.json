@@ -11,7 +11,8 @@
             "base_shade4_color": "#EBECEF",
             "alert_color": "#FA4D30",
             "background_color": "#FFFFFF",
-            "base_inverse_color": "#000000"
+            "base_inverse_color": "#000000",
+            "highlight_color": "#1054DE"
         },
         "dark": {
             "primary_color": "#1054DE",
@@ -23,7 +24,8 @@
             "base_shade4_color": "#292B32",
             "alert_color": "#FA4D30",
             "background_color": "#191919",
-            "base_inverse_color": "#FFFFFF"
+            "base_inverse_color": "#FFFFFF",
+            "highlight_color": "#1054DE"
         }
     },
     "excludes": [],
@@ -301,6 +303,228 @@
             "icon": "officalBadgeIcon"
         },
         "social_global_search_page/community_search_result/community_category_name": {},
-        "social_global_search_page/community_search_result/community_members_count": {}
+        "social_global_search_page/community_search_result/community_members_count": {},
+        "user_profile_page/*/*": {},
+        "user_profile_page/*/back_button": {
+            "image": "backIcon"
+        },
+        "user_profile_page/*/menu_button": {
+            "image": "menuIcon"
+        },
+        "user_profile_page/*/user_feed_tab_button": {
+            "image": "profileFeedIcon"
+        },
+        "user_profile_page/*/user_image_feed_tab_button": {
+            "image": "profileImageFeedIcon"
+        },
+        "user_profile_page/*/user_video_feed_tab_button": {
+            "image": "profileVideoFeedIcon"
+        },
+        "user_profile_page/user_profile_header/*": {},
+        "user_profile_page/user_feed/*": {},
+        "user_profile_page/user_image_feed/*": {},
+        "user_profile_page/user_video_feed/*": {},
+        "user_relationship_page/*/*": {},
+        "user_pending_follow_request_page/*/*": {},
+        "user_profile_page/user_profile_header/follow_user_button": {
+            "text": "Follow",
+            "image": "plusIcon"
+        },
+        "user_profile_page/user_profile_header/following_user_button": {
+            "text": "Following",
+            "image": "followingIcon"
+        },
+        "user_profile_page/user_profile_header/pending_user_button": {
+            "text": "Cancel request",
+            "image": "pendingIcon"
+        },
+        "user_profile_page/user_profile_header/unblock_user_button": {
+            "text": "Unblock",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_profile_header/user_avatar": {},
+        "user_profile_page/user_profile_header/user_name": {},
+        "user_profile_page/user_profile_header/user_description": {},
+        "user_profile_page/user_profile_header/user_following": {
+            "text": "following"
+        },
+        "user_profile_page/user_profile_header/user_follower": {
+            "text": "followers"
+        },
+        "user_profile_page/user_feed/empty_user_feed": {
+            "text": "No post yet",
+            "image": "emptyProfileFeedIcon"
+        },
+        "user_profile_page/user_feed/private_user_feed": {
+            "text": "This account is private",
+            "image": "lockIcon"
+        },
+        "user_profile_page/user_feed/private_user_feed_info": {
+            "text": "Follow this user to see their posts."
+        },
+        "user_profile_page/user_feed/blocked_user_feed": {
+            "text": "You've blocked this user",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_feed/blocked_user_feed_info": {
+            "text": "Unblock to see their posts."
+        },
+        "user_profile_page/user_image_feed/empty_user_image_feed": {
+            "text": "No photo yet",
+            "image": "emptyPhotoIcon"
+        },
+        "user_profile_page/user_image_feed/private_user_image_feed": {
+            "text": "This account is private",
+            "image": "lockIcon"
+        },
+        "user_profile_page/user_image_feed/private_user_image_feed_info": {
+            "text": "Follow this user to see their posts."
+        },
+        "user_profile_page/user_image_feed/blocked_user_image_feed": {
+            "text": "You've blocked this user",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_image_feed/blocked_user_image_feed_info": {
+            "text": "Unblock to see their posts."
+        },
+        "user_profile_page/user_video_feed/empty_user_video_feed": {
+            "text": "No videos yet",
+            "image": "emptyVideoIcon"
+        },
+        "user_profile_page/user_video_feed/private_user_video_feed": {
+            "text": "This account is private",
+            "image": "lockIcon"
+        },
+        "user_profile_page/user_video_feed/private_user_video_feed_info": {
+            "text": "Follow this user to see their posts."
+        },
+        "user_profile_page/user_video_feed/blocked_user_video_feed": {
+            "text": "You've blocked this user",
+            "image": "blockedIcon"
+        },
+        "user_profile_page/user_video_feed/blocked_user_video_feed_info": {
+            "text": "Unblock to see their posts."
+        },
+        "edit_user_profile_page/*/*": {},
+        "edit_user_profile_page/*/back_button": {
+            "image": "backIcon"
+        },
+        "edit_user_profile_page/*/title": {
+            "text": "Edit profile"
+        },
+        "edit_user_profile_page/*/user_display_name_title": {
+            "text": "Display name"
+        },
+        "edit_user_profile_page/*/user_about_title": {
+            "text": "About"
+        },
+        "edit_user_profile_page/*/update_user_profile_button": {
+            "text": "Save"
+        },
+        "blocked_users_page/*/*": {},
+        "blocked_users_page/*/back_button": {
+            "image": "backIcon"
+        },
+        "blocked_users_page/*/title": {
+            "text": "Manage blocked users"
+        },
+        "blocked_users_page/*/unblock_user_button": {
+            "text": "Unblock"
+        },
+        "community_setting_page/*/*": {},
+        "community_setting_page/*/edit_profile": {
+            "text": "Edit profile"
+        },
+        "community_setting_page/*/members": {
+            "text": "Members"
+        },
+        "community_setting_page/*/notifications": {
+            "text": "Notifications"
+        },
+        "community_setting_page/*/post_permission": {
+            "text": "Post permission"
+        },
+        "community_setting_page/*/story_setting": {
+            "text": "Story comments"
+        },
+        "community_setting_page/*/leave_community": {
+            "text": "Leave community"
+        },
+        "community_setting_page/*/close_community": {
+            "text": "Close community"
+        },
+        "community_setting_page/*/close_community_description": {
+            "text": "Closing this community will remove the community  page and all its content and comments."
+        },
+        "chat_page/*/*": {
+            "theme": {
+                "light": {
+                    "primary_color": "#1054DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "background_shade_color": "#FFFFFF",
+                    "highlight_color": "#1054DE"
+                },
+                "dark": {
+                    "primary_color": "#FF7500",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "highlight_color": "#FF7500"
+                }
+            }
+        },
+        "chat_page/message_bubble/*": {
+            "theme": {
+                "light": {
+                    "primary_color": "#1054DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "highlight_color": "#1054DE"
+                },
+                "dark": {
+                    "primary_color": "#10F4DE",
+                    "secondary_color": "#292B32",
+                    "base_color": "#292B32",
+                    "base_shade1_color": "#636878",
+                    "base_shade2_color": "#898E9E",
+                    "base_shade3_color": "#A5A9b5",
+                    "base_shade4_color": "#EBECEF",
+                    "alert_color": "#FA4D30",
+                    "background_color": "#FFFFFF",
+                    "base_inverse_color": "#000000",
+                    "highlight_color": "#10F4DE"
+                }
+            },
+            "left_bubble_color": "#EBECEF",
+            "left_bubble_pressed_color": "#A5A9b5",
+            "left_bubble_text_color": "#292B32",
+            "left_bubble_subtle_text_color": "#636878",
+            "right_bubble_color": "#1054DE",
+            "right_bubble_pressed_color": "#1A4499",
+            "right_bubble_text_color": "#FFFFFF",
+            "right_bubble_subtle_text_color": "#A9C4F9",
+            "bubble_divider_color": "#C1C1C1"
+        }
     }
 }

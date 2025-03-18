@@ -1,6 +1,9 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
@@ -10,9 +13,14 @@ import 'package:flutter_svg/svg.dart';
 class PostDisplayName extends StatelessWidget {
   final AmityPost post;
   final AmityThemeColor theme;
+  final bool hideTarget;
 
-  const PostDisplayName({Key? key, required this.post, required this.theme})
-      : super(key: key);
+  const PostDisplayName({
+    Key? key,
+    required this.post,
+    required this.theme,
+    required this.hideTarget,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,25 +40,30 @@ class PostDisplayName extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: (post.target != null &&
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: (!hideTarget &&
+                    post.target != null &&
                     ((post.target is CommunityTarget) ||
                         (post.target is UserTarget &&
                             (post.target as UserTarget).targetUserId !=
                                 post.postedUserId)))
                 ? [
-                    IntrinsicWidth(
-                        child: DisplayName(context, post.postedUser)),
-                    Expanded(child: PostTarget(context, post.target!)),
+                    Flexible(child: DisplayName(context, post.postedUser)),
+                    TargetArrow(),
+                    Expanded(flex: 2, child: PostTarget(context, post.target!)),
                   ]
-                : [Expanded(child: DisplayName(context, post.postedUser))],
+                : [
+                    Flexible(
+                        fit: FlexFit.loose,
+                        child: DisplayName(context, post.postedUser))
+                  ],
           ),
           Row(
             children: [
@@ -89,20 +102,16 @@ class PostDisplayName extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => UserProfileScreen(
-              amityUserId: user?.userId ?? '',
-              amityUser: null,
-            ),
+            builder: (context) =>
+                AmityUserProfilePage(userId: user?.userId ?? ""),
           ),
         );
       },
       child: Text(
         user?.displayName ?? "Unknown",
-        style: TextStyle(
-          color: theme.baseColor,
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AmityTextStyle.bodyBold(theme.baseColor),
       ),
     );
   }
@@ -118,8 +127,8 @@ class PostDisplayName extends StatelessWidget {
       onTap = () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                CommunityScreen(community: target.targetCommunity!),
+            builder: (context) => AmityCommunityProfilePage(
+                communityId: target.targetCommunityId!),
           ),
         );
       };
@@ -132,10 +141,8 @@ class PostDisplayName extends StatelessWidget {
         onTap = () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => UserProfileScreen(
-                amityUserId: target.targetUser?.userId ?? '',
-                amityUser: null,
-              ),
+              builder: (context) =>
+                  AmityUserProfilePage(userId: target.targetUser?.userId ?? ''),
             ),
           );
         };
@@ -144,42 +151,24 @@ class PostDisplayName extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(width: 4),
-          TargetArrow(),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Text(
-              targetName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              style: TextStyle(
-                color: theme.baseColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+      child: Text(
+        targetName,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        // softWrap: false,
+        style: AmityTextStyle.bodyBold(theme.baseColor),
       ),
     );
   }
 
   Widget TargetArrow() {
-    return Container(
-      width: 16,
-      height: 16,
-      padding: const EdgeInsets.symmetric(vertical: 2),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: SvgPicture.asset(
         'assets/Icons/amity_ic_post_target_arrow.svg',
         package: 'amity_uikit_beta_service',
-        width: 16,
-        height: 12,
+        width: 12,
+        height: 10,
       ),
     );
   }

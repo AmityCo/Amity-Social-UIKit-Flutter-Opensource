@@ -156,6 +156,7 @@ class CommunityPageState extends State<CommunityPage>
                     TabBar(
                       controller: _tabController,
                       // Attach the TabController
+                      tabAlignment: TabAlignment.start,
                       isScrollable: true,
                       dividerColor: Provider.of<AmityUIConfiguration>(context)
                           .appColors

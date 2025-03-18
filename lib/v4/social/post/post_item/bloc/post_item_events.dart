@@ -69,3 +69,5 @@ class PostItemDelete extends PostItemEvent {
 
   const PostItemDelete({required this.post, this.action});
 }
+
+class PostItemReacted extends PostItemEvent {}

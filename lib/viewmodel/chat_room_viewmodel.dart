@@ -88,7 +88,7 @@ class ChatRoomVM extends ChangeNotifier {
     });
     messageLiveCollection = AmityChatClient.newMessageRepository()
         .getMessages(channelId)
-        .getLiveCollection(pageSize: 20);
+        .getLiveCollection();
 
     messageLiveCollection.getStreamController().stream.listen((event) {
       amitymessage.clear();

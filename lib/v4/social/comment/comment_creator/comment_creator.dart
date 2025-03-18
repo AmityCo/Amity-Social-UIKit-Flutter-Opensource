@@ -2,20 +2,24 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/bloc/comment_creator_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator_action.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
+import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../../core/ui/mention/mention_text_editing_controller.dart';
 
 class AmityCommentCreator extends BaseElement {
   final String referenceId;
   final AmityCommentReferenceType referenceType;
   final AmityComment? replyTo;
   final CommentCreatorAction action;
+  final String? communityId;
   AmityThemeColor? localTheme;
-
   AmityCommentCreator({
     Key? key,
     required this.referenceId,
@@ -23,15 +27,17 @@ class AmityCommentCreator extends BaseElement {
     required this.action,
     this.localTheme,
     required this.referenceType,
+    this.communityId,
     elementId = "comment_creator",
   }) : super(key: key, elementId: elementId);
-  
+
   @override
   Widget buildElement(BuildContext context) {
-     return AmityCommentCreatorInternal(
+    return AmityCommentCreatorInternal(
       referenceId: referenceId,
       referenceType: referenceType,
       replyTo: replyTo,
+      communityId: communityId,
       action: action,
       theme: localTheme ?? theme,
     );
@@ -44,12 +50,14 @@ class AmityCommentCreatorInternal extends StatefulWidget {
   final AmityComment? replyTo;
   final CommentCreatorAction action;
   final AmityThemeColor theme;
+  final String? communityId;
 
   const AmityCommentCreatorInternal({
     Key? key,
     required this.referenceId,
     required this.referenceType,
     this.replyTo,
+    this.communityId,
     required this.action,
     required this.theme,
   }) : super(key: key);
@@ -61,13 +69,14 @@ class AmityCommentCreatorInternal extends StatefulWidget {
 
 class _AmityCommentCreatorInternalState
     extends State<AmityCommentCreatorInternal> {
-  late TextEditingController controller;
+  late MentionTextEditingController controller;
   late ScrollController scrollController;
+  final focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController();
+    controller = MentionTextEditingController();
     scrollController = ScrollController();
   }
 
@@ -81,6 +90,7 @@ class _AmityCommentCreatorInternalState
 
   @override
   Widget build(BuildContext context) {
+
     return BlocProvider(
       key: ValueKey(widget.replyTo?.commentId ?? ""),
       create: (context) => CommentCreatorBloc(replyTo: widget.replyTo),
@@ -91,7 +101,8 @@ class _AmityCommentCreatorInternalState
               if (state.replyTo != null) renderReplyPanel(state.replyTo!),
               SafeArea(
                 top: false,
-                child: renderComposer(context, state, widget.referenceId, widget.referenceType),
+                child: renderComposer(
+                    context, state, widget.referenceId, widget.referenceType, widget.communityId),
               ),
             ],
           );
@@ -100,115 +111,129 @@ class _AmityCommentCreatorInternalState
     );
   }
 
-  Widget renderComposer(BuildContext context, CommentCreatorState state, String referenceId, AmityCommentReferenceType referenceType) {
-    String? avatarUrl = AmityCoreClient.getCurrentUser().avatarUrl;
+  Widget renderComposer(BuildContext context,
+      CommentCreatorState state,
+      String referenceId,
+      AmityCommentReferenceType referenceType,
+      String? communityId) {
+    AmityUser user = AmityCoreClient.getCurrentUser();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 0, left: 12, right: 8, bottom: 8),
-                child: SizedBox(
-                  width: 32,
-                  height: 32,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: AmityNetworkImage(
-                        imageUrl: avatarUrl,
-                        placeHolderPath:
-                            "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
-                  ),
+        Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(
+                top: 0, left: 12, right: 8, bottom: 8),
+            child: SizedBox(
+              width: 32,
+              height: 32,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: AmityUserImage(
+                  user: user,
+                  theme: widget.theme,
+                  size: 32,
                 ),
               ),
-              Expanded(
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 200),
-                  height: state.currentHeight,
-                  alignment: Alignment.centerLeft,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                  decoration: ShapeDecoration(
-                    color: widget.theme.baseColorShade4,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: widget.theme.backgroundColor),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    removeBottom: true,
-                    child: Scrollbar(
-                      controller: scrollController,
-                      child: TextField(
-                        controller: controller,
-                        scrollController: scrollController,
-                        onChanged: (value) {
-                          context
-                              .read<CommentCreatorBloc>()
-                              .add(CommentCreatorTextChage(text: value.trim()));
-                        },
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        minLines: 1,
-                        textAlignVertical: TextAlignVertical.bottom,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 0),
-                          hintText: 'Say something nice...',
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                            color: widget.theme.baseColorShade2,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 135),
+              height: state.currentHeight,
+              alignment: Alignment.centerLeft,
+              padding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              decoration: ShapeDecoration(
+                color: widget.theme.baseColorShade4,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: widget.theme.backgroundColor),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                removeBottom: true,
+                child: Scrollbar(
+                  controller: scrollController,
+                  child: MentionTextField(
+                    theme: widget.theme,
+                    suggestionMaxRow: 2,
+                    suggestionDisplayMode: SuggestionDisplayMode.bottom,
+                    mentionContentType: MentionContentType.comment,
+                    communityId: communityId,
+                    controller: controller,
+                    scrollController: scrollController,
+                    onChanged: (value) {
+                      context
+                          .read<CommentCreatorBloc>()
+                          .add(CommentCreatorTextChage(text: value.trim()));
+                    },
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 1,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 0),
+                      hintText: 'Say something nice...',
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(
+                        color: widget.theme.baseColorShade2,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
+                    suggestionOverlayBottomPaddingWhenKeyboardClosed: state.currentHeight + 16.0 + (state.replyTo != null ? 40.0 : 0.0),
+                    suggestionOverlayBottomPaddingWhenKeyboardOpen:  state.currentHeight + 16.0 + (state.replyTo != null ? 40.0 : 0.0),
+                  ),
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  context.read<CommentCreatorBloc>().add(CommentCreatorCreated(
-                        referenceId: referenceId,
-                        referenceType: referenceType,
-                        text: controller.text,
-                        toastBloc: context.read<AmityToastBloc>(),
-                      ));
-                  controller.clear();
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.only(bottom: 12, right: 12, left: 8),
-                  clipBehavior: Clip.antiAlias,
-                  decoration:
-                      BoxDecoration(color: widget.theme.backgroundColor),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Post',
-                        style: TextStyle(
-                          color: (state.text.isEmpty)
-                              ? const Color(0xFFA0BDF8)
-                              : widget.theme.primaryColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                        ),
+            ),
+            GestureDetector(
+              onTap: () {
+                context.read<CommentCreatorBloc>().add(CommentCreatorCreated(
+                  referenceId: referenceId,
+                  referenceType: referenceType,
+                  text: controller.text,
+                  mentionMetadataList: controller.getAmityMentionMetadata(),
+                  mentionUserIds: controller.getMentionUserIds(),
+                  toastBloc: context.read<AmityToastBloc>(),
+                ));
+                controller.clear();
+              },
+              child: Container(
+                padding:
+                const EdgeInsets.only(bottom: 12, right: 12, left: 8),
+                clipBehavior: Clip.antiAlias,
+                decoration:
+                BoxDecoration(color: widget.theme.backgroundColor),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Post',
+                      style: TextStyle(
+                        color: (state.text.isEmpty)
+                            ? const Color(0xFFA0BDF8)
+                            : widget.theme.primaryColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+            ),
             ],
           ),
         ],

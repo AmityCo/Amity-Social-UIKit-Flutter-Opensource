@@ -77,12 +77,12 @@ class ProfileScreenState extends State<ProfileScreen> {
             .currentamityUser
             ?.avatarUrl);
     _displayNameController.text = Provider.of<AmityVM>(context, listen: false)
-            .currentamityUser!
-            .displayName ??
+            .currentamityUser
+            ?.displayName ??
         "";
     _descriptionController.text = Provider.of<AmityVM>(context, listen: false)
-            .currentamityUser!
-            .description ??
+            .currentamityUser
+            ?.description ??
         "";
     super.initState();
   }
@@ -138,8 +138,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                         description: _descriptionController.text,
                         avatarFileId:
                             Provider.of<AmityVM>(context, listen: false)
-                                .currentamityUser!
-                                .avatarFileId);
+                                    .currentamityUser
+                                    ?.avatarFileId ??
+                                "");
               }
               // ignore: use_build_context_synchronously
               await Provider.of<AmityVM>(context, listen: false)

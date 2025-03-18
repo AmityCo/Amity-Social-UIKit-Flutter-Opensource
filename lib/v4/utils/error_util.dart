@@ -1,16 +1,25 @@
 import 'package:amity_sdk/amity_sdk.dart';
 
-enum AmityErrorCode { BAN_WORD_FOUND , TARGET_NOT_FOUND} 
+enum AmityErrorCode {
+  BAN_WORD_FOUND,
+  TARGET_NOT_FOUND,
+  NO_USER_ACCESS_PERMISSION,
+}
 
 extension AmityExceptionExtension on AmityException {
   int getErrorCode(AmityErrorCode error) {
-    if (error == AmityErrorCode.BAN_WORD_FOUND) {
-      return 400308;
-    }if (error == AmityErrorCode.TARGET_NOT_FOUND) {
-      return 400400;
+    switch (error) {
+      case AmityErrorCode.BAN_WORD_FOUND:
+        return 400308;
+      case AmityErrorCode.TARGET_NOT_FOUND:
+        return 400400;
+      case AmityErrorCode.NO_USER_ACCESS_PERMISSION:
+        return 400301;
     }
-     else {
-      return 800000; // Unknown error
-    }
+  }
+
+  // Compares `code` property from AmityException with the given error code
+  bool isAmityErrorWithCode(AmityErrorCode code) {
+    return this.code == getErrorCode(code);
   }
 }

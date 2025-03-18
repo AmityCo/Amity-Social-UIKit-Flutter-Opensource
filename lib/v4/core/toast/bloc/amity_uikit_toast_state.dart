@@ -9,27 +9,31 @@ class AmityToastState extends Equatable {
     required this.style,
     this.icon,
     this.key,
+    this.bottomPadding = 0.0,
   });
 
   final String message;
   final AmityToastStyle style;
   final AmityToastIcon? icon;
   final Key? key;
+  final double bottomPadding;
 
   @override
-  List<Object?> get props => [message, style, icon, key];
+  List<Object?> get props => [message, style, icon, key, bottomPadding];
 
   AmityToastState copyWith({
     AmityToastStyle? style,
     String? message,
     AmityToastIcon? icon,
     Key? key,
+    double? bottomPadding,
   }) {
     return AmityToastState(
       message: message ?? this.message,
       style: style ?? this.style,
       icon: icon ?? this.icon,
       key: key ?? this.key,
+      bottomPadding: bottomPadding ?? this.bottomPadding,
     );
   }
 }

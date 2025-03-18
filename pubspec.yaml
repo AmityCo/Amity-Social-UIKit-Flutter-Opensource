@@ -1,6 +1,6 @@
 name: amity_uikit_beta_service
 description: Amity UIkit opensource developed by SLE team to enable social feature in Flutter.
-version: 3.0.6+8
+version: 4.0.0
 homepage: https://github.com/AmityCo/Amity-Social-UIKit-Flutter-Opensource
 
 environment:
@@ -20,7 +20,9 @@ dependencies:
   flutter_phoenix: ^1.0.0
   flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
-  amity_sdk: ^0.51.0
+  amity_sdk: ^0.57.2
+  image_gallery_saver: ^2.0.3
+  dio: ^5.0.0
   provider: ^6.0.3
   carousel_slider: ^5.0.0
   chewie: ^1.3.4
@@ -28,24 +30,25 @@ dependencies:
   # extended_image: ^6.2.1
   intl: ^0.19.0
   image_picker: ^1.1.2
+  image_picker_android: ^0.8.12+18
+  image_picker_platform_interface: ^2.10.0
   socket_io_client: ^1.0.0
   get_time_ago: ^1.1.5
   shimmer: ^3.0.0
-  dio:
-  sign_in_with_apple: ^4.1.0
+  sign_in_with_apple: ^6.1.2
   any_link_preview: ^3.0.1
   linkwell: ^2.0.6
   linkify: ^5.0.0
   flutter_link_previewer: ^3.1.0
   url_launcher: ^6.1.6
-  flutter_sticky_header: ^0.6.5
+  flutter_sticky_header: ^0.7.0
   path_provider: ^2.0.2
   video_thumbnail: ^0.5.3
   mime: ^1.0.4
   file_picker: ^6.0.0
   open_file: ^3.5.1
   flutter_svg: ^2.0.9
-  permission_handler: ^11.0.1
+  permission_handler: ^11.3.1
   intrinsic_dimension: ^0.3.1
   flutter_linkify: ^6.0.0
   camera: 0.10.6
@@ -57,6 +60,12 @@ dependencies:
   package_info_plus : ^8.1.3
   device_info_plus: ^10.1.2
   palette_generator: ^0.3.3+4
+  connectivity_plus: ^6.1.0
+  photo_manager: ^3.6.3
+  diff_match_patch: ^0.4.1
+  flutter_markdown: ^0.6.14
+  markdown: ^7.0.0
+  diacritic: ^0.1.3
   ffi: ^2.1.3
 
 dev_dependencies:

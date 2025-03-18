@@ -1,10 +1,10 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
-import 'package:amity_uikit_beta_service/v4/utils/shimmer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feed.dart';
 import 'package:flutter/material.dart';
 
 Widget communityList(
@@ -38,14 +38,18 @@ Widget communityList(
           );
         },
         itemBuilder: (context, index) {
-          return SizedBox(
-            width: double.infinity,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [communityRow(context, communities[index], theme)],
-            ),
+          return Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [communityRow(context, communities[index], theme)],
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -59,10 +63,12 @@ Widget communityRow(
       community.categories?.map((category) => category?.name).toList();
 
   return GestureDetector(
+    behavior: HitTestBehavior.translucent,
     onTap: () {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => CommunityScreen(community: community),
+          builder: (context) =>
+              AmityCommunityProfilePage(communityId: community.communityId!),
         ),
       );
     },
@@ -78,7 +84,8 @@ Widget communityRow(
             height: 80,
             child: CommunityImageAvatarElement(
                 avatarUrl: community.avatarImage?.fileUrl,
-                placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder_rectangle.svg",
+                placeHolderPath:
+                    "assets/Icons/amity_ic_community_avatar_placeholder_rectangle.svg",
                 elementId: AmityMyCommunityElement.communityAvatar.stringValue),
           ),
         ),

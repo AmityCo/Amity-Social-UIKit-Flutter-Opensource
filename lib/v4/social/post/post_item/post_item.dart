@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
-import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_image.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_video.dart';
@@ -8,38 +10,54 @@ import 'package:amity_uikit_beta_service/v4/social/post/common/post_header.dart'
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/amity_post_detail_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom_nonmember.dart';
+import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../common/post_poll.dart';
+
 class PostItem extends NewBaseComponent {
   final AmityPost post;
+  final AmityPostCategory category;
+  final bool hideMenu;
+  final bool hideTarget;
   final AmityPostAction? action;
 
   PostItem({
     Key? key,
     String? pageId,
     required this.post,
+    required this.category,
+    required this.hideMenu,
+    required this.hideTarget,
     this.action,
   }) : super(key: key, pageId: pageId, componentId: "post_item_component");
 
   @override
   Widget buildComponent(BuildContext context) {
-    return BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
-      if (state is PostItemStateLoaded) {
-        return renderPost(context: context, post: state.post);
-      } else if (state is PostItemStateReacting) {
-        return renderPost(context: context, post: state.post, isReacting: true);
-      } else {
-        return renderPost(context: context, post: post);
-      }
-    });
+    return BlocProvider(
+      create: (context) => PostItemBloc(post),
+      child:
+          BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
+        return renderPost(
+            context: context,
+            post: state.post,
+            category: category,
+            hideTarget: hideTarget,
+            isReacting: state.isReacting);
+      }),
+    );
   }
 
-  Widget renderPost(
-      {required BuildContext context,
-      required AmityPost post,
-      bool isReacting = false}) {
+  Widget renderPost({
+    required BuildContext context,
+    required AmityPost post,
+    required AmityPostCategory category,
+    required bool hideTarget,
+    bool isReacting = false,
+  }) {
     onAddReaction(reactionType) {
       context
           .read<PostItemBloc>()
@@ -69,24 +87,20 @@ class PostItem extends NewBaseComponent {
 
     var page = AmityPostDetailPage(
       postId: post.postId!,
+      category: category,
+      hideMenu: hideMenu,
       action: postAction,
     );
+
+    goToDetail() {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => page,
+      ));
+    }
+
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PopScope(
-            canPop: true,
-            child: page,
-            onPopInvoked: (didPop) => {
-              if (didPop)
-                {
-                  context
-                      .read<GlobalFeedBloc>()
-                      .add(GlobalFeedReloadThePost(post: post))
-                }
-            },
-          ),
-        ));
+        goToDetail();
       },
       child: Container(
         width: double.infinity,
@@ -100,16 +114,24 @@ class PostItem extends NewBaseComponent {
             AmityPostHeader(
               post: post,
               theme: theme,
+              category: category,
+              hideTarget: hideTarget,
               action: postAction,
             ),
             getTextPostContent(post),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: getChildrenPostContent(context, post),
+              child:
+                  getChildrenPostContent(context, post, hideMenu, goToDetail),
             ),
-            getPostBottom(
-                post: post, action: postAction, isReacting: isReacting),
+            hideMenu
+                ? PostBottomNonMember()
+                : getPostBottom(
+                    post: post,
+                    action: postAction,
+                    isReacting: isReacting,
+                  ),
           ],
         ),
       ),
@@ -117,24 +139,88 @@ class PostItem extends NewBaseComponent {
   }
 
   Widget getTextPostContent(AmityPost post) {
+    // Get the text content from the post.
     String textContent = "";
     if (post.data is TextData) {
       textContent = (post.data as TextData).text ?? "";
     }
-    return textContent.isNotEmpty
-        ? Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              textContent,
-              style: TextStyle(
-                color: theme.baseColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          )
-        : Container();
+
+    // Define your normal text style and mention highlight style.
+    final normalStyle = TextStyle(
+      color: theme.baseColor,
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+    );
+    final mentionStyle = TextStyle(
+      color: theme.highlightColor, // Use your highlight color from the theme.
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+    );
+
+    // If there is no metadata, return the text with normal style.
+    if (post.metadata == null ||
+        post.metadata!['mentioned'] == null ||
+        post.metadata!['mentioned'] is! List) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Text(
+          textContent,
+          style: normalStyle,
+        ),
+      );
+    }
+
+    // Obtain the mention metadata from the post.
+    final mentionedGetter = AmityMentionMetadataGetter(metadata: post.metadata!);
+    final List<AmityUserMentionMetadata> mentionedUsers = mentionedGetter.getMentionedUsers();
+
+    // Sort mention metadata by starting index (if not already sorted).
+    mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
+
+    List<TextSpan> spans = [];
+    int currentIndex = 0;
+
+    // Iterate over each mention metadata and build spans.
+    for (var mention in mentionedUsers) {
+      // If the mention's start index is beyond our text, skip it.
+      if (mention.index >= textContent.length) continue;
+
+      // Add text before the mention, if any.
+      if (mention.index > currentIndex) {
+        spans.add(TextSpan(
+          text: textContent.substring(currentIndex, mention.index),
+          style: normalStyle,
+        ));
+      }
+      // Calculate the raw end index (the mention text length might include a prefix, e.g. '@')
+      int rawEndIndex = mention.index + mention.length + 1;
+      // Clamp the end index to the text length.
+      int safeEndIndex = min(rawEndIndex, textContent.length);
+
+      spans.add(TextSpan(
+        text: textContent.substring(mention.index, safeEndIndex),
+        style: mentionStyle,
+      ));
+
+      currentIndex = safeEndIndex;
+    }
+    // Append any remaining text after the last mention.
+    if (currentIndex < textContent.length) {
+      spans.add(TextSpan(
+        text: textContent.substring(currentIndex),
+        style: normalStyle,
+      ));
+    }
+
+    // Return a RichText widget with the computed spans.
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: RichText(
+        text: TextSpan(children: spans),
+      ),
+    );
   }
 
   Widget getImagePostContent(List<ImageData> images) {
@@ -146,7 +232,9 @@ class PostItem extends NewBaseComponent {
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: Image.network(imageUrl),
+        child: AmityNetworkImage(
+            imageUrl: imageUrl,
+            placeHolderPath: 'assets/Icons/amity_ic_image_placeholder.svg'),
       ),
     );
   }
@@ -155,7 +243,8 @@ class PostItem extends NewBaseComponent {
     return Container();
   }
 
-  Widget getChildrenPostContent(BuildContext context, AmityPost post) {
+  Widget getChildrenPostContent(BuildContext context, AmityPost post,
+      bool hideMenu, Function goToDetail) {
     final noChildrenPost = post.children?.isEmpty ?? true;
     if (noChildrenPost) {
       return Container();
@@ -163,6 +252,13 @@ class PostItem extends NewBaseComponent {
       return PostContentImage(posts: post.children!);
     } else if (post.children!.first.data is VideoData) {
       return PostContentVideo(posts: post.children!);
+    } else if (post.children!.first.data is PollData) {
+      return PostPollContent(
+          post: post.children!.first,
+          style: AmityPostContentComponentStyle.feed,
+          theme: theme,
+          hideMenu: hideMenu,
+          goToDetail: goToDetail);
     } else {
       return Container();
     }
@@ -177,7 +273,7 @@ class PostItem extends NewBaseComponent {
       action: action,
       isReacting: isReacting,
       componentId: '',
-      isOptimisticUi: true,
+      isOptimisticUi: false,
     );
   }
 
@@ -214,8 +310,9 @@ class PostItem extends NewBaseComponent {
                     files[index].data!.fileInfo.fileUrl!,
                   );
                 },
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8, horizontal: 14), // Reduced padding
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                // Reduced padding
                 tileColor: Colors.white.withOpacity(0.0),
                 leading: Container(
                   height: 100, // Reduced height to make it slimmer

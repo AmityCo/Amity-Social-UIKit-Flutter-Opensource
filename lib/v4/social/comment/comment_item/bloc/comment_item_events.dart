@@ -68,8 +68,15 @@ class CommentItemEditChanged extends CommentItemEvent {
 class CommentItemUpdate extends CommentItemEvent {
   final String commentId;
   final String text;
+  final List<AmityMentionMetadata> mentionMetadataList;
+  final List<String> mentionUserIds;
 
-  const CommentItemUpdate({required this.commentId, required this.text});
+  const CommentItemUpdate({
+    required this.commentId,
+    required this.text,
+    required this.mentionMetadataList,
+    required this.mentionUserIds
+  });
 }
 
 class CommentItemDelete extends CommentItemEvent {

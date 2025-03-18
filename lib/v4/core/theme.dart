@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class AmityTheme {
@@ -138,6 +136,14 @@ extension ColorBlending on Color {
     final hslColor = HSLColor.fromColor(this);
     final blendedHslColor = hslColor.withLightness(
       (hslColor.lightness + option.luminance / 100).clamp(0.0, 1.0),
+    );
+    return blendedHslColor.toColor();
+  }
+
+  Color darken(double luminance) {
+    final hslColor = HSLColor.fromColor(this);
+    final blendedHslColor = hslColor.withLightness(
+      (hslColor.lightness - luminance / 100).clamp(0.0, 1.0),
     );
     return blendedHslColor.toColor();
   }

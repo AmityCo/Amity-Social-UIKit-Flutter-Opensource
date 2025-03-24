@@ -260,7 +260,7 @@ class CommunityIconList extends StatelessWidget {
                 Text(
                   'My Community',
                   style: TextStyle(
-                    fontSize: 17.0,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Provider.of<AmityUIConfiguration>(context)
                         .appColors
@@ -320,81 +320,85 @@ class CommunityIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AmityCommunity>(
-        stream: amityCommunity.listen.stream,
-        builder: (context, snapshot) {
-          var communityStream = snapshot.data ?? amityCommunity;
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      CommunityScreen(community: communityStream)));
-            },
-            child: Container(
-              color: Colors.transparent,
-              width: 62,
-              margin: const EdgeInsets.only(right: 4, bottom: 10),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: (amityCommunity.avatarImage != null)
-                        ? CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage(amityCommunity
-                                .avatarImage!
-                                .getUrl(AmityImageSize.SMALL)),
-                          )
-                        : Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .appColors
-                                        .primaryShade3,
-                                shape: BoxShape.circle),
-                            child: const Icon(
-                              Icons.group,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                  Row(
-                    children: [
-                      !amityCommunity.isPublic!
-                          ? Icon(
-                              Icons.lock,
-                              size: 12,
+      stream: amityCommunity.listen.stream,
+      builder: (context, snapshot) {
+        var communityStream = snapshot.data ?? amityCommunity;
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) =>
+                    CommunityScreen(community: communityStream)));
+          },
+          child: Container(
+            color: Colors.transparent,
+            width: 62,
+            margin: const EdgeInsets.only(right: 4, bottom: 10),
+            child: Column(
+              children: [
+                Expanded(
+                  child: (amityCommunity.avatarImage != null)
+                      ? CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: NetworkImage(amityCommunity
+                              .avatarImage!
+                              .getUrl(AmityImageSize.SMALL)),
+                        )
+                      : Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
                               color: Provider.of<AmityUIConfiguration>(context)
                                   .appColors
-                                  .base,
-                            )
-                          : const SizedBox(),
-                      Expanded(
-                        child: Text(amityCommunity.displayName ?? "",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .appColors
-                                        .base,
-                                overflow: TextOverflow.ellipsis)),
+                                  .primaryShade3,
+                              shape: BoxShape.circle),
+                          child: const Icon(
+                            Icons.group,
+                            color: Colors.white,
+                          ),
+                        ),
+                ),
+                Row(
+                  children: [
+                    !amityCommunity.isPublic!
+                        ? Icon(
+                            Icons.lock,
+                            size: 12,
+                            color: Provider.of<AmityUIConfiguration>(context)
+                                .appColors
+                                .base,
+                          )
+                        : const SizedBox(),
+                    Expanded(
+                      child: Text(
+                        amityCommunity.displayName ?? "",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Provider.of<AmityUIConfiguration>(context)
+                              .appColors
+                              .base,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      amityCommunity.isOfficial!
-                          ? Provider.of<AmityUIConfiguration>(context)
-                              .iconConfig
-                              .officialIcon(
-                                  iconSize: 12,
-                                  color:
-                                      Provider.of<AmityUIConfiguration>(context)
-                                          .primaryColor)
-                          : const SizedBox(),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    amityCommunity.isOfficial!
+                        ? Provider.of<AmityUIConfiguration>(context)
+                            .iconConfig
+                            .officialIcon(
+                              iconSize: 12,
+                              color: Provider.of<AmityUIConfiguration>(context)
+                                  .primaryColor,
+                            )
+                        : const SizedBox(),
+                  ],
+                ),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

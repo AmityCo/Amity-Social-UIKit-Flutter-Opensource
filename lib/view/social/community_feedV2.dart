@@ -23,6 +23,7 @@ class CommunityScreen extends StatefulWidget {
   final AmityCommunity community;
   final bool isFromFeed;
   static const routeName = '/CommunityScreen';
+
   const CommunityScreen(
       {Key? key, required this.community, this.isFromFeed = false})
       : super(key: key);
@@ -121,10 +122,21 @@ class CommunityScreenState extends State<CommunityScreen>
           children: [
             Column(
               children: [
-                Text("${Provider.of<CommuFeedVM>(context).postCount}",
-                    style: const TextStyle(fontSize: 16)),
-                const Text('posts',
-                    style: TextStyle(fontSize: 16, color: Color(0xff898E9E)))
+                Text(
+                  "${Provider.of<CommuFeedVM>(context).postCount}",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Text(
+                  'posts',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff898E9E),
+                  ),
+                ),
               ],
             ),
             Container(
@@ -140,11 +152,19 @@ class CommunityScreenState extends State<CommunityScreen>
                 children: [
                   Text(
                     community.membersCount.toString(),
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                  Text(community.membersCount == 1 ? 'member' : 'members',
-                      style: const TextStyle(
-                          fontSize: 16, color: Color(0xff898E9E)))
+                  Text(
+                    community.membersCount == 1 ? 'member' : 'members',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xff898E9E),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -445,7 +465,7 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
         Text(
           community.description ?? "",
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 12,
             color: Provider.of<AmityUIConfiguration>(context).appColors.base,
           ),
         ),
@@ -481,7 +501,8 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 Text(
                   "${Provider.of<CommuFeedVM>(context).postCount}",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
                     color: Provider.of<AmityUIConfiguration>(context)
                         .appColors
                         .base,
@@ -490,7 +511,8 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                 const Text(
                   'posts',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
                     color: Color(0xff898E9E),
                   ),
                 ),
@@ -518,7 +540,8 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   Text(
                     community.membersCount.toString(),
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
                       color: Provider.of<AmityUIConfiguration>(context)
                           .appColors
                           .base,
@@ -527,7 +550,8 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   Text(
                     community.membersCount == 1 ? 'member' : 'members',
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
                       color: Color(0xff898E9E),
                     ),
                   ),
@@ -691,20 +715,25 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                 width: 7,
                               ),
                         Text(
-                            widget.community.displayName != null
-                                ? widget.community.displayName!
-                                : "Community",
-                            style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white)),
+                          widget.community.displayName != null
+                              ? widget.community.displayName!
+                              : "Community",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
                         const SizedBox(
                           width: 7,
                         ),
                         widget.community.isOfficial!
                             ? Provider.of<AmityUIConfiguration>(context)
                                 .iconConfig
-                                .officialIcon(iconSize: 17, color: Colors.white)
+                                .officialIcon(
+                                  iconSize: 16,
+                                  color: Colors.white,
+                                )
                             : const SizedBox(),
                       ],
                     ),
@@ -718,9 +747,11 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                         ""
                                 : "",
                             style: const TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 16,
-                                color: Colors.white)),
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
                     const SizedBox(
                       height: 16,
                     )
@@ -746,9 +777,10 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                        child: EditProfileButton(
-                      community: widget.community,
-                    )),
+                      child: EditProfileButton(
+                        community: widget.community,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -768,11 +800,12 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Expanded(
-                                      child: PedindingButton(
-                                    community: widget.community,
-                                  )),
+                                    child: PedindingButton(
+                                      community: widget.community,
+                                    ),
+                                  ),
                                 ],
-                              )
+                              ),
               ],
             ),
           ),

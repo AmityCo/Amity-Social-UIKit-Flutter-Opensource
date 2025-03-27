@@ -1,0 +1,7 @@
+import 'package:flutter/material.dart';
+import 'generated/app_localizations.dart';
+
+// Extension for easier access to localized strings
+extension BuildContextLocalizationsExtension on BuildContext {
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
+}

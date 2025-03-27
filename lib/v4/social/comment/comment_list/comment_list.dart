@@ -73,6 +73,7 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
                     key: ValueKey(
                         "${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}"),
                     create: (context) => CommentItemBloc(
+                      context: context,
                       comment: comment,
                       isExpanded: isExpanded,
                     ),

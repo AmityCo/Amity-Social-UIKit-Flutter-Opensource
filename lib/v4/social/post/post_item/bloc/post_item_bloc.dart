@@ -1,8 +1,10 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'post_item_events.dart';
@@ -10,8 +12,9 @@ part 'post_item_state.dart';
 
 class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
   AmityPost post;
+  BuildContext context;
 
-  PostItemBloc(this.post) : super(PostItemState(post: post)) {
+  PostItemBloc(this.context, this.post) : super(PostItemState(post: post)) {
     on<PostItemLoading>((event, emit) async {
       var post =
           await AmitySocialClient.newPostRepository().getPost(event.postId);
@@ -44,8 +47,8 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     on<PostItemFlag>((event, emit) async {
       final flag = await event.post.report().flag();
       if (flag) {
-        event.toastBloc.add(const AmityToastShort(
-            message: "Post reported.", icon: AmityToastIcon.success));
+        event.toastBloc.add(AmityToastShort(
+            message: context.l10n.post_reported, icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);
         emit(state.copyWith(post: updatedPost));
@@ -55,8 +58,9 @@ class PostItemBloc extends Bloc<PostItemEvent, PostItemState> {
     on<PostItemUnFlag>((event, emit) async {
       final flag = await event.post.report().unflag();
       if (flag) {
-        event.toastBloc.add(const AmityToastShort(
-            message: "Post unreported.", icon: AmityToastIcon.success));
+        event.toastBloc.add(AmityToastShort(
+            message: context.l10n.post_unreported,
+            icon: AmityToastIcon.success));
         var updatedPost = await AmitySocialClient.newPostRepository()
             .getPost(event.post.postId!);
         emit(state.copyWith(post: updatedPost));

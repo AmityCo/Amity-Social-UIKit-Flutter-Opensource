@@ -1,19 +1,15 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
-import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/element/setting_confirmation_back_button.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/bloc/community_notification_setting_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/element/setting_radio_button.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/post/bloc/community_post_notification_setting_page_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 
 enum PostNotificationSetting { everyone, onlyModerator, off }
 
@@ -43,7 +39,7 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: "Posts",
+            title: context.l10n.profile_posts,
             configProvider: configProvider,
             theme: theme,
             leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
@@ -61,7 +57,7 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
               child: Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
-                  'Save',
+                  context.l10n.general_edit,
                   style: TextStyle(
                       color: state.settingsChanged
                           ? theme.primaryColor
@@ -74,11 +70,10 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
             )),
         body: ListView(
           children: [
-            if (state.isReactPostNetworkEnabled)...[
+            if (state.isReactPostNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'React posts',
-                  description:
-                      'Receive notifications when someone make a reaction to your posts in this community.',
+                  title: context.l10n.settings_react_posts,
+                  description: context.l10n.settings_react_posts_description,
                   groupValue: state.reactPostSetting,
                   onChanged: (value) {
                     context.read<CommunityPostNotificationSettingPageBloc>().add(
@@ -91,11 +86,10 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
               _getDividerWidget(),
             ],
             
-            if (state.isNewPostNetworkEnabled)...[
+            if (state.isNewPostNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'New posts',
-                  description:
-                      'Receive notifications when someone create new posts  in this community.',
+                  title: context.l10n.settings_new_posts,
+                  description: context.l10n.settings_new_posts_description,
                   groupValue: state.newPostSetting,
                   onChanged: (value) {
                     context.read<CommunityPostNotificationSettingPageBloc>().add(

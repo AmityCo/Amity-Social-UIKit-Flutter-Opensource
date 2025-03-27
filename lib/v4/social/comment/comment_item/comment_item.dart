@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -18,9 +19,7 @@ import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
-import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -241,7 +240,7 @@ class CommentItem extends BaseElement {
                                                             horizontal: 0,
                                                             vertical: 0),
                                                     hintText:
-                                                        'Say something nice...',
+                                                        context.l10n.comment_create_hint,
                                                     border: InputBorder.none,
                                                     hintStyle: TextStyle(
                                                       color:
@@ -310,10 +309,9 @@ class CommentItem extends BaseElement {
                                             .top, // Align text at the top
                                         decoration: InputDecoration(
                                           isDense: true,
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 0, vertical: 0),
-                                          hintText: 'Say something nice...',
+                                          contentPadding: const EdgeInsets.symmetric(
+                                              horizontal: 0, vertical: 0),
+                                          hintText: context.l10n.comment_create_hint,
                                           border: InputBorder.none,
                                           hintStyle: TextStyle(
                                             color: theme.baseColor,
@@ -396,7 +394,7 @@ class CommentItem extends BaseElement {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "${comment.createdAt?.toSocialTimestamp() ?? ""}${(comment.editedAt != comment.createdAt) ? " (edited)" : ""}",
+                "${comment.createdAt?.toSocialTimestamp() ?? ""}${(comment.editedAt != comment.createdAt) ? context.l10n.general_edited_suffix : ""}",
                 style: TextStyle(
                   color: theme.baseColorShade2,
                   fontSize: 13,
@@ -410,7 +408,7 @@ class CommentItem extends BaseElement {
                   ? GestureDetector(
                       onTap: () => {commentAction.onReply(comment)},
                       child: Text(
-                        'Reply',
+                        context.l10n.comment_reply,
                         style: TextStyle(
                           color: theme.baseColorShade2,
                           fontSize: 13,
@@ -461,7 +459,7 @@ class CommentItem extends BaseElement {
     if (isReacting) {
       return (hasMyReaction)
           ? Text(
-              'Like',
+              context.l10n.post_like,
               style: TextStyle(
                 color: theme.baseColorShade2,
                 fontSize: 13,
@@ -469,7 +467,7 @@ class CommentItem extends BaseElement {
               ),
             )
           : Text(
-              'Like',
+              context.l10n.post_like,
               style: TextStyle(
                 color: theme.primaryColor,
                 fontSize: 13,
@@ -498,7 +496,7 @@ class CommentItem extends BaseElement {
         },
         child: (hasMyReaction)
             ? Text(
-                'Like',
+                context.l10n.post_like,
                 style: TextStyle(
                   color: theme.primaryColor,
                   fontSize: 13,
@@ -506,7 +504,7 @@ class CommentItem extends BaseElement {
                 ),
               )
             : Text(
-                'Like',
+                context.l10n.post_like,
                 style: TextStyle(
                   color: theme.baseColorShade2,
                   fontSize: 13,
@@ -564,7 +562,7 @@ class CommentItem extends BaseElement {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'View $childrenNumber reply',
+                        context.l10n.comment_view_reply_count(childrenNumber),
                         style: TextStyle(
                           color: theme.baseColorShade1,
                           fontSize: 13,
@@ -794,10 +792,10 @@ class CommentItem extends BaseElement {
     var reportButtonLabel = "";
     if (isFlaggedByMe) {
       reportButtonLabel =
-          (comment.parentId == null) ? 'Unreport comment' : "Unreport reply";
+          (comment.parentId == null) ? context.l10n.comment_unreport : context.l10n.comment_reply_unreport;
     } else {
       reportButtonLabel =
-          (comment.parentId == null) ? 'Report comment' : "Report reply";
+          (comment.parentId == null) ? context.l10n.comment_report : context.l10n.comment_reply_report;
     }
 
     return GestureDetector(
@@ -907,8 +905,8 @@ class CommentItem extends BaseElement {
                         const SizedBox(width: 12),
                         Text(
                           (comment.parentId == null)
-                              ? 'Edit comment'
-                              : "Edit reply",
+                              ? context.l10n.comment_edit
+                              : context.l10n.comment_reply_edit,
                           style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,
@@ -927,13 +925,16 @@ class CommentItem extends BaseElement {
                       builder: (BuildContext context) {
                         return CupertinoAlertDialog(
                           title: Text((comment.parentId == null)
-                              ? "Delete comment"
-                              : "Delete reply"),
+                              ? context.l10n.comment_delete
+                              : context.l10n.comment_reply_delete),
                           content: Text(
-                              "This ${(comment.parentId == null) ? "comment" : "reply"} will be permanently removed."),
+                              context.l10n.comment_delete_description(
+                              (comment.parentId == null)
+                                  ? context.l10n.post_comment.toLowerCase()
+                                  : context.l10n.comment_reply.toLowerCase())),
                           actions: [
                             CupertinoDialogAction(
-                              child: Text("Cancel",
+                              child: Text(context.l10n.general_cancel,
                                   style: TextStyle(
                                     color: theme.primaryColor,
                                     fontSize: 17,
@@ -945,7 +946,7 @@ class CommentItem extends BaseElement {
                             ),
                             CupertinoDialogAction(
                               child: Text(
-                                "Delete",
+                                context.l10n.general_delete,
                                 style: TextStyle(
                                   color: theme.alertColor,
                                   fontSize: 17,
@@ -983,8 +984,8 @@ class CommentItem extends BaseElement {
                         const SizedBox(width: 12),
                         Text(
                           (comment.parentId == null)
-                              ? 'Delete comment'
-                              : "Delete reply",
+                              ? context.l10n.comment_delete
+                              : context.l10n.comment_reply_delete,
                           style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,
@@ -1043,7 +1044,7 @@ class CommentItem extends BaseElement {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Cancel',
+                            context.l10n.general_cancel,
                             style: TextStyle(
                               color: theme.baseColorShade1,
                               fontSize: 13,
@@ -1090,14 +1091,14 @@ class CommentItem extends BaseElement {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(2)),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Save',
-                            style: TextStyle(
+                            context.l10n.general_save,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 13,
                               fontWeight: FontWeight.w600,

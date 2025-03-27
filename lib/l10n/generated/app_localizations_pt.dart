@@ -1,0 +1,1265 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Portuguese (`pt`).
+class AppLocalizationsPt extends AppLocalizations {
+  AppLocalizationsPt([String locale = 'pt']) : super(locale);
+
+  @override
+  String get community_title => 'Comunidade';
+
+  @override
+  String get tab_newsfeed => 'Feed de notícias';
+
+  @override
+  String get tab_explore => 'Explorar';
+
+  @override
+  String get tab_my_communities => 'Minhas Comunidades';
+
+  @override
+  String get global_search_hint => 'Pesquisar comunidade e usuário';
+
+  @override
+  String get search_no_results => 'Nenhum resultado encontrado';
+
+  @override
+  String get title_communities => 'Comunidades';
+
+  @override
+  String get title_users => 'Usuários';
+
+  @override
+  String get general_cancel => 'Cancelar';
+
+  @override
+  String get general_featured => 'Destaque';
+
+  @override
+  String get profile_edit => 'Editar Perfil';
+
+  @override
+  String get profile_followers => 'Seguidores';
+
+  @override
+  String get profile_following => 'Seguindo';
+
+  @override
+  String get profile_posts => 'Publicações';
+
+  @override
+  String get post_create => 'Criar Publicação';
+
+  @override
+  String get post_edit => 'Editar Publicação';
+
+  @override
+  String get post_delete => 'Excluir Publicação';
+
+  @override
+  String get post_delete_description => 'Esta publicação será excluída permanentemente.';
+
+  @override
+  String get post_delete_confirmation => 'Excluir Publicação?';
+
+  @override
+  String get post_delete_confirmation_description => 'Você quer excluir sua publicação?';
+
+  @override
+  String get post_report => 'Denunciar publicação';
+
+  @override
+  String get post_unreport => 'Remover denúncia';
+
+  @override
+  String get post_like => 'Curtir';
+
+  @override
+  String get post_comment => 'Comentar';
+
+  @override
+  String get post_share => 'Compartilhar';
+
+  @override
+  String get post_discard => 'Descartar esta publicação?';
+
+  @override
+  String get post_discard_description => 'A publicação será excluída permanentemente. Não pode ser desfeito.';
+
+  @override
+  String get post_write_comment => 'Escreva um comentário...';
+
+  @override
+  String get poll_duration => 'Duração da enquete';
+
+  @override
+  String get poll_duration_hint => 'Você sempre pode fechar a enquete antes do tempo definido.';
+
+  @override
+  String get poll_custom_edn_date => 'Data de término personalizada';
+
+  @override
+  String get poll_close => 'Fechar enquete';
+
+  @override
+  String get poll_close_description => 'Esta enquete está fechada. Você não pode mais votar.';
+
+  @override
+  String get poll_vote => 'Votar';
+
+  @override
+  String get poll_results => 'Ver resultados';
+
+  @override
+  String get poll_back_to_vote => 'Voltar para votar';
+
+  @override
+  String poll_vote_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count votos',
+      one: '1 voto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String poll_total_votes(int count, String plusSign) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Votado por $count$plusSign participantes',
+      one: 'Votado por 1 participante',
+      zero: 'Nenhum voto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String poll_see_more_options(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ver $count mais opções',
+      one: 'Ver 1 mais opção',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get poll_see_full_results => 'Ver Resultados Completos';
+
+  @override
+  String get poll_voted => 'Votado por você';
+
+  @override
+  String get poll_and_you => ' e você';
+
+  @override
+  String get poll_remaining_time => 'restante';
+
+  @override
+  String get poll_vote_error => 'Falha ao votar na enquete. Por favor, tente novamente.';
+
+  @override
+  String get poll_ended => 'Encerrada';
+
+  @override
+  String get poll_single_choice => 'Selecione uma opção';
+
+  @override
+  String get poll_multiple_choice => 'Selecione uma ou mais opções';
+
+  @override
+  String poll_options_description(int minOptions) {
+    return 'A enquete deve conter pelo menos $minOptions opções.';
+  }
+
+  @override
+  String get poll_question => 'Pergunta da enquete';
+
+  @override
+  String get poll_question_hint => 'Qual é a sua pergunta da enquete?';
+
+  @override
+  String get comment_create_hint => 'Diga algo legal...';
+
+  @override
+  String get comment_reply => 'Responder';
+
+  @override
+  String get comment_reply_to => 'Respondendo a ';
+
+  @override
+  String comment_view_reply_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ver $count respostas',
+      one: 'Ver 1 resposta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get comment_report => 'Denunciar comentário';
+
+  @override
+  String get comment_unreport => 'Remover denúncia';
+
+  @override
+  String get comment_reply_report => 'Denunciar resposta';
+
+  @override
+  String get comment_reply_unreport => 'Remover denúncia';
+
+  @override
+  String get comment_edit => 'Editar comentário';
+
+  @override
+  String get comment_reply_edit => 'Editar resposta';
+
+  @override
+  String get comment_delete => 'Excluir comentário';
+
+  @override
+  String get comment_reply_delete => 'Excluir resposta';
+
+  @override
+  String comment_delete_description(String content) {
+    return 'Este $content será excluído permanentemente.';
+  }
+
+  @override
+  String get community_close => 'Fechar comunidade?';
+
+  @override
+  String get community_close_description => 'Todos os membros serão removidos da comunidade. Todas as publicações, mensagens, reações e mídias compartilhadas na comunidade serão excluídas. Isso não pode ser desfeito.';
+
+  @override
+  String get community_join => 'Entrar';
+
+  @override
+  String get community_leave => 'Sair da comunidade';
+
+  @override
+  String get community_leave_description => 'Sair da comunidade. Você não poderá mais publicar e interagir nesta comunidade.';
+
+  @override
+  String get community_create => 'Criar Comunidade';
+
+  @override
+  String get community_name => 'Nome da comunidade';
+
+  @override
+  String get community_name_hint => 'Nomeie sua comunidade';
+
+  @override
+  String get community_description_hint => 'Digite a descrição';
+
+  @override
+  String get community_edit => 'Editar Comunidade';
+
+  @override
+  String get community_members => 'Membros';
+
+  @override
+  String get community_private => 'Privada';
+
+  @override
+  String get community_public => 'Pública';
+
+  @override
+  String get community_public_description => 'Qualquer pessoa pode entrar, visualizar e pesquisar as publicações nesta comunidade.';
+
+  @override
+  String get community_private_description => 'Apenas membros convidados pelos moderadores podem entrar, visualizar e pesquisar as publicações nesta comunidade.';
+
+  @override
+  String get community_about => 'Sobre';
+
+  @override
+  String get categories_title => 'Categorias';
+
+  @override
+  String get category_hint => 'Selecione a categoria';
+
+  @override
+  String get community_pending_posts => 'Publicações Pendentes';
+
+  @override
+  String get commnuity_pending_post_reviewing => 'Suas publicações estão pendentes de revisão';
+
+  @override
+  String commnuity_pending_post_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count publicações precisam de aprovação',
+      one: '$count publicação precisa de aprovação',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get community_basic_info => 'Informações Básicas';
+
+  @override
+  String get community_discard_confirmation => 'Sair sem terminar?';
+
+  @override
+  String get community_discard_description => 'Seu progresso não será salvo e sua comunidade não será criada.';
+
+  @override
+  String get message_send => 'Enviar';
+
+  @override
+  String get message_typing => 'está digitando...';
+
+  @override
+  String get message_placeholder => 'Digite uma mensagem...';
+
+  @override
+  String get settings_title => 'Configurações';
+
+  @override
+  String get settings_notifications => 'Notificações';
+
+  @override
+  String get settings_new_posts => 'Novas publicações';
+
+  @override
+  String get settings_new_posts_description => 'Receba notificações quando alguém criar novas publicações nesta comunidade.';
+
+  @override
+  String get settings_react_posts => 'Reações às publicações';
+
+  @override
+  String get settings_react_posts_description => 'Receba notificações quando alguém reagir às suas publicações nesta comunidade.';
+
+  @override
+  String get settings_react_comments => 'Reações aos comentários';
+
+  @override
+  String get settings_react_comments_description => 'Receba notificações quando alguém curtir seu comentário nesta comunidade.';
+
+  @override
+  String get settings_new_comments => 'Novos comentários';
+
+  @override
+  String get settings_new_comments_description => 'Receba notificações quando alguém comentar em sua publicação nesta comunidade.';
+
+  @override
+  String get settings_new_replies => 'Respostas';
+
+  @override
+  String get settings_new_replies_description => 'Receba notificações quando alguém comentar em seus comentários nesta comunidade.';
+
+  @override
+  String get settings_allow_stories_comments => 'Permitir comentários nas histórias da comunidade';
+
+  @override
+  String get settings_allow_stories_comments_description => 'Ative para receber comentários nas histórias desta comunidade.';
+
+  @override
+  String get settings_new_stories => 'Novas histórias';
+
+  @override
+  String get settings_new_stories_description => 'Receba notificações quando alguém criar uma nova história nesta comunidade.';
+
+  @override
+  String get settings_story_reactions => 'Reações às histórias';
+
+  @override
+  String get settings_story_reactions_description => 'Receba notificações quando alguém reagir à sua história nesta comunidade.';
+
+  @override
+  String get settings_story_comments => 'Comentários nas histórias';
+
+  @override
+  String get settings_story_comments_description => 'Receba notificações quando alguém comentar em sua história nesta comunidade.';
+
+  @override
+  String get settings_everyone => 'Todos';
+
+  @override
+  String get settings_only_moderators => 'Apenas moderadores';
+
+  @override
+  String get settings_privacy => 'Privacidade';
+
+  @override
+  String get settings_permissions => 'Permissões da comunidade';
+
+  @override
+  String get settings_language => 'Idioma';
+
+  @override
+  String get settings_leave_confirmation => 'Sair sem terminar?';
+
+  @override
+  String get settings_leave_description => 'As alterações que você fez podem não ser salvas.';
+
+  @override
+  String get settings_privacy_confirmation => 'Alterar as configurações de privacidade da comunidade?';
+
+  @override
+  String get settings_privacy_description => 'Esta comunidade tem publicações destacadas globalmente. Alterar a comunidade de pública para privada removerá essas publicações de serem destacadas globalmente.';
+
+  @override
+  String get general_add => 'Adicionar';
+
+  @override
+  String get general_loading => 'Carregando...';
+
+  @override
+  String get general_leave => 'Sair';
+
+  @override
+  String get general_error => 'Ops, algo deu errado';
+
+  @override
+  String get general_edited => 'Editado';
+
+  @override
+  String get general_edited_suffix => ' (editado)';
+
+  @override
+  String get general_keep_editing => 'Continuar editando';
+
+  @override
+  String get general_discard => 'Descartar';
+
+  @override
+  String get general_moderator => 'Moderador';
+
+  @override
+  String get general_save => 'Salvar';
+
+  @override
+  String get general_delete => 'Excluir';
+
+  @override
+  String get general_edit => 'Editar';
+
+  @override
+  String get general_close => 'Fechar';
+
+  @override
+  String get general_done => 'Concluído';
+
+  @override
+  String get general_post => 'Publicar';
+
+  @override
+  String get general_comments => 'Comentários';
+
+  @override
+  String get general_story => 'História';
+
+  @override
+  String get general_stories => 'Histórias';
+
+  @override
+  String get general_poll => 'Enquete';
+
+  @override
+  String get general_optional => 'Opcional';
+
+  @override
+  String get general_on => 'Ligado';
+
+  @override
+  String get general_off => 'Desligado';
+
+  @override
+  String get general_reported => 'denunciado';
+
+  @override
+  String get general_see_more => '...Ver mais';
+
+  @override
+  String get general_camera => 'Câmera';
+
+  @override
+  String get general_photo => 'Foto';
+
+  @override
+  String get general_video => 'Vídeo';
+
+  @override
+  String get general_posting => 'Publicando';
+
+  @override
+  String get general_my_timeline => 'Minha Linha do Tempo';
+
+  @override
+  String get general_options => 'Opções';
+
+  @override
+  String get post_edit_globally_featured => 'Editar publicação destacada globalmente?';
+
+  @override
+  String get post_edit_globally_featured_description => 'A publicação que você está editando foi destacada globalmente. Se você editar sua publicação, ela precisará ser reaprovação e não será mais destacada globalmente.';
+
+  @override
+  String post_like_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count curtidas',
+      one: '1 curtida',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String post_comment_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comentários',
+      one: '1 comentário',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get post_reported => 'Publicação denunciada.';
+
+  @override
+  String get post_unreported => 'Denúncia removida.';
+
+  @override
+  String profile_followers_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seguidores',
+      one: '1 seguidor',
+      zero: 'Nenhum seguidor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String community_members_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count membros',
+      one: '1 membro',
+      zero: 'Nenhum membro',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profile_posts_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'publicações',
+      one: 'publicação',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profile_members_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'membros',
+      one: 'membro',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get user_block => 'Bloquear usuário';
+
+  @override
+  String get user_unblock => 'Desbloquear usuário';
+
+  @override
+  String get error_delete_post => 'Falha ao excluir a publicação. Por favor, tente novamente.';
+
+  @override
+  String get error_leave_community => 'Não foi possível sair da comunidade';
+
+  @override
+  String get error_leave_community_description => 'Você é o único moderador deste grupo. Para sair da comunidade, nomeie outros membros para o cargo de moderador';
+
+  @override
+  String get error_close_community => 'Não foi possível fechar a comunidade';
+
+  @override
+  String get error_close_community_description => 'Algo deu errado. Por favor, tente novamente mais tarde.';
+
+  @override
+  String get error_max_upload_reached => 'Limite máximo de upload atingido';
+
+  @override
+  String error_max_upload_image_reached_description(int maxUploads) {
+    return 'Você atingiu o limite de upload de $maxUploads imagens. Quaisquer imagens adicionais não serão salvas.';
+  }
+
+  @override
+  String error_max_upload_videos_reached_description(int maxUploads) {
+    return 'Você atingiu o limite de upload de $maxUploads vídeos. Quaisquer vídeos adicionais não serão salvos.';
+  }
+
+  @override
+  String get error_edit_post => 'Falha ao editar a publicação. Por favor, tente novamente.';
+
+  @override
+  String get error_create_post => 'Falha ao criar a publicação. Por favor, tente novamente.';
+
+  @override
+  String error_max_poll_characters(int maxQuestionLength) {
+    return 'A pergunta da enquete não pode exceder $maxQuestionLength caracteres.';
+  }
+
+  @override
+  String error_max_poll_option_characters(int maxQuestionLength) {
+    return 'A opção da enquete não pode exceder $maxQuestionLength caracteres.';
+  }
+
+  @override
+  String get error_create_poll => 'Falha ao criar a enquete. Por favor, tente novamente.';
+}
+
+/// The translations for Portuguese, as used in Brazil (`pt_BR`).
+class AppLocalizationsPtBr extends AppLocalizationsPt {
+  AppLocalizationsPtBr(): super('pt_BR');
+
+  @override
+  String get community_title => 'Comunidade';
+
+  @override
+  String get tab_newsfeed => 'Feed de notícias';
+
+  @override
+  String get tab_explore => 'Explorar';
+
+  @override
+  String get tab_my_communities => 'Minhas Comunidades';
+
+  @override
+  String get global_search_hint => 'Pesquisar comunidade e usuário';
+
+  @override
+  String get search_no_results => 'Nenhum resultado encontrado';
+
+  @override
+  String get title_communities => 'Comunidades';
+
+  @override
+  String get title_users => 'Usuários';
+
+  @override
+  String get general_cancel => 'Cancelar';
+
+  @override
+  String get general_featured => 'Destaque';
+
+  @override
+  String get profile_edit => 'Editar Perfil';
+
+  @override
+  String get profile_followers => 'Seguidores';
+
+  @override
+  String get profile_following => 'Seguindo';
+
+  @override
+  String get profile_posts => 'Publicações';
+
+  @override
+  String get post_create => 'Criar Publicação';
+
+  @override
+  String get post_edit => 'Editar Publicação';
+
+  @override
+  String get post_delete => 'Excluir Publicação';
+
+  @override
+  String get post_delete_description => 'Esta publicação será excluída permanentemente.';
+
+  @override
+  String get post_delete_confirmation => 'Excluir Publicação?';
+
+  @override
+  String get post_delete_confirmation_description => 'Você quer excluir sua publicação?';
+
+  @override
+  String get post_report => 'Denunciar publicação';
+
+  @override
+  String get post_unreport => 'Remover denúncia';
+
+  @override
+  String get post_like => 'Curtir';
+
+  @override
+  String get post_comment => 'Comentar';
+
+  @override
+  String get post_share => 'Compartilhar';
+
+  @override
+  String get post_discard => 'Descartar esta publicação?';
+
+  @override
+  String get post_discard_description => 'A publicação será excluída permanentemente. Não pode ser desfeito.';
+
+  @override
+  String get post_write_comment => 'Escreva um comentário...';
+
+  @override
+  String get poll_duration => 'Duração da enquete';
+
+  @override
+  String get poll_duration_hint => 'Você sempre pode fechar a enquete antes do tempo definido.';
+
+  @override
+  String get poll_custom_edn_date => 'Data de término personalizada';
+
+  @override
+  String get poll_close => 'Fechar enquete';
+
+  @override
+  String get poll_close_description => 'Esta enquete está fechada. Você não pode mais votar.';
+
+  @override
+  String get poll_vote => 'Votar';
+
+  @override
+  String get poll_results => 'Ver resultados';
+
+  @override
+  String get poll_back_to_vote => 'Voltar para votar';
+
+  @override
+  String poll_vote_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count votos',
+      one: '1 voto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String poll_total_votes(int count, String plusSign) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Votado por $count$plusSign participantes',
+      one: 'Votado por 1 participante',
+      zero: 'Nenhum voto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String poll_see_more_options(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ver $count mais opções',
+      one: 'Ver 1 mais opção',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get poll_see_full_results => 'Ver Resultados Completos';
+
+  @override
+  String get poll_voted => 'Votado por você';
+
+  @override
+  String get poll_and_you => ' e você';
+
+  @override
+  String get poll_remaining_time => 'restante';
+
+  @override
+  String get poll_vote_error => 'Falha ao votar na enquete. Por favor, tente novamente.';
+
+  @override
+  String get poll_ended => 'Encerrada';
+
+  @override
+  String get poll_single_choice => 'Selecione uma opção';
+
+  @override
+  String get poll_multiple_choice => 'Selecione uma ou mais opções';
+
+  @override
+  String poll_options_description(int minOptions) {
+    return 'A enquete deve conter pelo menos $minOptions opções.';
+  }
+
+  @override
+  String get poll_question => 'Pergunta da enquete';
+
+  @override
+  String get poll_question_hint => 'Qual é a sua pergunta da enquete?';
+
+  @override
+  String get comment_create_hint => 'Diga algo legal...';
+
+  @override
+  String get comment_reply => 'Responder';
+
+  @override
+  String get comment_reply_to => 'Respondendo a ';
+
+  @override
+  String comment_view_reply_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ver $count respostas',
+      one: 'Ver 1 resposta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get comment_report => 'Denunciar comentário';
+
+  @override
+  String get comment_unreport => 'Remover denúncia';
+
+  @override
+  String get comment_reply_report => 'Denunciar resposta';
+
+  @override
+  String get comment_reply_unreport => 'Remover denúncia';
+
+  @override
+  String get comment_edit => 'Editar comentário';
+
+  @override
+  String get comment_reply_edit => 'Editar resposta';
+
+  @override
+  String get comment_delete => 'Excluir comentário';
+
+  @override
+  String get comment_reply_delete => 'Excluir resposta';
+
+  @override
+  String comment_delete_description(String content) {
+    return 'Este $content será excluído permanentemente.';
+  }
+
+  @override
+  String get community_close => 'Fechar comunidade?';
+
+  @override
+  String get community_close_description => 'Todos os membros serão removidos da comunidade. Todas as publicações, mensagens, reações e mídias compartilhadas na comunidade serão excluídas. Isso não pode ser desfeito.';
+
+  @override
+  String get community_join => 'Entrar';
+
+  @override
+  String get community_leave => 'Sair da comunidade';
+
+  @override
+  String get community_leave_description => 'Sair da comunidade. Você não poderá mais publicar e interagir nesta comunidade.';
+
+  @override
+  String get community_create => 'Criar Comunidade';
+
+  @override
+  String get community_name => 'Nome da comunidade';
+
+  @override
+  String get community_name_hint => 'Nomeie sua comunidade';
+
+  @override
+  String get community_description_hint => 'Digite a descrição';
+
+  @override
+  String get community_edit => 'Editar Comunidade';
+
+  @override
+  String get community_members => 'Membros';
+
+  @override
+  String get community_private => 'Privada';
+
+  @override
+  String get community_public => 'Pública';
+
+  @override
+  String get community_public_description => 'Qualquer pessoa pode entrar, visualizar e pesquisar as publicações nesta comunidade.';
+
+  @override
+  String get community_private_description => 'Apenas membros convidados pelos moderadores podem entrar, visualizar e pesquisar as publicações nesta comunidade.';
+
+  @override
+  String get community_about => 'Sobre';
+
+  @override
+  String get categories_title => 'Categorias';
+
+  @override
+  String get category_hint => 'Selecione a categoria';
+
+  @override
+  String get community_pending_posts => 'Publicações Pendentes';
+
+  @override
+  String get commnuity_pending_post_reviewing => 'Suas publicações estão pendentes de revisão';
+
+  @override
+  String commnuity_pending_post_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count publicações precisam de aprovação',
+      one: '$count publicação precisa de aprovação',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get community_basic_info => 'Informações Básicas';
+
+  @override
+  String get community_discard_confirmation => 'Sair sem terminar?';
+
+  @override
+  String get community_discard_description => 'Seu progresso não será salvo e sua comunidade não será criada.';
+
+  @override
+  String get message_send => 'Enviar';
+
+  @override
+  String get message_typing => 'está digitando...';
+
+  @override
+  String get message_placeholder => 'Digite uma mensagem...';
+
+  @override
+  String get settings_title => 'Configurações';
+
+  @override
+  String get settings_notifications => 'Notificações';
+
+  @override
+  String get settings_new_posts => 'Novas publicações';
+
+  @override
+  String get settings_new_posts_description => 'Receba notificações quando alguém criar novas publicações nesta comunidade.';
+
+  @override
+  String get settings_react_posts => 'Reações às publicações';
+
+  @override
+  String get settings_react_posts_description => 'Receba notificações quando alguém reagir às suas publicações nesta comunidade.';
+
+  @override
+  String get settings_react_comments => 'Reações aos comentários';
+
+  @override
+  String get settings_react_comments_description => 'Receba notificações quando alguém curtir seu comentário nesta comunidade.';
+
+  @override
+  String get settings_new_comments => 'Novos comentários';
+
+  @override
+  String get settings_new_comments_description => 'Receba notificações quando alguém comentar em sua publicação nesta comunidade.';
+
+  @override
+  String get settings_new_replies => 'Respostas';
+
+  @override
+  String get settings_new_replies_description => 'Receba notificações quando alguém comentar em seus comentários nesta comunidade.';
+
+  @override
+  String get settings_allow_stories_comments => 'Permitir comentários nas histórias da comunidade';
+
+  @override
+  String get settings_allow_stories_comments_description => 'Ative para receber comentários nas histórias desta comunidade.';
+
+  @override
+  String get settings_new_stories => 'Novas histórias';
+
+  @override
+  String get settings_new_stories_description => 'Receba notificações quando alguém criar uma nova história nesta comunidade.';
+
+  @override
+  String get settings_story_reactions => 'Reações às histórias';
+
+  @override
+  String get settings_story_reactions_description => 'Receba notificações quando alguém reagir à sua história nesta comunidade.';
+
+  @override
+  String get settings_story_comments => 'Comentários nas histórias';
+
+  @override
+  String get settings_story_comments_description => 'Receba notificações quando alguém comentar em sua história nesta comunidade.';
+
+  @override
+  String get settings_everyone => 'Todos';
+
+  @override
+  String get settings_only_moderators => 'Apenas moderadores';
+
+  @override
+  String get settings_privacy => 'Privacidade';
+
+  @override
+  String get settings_permissions => 'Permissões da comunidade';
+
+  @override
+  String get settings_language => 'Idioma';
+
+  @override
+  String get settings_leave_confirmation => 'Sair sem terminar?';
+
+  @override
+  String get settings_leave_description => 'As alterações que você fez podem não ser salvas.';
+
+  @override
+  String get settings_privacy_confirmation => 'Alterar as configurações de privacidade da comunidade?';
+
+  @override
+  String get settings_privacy_description => 'Esta comunidade tem publicações destacadas globalmente. Alterar a comunidade de pública para privada removerá essas publicações de serem destacadas globalmente.';
+
+  @override
+  String get general_add => 'Adicionar';
+
+  @override
+  String get general_loading => 'Carregando...';
+
+  @override
+  String get general_leave => 'Sair';
+
+  @override
+  String get general_error => 'Ops, algo deu errado';
+
+  @override
+  String get general_edited => 'Editado';
+
+  @override
+  String get general_edited_suffix => ' (editado)';
+
+  @override
+  String get general_keep_editing => 'Continuar editando';
+
+  @override
+  String get general_discard => 'Descartar';
+
+  @override
+  String get general_moderator => 'Moderador';
+
+  @override
+  String get general_save => 'Salvar';
+
+  @override
+  String get general_delete => 'Excluir';
+
+  @override
+  String get general_edit => 'Editar';
+
+  @override
+  String get general_close => 'Fechar';
+
+  @override
+  String get general_done => 'Concluído';
+
+  @override
+  String get general_post => 'Publicar';
+
+  @override
+  String get general_comments => 'Comentários';
+
+  @override
+  String get general_story => 'História';
+
+  @override
+  String get general_stories => 'Histórias';
+
+  @override
+  String get general_poll => 'Enquete';
+
+  @override
+  String get general_optional => 'Opcional';
+
+  @override
+  String get general_on => 'Ligado';
+
+  @override
+  String get general_off => 'Desligado';
+
+  @override
+  String get general_reported => 'denunciado';
+
+  @override
+  String get general_see_more => '...Ver mais';
+
+  @override
+  String get general_camera => 'Câmera';
+
+  @override
+  String get general_photo => 'Foto';
+
+  @override
+  String get general_video => 'Vídeo';
+
+  @override
+  String get general_posting => 'Publicando';
+
+  @override
+  String get general_my_timeline => 'Minha Linha do Tempo';
+
+  @override
+  String get general_options => 'Opções';
+
+  @override
+  String get post_edit_globally_featured => 'Editar publicação destacada globalmente?';
+
+  @override
+  String get post_edit_globally_featured_description => 'A publicação que você está editando foi destacada globalmente. Se você editar sua publicação, ela precisará ser reaprovação e não será mais destacada globalmente.';
+
+  @override
+  String post_like_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count curtidas',
+      one: '1 curtida',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String post_comment_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comentários',
+      one: '1 comentário',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get post_reported => 'Publicação denunciada.';
+
+  @override
+  String get post_unreported => 'Denúncia removida.';
+
+  @override
+  String profile_followers_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seguidores',
+      one: '1 seguidor',
+      zero: 'Nenhum seguidor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String community_members_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count membros',
+      one: '1 membro',
+      zero: 'Nenhum membro',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profile_posts_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'publicações',
+      one: 'publicação',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String profile_members_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'membros',
+      one: 'membro',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get user_block => 'Bloquear usuário';
+
+  @override
+  String get user_unblock => 'Desbloquear usuário';
+
+  @override
+  String get error_delete_post => 'Falha ao excluir a publicação. Por favor, tente novamente.';
+
+  @override
+  String get error_leave_community => 'Não foi possível sair da comunidade';
+
+  @override
+  String get error_leave_community_description => 'Você é o único moderador deste grupo. Para sair da comunidade, nomeie outros membros para o cargo de moderador';
+
+  @override
+  String get error_close_community => 'Não foi possível fechar a comunidade';
+
+  @override
+  String get error_close_community_description => 'Algo deu errado. Por favor, tente novamente mais tarde.';
+
+  @override
+  String get error_max_upload_reached => 'Limite máximo de upload atingido';
+
+  @override
+  String error_max_upload_image_reached_description(int maxUploads) {
+    return 'Você atingiu o limite de upload de $maxUploads imagens. Quaisquer imagens adicionais não serão salvas.';
+  }
+
+  @override
+  String error_max_upload_videos_reached_description(int maxUploads) {
+    return 'Você atingiu o limite de upload de $maxUploads vídeos. Quaisquer vídeos adicionais não serão salvos.';
+  }
+
+  @override
+  String get error_edit_post => 'Falha ao editar a publicação. Por favor, tente novamente.';
+
+  @override
+  String get error_create_post => 'Falha ao criar a publicação. Por favor, tente novamente.';
+
+  @override
+  String error_max_poll_characters(int maxQuestionLength) {
+    return 'A pergunta da enquete não pode exceder $maxQuestionLength caracteres.';
+  }
+
+  @override
+  String error_max_poll_option_characters(int maxQuestionLength) {
+    return 'A opção da enquete não pode exceder $maxQuestionLength caracteres.';
+  }
+
+  @override
+  String get error_create_poll => 'Falha ao criar a enquete. Por favor, tente novamente.';
+}

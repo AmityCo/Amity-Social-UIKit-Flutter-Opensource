@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
@@ -35,7 +36,7 @@ class PostDisplayName extends StatelessWidget {
 
     var timestampText = post.createdAt?.toSocialTimestamp() ?? "";
     if (post.editedAt != post.createdAt) {
-      timestampText += " (edited)";
+      timestampText += context.l10n.general_edited_suffix;
     }
 
     return Container(

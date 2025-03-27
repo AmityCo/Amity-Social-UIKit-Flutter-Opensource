@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
@@ -18,7 +19,7 @@ class PostDetailInfo extends NewBaseComponent {
         children: [
           getReactionPreview(post, context),
           Expanded(child: Container()),
-          getCommentCount(post),
+          getCommentCount(context, post),
         ],
       ),
     );
@@ -70,7 +71,7 @@ class PostDetailInfo extends NewBaseComponent {
         children: [
           getReactionIcon(post),
           const SizedBox(width: 4),
-          getReactionCount(post),
+          getReactionCount(context, post),
         ],
       ),
     );
@@ -96,10 +97,9 @@ class PostDetailInfo extends NewBaseComponent {
     }
   }
 
-  Widget getReactionCount(AmityPost post) {
+  Widget getReactionCount(BuildContext context, AmityPost post) {
     final reactionCount = post.reactionCount ?? 0;
-    final text =
-        (reactionCount != 1) ? "${reactionCount.formattedCompactString()} likes" : "$reactionCount like";
+    final text = context.l10n.post_like_count(reactionCount);
     return Text(text,
         style: TextStyle(
           color: theme.baseColorShade2,
@@ -108,10 +108,9 @@ class PostDetailInfo extends NewBaseComponent {
         ));
   }
 
-  Widget getCommentCount(AmityPost post) {
+  Widget getCommentCount(BuildContext context, AmityPost post) {
     final commentCount = post.commentCount ?? 0;
-    final text =
-        (commentCount != 1) ? "${commentCount.formattedCompactString()} comments" : "$commentCount comment";
+    final text = context.l10n.post_comment_count(commentCount);
     return Text(text,
         style: TextStyle(
           color: theme.baseColorShade2,

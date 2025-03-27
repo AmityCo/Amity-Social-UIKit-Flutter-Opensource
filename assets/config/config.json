@@ -31,19 +31,19 @@
     "excludes": [],
     "message_reactions": [
         {
-            "name": "heart",
-            "image": "assets/Icons/amity_ic_heart_reaction.svg"
-        },
-        {
             "name": "like",
             "image": "assets/Icons/amity_ic_like_reaction.svg"
+        },
+        {
+            "name": "love",
+            "image": "assets/Icons/amity_ic_heart_reaction.svg"
         },
         {
             "name": "fire",
             "image": "assets/Icons/amity_ic_fire_reaction.svg"
         },
         {
-            "name": "grinning",
+            "name": "happy",
             "image": "assets/Icons/amity_ic_grinning_reaction.svg"
         },
         {

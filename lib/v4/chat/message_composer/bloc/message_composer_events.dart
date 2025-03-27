@@ -7,34 +7,47 @@ abstract class MessageComposerEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class MessageComposerTextChage extends MessageComposerEvent {
+class MessageComposerTextChange extends MessageComposerEvent {
   final String text;
 
-  const MessageComposerTextChage({required this.text});
+  const MessageComposerTextChange({required this.text});
 
   @override
   List<Object> get props => [text];
 }
 
-class  MessageComposerCreateTextMessage extends MessageComposerEvent {
+class MessageComposerCreateTextMessage extends MessageComposerEvent {
   final String text;
+  final String? parentId;
 
-  const MessageComposerCreateTextMessage({required this.text});
+  const MessageComposerCreateTextMessage({required this.text, this.parentId});
 
   @override
   List<Object> get props => [text];
 }
 
-class MessageComposerMediaExpanded extends MessageComposerEvent { }
-class MessageComposerMediaCollapsed extends MessageComposerEvent { }
-class MessageComposerGetAppName extends MessageComposerEvent { }
+class MessageComposerUpdateTextMessage extends MessageComposerEvent {
+  final String text;
+  final String messageId;
 
+  const MessageComposerUpdateTextMessage({required this.text, required this.messageId});
+
+  @override
+  List<Object> get props => [text];
+}
+
+class MessageComposerMediaExpanded extends MessageComposerEvent {}
+
+class MessageComposerMediaCollapsed extends MessageComposerEvent {}
+
+class MessageComposerGetAppName extends MessageComposerEvent {}
 
 class MessageComposerSelectImageAndVideoEvent extends MessageComposerEvent {
   final XFile selectedMedia;
   final bool fromCamera;
 
-  const MessageComposerSelectImageAndVideoEvent({required this.selectedMedia, this.fromCamera = false});
+  const MessageComposerSelectImageAndVideoEvent(
+      {required this.selectedMedia, this.fromCamera = false});
 
   MessageComposerSelectImageAndVideoEvent copyWith({
     AmityFileInfoWithUploadStatus? selectedImage,

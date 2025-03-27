@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
@@ -118,7 +119,7 @@ class AmityPostPollTargetSelectionPage extends NewBasePage {
                           ),
                         ),
                       ),
-                      title: Text('My timeline',
+                      title: Text(context.l10n.general_my_timeline,
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 15,
@@ -140,7 +141,7 @@ class AmityPostPollTargetSelectionPage extends NewBasePage {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        'My Communities',
+                        context.l10n.tab_my_communities,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,

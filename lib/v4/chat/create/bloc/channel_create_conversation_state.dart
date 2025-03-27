@@ -4,20 +4,22 @@ class ChannelCreateConversationState extends Equatable {
   final List<AmityUser> list;
   final bool hasMoreItems;
   final bool isFetching;
+  final String searchText;
 
   const ChannelCreateConversationState(
       {this.list = const [],
       this.hasMoreItems = false,
-      this.isFetching = false});
+      this.isFetching = false,
+      this.searchText = ''});
 
   @override
-  List<Object?> get props => [list, hasMoreItems, isFetching];
+  List<Object?> get props => [list, hasMoreItems, isFetching, searchText];
 }
 
 class UserSearchTextChange extends ChannelCreateConversationState {
   final String searchText;
 
-  const UserSearchTextChange(this.searchText);
+  const UserSearchTextChange(this.searchText) : super(searchText: searchText);
 
   @override
   List<Object> get props => [searchText];
@@ -30,24 +32,28 @@ class ChannelCreateConversationLoaded extends ChannelCreateConversationState {
     required List<AmityUser> list,
     required bool isFetching,
     required bool hasMoreItems,
+    String searchText = '',
   }) : super(
           list: list,
           isFetching: isFetching,
           hasMoreItems: hasMoreItems,
+          searchText: searchText,
         );
 
   ChannelCreateConversationLoaded copyWith({
     List<AmityUser>? list,
     bool? hasMoreItems,
     bool? isFetching,
+    String? searchText,
   }) {
     return ChannelCreateConversationLoaded(
       list: list ?? this.list,
       hasMoreItems: hasMoreItems ?? this.hasMoreItems,
       isFetching: isFetching ?? this.isFetching,
+      searchText: searchText ?? this.searchText,
     );
   }
 
   @override
-  List<Object> get props => [list, hasMoreItems, isFetching];
+  List<Object> get props => [list, hasMoreItems, isFetching, searchText];
 }

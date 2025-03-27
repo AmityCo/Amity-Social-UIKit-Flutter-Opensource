@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -67,9 +68,8 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
           children: [
             if (state.isNewStoryNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'New stories',
-                  description:
-                      'Receive notifications when someone creates a new story in this community.',
+                  title: context.l10n.settings_new_stories,
+                  description: context.l10n.settings_new_stories_description,
                   groupValue: state.newStorySetting,
                   onChanged: (value) {
                     context
@@ -86,9 +86,8 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
 
             if (state.isReactStoryNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'Story reactions',
-                  description:
-                      'Receive notifications when someone reacts to your story in this community.',
+                  title: context.l10n.settings_story_reactions,
+                  description: context.l10n.settings_story_reactions_description,
                   groupValue: state.reactStorySetting,
                   onChanged: (value) {
                     context
@@ -105,9 +104,8 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
             
             if (state.isCommentStoryNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'Story comments',
-                  description:
-                      'Receive notifications when someone comments on your story in this community.',
+                  title: context.l10n.settings_story_comments,
+                  description: context.l10n.settings_story_comments_description,
                   groupValue: state.commentStorySetting,
                   onChanged: (value) {
                     context

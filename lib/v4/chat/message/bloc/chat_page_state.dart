@@ -1,5 +1,7 @@
 part of 'chat_page_bloc.dart';
 
+const _undefined = Object();
+
 class ChatPageState extends Equatable {
   final String channelId;
   final String? avatarUrl;
@@ -12,6 +14,11 @@ class ChatPageState extends Equatable {
   final Map<String, Uint8List?> localThumbnails;
   final bool isOnMuteChange;
   final AmityChannelMember? channelMember;
+  final ReplyingMesage? replyingMessage;
+  final AmityMessage? editingMessage;
+  final bool showScrollButton;
+  final AmityMessage? newMessage;
+  final ScrollController scrollController;
 
   const ChatPageState({
     required this.channelId,
@@ -24,7 +31,12 @@ class ChatPageState extends Equatable {
     this.hasNextPage = true,
     this.localThumbnails = const {},
     this.isOnMuteChange = false,
-    this.channelMember
+    this.channelMember,
+    this.replyingMessage,
+    this.editingMessage,
+    this.showScrollButton = false,
+    this.newMessage,
+    required this.scrollController,
   });
 
   @override
@@ -39,7 +51,11 @@ class ChatPageState extends Equatable {
         hasNextPage,
         localThumbnails,
         isOnMuteChange,
-        channelMember
+        channelMember,
+        replyingMessage,
+        editingMessage,
+        showScrollButton,
+        newMessage,
       ];
 
   ChatPageState copyWith({
@@ -53,7 +69,12 @@ class ChatPageState extends Equatable {
     bool? hasNextPage,
     Map<String, Uint8List?>? localThumbnails,
     bool? isOnMuteChange,
-    AmityChannelMember? channelMember
+    AmityChannelMember? channelMember,
+    Object? replyingMessage = _undefined,
+    Object? editingMessage = _undefined,
+    bool? showScrollButton,
+    Object? newMessage = _undefined,
+    ScrollController? scrollController,
   }) {
     return ChatPageState(
       channelId: channelId ?? this.channelId,
@@ -66,7 +87,18 @@ class ChatPageState extends Equatable {
       hasNextPage: hasNextPage ?? this.hasNextPage,
       localThumbnails: localThumbnails ?? this.localThumbnails,
       isOnMuteChange: isOnMuteChange ?? this.isOnMuteChange,
-      channelMember: channelMember ?? this.channelMember
+      channelMember: channelMember ?? this.channelMember,
+      replyingMessage: replyingMessage == _undefined
+          ? this.replyingMessage
+          : replyingMessage as ReplyingMesage?,
+      editingMessage: editingMessage == _undefined
+          ? this.editingMessage
+          : editingMessage as AmityMessage?,
+      showScrollButton: showScrollButton ?? this.showScrollButton,
+      newMessage: newMessage == _undefined
+          ? this.newMessage
+          : newMessage as AmityMessage?,
+      scrollController: scrollController ?? this.scrollController,
     );
   }
 }
@@ -76,6 +108,7 @@ class ChatPageStateInitial extends ChatPageState {
     required String channelId,
     required String? userDisplayName,
     required String? avatarUrl,
+    required ScrollController scrollController,
   }) : super(
           channelId: channelId,
           userDisplayName: userDisplayName,
@@ -84,6 +117,7 @@ class ChatPageStateInitial extends ChatPageState {
           isFetching: false,
           hasNextPage: true,
           isOnMuteChange: false,
+          scrollController: scrollController,
         );
 }
 
@@ -93,10 +127,12 @@ class ChatPageStateChanged extends ChatPageState {
     required List<ChatItem> messages,
     required bool isFetching,
     required bool hasNextPage,
+    required ScrollController scrollController,
   }) : super(
           channelId: channelId,
           messages: messages,
           isFetching: isFetching,
           hasNextPage: hasNextPage,
+          scrollController: scrollController,
         );
 }

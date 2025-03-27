@@ -20,6 +20,7 @@ extension MessageComposerWithCamera on AmityMessageComposer {
       (value) {
         AmityCameraResult? result = value;
         if (result != null) {
+          action.onMessageCreated();
           context.read<MessageComposerBloc>().add(
               MessageComposerSelectImageAndVideoEvent(
                 selectedMedia: result.file,

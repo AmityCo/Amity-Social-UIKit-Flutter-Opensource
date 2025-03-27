@@ -35,127 +35,37 @@ class CommunityPinComponent extends NewBaseComponent {
       child: BlocBuilder<CommunityPinBloc, CommunityPinState>(
         builder: (context, state) {
           if (state.isFetching && state.pins.isEmpty) {
-            return Container();
+            return SliverToBoxAdapter(child: Container());
           } else if (state.pins.isEmpty) {
-            return Container(
-              padding: const EdgeInsets.only(bottom:  120),
+            return SliverToBoxAdapter(
+                child: Container(
+              padding: const EdgeInsets.only(bottom: 120),
               width: double.infinity,
               height: 550,
               color: theme.backgroundColor,
               child: getEmptyFeed(theme),
-            );
+            ));
           } else {
             bool hasAnnouncement = state.announcements.any((element) =>
                 state.pins.map((e) => e.postId).contains(element.postId));
-            return Column(
-              children: [
+            return SliverMainAxisGroup(
+              slivers: [
                 if (hasAnnouncement)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.announcements.length,
-                    itemBuilder: (context, index) {
-                      final post = state.announcements[index].post;
-                      if (post == null) {
-                        return Container();
-                      }
-                      final amityPost = post;
-                      if (((amityPost.children?.isNotEmpty ?? false) &&
-                              (amityPost.children!.first.type ==
-                                      AmityDataType.FILE ||
-                                  amityPost.children!.first.type ==
-                                      AmityDataType.LIVESTREAM)) ||
-                          (amityPost.isDeleted ?? false)) {
-                        return Container();
-                      } else {
-                        var uniqueKey = UniqueKey();
-                        return VisibilityDetector(
-                          key: Key(amityPost.postId ?? ''),
-                          onVisibilityChanged: (VisibilityInfo info) {
-                            final visiblePercentage =
-                                info.visibleFraction * 100;
-                            if (visiblePercentage > 60) {
-                              checkVisibilityAndMarkSeen(
-                                  amityPost, visiblePercentage);
-                            }
-                          },
-                          child: Column(
-                            children: [
-                              if (index > 0) const SizedBox(height: 8),
-                              AmityPostContentComponent(
-                                  style: AmityPostContentComponentStyle.feed,
-                                  post: amityPost,
-                                  key: uniqueKey,
-                                  category: (state.pins
-                                          .map((e) => e.postId)
-                                          .contains(amityPost.postId))
-                                      ? AmityPostCategory.announcementAndPin
-                                      : AmityPostCategory.announcement,
-                                  hideTarget: true,
-                                  action: AmityPostAction(
-                                    onAddReaction: (String) {},
-                                    onRemoveReaction: (String) {},
-                                    onPostDeleted: (AmityPost post) {},
-                                    onPostUpdated: (post) {},
-                                  )),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    padding: const EdgeInsets.all(0),
+                  SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          childCount: state.announcements.length,
+                          (context, index) {
+                    return _getAnnouncementPost(index, state);
+                  })),
+                if (state.announcements.isNotEmpty)
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 8),
                   ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.pins.length,
-                  itemBuilder: (context, index) {
-                    final amityPost = state.pins[index].post!;
-                    if (((amityPost.children?.isNotEmpty ?? false) &&
-                            (amityPost.children!.first.type ==
-                                    AmityDataType.FILE ||
-                                amityPost.children!.first.type ==
-                                    AmityDataType.LIVESTREAM)) ||
-                        (amityPost.isDeleted ?? false) ||
-                        (state.announcements
-                            .map((e) => e.postId)
-                            .contains(amityPost.postId))) {
-                      return Container();
-                    } else {
-                      var uniqueKey = UniqueKey();
-                      return VisibilityDetector(
-                        key: Key(amityPost.postId ?? uniqueKey.toString()),
-                        onVisibilityChanged: (VisibilityInfo info) {
-                          final visiblePercentage = info.visibleFraction * 100;
-                          if (visiblePercentage > 60) {
-                            checkVisibilityAndMarkSeen(
-                                amityPost, visiblePercentage);
-                          }
-                        },
-                        child: Column(
-                          children: [
-                            AmityPostContentComponent(
-                                style: AmityPostContentComponentStyle.feed,
-                                post: amityPost,
-                                category: AmityPostCategory.pin,
-                                key: uniqueKey,
-                                hideTarget: true,
-                                action: AmityPostAction(
-                                  onAddReaction: (String) {},
-                                  onRemoveReaction: (String) {},
-                                  onPostDeleted: (AmityPost post) {},
-                                  onPostUpdated: (post) {},
-                                )),
-                            const SizedBox(height: 8),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  padding: (hasAnnouncement)
-                      ? const EdgeInsets.only(top: 8)
-                      : const EdgeInsets.all(0),
-                ),
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        childCount: state.pins.length, (context, index) {
+                  return _getPinPost(index, state);
+                })),
               ],
             );
           }
@@ -215,6 +125,90 @@ class CommunityPinComponent extends NewBaseComponent {
     if (visiblePercentage > 60 && !viewedPosts.contains(post.postId)) {
       viewedPosts.add(post.postId!);
       post.analytics().markPostAsViewed();
+    }
+  }
+
+  Widget _getAnnouncementPost(int index, CommunityPinState state) {
+    final post = state.announcements[index].post;
+    if (post == null) {
+      return Container();
+    }
+    final amityPost = post;
+    if (((amityPost.children?.isNotEmpty ?? false) &&
+            (amityPost.children!.first.type == AmityDataType.FILE ||
+                amityPost.children!.first.type == AmityDataType.LIVESTREAM)) ||
+        (amityPost.isDeleted ?? false)) {
+      return Container();
+    } else {
+      var uniqueKey = UniqueKey();
+      return VisibilityDetector(
+        key: Key(amityPost.postId ?? ''),
+        onVisibilityChanged: (VisibilityInfo info) {
+          final visiblePercentage = info.visibleFraction * 100;
+          if (visiblePercentage > 60) {
+            checkVisibilityAndMarkSeen(amityPost, visiblePercentage);
+          }
+        },
+        child: Column(
+          children: [
+            if (index > 0) const SizedBox(height: 8),
+            AmityPostContentComponent(
+                style: AmityPostContentComponentStyle.feed,
+                post: amityPost,
+                key: uniqueKey,
+                category:
+                    (state.pins.map((e) => e.postId).contains(amityPost.postId))
+                        ? AmityPostCategory.announcementAndPin
+                        : AmityPostCategory.announcement,
+                hideTarget: true,
+                action: AmityPostAction(
+                  onAddReaction: (String) {},
+                  onRemoveReaction: (String) {},
+                  onPostDeleted: (AmityPost post) {},
+                  onPostUpdated: (post) {},
+                )),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _getPinPost(int index, CommunityPinState state) {
+    final amityPost = state.pins[index].post!;
+    if (((amityPost.children?.isNotEmpty ?? false) &&
+            (amityPost.children!.first.type == AmityDataType.FILE ||
+                amityPost.children!.first.type == AmityDataType.LIVESTREAM)) ||
+        (amityPost.isDeleted ?? false) ||
+        (state.announcements.map((e) => e.postId).contains(amityPost.postId))) {
+      return Container();
+    } else {
+      var uniqueKey = UniqueKey();
+      return VisibilityDetector(
+        key: Key(amityPost.postId ?? uniqueKey.toString()),
+        onVisibilityChanged: (VisibilityInfo info) {
+          final visiblePercentage = info.visibleFraction * 100;
+          if (visiblePercentage > 60) {
+            checkVisibilityAndMarkSeen(amityPost, visiblePercentage);
+          }
+        },
+        child: Column(
+          children: [
+            AmityPostContentComponent(
+                style: AmityPostContentComponentStyle.feed,
+                post: amityPost,
+                category: AmityPostCategory.pin,
+                key: uniqueKey,
+                hideTarget: true,
+                action: AmityPostAction(
+                  onAddReaction: (String) {},
+                  onRemoveReaction: (String) {},
+                  onPostDeleted: (AmityPost post) {},
+                  onPostUpdated: (post) {},
+                )),
+            const SizedBox(height: 8),
+          ],
+        ),
+      );
     }
   }
 }

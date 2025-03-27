@@ -83,30 +83,37 @@ class AmityChannelCreateConversationPage extends NewBasePage {
         return userSkeletonList(theme, configProvider, itemCount: 10);
       } else {
         if (state.list.isEmpty) {
-          return Center(
+            final isInitialSearch = state.searchText.isNotEmpty && state.searchText.length < 3;
+            
+            return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SvgPicture.asset(
-                  'assets/Icons/amity_ic_search_not_found.svg',
-                  package: 'amity_uikit_beta_service',
-                  colorFilter:
-                      ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
-                  width: 47,
-                  height: 47,
+              SvgPicture.asset(
+                isInitialSearch
+                  ? 'assets/Icons/amity_ic_search_user.svg'
+                  : 'assets/Icons/amity_ic_search_not_found.svg',
+                package: 'amity_uikit_beta_service',
+                colorFilter:
+                  ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
+                width: 47,
+                height: 47,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                isInitialSearch
+                  ? 'Start your search by typing\n at least 3 letters'
+                  : 'No results found',
+                style: TextStyle(
+                color: theme.baseColorShade3,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  'No results found',
-                  style: TextStyle(
-                    color: theme.baseColorShade3,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
-                  ),
-                ),
+                textAlign: TextAlign.center,
+              ),
               ],
             ),
-          );
+            );
         } else {
           return userList(
             context: context,

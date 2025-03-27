@@ -14,6 +14,7 @@ extension MessageComposerFilePicker on AmityMessageComposer {
       MediaPermissionHandler().pickImageAndVideo().then((files) {
         if (files.isNotEmpty) {
           for (var media in files) {
+            action.onMessageCreated();
             context.read<MessageComposerBloc>().add(
                   MessageComposerSelectImageAndVideoEvent(selectedMedia: media),
                 );

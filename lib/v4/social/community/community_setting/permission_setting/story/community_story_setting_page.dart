@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/permission_setting/story/bloc/community_story_setting_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
@@ -52,7 +53,7 @@ class AmityCommunityStorySettingPage extends NewBasePage {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Allow comments on community stories',
+                      context.l10n.settings_allow_stories_comments,
                       style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -60,7 +61,7 @@ class AmityCommunityStorySettingPage extends NewBasePage {
                     ),
                     SizedBox(height: 4), // Reduced padding
                     Text(
-                      'Turn on to receive comments on stories in this community.',
+                      context.l10n.settings_allow_stories_comments_description,
                       style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,

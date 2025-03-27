@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,7 +38,7 @@ class CommunityModeratorBadge extends StatelessWidget {
             Container(
               //color: Colors.blue,
               child: Text(
-                'Moderator',
+                context.l10n.general_moderator,
                 style: AmityTextStyle.captionSmall(const Color(0xFF1054DE)),
               ),
             ),

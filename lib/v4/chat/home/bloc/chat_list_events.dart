@@ -44,3 +44,23 @@ class ChatListPushNotificationEvent extends ChatListEvent {
   @override
   List<Object> get props => [isPushNotificationEnabled];
 }
+
+class ChatListEventChannelArchive extends ChatListEvent {
+  final String channelId;
+  
+  const ChatListEventChannelArchive({required this.channelId});
+  
+  @override
+  List<Object> get props => [channelId];
+}
+
+class ChatListEventChannelUnarchive extends ChatListEvent {
+  final String channelId;
+  
+  const ChatListEventChannelUnarchive({required this.channelId});
+  
+  @override
+  List<Object> get props => [channelId];
+}
+
+class ChatListEventResetDialogState extends ChatListEvent {}

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -265,10 +266,10 @@ class AmityPostComposerPage extends NewBasePage {
           if (result.type == FileType.video) {
             if (selectedFiles.length == 10) {
               AmityV4Dialog().showAlertErrorDialog(
-                title: "Maximum upload limit reached",
-                message:
-                    "You’ve reached the upload limit of 10 vidoes. Any additional videos will not be saved.",
-                closeText: "Close",
+                title: context.l10n.error_max_upload_reached,
+                message: context.l10n
+                    .error_max_upload_videos_reached_description(10),
+                closeText: context.l10n.general_close,
               );
             } else {
               context.read<PostComposerBloc>().add(
@@ -278,11 +279,10 @@ class AmityPostComposerPage extends NewBasePage {
           } else {
             if (selectedFiles.length == 10) {
               AmityV4Dialog().showAlertErrorDialog(
-                title: "Maximum upload limit reached",
-                message:
-                    "You’ve reached the upload limit of 10 images. Any additional images will not be saved.",
-                closeText: "Close",
-              );
+                  title: context.l10n.error_max_upload_reached,
+                  message: context.l10n
+                      .error_max_upload_image_reached_description(10),
+                  closeText: context.l10n.general_close);
             } else {
               context.read<PostComposerBloc>().add(
                     PostComposerSelectImagesEvent(selectedImage: result.file),
@@ -318,10 +318,10 @@ class AmityPostComposerPage extends NewBasePage {
   void handleClose(BuildContext context) {
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Discard this post?',
-      detailText: 'The post will be permanently deleted. It cannot be undone.',
-      leftButtonText: 'Keep editing',
-      rightButtonText: 'Discard',
+      title: context.l10n.post_discard,
+      detailText: context.l10n.post_discard_description,
+      leftButtonText: context.l10n.general_keep_editing,
+      rightButtonText: context.l10n.general_discard,
       onConfirm: () {
         Navigator.pop(context);
         onPopRequested?.call(true);
@@ -349,7 +349,7 @@ class AmityPostComposerPage extends NewBasePage {
           .then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
-        _showToast(context, "Failed to edit post. Please try again.",
+        _showToast(context, context.l10n.error_edit_post,
             AmityToastIcon.warning);
       });
     } else {
@@ -365,7 +365,7 @@ class AmityPostComposerPage extends NewBasePage {
           .then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
-        _showToast(context, "Failed to edit post. Please try again.",
+        _showToast(context, context.l10n.error_edit_post,
             AmityToastIcon.warning);
       });
     }
@@ -374,8 +374,8 @@ class AmityPostComposerPage extends NewBasePage {
   void _createPost(BuildContext context) {
     final targetId = options.targetId;
 
-    context.read<AmityToastBloc>().add(const AmityToastLoading(
-        message: "Posting", icon: AmityToastIcon.loading));
+    context.read<AmityToastBloc>().add(AmityToastLoading(
+        message: context.l10n.general_posting, icon: AmityToastIcon.loading));
 
     var targetBuilder = AmitySocialClient.newPostRepository().createPost();
 
@@ -427,7 +427,7 @@ class AmityPostComposerPage extends NewBasePage {
         .then((post) {
       _onPostSuccess(context, post);
     }).onError((error, stackTrace) {
-      _showToast(context, "Failed to create post. Please try again.",
+      _showToast(context, context.l10n.error_create_post,
           AmityToastIcon.warning);
     });
   }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:developer' as dev;
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -113,7 +114,7 @@ class _PostPollContentState extends State<PostPollContent> {
     if (poll == null) return Container();
 
     final timeLeft = poll.isClose
-        ? 'Ended'
+        ? context.l10n.poll_ended
         : poll.closedAt == null
             ? ''
             : readableTimeLeft(poll.closedAt!);
@@ -169,8 +170,8 @@ class _PostPollContentState extends State<PostPollContent> {
                         color: Colors.white,
                         strokeWidth: 2,
                       )
-                    : const Text("Vote",
-                        style: TextStyle(
+                    : Text(context.l10n.poll_vote,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         )),
@@ -183,7 +184,7 @@ class _PostPollContentState extends State<PostPollContent> {
           children: [
             Expanded(
               child: Text(
-                '${NumberFormat.decimalPattern().format(poll.totalVote)} votes • $timeLeft',
+                '${context.l10n.poll_vote_count(poll.totalVote)} • $timeLeft',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -210,7 +211,7 @@ class _PostPollContentState extends State<PostPollContent> {
                   }
                 },
                 child: Text(
-                  isResultState ? "Back to vote" : "See results",
+                  isResultState ? context.l10n.poll_back_to_vote : context.l10n.poll_results,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -243,14 +244,8 @@ class _PostPollContentState extends State<PostPollContent> {
       setState(() {
         isVoting = false;
       });
-      _showToast(context, "Failed to vote poll. Please try again.",
+      _showToast(context, context.l10n.poll_vote_error,
             AmityToastIcon.warning);
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text("Failed to vote: ${error.toString()}"),
-      //     backgroundColor: widget.theme.alertColor,
-      //   ),
-      // );
     });
   }
 
@@ -264,7 +259,7 @@ class _PostPollContentState extends State<PostPollContent> {
     startTime ??= DateTime.now();
 
     if (targetTime.isBefore(startTime) || targetTime == startTime) {
-      return "Ended";
+      return context.l10n.poll_ended;
     }
 
     final duration = targetTime.difference(startTime);
@@ -276,13 +271,13 @@ class _PostPollContentState extends State<PostPollContent> {
     if (totalDays > 0) {
       final remainingHours = totalHours % 24;
       final daysLeft = remainingHours > 0 ? totalDays + 1 : totalDays;
-      return "${daysLeft}d left";
+      return "${daysLeft}d ${context.l10n.poll_remaining_time}";
     } else if (totalHours > 0) {
-      return "${totalHours}h left";
+      return "${totalHours}h ${context.l10n.poll_remaining_time}";
     } else if (totalMinutes > 0) {
-      return "${totalMinutes}m left";
+      return "${totalMinutes}m ${context.l10n.poll_remaining_time}";
     } else {
-      return "0m left";
+      return "0m ${context.l10n.poll_remaining_time}";
     }
   }
 }
@@ -317,8 +312,8 @@ class PollOptions extends StatelessWidget {
       children: [
         Text(
           poll.answerType == AmityPollAnswerType.SINGLE
-              ? "Select one option"
-              : "Select one or more options",
+              ? context.l10n.poll_single_choice
+              : context.l10n.poll_multiple_choice,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -457,7 +452,7 @@ class PollOptions extends StatelessWidget {
               splashFactory: NoSplash.splashFactory,
             ),
             child: Text(
-              "See ${answers.length - threshold} more options",
+              context.l10n.poll_see_more_options(answers.length - threshold),
               style: TextStyle(
                 color: theme.secondaryColor,
                 fontWeight: FontWeight.bold,
@@ -566,7 +561,7 @@ class PollResults extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        getVotedByText(answer.voteCount ?? 0, userVoted),
+                        getVotedByText(context, answer.voteCount ?? 0, userVoted),
                         style: TextStyle(
                           color: theme.baseColorShade2,
                           fontSize: 12,
@@ -631,7 +626,7 @@ class PollResults extends StatelessWidget {
               splashFactory: NoSplash.splashFactory,
             ),
             child: Text(
-              "See Full Results",
+              context.l10n.poll_see_full_results,
               style: TextStyle(
                 color: theme.baseColor,
                 fontWeight: FontWeight.bold,
@@ -643,25 +638,23 @@ class PollResults extends StatelessWidget {
   }
 }
 
-String getVotedByText(int voteCount, bool isVotedByUser) {
+String getVotedByText(BuildContext context, voteCount, bool isVotedByUser) {
   if (voteCount == 0) {
-    return "No votes";
+    return context.l10n.poll_total_votes(0, "");
   } else if (voteCount == 1 && isVotedByUser) {
-    return "Voted by you";
+    return context.l10n.poll_voted;
   } else if (voteCount == 1) {
-    return "Voted by 1 participant";
+    return context.l10n.poll_total_votes(1, "");
   } else {
     // Check if the number needs a "+" sign
     final nextThreshold = _getNextThreshold(voteCount);
     final plusSign = voteCount > nextThreshold ? "+" : "";
 
-    final displayVoteCount = isVotedByUser
-        ? readableNumber(voteCount - 1)
-        : readableNumber(voteCount);
+    final displayVoteCount = isVotedByUser ? (voteCount - 1) : (voteCount);
 
-    var votedByText = "Voted by $displayVoteCount$plusSign participants";
+    var votedByText = context.l10n.poll_total_votes(displayVoteCount, plusSign);
     if (isVotedByUser) {
-      votedByText += " and you";
+      votedByText += context.l10n.poll_and_you;
     }
     return votedByText;
   }

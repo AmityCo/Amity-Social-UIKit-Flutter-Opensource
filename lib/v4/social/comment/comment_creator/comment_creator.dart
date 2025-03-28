@@ -1,11 +1,11 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/bloc/comment_creator_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator_action.dart';
-import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -182,7 +182,7 @@ class _AmityCommentCreatorInternalState
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 0, vertical: 0),
-                      hintText: 'Say something nice...',
+                      hintText: context.l10n.comment_create_hint,
                       border: InputBorder.none,
                       hintStyle: TextStyle(
                         color: widget.theme.baseColorShade2,
@@ -221,7 +221,7 @@ class _AmityCommentCreatorInternalState
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Post',
+                      context.l10n.general_post,
                       style: TextStyle(
                         color: (state.text.isEmpty)
                             ? const Color(0xFFA0BDF8)
@@ -259,7 +259,7 @@ class _AmityCommentCreatorInternalState
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Replying to ',
+                      text: context.l10n.comment_reply_to,
                       style: TextStyle(
                         color: widget.theme.baseColorShade1,
                         fontSize: 15,

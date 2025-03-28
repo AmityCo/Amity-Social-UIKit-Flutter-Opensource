@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class AmityPollPostComposerPage extends NewBasePage {
                       ? null
                       : () => _createPollPost(state, bloc, context),
                   child: Text(
-                    'Post',
+                    context.l10n.general_post,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -106,12 +107,12 @@ class AmityPollPostComposerPage extends NewBasePage {
             body: ListView(
               padding: const EdgeInsets.all(16.0),
               children: [
-                _buildPollQuestionSection(state, bloc, _questionController, communityId),
+                _buildPollQuestionSection(context, state, bloc, _questionController, communityId),
                 const SizedBox(height: 24),
 
-                _buildSectionTitle('Options',
-                    description: 'Poll must contain at least $minOptionsRequired options.'),
-                ..._buildOptionFields(state, bloc),
+                _buildSectionTitle(context.l10n.general_options,
+                    description: context.l10n.poll_options_description(minOptionsRequired)),
+                ..._buildOptionFields(context, state, bloc),
                 _buildAddOptionButton(state, bloc),
                 Divider(color: theme.baseColorShade4, height: 32),
 
@@ -128,6 +129,7 @@ class AmityPollPostComposerPage extends NewBasePage {
   }
 
   Widget _buildPollQuestionSection(
+      BuildContext context,
       PollComposerState state,
       PollComposerBloc bloc,
       TextEditingController controller,
@@ -148,7 +150,7 @@ class AmityPollPostComposerPage extends NewBasePage {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Poll question',
+              context.l10n.poll_question,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -176,7 +178,7 @@ class AmityPollPostComposerPage extends NewBasePage {
           maxLines: null,
           enabled: !state.isPosting,
           decoration: InputDecoration(
-            hintText: "What's your poll question?",
+            hintText: context.l10n.poll_question_hint,
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
             hintStyle: TextStyle(
@@ -208,7 +210,7 @@ class AmityPollPostComposerPage extends NewBasePage {
               color: theme.alertColor
           ),
           Text(
-            "Poll question cannot exceed $maxQuestionLength characters.",
+            context.l10n.error_max_poll_characters(maxQuestionLength),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.normal,
@@ -251,7 +253,7 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  List<Widget> _buildOptionFields(PollComposerState state,
+  List<Widget> _buildOptionFields(BuildContext context, PollComposerState state,
       PollComposerBloc bloc) {
     return state.options
         .asMap()
@@ -369,7 +371,7 @@ class AmityPollPostComposerPage extends NewBasePage {
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
-                  "Poll option cannot exceed $maxOptionLength characters.",
+                  context.l10n.error_max_poll_option_characters(maxOptionLength),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.normal,
@@ -465,7 +467,7 @@ class AmityPollPostComposerPage extends NewBasePage {
           ),
         ),
         const SizedBox(height: 12),
-        ..._buildOptionFields(state, bloc,),
+        ..._buildOptionFields(context, state, bloc,),
         _buildAddOptionButton(state, bloc),
         const SizedBox(height: 24),
         Divider(
@@ -529,8 +531,8 @@ class AmityPollPostComposerPage extends NewBasePage {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(
-          'Poll duration',
-          description: 'You can always close the poll before the set duration.',
+          context.l10n.poll_duration,
+          description: context.l10n.poll_duration_hint,
         ),
         const SizedBox(height: 8),
         GestureDetector(
@@ -681,7 +683,7 @@ class AmityPollPostComposerPage extends NewBasePage {
                   Expanded(
                     child: Text(
                       isCustomSelected
-                          ? 'Custom end date'
+                          ? context.l10n.poll_custom_edn_date
                           : state.durationOptions[state
                           .selectedPollDurationIndex],
                       style: TextStyle(
@@ -844,8 +846,8 @@ class AmityPollPostComposerPage extends NewBasePage {
       BuildContext context) {
     bloc.add(UpdatePostingStateEvent(isPosting: true));
 
-    context.read<AmityToastBloc>().add(const AmityToastLoading(
-        message: "Posting", icon: AmityToastIcon.loading));
+    context.read<AmityToastBloc>().add(AmityToastLoading(
+        message: context.l10n.general_posting, icon: AmityToastIcon.loading));
 
     var targetBuilder = AmitySocialClient.newPostRepository().createPost();
 
@@ -892,13 +894,13 @@ class AmityPollPostComposerPage extends NewBasePage {
         _onPostSuccess(context, post);
       }).onError((error, stackTrace) {
         bloc.add(UpdatePostingStateEvent(isPosting: false));
-        _showToast(context, "Failed to create poll. Please try again.",
+        _showToast(context, context.l10n.error_create_poll,
             AmityToastIcon.warning);
       });
     })
         .onError((error, stackTrace) {
       bloc.add(UpdatePostingStateEvent(isPosting: false));
-      _showToast(context, "Failed to create poll. Please try again.",
+      _showToast(context, context.l10n.error_create_poll,
           AmityToastIcon.warning);
     });
   }
@@ -954,10 +956,10 @@ class AmityPollPostComposerPage extends NewBasePage {
   void handleClose(BuildContext context) {
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Discard this post?',
-      detailText: 'The post will be permanently deleted. It cannot be undone.',
-      leftButtonText: 'Keep editing',
-      rightButtonText: 'Discard',
+      title: context.l10n.post_discard,
+      detailText: context.l10n.post_discard_description,
+      leftButtonText: context.l10n.general_keep_editing,
+      rightButtonText: context.l10n.general_discard,
       onConfirm: () {
         Navigator.pop(context);
         onPopRequested?.call(true);

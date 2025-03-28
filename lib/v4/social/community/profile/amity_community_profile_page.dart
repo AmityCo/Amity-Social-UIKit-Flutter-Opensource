@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_feed/community_feed_component.dart';
@@ -244,31 +245,17 @@ class AmityCommunityProfilePage extends NewBasePage {
                       },
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child:
-                        (state.selectedIndex == CommunityProfileTabIndex.feed)
-                            ? Container(
-                                color: theme.baseColorShade4,
-                                width: double.infinity,
-                                child: CommunityFeedComponent(
-                                  communityId: state.communityId,
-                                  scrollController: _scrollController,
-                                ),
-                              )
-                            : Container(),
-                  ),
-                  SliverToBoxAdapter(
-                    child: (state.selectedIndex == CommunityProfileTabIndex.pin)
-                        ? Container(
-                            color: theme.baseColorShade4,
-                            width: double.infinity,
-                            child: CommunityPinComponent(
-                              communityId: state.communityId,
-                              scrollController: _scrollController,
-                            ),
-                          )
-                        : Container(),
-                  ),
+                  if (state.selectedIndex == CommunityProfileTabIndex.feed)
+                    CommunityFeedComponent(
+                      communityId: state.communityId,
+                      scrollController: _scrollController,
+                    ),
+                  
+                  if (state.selectedIndex == CommunityProfileTabIndex.pin)
+                    CommunityPinComponent(
+                      communityId: state.communityId,
+                      scrollController: _scrollController,
+                    ),
                 ],
               ),
               floatingActionButtonLocation:
@@ -442,7 +429,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Post',
+                          context.l10n.general_post,
                           style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,
@@ -489,7 +476,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'Story',
+                            context.l10n.general_story,
                             style: TextStyle(
                               color: theme.baseColor,
                               fontSize: 15,
@@ -559,7 +546,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Poll',
+                          context.l10n.general_poll,
                           style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,

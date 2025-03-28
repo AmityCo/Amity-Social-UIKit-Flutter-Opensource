@@ -3,7 +3,9 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
@@ -28,6 +30,7 @@ import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'viewmodel/amity_viewmodel.dart';
@@ -42,6 +45,7 @@ import 'viewmodel/user_feed_viewmodel.dart';
 import 'viewmodel/user_viewmodel.dart';
 
 export 'package:amity_sdk/src/domain/model/session/session_state.dart';
+
 
 enum AmityEndpointRegion {
   sg,
@@ -186,6 +190,7 @@ class AmityUIKit {
 
   void unRegisterDevice() {
     AmityCoreClient.unregisterDeviceNotification();
+    ParentMessageCache().clear();
     AmityCoreClient.logout();
   }
 
@@ -279,6 +284,42 @@ class AmityUIKitProvider extends StatelessWidget {
             home: Builder(builder: (context2) {
               return child;
             }),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('pt'), // Base Portuguese locale
+              Locale('pt', 'BR'),  // Portuguese (Brazil)
+              Locale('es'),        // Base Spanish locale
+              Locale('es', 'CL'),  // Spanish (Chile)
+              Locale('es', 'CO'),  // Spanish (Colombia)
+              Locale('es', 'MX'),  // Spanish (Mexico)
+              Locale('es', 'PE'),  // Spanish (Peru)
+            ],
+            // Ensure the app uses the device locale by default
+            localeResolutionCallback: (deviceLocale, supportedLocales) {
+              if (deviceLocale != null) {
+                for (var locale in supportedLocales) {
+                  print ("deviceLocale: ${deviceLocale.languageCode}");
+                  print ("supportedLocales: $supportedLocales}");
+                  // Check for exact matches first
+                  if (locale.languageCode == deviceLocale.languageCode &&
+                      locale.countryCode == deviceLocale.countryCode) {
+                    return locale;
+                  }
+                  // Then check for language code matches
+                  if (locale.languageCode == deviceLocale.languageCode) {
+                    return locale;
+                  }
+                }
+              }
+              // Default to English if no match found
+              return const Locale('en');
+            },
           );
         });
       }),

@@ -1,14 +1,6 @@
 part of 'message_composer_bloc.dart';
 
 class MessageComposerState extends Equatable {
-  const MessageComposerState({
-    required this.controller,
-    required this.scrollController,
-    required this.text,
-    required this.replyTo,
-    required this.showMediaSection,
-    required this.appName,
-  });
 
   final TextEditingController controller;
   final ScrollController scrollController;
@@ -17,6 +9,14 @@ class MessageComposerState extends Equatable {
   final bool showMediaSection;
   final String appName;
 
+  const MessageComposerState({
+    required this.controller,
+    required this.scrollController,
+    required this.text,
+    required this.replyTo,
+    required this.showMediaSection,
+    required this.appName,
+  });
   @override
   List<Object?> get props => [text, replyTo, showMediaSection, appName];
 

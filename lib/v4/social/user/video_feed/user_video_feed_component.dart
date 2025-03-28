@@ -47,45 +47,40 @@ class UserVideoFeedComponent extends NewBaseComponent {
               info = getEmptyStateInfo(
                   state.emptyState ?? UserFeedEmptyStateType.empty);
             }
-            return UserFeedEmptyState(info: info);
+            return SliverToBoxAdapter(child: UserFeedEmptyState(info: info));
           } else if (state.posts.isEmpty && state.isLoading) {
-            return Column(
+            return SliverToBoxAdapter(
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 getSkeleton(theme, configProvider),
               ],
-            );
+            ));
           } else {
-            return Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-              color: theme.backgroundColor,
-              child: Column(
-                children: [
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                    ),
-                    itemCount: state.posts.length,
-                    itemBuilder: (context, index) {
-                      final post = state.posts[index];
-
-                      return UserVideoFeedElement(
-                        post: post,
-                      );
-                    },
-                  ),
-                  if (state.isLoading && state.posts.isNotEmpty)
-                    getSkeleton(theme, configProvider),
-                ],
-              ),
-            );
+            return SliverMainAxisGroup(slivers: [
+              SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                          childCount: state.posts.length, (context, index) {
+                        final post = state.posts[index];
+                        return UserVideoFeedElement(
+                          post: post,
+                        );
+                      }),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 8.0,
+                        crossAxisSpacing: 8.0,
+                        childAspectRatio: 1.0,
+                      ))),
+              if (state.isLoading && state.posts.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: getSkeleton(theme, configProvider),
+                )
+            ]);
           }
         },
       ),

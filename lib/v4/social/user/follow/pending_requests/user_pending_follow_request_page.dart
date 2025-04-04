@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
@@ -7,7 +8,6 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/core/ui/Skeleton/user_skeleton_list.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/pending_requests/bloc/user_pending_follow_requests_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -154,12 +154,14 @@ class PendingRequestItem extends BaseElement {
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) {
-                    return AmityUserProfilePage(
-                        userId: user.sourceUserId ?? "");
-                  },
-                ));
+                final userId = user.sourceUserId;
+                if (userId != null && userId.isNotEmpty) {
+                  AmityUIKit4Manager.behavior.userPendingFollowRequestsPageBehavior
+                      .goToUserProfilePage(
+                    context,
+                    userId,
+                  );
+                }
               },
               child: Row(
                 children: [

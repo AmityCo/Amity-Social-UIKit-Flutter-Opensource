@@ -94,7 +94,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
         await AmityChatClient.newChannelRepository()
             .archiveChannel(event.channelId);
         toastBloc.add(const AmityToastShort(
-            message: 'Chat archived', icon: AmityToastIcon.success));
+            message: 'Chat archived.', icon: AmityToastIcon.success));
       } catch (error) {
         String errorMessage = error.toString();
         if (errorMessage.contains('Archive limit exceeded')) {
@@ -121,7 +121,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       await AmityChatClient.newChannelRepository()
           .unarchiveChannel(event.channelId);
       toastBloc.add(const AmityToastShort(
-          message: 'Chat unarchived', icon: AmityToastIcon.success));
+          message: 'Chat unarchived.', icon: AmityToastIcon.success));
     });
 
     on<ChatListEventResetDialogState>((event, emit) {

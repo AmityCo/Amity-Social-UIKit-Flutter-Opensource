@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -38,9 +39,27 @@ class AmityUserProfilePage extends NewBasePage {
       child: Builder(builder: (context) {
         return BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state) {
+            _scrollController.addListener(() {
+              if (_scrollController.hasClients &&
+                  _scrollController.offset > 100) {
+                context
+                    .read<UserProfileBloc>()
+                    .add(const ShowUserNameOnAppBarEvent(showUserName: true));
+              } else {
+                context
+                    .read<UserProfileBloc>()
+                    .add(const ShowUserNameOnAppBarEvent(showUserName: false));
+              }
+            });
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
+                title: state.showUserNameOnAppBar
+                    ? Text(
+                        state.user?.displayName ?? "",
+                        style: AmityTextStyle.titleBold(theme.baseColor),
+                      )
+                    : null,
                 scrolledUnderElevation: 0,
                 backgroundColor: theme.backgroundColor,
                 leading: IconButton(

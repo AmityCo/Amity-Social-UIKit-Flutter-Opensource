@@ -4,50 +4,55 @@ extension TextMessageWidget on MessageBubbleView {
   Widget _buildTextMessageWidget(
       BuildContext context, bool isUser, MessageBubbleState state) {
     final text = (message.data as MessageTextData).text ?? "";
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        if (isUser &&
-            message.createdAt != null &&
-            message.syncState == AmityMessageSyncState.SYNCED) ...[
-          _buildDateWidget(message.createdAt!),
-          const SizedBox(width: 8),
-        ],
-        if (isUser &&
-            message.syncState != AmityMessageSyncState.SYNCED &&
-            message.syncState != AmityMessageSyncState.FAILED) ...[
-          _buildSideTextWidget("Sending..."),
-          const SizedBox(width: 8),
-        ],
-        if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
-          Container(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: GestureDetector(
-              onTap: () {
-                _showActionSheet(context);
-              },
-              child: SvgPicture.asset(
-                'assets/Icons/amity_ic_error_message.svg',
-                package: 'amity_uikit_beta_service',
-                width: 16,
-                height: 16,
-                color: theme.baseColorShade2,
+    return Transform.translate(
+      offset: Offset(
+          ((bounce * bounceOffset) - bounceOffset) * (isUser ? -1 : 1),
+          0), // Bounce effect
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (isUser &&
+              message.createdAt != null &&
+              message.syncState == AmityMessageSyncState.SYNCED) ...[
+            _buildDateWidget(message.createdAt!),
+            const SizedBox(width: 8),
+          ],
+          if (!isUser) ...[
+            _buildAvatarWidget(context),
+            const SizedBox(width: 8),
+          ],
+          if (isUser &&
+              message.syncState != AmityMessageSyncState.SYNCED &&
+              message.syncState != AmityMessageSyncState.FAILED) ...[
+            _buildSideTextWidget("Sending..."),
+            const SizedBox(width: 8),
+          ],
+          if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
+            Container(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: GestureDetector(
+                onTap: () {
+                  _showActionSheet(context);
+                },
+                child: SvgPicture.asset(
+                  'assets/Icons/amity_ic_error_message.svg',
+                  package: 'amity_uikit_beta_service',
+                  width: 16,
+                  height: 16,
+                  color: theme.baseColorShade2,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
+            const SizedBox(width: 8),
+          ],
+          _buildTextWidget(context, text, isUser, state),
+          if (!isUser && message.createdAt != null) ...[
+            const SizedBox(width: 8),
+            _buildDateWidget(message.createdAt!),
+          ],
         ],
-        if (!isUser) ...[
-          _buildAvatarWidget(context),
-          const SizedBox(width: 8),
-        ],
-        _buildTextWidget(context, text, isUser, state),
-        if (!isUser && message.createdAt != null) ...[
-          const SizedBox(width: 8),
-          _buildDateWidget(message.createdAt!),
-        ],
-      ],
+      ),
     );
   }
 

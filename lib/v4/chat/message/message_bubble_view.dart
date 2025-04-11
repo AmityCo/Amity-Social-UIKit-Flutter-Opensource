@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:amity_sdk/amity_sdk.dart';
@@ -15,6 +16,7 @@ import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
@@ -47,7 +49,10 @@ class MessageBubbleView extends NewBaseComponent {
   void Function(AmityMessage)? onResend;
   final Uint8List? thumbnail;
   late MessageColor messageColor;
+  final int bounceOffset = 150;
   Image? messageImage;
+  BounceAnimator? bounceAnimator;
+  double bounce;
 
   MessageBubbleView(
       {super.key,
@@ -56,7 +61,9 @@ class MessageBubbleView extends NewBaseComponent {
       this.channelMember,
       this.onSeeMoreTap,
       this.onResend,
-      this.thumbnail})
+      this.thumbnail,
+      this.bounceAnimator,
+      this.bounce = 0.0})
       : super(componentId: "message_bubble");
 
   @override
@@ -111,7 +118,7 @@ class MessageBubbleView extends NewBaseComponent {
                 maxWidth: MediaQuery.of(context).size.width * 0.8,
               ),
               margin: EdgeInsets.only(
-                left: isUser ? 98 : 16,
+                left: isUser ? 50 : 16,
                 right: isUser ? 16 : 58,
                 top: 4,
                 bottom: 4,
@@ -126,7 +133,7 @@ class MessageBubbleView extends NewBaseComponent {
                     children: [
                       if (message.parentId != null && message.isDeleted == false)
                         _buildParentMessage(message, parentMessage, context),
-                      _buildMessageContent(context, isUser, state),
+                      _buildMessageContent(context, isUser, state, bounceAnimator, bounce),
                       // If message have reaction will reserve space for it
                       if (showReaction)
                         const SizedBox(
@@ -177,14 +184,14 @@ class MessageBubbleView extends NewBaseComponent {
   }
 
   Widget _buildMessageContent(
-      BuildContext context, bool isUser, MessageBubbleState state) {
+      BuildContext context, bool isUser, MessageBubbleState state, BounceAnimator? bounceAnimator, double bounce) {
     if (message.isDeleted ?? false) {
       return _buildDeletedMessage(context, theme, isUser);
     } else {
       if (message.data is MessageTextData) {
         return _buildTextMessageWidget(context, isUser, state);
       } else if (message.data is MessageImageData) {
-        return _buildImageMessageWidget(context, isUser, state);
+        return _buildImageMessageWidget(context, isUser, state, bounce);
       } else if (message.data is MessageVideoData) {
         return _buildVideoMessageWidget(context, isUser, thumbnail, state);
       } else {

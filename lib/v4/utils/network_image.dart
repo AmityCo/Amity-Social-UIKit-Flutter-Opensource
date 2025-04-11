@@ -113,12 +113,15 @@ Future<AmityImageWithSize> getImageWithSize(
   if (image != null) {
     image.image.resolve(const ImageConfiguration()).addListener(
           ImageStreamListener((ImageInfo info, bool _) {
-            completer.complete(AmityImageWithSize(
+            completer.complete(
+              AmityImageWithSize(
                 image!,
                 Size(
                   info.image.width.toDouble(),
                   info.image.height.toDouble(),
-                )));
+                ),
+              ),
+            );
           }, onError: (dynamic exception, StackTrace? stackTrace) {
             completer.completeError(exception);
           }),

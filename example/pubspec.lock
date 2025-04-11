@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: amity_sdk
-      sha256: c3bde703921580285c60fe93c85323734062a35fcc082cff05ac21d0eda1771e
+      sha256: "559bae1a90f0f47faaa7087bf7c0ce5df31c11abcf97d1ad9ed6d1e401a3f9c7"
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.0"
   amity_sdk_api:
     dependency: transitive
     description:
@@ -31,7 +31,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "4.5.0"
+    version: "4.6.0"
   analyzer:
     dependency: transitive
     description:

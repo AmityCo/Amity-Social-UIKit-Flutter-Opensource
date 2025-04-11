@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -37,7 +38,7 @@ class AmityPostHeader extends StatelessWidget {
     required this.hideTarget,
     this.action,
   });
-  
+
 
   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
     context
@@ -79,13 +80,12 @@ class AmityPostHeader extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AmityUserProfilePage(
-                      userId: post.postedUserId ?? "",
-                    ),
-                  ),
-                );
+                if (post.postedUserId?.isNotEmpty ?? false) {
+                  AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+                    context,
+                    post.postedUserId!,
+                  );
+                }
               },
               child: Container(
                 padding: const EdgeInsets.only(
@@ -334,7 +334,7 @@ class AmityPostHeader extends StatelessWidget {
           }).onError((error, stackTrace) {
             _showToast(
                  context,
-                 context.l10n.general_error, 
+                 context.l10n.general_error,
                  AmityToastIcon.warning);
           })
         };

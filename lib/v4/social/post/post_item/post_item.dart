@@ -1,7 +1,5 @@
-import 'dart:ffi';
-import 'dart:math';
-
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/preview_link_widget.dart';
@@ -14,7 +12,6 @@ import 'package:amity_uikit_beta_service/v4/social/post/post_detail/amity_post_d
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom_nonmember.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -365,7 +362,9 @@ class PostItem extends NewBaseComponent {
   }
 
   void _goToUserProfilePage(BuildContext context, String userId) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => AmityUserProfilePage(userId: userId)));
+    AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+      context,
+      userId,
+    );
   }
 }

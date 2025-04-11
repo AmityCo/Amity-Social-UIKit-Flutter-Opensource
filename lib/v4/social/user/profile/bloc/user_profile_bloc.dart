@@ -44,6 +44,10 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       emit(state.copyWith(isHeaderExpanded: true));
     });
 
+    on<ShowUserNameOnAppBarEvent>((event, emit) async {
+      emit(state.copyWith(showUserNameOnAppBar: event.showUserName));
+    });
+
     final relationshipManager = UserRelationshipManager();
 
     // User Moderation

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/member/community_add_member_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/bloc/community_membership_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -171,14 +171,15 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         : _placeholderAvatar(),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return AmityUserProfilePage(
-                              userId: member.user?.userId ?? "");
-                        },
-                      ),
-                    );
+                    final userId = member.user?.userId;
+                    if (userId != null && userId.isNotEmpty) {
+                      AmityUIKit4Manager
+                          .behavior.communityMembershipPageBehavior
+                          .goToUserProfilePage(
+                        context,
+                        userId,
+                      );
+                    }
                   },
                 ),
                 if (member.isModerator())
@@ -220,18 +221,18 @@ class AmityCommunityMembershipPage extends NewBasePage {
                       ),
                     ),
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return AmityUserProfilePage(
-                                userId: member.user?.userId ?? "");
-                          },
-                        ),
-                      );
+                      final userId = member.user?.userId;
+                                        if (userId != null && userId.isNotEmpty) {
+                                          AmityUIKit4Manager.behavior.communityMembershipPageBehavior
+                                              .goToUserProfilePage(
+                                            context,
+                                            userId,
+                                          );
+                                        }
                     },
                   ),
                 ),
-                if(member.user?.isBrand ?? false) brandBadge() 
+                if(member.user?.isBrand ?? false) brandBadge()
               ],
             )),
 

@@ -5,6 +5,8 @@ import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_feed/community_feed_component.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_media_feed/community_image_feed_component.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_media_feed/community_video_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_pin/community_pin_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/bloc/community_profile_bloc.dart';
@@ -253,6 +255,18 @@ class AmityCommunityProfilePage extends NewBasePage {
                   
                   if (state.selectedIndex == CommunityProfileTabIndex.pin)
                     CommunityPinComponent(
+                      communityId: state.communityId,
+                      scrollController: _scrollController,
+                    ),
+                  
+                  if (state.selectedIndex == CommunityProfileTabIndex.image)
+                    AmityCommunityImageFeedComponent(
+                      communityId: state.communityId,
+                      scrollController: _scrollController,
+                    ),
+
+                  if (state.selectedIndex == CommunityProfileTabIndex.video)
+                    AmityCommunityVideoFeedComponent(
                       communityId: state.communityId,
                       scrollController: _scrollController,
                     ),

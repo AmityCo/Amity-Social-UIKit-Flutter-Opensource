@@ -1,106 +1,115 @@
 part of '../message_bubble_view.dart';
 
 extension ImageMessageWidget on MessageBubbleView {
-  Widget _buildImageMessageWidget(
-      BuildContext context, bool isUser, MessageBubbleState state) {
+  Widget _buildImageMessageWidget(BuildContext context, bool isUser,
+      MessageBubbleState state, double bounce) {
     final image = (message.data as MessageImageData).image;
     final fileUrl = image?.getUrl(AmityImageSize.MEDIUM) ?? "";
     final filePath = image?.getFilePath;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: (message.syncState == AmityMessageSyncState.FAILED)
-          ? CrossAxisAlignment.center
-          : CrossAxisAlignment.end,
-      children: [
-        if (isUser &&
-            message.createdAt != null &&
-            message.syncState == AmityMessageSyncState.SYNCED) ...[
-          _buildDateWidget(message.createdAt!),
-          const SizedBox(width: 8),
-        ],
-        if (isUser &&
-            message.syncState != AmityMessageSyncState.SYNCED &&
-            message.syncState != AmityMessageSyncState.FAILED) ...[
-          _buildSideTextWidget("Sending..."),
-          const SizedBox(width: 8),
-        ],
-        if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
-          Center(
-            child: Container(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: GestureDetector(
-                onTap: () {
-                  _showActionSheet(context);
-                },
-                child: SvgPicture.asset(
-                  'assets/Icons/amity_ic_error_message.svg',
-                  package: 'amity_uikit_beta_service',
-                  width: 16,
-                  height: 16,
-                  colorFilter: ColorFilter.mode(
-                    theme.baseColorShade2,
-                    BlendMode.srcIn,
+    return Transform.translate(
+      offset: Offset(
+          ((bounce * bounceOffset) - bounceOffset) * (isUser ? -1 : 1),
+          0), // Bounce effect
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment:
+            (message.syncState == AmityMessageSyncState.FAILED)
+                ? CrossAxisAlignment.center
+                : CrossAxisAlignment.end,
+        children: [
+          if (isUser &&
+              message.createdAt != null &&
+              message.syncState == AmityMessageSyncState.SYNCED) ...[
+            _buildDateWidget(message.createdAt!),
+            const SizedBox(width: 8),
+          ],
+          if (isUser &&
+              message.syncState != AmityMessageSyncState.SYNCED &&
+              message.syncState != AmityMessageSyncState.FAILED) ...[
+            _buildSideTextWidget("Sending..."),
+            const SizedBox(width: 8),
+          ],
+          if (!isUser) ...[
+            _buildAvatarWidget(context),
+            const SizedBox(width: 8),
+          ],
+          if (message.syncState == AmityMessageSyncState.FAILED &&
+              isUser) ...[
+            Center(
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: GestureDetector(
+                  onTap: () {
+                    _showActionSheet(context);
+                  },
+                  child: SvgPicture.asset(
+                    'assets/Icons/amity_ic_error_message.svg',
+                    package: 'amity_uikit_beta_service',
+                    width: 16,
+                    height: 16,
+                    colorFilter: ColorFilter.mode(
+                      theme.baseColorShade2,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        if (!isUser) ...[
-          _buildAvatarWidget(context),
-          const SizedBox(width: 8),
-        ],
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _buildImageWidget(
-                    context,
-                    fileUrl,
-                    filePath,
-                    null,
-                    isUser,
-                    message.syncState != AmityMessageSyncState.SYNCED &&
-                        message.syncState != AmityMessageSyncState.FAILED, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AmityImageViewer(
-                        imageUrl: image?.getUrl(AmityImageSize.LARGE) ?? "",
-                        showDeleteButton: isUser,
-                        showSaveButton: true,
-                        onDelete: () {
-                          deleteMessage(context, true);
-                        },
-                        onSave: () async {
-                          await saveImage(context);
-                        },
-                      ),
-                    ),
-                  );
-                }, state),
-                if (message.syncState == AmityMessageSyncState.FAILED) ...[
-                  const SizedBox(height: 4),
-                  _buildFailToSendText(),
-                ],
-              ],
-            ),
-            if (message.syncState != AmityMessageSyncState.SYNCED &&
-                message.syncState != AmityMessageSyncState.FAILED)
-              _buildUploadingIndicator(),
-            if (message.syncState == AmityMessageSyncState.UPLOADING)
-              _buildCancelDownloadButton(),
+            const SizedBox(width: 8),
           ],
-        ),
-        if (!isUser && message.createdAt != null) ...[
-          const SizedBox(width: 8),
-          _buildDateWidget(message.createdAt!),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _buildImageWidget(
+                      context,
+                      fileUrl,
+                      filePath,
+                      null,
+                      isUser,
+                      message.syncState != AmityMessageSyncState.SYNCED &&
+                          message.syncState != AmityMessageSyncState.FAILED,
+                      () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AmityImageViewer(
+                          imageUrl:
+                              image?.getUrl(AmityImageSize.LARGE) ?? "",
+                          showDeleteButton: isUser,
+                          showSaveButton: true,
+                          onDelete: () {
+                            deleteMessage(context, true);
+                          },
+                          onSave: () async {
+                            await saveImage(context);
+                          },
+                        ),
+                      ),
+                    );
+                  }, state),
+                  if (message.syncState ==
+                      AmityMessageSyncState.FAILED) ...[
+                    const SizedBox(height: 4),
+                    _buildFailToSendText(),
+                  ],
+                ],
+              ),
+              if (message.syncState != AmityMessageSyncState.SYNCED &&
+                  message.syncState != AmityMessageSyncState.FAILED)
+                _buildUploadingIndicator(),
+              if (message.syncState == AmityMessageSyncState.UPLOADING)
+                _buildCancelDownloadButton(),
+            ],
+          ),
+          if (!isUser && message.createdAt != null) ...[
+            const SizedBox(width: 8),
+            _buildDateWidget(message.createdAt!),
+          ],
         ],
-      ],
+      ),
     );
   }
 
@@ -194,7 +203,12 @@ extension ImageMessageWidget on MessageBubbleView {
                   }
                 }
 
-                if (fileUrl != null && !ImageInfoManager().contains(fileUrl)) {
+                if (filePath != null &&
+                    !ImageInfoManager().contains(filePath)) {
+                  ImageInfoManager()
+                      .addImageData(filePath, thumbnailHeight, thumbnailWidth);
+                } else if (fileUrl != null &&
+                    !ImageInfoManager().contains(fileUrl)) {
                   ImageInfoManager()
                       .addImageData(fileUrl, thumbnailHeight, thumbnailWidth);
                 }
@@ -230,11 +244,44 @@ extension ImageMessageWidget on MessageBubbleView {
                   ),
                 );
               }
+              // Special case when it transition from local to remote
+              // If the image is already cached, use the cached image first
+              if (filePath != null && ImageInfoManager().contains(filePath)) {
+                final height =
+                    ImageInfoManager().messageImageCaches[filePath]?.height;
+                final width =
+                    ImageInfoManager().messageImageCaches[filePath]?.width;
+                final locaImage = Image.file(
+                  File(filePath),
+                  fit: BoxFit.contain,
+                  width: width,
+                  height: height,
+                );
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: width ?? 240,
+                      maxHeight: height ?? 240,
+                    ),
+                    child: Stack(
+                      children: [
+                        locaImage,
+                        if (shouldShowOverlay || onLongPress)
+                          _buildMediaOverlay(),
+                      ],
+                    ),
+                  ),
+                );
+              }
               return Container(
-                height:
-                    ImageInfoManager().messageImageCaches[fileUrl]?.height ??
-                        240,
-                width: ImageInfoManager().messageImageCaches[fileUrl]?.width ??
+                height: ImageInfoManager()
+                        .messageImageCaches[filePath ?? fileUrl]
+                        ?.height ??
+                    240,
+                width: ImageInfoManager()
+                        .messageImageCaches[filePath ?? fileUrl]
+                        ?.width ??
                     240,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(

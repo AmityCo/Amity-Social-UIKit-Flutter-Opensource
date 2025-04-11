@@ -95,7 +95,7 @@ extension ChatPageHelpers on AmityChatPage {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => _scrollToBottom(state),
+              onTap: () => _scrollToBottom(state, shouldAnimated: true, millisecBeforeAnimated: (message.data is MessageTextData) ? 50 : 300),
               child: Padding(
                 padding: const EdgeInsets.only(left: 6, top: 6, bottom: 6),
                 child: Row(
@@ -167,7 +167,7 @@ extension ChatPageHelpers on AmityChatPage {
             borderRadius: BorderRadius.circular(20),
             child: Material(
               color: theme.secondaryColor.withOpacity(0.05),
-              child: InkWell(onTap: () => _scrollToBottom(state)),
+              child: InkWell(onTap: () => _scrollToBottom(state, shouldAnimated: true, millisecBeforeAnimated: (message.data is MessageTextData) ? 50 : 300)),
             ),
           ),
         ),
@@ -215,7 +215,7 @@ extension ChatPageHelpers on AmityChatPage {
           child: ClipOval(
             child: Material(
               color: theme.secondaryColor.withOpacity(0.05),
-              child: InkWell(onTap: () => _scrollToBottom(state)),
+              child: InkWell(onTap: () => _scrollToBottom(state),),
             ),
           ),
         ),
@@ -224,12 +224,24 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // Helper method to scroll to bottom
-  void _scrollToBottom(ChatPageState state) {
+  void _scrollToBottom(ChatPageState state, {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
     state.scrollController.animateTo(
       0.0,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
-    );
+    ).then((_) {
+      if (shouldAnimated) {
+        if (millisecBeforeAnimated > 0) {
+          // Delay the bounce animation to allow the media content to load
+          // before the animation starts
+          Future.delayed(Duration(milliseconds: millisecBeforeAnimated), () {
+            bounceLatestMessage();
+          });
+        } else {
+          bounceLatestMessage();
+        }
+      }
+    });
   }
 
   Widget _buildImagePreview(MessageImageData imageData) {

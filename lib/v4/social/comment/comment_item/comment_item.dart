@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -16,7 +17,6 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/bloc/com
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/reply_list.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
@@ -99,12 +99,10 @@ class CommentItem extends BaseElement {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      AmityUserProfilePage(userId: comment.user?.userId ?? ""),
-                ),
-              );
+              final userId = comment.user?.userId;
+              if (userId != null && userId.isNotEmpty) {
+                AmityUIKit4Manager.behavior.commentTrayBehavior.goToUserProfilePage(context, userId);
+              }
             },
             child: SizedBox(
               width: 32,
@@ -151,15 +149,10 @@ class CommentItem extends BaseElement {
                                       padding: const EdgeInsets.only(bottom: 4),
                                       child: GestureDetector(
                                         onTap: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AmityUserProfilePage(
-                                                      userId: comment
-                                                              .user?.userId ??
-                                                          ""),
-                                            ),
-                                          );
+                                          final userId = comment.user?.userId;
+                                          if (userId != null && userId.isNotEmpty) {
+                                            AmityUIKit4Manager.behavior.commentTrayBehavior.goToUserProfilePage(context, userId);
+                                          }
                                         },
                                         child: Row(
                                           children: [
@@ -1131,7 +1124,9 @@ class CommentItem extends BaseElement {
   }
 
   void _goToUserProfilePage(BuildContext context, String userId) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => AmityUserProfilePage(userId: userId)));
+    AmityUIKit4Manager.behavior.commentTrayBehavior.goToUserProfilePage(
+      context,
+      userId,
+    );
   }
 }

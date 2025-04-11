@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
@@ -46,7 +47,6 @@ import 'viewmodel/user_viewmodel.dart';
 
 export 'package:amity_sdk/src/domain/model/session/session_state.dart';
 
-
 enum AmityEndpointRegion {
   sg,
   eu,
@@ -63,19 +63,23 @@ class AmityUIKit {
     String? customEndpoint,
     String? customSocketEndpoint,
     String? customMqttEndpoint,
+    String? customUploadEndpoint,
   }) async {
     Stopwatch stopwatch = Stopwatch()..start();
     AmityRegionalHttpEndpoint? amityEndpoint;
     AmityRegionalMqttEndpoint? amityMqttEndpoint;
+    AmityUploadEndpoint? amityUploadEndpoint;    
 
     switch (region) {
       case AmityEndpointRegion.custom:
         if (customEndpoint != null &&
             customMqttEndpoint != null &&
-            customSocketEndpoint != null) {
+            customSocketEndpoint != null && customUploadEndpoint != null) {
           amityEndpoint = AmityRegionalHttpEndpoint.custom(customEndpoint);
           amityMqttEndpoint =
               AmityRegionalMqttEndpoint.custom(customMqttEndpoint);
+          amityUploadEndpoint =
+              AmityUploadEndpoint.custom(customUploadEndpoint);
         } else {
           log("please provide custom Endpoint");
         }
@@ -85,6 +89,7 @@ class AmityUIKit {
         {
           amityEndpoint = AmityRegionalHttpEndpoint.SG;
           amityMqttEndpoint = AmityRegionalMqttEndpoint.SG;
+          amityUploadEndpoint = AmityUploadEndpoint.SG;
         }
 
         break;
@@ -92,6 +97,7 @@ class AmityUIKit {
         {
           amityEndpoint = AmityRegionalHttpEndpoint.EU;
           amityMqttEndpoint = AmityRegionalMqttEndpoint.EU;
+          amityUploadEndpoint = AmityUploadEndpoint.EU;
         }
 
         break;
@@ -99,6 +105,7 @@ class AmityUIKit {
         {
           amityEndpoint = AmityRegionalHttpEndpoint.US;
           amityMqttEndpoint = AmityRegionalMqttEndpoint.US;
+          amityUploadEndpoint = AmityUploadEndpoint.US;
         }
     }
 
@@ -110,6 +117,7 @@ class AmityUIKit {
           showLogs: true,
           httpEndpoint: amityEndpoint!,
           mqttEndpoint: amityMqttEndpoint!,
+          uploadEndpoint: amityUploadEndpoint!,
         ),
         sycInitialization: true);
     stopwatch.stop();
@@ -325,4 +333,8 @@ class AmityUIKitProvider extends StatelessWidget {
       }),
     );
   }
+}
+
+class AmityUIKit4Manager {
+  static UIKitBehavior behavior = UIKitBehavior();
 }

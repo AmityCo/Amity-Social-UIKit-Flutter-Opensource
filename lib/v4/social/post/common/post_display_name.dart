@@ -1,11 +1,12 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -115,12 +116,13 @@ class PostDisplayName extends StatelessWidget {
   Widget DisplayName(BuildContext context, AmityUser? user) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                AmityUserProfilePage(userId: user?.userId ?? ""),
-          ),
-        );
+        final userId = user?.userId;
+        if (userId != null && userId.isNotEmpty) {
+          AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+            context,
+            userId,
+          );
+        }
       },
       child: Text(
         user?.displayName ?? "Unknown",
@@ -154,12 +156,14 @@ class PostDisplayName extends StatelessWidget {
               (post.target as UserTarget).targetUser?.displayName ?? 'Unknown';
         }
         onTap = () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  AmityUserProfilePage(userId: target.targetUser?.userId ?? ''),
-            ),
-          );
+          final userId = target.targetUser?.userId;
+          if (userId != null && userId.isNotEmpty) {
+            AmityUIKit4Manager.behavior.postContentComponentBehavior
+                .goToUserProfilePage(
+              context,
+              userId,
+            );
+          }
         };
       }
     }

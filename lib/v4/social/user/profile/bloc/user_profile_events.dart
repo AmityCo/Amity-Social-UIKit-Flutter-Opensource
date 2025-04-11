@@ -71,3 +71,12 @@ class UserProfileUserModerationEvent extends UserProfileEvent {
 class UserFollowInfoFetchEvent extends UserProfileEvent {}
 
 class UserProfileExpandHeaderEvent extends UserProfileEvent {}
+
+class ShowUserNameOnAppBarEvent extends UserProfileEvent {
+  final bool showUserName;
+
+  const ShowUserNameOnAppBarEvent({required this.showUserName});
+
+  @override
+  List<Object> get props => [showUserName];
+}

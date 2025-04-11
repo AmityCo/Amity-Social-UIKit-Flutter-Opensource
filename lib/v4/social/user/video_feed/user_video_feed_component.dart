@@ -58,29 +58,30 @@ class UserVideoFeedComponent extends NewBaseComponent {
               ],
             ));
           } else {
-            return SliverMainAxisGroup(slivers: [
-              SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                          childCount: state.posts.length, (context, index) {
-                        final post = state.posts[index];
-                        return UserVideoFeedElement(
-                          post: post,
-                        );
-                      }),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 8.0,
-                        crossAxisSpacing: 8.0,
-                        childAspectRatio: 1.0,
-                      ))),
-              if (state.isLoading && state.posts.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: getSkeleton(theme, configProvider),
-                )
-            ]);
+            return DecoratedSliver(
+                decoration: BoxDecoration(color: theme.backgroundColor),
+                sliver: SliverMainAxisGroup(slivers: [
+                  SliverPadding(
+                      padding: const EdgeInsets.all(16),
+                      sliver: SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                              childCount: state.posts.length, (context, index) {
+                            final post = state.posts[index];
+                            return UserVideoFeedElement(
+                                post: post, theme: theme);
+                          }),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 8.0,
+                            crossAxisSpacing: 8.0,
+                            childAspectRatio: 1.0,
+                          ))),
+                  if (state.isLoading && state.posts.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: getSkeleton(theme, configProvider),
+                    )
+                ]));
           }
         },
       ),
@@ -91,39 +92,33 @@ class UserVideoFeedComponent extends NewBaseComponent {
     return Container(
       color: theme.backgroundColor,
       width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Shimmer(
-            linearGradient: configProvider.getShimmerGradient(),
-            child: ListView.separated(
-              padding: const EdgeInsets.all(0),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) {
-                return Divider(
-                  color: theme.baseColorShade4,
-                  thickness: 8,
-                );
-              },
-              itemBuilder: (context, index) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ShimmerLoading(
-                      isLoading: true,
-                      child: skeletonRow(),
-                    ),
-                  ],
-                );
-              },
-              itemCount: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Shimmer(
+          linearGradient: configProvider.getShimmerGradient(),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+              childAspectRatio: 1.0,
             ),
+            itemCount: 6, // Show 6 skeleton items (3 rows of 2)
+            itemBuilder: (context, index) {
+              return ShimmerLoading(
+                isLoading: true,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.baseColorShade4,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              );
+            },
           ),
-        ],
+        ),
       ),
     );
   }

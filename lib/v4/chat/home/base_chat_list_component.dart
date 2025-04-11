@@ -137,23 +137,6 @@ class BaseChatListComponent extends NewBaseComponent {
       message: errorMessage,
       closeText: 'OK',
     );
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext dialogContext) {
-    //     return AlertDialog(
-    //       title: Text(errorTitle),
-    //       content: Text(errorMessage),
-    //       actions: <Widget>[
-    //         TextButton(
-    //           onPressed: () {
-    //             Navigator.of(dialogContext).pop();
-    //           },
-    //           child: const Text('OK'),
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
   }
 
   Widget renderChatListItem(BuildContext context, ChatListType chatListType,

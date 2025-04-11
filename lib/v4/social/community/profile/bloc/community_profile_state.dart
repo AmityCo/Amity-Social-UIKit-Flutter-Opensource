@@ -1,6 +1,6 @@
 part of 'community_profile_bloc.dart';
 
-enum CommunityProfileTabIndex { feed, pin }
+enum CommunityProfileTabIndex { feed, pin, image, video }
 
 class CommunityProfileState extends Equatable {
   const CommunityProfileState({

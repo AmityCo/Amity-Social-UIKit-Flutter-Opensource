@@ -11,6 +11,7 @@ class UserProfileState extends Equatable {
     this.selectedIndex = UserProfileTabIndex.feed,
     this.isOwnUserProfile = true,
     this.isHeaderExpanded = false,
+    this.showUserNameOnAppBar = false,
   });
 
   final String userId;
@@ -20,6 +21,7 @@ class UserProfileState extends Equatable {
   final UserProfileTabIndex selectedIndex;
   final bool isOwnUserProfile;
   final bool isHeaderExpanded;
+  final bool showUserNameOnAppBar;
 
   @override
   List<Object?> get props => [
@@ -30,6 +32,7 @@ class UserProfileState extends Equatable {
         selectedIndex,
         isOwnUserProfile,
         isHeaderExpanded,
+        showUserNameOnAppBar
       ];
 
   UserProfileState copyWith({
@@ -39,6 +42,7 @@ class UserProfileState extends Equatable {
     AmityUserFollowInfo? userFollowInfo,
     UserProfileTabIndex? selectedIndex,
     bool? isHeaderExpanded,
+    bool? showUserNameOnAppBar,
   }) {
     return UserProfileState(
       userId: userId ?? this.userId,
@@ -48,6 +52,7 @@ class UserProfileState extends Equatable {
       selectedIndex: selectedIndex ?? this.selectedIndex,
       isOwnUserProfile: AmityCoreClient.getUserId() == userId,
       isHeaderExpanded: isHeaderExpanded ?? this.isHeaderExpanded,
+      showUserNameOnAppBar: showUserNameOnAppBar ?? this.showUserNameOnAppBar,
     );
   }
 }

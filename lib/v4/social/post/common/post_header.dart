@@ -258,7 +258,7 @@ class AmityPostHeader extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                               Text(
+                              Text(
                                 context.l10n.post_report,
                                 style: const TextStyle(
                                   color: Color(0xFF292B32),
@@ -295,7 +295,7 @@ class AmityPostHeader extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                               Text(
+                              Text(
                                 context.l10n.post_unreport,
                                 style: const TextStyle(
                                   color: Color(0xFF292B32),
@@ -349,9 +349,7 @@ class AmityPostHeader extends StatelessWidget {
         //success
       }).onError((error, stackTrace) {
         _showToast(
-            context,
-            context.l10n.error_delete_post,
-            AmityToastIcon.warning);
+            context, context.l10n.error_delete_post, AmityToastIcon.warning);
       });
     }
 
@@ -405,7 +403,7 @@ class AmityPostHeader extends StatelessWidget {
 
                         showDialog(
                           context: context,
-                          builder: (BuildContext context) {
+                          builder: (BuildContext innerContext) {
                             return CupertinoAlertDialog(
                               title: Text(
                                   context.l10n.post_edit_globally_featured),
@@ -420,7 +418,7 @@ class AmityPostHeader extends StatelessWidget {
                                         fontWeight: FontWeight.w400,
                                       )),
                                   onPressed: () {
-                                    Navigator.of(context).pop();
+                                    Navigator.of(innerContext).pop();
                                   },
                                 ),
                                 CupertinoDialogAction(
@@ -433,7 +431,7 @@ class AmityPostHeader extends StatelessWidget {
                                     ),
                                   ),
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    Navigator.pop(innerContext);
                                     onEdit();
                                   },
                                 ),
@@ -548,7 +546,7 @@ class AmityPostHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-             Text(
+            Text(
               context.l10n.poll_close,
               style: const TextStyle(
                 color: Color(0xFF292B32),

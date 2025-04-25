@@ -62,11 +62,8 @@ extension PostComposerView on AmityPostComposerPage {
     );
   }
 
-  Widget buildTextField(BuildContext context,
-      String? communityId,
-      double minBottomSheetSize,
-      double maxBottomSheetSize) {
-
+  Widget buildTextField(BuildContext context, String? communityId,
+      double minBottomSheetSize, double maxBottomSheetSize) {
     return MentionTextField(
       controller: textController,
       theme: theme,
@@ -84,17 +81,14 @@ extension PostComposerView on AmityPostComposerPage {
         hintStyle: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.normal,
-            color: theme.baseColorShade3)
-        ,
+            color: theme.baseColorShade3),
       ),
       style: TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.normal,
         color: theme.baseColor,
       ),
-      onChanged: (value) {
-      },
-
+      onChanged: (value) {},
     );
   }
 
@@ -106,32 +100,36 @@ extension PostComposerView on AmityPostComposerPage {
       case 1:
         return AspectRatio(
           aspectRatio: 1,
-          child: _mediaView(context, files.entries.first),
+          child: _mediaView(context, files.entries.first, 0),
         );
 
       case 2:
         return AspectRatio(
           aspectRatio: 1,
           child: Row(children: [
-            Expanded(child: _mediaView(context, files.entries.toList()[0])),
-            Expanded(child: _mediaView(context, files.entries.toList()[1]))
+            Expanded(child: _mediaView(context, files.entries.toList()[0], 0)),
+            Expanded(child: _mediaView(context, files.entries.toList()[1], 1))
           ]),
         );
 
       default:
-        return GridView.count(
-          crossAxisCount: 3,
+        final entriesList = files.entries.toList();
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+          ),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          children: files.entries.map((entry) {
-            return _mediaView(context, entry);
-          }).toList(),
+          itemCount: entriesList.length,
+          itemBuilder: (context, index) {
+            return _mediaView(context, entriesList[index], index);
+          },
         );
     }
   }
 
   Widget _mediaView(BuildContext context,
-      MapEntry<String, AmityFileInfoWithUploadStatus> file) {
+      MapEntry<String, AmityFileInfoWithUploadStatus> file, int index) {
     var progress = file.value.progress;
     var isError = file.value.isError;
     var isUploaded = file.value.isUploaded;
@@ -269,9 +267,10 @@ extension PostComposerView on AmityPostComposerPage {
                         PostComposerDeleteFileEvent(filePath: file.key),
                       );
                   if (selectedMediaType == FileType.image) {
-                    existingImages.remove(file.value.uploadedUrl);
+                    existingImages.removeAt(index);
                   } else if (selectedMediaType == FileType.video) {
-                    existingVideos.remove(file.value.uploadedUrl);
+                    existingVideos.removeAt(index);
+                    existingVideoObjects.removeAt(index);
                   }
                 },
                 child: ClipRRect(

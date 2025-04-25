@@ -1,10 +1,12 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/image_viewer.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 
 class PostContentImage extends StatelessWidget {
   final List<AmityPost> posts;
-  const PostContentImage({super.key, required this.posts});
+  final AmityThemeColor theme;
+  const PostContentImage({super.key, required this.posts, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +19,7 @@ class PostContentImage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(2.0),
           decoration: BoxDecoration(
+            color: theme.baseColorShade4,
             borderRadius: borderRadius,
             image: DecorationImage(
               image: NetworkImage(fileUrl),

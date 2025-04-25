@@ -15,6 +15,7 @@ import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_compo
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/utils/CustomBottomSheet/custom_buttom_sheet.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,10 +33,11 @@ class AmityPostComposerPage extends NewBasePage {
   late String currentPostText = '';
   late int currentUrlsCount = 0;
   Map<String, AmityFileInfoWithUploadStatus> selectedFiles = {};
+  Set<String>? existingFileKeys;
   FileType? selectedMediaType;
-  Map<String, AmityImage> existingImages = {};
-  Map<String, VideoData> existingVideos = {};
-  List<AmityVideo>? currentVideos;
+  List<AmityImage> existingImages = [];
+  List<VideoData> existingVideos = [];
+  List<AmityVideo> existingVideoObjects = [];
   bool isPostButtonEnabled = false;
   bool isTextChanged = false;
   bool isFileCountChanged = false;
@@ -48,30 +50,34 @@ class AmityPostComposerPage extends NewBasePage {
   @override
   Widget buildPage(BuildContext context) {
     _getAppName();
-    String? communityId = (options.targetType == AmityPostTargetType.COMMUNITY &&
-        options.targetId != null)
-        ? options.targetId
-        : null;
+    String? communityId =
+        (options.targetType == AmityPostTargetType.COMMUNITY &&
+                options.targetId != null)
+            ? options.targetId
+            : null;
 
     if (options.mode == AmityPostComposerMode.edit) {
       AmityPost post = options.post!;
       currentPostText = (post.data as TextData).text ?? '';
+
+      existingImages.clear();
+      existingVideos.clear();
 
       if (post.children?.isNotEmpty ?? false) {
         for (var child in post.children!) {
           var postData = child.data;
           if (postData is VideoData) {
             var data = postData;
-            var url =
-                data.thumbnail?.getUrl(AmityImageSize.MEDIUM) ?? data.postId;
+            existingVideos.add(data);
 
-            existingVideos[url] = (data);
+            data.getVideo(AmityVideoQuality.LOW).then((video) {
+              existingVideoObjects.add(video);
+            });
 
             selectedMediaType = FileType.video;
           } else if (postData is ImageData) {
             var data = postData;
-            var url = data.image?.getUrl(AmityImageSize.MEDIUM);
-            existingImages[url!] = (data.image!);
+            existingImages.add(data.image!);
             selectedMediaType = FileType.image;
           }
         }
@@ -91,13 +97,14 @@ class AmityPostComposerPage extends NewBasePage {
           builder: (context, state) {
             if (existingImages.isNotEmpty || existingVideos.isNotEmpty) {
               if (selectedMediaType == FileType.image) {
-                List<String> uploadedUrlsKeys = existingImages.keys.toList();
+                List<String> uploadedUrlsKeys = existingImages.map((e) {
+                  return e.getUrl(AmityImageSize.MEDIUM);
+                }).toList();
                 context.read<PostComposerBloc>().add(
                       PostComposerGetImageUrlsEvent(urls: uploadedUrlsKeys),
                     );
               } else if (selectedMediaType == FileType.video) {
-                List<VideoData> uploadedUrlsKeys =
-                    existingVideos.values.toList();
+                List<VideoData> uploadedUrlsKeys = existingVideos.toList();
                 context.read<PostComposerBloc>().add(
                       PostComposerGetVideoUrlsEvent(videos: uploadedUrlsKeys),
                     );
@@ -116,48 +123,28 @@ class AmityPostComposerPage extends NewBasePage {
 
             if (state is PostComposerSelectedFiles) {
               selectedFiles = state.selectedFiles;
+              existingFileKeys ??= selectedFiles.keys.toSet();
+              final newFileKeys = selectedFiles.keys.toSet();
 
-              if (options.mode == AmityPostComposerMode.create) {
-                if (state.selectedFiles.isEmpty) {
-                  isPostButtonEnabled = false;
-                  selectedMediaType = null;
-                } else {
-                  bool isAllImageUploaded = selectedFiles.values
-                      .every((image) => image.isUploaded == true);
-
-                  if (selectedFiles.entries.first.value.type ==
-                      FileType.video) {
-                    selectedMediaType = FileType.video;
-                  } else if (selectedFiles.entries.first.value.type ==
-                      FileType.image) {
-                    selectedMediaType = FileType.image;
-                  }
-                  if (isAllImageUploaded) {
-                    isMediaReady = true;
-                    context.read<AmityToastBloc>().add(AmityToastDismiss());
-                  } else {
-                    isMediaReady = false;
-                  }
-                  updatePostButtonStatus();
-                }
+              if (state.selectedFiles.isEmpty) {
+                selectedMediaType = null;
+                isFileCountChanged = !setEquals(existingFileKeys, newFileKeys);
               } else {
-                if (selectedMediaType == FileType.image) {
-                  if (currentUrlsCount != selectedFiles.length) {
-                    isFileCountChanged = true;
-                  } else {
-                    isFileCountChanged = false;
-                  }
-                } else if (selectedMediaType == FileType.video) {
-                  if (currentUrlsCount != selectedFiles.length) {
-                    isFileCountChanged = true;
-                  } else {
-                    isFileCountChanged = false;
-                  }
+                if (selectedFiles.entries.first.value.type == FileType.video) {
+                  selectedMediaType = FileType.video;
+                } else if (selectedFiles.entries.first.value.type ==
+                    FileType.image) {
+                  selectedMediaType = FileType.image;
                 }
-                updatePostButtonStatus();
-
-                currentVideos = state.currentVideos;
+                if (currentUrlsCount != selectedFiles.length) {
+                  isFileCountChanged = true;
+                } else {
+                  isFileCountChanged =
+                      !setEquals(existingFileKeys, newFileKeys);
+                }
+                checkAllFilesAreUploaded(context);
               }
+              updatePostButtonStatus();
             }
 
             double maxBottomSheetSize = 0.3;
@@ -181,13 +168,14 @@ class AmityPostComposerPage extends NewBasePage {
                             child: Column(
                               children: [
                                 const SizedBox(height: 20),
-                                buildTextField(context, communityId, minBottomSheetSize, maxBottomSheetSize),
+                                buildTextField(context, communityId,
+                                    minBottomSheetSize, maxBottomSheetSize),
                                 const SizedBox(height: 20),
                                 Container(
                                   color: Colors.transparent,
                                   child: mediaListView(context, selectedFiles),
                                 ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 200),
                               ],
                             ),
                           ),
@@ -195,39 +183,39 @@ class AmityPostComposerPage extends NewBasePage {
                       ),
                     ],
                   ),
-                  if (options.mode == AmityPostComposerMode.create)
-                    CustomBottomSheet(
-                      maxSize: maxBottomSheetSize,
-                      minSize: minBottomSheetSize,
-                      theme: theme,
-                      collapsedContent: AmityMediaAttachmentComponent(
-                        onCameraTap: () async {
+                  // if (options.mode == AmityPostComposerMode.create)
+                  CustomBottomSheet(
+                    maxSize: maxBottomSheetSize,
+                    minSize: minBottomSheetSize,
+                    theme: theme,
+                    collapsedContent: AmityMediaAttachmentComponent(
+                      onCameraTap: () async {
+                        onCameraTap(context);
+                      },
+                      onImageTap: () async {
+                        pickMultipleFiles(context, FileType.image,
+                            maxFiles: 10);
+                      },
+                      onVideoTap: () async {
+                        pickMultipleFiles(context, FileType.video,
+                            maxFiles: 10);
+                      },
+                      mediaType: selectedMediaType,
+                    ),
+                    expandedContent: AmityDetailedMediaAttachmentComponent(
+                        onCameraTap: () {
                           onCameraTap(context);
                         },
-                        onImageTap: () async {
+                        onImageTap: () {
                           pickMultipleFiles(context, FileType.image,
                               maxFiles: 10);
                         },
-                        onVideoTap: () async {
+                        onVideoTap: () {
                           pickMultipleFiles(context, FileType.video,
                               maxFiles: 10);
                         },
-                        mediaType: selectedMediaType,
-                      ),
-                      expandedContent: AmityDetailedMediaAttachmentComponent(
-                          onCameraTap: () {
-                            onCameraTap(context);
-                          },
-                          onImageTap: () {
-                            pickMultipleFiles(context, FileType.image,
-                                maxFiles: 10);
-                          },
-                          onVideoTap: () {
-                            pickMultipleFiles(context, FileType.video,
-                                maxFiles: 10);
-                          },
-                          mediaType: selectedMediaType),
-                    ),
+                        mediaType: selectedMediaType),
+                  ),
                 ],
               ),
             );
@@ -238,10 +226,64 @@ class AmityPostComposerPage extends NewBasePage {
   }
 
   void updatePostButtonStatus() {
-    if (isTextChanged || isFileCountChanged || isMediaReady) {
-      isPostButtonEnabled = true;
-    } else {
+    // For create mode, enable button if there's text or files
+    if (options.mode == AmityPostComposerMode.create) {
+      if (textController.text.isNotEmpty) {
+        isPostButtonEnabled = true;
+      } else if (selectedFiles.isNotEmpty) {
+        isPostButtonEnabled = isMediaReady; // Only enable if media is ready
+      } else {
+        isPostButtonEnabled = false; // Nothing to post
+      }
+      return;
+    }
+
+    // For edit mode, check if anything changed
+    if (options.mode == AmityPostComposerMode.edit) {
+      // Check if text and files are empty
+      if (textController.text.isEmpty && selectedFiles.isEmpty) {
+        isPostButtonEnabled = false;
+        return;
+      }
+
+      // If nothing changed, disable button
+      if (!isTextChanged && !isFileCountChanged) {
+        isPostButtonEnabled = false;
+        return;
+      }
+
+      // If files changed, check if they're all uploaded
+      if (isFileCountChanged && selectedFiles.isNotEmpty) {
+        isPostButtonEnabled = isMediaReady;
+        return;
+      }
+
+      // If file count changed and files are empty, enable button
+      if (isFileCountChanged && selectedFiles.isEmpty) {
+        isPostButtonEnabled = true;
+        return;
+      }
+
+      // If only text changed (no files or no file changes), enable button
+      if (isTextChanged) {
+        isPostButtonEnabled = true;
+        return;
+      }
+
+      // print('No changes detected');
+      // Default case - nothing valid to update
       isPostButtonEnabled = false;
+    }
+  }
+
+  void checkAllFilesAreUploaded(BuildContext context) {
+    bool isAllImageUploaded =
+        selectedFiles.values.every((image) => image.isUploaded == true);
+    if (isAllImageUploaded) {
+      isMediaReady = true;
+      context.read<AmityToastBloc>().add(AmityToastDismiss());
+    } else {
+      isMediaReady = false;
     }
   }
 
@@ -300,9 +342,9 @@ class AmityPostComposerPage extends NewBasePage {
       final text = (options.post!.data as TextData).text ?? '';
       var mentionList = List<AmityUserMentionMetadata>.empty();
 
-      if(options.post!.metadata != null) {
-        final mentionedGetter = AmityMentionMetadataGetter(
-            metadata: options.post!.metadata!);
+      if (options.post!.metadata != null) {
+        final mentionedGetter =
+            AmityMentionMetadataGetter(metadata: options.post!.metadata!);
         mentionList = mentionedGetter.getMentionedUsers();
       }
 
@@ -339,7 +381,15 @@ class AmityPostComposerPage extends NewBasePage {
 
   void _editPost(BuildContext context) {
     if (selectedMediaType == FileType.image) {
-      List<AmityImage> images = existingImages.values.toList();
+      List<AmityImage> images = existingImages.toList();
+      var imageList = selectedFiles.entries;
+      for (var image in imageList) {
+        if (image.value.fileInfo != null &&
+            image.value.fileInfo!.getFileProperties != null) {
+          images.add(AmityImage(image.value.fileInfo!.getFileProperties!));
+        }
+      }
+
       options.post
           ?.edit()
           .image(images)
@@ -349,24 +399,67 @@ class AmityPostComposerPage extends NewBasePage {
           .then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
-        _showToast(context, context.l10n.error_edit_post,
-            AmityToastIcon.warning);
+        _showToast(
+            context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
     } else {
       final postEditBuilder = options.post?.edit();
+      List<AmityVideo> videosToUpload = [];
 
-      if (currentVideos != null) {
-        postEditBuilder?.video(currentVideos!);
+      // First, add all existing videos that haven't been deleted
+      for (var video in existingVideoObjects) {
+        if (video.getFileProperties != null) {
+          String videoUrl = video.getFileProperties!.fileUrl ?? "";
+          // Check if this video should still be included
+          // (it's still in the selectedFiles list)
+          bool shouldInclude = false;
+          for (var entry in selectedFiles.entries) {
+            if (entry.key == videoUrl) {
+              shouldInclude = true;
+              break;
+            }
+          }
+
+          if (shouldInclude || selectedFiles.isEmpty) {
+            videosToUpload.add(video);
+          }
+        }
       }
-      postEditBuilder
-          ?.text(textController.text)
-          .build()
-          .update()
-          .then((post) {
+
+      // Then add any newly uploaded videos
+      for (var entry in selectedFiles.entries) {
+        // Skip videos that are already in existingVideoObjects
+        bool isExisting = false;
+        for (var video in existingVideoObjects) {
+          String url = video.getFileProperties?.fileUrl ?? "";
+          if (url == entry.key) {
+            isExisting = true;
+            break;
+          }
+        }
+
+        // If it's a new video, add it
+        if (!isExisting &&
+            entry.value.fileInfo != null &&
+            entry.value.fileInfo!.getFileProperties != null) {
+          AmityVideo video =
+              AmityVideo(entry.value.fileInfo!.getFileProperties!);
+          videosToUpload.add(video);
+        }
+      }
+
+      if (videosToUpload.isNotEmpty) {
+        postEditBuilder?.video(videosToUpload);
+      } else {
+        // If all videos were removed, send an empty list
+        postEditBuilder?.video([]);
+      }
+
+      postEditBuilder?.text(textController.text).build().update().then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
-        _showToast(context, context.l10n.error_edit_post,
-            AmityToastIcon.warning);
+        _showToast(
+            context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
     }
   }
@@ -398,22 +491,19 @@ class AmityPostComposerPage extends NewBasePage {
               AmityVideo(amityVideo.value.fileInfo!.getFileProperties!);
           videos.add(video);
         }
-        postCreatorBuilder = dataTypeSelector
-            .video(videos)
-            .text(textController.text);
+        postCreatorBuilder =
+            dataTypeSelector.video(videos).text(textController.text);
       } else {
         List<AmityImage> images = [];
         var imageList = selectedFiles.entries;
         for (var image in imageList) {
           images.add(AmityImage(image.value.fileInfo!.getFileProperties!));
         }
-        postCreatorBuilder = dataTypeSelector
-            .image(images)
-            .text(textController.text);
+        postCreatorBuilder =
+            dataTypeSelector.image(images).text(textController.text);
       }
     } else {
-      postCreatorBuilder = dataTypeSelector
-          .text(textController.text);
+      postCreatorBuilder = dataTypeSelector.text(textController.text);
     }
     final mentionMetadataList = textController.getAmityMentionMetadata();
     final mentionUserIds = textController.getMentionUserIds();
@@ -427,8 +517,8 @@ class AmityPostComposerPage extends NewBasePage {
         .then((post) {
       _onPostSuccess(context, post);
     }).onError((error, stackTrace) {
-      _showToast(context, context.l10n.error_create_post,
-          AmityToastIcon.warning);
+      _showToast(
+          context, context.l10n.error_create_post, AmityToastIcon.warning);
     });
   }
 

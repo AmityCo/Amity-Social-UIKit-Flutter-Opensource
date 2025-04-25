@@ -21,9 +21,9 @@ class PostChildrenContent extends StatelessWidget {
     if(noChildrenPost) {
       return Container();
     } else if (post.children!.first.data is ImageData) {
-      return PostContentImage(posts: post.children!);
+      return PostContentImage(posts: post.children!, theme: theme);
     } else if (post.children!.first.data is VideoData) {
-      return PostContentVideo(posts: post.children!);
+      return PostContentVideo(posts: post.children!, theme: theme);
     } else if (post.children!.first.data is PollData) {
       return PostPollContent(post: post.children!.first, style: style, theme: theme, hideMenu: hideMenu, goToDetail: (){},);
     } else {

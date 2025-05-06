@@ -107,9 +107,25 @@ class CommentScreenState extends State<CommentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var postData =
-        Provider.of<PostVM>(context, listen: false).amityPost.data as TextData;
     final theme = Theme.of(context);
+    var postData =
+        Provider.of<PostVM>(context, listen: false).amityPost?.data;
+    if (postData == null) {
+      return ThemeConfig(
+          child: Scaffold(
+              backgroundColor: Provider.of<AmityUIConfiguration>(context)
+                  .appColors
+                  .baseBackground,
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Provider.of<AmityUIConfiguration>(context)
+                    .appColors
+                    .primary,
+              ),
+            ),
+          )
+      );
+    }
     // final mediaQuery = MediaQuery.of(context);
     // final bHeight = mediaQuery.size.height - mediaQuery.padding.top;
 

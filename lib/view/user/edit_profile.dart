@@ -149,7 +149,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 Provider.of<AmityUIConfiguration>(context, listen: false)
                     .logicConfig
                     .onEditProfileSaved
-                    ?.call();
+                    ?.call(_displayNameController.text);
 
                 Navigator.of(context).pop();
                 AmityDialog().showAlertErrorDialog(

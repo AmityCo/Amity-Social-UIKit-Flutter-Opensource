@@ -694,67 +694,136 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(left: 16),
-                child: Column(
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        widget.community.isPublic!
-                            ? const SizedBox()
-                            : const Icon(
-                                Icons.lock,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                        widget.community.isPublic!
-                            ? const SizedBox()
-                            : const SizedBox(
-                                width: 7,
-                              ),
-                        Text(
-                          widget.community.displayName != null
-                              ? widget.community.displayName!
-                              : "Community",
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                widget.community.isPublic!
+                                    ? const SizedBox()
+                                    : const Icon(
+                                        Icons.lock,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                widget.community.isPublic!
+                                    ? const SizedBox()
+                                    : const SizedBox(
+                                        width: 7,
+                                      ),
+                                Text(
+                                  widget.community.displayName != null
+                                      ? widget.community.displayName!
+                                      : "Community",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 7,
+                                ),
+                                widget.community.isOfficial!
+                                    ? Provider.of<AmityUIConfiguration>(context)
+                                        .iconConfig
+                                        .officialIcon(
+                                          iconSize: 16,
+                                          color: Colors.white,
+                                        )
+                                    : const SizedBox(),
+                              ],
+                            ),
+                            widget.community.categories == null
+                                ? const SizedBox()
+                                : Text(
+                                    widget.community.displayName != null
+                                        ? widget.community.categories!.isEmpty
+                                            ? "no category"
+                                            : widget.community.categories![0]
+                                                    ?.name ??
+                                                ""
+                                        : "",
+                                    style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                            const SizedBox(
+                              height: 16,
+                            )
+                          ],
                         ),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        widget.community.isOfficial!
-                            ? Provider.of<AmityUIConfiguration>(context)
-                                .iconConfig
-                                .officialIcon(
-                                  iconSize: 16,
-                                  color: Colors.white,
-                                )
-                            : const SizedBox(),
-                      ],
+                      ),
                     ),
-                    widget.community.categories == null
-                        ? const SizedBox()
-                        : Text(
-                            widget.community.displayName != null
-                                ? widget.community.categories!.isEmpty
-                                    ? "no category"
-                                    : widget.community.categories![0]?.name ??
-                                        ""
-                                : "",
-                            style: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: 16,
-                              color: Colors.white,
+                    SizedBox(
+                      width: 120,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(32),
+                          child: Material(
+                            color: Colors.white,
+                            child: InkWell(
+                              onTap: () {
+                                Provider.of<AmityUIConfiguration>(context,
+                                        listen: false)
+                                    .logicConfig
+                                    .onTappedHomepage
+                                    ?.call(
+                                      communityId: widget
+                                          .community.metadata?['communityId'],
+                                    );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(32),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 4,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.home_rounded,
+                                      size: 16,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      'Homepage',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                    const SizedBox(
-                      height: 16,
-                    )
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

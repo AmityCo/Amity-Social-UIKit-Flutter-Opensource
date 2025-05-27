@@ -312,12 +312,14 @@ class AmityLogicConfig {
   final bool replaceModeratorProfile;
   final bool replaceModeratorProfileNavigation;
   final void Function({dynamic communityId})? onCommunityScreen;
+  final void Function({dynamic communityId})? onTappedHomepage;
   final void Function(String displayName)? onEditProfileSaved;
 
   AmityLogicConfig({
     this.replaceModeratorProfile = false,
     this.replaceModeratorProfileNavigation = false,
     this.onCommunityScreen,
+    this.onTappedHomepage,
     this.onEditProfileSaved,
   });
 }

@@ -51,7 +51,7 @@ dependencies:
   permission_handler: ^11.3.1
   intrinsic_dimension: ^0.3.1
   flutter_linkify: ^6.0.0
-  camera: 0.10.6
+  camera: ^0.11.0+1
   equatable: ^2.0.0
   gradient_widgets: ^0.6.0
   cached_network_image: ^3.3.1

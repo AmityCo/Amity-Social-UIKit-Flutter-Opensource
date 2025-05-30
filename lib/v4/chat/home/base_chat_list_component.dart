@@ -1,16 +1,18 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/archive/archived_chat_list_empty_state.dart';
+import 'package:amity_uikit_beta_service/v4/chat/group_message/group_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/bloc/chat_list_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/core/channel_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
-import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
+import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,105 +30,111 @@ class BaseChatListComponent extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
-    return BlocProvider<ChatListBloc>(
-      create: (context) => ChatListBloc(
-          chatListType: chatListType,
-          toastBloc: context.read<AmityToastBloc>()),
-      child: BlocBuilder<ChatListBloc, ChatListState>(
-        builder: (context, state) {
-          scrollController.addListener(() {
-            if (scrollController.position.pixels ==
-                scrollController.position.maxScrollExtent) {
-              context.read<ChatListBloc>().addEvent(ChatListLoadNextPage());
-            }
-          });
-
-          if (state.showArchiveErrorDialog) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _showArchiveErrorDialog(context, state.error?.title ?? "Error",
-                  state.error?.message ?? "An error occurred");
-              context
-                  .read<ChatListBloc>()
-                  .addEvent(ChatListEventResetDialogState());
-            });
+    return BlocBuilder<ChatListBloc, ChatListState>(
+      builder: (context, state) {
+        scrollController.addListener(() {
+          if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent) {
+            context.read<ChatListBloc>().addEvent(ChatListLoadNextPage());
           }
+        });
 
-          if (state.isLoading && state.channels.isEmpty) {
-            return ChatListSkeletonLoadingView();
-          } else if (!state.isLoading && state.channels.isEmpty) {
-            if (chatListType == ChatListType.ARCHIVED) {
-              return ArchivedChatListEmptyState(theme: theme);
-            } else {
-              return ChatListEmptyState(theme: theme);
-            }
+        if (state.showArchiveErrorDialog) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showArchiveErrorDialog(context, state.error?.title ?? "Error",
+                state.error?.message ?? "An error occurred");
+            context
+                .read<ChatListBloc>()
+                .addEvent(ChatListEventResetDialogState());
+          });
+        }
+
+        if (state.isLoading && state.channels.isEmpty) {
+          return ChatListSkeletonLoadingView();
+        } else if (!state.isLoading && state.channels.isEmpty) {
+          if (chatListType == ChatListType.ARCHIVED) {
+            return ArchivedChatListEmptyState(theme: theme);
           } else {
-            return Column(
-              children: [
-                if (!state.isPushNotificationEnabled)
-                  Container(
-                    color: theme.backgroundShade1Color,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/Icons/amity_ic_chat_mute.svg',
-                          package: 'amity_uikit_beta_service',
-                          width: 12,
-                          height: 12,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          "You have disabled notifications for chat",
-                          style: TextStyle(
-                              color: theme.baseColorShade1,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                  ),
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: state.channels.length,
-                    itemBuilder: (context, index) {
-                      final channel = state.channels[index];
-                      final channelMember = state.channelMembers[
-                          channel.channelId]; // Other participant
-
-                      return GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          final channelId = channel.channelId;
-                          final userId = channelMember?.userId;
-                          final displayName = channelMember?.user?.displayName;
-                          final avatarUrl = channelMember?.user?.avatarUrl;
-
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => AmityChatPage(
-                                key: Key("${channelId ?? ""}_${userId ?? ""}"),
-                                channelId: channelId,
-                                userId: userId ?? "",
-                                userDisplayName: displayName ?? "",
-                                avatarUrl: avatarUrl ?? "",
-                              ),
-                            ),
-                          );
-                        },
-                        child: renderChatListItem(
-                            context, chatListType, channel, channelMember),
-                      );
-                    },
+            return ChatListEmptyState(theme: theme);
+          }
+        } else {
+          return Column(
+            children: [
+              if (!state.isPushNotificationEnabled)
+                Container(
+                  color: theme.backgroundShade1Color,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/Icons/amity_ic_chat_mute.svg',
+                        package: 'amity_uikit_beta_service',
+                        width: 12,
+                        height: 12,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        "You have disabled notifications for chat",
+                        style: TextStyle(
+                            color: theme.baseColorShade1,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            );
-          }
-        },
-      ),
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: state.channels.length,
+                  itemBuilder: (context, index) {
+                    final channel = state.channels[index];
+                    final channelMember = state
+                        .channelMembers[channel.channelId]; // Other participant
+
+                    return GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          if (channel.amityChannelType ==
+                              AmityChannelType.COMMUNITY) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => GroupChatPage(
+                                        channelId: channel.channelId,
+                                      )),
+                            );
+                          } else {
+                            final channelId = channel.channelId;
+                            final userId = channelMember?.userId;
+                            final displayName =
+                                channelMember?.user?.displayName;
+                            final avatarUrl = channelMember?.user?.avatarUrl;
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AmityChatPage(
+                                  key:
+                                      Key("${channelId ?? ""}_${userId ?? ""}"),
+                                  channelId: channelId,
+                                  userId: userId ?? "",
+                                  userDisplayName: displayName ?? "",
+                                  avatarUrl: avatarUrl ?? "",
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: renderChatListItem(
+                            context, chatListType, channel, channelMember));
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 
@@ -180,31 +188,34 @@ class BaseChatListComponent extends NewBaseComponent {
           }
           return false;
         },
-        background: Container(
-          color: theme.baseColorShade2,
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                assetIcon,
-                package: 'amity_uikit_beta_service',
-                width: 28,
-                height: 28,
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
+        background: Builder(builder: (context) {
+          final theme = Theme.of(context).extension<AmityThemeColor>()!;
+          return Container(
+            color: theme.baseColorShade2,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  assetIcon,
+                  package: 'amity_uikit_beta_service',
+                  width: 28,
+                  height: 28,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                actionText,
-                style: AmityTextStyle.captionBold(Colors.white),
-              ),
-            ],
-          ),
-        ),
+                const SizedBox(height: 2),
+                Text(
+                  actionText,
+                  style: AmityTextStyle.captionBold(Colors.white),
+                ),
+              ],
+            ),
+          );
+        }),
         child: ChatListItem(channel: channel, channelMember: channelMember));
   }
 }
@@ -228,7 +239,7 @@ class ChatListItem extends BaseElement {
 
   @override
   Widget buildElement(BuildContext context) {
-    String? displayName = channelMember?.user?.displayName;
+    Widget displayNameWidget;
 
     String? previewText;
     Widget? previewIcon;
@@ -273,12 +284,41 @@ class ChatListItem extends BaseElement {
         previewText = "No message yet";
       }
     }
+    if (channel.amityChannelType == AmityChannelType.COMMUNITY) {
+      displayNameWidget = Row(
+        children: [
+          Flexible(
+            child: Text(
+              channel.displayName ?? "",
+              style: AmityTextStyle.titleBold(theme.baseColor),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 2),
+          Text(
+            "(${(channel.memberCount ?? 0).formattedCompactString()})",
+            style: AmityTextStyle.caption(theme.baseColorShade2),
+          ),
+        ],
+      );
+    } else {
+      var displayName = channelMember?.user?.displayName;
 
-    if (channelMember?.user?.isDeleted == true ||
-        displayName == null ||
-        displayName.isEmpty) {
-      displayName = "Unknown User";
+      if (channelMember?.user?.isDeleted == true ||
+          displayName == null ||
+          displayName.isEmpty) {
+        displayName = "Unknown User";
+      }
+
+      displayNameWidget = Text(
+        displayName,
+        style: AmityTextStyle.titleBold(theme.baseColor),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
     }
+
     return Container(
       height: 82,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -286,18 +326,20 @@ class ChatListItem extends BaseElement {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AmityChatAvatar(channelMember: channelMember),
+          if (channel.amityChannelType == AmityChannelType.COMMUNITY)
+            AmityChannelAvatar.withChannel(
+              channel: channel,
+              avatarSize: const Size(40, 40),
+              showPrivateBadge: (channel.isPublic == false),
+            )
+          else
+            AmityChatAvatar(channelMember: channelMember),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  displayName,
-                  style: AmityTextStyle.titleBold(theme.baseColor),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                displayNameWidget,
                 Row(
                   children: [
                     if (previewIcon != null) ...[

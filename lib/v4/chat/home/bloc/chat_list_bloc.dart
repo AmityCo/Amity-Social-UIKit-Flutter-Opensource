@@ -1,11 +1,11 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/base_chat_list_component.dart';
+import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:amity_uikit_beta_service/v4/utils/error_util.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'chat_list_events.dart';
@@ -13,19 +13,36 @@ part 'chat_list_state.dart';
 
 class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   ChatListType chatListType;
+  ChannelFilterType channelFilterType;
   AmityToastBloc toastBloc;
 
   late final LiveCollectionStream<AmityChannel> channelLiveCollection;
 
-  ChatListBloc({required this.chatListType, required this.toastBloc})
-      : super(ChatListState()) {
+  ChatListBloc({required this.chatListType, required this.channelFilterType, required this.toastBloc})
+      : super(const ChatListState()) {
     if (chatListType == ChatListType.ARCHIVED) {
       channelLiveCollection =
           AmityChatClient.newChannelRepository().getArchivedChannels();
     } else {
+      // Filter channels based on channelFilterType
+      List<AmityChannelType> channelTypes;
+      switch (channelFilterType) {
+        case ChannelFilterType.conversation:
+          channelTypes = [AmityChannelType.CONVERSATION];
+          break;
+        case ChannelFilterType.community:
+          channelTypes = [AmityChannelType.COMMUNITY];
+          break;
+        case ChannelFilterType.all:
+        default:
+          channelTypes = [AmityChannelType.COMMUNITY, AmityChannelType.CONVERSATION];
+          break;
+      }
+      
       channelLiveCollection = AmityChatClient.newChannelRepository()
           .getChannels()
-          .conversationType()
+          .types(channelTypes)
+          .filter(AmityChannelFilter.MEMBER)
           .excludeArchives(true)
           .getLiveCollection();
     }
@@ -40,8 +57,13 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
 
       addEvent(ChatListEventFetchMembers(channelIds: channelIds));
 
+      // Calculate if there are any unread messages
+      final hasUnreadMessages = event.channels
+          .any((channel) => (channel.unreadCount ?? 0) > 0);
+
       emit(state.copyWith(
         channels: event.channels,
+        hasUnreadMessages: hasUnreadMessages,
       ));
     });
 

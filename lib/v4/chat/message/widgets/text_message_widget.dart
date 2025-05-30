@@ -46,6 +46,7 @@ extension TextMessageWidget on MessageBubbleView {
             ),
             const SizedBox(width: 8),
           ],
+          Container(color: Colors.red),
           _buildTextWidget(context, text, isUser, state),
           if (!isUser && message.createdAt != null) ...[
             const SizedBox(width: 8),
@@ -87,6 +88,9 @@ extension TextMessageWidget on MessageBubbleView {
 
               return GestureDetector(
                 onLongPress: () async {
+                  if (message.syncState == AmityMessageSyncState.FAILED) {
+                    return;
+                  }
                   HapticFeedback.heavyImpact();
                   setState(() {
                     initialColor = isUser

@@ -76,7 +76,7 @@ class ReactionBubble extends StatelessWidget {
               const SizedBox(width: 2),
               // Total reaction count
               Text(
-                '$totalReactionCount',
+                totalReactionCount.formattedCompactString(),
                 style: AmityTextStyle.captionBold(containMyReations
                     ? theme.backgroundColor
                     : theme.baseColor),

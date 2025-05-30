@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_cubit.dart';
@@ -20,6 +19,7 @@ import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.da
 import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/image_info_manager.dart';
 import 'package:amity_uikit_beta_service/v4/utils/media_permission_handler.dart';
 import 'package:amity_uikit_beta_service/v4/utils/message_color.dart';
@@ -45,26 +45,34 @@ part 'widgets/video_message_widget.dart';
 class MessageBubbleView extends NewBaseComponent {
   final AmityMessage message;
   final AmityChannelMember? channelMember;
-  void Function(String, { bool isReplied  } )? onSeeMoreTap;
+  void Function(String, {bool isReplied})? onSeeMoreTap;
   void Function(AmityMessage)? onResend;
+  void Function(ReplyingMesage)? onReplyMessage;
+  void Function(AmityMessage)? onEditMessage;
   final Uint8List? thumbnail;
+  final bool isModerator;
   late MessageColor messageColor;
   final int bounceOffset = 150;
   Image? messageImage;
   BounceAnimator? bounceAnimator;
   double bounce;
+  bool isGroupChat;
 
-  MessageBubbleView(
-      {super.key,
-      super.pageId,
-      required this.message,
-      this.channelMember,
-      this.onSeeMoreTap,
-      this.onResend,
-      this.thumbnail,
-      this.bounceAnimator,
-      this.bounce = 0.0})
-      : super(componentId: "message_bubble");
+  MessageBubbleView({
+    super.key,
+    super.pageId,
+    required this.message,
+    this.channelMember,
+    this.onSeeMoreTap,
+    this.onResend,
+    this.onReplyMessage,
+    this.onEditMessage,
+    this.thumbnail,
+    this.bounceAnimator,
+    this.bounce = 0.0,
+    this.isGroupChat = false,
+    this.isModerator = false,
+  }) : super(componentId: "message_bubble");
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -131,9 +139,20 @@ class MessageBubbleView extends NewBaseComponent {
                             ? CrossAxisAlignment.end
                             : CrossAxisAlignment.start,
                     children: [
-                      if (message.parentId != null && message.isDeleted == false)
+                      if (message.parentId != null &&
+                          message.isDeleted == false)
                         _buildParentMessage(message, parentMessage, context),
-                      _buildMessageContent(context, isUser, state, bounceAnimator, bounce),
+                      if (!isUser && (isGroupChat && message.parentId == null))
+                        Container(
+                          padding: EdgeInsets.only(left: 40, bottom: 4),
+                          child: Text(
+                            message.user?.displayName ?? "",
+                            style: AmityTextStyle.captionBold(
+                                theme.baseColorShade1),
+                          ),
+                        ),
+                      _buildMessageContent(
+                          context, isUser, state, bounceAnimator, bounce),
                       // If message have reaction will reserve space for it
                       if (showReaction)
                         const SizedBox(
@@ -183,8 +202,8 @@ class MessageBubbleView extends NewBaseComponent {
     );
   }
 
-  Widget _buildMessageContent(
-      BuildContext context, bool isUser, MessageBubbleState state, BounceAnimator? bounceAnimator, double bounce) {
+  Widget _buildMessageContent(BuildContext context, bool isUser,
+      MessageBubbleState state, BounceAnimator? bounceAnimator, double bounce) {
     if (message.isDeleted ?? false) {
       return _buildDeletedMessage(context, theme, isUser);
     } else {

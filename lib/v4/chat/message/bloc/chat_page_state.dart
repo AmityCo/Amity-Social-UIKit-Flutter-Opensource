@@ -13,7 +13,9 @@ class ChatPageState extends Equatable {
   final bool hasNextPage;
   final Map<String, Uint8List?> localThumbnails;
   final bool isOnMuteChange;
+  final bool isOnFlagChange;
   final AmityChannelMember? channelMember;
+  final AmityUser? user; // Dedicated user property
   final ReplyingMesage? replyingMessage;
   final AmityMessage? editingMessage;
   final bool showScrollButton;
@@ -31,7 +33,9 @@ class ChatPageState extends Equatable {
     this.hasNextPage = true,
     this.localThumbnails = const {},
     this.isOnMuteChange = false,
+    this.isOnFlagChange = false,
     this.channelMember,
+    this.user,
     this.replyingMessage,
     this.editingMessage,
     this.showScrollButton = false,
@@ -51,7 +55,9 @@ class ChatPageState extends Equatable {
         hasNextPage,
         localThumbnails,
         isOnMuteChange,
+        isOnFlagChange,
         channelMember,
+        user,
         replyingMessage,
         editingMessage,
         showScrollButton,
@@ -68,13 +74,13 @@ class ChatPageState extends Equatable {
     bool? isFetching,
     bool? hasNextPage,
     Map<String, Uint8List?>? localThumbnails,
-    bool? isOnMuteChange,
     AmityChannelMember? channelMember,
     Object? replyingMessage = _undefined,
     Object? editingMessage = _undefined,
     bool? showScrollButton,
     Object? newMessage = _undefined,
     ScrollController? scrollController,
+    AmityUser? user,
   }) {
     return ChatPageState(
       channelId: channelId ?? this.channelId,
@@ -85,6 +91,7 @@ class ChatPageState extends Equatable {
       userDisplayName: userDisplayName ?? this.userDisplayName,
       isFetching: isFetching ?? this.isFetching,
       hasNextPage: hasNextPage ?? this.hasNextPage,
+      isOnFlagChange: isOnFlagChange ?? this.isOnFlagChange,
       localThumbnails: localThumbnails ?? this.localThumbnails,
       isOnMuteChange: isOnMuteChange ?? this.isOnMuteChange,
       channelMember: channelMember ?? this.channelMember,
@@ -99,6 +106,7 @@ class ChatPageState extends Equatable {
           ? this.newMessage
           : newMessage as AmityMessage?,
       scrollController: scrollController ?? this.scrollController,
+      user: user ?? this.user,
     );
   }
 }
@@ -118,6 +126,7 @@ class ChatPageStateInitial extends ChatPageState {
           hasNextPage: true,
           isOnMuteChange: false,
           scrollController: scrollController,
+          user: null,
         );
 }
 
@@ -134,5 +143,6 @@ class ChatPageStateChanged extends ChatPageState {
           isFetching: isFetching,
           hasNextPage: hasNextPage,
           scrollController: scrollController,
+          user: null,
         );
 }

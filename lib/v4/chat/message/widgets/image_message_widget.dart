@@ -134,6 +134,9 @@ extension ImageMessageWidget on MessageBubbleView {
             onTap?.call();
           },
           onLongPress: () async {
+            if (message.syncState == AmityMessageSyncState.FAILED) {
+              return;
+            }
             HapticFeedback.heavyImpact();
             setState(() {
               onLongPress = true;

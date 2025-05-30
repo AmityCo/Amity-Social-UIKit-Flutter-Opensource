@@ -179,8 +179,7 @@ extension MessagePopup on MessageBubbleView {
   ) async {
     // Use the same threshold calculation as in _showPopupMenu
     final screenHeight = MediaQuery.of(context).size.height - 50;
-    final screenThreshold = (screenHeight) -
-        ((screenHeight) * 0.3);
+    final screenThreshold = (screenHeight) - ((screenHeight) * 0.3);
 
     // Determine if message is in lower portion of screen for animation direction
     final isInLowerPortion = offset.dy > screenThreshold;
@@ -292,7 +291,6 @@ extension MessagePopup on MessageBubbleView {
     MessageBubbleState state,
     bool isUser,
   ) async {
-
     if (offset != null) {
       // Adjust the vertical position based on screen position
       final yPos = offset.dy;
@@ -559,12 +557,13 @@ extension MessagePopup on MessageBubbleView {
   }
 
   replyMessage(BuildContext context) {
-    context.read<ChatPageBloc>().add(ChatPageReplyEvent(
-        message: ReplyingMesage(message: message, previewImage: messageImage)));
+    final replyingMessage =
+        ReplyingMesage(message: message, previewImage: messageImage);
+    onReplyMessage?.call(replyingMessage);
   }
 
   editMessage(BuildContext context) {
-    context.read<ChatPageBloc>().add(ChatPageEditEvent(message: message));
+    onEditMessage?.call(message);
   }
 
   Future deleteMessage(BuildContext context, bool shouldPop) async {
@@ -597,57 +596,55 @@ extension MessagePopup on MessageBubbleView {
 }
 
 Future saveImageMessage(BuildContext context, AmityMessage message) async {
-    if (message.data is MessageImageData) {
-      final permissionHandler = MediaPermissionHandler();
-      final bool mediaPermissionGranted =
-          await permissionHandler.handleMediaPermissions();
-      if (mediaPermissionGranted == false) {
+  if (message.data is MessageImageData) {
+    final permissionHandler = MediaPermissionHandler();
+    final bool mediaPermissionGranted =
+        await permissionHandler.handleMediaPermissions();
+    if (mediaPermissionGranted == false) {
+      context.read<AmityToastBloc>().add(AmityToastShort(
+          message: "Permission denied.",
+          icon: AmityToastIcon.warning,
+          bottomPadding: AmityChatPage.toastBottomPadding));
+      return;
+    }
+    final fileInfo = (message.data as MessageImageData).fileInfo;
+    final fileUrl = fileInfo.fileUrl;
+    final filePath = fileInfo.getFileProperties?.filePath;
+    if (await MediaPermissionHandler()
+        .downloadAndSaveImage("${fileUrl ?? filePath ?? ''}/?size=large")) {
+      context.read<AmityToastBloc>().add(AmityToastShort(
+          message: "Saved photo.",
+          icon: AmityToastIcon.success,
+          bottomPadding: AmityChatPage.toastBottomPadding));
+    } else {
+      context.read<AmityToastBloc>().add(AmityToastShort(
+          message: "Failed to save image.",
+          icon: AmityToastIcon.warning,
+          bottomPadding: AmityChatPage.toastBottomPadding));
+    }
+  }
+}
+
+Future saveVideoMessage(BuildContext context, AmityMessage message) async {
+  if (message.data is MessageVideoData) {
+    final videoData = (message.data as MessageVideoData);
+    final videoUrl =
+        videoData.getVideo().getVideoUrl(AmityVideoResolution.ORIGINAL) ??
+            videoData.getVideo().fileUrl;
+    if (videoUrl != null) {
+      final result =
+          await MediaPermissionHandler().downloadAndSaveVideo(videoUrl);
+      if (result) {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Permission denied.",
-            icon: AmityToastIcon.warning,
-            bottomPadding: AmityChatPage.toastBottomPadding));
-        return;
-      }
-      final fileInfo = (message.data as MessageImageData).fileInfo;
-      final fileUrl = fileInfo.fileUrl;
-      final filePath = fileInfo.getFileProperties?.filePath;
-      if (await MediaPermissionHandler()
-          .downloadAndSaveImage("${fileUrl ?? filePath ?? ''}/?size=large")) {
-        context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Saved photo.",
+            message: "Saved video.",
             icon: AmityToastIcon.success,
             bottomPadding: AmityChatPage.toastBottomPadding));
       } else {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Failed to save image.",
+            message: "Failed to save video.",
             icon: AmityToastIcon.warning,
             bottomPadding: AmityChatPage.toastBottomPadding));
       }
     }
   }
-
-
-
-  Future saveVideoMessage(BuildContext context, AmityMessage message) async {
-    if (message.data is MessageVideoData) {
-      final videoData = (message.data as MessageVideoData);
-      final videoUrl =
-          videoData.getVideo().getVideoUrl(AmityVideoResolution.ORIGINAL) ??
-              videoData.getVideo().fileUrl;
-      if (videoUrl != null) {
-        final result =
-            await MediaPermissionHandler().downloadAndSaveVideo(videoUrl);
-        if (result) {
-          context.read<AmityToastBloc>().add(AmityToastShort(
-              message: "Saved video.",
-              icon: AmityToastIcon.success,
-              bottomPadding: AmityChatPage.toastBottomPadding));
-        } else {
-          context.read<AmityToastBloc>().add(AmityToastShort(
-              message: "Failed to save video.",
-              icon: AmityToastIcon.warning,
-              bottomPadding: AmityChatPage.toastBottomPadding));
-        }
-      }
-    }
-  }
+}

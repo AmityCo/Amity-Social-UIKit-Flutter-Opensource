@@ -156,3 +156,24 @@ class ChatPageEventMarkReadMessage extends ChatPageEvent {
   @override
   List<Object> get props => [message];
 }
+
+class ChatPageEventFlagUser extends ChatPageEvent {
+  final bool isFlagging; // true for flag, false for unflag
+
+  const ChatPageEventFlagUser({required this.isFlagging});
+
+  @override
+  List<Object> get props => [isFlagging];
+}
+
+class ChatPageUserFlagStateChanged extends ChatPageEvent {
+  final bool isFlagged;
+  final AmityUser user;
+
+  const ChatPageUserFlagStateChanged({required this.isFlagged,required this.user});
+
+  @override
+  List<Object> get props => [isFlagged, user];
+}
+
+

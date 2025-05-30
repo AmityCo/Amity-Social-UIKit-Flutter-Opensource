@@ -55,6 +55,7 @@ class AmityUserSearchResultComponent extends NewBaseComponent {
             scrollController: viewModel.scrollController,
             users: viewModel.users,
             theme: theme,
+            memberRoles: null,
             loadMore: viewModel.onLoadMore?.call ?? () {},
             onTap: (user) {
               final userId = user.userId;

@@ -252,10 +252,11 @@ class AmityReactionList extends NewBaseComponent {
     final bool isSelected = _selectedTabIndex == index;
     final textColor = isSelected ? theme.primaryColor : theme.baseColorShade2;
     final tabTextStyle = AmityTextStyle.titleBold(textColor);
+    final tabDataCount =
+        ((tabData['count'] ?? 0) as int).formattedCompactString();
 
-    final String displayText = tabData['type'] == 'all'
-        ? "All ${tabData['count']}"
-        : "${tabData['count']}";
+    final String displayText =
+        tabData['type'] == 'all' ? "All $tabDataCount" : tabDataCount;
 
     final contentWidth =
         _calculateTabWidth(displayText, tabData['imagePath'], tabTextStyle);
@@ -520,7 +521,8 @@ class AmityReactionList extends NewBaseComponent {
       // Navigate to user profile
       final userId = reaction.creator?.userId;
       if (userId != null) {
-        AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+        AmityUIKit4Manager.behavior.postContentComponentBehavior
+            .goToUserProfilePage(
           context,
           userId,
         );

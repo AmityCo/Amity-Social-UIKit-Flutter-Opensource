@@ -120,6 +120,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
             scrollController: scrollController,
             users: state.list,
             theme: theme,
+            memberRoles: null,
             loadMore: () {
               context
                   .read<ChannelCreateConversationBloc>()

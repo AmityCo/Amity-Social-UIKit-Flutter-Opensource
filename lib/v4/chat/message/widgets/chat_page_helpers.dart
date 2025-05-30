@@ -1,6 +1,27 @@
 part of '../chat_page.dart';
 
 extension ChatPageHelpers on AmityChatPage {
+  void _showChatUserActionBottomSheet(BuildContext context, ChatPageState state) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return ChatUserActionComponent(
+          user: state.channelMember!.user!,
+          isMute: state.isMute,
+          onMuteToggleTap: () {
+            context.read<ChatPageBloc>().add(const ChatPageEventMuteUnmute());
+          },
+          onReportUserTap: () {
+            // Implement report user functionality
+            print('Report user tapped');
+          },
+        );
+      },
+    );
+  }
+
   Widget skeletonHeader() {
     return Shimmer(
       linearGradient: configProvider.getShimmerGradient(),

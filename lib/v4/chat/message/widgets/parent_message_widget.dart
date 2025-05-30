@@ -1,7 +1,60 @@
 part of '../message_bubble_view.dart';
 
 extension ParentMessageWidget on MessageBubbleView {
-  Widget _buildParentMessage(message, AmityMessage? parentMessage, BuildContext context) {
+  // Helper method to truncate display names for group chat replies
+  String _truncateDisplayName(String displayName, {int maxLength = 10}) {
+    if (displayName.length <= maxLength) {
+      return displayName;
+    }
+    return '${displayName.substring(0, maxLength)}...';
+  }
+
+  // Helper method to get appropriate reply text based on group chat context
+  String _getReplyText(AmityMessage message, AmityMessage parentMessage) {
+    final currentUserId = AmityCoreClient.getUserId();
+    final isCurrentUser = message.userId == currentUserId;
+    final isParentCurrentUser = parentMessage.userId == currentUserId;
+
+    Text(
+        parentMessage.userId == AmityCoreClient.getUserId()
+            ? message.userId == AmityCoreClient.getUserId()
+                ? "You replied to yourself"
+                : "Replied to you"
+            : message.userId == AmityCoreClient.getUserId()
+                ? "You replied"
+                : "Replied to themself",
+        style: AmityTextStyle.caption(theme.baseColorShade1));
+    if (!isGroupChat) {
+      // For private chats, use the original logic
+      if (isParentCurrentUser) {
+        return isCurrentUser ? "You replied to yourself" : "Replied to you";
+      } else {
+        return isCurrentUser ? "You replied" : "Replied to themself";
+      }
+    } else {
+      // For group chats, include display names (truncated)
+      final parentUserDisplayName =
+          _truncateDisplayName(parentMessage.user?.displayName ?? "Unknown");
+      final currentUserDisplayName = message.user?.displayName ?? "Unknown";
+
+      if (isParentCurrentUser) {
+        return isCurrentUser ? "You replied to yourself" : "${_truncateDisplayName(currentUserDisplayName)} replied to you";
+      } else {
+        if (isCurrentUser) {
+          return "You replied to $parentUserDisplayName";
+        } else {
+          if (parentMessage.userId == message.userId) {
+            return "${_truncateDisplayName(currentUserDisplayName)} replied to themself";
+          } else {
+            return "${_truncateDisplayName(currentUserDisplayName)} replied to $parentUserDisplayName";
+          }
+        }
+      }
+    }
+  }
+
+  Widget _buildParentMessage(
+      message, AmityMessage? parentMessage, BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
           left: message.userId == AmityCoreClient.getUserId() ? 32 : 40),
@@ -57,14 +110,7 @@ extension ParentMessageWidget on MessageBubbleView {
                           : "Replied to deleted message",
                       style: AmityTextStyle.caption(theme.baseColorShade1))
                 else
-                  Text(
-                      parentMessage.userId == AmityCoreClient.getUserId()
-                          ? message.userId == AmityCoreClient.getUserId()
-                              ? "You replied to yourself"
-                              : "Replied to you"
-                          : message.userId == AmityCoreClient.getUserId()
-                              ? "You replied"
-                              : "Replied to themself",
+                  Text(_getReplyText(message, parentMessage),
                       style: AmityTextStyle.caption(theme.baseColorShade1)),
               ],
             ),
@@ -141,8 +187,8 @@ extension ParentMessageWidget on MessageBubbleView {
                               ),
                               Text(
                                 'This message was deleted',
-                                style:
-                                    AmityTextStyle.caption(theme.baseColorShade2),
+                                style: AmityTextStyle.caption(
+                                    theme.baseColorShade2),
                               ),
                             ],
                           ),
@@ -150,9 +196,10 @@ extension ParentMessageWidget on MessageBubbleView {
                       } else {
                         if (parentMessage.data is MessageTextData) {
                           final parentTextMessage =
-                              (parentMessage.data as MessageTextData).text ?? "";
+                              (parentMessage.data as MessageTextData).text ??
+                                  "";
                           final elements = linkify(parentTextMessage);
-              
+
                           final textSpans = elements.map<TextSpan>((element) {
                             if (element is LinkableElement) {
                               return TextSpan(
@@ -171,7 +218,7 @@ extension ParentMessageWidget on MessageBubbleView {
                               );
                             }
                           }).toList();
-              
+
                           return Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 10),
@@ -198,13 +245,13 @@ extension ParentMessageWidget on MessageBubbleView {
                                 final Size imageSize = snapshot.data!.size;
                                 double thumbnailHeight = 40;
                                 double thumbnailWidth = 40;
-              
+
                                 if (imageSize.height >= imageSize.width) {
                                   thumbnailHeight = 120;
-              
+
                                   double imageRatio =
                                       imageSize.height / imageSize.width;
-              
+
                                   if (imageRatio > 3) {
                                     thumbnailWidth = 40;
                                   } else {
@@ -214,14 +261,14 @@ extension ParentMessageWidget on MessageBubbleView {
                                   thumbnailWidth = 120;
                                   double imageRatio =
                                       imageSize.width / imageSize.height;
-              
+
                                   if (imageRatio > 3) {
                                     thumbnailHeight = 40;
                                   } else {
                                     thumbnailHeight = 120 / imageRatio;
                                   }
                                 }
-              
+
                                 if (!ImageInfoManager()
                                     .contains("${fileUrl}_reply")) {
                                   ImageInfoManager().addImageData(
@@ -229,7 +276,7 @@ extension ParentMessageWidget on MessageBubbleView {
                                       thumbnailHeight,
                                       thumbnailWidth);
                                 }
-              
+
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
                                   child: ConstrainedBox(
@@ -285,7 +332,7 @@ extension ParentMessageWidget on MessageBubbleView {
                               image?.getUrl(AmityImageSize.MEDIUM) ?? "";
                           final filePath = image?.getFilePath;
                           final cacheKey = "${fileUrl}_reply";
-              
+
                           if (image == null) {
                             return FutureBuilder<Uint8List?>(
                               future: VideoThumbnail.thumbnailData(
@@ -300,7 +347,8 @@ extension ParentMessageWidget on MessageBubbleView {
                               ),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData)
-                                  return buildPlaceholderWidget(cacheKey, theme);
+                                  return buildPlaceholderWidget(
+                                      cacheKey, theme);
                                 return FutureBuilder<AmityImageWithSize>(
                                   future: getImageWithSize(null, snapshot.data),
                                   builder: (context, innerSnapshot) {

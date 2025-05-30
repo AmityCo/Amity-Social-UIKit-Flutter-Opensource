@@ -96,12 +96,10 @@ extension GenericWidget on MessageBubbleView {
           );
         }
       },
-      child: SizedBox(
-        width: 32,
-        height: 32,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(32),
-          child: AmityMessageAvatar(channelMember: channelMember),
+      child: SizedBox(        
+        child: AmityMessageAvatar(
+          message: message,
+          isModerator: isModerator,
         ),
       ),
     );

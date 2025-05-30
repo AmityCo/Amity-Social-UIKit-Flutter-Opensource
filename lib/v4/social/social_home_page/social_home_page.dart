@@ -62,7 +62,7 @@ class AmitySocialHomePage extends NewBasePage {
                     pageId: 'social_home_page',
                   ),
                   const Expanded(child: TabContent()),
-                  AmityToast(elementId: "toast"),
+                  AmityToast(pageId: pageId, elementId: "toast"),
                 ],
               ),
             );

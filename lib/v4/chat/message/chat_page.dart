@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/components/chat_user_action_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_action.dart';
@@ -20,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/components/chat_user_action_component.dart';
 
 part 'widgets/chat_page_helpers.dart';
 
@@ -40,6 +42,34 @@ class AmityChatPage extends NewBasePage {
       this.userDisplayName,
       this.avatarUrl})
       : super(pageId: 'chat_page');
+
+  // Method to show the chat user action bottom sheet
+  void _showChatUserActionBottomSheet(BuildContext context, ChatPageState state) {
+    // Get a reference to the bloc before showing the modal
+    final chatPageBloc = context.read<ChatPageBloc>();
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (bottomSheetContext) {
+        // Use dedicated user property if available, otherwise fall back to channelMember.user
+        final AmityUser userToUse = state.user ?? state.channelMember!.user!;
+        return ChatUserActionComponent(
+          user: userToUse,
+          isMute: state.isMute,
+          onMuteToggleTap: () {
+            // Use the bloc reference from the parent context
+            chatPageBloc.add(const ChatPageEventMuteUnmute());
+          },
+          onReportUserTap: () {
+            // Toggle between flag and unflag based on user's current flag status
+            chatPageBloc.add(ChatPageEventFlagUser(isFlagging: !userToUse.isFlaggedByMe));
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget buildPage(BuildContext context) {
@@ -151,22 +181,16 @@ class AmityChatPage extends NewBasePage {
                     actions: [
                       if (!isLoadingUserAvatar) ...[
                         IconButton(
-                          icon: SizedBox(
+                          icon: SvgPicture.asset(
+                            'assets/Icons/amity_ic_three_dot_vertical.svg',
+                            package: 'amity_uikit_beta_service',
                             width: 24,
                             height: 24,
-                            child: SvgPicture.asset(
-                              state.isMute
-                                  ? 'assets/Icons/amity_ic_chat_mute.svg'
-                                  : 'assets/Icons/amity_ic_chat_unmute.svg',
-                              package: 'amity_uikit_beta_service',
-                            ),
+                            colorFilter: ColorFilter.mode(theme.secondaryColor, BlendMode.srcIn),
                           ),
-                          color: theme.secondaryColor,
                           onPressed: () {
                             HapticFeedback.heavyImpact();
-                            context
-                                .read<ChatPageBloc>()
-                                .add(const ChatPageEventMuteUnmute());
+                            _showChatUserActionBottomSheet(context, state);
                           },
                         ),
                         const SizedBox(width: 8),
@@ -306,6 +330,7 @@ class AmityChatPage extends NewBasePage {
                                                     message: message,
                                                     channelMember:
                                                         state.channelMember,
+                                                    isModerator: false,
                                                     bounceAnimator:
                                                         bounceAnimator,
                                                     bounce: bounce,
@@ -333,6 +358,18 @@ class AmityChatPage extends NewBasePage {
                                                               ChatPageEventResendMessage(
                                                                   message:
                                                                       message));
+                                                    },
+                                                    onReplyMessage: (replyingMessage) {
+                                                      context
+                                                          .read<ChatPageBloc>()
+                                                          .add(ChatPageReplyEvent(
+                                                              message: replyingMessage));
+                                                    },
+                                                    onEditMessage: (message) {
+                                                      context
+                                                          .read<ChatPageBloc>()
+                                                          .add(ChatPageEditEvent(
+                                                              message: message));
                                                     },
                                                     thumbnail: state
                                                             .localThumbnails[
@@ -419,7 +456,7 @@ class AmityChatPage extends NewBasePage {
               },
             ),
           ),
-          AmityToast(elementId: "toast"),
+          AmityToast(pageId: pageId, elementId: "toast"),
         ],
       ),
     );

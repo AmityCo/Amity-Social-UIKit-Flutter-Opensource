@@ -1,5 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/chat/archive/archived_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/create/channel_create_conversation_page.dart';
+import 'package:amity_uikit_beta_service/v4/chat/createGroup/ui/select_group_user_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/Network/network_connectivity_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
@@ -7,29 +8,143 @@ import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
-import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class AmityChatHomePage extends NewBasePage {
   AmityChatHomePage({super.key}) : super(pageId: 'chat_home_page');
 
   @override
   Widget buildPage(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: ChatHomePageNavigationBar(),
+    return Builder(
+      builder: (context) {
+        // Use Provider.of to get the config provider
+        final configProvider = Provider.of<ConfigProvider>(context);
+        final theme = configProvider.getTheme('chat_home_page', '');
+
+        // Initialize all chat list components for prefetching
+        final allChatsWidget = ChatListComponent(channelType: 'All');
+        final directChatsWidget = ChatListComponent(channelType: 'Direct');
+        final groupChatsWidget = ChatListComponent(channelType: 'Groups');
+
+        return DefaultTabController(
+          length: 3,
+          animationDuration: const Duration(milliseconds: 200),
+          child: Builder(
+            builder: (context) {
+              final TabController tabController = DefaultTabController.of(context);
+              
+              return AnimatedBuilder(
+                animation: tabController,
+                builder: (context, _) {
+                  return Stack(
+                    children: [
+                      Scaffold(
+                        appBar: PreferredSize(
+                          preferredSize: const Size.fromHeight(kToolbarHeight),
+                          child: ChatHomePageNavigationBar(),
+                        ),
+                        backgroundColor: theme.backgroundColor,
+                        body: Column(
+                          children: [
+                            _ChatTabs(),
+                            const SizedBox(height: 8),
+                            Expanded(
+                              child: IndexedStack(
+                                index: tabController.index,
+                                children: [
+                                  allChatsWidget,
+                                  directChatsWidget,
+                                  groupChatsWidget,
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      AmityToast(pageId: pageId, elementId: "toast"),
+                    ],
+                  );
+                },
+              );
+            },
           ),
-          backgroundColor: theme.backgroundColor,
-          body: ChatListComponent(),
+        );
+      },
+    );
+  }
+}
+
+class _ChatTabs extends NewBaseComponent {
+  _ChatTabs({Key? key})
+      : super(key: key, pageId: 'chat_home_page', componentId: 'chat_tabs');
+
+  @override
+  Widget buildComponent(BuildContext context) {
+    // Get the TabController from the DefaultTabController ancestor
+    final TabController tabController = DefaultTabController.of(context);
+
+    // Using AnimatedBuilder to rebuild when the tabController changes
+    return AnimatedBuilder(
+      animation: tabController,
+      builder: (context, _) {
+        return Container(
+          alignment: AlignmentDirectional.centerStart,
+          color: theme.backgroundColor,
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildTabButton(context, 'All', 0, tabController),
+                _buildTabButton(context, 'Direct', 1, tabController),
+                _buildTabButton(context, 'Groups', 2, tabController),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTabButton(BuildContext context, String text, int index,
+      TabController tabController) {
+    final isSelected = tabController.index == index;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: IntrinsicWidth(
+        child: ElevatedButton(
+          onPressed: () => tabController.animateTo(index),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: isSelected ? Colors.white : theme.baseColorShade1,
+            backgroundColor:
+                isSelected ? theme.primaryColor : Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            side: BorderSide(
+              color: isSelected ? theme.primaryColor : theme.baseColorShade4,
+              width: 1.0,
+            ),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
         ),
-        AmityToast(elementId: "toast"),
-      ],
+      ),
     );
   }
 }
@@ -44,8 +159,6 @@ class ChatHomePageNavigationBar extends NewBaseComponent {
       create: (context) => NetworkConnectivityBloc(),
       child: BlocBuilder<NetworkConnectivityBloc, NetworkConnectivityState>(
         builder: (context, state) {
-
-    final toastBloc = context.read<AmityToastBloc>();
           return AppBar(
             automaticallyImplyLeading: false,
             titleSpacing: 4,
@@ -78,7 +191,7 @@ class ChatHomePageNavigationBar extends NewBaseComponent {
             ),
             backgroundColor: theme.backgroundColor,
             elevation: 0,
-            actions: [AmityCreateChatMenuComponent(),AmityChatMenuComponent()],
+            actions: [AmityCreateChatMenuComponent(), AmityChatMenuComponent()],
             iconTheme: const IconThemeData(color: Colors.black),
           );
         },
@@ -127,6 +240,12 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
                       builder: (context) =>
                           AmityChannelCreateConversationPage()),
                 );
+              } else if (result == 2) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) => SelectGroupUserPage()),
+                );
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
@@ -134,8 +253,15 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
                 value: 1,
                 padding: EdgeInsets.zero,
                 child: getMenu(
-                    text: "New conversation",
+                    text: "Direct chat",
                     iconPath: "amity_ic_chat_create_button.svg"),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                padding: EdgeInsets.zero,
+                child: getMenu(
+                    text: "Group chat",
+                    iconPath: "amity_ic_create_group_chat_button.svg"),
               ),
             ],
           ),
@@ -173,7 +299,6 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
   }
 }
 
-
 class AmityChatMenuComponent extends NewBaseComponent {
   AmityChatMenuComponent({Key? key, String? pageId})
       : super(key: key, pageId: pageId, componentId: 'chat_menu');
@@ -207,8 +332,7 @@ class AmityChatMenuComponent extends NewBaseComponent {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (context) =>
-                          AmityArchivedChatPage()),
+                      builder: (context) => AmityArchivedChatPage()),
                 );
               }
             },
@@ -253,5 +377,27 @@ class AmityChatMenuComponent extends NewBaseComponent {
         ],
       ),
     );
+  }
+}
+
+// Widget to keep alive tab content for prefetching
+class KeepAliveTabView extends StatefulWidget {
+  final Widget child;
+
+  const KeepAliveTabView({Key? key, required this.child}) : super(key: key);
+
+  @override
+  State<KeepAliveTabView> createState() => _KeepAliveTabViewState();
+}
+
+class _KeepAliveTabViewState extends State<KeepAliveTabView>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }

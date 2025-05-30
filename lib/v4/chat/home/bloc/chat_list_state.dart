@@ -7,6 +7,7 @@ class ChatListState extends Equatable {
   final bool isPushNotificationEnabled;
   final AmityErrorInfo? error;
   final bool showArchiveErrorDialog;
+  final bool hasUnreadMessages;
 
   const ChatListState({
     this.channels = const [],
@@ -15,6 +16,7 @@ class ChatListState extends Equatable {
     this.isPushNotificationEnabled = true,
     this.error,
     this.showArchiveErrorDialog = false,
+    this.hasUnreadMessages = false,
   });
 
   ChatListState copyWith({
@@ -24,6 +26,7 @@ class ChatListState extends Equatable {
     bool? isPushNotificationEnabled,
     AmityErrorInfo? error,
     bool? showArchiveErrorDialog,
+    bool? hasUnreadMessages,
   }) {
     return ChatListState(
       channels: channels ?? this.channels,
@@ -34,6 +37,7 @@ class ChatListState extends Equatable {
       error: error ?? this.error,
       showArchiveErrorDialog:
           showArchiveErrorDialog ?? this.showArchiveErrorDialog,
+      hasUnreadMessages: hasUnreadMessages ?? this.hasUnreadMessages,
     );
   }
 
@@ -45,5 +49,6 @@ class ChatListState extends Equatable {
         isPushNotificationEnabled,
         error,
         showArchiveErrorDialog,
+        hasUnreadMessages,
       ];
 }

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/replying_message.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -61,6 +62,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
         avatarUrl: event.channelMember.user?.avatarUrl,
         userDisplayName: event.channelMember.user?.displayName,
         channelMember: event.channelMember,
+        user: event.channelMember.user,
         hasNextPage: liveCollection?.hasNextPage(),
       ));
     });
@@ -78,30 +80,40 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
 
     on<ChatPageEventMuteUnmute>((event, emit) async {
       if (state.isMute) {
-        emit(state.copyWith(isMute: false, isOnMuteChange: true));
         try {
           await AmityCoreClient()
               .notifications()
               .channel(state.channelId)
               .enable();
           addEvent(const ChatPageIsMuteEventChanged(isMute: false));
+
+          await Future.delayed(const Duration(milliseconds: 300));
+
+          toastBloc.add(const AmityToastShort(
+            message: "Notification turned on",
+            icon: AmityToastIcon.success,
+          ));
         } catch (error) {
-          emit(state.copyWith(isMute: true, isOnMuteChange: false));
           toastBloc.add(
-              const AmityToastShort(message: "Failed to unmute the channel."));
+              const AmityToastShort(message: "Failed to turn on notification. Please try again."));
         }
       } else {
-        emit(state.copyWith(isMute: true, isOnMuteChange: true));
         try {
           await AmityCoreClient()
               .notifications()
               .channel(state.channelId)
               .disable();
           addEvent(const ChatPageIsMuteEventChanged(isMute: true));
+
+          await Future.delayed(const Duration(milliseconds: 300));
+
+          toastBloc.add(const AmityToastShort(
+            message: "Notification turned off",
+            icon: AmityToastIcon.success,
+          ));
         } catch (error) {
-          emit(state.copyWith(isMute: true, isOnMuteChange: false));
           toastBloc.add(
-              const AmityToastShort(message: "Failed to mute the channel."));
+              const AmityToastShort(message: "Failed to turn off notification. Please try again."));
         }
       }
     });
@@ -181,7 +193,11 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     });
 
     on<ChatPageIsMuteEventChanged>((event, emit) async {
-      emit(state.copyWith(isMute: event.isMute, isOnMuteChange: false));
+      emit(state.copyWith(isMute: event.isMute));
+    });
+
+    on<ChatPageUserFlagStateChanged>((event, emit) async {
+      emit(state.copyWith(user: event.user ?? state.user));
     });
 
     on<ChatPageEventChannelIdChanged>((event, emit) async {
@@ -317,6 +333,62 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
       event.message.markRead();
     });
 
+    on<ChatPageEventFlagUser>((event, emit) async {
+      // Use our dedicated user property first, fallback to channelMember.user if needed
+      AmityUser? user = state.user ?? state.channelMember?.user;
+      if (user == null) {
+        return;
+      }
+
+      if (event.isFlagging) {
+        try {
+          // First flag the user
+          final updatedUser = await user.report().flag();
+
+          // Dispatch the state change event
+          addEvent(
+              ChatPageUserFlagStateChanged(isFlagged: true, user: updatedUser));
+
+          // Use a small delay before showing toast
+          await Future.delayed(const Duration(milliseconds: 300));
+
+          // Then show toast message
+          toastBloc.add(const AmityToastShort(
+            message: "User reported.",
+            icon: AmityToastIcon.success,
+          ));
+        } catch (error) {
+          toastBloc.add(const AmityToastShort(
+            message: "Failed to report user. Please try again.",
+            icon: AmityToastIcon.warning,
+          ));
+        }
+      } else {
+        try {
+          // First unflag the user
+          final updatedUser = await user.report().unflag();
+
+          // Dispatch the state change event
+          addEvent(ChatPageUserFlagStateChanged(
+              isFlagged: false, user: updatedUser));
+
+          // Use a small delay before showing toast
+          await Future.delayed(const Duration(milliseconds: 300));
+
+          // Then show toast message
+          toastBloc.add(const AmityToastShort(
+            message: "User unreported.",
+            icon: AmityToastIcon.success,
+          ));
+        } catch (error) {
+          toastBloc.add(const AmityToastShort(
+            message: "Failed to unreport user. Please try again.",
+            icon: AmityToastIcon.warning,
+          ));
+        }
+      }
+    });
+
     if (channelId != null && channelId.isNotEmpty) {
       initLiveCollection(channelId);
       addEvent(ChatPageEventChannelIdChanged(channelId));
@@ -381,8 +453,10 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
         .getMembersFromCache();
     final otherMember = list
         .firstWhere((element) => element.userId != AmityCoreClient.getUserId());
+
     if (otherMember.user != null) {
       addEvent(ChatPageHeaderEventChanged(channelMember: otherMember));
+      // User will be updated in the HeaderEventChanged handler
     }
 
     liveCollection?.getStreamController().stream.listen((event) {

@@ -75,6 +75,45 @@ class CommunityPageState extends State<CommunityPage>
     });
   }
 
+  void refreshFeed() {
+    if (_tabController.index == 0) {
+      // Newsfeed Tab
+      var globalFeedProvider = Provider.of<FeedVM>(context, listen: false);
+      globalFeedProvider.initAmityGlobalfeed(
+        onCustomPost: AmityUIConfiguration.onCustomPost,
+      );
+
+      var myCommunityList = Provider.of<MyCommunityVM>(context, listen: false);
+      myCommunityList.initMyCommunityFeed();
+    } else {
+      // Explore Tab
+      var explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
+      explorePageVM.getRecommendedCommunities();
+      explorePageVM.getTrendingCommunities();
+      explorePageVM.queryCommunityCategories(
+          sortOption: AmityCommunityCategorySortOption.FIRST_CREATED);
+    }
+  }
+
+  void scrollToTop() {
+    ScrollController? scrollController;
+
+    if (_tabController.index == 0) {
+      final globalFeedVM = Provider.of<FeedVM>(context, listen: false);
+      scrollController = globalFeedVM.scrollcontroller;
+    } else {
+      final explorePageVM = Provider.of<ExplorePageVM>(context, listen: false);
+
+      scrollController = explorePageVM.communityScrollcontroller;
+    }
+
+    scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
   @override
   void didUpdateWidget(CommunityPage oldWidget) {
     super.didUpdateWidget(oldWidget);

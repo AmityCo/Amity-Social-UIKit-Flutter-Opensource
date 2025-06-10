@@ -1,6 +1,6 @@
 name: amity_uikit_beta_service
 description: Amity UIkit opensource developed by SLE team to enable social feature in Flutter.
-version: 4.0.0+9
+version: 4.0.0+10
 homepage: https://github.com/AmityCo/Amity-Social-UIKit-Flutter-Opensource
 
 environment:

@@ -36,19 +36,20 @@ class AmityUIConfiguration extends ChangeNotifier {
 
   // ... existing methods ...
 
-  static Future<bool> isFollowing(String userId) {
-    // If the following status is in the cache, return it
-    if (isFollowingCache.containsKey(userId)) {
-      return isFollowingCache[userId]!;
-    }
+  static Future<bool> isFollowing(String userId) async {
+    return false;
+    // // If the following status is in the cache, return it
+    // if (isFollowingCache.containsKey(userId)) {
+    //   return isFollowingCache[userId]!;
+    // }
 
-    // Otherwise, make the API call
-    final followingStatus = checkFollowingStatus(userId);
+    // // Otherwise, make the API call
+    // final followingStatus = checkFollowingStatus(userId);
 
-    // Store the result in the cache
-    isFollowingCache[userId] = followingStatus;
+    // // Store the result in the cache
+    // isFollowingCache[userId] = followingStatus;
 
-    return followingStatus;
+    // return followingStatus;
   }
 
   static Future<bool> checkFollowingStatus(String userId) async {

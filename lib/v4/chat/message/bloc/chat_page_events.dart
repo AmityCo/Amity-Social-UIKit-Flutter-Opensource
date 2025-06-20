@@ -176,4 +176,29 @@ class ChatPageUserFlagStateChanged extends ChatPageEvent {
   List<Object> get props => [isFlagged, user];
 }
 
+class ChatPageEventFetchFollowInfo extends ChatPageEvent {
+  const ChatPageEventFetchFollowInfo();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ChatPageFollowInfoUpdated extends ChatPageEvent {
+  final bool isUserBlocked;
+
+  const ChatPageFollowInfoUpdated({required this.isUserBlocked});
+
+  @override
+  List<Object> get props => [isUserBlocked];
+}
+
+class ChatPageEventBlockUser extends ChatPageEvent {
+  final bool isUserBlocked;
+
+  const ChatPageEventBlockUser({required this.isUserBlocked});
+
+  @override
+  List<Object> get props => [isUserBlocked];
+}
+
 

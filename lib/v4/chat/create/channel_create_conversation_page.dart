@@ -12,7 +12,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
   AmityChannelCreateConversationPage({Key? key})
       : super(key: key, pageId: 'create_conversation_page');
   final ScrollController scrollController = ScrollController();
-  var textcontroller = TextEditingController();
+  final textcontroller = TextEditingController();
   final _debouncer = Debouncer(milliseconds: 300);
 
   @override
@@ -79,7 +79,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
   Widget userContainer(
       BuildContext context, ChannelCreateConversationState state) {
     if (state is ChannelCreateConversationLoaded) {
-      if (state.isFetching) {
+      if (state.isFetching && state.list.isEmpty) {
         return userSkeletonList(theme, configProvider, itemCount: 10);
       } else {
         if (state.list.isEmpty) {
@@ -137,6 +137,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
               ));
             },
             excludeCurrentUser: true,
+            isLoadingMore: state.isFetching == true && state.list.isNotEmpty,
           );
         }
       }

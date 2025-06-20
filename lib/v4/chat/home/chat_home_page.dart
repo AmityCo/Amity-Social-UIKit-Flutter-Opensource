@@ -1,7 +1,9 @@
 import 'package:amity_uikit_beta_service/v4/chat/archive/archived_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/create/channel_create_conversation_page.dart';
-import 'package:amity_uikit_beta_service/v4/chat/createGroup/ui/select_group_user_page.dart';
-import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_component.dart';
+import 'package:amity_uikit_beta_service/v4/chat/createGroup/ui/amity_select_group_member_page.dart';
+import 'package:amity_uikit_beta_service/v4/chat/home/amity_all_chat_list_component.dart';
+import 'package:amity_uikit_beta_service/v4/chat/home/amity_conversation_chat_list_component.dart';
+import 'package:amity_uikit_beta_service/v4/chat/home/amity_group_chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/Network/network_connectivity_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
@@ -26,10 +28,9 @@ class AmityChatHomePage extends NewBasePage {
         final configProvider = Provider.of<ConfigProvider>(context);
         final theme = configProvider.getTheme('chat_home_page', '');
 
-        // Initialize all chat list components for prefetching
-        final allChatsWidget = ChatListComponent(channelType: 'All');
-        final directChatsWidget = ChatListComponent(channelType: 'Direct');
-        final groupChatsWidget = ChatListComponent(channelType: 'Groups');
+        final allChatsWidget = AmityAllChatListComponent();
+        final directChatsWidget = AmityConversationChatListComponent();
+        final groupChatsWidget = AmityGroupChatListComponent();
 
         return DefaultTabController(
           length: 3,
@@ -244,7 +245,7 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (context) => SelectGroupUserPage()),
+                      builder: (context) => AmitySelectGroupMemberPage()),
                 );
               }
             },

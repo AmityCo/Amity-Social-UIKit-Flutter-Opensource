@@ -65,6 +65,11 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
         user: event.channelMember.user,
         hasNextPage: liveCollection?.hasNextPage(),
       ));
+      
+      // Fetch follow info to determine blocking status
+      if (event.channelMember.user != null) {
+        addEvent(const ChatPageEventFetchFollowInfo());
+      }
     });
 
     on<ChatPageEventFetchMuteState>((event, emit) async {
@@ -197,7 +202,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     });
 
     on<ChatPageUserFlagStateChanged>((event, emit) async {
-      emit(state.copyWith(user: event.user ?? state.user));
+      emit(state.copyWith(user: event.user));
     });
 
     on<ChatPageEventChannelIdChanged>((event, emit) async {
@@ -386,6 +391,81 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
             icon: AmityToastIcon.warning,
           ));
         }
+      }
+    });
+
+    on<ChatPageEventFetchFollowInfo>((event, emit) async {
+      // Use our dedicated user property first, fallback to channelMember.user if needed
+      AmityUser? user = state.user ?? state.channelMember?.user;
+      if (user == null) {
+        return;
+      }
+
+      try {
+        final followInfo = await AmityCoreClient.newUserRepository()
+            .relationship()
+            .getFollowInfo(user.userId!);
+        
+        final isBlocking = followInfo.status == AmityFollowStatus.BLOCKED;
+        addEvent(ChatPageFollowInfoUpdated(isUserBlocked: isBlocking));
+      } catch (error) {
+        // If there's an error fetching follow info, default to not blocking
+        addEvent(const ChatPageFollowInfoUpdated(isUserBlocked: false));
+      }
+    });
+
+    on<ChatPageFollowInfoUpdated>((event, emit) async {
+      emit(state.copyWith(isUserBlocked: event.isUserBlocked));
+    });
+
+    on<ChatPageEventBlockUser>((event, emit) async {
+      // Use our dedicated user property first, fallback to channelMember.user if needed
+      AmityUser? user = state.user ?? state.channelMember?.user;
+      if (user == null) {
+        return;
+      }
+
+      try {
+        if (event.isUserBlocked) {
+          // Block the user
+          await AmityCoreClient.newUserRepository()
+              .relationship()
+              .blockUser(user.userId!);
+          
+          // Update state to reflect blocking
+          addEvent(const ChatPageFollowInfoUpdated(isUserBlocked: true));
+          
+          // Use a small delay before showing toast
+          await Future.delayed(const Duration(milliseconds: 300));
+          
+          toastBloc.add(const AmityToastShort(
+            message: "User blocked.",
+            icon: AmityToastIcon.success,
+          ));
+        } else {
+          // Unblock the user
+          await AmityCoreClient.newUserRepository()
+              .relationship()
+              .unblockUser(user.userId!);
+          
+          // Update state to reflect unblocking
+          addEvent(const ChatPageFollowInfoUpdated(isUserBlocked: false));
+          
+          // Use a small delay before showing toast
+          await Future.delayed(const Duration(milliseconds: 300));
+          
+          toastBloc.add(const AmityToastShort(
+            message: "User unblocked.",
+            icon: AmityToastIcon.success,
+          ));
+        }
+      } catch (error) {
+        toastBloc.add(AmityToastShort(
+          message: event.isUserBlocked 
+              ? "Failed to block user. Please try again."
+              : "Failed to unblock user. Please try again.",
+          icon: AmityToastIcon.warning,
+        ));
       }
     });
 

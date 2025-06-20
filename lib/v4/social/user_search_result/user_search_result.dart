@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityUserSearchResultComponent extends NewBaseComponent {
-  AmityGlobalSearchViewModel viewModel;
+  final AmityGlobalSearchViewModel viewModel;
 
   AmityUserSearchResultComponent({
     Key? key,
@@ -63,7 +63,8 @@ class AmityUserSearchResultComponent extends NewBaseComponent {
                 AmityUIKit4Manager.behavior.userSearchResultBehavior
                     .goToUserProfilePage(context, userId);
               }
-            }),
+            },
+            isLoadingMore: viewModel.isUsersFetching == true && viewModel.users.isNotEmpty),
       );
     }
   }

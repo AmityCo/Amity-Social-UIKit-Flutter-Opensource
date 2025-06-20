@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: amity_sdk
-      sha256: "514efbe097b3def2e4249da00ce3db2bdffc925a85bae543e9768d07001482e3"
+      sha256: "90a17df1401e6faef91a12b696a97712135af2181b464426a195a0376945ea74"
       url: "https://pub.dev"
     source: hosted
-    version: "7.4.6"
+    version: "7.5.0"
   amity_sdk_api:
     dependency: transitive
     description:
@@ -31,7 +31,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "4.7.0"
+    version: "4.9.0"
   analyzer:
     dependency: transitive
     description:
@@ -661,10 +661,10 @@ packages:
     dependency: transitive
     description:
       name: freezed_annotation
-      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
+      sha256: c87ff004c8aa6af2d531668b46a4ea379f7191dc6dfa066acd53d506da6e044b
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "3.0.0"
   frontend_server_client:
     dependency: transitive
     description:

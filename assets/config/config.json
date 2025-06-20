@@ -526,10 +526,40 @@
             "right_bubble_subtle_text_color": "#A9C4F9",
             "bubble_divider_color": "#C1C1C1"
         },
-        "group_chat_page/*/*": {
+        "chat_home_page/*/search_chat_button": {
+            "image": "search_chat_button"
         },
+        "chat_home_page/*/create_new_chat_button": {
+            "image": "create_new_chat_button"
+        },
+        "chat_home_page/*/create_new_conversation_button": {
+            "image": "create_new_conversation_button",
+            "text": "Direct chat"
+        },
+        "chat_home_page/*/create_new_group_button": {
+            "image": "create_new_group_button",
+            "text": "Group chat"
+        },
+        "chat_home_page/*/chat_home_page_more_menu_button": {
+            "image": "chat_home_page_more_menu_button"
+        },
+        "chat_home_page/*/chat_home_page_all_chat_button": {
+            "text": "All"
+        },
+        "chat_home_page/*/chat_home_page_direct_chat_button": {
+            "text": "Direct"
+        },
+        "chat_home_page/*/chat_home_page_group_chat_button": {
+            "text": "Groups"
+        },
+        "select_group_member_page/*/select_group_user_title": {
+            "text": "New group"
+        },
+        "create_group_chat_page/*/create_group_chat_title": {
+            "text": "New group"
+        },
+        "group_chat_page/*/*": {},
         "group_chat_page/message_bubble/*": {
-            
             "left_bubble_color": "#EBECEF",
             "left_bubble_pressed_color": "#A5A9b5",
             "left_bubble_text_color": "#292B32",
@@ -539,6 +569,141 @@
             "right_bubble_text_color": "#FFFFFF",
             "right_bubble_subtle_text_color": "#A9C4F9",
             "bubble_divider_color": "#C1C1C1"
+        },
+        "group_chat_page/*/group_chat_page_title": {},
+        "group_chat_page/*/group_chat_page_image": {
+            "image": "group_chat_page_image_placeholder"
+        },
+        "group_chat_page/group_chat_message_list_component/*": {},
+        "group_setting_page/*/group_setting_title": {},
+        "group_setting_page/*/group_setting_image": {
+            "image": "group_setting_image_placeholder"
+        },
+        "group_setting_page/*/edit_group_profile_button": {
+            "image": "edit_group_profile_button",
+            "text": "Group profile"
+        },
+        "group_setting_page/*/edit_group_notification_button": {
+            "image": "edit_group_notification_button",
+            "text": "Group notification"
+        },
+        "group_setting_page/*/edit_group_member_permission_button": {
+            "image": "edit_group_member_permission_button",
+            "text": "Member permissions"
+        },
+        "group_setting_page/*/group_member_list_button": {
+            "image": "group_member_list_button",
+            "text": "All members"
+        },
+        "group_setting_page/*/group_banned_list_button": {
+            "image": "group_banned_list_button",
+            "text": "Banned users"
+        },
+        "group_setting_page/*/notification_preference_button": {
+            "image": "notification_preference_button",
+            "text": "Notifications"
+        },
+        "edit_group_profile_page/*/edit_group_profile_title": {
+            "text": "Group profile"
+        },
+        "edit_group_profile_page/*/edit_group_image": {
+            "image": "edit_group_image_placeholder"
+        },
+        "edit_group_profile_page/*/edit_profile_save_button": {
+            "image": "Save"
+        },
+        "edit_group_notification_page/*/edit_group_notification_title": {
+            "text": "Group notifications"
+        },
+        "edit_group_notification_page/*/group_notification_default_mode_button": {},
+        "edit_group_notification_page/*/group_notification_silent_mode_button": {},
+        "edit_group_notification_page/*/group_notification_subscribe_mode_button": {},
+        "edit_member_permission_page/*/edit_member_permission_title": {
+            "text": "Member permissions"
+        },
+        "edit_member_permission_page/*/messaging_permission_all_member_button": {},
+        "edit_member_permission_page/*/messaging_permission_only_moderator_button": {},
+        "group_member_list_page/*/group_member_list_title": {
+            "text": "All members"
+        },
+        "group_member_list_page/*/add_group_member_button": {
+            "image": "group_member_list_add_member_button"
+        },
+        "banned_member_list_page/*/banned_member_list_title": {
+            "text": "Banned users"
+        },
+        "add_group_member_page/*/add_group_member_title": {
+            "text": "Add member"
+        },
+        "add_group_member_page/*/add_group_member_add_button": {
+            "text": "Add member"
+        },
+        "*/group_member_action/promote_user_button": {
+            "image": "promote_user_button",
+            "text": "Promote to moderator"
+        },
+        "*/group_member_action/demote_user_button": {
+            "image": "demote_user_button",
+            "text": "Demote from moderator"
+        },
+        "*/group_member_action/remove_user_button": {
+            "image": "remove_user_button",
+            "text": "Remove from group"
+        },
+        "*/group_member_action/report_user_button": {
+            "image": "report_user_button",
+            "text": "Report user"
+        },
+        "*/group_member_action/unreport_user_button": {
+            "image": "unreport_user_button",
+            "text": "Unreport user"
+        },
+        "*/group_member_action/ban_user_button": {
+            "image": "ban_user_button",
+            "text": "Ban user"
+        },
+        "*/group_member_action/unban_user_button": {
+            "image": "unban_user_button",
+            "text": "Unban user"
+        },
+        "group_notification_preference_page/*/group_notification_title": {
+            "text": "Notifications"
+        },
+        "*/conversation_chat_list/*": {},
+        "*/group_chat_list/*": {},
+        "*/all_chat_list/*": {},
+        "*/chat_user_action/turn_on_chat_notification_button": {
+            "image": "turn_on_chat_notification_button",
+            "text": "Turn on notification"
+        },
+        "*/chat_user_action/turn_off_chat_notification_button": {
+            "image": "turn_off_chat_notification_button",
+            "text": "Turn off notification"
+        },
+        "*/group_member_action/block_chat_user_button": {
+            "image": "block_chat_user_button",
+            "text": "Block user"
+        },
+        "*/group_member_action/unblock_chat_user_button": {
+            "image": "unblock_chat_user_button",
+            "text": "Unblock user"
+        },
+        "*/group_member_action/report_chat_user_button": {
+            "image": "report_chat_user_button",
+            "text": "Report user"
+        },
+        "*/group_member_action/unreport_chat_user_button": {
+            "image": "unreport_chat_user_button",
+            "text": "Unreport user"
+        },
+        "*/message_report/message_report_submit_button": {
+            "text": "Submit"
+        },
+        "*/message_report/message_report_close_button": {
+            "image": "message_report_close_button"
+        },
+        "*/message_report/error_close_button": {
+            "text": "Close"
         }
     }
 }

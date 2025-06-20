@@ -1,7 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/chat/message/components/chat_user_action_component.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/components/amity_conversation_chat_user_action_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_action.dart';
@@ -13,6 +13,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/simple_ticker_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
@@ -21,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:amity_uikit_beta_service/v4/chat/message/components/chat_user_action_component.dart';
 
 part 'widgets/chat_page_helpers.dart';
 
@@ -42,34 +42,6 @@ class AmityChatPage extends NewBasePage {
       this.userDisplayName,
       this.avatarUrl})
       : super(pageId: 'chat_page');
-
-  // Method to show the chat user action bottom sheet
-  void _showChatUserActionBottomSheet(BuildContext context, ChatPageState state) {
-    // Get a reference to the bloc before showing the modal
-    final chatPageBloc = context.read<ChatPageBloc>();
-    
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (bottomSheetContext) {
-        // Use dedicated user property if available, otherwise fall back to channelMember.user
-        final AmityUser userToUse = state.user ?? state.channelMember!.user!;
-        return ChatUserActionComponent(
-          user: userToUse,
-          isMute: state.isMute,
-          onMuteToggleTap: () {
-            // Use the bloc reference from the parent context
-            chatPageBloc.add(const ChatPageEventMuteUnmute());
-          },
-          onReportUserTap: () {
-            // Toggle between flag and unflag based on user's current flag status
-            chatPageBloc.add(ChatPageEventFlagUser(isFlagging: !userToUse.isFlaggedByMe));
-          },
-        );
-      },
-    );
-  }
 
   @override
   Widget buildPage(BuildContext context) {
@@ -186,7 +158,8 @@ class AmityChatPage extends NewBasePage {
                             package: 'amity_uikit_beta_service',
                             width: 24,
                             height: 24,
-                            colorFilter: ColorFilter.mode(theme.secondaryColor, BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(
+                                theme.secondaryColor, BlendMode.srcIn),
                           ),
                           onPressed: () {
                             HapticFeedback.heavyImpact();
@@ -359,17 +332,21 @@ class AmityChatPage extends NewBasePage {
                                                                   message:
                                                                       message));
                                                     },
-                                                    onReplyMessage: (replyingMessage) {
+                                                    onReplyMessage:
+                                                        (replyingMessage) {
                                                       context
                                                           .read<ChatPageBloc>()
                                                           .add(ChatPageReplyEvent(
-                                                              message: replyingMessage));
+                                                              message:
+                                                                  replyingMessage));
                                                     },
                                                     onEditMessage: (message) {
                                                       context
                                                           .read<ChatPageBloc>()
-                                                          .add(ChatPageEditEvent(
-                                                              message: message));
+                                                          .add(
+                                                              ChatPageEditEvent(
+                                                                  message:
+                                                                      message));
                                                     },
                                                     thumbnail: state
                                                             .localThumbnails[
@@ -424,31 +401,53 @@ class AmityChatPage extends NewBasePage {
                             ],
                           ),
                         ),
-                        AmityMessageComposer(
-                          key: Key('${state.channelId}'),
-                          pageId: pageId,
-                          replyingMessage: state.replyingMessage,
-                          editingMessage: state.editingMessage,
-                          subChannelId: state.channelId,
-                          avatarUrl: avatarUrl,
-                          action: MessageComposerAction(
-                            onDissmiss: () {
-                              context
-                                  .read<ChatPageBloc>()
-                                  .add(const ChatPageRemoveReplyEvent());
-                            },
-                            onMessageCreated: () {
-                              context
-                                  .read<ChatPageBloc>()
-                                  .add(const ChatPageRemoveReplyEvent());
-                              state.scrollController.animateTo(
-                                0.0,
-                                curve: Curves.easeOut,
-                                duration: const Duration(milliseconds: 300),
-                              );
-                            },
+                        // Show blocked message if current user is blocking the other user
+                        if (state.isUserBlocked)
+                          SafeArea(
+                            top: false,
+                            child: Container(
+                              height: 42,
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0, left: 16.0, right: 16.0),
+                              decoration: BoxDecoration(
+                                color: theme.backgroundShade1Color,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "You can't send messages to this person.",
+                                  style: AmityTextStyle.caption(
+                                      theme.baseColorShade1),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          AmityMessageComposer(
+                            key: Key('${state.channelId}'),
+                            pageId: pageId,
+                            replyingMessage: state.replyingMessage,
+                            editingMessage: state.editingMessage,
+                            subChannelId: state.channelId,
+                            avatarUrl: avatarUrl,
+                            action: MessageComposerAction(
+                              onDissmiss: () {
+                                context
+                                    .read<ChatPageBloc>()
+                                    .add(const ChatPageRemoveReplyEvent());
+                              },
+                              onMessageCreated: () {
+                                context
+                                    .read<ChatPageBloc>()
+                                    .add(const ChatPageRemoveReplyEvent());
+                                state.scrollController.animateTo(
+                                  0.0,
+                                  curve: Curves.easeOut,
+                                  duration: const Duration(milliseconds: 300),
+                                );
+                              },
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

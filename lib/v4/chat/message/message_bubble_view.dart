@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/components/message_report_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';

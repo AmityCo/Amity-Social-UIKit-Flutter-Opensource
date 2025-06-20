@@ -1,6 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/base_chat_list_component.dart';
-import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
@@ -13,32 +12,17 @@ part 'chat_list_state.dart';
 
 class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   ChatListType chatListType;
-  ChannelFilterType channelFilterType;
+  List<AmityChannelType> channelTypes;
   AmityToastBloc toastBloc;
 
   late final LiveCollectionStream<AmityChannel> channelLiveCollection;
 
-  ChatListBloc({required this.chatListType, required this.channelFilterType, required this.toastBloc})
+  ChatListBloc({required this.chatListType, required this.channelTypes, required this.toastBloc})
       : super(const ChatListState()) {
     if (chatListType == ChatListType.ARCHIVED) {
       channelLiveCollection =
           AmityChatClient.newChannelRepository().getArchivedChannels();
     } else {
-      // Filter channels based on channelFilterType
-      List<AmityChannelType> channelTypes;
-      switch (channelFilterType) {
-        case ChannelFilterType.conversation:
-          channelTypes = [AmityChannelType.CONVERSATION];
-          break;
-        case ChannelFilterType.community:
-          channelTypes = [AmityChannelType.COMMUNITY];
-          break;
-        case ChannelFilterType.all:
-        default:
-          channelTypes = [AmityChannelType.COMMUNITY, AmityChannelType.CONVERSATION];
-          break;
-      }
-      
       channelLiveCollection = AmityChatClient.newChannelRepository()
           .getChannels()
           .types(channelTypes)
@@ -128,22 +112,24 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
             showArchiveErrorDialog: true,
           ));
         } else {
-          emit(state.copyWith(
-            error: AmityErrorInfo(
-              title: 'Archive Error',
-              message: errorMessage,
-            ),
-            showArchiveErrorDialog: true,
-          ));
+          toastBloc.add(const AmityToastShort(
+              message: 'Failed to archive chat. Please try again', 
+              icon: AmityToastIcon.warning));
         }
       }
     });
 
     on<ChatListEventChannelUnarchive>((event, emit) async {
-      await AmityChatClient.newChannelRepository()
-          .unarchiveChannel(event.channelId);
-      toastBloc.add(const AmityToastShort(
-          message: 'Chat unarchived.', icon: AmityToastIcon.success));
+      try {
+        await AmityChatClient.newChannelRepository()
+            .unarchiveChannel(event.channelId);
+        toastBloc.add(const AmityToastShort(
+            message: 'Chat unarchived.', icon: AmityToastIcon.success));
+      } catch (error) {
+        toastBloc.add(const AmityToastShort(
+            message: 'Failed to unarchive chat. Please try again', 
+            icon: AmityToastIcon.warning));
+      }
     });
 
     on<ChatListEventResetDialogState>((event, emit) {

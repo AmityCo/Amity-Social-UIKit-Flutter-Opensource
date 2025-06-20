@@ -1,4 +1,8 @@
 part of '../message_bubble_view.dart';
+// Import already included in the parent file:
+// import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+// import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+// import 'package:flutter/material.dart';
 
 class ReactionItem {
   final AmityReactionType reaction;
@@ -14,14 +18,14 @@ class ReactionRow extends StatefulWidget {
   final List<ReactionItem> reactions;
   final Function(AmityReactionType, bool) onReactionSelected;
   final AmityThemeColor theme;
-  final bool showTooltipBelow; // Add this property
+  final bool showTooltipBelow;
 
   const ReactionRow({
     Key? key,
     required this.reactions,
     required this.onReactionSelected,
     required this.theme,
-    this.showTooltipBelow = false, // Default to showing above
+    this.showTooltipBelow = false,
   }) : super(key: key);
 
   @override
@@ -34,7 +38,6 @@ class _ReactionRowState extends State<ReactionRow> {
   void _updateHighlight(Offset globalPos) {
     final renderBox = context.findRenderObject() as RenderBox;
     final localPos = renderBox.globalToLocal(globalPos);
-    // Check if the pointer is within the widget bounds.
     if (localPos.dx < 0 ||
         localPos.dx > renderBox.size.width ||
         localPos.dy < 0 ||
@@ -85,15 +88,13 @@ class _ReactionRowState extends State<ReactionRow> {
           final active = index == highlightedIndex;
           final reactionItem = widget.reactions[index];
 
-          // Fixed size container for reaction item to maintain stable layout
           return Container(
-            width: 42, // Fixed width
-            height: 52, // Fixed height to accommodate upward animation
+            width: 42,
+            height: 52,
             alignment: Alignment.center,
             child: Stack(
               alignment: Alignment.center,
-              clipBehavior:
-                  Clip.none, // Allow content to overflow for animation
+              clipBehavior: Clip.none,
               children: [
                 if (reactionItem.isSelected)
                   Container(
@@ -104,10 +105,8 @@ class _ReactionRowState extends State<ReactionRow> {
                       color: widget.theme.baseColorShade4,
                     ),
                   ),
-                // Reaction name label that appears when active
                 if (active)
                   Positioned(
-                    // Position based on showTooltipBelow flag
                     top: widget.showTooltipBelow ? 53 : -33,
                     child: AnimatedOpacity(
                       duration: const Duration(milliseconds: 150),
@@ -140,7 +139,6 @@ class _ReactionRowState extends State<ReactionRow> {
                   ),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
-                  // Transform direction based on showTooltipBelow flag
                   transform: Matrix4.translationValues(
                     0,
                     active ? (widget.showTooltipBelow ? 10 : -10) : 0,
@@ -161,7 +159,6 @@ class _ReactionRowState extends State<ReactionRow> {
     );
   }
 
-  // Helper method to capitalize first letter of reaction name
   String _capitalizeFirstLetter(String text) {
     if (text.isEmpty) return '';
     return text[0].toUpperCase() + text.substring(1).toLowerCase();
@@ -177,15 +174,11 @@ extension MessagePopup on MessageBubbleView {
     MessageBubbleState state,
     List<AmityReactionType> reactions,
   ) async {
-    // Use the same threshold calculation as in _showPopupMenu
     final screenHeight = MediaQuery.of(context).size.height - 50;
     final screenThreshold = (screenHeight) - ((screenHeight) * 0.3);
 
-    // Determine if message is in lower portion of screen for animation direction
     final isInLowerPortion = offset.dy > screenThreshold;
 
-    // Check if the tooltip would go beyond the top of the screen
-    // Tooltip height + some padding
     const tooltipHeightWithPadding = 40;
     final isTooCloseToTop = reactionActionOffset.dy < tooltipHeightWithPadding;
 
@@ -324,9 +317,8 @@ extension MessagePopup on MessageBubbleView {
           itemCount += 1; // Save option for media messages
         }
 
-        if (isUser) {
-          itemCount += 1; // Delete option for own messages
-        }
+        itemCount +=
+            1; // Delete option for own messages or report option for others
       }
 
       final popupHeight = (menuItemHeight * itemCount) + menuPadding;
@@ -482,6 +474,37 @@ extension MessagePopup on MessageBubbleView {
                 ),
               ),
             ),
+          if (!isUser)
+            PopupMenuItem(
+              value: message.isFlaggedByMe == true ? 'unreport' : 'report',
+              child: Container(
+                // width: 100,
+                height: 44,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      message.isFlaggedByMe == true
+                          ? 'assets/Icons/amity_ic_unreport_user_button.svg'
+                          : 'assets/Icons/amity_ic_report_user_button.svg',
+                      package: 'amity_uikit_beta_service',
+                      width: 20,
+                      height: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      message.isFlaggedByMe == true ? "Unreport" : "Report",
+                      style: TextStyle(
+                        color: theme.baseColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           if (isUser)
             PopupMenuItem(
               value: 'delete',
@@ -542,6 +565,12 @@ extension MessagePopup on MessageBubbleView {
         case 'edit':
           editMessage(context);
           break;
+        case 'report':
+          flagMessage(context);
+          break;
+        case 'unreport':
+          unflagMessage(context);
+          break;
       }
       return result;
     }
@@ -564,6 +593,54 @@ extension MessagePopup on MessageBubbleView {
 
   editMessage(BuildContext context) {
     onEditMessage?.call(message);
+  }
+
+  flagMessage(BuildContext context) async {
+    // Show message report component to select reason
+    _showMessageReportBottomSheet(context);
+  }
+
+  void _showMessageReportBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) {
+        return AmityMessageReportComponent(
+          message: message,
+          onCancel: () {
+            Navigator.pop(modalContext);
+          },
+        );
+      },
+    );
+  }
+
+  unflagMessage(BuildContext context) async {
+    try {
+      if (message.user?.userId != null) {
+        final messageId = message.messageId ?? "";
+
+        // Unflag the message
+        await AmityChatClient.newMessageRepository().unflag(messageId);
+
+        context.read<AmityToastBloc>().add(AmityToastShort(
+            message: "Message unreported.",
+            icon: AmityToastIcon.success,
+            bottomPadding: AmityChatPage.toastBottomPadding));
+      } else {
+        context.read<AmityToastBloc>().add(AmityToastShort(
+            message:
+                "Unable to unreport message - user information not available.",
+            icon: AmityToastIcon.warning,
+            bottomPadding: AmityChatPage.toastBottomPadding));
+      }
+    } catch (e) {
+      context.read<AmityToastBloc>().add(AmityToastShort(
+          message: "Failed to unreport message. Please try again.",
+          icon: AmityToastIcon.warning,
+          bottomPadding: AmityChatPage.toastBottomPadding));
+    }
   }
 
   Future deleteMessage(BuildContext context, bool shouldPop) async {
@@ -648,3 +725,7 @@ Future saveVideoMessage(BuildContext context, AmityMessage message) async {
     }
   }
 }
+
+/// A PageView wrapper for message reporting with slide animation between report screens
+/// Note: MessageReportPageView has been moved and renamed to MessageReportComponent
+/// Path: /lib/v4/chat/message/components/message_report_component.dart

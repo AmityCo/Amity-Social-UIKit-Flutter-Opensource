@@ -16,7 +16,8 @@ Widget multiSelectUserList(
     required AmityThemeColor theme,
     required void Function() loadMore,
     required void Function(AmityUser) onSelectUser,
-    bool excludeCurrentUser = false}) {
+    bool excludeCurrentUser = false,
+    bool isLoadingMore = false}) {
   scrollController.addListener(() {
     if (scrollController.position.pixels ==
         scrollController.position.maxScrollExtent) {
@@ -29,11 +30,27 @@ Widget multiSelectUserList(
       Expanded(
         child: ListView.separated(
           controller: scrollController,
-          itemCount: users.length,
+          itemCount: users.length + (isLoadingMore ? 1 : 0),
           separatorBuilder: (context, index) {
             return const SizedBox(height: 4);
           },
           itemBuilder: (context, index) {
+            // Show loading indicator at the bottom
+            if (index == users.length && isLoadingMore) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                  ),
+                ),
+              );
+            }
+
             final user = users[index];
             final currentUserId = AmityCoreClient.getUserId();
             return Padding(
@@ -75,7 +92,8 @@ Widget userList(
     void Function(AmityUser)? onActionTap,
     bool excludeCurrentUser = false,
     bool hideActionForCurrentUser = false,
-    Map<String, List<String>>? memberRoles}) {
+    Map<String, List<String>>? memberRoles,
+    bool isLoadingMore = false}) {
   scrollController.addListener(() {
     if (scrollController.position.pixels ==
         scrollController.position.maxScrollExtent) {
@@ -88,11 +106,28 @@ Widget userList(
       Expanded(
         child: ListView.separated(
           controller: scrollController,
-          itemCount: users.length,
+          itemCount: users.length + (isLoadingMore ? 1 : 0),
           separatorBuilder: (context, index) {
             return const SizedBox(height: 4);
           },
           itemBuilder: (context, index) {
+            // Show loading indicator at the bottom
+            if (index == users.length && isLoadingMore) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                  ),
+                ),
+              );
+            }
+
+            
             final user = users[index];
             final currentUserId = AmityCoreClient.getUserId();
             final isCurrentUser = user.userId == currentUserId;
@@ -180,8 +215,7 @@ Widget groupUserList({
           isCurrentUser: isCurrentUser,
           memberRoles: memberRoles,
           onTap: onTap,
-          onActionTap: (hideActionForCurrentUser && isCurrentUser ||
-                  !isCurrentUserModerator)
+          onActionTap: (hideActionForCurrentUser && isCurrentUser)
               ? null
               : onActionTap,
         );

@@ -21,6 +21,7 @@ class ChatPageState extends Equatable {
   final bool showScrollButton;
   final AmityMessage? newMessage;
   final ScrollController scrollController;
+  final bool isUserBlocked;
 
   const ChatPageState({
     required this.channelId,
@@ -41,6 +42,7 @@ class ChatPageState extends Equatable {
     this.showScrollButton = false,
     this.newMessage,
     required this.scrollController,
+    this.isUserBlocked = false,
   });
 
   @override
@@ -62,6 +64,7 @@ class ChatPageState extends Equatable {
         editingMessage,
         showScrollButton,
         newMessage,
+        isUserBlocked,
       ];
 
   ChatPageState copyWith({
@@ -74,6 +77,8 @@ class ChatPageState extends Equatable {
     bool? isFetching,
     bool? hasNextPage,
     Map<String, Uint8List?>? localThumbnails,
+    bool? isOnMuteChange,
+    bool? isOnFlagChange,
     AmityChannelMember? channelMember,
     Object? replyingMessage = _undefined,
     Object? editingMessage = _undefined,
@@ -81,6 +86,7 @@ class ChatPageState extends Equatable {
     Object? newMessage = _undefined,
     ScrollController? scrollController,
     AmityUser? user,
+    bool? isUserBlocked,
   }) {
     return ChatPageState(
       channelId: channelId ?? this.channelId,
@@ -107,6 +113,7 @@ class ChatPageState extends Equatable {
           : newMessage as AmityMessage?,
       scrollController: scrollController ?? this.scrollController,
       user: user ?? this.user,
+      isUserBlocked: isUserBlocked ?? this.isUserBlocked,
     );
   }
 }
@@ -127,6 +134,7 @@ class ChatPageStateInitial extends ChatPageState {
           isOnMuteChange: false,
           scrollController: scrollController,
           user: null,
+          isUserBlocked: false,
         );
 }
 
@@ -144,5 +152,6 @@ class ChatPageStateChanged extends ChatPageState {
           hasNextPage: hasNextPage,
           scrollController: scrollController,
           user: null,
+          isUserBlocked: false,
         );
 }

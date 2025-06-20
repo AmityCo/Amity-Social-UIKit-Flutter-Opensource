@@ -91,7 +91,6 @@ class ExplorePageVM with ChangeNotifier {
   void queryCommunityCategories(
       {required AmityCommunityCategorySortOption sortOption,
       bool enablenotifylistener = false}) async {
-    print("queryCommunityCategories");
     _communityCategoryController = PagingController(
       pageFuture: (token) => AmitySocialClient.newCommunityRepository()
           .getCategories()

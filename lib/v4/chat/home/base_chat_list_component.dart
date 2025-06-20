@@ -1,6 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/archive/archived_chat_list_empty_state.dart';
-import 'package:amity_uikit_beta_service/v4/chat/group_message/group_chat_page.dart';
+import 'package:amity_uikit_beta_service/v4/chat/group_message/amity_group_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/bloc/chat_list_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_skeleton.dart';
@@ -101,8 +101,8 @@ class BaseChatListComponent extends NewBaseComponent {
                               AmityChannelType.COMMUNITY) {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => GroupChatPage(
-                                        channelId: channel.channelId,
+                                  builder: (context) => AmityGroupChatPage(
+                                        channelId: channel.channelId ?? "",
                                       )),
                             );
                           } else {
@@ -189,7 +189,6 @@ class BaseChatListComponent extends NewBaseComponent {
           return false;
         },
         background: Builder(builder: (context) {
-          final theme = Theme.of(context).extension<AmityThemeColor>()!;
           return Container(
             color: theme.baseColorShade2,
             alignment: Alignment.centerRight,

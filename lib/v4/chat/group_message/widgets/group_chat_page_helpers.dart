@@ -1,6 +1,6 @@
-part of '../group_chat_page.dart';
+part of '../amity_group_chat_page.dart';
 
-extension GroupChatPageHelpers on GroupChatPage {
+extension GroupChatPageHelpers on AmityGroupChatPage {
   Widget _buildNewMessageNotification(
       GroupChatPageState state, AmityMessage newMessage) {
     return Positioned(

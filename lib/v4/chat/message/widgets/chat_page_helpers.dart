@@ -2,23 +2,76 @@ part of '../chat_page.dart';
 
 extension ChatPageHelpers on AmityChatPage {
   void _showChatUserActionBottomSheet(BuildContext context, ChatPageState state) {
+    final chatPageBloc = context.read<ChatPageBloc>();
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        return ChatUserActionComponent(
-          user: state.channelMember!.user!,
-          isMute: state.isMute,
-          onMuteToggleTap: () {
-            context.read<ChatPageBloc>().add(const ChatPageEventMuteUnmute());
-          },
-          onReportUserTap: () {
-            // Implement report user functionality
-            print('Report user tapped');
-          },
+      builder: (bottomSheetContext) {
+        // Provide the bloc to the bottom sheet context
+        return BlocProvider.value(
+          value: chatPageBloc,
+          child: AmityConversationChatUserActionComponent(
+            user: state.channelMember!.user!,
+            isMute: state.isMute,
+            isUserBlocked: state.isUserBlocked,
+            onMuteToggleTap: () {
+              chatPageBloc.add(const ChatPageEventMuteUnmute());
+            },
+            onReportUserTap: () {
+              final user = state.channelMember!.user!;
+              final isFlagging = !user.isFlaggedByMe;
+              chatPageBloc.add(ChatPageEventFlagUser(isFlagging: isFlagging));
+            },
+            onBlockToggleTap: () {
+              _handleBlockToggle(context, state);
+            },
+          ),
         );
       },
+    );
+  }
+
+  void _handleBlockToggle(BuildContext context, ChatPageState state) {
+    final chatPageBloc = context.read<ChatPageBloc>();
+    final user = state.channelMember!.user!;
+    final isCurrentlyBlocking = state.isUserBlocked;
+
+    if (isCurrentlyBlocking) {
+      // Show confirmation dialog for unblocking
+      _showUnblockConfirmation(context, user.displayName ?? 'this user', () {
+        chatPageBloc.add(const ChatPageEventBlockUser(isUserBlocked: false));
+      });
+    } else {
+      // Show confirmation dialog for blocking
+      _showBlockConfirmation(context, user.displayName ?? 'this user', () {
+        chatPageBloc.add(const ChatPageEventBlockUser(isUserBlocked: true));
+      });
+    }
+  }
+
+  void _showBlockConfirmation(BuildContext context, String displayName, VoidCallback onConfirm) {
+    ConfirmationV4Dialog().show(
+      context: context,
+      title: "Block user?",
+      detailText: "$displayName won’t be able to send you the message. They won’t be notified that you’ve blocked them.",
+      leftButtonText: "Cancel",
+      rightButtonText: "Block",
+      leftButtonColor: theme.alertColor,
+      onConfirm: onConfirm,
+    );
+  }
+
+  void _showUnblockConfirmation(BuildContext context, String displayName, VoidCallback onConfirm) {
+    ConfirmationV4Dialog().show(
+      context: context,
+      title: "Unblock user?",
+      detailText: "$displayName will now be able to send you the message. They won’t be notified that you’ve unblocked them.",
+      leftButtonText: "Cancel",
+      rightButtonText: "Unblock",
+      leftButtonColor: theme.alertColor,
+      onConfirm: onConfirm,
     );
   }
 

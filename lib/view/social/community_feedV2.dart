@@ -490,6 +490,10 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
   }
 
   Widget communityInfo(AmityCommunity community) {
+    final isModerator =
+        AmityCoreClient.hasPermission(AmityPermission.EDIT_COMMUNITY)
+            .atCommunity(community.communityId!)
+            .check();
     return Column(
       children: [
         Row(
@@ -559,21 +563,22 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
               ),
             ),
             const Spacer(),
-            Provider.of<AmityUIConfiguration>(context)
-                .widgetBuilders
-                .buildJoinUnjoinButton(
-                  community.metadata?['communityId'] as int?,
-                  community.displayName,
-                  community.isJoined,
-                  Provider.of<FeedVM>(
-                    context,
-                    listen: false,
+            if (!isModerator)
+              Provider.of<AmityUIConfiguration>(context)
+                  .widgetBuilders
+                  .buildJoinUnjoinButton(
+                    community.metadata?['communityId'] as int?,
+                    community.displayName,
+                    community.isJoined,
+                    Provider.of<FeedVM>(
+                      context,
+                      listen: false,
+                    ),
+                    Provider.of<ExplorePageVM>(
+                      context,
+                      listen: false,
+                    ),
                   ),
-                  Provider.of<ExplorePageVM>(
-                    context,
-                    listen: false,
-                  ),
-                ),
           ],
         ),
       ],

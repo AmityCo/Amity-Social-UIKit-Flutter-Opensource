@@ -699,7 +699,10 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                   ],
                 ),
               ),
-              Expanded(
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -814,11 +817,15 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                       size: 16,
                                     ),
                                     SizedBox(width: 4),
-                                    Text(
-                                      'Homepage',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
+                                    Flexible(
+                                      child: Text(
+                                        'Homepage',
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ),
                                   ],

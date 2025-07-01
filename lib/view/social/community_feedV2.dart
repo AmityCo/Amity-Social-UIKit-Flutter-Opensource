@@ -22,11 +22,16 @@ import 'edit_community.dart';
 class CommunityScreen extends StatefulWidget {
   final AmityCommunity community;
   final bool isFromFeed;
+  final String homePagePhrase;
+
   static const routeName = '/CommunityScreen';
 
-  const CommunityScreen(
-      {Key? key, required this.community, this.isFromFeed = false})
-      : super(key: key);
+  const CommunityScreen({
+    Key? key,
+    required this.community,
+    this.isFromFeed = false,
+    this.homePagePhrase = 'Homepage',
+  }) : super(key: key);
 
   @override
   CommunityScreenState createState() => CommunityScreenState();
@@ -210,6 +215,7 @@ class CommunityScreenState extends State<CommunityScreen>
                     bheight: bheight,
                     profileSectionWidget: CommunityDetailComponent(
                       community: snapshot.data!,
+                      homePagePhrase: widget.homePagePhrase,
                     ));
               }),
               _StickyHeaderList(
@@ -446,8 +452,13 @@ class PedindingButton extends StatelessWidget {
 
 class CommunityDetailComponent extends StatefulWidget {
   final AmityCommunity community;
+  final String homePagePhrase;
 
-  const CommunityDetailComponent({super.key, required this.community});
+  const CommunityDetailComponent({
+    super.key,
+    required this.community,
+    this.homePagePhrase = 'Homepage',
+  });
 
   @override
   State<CommunityDetailComponent> createState() =>
@@ -808,21 +819,21 @@ class _CommunityDetailComponentState extends State<CommunityDetailComponent> {
                                     ),
                                   ],
                                 ),
-                                child: const Row(
+                                child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.home_rounded,
                                       size: 16,
                                     ),
-                                    SizedBox(width: 4),
+                                    const SizedBox(width: 4),
                                     Flexible(
                                       child: Text(
-                                        'Homepage',
+                                        widget.homePagePhrase,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w700,
                                         ),

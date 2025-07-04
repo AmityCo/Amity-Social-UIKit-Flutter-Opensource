@@ -1,32 +1,33 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
-import 'package:amity_uikit_beta_service/view/social/pending_page.dart';
 import 'package:flutter/material.dart';
 
 class AmityCommunityPendingPost extends BaseElement {
   final AmityCommunity community;
   final int pendingPostCount;
   final bool isModerator;
+  final Function? onReturnCallback;
 
   AmityCommunityPendingPost(
       {Key? key,
       required this.community,
       required this.pendingPostCount,
-      required this.isModerator})
+      required this.isModerator,
+      this.onReturnCallback})
       : super(elementId: 'community_pending_post', key: key);
 
   @override
   Widget buildElement(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to Edit Profile Page or perform an action
-        if (isModerator) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PendingFeddScreen(
-                    community: community,
-                  )));
-        }
+        AmityUIKit4Manager.behavior.communityProfilePageBehavior
+            .goToPendingRequestsPage(
+          context, 
+          community,
+          onReturnCallback: onReturnCallback,
+        );
       },
       child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -53,7 +54,7 @@ class AmityCommunityPendingPost extends BaseElement {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    context.l10n.community_pending_posts,
+                    context.l10n.community_pending_request_title(pendingPostCount),
                     style: TextStyle(
                       color: theme.baseColor,
                       fontSize: 15,
@@ -63,9 +64,11 @@ class AmityCommunityPendingPost extends BaseElement {
                 ],
               ),
               Text(
-                
                 isModerator
-                    ? context.l10n.commnuity_pending_post_count(pendingPostCount)
+                    ? () {
+                        final displayCount = pendingPostCount > 10 ? "10+" : "$pendingPostCount";
+                        return context.l10n.community_pending_request_message(displayCount, pendingPostCount);
+                      }()
                     : context.l10n.commnuity_pending_post_reviewing,
                 textAlign: TextAlign.center,
                 style: const TextStyle(

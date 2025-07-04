@@ -258,7 +258,6 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   void _showBottomSheet(BuildContext context,
       CommunityMembershipPageState state, AmityCommunityMember member) {
-    print('Member isFlaggedByMe: ${member.user?.isFlaggedByMe}');
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(

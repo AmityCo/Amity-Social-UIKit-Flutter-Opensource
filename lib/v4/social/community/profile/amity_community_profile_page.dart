@@ -20,6 +20,7 @@ import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_compo
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component_type.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,8 +141,9 @@ class AmityCommunityProfilePage extends NewBasePage {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context2) =>
-                                              AmityCommunitySettingPage(community: state.community!)
-                                          ))
+                                                  AmityCommunitySettingPage(
+                                                      community:
+                                                          state.community!)))
                                     }
                                 },
                                 child: Container(
@@ -225,7 +227,8 @@ class AmityCommunityProfilePage extends NewBasePage {
                   SliverToBoxAdapter(
                     child: (state.community != null &&
                             state.isJoined &&
-                            state.pendingPostCount > 0 && (state.community!.isPostReviewEnabled ?? false))
+                            state.pendingPostCount > 0 &&
+                            (state.community!.isPostReviewEnabled ?? false))
                         ? Container(
                             color: theme.backgroundColor,
                             padding: const EdgeInsets.all(16),
@@ -233,6 +236,11 @@ class AmityCommunityProfilePage extends NewBasePage {
                               community: state.community!,
                               pendingPostCount: state.pendingPostCount,
                               isModerator: state.isModerator,
+                              onReturnCallback: () {
+                                context
+                                    .read<CommunityProfileBloc>()
+                                    .add(CommunityProfileEventRefreshFromPendingPage());
+                              },
                             ),
                           )
                         : Container(),
@@ -252,19 +260,16 @@ class AmityCommunityProfilePage extends NewBasePage {
                       communityId: state.communityId,
                       scrollController: _scrollController,
                     ),
-                  
                   if (state.selectedIndex == CommunityProfileTabIndex.pin)
                     CommunityPinComponent(
                       communityId: state.communityId,
                       scrollController: _scrollController,
                     ),
-                  
                   if (state.selectedIndex == CommunityProfileTabIndex.image)
                     AmityCommunityImageFeedComponent(
                       communityId: state.communityId,
                       scrollController: _scrollController,
                     ),
-
                   if (state.selectedIndex == CommunityProfileTabIndex.video)
                     AmityCommunityVideoFeedComponent(
                       communityId: state.communityId,
@@ -278,7 +283,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                   ? GestureDetector(
                       onTap: () {
                         showCommunityProfileAction(context, theme,
-                            state.canManageStory, state.community);
+                            state.canManageStory, state.community, state.isModerator);
                       },
                       child: Container(
                         width: 64,
@@ -339,6 +344,7 @@ class AmityCommunityProfilePage extends NewBasePage {
     AmityThemeColor theme,
     bool canManageStory,
     AmityCommunity? community,
+    bool isModerator,
   ) {
     double height = 0;
     double baseHeight = 80;
@@ -416,6 +422,10 @@ class AmityCommunityProfilePage extends NewBasePage {
                             onPopRequested: (shouldPopCaller) {
                               if (shouldPopCaller) {
                                 Navigator.of(context).pop();
+                                // Show dialog if post review is enabled and user is not a moderator
+                                if (community?.isPostReviewEnabled == true && !isModerator) {
+                                  _showPostReviewDialog(context);
+                                }
                               }
                             },
                           ),
@@ -525,18 +535,22 @@ class AmityCommunityProfilePage extends NewBasePage {
                         reverseTransitionDuration: Duration.zero,
                         pageBuilder: (context, animation, secondaryAnimation) =>
                             PopScope(
-                              canPop: true,
-                              child: AmityPollPostComposerPage(
-                                targetId: communityId,
-                                targetType: AmityPostTargetType.COMMUNITY,
-                                targetCommunityName: community?.displayName ?? '',
-                                onPopRequested: (shouldPopCaller) {
-                                  if (shouldPopCaller) {
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                              ),
-                            ),
+                          canPop: true,
+                          child: AmityPollPostComposerPage(
+                            targetId: communityId,
+                            targetType: AmityPostTargetType.COMMUNITY,
+                            targetCommunityName: community?.displayName ?? '',
+                            onPopRequested: (shouldPopCaller) {
+                              if (shouldPopCaller) {
+                                Navigator.of(context).pop();
+                                // Show dialog if post review is enabled and user is not a moderator
+                                if (community?.isPostReviewEnabled == true && !isModerator) {
+                                  _showPostReviewDialog(context);
+                                }
+                              }
+                            },
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -575,5 +589,13 @@ class AmityCommunityProfilePage extends NewBasePage {
             ),
           );
         });
+  }
+
+  void _showPostReviewDialog(BuildContext context) {
+    AmityV4Dialog().showAlertErrorDialog(
+      title: "Posts sent for review",
+      message: "Your post has been submitted to the pending list. It will be published once approved by the community moderator.",
+      closeText: "OK",
+    );
   }
 }

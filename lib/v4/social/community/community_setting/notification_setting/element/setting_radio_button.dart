@@ -66,7 +66,7 @@ class SettingRadioButtonWidget extends StatelessWidget {
             ),
             const SizedBox(height: 32.0),
             _getRadioButtonTile(
-              title: context.l10n.general_off,
+              title: "Only admins can post",
               value: RadioButtonSetting.off,
               groupValue: groupValue,
               onChanged: onChanged,

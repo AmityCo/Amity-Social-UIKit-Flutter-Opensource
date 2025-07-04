@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -303,6 +303,28 @@ class AppLocalizationsPt extends AppLocalizations {
       one: '$count publicação precisa de aprovação',
     );
     return '$_temp0';
+  }
+
+  @override
+  String community_pending_request_title(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Solicitações pendentes',
+      one: 'Solicitação pendente',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String community_pending_request_message(String displayCount, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'publicações requerem',
+      one: 'publicação requer',
+    );
+    return '$displayCount $_temp0 aprovação';
   }
 
   @override
@@ -933,6 +955,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       one: '$count publicação precisa de aprovação',
     );
     return '$_temp0';
+  }
+
+  @override
+  String community_pending_request_title(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Solicitações pendentes',
+      one: 'Solicitação pendente',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String community_pending_request_message(String displayCount, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'publicações requerem',
+      one: 'publicação requer',
+    );
+    return '$displayCount $_temp0 aprovação';
   }
 
   @override

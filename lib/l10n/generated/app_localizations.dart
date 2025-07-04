@@ -606,6 +606,18 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{{count} post need approval} other{{count} posts need approval}}'**
   String commnuity_pending_post_count(int count);
 
+  /// Title for pending request/requests
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Pending request} other{Pending requests}}'**
+  String community_pending_request_title(int count);
+
+  /// Message for pending request showing count and plural forms
+  ///
+  /// In en, this message translates to:
+  /// **'{displayCount} {count, plural, =1{post requires} other{posts require}} approval'**
+  String community_pending_request_message(String displayCount, int count);
+
   /// Label for basic info section
   ///
   /// In en, this message translates to:

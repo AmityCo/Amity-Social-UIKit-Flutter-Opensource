@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -303,6 +303,28 @@ class AppLocalizationsEn extends AppLocalizations {
       one: '$count post need approval',
     );
     return '$_temp0';
+  }
+
+  @override
+  String community_pending_request_title(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Pending requests',
+      one: 'Pending request',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String community_pending_request_message(String displayCount, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'posts require',
+      one: 'post requires',
+    );
+    return '$displayCount $_temp0 approval';
   }
 
   @override

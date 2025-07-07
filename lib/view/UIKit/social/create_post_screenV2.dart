@@ -183,26 +183,29 @@ class _AmityCreatePostV2ScreenState extends State<AmityCreatePostV2Screen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          TextField(
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .appColors
-                                        .base),
-                            onChanged: (value) => vm.updatePostValidity(),
-                            controller: vm.textEditingController,
-                            scrollPhysics: const NeverScrollableScrollPhysics(),
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Write something to post",
-                              hintStyle: TextStyle(
+                          Semantics(
+                            identifier: 'create_post_v2',
+                            child: TextField(
+                              style: TextStyle(
                                   color:
                                       Provider.of<AmityUIConfiguration>(context)
                                           .appColors
-                                          .userProfileTextColor),
+                                          .base),
+                              onChanged: (value) => vm.updatePostValidity(),
+                              controller: vm.textEditingController,
+                              scrollPhysics: const NeverScrollableScrollPhysics(),
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Write something to post",
+                                hintStyle: TextStyle(
+                                    color:
+                                        Provider.of<AmityUIConfiguration>(context)
+                                            .appColors
+                                            .userProfileTextColor),
+                              ),
+                              // style: t/1heme.textTheme.bodyText1.copyWith(color: Colors.grey),
                             ),
-                            // style: t/1heme.textTheme.bodyText1.copyWith(color: Colors.grey),
                           ),
                           Consumer<CreatePostVMV2>(
                             builder: (context, vm, _) =>

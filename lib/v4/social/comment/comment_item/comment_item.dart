@@ -204,38 +204,41 @@ class CommentItem extends BaseElement {
                                               removeBottom: true,
                                               child: Scrollbar(
                                                 controller: scrollController,
-                                                child: MentionTextField(
-                                                  theme: theme,
-                                                  suggestionMaxRow: 2,
-                                                  suggestionDisplayMode: SuggestionDisplayMode.inline,
-                                                  mentionContentType: MentionContentType.comment,
-                                                  communityId: communityId,
-                                                  controller: controller,
-                                                  scrollController:
-                                                      scrollController,
-                                                  onChanged: (value) {},
-                                                  keyboardType:
-                                                      TextInputType.multiline,
-                                                  maxLines: null,
-                                                  minLines: 1,
-                                                  textAlignVertical:
-                                                      TextAlignVertical.bottom,
-                                                  decoration: InputDecoration(
-                                                    isDense: true,
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 0,
-                                                            vertical: 0),
-                                                    hintText:
-                                                        'Say something nice...',
-                                                    border: InputBorder.none,
-                                                    hintStyle: TextStyle(
-                                                      color:
-                                                          theme.baseColorShade2,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w400,
+                                                child:  Semantics(
+                                                  identifier: 'comment_item',
+                                                  child: MentionTextField(
+                                                    theme: theme,
+                                                    suggestionMaxRow: 2,
+                                                    suggestionDisplayMode: SuggestionDisplayMode.inline,
+                                                    mentionContentType: MentionContentType.comment,
+                                                    communityId: communityId,
+                                                    controller: controller,
+                                                    scrollController:
+                                                        scrollController,
+                                                    onChanged: (value) {},
+                                                    keyboardType:
+                                                        TextInputType.multiline,
+                                                    maxLines: null,
+                                                    minLines: 1,
+                                                    textAlignVertical:
+                                                        TextAlignVertical.bottom,
+                                                    decoration: InputDecoration(
+                                                      isDense: true,
+                                                      contentPadding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 0,
+                                                              vertical: 0),
+                                                      hintText:
+                                                          'Say something nice...',
+                                                      border: InputBorder.none,
+                                                      hintStyle: TextStyle(
+                                                        color:
+                                                            theme.baseColorShade2,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -283,31 +286,34 @@ class CommentItem extends BaseElement {
                                       removeRight: true,
                                       child: Scrollbar(
                                         controller: scrollController,
-                                        child: MentionTextField(
-                                          theme: theme,
-                                          suggestionMaxRow: 2,
-                                          suggestionDisplayMode: SuggestionDisplayMode.inline,
-                                          mentionContentType: MentionContentType.comment,
-                                          communityId: communityId,
-                                          controller: controller,
-                                          scrollController: scrollController,
-                                          onChanged: (value) {},
-                                          keyboardType: TextInputType.multiline,
-                                          maxLines: null,
-                                          minLines: 1,
-                                          textAlignVertical:
-                                              TextAlignVertical.bottom,
-                                          decoration: InputDecoration(
-                                            isDense: true,
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 0, vertical: 0),
-                                            hintText: 'Say something nice...',
-                                            border: InputBorder.none,
-                                            hintStyle: TextStyle(
-                                              color: theme.baseColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
+                                        child: Semantics(
+                                          identifier: 'comment_item2',
+                                          child: MentionTextField(
+                                            theme: theme,
+                                            suggestionMaxRow: 2,
+                                            suggestionDisplayMode: SuggestionDisplayMode.inline,
+                                            mentionContentType: MentionContentType.comment,
+                                            communityId: communityId,
+                                            controller: controller,
+                                            scrollController: scrollController,
+                                            onChanged: (value) {},
+                                            keyboardType: TextInputType.multiline,
+                                            maxLines: null,
+                                            minLines: 1,
+                                            textAlignVertical:
+                                                TextAlignVertical.bottom,
+                                            decoration: InputDecoration(
+                                              isDense: true,
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 0, vertical: 0),
+                                              hintText: 'Say something nice...',
+                                              border: InputBorder.none,
+                                              hintStyle: TextStyle(
+                                                color: theme.baseColor,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
                                         ),

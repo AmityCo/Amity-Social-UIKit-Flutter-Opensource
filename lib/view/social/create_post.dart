@@ -55,12 +55,15 @@ class CreatePostScreenState extends State<CreatePostScreen> {
                     const SizedBox(width: 15),
                     SizedBox(
                       width: mediaQuery.size.width - 150,
-                      child: const TextField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Say Something about this photo',
+                      child:  Semantics(
+                        identifier: 'create_photo',
+                        child: const TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Say Something about this photo',
+                          ),
+                          // style: theme.textTheme.bodyText1.copyWith(color: Colors.grey),
                         ),
-                        // style: theme.textTheme.bodyText1.copyWith(color: Colors.grey),
                       ),
                     ),
                   ],

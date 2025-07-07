@@ -161,37 +161,40 @@ class _AmityCommentCreatorInternalState
                 removeBottom: true,
                 child: Scrollbar(
                   controller: scrollController,
-                  child: MentionTextField(
-                    theme: widget.theme,
-                    suggestionMaxRow: 2,
-                    suggestionDisplayMode: SuggestionDisplayMode.bottom,
-                    mentionContentType: MentionContentType.comment,
-                    communityId: communityId,
-                    controller: controller,
-                    scrollController: scrollController,
-                    onChanged: (value) {
-                      context
-                          .read<CommentCreatorBloc>()
-                          .add(CommentCreatorTextChage(text: value.trim()));
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 1,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 0, vertical: 0),
-                      hintText: 'Say something nice...',
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(
-                        color: widget.theme.baseColorShade2,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
+                  child:  Semantics(
+                    identifier: 'create_comment',
+                    child: MentionTextField(
+                      theme: widget.theme,
+                      suggestionMaxRow: 2,
+                      suggestionDisplayMode: SuggestionDisplayMode.bottom,
+                      mentionContentType: MentionContentType.comment,
+                      communityId: communityId,
+                      controller: controller,
+                      scrollController: scrollController,
+                      onChanged: (value) {
+                        context
+                            .read<CommentCreatorBloc>()
+                            .add(CommentCreatorTextChage(text: value.trim()));
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 1,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 0, vertical: 0),
+                        hintText: 'Say something nice...',
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(
+                          color: widget.theme.baseColorShade2,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
+                      suggestionOverlayBottomPaddingWhenKeyboardClosed: state.currentHeight + 16.0 + (state.replyTo != null ? 40.0 : 0.0),
+                      suggestionOverlayBottomPaddingWhenKeyboardOpen:  state.currentHeight + 16.0 + (state.replyTo != null ? 40.0 : 0.0),
                     ),
-                    suggestionOverlayBottomPaddingWhenKeyboardClosed: state.currentHeight + 16.0 + (state.replyTo != null ? 40.0 : 0.0),
-                    suggestionOverlayBottomPaddingWhenKeyboardOpen:  state.currentHeight + 16.0 + (state.replyTo != null ? 40.0 : 0.0),
                   ),
                   ),
                 ),

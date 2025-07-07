@@ -111,29 +111,32 @@ class _AmityEditPostScreenState extends State<AmityEditPostScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          TextField(
-                            onChanged: (value) {
-                              vm.updatePostValidity();
+                          Semantics(
+                            identifier: 'edit_post',
+                            child: TextField(
+                              onChanged: (value) {
+                                vm.updatePostValidity();
 
-                              if (value == originalText) {
-                                hasContent = false;
-                                setState(() {});
-                              } else {
-                                hasContent = true;
-                                setState(() {});
-                              }
-                            },
-                            controller: vm.textEditingController,
-                            style: TextStyle(
-                              color: Provider.of<AmityUIConfiguration>(context)
-                                  .appColors
-                                  .base,
-                            ),
-                            scrollPhysics: const NeverScrollableScrollPhysics(),
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Write something to post",
+                                if (value == originalText) {
+                                  hasContent = false;
+                                  setState(() {});
+                                } else {
+                                  hasContent = true;
+                                  setState(() {});
+                                }
+                              },
+                              controller: vm.textEditingController,
+                              style: TextStyle(
+                                color: Provider.of<AmityUIConfiguration>(context)
+                                    .appColors
+                                    .base,
+                              ),
+                              scrollPhysics: const NeverScrollableScrollPhysics(),
+                              maxLines: null,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Write something to post",
+                              ),
                             ),
                           ),
                           Consumer<EditPostVM>(

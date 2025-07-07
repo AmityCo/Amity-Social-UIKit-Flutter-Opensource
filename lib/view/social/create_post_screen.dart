@@ -78,16 +78,19 @@ class CreatePostScreen2State extends State<CreatePostScreen2> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            TextField(
-                              controller: vm.textEditingController,
-                              scrollPhysics:
-                                  const NeverScrollableScrollPhysics(),
-                              maxLines: null,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Write something to post",
+                            Semantics(
+                              identifier: 'create_post',
+                              child: TextField(
+                                controller: vm.textEditingController,
+                                scrollPhysics:
+                                    const NeverScrollableScrollPhysics(),
+                                maxLines: null,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Write something to post",
+                                ),
+                                // style: t/1heme.textTheme.bodyText1.copyWith(color: Colors.grey),
                               ),
-                              // style: t/1heme.textTheme.bodyText1.copyWith(color: Colors.grey),
                             ),
                             (vm.amityVideo != null)
                                 ? (vm.amityVideo!.isComplete)

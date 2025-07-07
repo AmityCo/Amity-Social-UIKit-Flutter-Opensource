@@ -450,56 +450,59 @@ class CommentTextField extends StatelessWidget {
                   width: 10,
                 ),
                 Expanded(
-                  child: TextField(
-                    controller: commentTextEditController,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        icon: Stack(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: Icon(
-                                Icons.arrow_outward_sharp,
-                                size: 15,
-                                color: Color(0xffA5A9B5),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Transform(
-                                alignment: Alignment.center,
-                                transform: Matrix4.identity()
-                                  ..scale(-1.0, -1.0), // Flips horizontally
-                                child: const Icon(
+                  child:  Semantics(
+                    identifier: 'comment_id',
+                    child: TextField(
+                      controller: commentTextEditController,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Stack(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(
                                   Icons.arrow_outward_sharp,
                                   size: 15,
                                   color: Color(0xffA5A9B5),
                                 ),
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Transform(
+                                  alignment: Alignment.center,
+                                  transform: Matrix4.identity()
+                                    ..scale(-1.0, -1.0), // Flips horizontally
+                                  child: const Icon(
+                                    Icons.arrow_outward_sharp,
+                                    size: 15,
+                                    color: Color(0xffA5A9B5),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onPressed: navigateToFullCommentPage,
                         ),
-                        onPressed: navigateToFullCommentPage,
+                        hintText: 'Say something nice...',
+                        fillColor: Colors.grey[300],
+                        // Set the background color to grey
+                        filled: true,
+                        // Enable the fill color
+                        border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(20.0), // Rounded border
+                          borderSide: BorderSide.none, // No border side
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10), // Padding inside the text field
                       ),
-                      hintText: 'Say something nice...',
-                      fillColor: Colors.grey[300],
-                      // Set the background color to grey
-                      filled: true,
-                      // Enable the fill color
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(20.0), // Rounded border
-                        borderSide: BorderSide.none, // No border side
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null, // Allows for any number of lines
+                      cursorHeight: 19,
+                      style: const TextStyle(
+                        height: 1.1,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 10), // Padding inside the text field
-                    ),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null, // Allows for any number of lines
-                    cursorHeight: 19,
-                    style: const TextStyle(
-                      height: 1.1,
                     ),
                   ),
                 ),

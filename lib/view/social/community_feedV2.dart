@@ -22,7 +22,6 @@ import 'edit_community.dart';
 class CommunityScreen extends StatefulWidget {
   final AmityCommunity community;
   final bool isFromFeed;
-  final String homePagePhrase;
 
   static const routeName = '/CommunityScreen';
 
@@ -30,7 +29,6 @@ class CommunityScreen extends StatefulWidget {
     Key? key,
     required this.community,
     this.isFromFeed = false,
-    this.homePagePhrase = 'Homepage',
   }) : super(key: key);
 
   @override
@@ -201,6 +199,12 @@ class CommunityScreenState extends State<CommunityScreen>
     final bheight = mediaQuery.size.height -
         mediaQuery.padding.top -
         myAppBar.preferredSize.height;
+
+    final homePhrase = Provider.of<AmityUIConfiguration>(context)
+            .phraseConfig
+            .phraseKeys['community_homepage'] ??
+        'Homepage';
+
     return StreamBuilder<AmityCommunity>(
         stream: widget.community.listen.stream,
         initialData: widget.community,
@@ -215,7 +219,7 @@ class CommunityScreenState extends State<CommunityScreen>
                     bheight: bheight,
                     profileSectionWidget: CommunityDetailComponent(
                       community: snapshot.data!,
-                      homePagePhrase: widget.homePagePhrase,
+                      homePagePhrase: homePhrase,
                     ));
               }),
               _StickyHeaderList(

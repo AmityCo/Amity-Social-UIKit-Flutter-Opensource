@@ -74,6 +74,8 @@ class AmityUIConfiguration extends ChangeNotifier {
   static GlobalKey newFeedExploreKey = GlobalKey();
   AmityWidgetConfig widgetConfig = AmityWidgetConfig();
   AmityLogicConfig logicConfig = AmityLogicConfig();
+  AmityPhraseConfig phraseConfig = AmityPhraseConfig();
+
   Widget? Function(String) buildSocialRating =
       (userId) => const SizedBox.shrink();
   Widget? Function(String) buildOtherUserProfile =
@@ -285,6 +287,14 @@ class MessageRoomConfig {
   Color appbarColor = Colors.white;
   Color textFieldBackGroundColor = Colors.white;
   Color textFieldHintColor = Colors.grey[500]!;
+}
+
+class AmityPhraseConfig {
+  final Map<String, String> phraseKeys;
+
+  AmityPhraseConfig({
+    this.phraseKeys = const {},
+  });
 }
 
 class AmityWidgetConfig {

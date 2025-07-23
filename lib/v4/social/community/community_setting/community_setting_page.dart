@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/community_setup_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/community_membership_page.dart';
@@ -8,12 +9,6 @@ import 'package:amity_uikit_beta_service/v4/social/community/community_setting/e
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/permission_setting/post/community_post_permission_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/permission_setting/story/community_story_setting_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/community_member_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/notification_setting_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/post_review_settimg_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/story_comment_setting_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
-import 'package:amity_uikit_beta_service/view/social/edit_community.dart';
 import 'package:flutter/material.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +43,7 @@ class AmityCommunitySettingPage extends NewBasePage {
         body: ListView(
           children: [
             // Basic Info Section
-            _getSectionTitleWidget("Basic Info"),
+            _getSectionTitleWidget(context.l10n.community_basic_info),
 
             if (state.shouldShowEditProfile)
               CommunitySettingItem(
@@ -75,7 +70,10 @@ class AmityCommunitySettingPage extends NewBasePage {
                       elementId: 'notifications'),
                   Positioned(
                     right: 45,
-                    child: Text(state.isNotificationEnabled ? "On" : "Off",
+                    child: Text(
+                        state.isNotificationEnabled
+                            ? context.l10n.general_on
+                            : context.l10n.general_off,
                         style: TextStyle(
                             color: theme.baseColorShade1,
                             fontSize: 15,
@@ -88,7 +86,7 @@ class AmityCommunitySettingPage extends NewBasePage {
 
             // Community Permission Section
             if (state.shouldShowPostPermission || state.shouldShowStoryComments)
-              _getSectionTitleWidget("Community permissions"),
+              _getSectionTitleWidget(context.l10n.settings_permissions),
 
             if (state.shouldShowPostPermission)
               CommunitySettingItem(
@@ -115,9 +113,8 @@ class AmityCommunitySettingPage extends NewBasePage {
                 null, onTap: () {
               ConfirmationDialog().show(
                   context: context,
-                  title: "Leave community",
-                  detailText:
-                      "Leave the community. You will no longer be able to post and interact in this community.",
+                  title: context.l10n.community_leave,
+                  detailText:context.l10n.community_leave_description,
                   onConfirm: () {
                     context
                         .read<CommunitySettingPageBloc>()
@@ -130,9 +127,8 @@ class AmityCommunitySettingPage extends NewBasePage {
                             },
                             onFailure: () {
                               AmityDialog().showAlertErrorDialog(
-                                  title: "Unable to leave community",
-                                  message:
-                                      "You’re the only moderator in this group. To leave community, nominate other members to moderator role.");
+                                  title: context.l10n.error_leave_community,
+                                  message:context.l10n.error_leave_community_description);
                             }));
                   });
             }),
@@ -148,9 +144,8 @@ class AmityCommunitySettingPage extends NewBasePage {
                   onTap: () {
                 ConfirmationDialog().show(
                     context: context,
-                    title: "Close community?",
-                    detailText:
-                        "All members will be removed from  the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.",
+                    title: context.l10n.community_close,
+                    detailText: context.l10n.community_close_description,
                     onConfirm: () {
                       context
                           .read<CommunitySettingPageBloc>()
@@ -163,9 +158,9 @@ class AmityCommunitySettingPage extends NewBasePage {
                               },
                               onFailure: () {
                                 AmityDialog().showAlertErrorDialog(
-                                    title: "Unable to close community",
-                                    message:
-                                        "Something went wrong. Please try again later.");
+                                    title: context.l10n.error_close_community,
+                                    message: context.l10n
+                                        .error_close_community_description);
                               }));
                     });
               }),

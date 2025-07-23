@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:equatable/equatable.dart';
 
 enum AmityErrorCode {
   BAN_WORD_FOUND,
@@ -22,4 +23,17 @@ extension AmityExceptionExtension on AmityException {
   bool isAmityErrorWithCode(AmityErrorCode code) {
     return this.code == getErrorCode(code);
   }
+}
+
+class AmityErrorInfo extends Equatable {
+  final String title;
+  final String message;
+
+  const AmityErrorInfo({
+    required this.title,
+    required this.message,
+  });
+
+  @override
+  List<Object?> get props => [title, message];
 }

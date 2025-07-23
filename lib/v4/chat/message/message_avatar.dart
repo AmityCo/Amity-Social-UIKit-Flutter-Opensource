@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityMessageAvatar extends BaseElement {
-  final AmityChannelMember? channelMember;
+  final AmityMessage? message;
+  final bool isModerator;
   final String avatarPlaceholder =
       "assets/Icons/amity_ic_user_avatar_placeholder.svg";
 
@@ -15,27 +16,30 @@ class AmityMessageAvatar extends BaseElement {
   late final String displayName;
 
   AmityMessageAvatar(
-      {required this.channelMember,
+      {required this.message,
+      this.isModerator = false,
       super.key,
       super.pageId = "",
       super.componentId = "",
       super.elementId = "chat-avatar"}) {
-    avatarUrl = channelMember?.user?.avatarUrl;
-    isDeletedUser = channelMember?.isDeleted ?? true;
-    displayName = channelMember?.user?.displayName ?? "";
+    avatarUrl = message?.user?.avatarUrl;
+    isDeletedUser = message?.user?.isDeleted ?? false;
+    displayName = message?.user?.displayName ?? "";
   }
 
   @override
   Widget buildElement(BuildContext context) {
+    Widget avatarWidget;
+
     if (isDeletedUser) {
-      return SvgPicture.asset(
+      avatarWidget = SvgPicture.asset(
         "assets/Icons/amity_ic_chat_deleted_user_avatar.svg",
         package: 'amity_uikit_beta_service',
       );
     } else {
       final isAvatarAvailable = avatarUrl != null && avatarUrl!.isNotEmpty;
       if (isAvatarAvailable) {
-        return SizedBox(
+        avatarWidget = SizedBox(
           width: 32,
           height: 32,
           child: ClipRRect(
@@ -62,15 +66,50 @@ class AmityMessageAvatar extends BaseElement {
           ),
         );
       } else {
-        return avatarCharacter();
+        avatarWidget = avatarCharacter();
       }
     }
+
+    if (isModerator) {
+      return Container(
+        height: isModerator ? 36 : 32,
+        width: isModerator ? 36 : 32,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            avatarWidget,
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                width: 16,
+                height: 16,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: theme.primaryColor.blend(ColorBlendingOption.shade3),
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/Icons/amity_ic_community_moderator.svg',
+                    package: 'amity_uikit_beta_service',
+                    width: 12,
+                    height: 12,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return avatarWidget;
   }
 
   Widget avatarCharacter() {
     return Container(
-      height: 32,
       width: 32,
+      height: 32,
       decoration: BoxDecoration(
         color: theme.primaryColor.blend(ColorBlendingOption.shade2),
         shape: BoxShape.circle,

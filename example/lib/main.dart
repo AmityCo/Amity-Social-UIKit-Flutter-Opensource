@@ -1,14 +1,20 @@
-import 'package:amity_sdk/amity_sdk.dart';
+import 'dart:developer';
+
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_home_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/comment/comment_tray_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_membership/community_membership_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/globalfeed/global_feed_component_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/post_detail/post_content_component_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/follow/pending_requests/user_pending_follow_request_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user_search_result/user_search_result_behavior.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
-import 'package:amity_uikit_beta_service/view/chat/UIKit/chat_room_page.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -62,12 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _customHttpUrl = TextEditingController();
   final TextEditingController _customSocketUrl = TextEditingController();
   final TextEditingController _customMqttUrl = TextEditingController();
-  bool _isCheckboxChecked = false;
-
+  final TextEditingController _customUploadUrl = TextEditingController();
   @override
   void initState() {
     _customHttpUrl.text = "https://api.staging.amity.co/";
     _customSocketUrl.text = "https://api.staging.amity.co/";
+    _customUploadUrl.text = "https://upload.staging.amity.co/";
     _customMqttUrl.text = "ssq.staging.amity.co";
     _apiKey.text = "b0efe90c3bdda2304d628918520c1688845889e4bc363d2c";
     super.initState();
@@ -78,7 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _apiKey.text = prefs.getString('apiKey') ?? "";
-      _isCheckboxChecked = prefs.getBool('isCheckboxChecked') ?? false;
 
       String? selectedRegionString = prefs.getString('selectedRegion');
       if (selectedRegionString != null) {
@@ -91,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _customHttpUrl.text = prefs.getString('customUrl') ?? "";
         _customSocketUrl.text = prefs.getString('customSocketUrl') ?? "";
         _customMqttUrl.text = prefs.getString('customMqttUrl') ?? "";
+        _customUploadUrl.text = prefs.getString('customUploadUrl') ?? "";
       }
     });
   }
@@ -158,53 +164,52 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 controller: _customMqttUrl,
               ),
+              const SizedBox(height: 20),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Custom upload URL',
+                  border: OutlineInputBorder(),
+                ),
+                controller: _customUploadUrl,
+              ),
             ],
-            const SizedBox(height: 20),
-            CheckboxListTile(
-              title: const Text('load old session cache'),
-              value: _isCheckboxChecked,
-              onChanged: (bool? value) {
-                setState(() {
-                  _isCheckboxChecked = value ?? false;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             ElevatedButton(
-              child: const Text('Initialize'),
-              onPressed: () async {
-                if (_selectedRegion != null) {
-                  final prefs = await SharedPreferences.getInstance();
+                child: const Text('Initialize'),
+                onPressed: () async {
+                  if (_selectedRegion != null) {
+                    final prefs = await SharedPreferences.getInstance();
 
-                  await prefs.setString('apiKey', _apiKey.text);
-                  await prefs.setString(
-                      'selectedRegion', _selectedRegion.toString());
-                  await prefs.setBool('isCheckboxChecked', _isCheckboxChecked);
-
-                  if (_selectedRegion == AmityEndpointRegion.custom) {
-                    await prefs.setString('customUrl', _customHttpUrl.text);
+                    await prefs.setString('apiKey', _apiKey.text);
                     await prefs.setString(
-                        'customSocketUrl', _customSocketUrl.text);
-                    await prefs.setString('customMqttUrl', _customMqttUrl.text);
-                  }
+                        'selectedRegion', _selectedRegion.toString());
 
-                  await AmityUIKit().setup(
-                    apikey: _apiKey.text,
-                    region: _selectedRegion!,
-                    customEndpoint: _customHttpUrl.text,
-                    customSocketEndpoint: _customSocketUrl.text,
-                    customMqttEndpoint: _customMqttUrl.text,
-                  );
-                  // Navigate to the next page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AmityApp(),
-                    ),
-                  );
-                }
-              },
-            ),
+                    if (_selectedRegion == AmityEndpointRegion.custom) {
+                      await prefs.setString('customUrl', _customHttpUrl.text);
+                      await prefs.setString(
+                          'customSocketUrl', _customSocketUrl.text);
+                      await prefs.setString(
+                          'customMqttUrl', _customMqttUrl.text);
+                      await prefs.setString(
+                          'customUploadUrl', _customUploadUrl.text);
+                    }
+                    log("save pref");
+
+                    await AmityUIKit().setup(
+                      apikey: _apiKey.text,
+                      region: _selectedRegion!,
+                      customEndpoint: _customHttpUrl.text,
+                      customSocketEndpoint: _customSocketUrl.text,
+                      customMqttEndpoint: _customMqttUrl.text,
+                      customUploadEndpoint: _customUploadUrl.text,
+                    );
+                    // Navigate to the next page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AmityApp()),
+                    );
+                  }
+                }),
           ],
         ),
       ),
@@ -218,9 +223,19 @@ class AmityApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AmityUIKitProvider(
       child: Builder(builder: (context2) {
-        return UserListPage();
+        return const UserListPage();
       }),
     );
+  }
+
+  void applyCustomBehavior() {
+    AmityUIKit4Manager.behavior.postContentComponentBehavior = CustomPostContentComponentBehavior();
+    AmityUIKit4Manager.behavior.globalFeedComponentBehavior = CustomGlobalFeedComponentBehavior();
+    AmityUIKit4Manager.behavior.commentTrayBehavior = CustomCommentTrayBehavior();
+    AmityUIKit4Manager.behavior.communityMembershipPageBehavior = CustomCommunityMembershipPageBehavior();
+    AmityUIKit4Manager.behavior.userSearchResultBehavior = CustomUserSearchResultBehavior();
+    AmityUIKit4Manager.behavior.userPendingFollowRequestsPageBehavior = CustomUserPendingFollowRequestsPageBehavior();
+    AmityUIKit4Manager.behavior.userRelationshipPageBehavior = CustomUserRelationshipPageBehavior();
   }
 }
 
@@ -412,13 +427,8 @@ class SecondPage extends StatelessWidget {
 }
 
 class SocialPage extends StatelessWidget {
-  SocialPage({
-    super.key,
-    required this.username,
-  });
+  const SocialPage({super.key, required this.username});
   final String username;
-
-  final TextEditingController amityCommunityTextCon = TextEditingController();
   void showColorPickerDialog(BuildContext sourceContext) {
     Color primary = Colors.red;
     Color base = Colors.red;
@@ -547,153 +557,112 @@ class SocialPage extends StatelessWidget {
               child: const Text("config"))
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ListTile(
-                title: const Text('Register push notification'),
-                onTap: () async {},
-              ),
-              ListTile(
-                title: const Text('unregister'),
-                onTap: () {
-                  // Navigate or perform action based on 'Global Feed' tap
-                  AmityUIKit().unRegisterDevice();
-                },
-              ),
-              ListTile(
-                title: const Text('Custom Post Ranking Feed'),
-                onTap: () {
-                  // Navigate or perform action based on 'Global Feed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListTile(
+              title: const Text('Register push notification'),
+              onTap: () async {},
+            ),
+            ListTile(
+              title: const Text('unregister'),
+              onTap: () {
+                // Navigate or perform action based on 'Global Feed' tap
+                AmityUIKit().unRegisterDevice();
+              },
+            ),
+            ListTile(
+              title: const Text('Custom Post Ranking Feed'),
+              onTap: () {
+                // Navigate or perform action based on 'Global Feed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const Scaffold(
+                      body: GlobalFeedScreen(
+                          //isCustomPostRanking: true,
+                          )),
+                ));
+              },
+            ),
+            ListTile(
+              title: const Text('User Profile'),
+              onTap: () {
+                // Navigate or perform action based on 'User Profile' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UserProfileScreen(
+                          amityUserId: username,
+                          amityUser: null,
+                        )));
+              },
+            ),
+            ListTile(
+              title: const Text('Newsfeed'),
+              onTap: () {
+                // Navigate or perform action based on 'Newsfeed' tap
+              },
+            ),
+            ListTile(
+              title: const Text('Create Community'),
+              onTap: () {
+                // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      const Scaffold(body: CreateCommunityPage()),
+                ));
+              },
+            ),
+            ListTile(
+              title: const Text('Create Post'),
+              onTap: () {
+                // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const Scaffold(body: PostToPage()),
+                ));
+              },
+            ),
+            ListTile(
+              title: const Text('My Community'),
+              onTap: () {
+                // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(
+                  MaterialPageRoute(
                     builder: (context) => const Scaffold(
-                        body: GlobalFeedScreen(
-                            //isCustomPostRanking: true,
-                            )),
-                  ));
-                },
-              ),
-              ListTile(
-                title: const Text('User Profile'),
-                onTap: () {
-                  // Navigate or perform action based on 'User Profile' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => UserProfileScreen(
-                            amityUserId: username,
-                            amityUser: null,
-                          )));
-                },
-              ),
-              ListTile(
-                title: const Text('Newsfeed'),
-                onTap: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        const Scaffold(body: GlobalFeedScreen()),
-                  ));
-                },
-              ),
-              ListTile(
-                title: const Text('Create Community'),
-                onTap: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        const Scaffold(body: CreateCommunityPage()),
-                  ));
-                },
-              ),
-              ListTile(
-                title: const Text('Create Post'),
-                onTap: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const Scaffold(body: PostToPage()),
-                  ));
-                },
-              ),
-              ListTile(
-                title: const Text('My Community'),
-                onTap: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const Scaffold(
-                        body: MyCommunityPage(
-                          canCreateCommunity: false,
-                        ),
+                      body: MyCommunityPage(
+                        canCreateCommunity: false,
                       ),
                     ),
-                  );
-                },
-              ),
-              ListTile(
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Community'),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Community ID',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          // Handle the community ID input
-                          amityCommunityTextCon.text = value;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () async {
-                  CommunityGetQueryBuilder communityGetQueryBuilder =
-                      AmitySocialClient.newCommunityRepository()
-                          .getCommunities();
-                  AmityCommunity amityCommunity = await communityGetQueryBuilder
-                      .useCase.communityRepo
-                      .getCommunity(amityCommunityTextCon.text);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => CommunityScreen(
-                          isFromFeed: true, community: amityCommunity),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Explore'),
-                onTap: () {
-                  // Navigate or perform action based on 'Newsfeed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const Scaffold(body: CommunityPage()),
-                  ));
-                },
-              ),
-              ListTile(
-                title: const Text('Version 4'),
-                onTap: () {
-                  // Navigate or perform action based on 'Global Feed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SampleV4(),
-                  ));
-                },
-              ),
-              ListTile(
-                title: const Text('Community v4 compatible'),
-                onTap: () {
-                  // Navigate or perform action based on 'Global Feed' tap
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AmitySocialV4Compatible(),
-                  ));
-                },
-              ),
-            ],
-          ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Explore'),
+              onTap: () {
+                // Navigate or perform action based on 'Newsfeed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const Scaffold(body: CommunityPage()),
+                ));
+              },
+            ),
+            ListTile(
+              title: const Text('Version 4'),
+              onTap: () {
+                // Navigate or perform action based on 'Global Feed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const SampleV4(),
+                ));
+              },
+            ),
+            ListTile(
+              title: const Text('Community v4 compatible'),
+              onTap: () {
+                // Navigate or perform action based on 'Global Feed' tap
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const AmitySocialV4Compatible(),
+                ));
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -730,3 +699,53 @@ class ChatPage extends StatelessWidget {
     );
   }
 }
+
+class CustomPostContentComponentBehavior extends AmityPostContentComponentBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomGlobalFeedComponentBehavior extends AmityGlobalFeedComponentBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomCommentTrayBehavior extends AmityCommentTrayBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomCommunityMembershipPageBehavior extends AmityCommunityMembershipPageBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomUserSearchResultBehavior extends AmityUserSearchResultBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomUserPendingFollowRequestsPageBehavior extends AmityUserPendingFollowRequestsPageBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomUserRelationshipPageBehavior extends AmityUserRelationshipPageBehavior {
+  @override
+  void goToUserProfilePage(BuildContext context, String userId) {
+    // Override the default behavior to navigate to a custom user profile page
+  }
+}
+

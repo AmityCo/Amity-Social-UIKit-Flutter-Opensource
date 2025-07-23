@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -7,11 +8,10 @@ import 'package:amity_uikit_beta_service/v4/core/ui/bottom_sheet_menu.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_page.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/profile/user_moderation_confirmation_handler.dart';
+import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:flutter_svg/svg.dart';
 
 // Internal Component
@@ -82,15 +82,23 @@ class UserFollowListComponent extends NewBaseComponent {
                         : state.followUsers[index].sourceUser;
 
                 return ListTile(
+                  contentPadding: const EdgeInsets.only(left: 16, right: 8),
                   leading: AmityUserAvatar(
                       avatarUrl: user?.avatarUrl,
                       displayName: user?.displayName ?? "",
                       isDeletedUser: user?.isDeleted ?? false),
-                  title: Text(
-                    user?.displayName ?? "",
-                    style: AmityTextStyle.bodyBold(theme.baseColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  title: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          user?.displayName ?? "",
+                          style: AmityTextStyle.bodyBold(theme.baseColor),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (user?.isBrand ?? false) brandBadge()
+                    ],
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.more_horiz),
@@ -102,14 +110,10 @@ class UserFollowListComponent extends NewBaseComponent {
                   horizontalTitleGap: 12,
                   onTap: () {
                     // Go to that user profile
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return AmityUserProfilePage(
-                              userId: user?.userId ?? "");
-                        },
-                      ),
-                    );
+                    final userId = user?.userId;
+                    if (userId != null && userId.isNotEmpty) {
+                      AmityUIKit4Manager.behavior.userRelationshipPageBehavior.goToUserProfilePage(context, userId);
+                    }
                   },
                 );
               },
@@ -206,4 +210,17 @@ class UserFollowListComponent extends NewBaseComponent {
 
     BottomSheetMenu(options: options).show(context, theme);
   }
+}
+
+Widget brandBadge() {
+  return Container(
+    padding: const EdgeInsets.only(left: 4),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
+    ),
+  );
 }

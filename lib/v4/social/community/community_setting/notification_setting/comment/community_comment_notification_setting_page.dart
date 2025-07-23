@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -35,7 +36,7 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: "Comments",
+            title: context.l10n.general_comments,
             configProvider: configProvider,
             theme: theme,
             leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
@@ -53,7 +54,7 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
               child: Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
-                  'Save',
+                  context.l10n.general_save,
                   style: TextStyle(
                       color: state.settingsChanged
                           ? theme.primaryColor
@@ -68,9 +69,8 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
           children: [
             if (state.isReactCommentNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'React comments',
-                  description:
-                      'Receive notifications when someone like your comment in this community.',
+                  title: context.l10n.settings_react_comments,
+                  description: context.l10n.settings_react_comments_description,
                   groupValue: state.reactCommentSetting,
                   onChanged: (value) {
                     context
@@ -87,9 +87,8 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
 
             if (state.isNewCommentNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'New comments',
-                  description:
-                      'Receive notifications when someone comment to your posts in this community.',
+                  title: context.l10n.settings_new_comments,
+                  description: context.l10n.settings_new_comments_description,
                   groupValue: state.newCommentSetting,
                   onChanged: (value) {
                     context
@@ -106,9 +105,8 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
 
             if (state.isReplyCommentNetworkEnabled) ...[
               SettingRadioButtonWidget(
-                  title: 'Replies',
-                  description:
-                      'Receive notifications when someone comment to your comments in this community.',
+                  title: context.l10n.settings_new_replies,
+                  description: context.l10n.settings_new_replies_description,
                   groupValue: state.replyCommentSetting,
                   onChanged: (value) {
                     context

@@ -38,137 +38,45 @@ class CommunityFeedComponent extends NewBaseComponent {
       child: BlocBuilder<CommunityFeedBloc, CommunityFeedState>(
         builder: (context, state) {
           if (state.posts.isEmpty && state.isLoading) {
-            return Column(
+            return SliverToBoxAdapter(
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 getSkeleton(theme, configProvider),
               ],
-            );
+            ));
           } else if (state.posts.isEmpty && state.announcements.isEmpty) {
-            return Container(
-              padding: const EdgeInsets.only(bottom:  120),
+            return SliverToBoxAdapter(
+                child: Container(
+              padding: const EdgeInsets.only(bottom: 120),
               width: double.infinity,
               height: 550,
               color: theme.backgroundColor,
               child: getEmptyFeed(theme),
-            );
+            ));
           } else {
-            return Column(
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.announcements.length,
-                  itemBuilder: (context, index) {
-                    final post = state.announcements[index].post;
-                    if (post == null) {
-                      return Container();
-                    }
-                    final amityPost = post;
-                    if (((amityPost.children?.isNotEmpty ?? false) &&
-                            (amityPost.children!.first.type ==
-                                    AmityDataType.FILE ||
-                                amityPost.children!.first.type ==
-                                    AmityDataType.LIVESTREAM)) ||
-                        (amityPost.isDeleted ?? false)) {
-                      return Container();
-                    } else {
-                      final uniqueKey = UniqueKey();
-                      return VisibilityDetector(
-                        key: Key(amityPost.postId ?? ''),
-                        onVisibilityChanged: (VisibilityInfo info) {
-                          final visiblePercentage = info.visibleFraction * 100;
-                          if (visiblePercentage > 60) {
-                            checkVisibilityAndMarkSeen(
-                                amityPost, visiblePercentage);
-                          }
-                        },
-                        child: Column(
-                          children: [
-                            if (index > 0) const SizedBox(height: 8),
-                            AmityPostContentComponent(
-                                style: AmityPostContentComponentStyle.feed,
-                                post: amityPost,
-                                key: uniqueKey,
-                                category: (state.pins
-                                        .map((e) => e.postId)
-                                        .contains(amityPost.postId))
-                                    ? AmityPostCategory.announcementAndPin
-                                    : AmityPostCategory.announcement,
-                                hideTarget: true,
-                                hideMenu: !state.isJoined,
-                                action: AmityPostAction(
-                                  onAddReaction: (String) {},
-                                  onRemoveReaction: (String) {},
-                                  onPostDeleted: (AmityPost post) {},
-                                  onPostUpdated: (post) {},
-                                )),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  padding: const EdgeInsets.all(0),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.posts.length,
-                  itemBuilder: (context, index) {
-                    final amityPost = state.posts[index];
-                    if (((amityPost.children?.isNotEmpty ?? false) &&
-                            (amityPost.children!.first.type ==
-                                    AmityDataType.FILE ||
-                                amityPost.children!.first.type ==
-                                    AmityDataType.LIVESTREAM)) ||
-                        (amityPost.isDeleted ?? false) ||
-                        (state.announcements
-                            .map((e) => e.postId)
-                            .contains(amityPost.postId))) {
-                      return Container();
-                    } else {
-                      var uniqueKey = UniqueKey();
-                      return VisibilityDetector(
-                        key: Key(amityPost.postId ?? ''),
-                        onVisibilityChanged: (VisibilityInfo info) {
-                          final visiblePercentage = info.visibleFraction * 100;
-                          if (visiblePercentage > 60) {
-                            checkVisibilityAndMarkSeen(
-                                amityPost, visiblePercentage);
-                          }
-                        },
-                        child: Column(
-                          children: [
-                            AmityPostContentComponent(
-                                style: AmityPostContentComponentStyle.feed,
-                                post: amityPost,
-                                category: (state.pins
-                                        .map((e) => e.postId)
-                                        .contains(amityPost.postId))
-                                    ? AmityPostCategory.pin
-                                    : AmityPostCategory.general,
-                                key: uniqueKey,
-                                hideTarget: true,
-                                hideMenu: !state.isJoined,
-                                action: AmityPostAction(
-                                  onAddReaction: (String) {},
-                                  onRemoveReaction: (String) {},
-                                  onPostDeleted: (AmityPost post) {},
-                                  onPostUpdated: (post) {},
-                                )),
-                            const SizedBox(height: 8),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  padding: (state.announcements.isNotEmpty)
-                      ? const EdgeInsets.only(top: 8)
-                      : const EdgeInsets.all(0),
-                ),
+            return SliverMainAxisGroup(
+              slivers: [
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        childCount: state.announcements.length,
+                        (context, index) {
+                  return _getAnnouncementPost(index, state);
+                })),
+                if (state.announcements.isNotEmpty)
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 8),
+                  ),
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        childCount: state.posts.length, (context, index) {
+                  return _getPost(index, state);
+                })),
                 if (state.isLoading && state.posts.isNotEmpty)
-                  getSkeleton(theme, configProvider),
+                  SliverToBoxAdapter(
+                    child: getSkeleton(theme, configProvider),
+                  )
               ],
             );
           }
@@ -269,6 +177,95 @@ class CommunityFeedComponent extends NewBaseComponent {
     if (visiblePercentage > 60 && !viewedPosts.contains(post.postId)) {
       viewedPosts.add(post.postId!);
       post.analytics().markPostAsViewed();
+    }
+  }
+
+  Widget _getAnnouncementPost(int index, CommunityFeedState state) {
+    final post = state.announcements[index].post;
+    if (post == null) {
+      return Container();
+    }
+    final amityPost = post;
+    if (((amityPost.children?.isNotEmpty ?? false) &&
+            (amityPost.children!.first.type == AmityDataType.FILE ||
+                amityPost.children!.first.type == AmityDataType.LIVESTREAM)) ||
+        (amityPost.isDeleted ?? false)) {
+      return Container();
+    } else {
+      final uniqueKey = UniqueKey();
+      return VisibilityDetector(
+        key: Key(amityPost.postId ?? ''),
+        onVisibilityChanged: (VisibilityInfo info) {
+          final visiblePercentage = info.visibleFraction * 100;
+          if (visiblePercentage > 60) {
+            checkVisibilityAndMarkSeen(amityPost, visiblePercentage);
+          }
+        },
+        child: Column(
+          children: [
+            if (index > 0) const SizedBox(height: 8),
+            AmityPostContentComponent(
+                style: AmityPostContentComponentStyle.feed,
+                post: amityPost,
+                key: uniqueKey,
+                category:
+                    (state.pins.map((e) => e.postId).contains(amityPost.postId))
+                        ? AmityPostCategory.announcementAndPin
+                        : AmityPostCategory.announcement,
+                hideTarget: true,
+                hideMenu: !state.isJoined,
+                action: AmityPostAction(
+                  onAddReaction: (String) {},
+                  onRemoveReaction: (String) {},
+                  onPostDeleted: (AmityPost post) {},
+                  onPostUpdated: (post) {},
+                )),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _getPost(int index, CommunityFeedState state) {
+    final amityPost = state.posts[index];
+    if (((amityPost.children?.isNotEmpty ?? false) &&
+            (amityPost.children!.first.type == AmityDataType.FILE ||
+                amityPost.children!.first.type == AmityDataType.LIVESTREAM)) ||
+        (amityPost.isDeleted ?? false) ||
+        (state.announcements.map((e) => e.postId).contains(amityPost.postId))) {
+      return Container();
+    } else {
+      var uniqueKey = UniqueKey();
+      return VisibilityDetector(
+        key: Key(amityPost.postId ?? ''),
+        onVisibilityChanged: (VisibilityInfo info) {
+          final visiblePercentage = info.visibleFraction * 100;
+          if (visiblePercentage > 60) {
+            checkVisibilityAndMarkSeen(amityPost, visiblePercentage);
+          }
+        },
+        child: Column(
+          children: [
+            AmityPostContentComponent(
+                style: AmityPostContentComponentStyle.feed,
+                post: amityPost,
+                category:
+                    (state.pins.map((e) => e.postId).contains(amityPost.postId))
+                        ? AmityPostCategory.pin
+                        : AmityPostCategory.general,
+                key: uniqueKey,
+                hideTarget: true,
+                hideMenu: !state.isJoined,
+                action: AmityPostAction(
+                  onAddReaction: (String) {},
+                  onRemoveReaction: (String) {},
+                  onPostDeleted: (AmityPost post) {},
+                  onPostUpdated: (post) {},
+                )),
+            const SizedBox(height: 8),
+          ],
+        ),
+      );
     }
   }
 }

@@ -1,7 +1,8 @@
-import 'dart:math';
-
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/preview_link_widget.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_image.dart';
@@ -38,7 +39,7 @@ class PostItem extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     return BlocProvider(
-      create: (context) => PostItemBloc(post),
+      create: (context) => PostItemBloc(context, post),
       child:
           BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
         return renderPost(
@@ -118,7 +119,15 @@ class PostItem extends NewBaseComponent {
               hideTarget: hideTarget,
               action: postAction,
             ),
-            getTextPostContent(post),
+            getTextPostContent(context, post),
+            if (post.children?.isEmpty ?? true && post.data is TextData)
+              Container(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+                child: PreviewLinkWidget(
+                  text: (post.data as TextData).text ?? '',
+                  theme: theme
+                ),
+              ),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -138,7 +147,7 @@ class PostItem extends NewBaseComponent {
     );
   }
 
-  Widget getTextPostContent(AmityPost post) {
+  Widget getTextPostContent(BuildContext context, AmityPost post) {
     // Get the text content from the post.
     String textContent = "";
     if (post.data is TextData) {
@@ -157,70 +166,30 @@ class PostItem extends NewBaseComponent {
       fontWeight: FontWeight.w400,
     );
 
-    // If there is no metadata, return the text with normal style.
-    if (post.metadata == null ||
-        post.metadata!['mentioned'] == null ||
-        post.metadata!['mentioned'] is! List) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Text(
-          textContent,
-          style: normalStyle,
-        ),
-      );
-    }
+    List<AmityUserMentionMetadata>? mentionedUsers;
 
-    // Obtain the mention metadata from the post.
-    final mentionedGetter = AmityMentionMetadataGetter(metadata: post.metadata!);
-    final List<AmityUserMentionMetadata> mentionedUsers = mentionedGetter.getMentionedUsers();
+    if (post.metadata != null && post.metadata!['mentioned'] != null) {
+      // Obtain the mention metadata from the post.
+      final mentionedGetter =
+          AmityMentionMetadataGetter(metadata: post.metadata!);
+      mentionedUsers = mentionedGetter.getMentionedUsers();
 
-    // Sort mention metadata by starting index (if not already sorted).
-    mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
-
-    List<TextSpan> spans = [];
-    int currentIndex = 0;
-
-    // Iterate over each mention metadata and build spans.
-    for (var mention in mentionedUsers) {
-      // If the mention's start index is beyond our text, skip it.
-      if (mention.index >= textContent.length) continue;
-
-      // Add text before the mention, if any.
-      if (mention.index > currentIndex) {
-        spans.add(TextSpan(
-          text: textContent.substring(currentIndex, mention.index),
-          style: normalStyle,
-        ));
-      }
-      // Calculate the raw end index (the mention text length might include a prefix, e.g. '@')
-      int rawEndIndex = mention.index + mention.length + 1;
-      // Clamp the end index to the text length.
-      int safeEndIndex = min(rawEndIndex, textContent.length);
-
-      spans.add(TextSpan(
-        text: textContent.substring(mention.index, safeEndIndex),
-        style: mentionStyle,
-      ));
-
-      currentIndex = safeEndIndex;
-    }
-    // Append any remaining text after the last mention.
-    if (currentIndex < textContent.length) {
-      spans.add(TextSpan(
-        text: textContent.substring(currentIndex),
-        style: normalStyle,
-      ));
+      // Sort mention metadata by starting index (if not already sorted).
+      mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
     }
 
     // Return a RichText widget with the computed spans.
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: RichText(
-        text: TextSpan(children: spans),
-      ),
-    );
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: ExpandableText(
+            text: textContent,
+            mentionedUsers: mentionedUsers,
+            maxLines: 8,
+            style: normalStyle,
+            linkStyle: mentionStyle,
+            onMentionTap: (userId) => _goToUserProfilePage(context, userId)
+            ));
   }
 
   Widget getImagePostContent(List<ImageData> images) {
@@ -249,9 +218,9 @@ class PostItem extends NewBaseComponent {
     if (noChildrenPost) {
       return Container();
     } else if (post.children!.first.data is ImageData) {
-      return PostContentImage(posts: post.children!);
+      return PostContentImage(posts: post.children!, theme: theme);
     } else if (post.children!.first.data is VideoData) {
-      return PostContentVideo(posts: post.children!);
+      return PostContentVideo(posts: post.children!, theme: theme);
     } else if (post.children!.first.data is PollData) {
       return PostPollContent(
           post: post.children!.first,
@@ -390,5 +359,12 @@ class PostItem extends NewBaseComponent {
       default:
         return 'assets/images/fileType/default.png';
     }
+  }
+
+  void _goToUserProfilePage(BuildContext context, String userId) {
+    AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+      context,
+      userId,
+    );
   }
 }

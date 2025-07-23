@@ -22,6 +22,7 @@ class CommunitiesByCategoriesPageBloc extends Bloc<
 
     communityLiveCollection = AmitySocialClient.newCommunityRepository()
         .getCommunities()
+        .includeDeleted(false)
         .categoryId(category.categoryId ?? '')
         .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
         .getLiveCollection(pageSize: 20);

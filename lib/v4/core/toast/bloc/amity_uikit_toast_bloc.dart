@@ -26,14 +26,31 @@ class AmityToastBloc extends Bloc<AmityToastEvent, AmityToastState> {
     );
 
     on<AmityToastDismiss>(
-      (event, emit) => emit(
-        const AmityToastState(
-          message: "",
-          style: AmityToastStyle.hidden,
-          key: null,
-          bottomPadding: 0.0,
-        ),
-      ),
+      (event, emit) {
+        emit(
+          const AmityToastState(
+            message: "",
+            style: AmityToastStyle.hidden,
+            key: null,
+            bottomPadding: 0.0,
+          ),
+        );
+      },
+    );
+
+    on<AmityToastDismissIfLoading>(
+      (event, emit) {
+        if (state.style == AmityToastStyle.loading) {
+          emit(
+            const AmityToastState(
+              message: "",
+              style: AmityToastStyle.hidden,
+              key: null,
+              bottomPadding: 0.0,
+            ),
+          );
+        }
+      },
     );
 
     on<AmityToastLoading>((event, emit) {

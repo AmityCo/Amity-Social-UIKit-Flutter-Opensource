@@ -1,14 +1,19 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
-import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/components/amity_conversation_chat_user_action_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_action.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/animation/simple_ticker_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
@@ -18,6 +23,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
+part 'widgets/chat_page_helpers.dart';
+
 class AmityChatPage extends NewBasePage {
   static double toastBottomPadding = 56;
 
@@ -25,7 +32,8 @@ class AmityChatPage extends NewBasePage {
   final String? userId;
   final String? userDisplayName;
   final String? avatarUrl;
-  final ScrollController scrollController = ScrollController();
+  late BounceAnimator bounceAnimator;
+  late Function bounceLatestMessage;
 
   AmityChatPage(
       {super.key,
@@ -37,13 +45,22 @@ class AmityChatPage extends NewBasePage {
 
   @override
   Widget buildPage(BuildContext context) {
-    return Stack(
-      children: [
-        BlocProvider(
-          key: Key("${channelId ?? ""}_${userId ?? ""}"),
-          create: (context) => ChatPageBloc(channelId, userId, userDisplayName,
-              avatarUrl, context.read<AmityToastBloc>()),
-          child: BlocBuilder<ChatPageBloc, ChatPageState>(
+    MessageComposerCache().updateText("");
+
+    return SimpleTickerProvider(
+      onInit: (vsync) {
+        bounceAnimator = BounceAnimator(vsync);
+        bounceLatestMessage = () {
+          bounceAnimator.animateItem(0);
+        };
+      },
+      child: Stack(
+        children: [
+          BlocProvider(
+            key: Key("${channelId ?? ""}_${userId ?? ""}"),
+            create: (context) => ChatPageBloc(channelId, userId,
+                userDisplayName, avatarUrl, context.read<AmityToastBloc>()),
+            child: BlocBuilder<ChatPageBloc, ChatPageState>(
               key: Key("${channelId ?? ""}_${userId ?? ""}"),
               builder: (context, state) {
                 if (state is ChatPageStateInitial) {
@@ -57,24 +74,16 @@ class AmityChatPage extends NewBasePage {
                   context.read<AmityToastBloc>().add(AmityToastDismiss());
                 }
 
-                scrollController.addListener(() {
-                  if ((scrollController.position.pixels >=
-                      (scrollController.position.maxScrollExtent))) {
-                    context
-                        .read<ChatPageBloc>()
-                        .add(const ChatPageEventLoadMore());
-                  }
-                });
-
                 final isLoadingUserAvatar =
                     state.avatarUrl == null && state.userDisplayName == null;
 
                 final List<GlobalKey> itemKeys = List.generate(
                     state.messages.length, (index) => GlobalKey());
 
-                final isScrollable = scrollController.hasClients &&
-                    scrollController.position.maxScrollExtent > 0;
+                final isScrollable = state.scrollController.hasClients &&
+                    state.scrollController.position.maxScrollExtent > 0;
 
+                final newMessage = state.newMessage;
                 return Scaffold(
                   appBar: AppBar(
                     titleSpacing: -5,
@@ -144,22 +153,17 @@ class AmityChatPage extends NewBasePage {
                     actions: [
                       if (!isLoadingUserAvatar) ...[
                         IconButton(
-                          icon: SizedBox(
+                          icon: SvgPicture.asset(
+                            'assets/Icons/amity_ic_three_dot_vertical.svg',
+                            package: 'amity_uikit_beta_service',
                             width: 24,
                             height: 24,
-                            child: SvgPicture.asset(
-                              state.isMute
-                                  ? 'assets/Icons/amity_ic_chat_mute.svg'
-                                  : 'assets/Icons/amity_ic_chat_unmute.svg',
-                              package: 'amity_uikit_beta_service',
-                            ),
+                            colorFilter: ColorFilter.mode(
+                                theme.secondaryColor, BlendMode.srcIn),
                           ),
-                          color: theme.secondaryColor,
                           onPressed: () {
                             HapticFeedback.heavyImpact();
-                            context
-                                .read<ChatPageBloc>()
-                                .add(const ChatPageEventMuteUnmute());
+                            _showChatUserActionBottomSheet(context, state);
                           },
                         ),
                         const SizedBox(width: 8),
@@ -190,198 +194,270 @@ class AmityChatPage extends NewBasePage {
                           ),
                         ),
                         Expanded(
-                          child: LayoutBuilder(builder: (context, constraints) {
-                            return ListView.builder(
-                            padding: const EdgeInsets.only(bottom: 8),
-                              controller: scrollController,
-                              reverse: isScrollable,
-                              cacheExtent: 1000,
-                              itemCount: state.messages.length,
-                              itemBuilder: (context, index) {
-                                ChatItem item;
-                                if (isScrollable) {
-                                  item = state.messages[index];
-                                } else {
-                                  final messageIndex =
-                                      state.messages.length - 1 - index;
-                                  item = state.messages[messageIndex];
+                          child: Stack(
+                            children: [
+                              Visibility(
+                                visible: state.isFetching &&
+                                    state.messages.isNotEmpty,
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  width: 24.0,
+                                  height: 24.0,
+                                  child: const CupertinoActivityIndicator(),
+                                ),
+                              ),
+                              LayoutBuilder(builder: (context, constraints) {
+                                final firstItem =
+                                    state.messages.firstOrNull?.message;
+                                if (firstItem != null) {
+                                  context.read<ChatPageBloc>().add(
+                                      ChatPageEventMarkReadMessage(
+                                          message: firstItem));
                                 }
-
-                                final message = item.message;
-                                if (message != null) {
-                                  if (message.data is MessageVideoData &&
-                                      message.syncState !=
-                                          AmityMessageSyncState.SYNCED &&
-                                      !state.localThumbnails
-                                          .containsKey(message.uniqueId)) {
-                                    try {
-                                      final filePath =
+                                return ListView.builder(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  controller: state.scrollController,
+                                  reverse: state.scrollController.hasClients &&
+                                      state.scrollController.position
+                                              .maxScrollExtent >
+                                          0,
+                                  cacheExtent: 1000,
+                                  itemCount: state.messages.length,
+                                  itemBuilder: (context, index) {
+                                    ChatItem item;
+                                    if (state.scrollController.hasClients &&
+                                        state.scrollController.position
+                                                .maxScrollExtent >
+                                            0) {
+                                      item = state.messages[index];
+                                    } else {
+                                      final messageIndex =
+                                          state.messages.length - 1 - index;
+                                      item = state.messages[messageIndex];
+                                    }
+                                    final message = item.message;
+                                    if (message != null) {
+                                      if (message.data is MessageVideoData &&
+                                          message.syncState !=
+                                              AmityMessageSyncState.SYNCED &&
+                                          !state.localThumbnails
+                                              .containsKey(message.uniqueId)) {
+                                        try {
+                                          final filePath =
+                                              (message.data as MessageVideoData)
+                                                  .getVideo()
+                                                  .getFilePath;
+                                          if (filePath != null) {
+                                            context.read<ChatPageBloc>().add(
+                                                ChatPageEventFetchLocalVideoThumbnail(
+                                                    uniqueId: message.uniqueId!,
+                                                    videoPath: filePath));
+                                          }
+                                        } catch (e) {}
+                                      } else if (message.data
+                                              is MessageVideoData &&
+                                          message.syncState ==
+                                              AmityMessageSyncState.SYNCED &&
+                                          !state.localThumbnails
+                                              .containsKey(message.uniqueId) &&
                                           (message.data as MessageVideoData)
-                                              .getVideo()
-                                              .getFilePath;
-                                      if (filePath != null) {
-                                        context.read<ChatPageBloc>().add(
-                                            ChatPageEventFetchLocalVideoThumbnail(
-                                                uniqueId: message.uniqueId!,
-                                                videoPath: filePath));
+                                                  .thumbnailImageFile ==
+                                              null) {
+                                        try {
+                                          final filePath =
+                                              (message.data as MessageVideoData)
+                                                  .getVideo()
+                                                  .fileProperties
+                                                  .fileUrl;
+                                          if (filePath != null) {
+                                            context.read<ChatPageBloc>().add(
+                                                ChatPageEventFetchLocalVideoThumbnail(
+                                                    uniqueId: message.uniqueId!,
+                                                    videoPath: filePath));
+                                          }
+                                        } catch (e) {}
                                       }
-                                    } catch (e) {}
-                                  } else if (message.data is MessageVideoData &&
-                                      message.syncState ==
-                                          AmityMessageSyncState.SYNCED &&
-                                      !state.localThumbnails
-                                          .containsKey(message.uniqueId) &&
-                                      (message.data as MessageVideoData)
-                                              .thumbnailImageFile ==
-                                          null) {
-                                    try {
-                                      final filePath =
-                                          (message.data as MessageVideoData)
-                                              .getVideo()
-                                              .fileProperties
-                                              .fileUrl;
-                                      if (filePath != null) {
-                                        context.read<ChatPageBloc>().add(
-                                            ChatPageEventFetchLocalVideoThumbnail(
-                                                uniqueId: message.uniqueId!,
-                                                videoPath: filePath));
-                                      }
-                                    } catch (e) {}
-                                  }
-                                  return MessageBubbleView(
-                                    key: message.uniqueId != null
-                                        ? Key(message.uniqueId!)
-                                        : itemKeys[index],
-                                    pageId: pageId,
-                                    message: message,
-                                    channelMember: state.channelMember,
-                                    onSeeMoreTap: (text) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => FullTextScreen(
-                                            fullText: text,
-                                            displayName:
-                                                state.userDisplayName ?? "",
-                                            theme: theme,
+                                      return ValueListenableBuilder<int?>(
+                                          valueListenable:
+                                              bounceAnimator.animatedIndex,
+                                          builder: (context, animatedIndex, _) {
+                                            return AnimatedBuilder(
+                                                animation:
+                                                    bounceAnimator.animation,
+                                                builder: (context, _) {
+                                                  final bounce =
+                                                      (animatedIndex == index)
+                                                          ? (1.0 +
+                                                              (0.1 *
+                                                                  bounceAnimator
+                                                                      .animation
+                                                                      .value))
+                                                          : 1.0;
+                                                  return MessageBubbleView(
+                                                    key: message.uniqueId !=
+                                                            null
+                                                        ? Key(message.uniqueId!)
+                                                        : itemKeys[index],
+                                                    pageId: pageId,
+                                                    message: message,
+                                                    channelMember:
+                                                        state.channelMember,
+                                                    isModerator: false,
+                                                    bounceAnimator:
+                                                        bounceAnimator,
+                                                    bounce: bounce,
+                                                    onSeeMoreTap: (text,
+                                                        {isReplied = false}) {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              FullTextScreen(
+                                                            fullText: text,
+                                                            displayName: (!isReplied)
+                                                                ? state.userDisplayName ??
+                                                                    ""
+                                                                : "Replied message",
+                                                            theme: theme,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    onResend: (message) {
+                                                      context
+                                                          .read<ChatPageBloc>()
+                                                          .add(
+                                                              ChatPageEventResendMessage(
+                                                                  message:
+                                                                      message));
+                                                    },
+                                                    onReplyMessage:
+                                                        (replyingMessage) {
+                                                      context
+                                                          .read<ChatPageBloc>()
+                                                          .add(ChatPageReplyEvent(
+                                                              message:
+                                                                  replyingMessage));
+                                                    },
+                                                    onEditMessage: (message) {
+                                                      context
+                                                          .read<ChatPageBloc>()
+                                                          .add(
+                                                              ChatPageEditEvent(
+                                                                  message:
+                                                                      message));
+                                                    },
+                                                    thumbnail: state
+                                                            .localThumbnails[
+                                                        item.message!.uniqueId],
+                                                  );
+                                                });
+                                          });
+                                    } else {
+                                      return Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0,
+                                              horizontal: 8.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: theme.backgroundColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.1),
+                                                  blurRadius: 4.0,
+                                                  offset: Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Text(
+                                              item.date ?? "",
+                                              style: TextStyle(
+                                                  color: theme.baseColorShade1,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 13),
+                                            ),
                                           ),
                                         ),
                                       );
-                                    },
-                                    onResend: (message) {
-                                      context.read<ChatPageBloc>().add(
-                                          ChatPageEventResendMessage(
-                                              message: message));
-                                    },
-                                    thumbnail: state.localThumbnails[
-                                        item.message!.uniqueId],
-                                  );
-                                } else {
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0,
-                                          horizontal: 8.0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: theme.backgroundColor,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.black.withOpacity(0.1),
-                                              blurRadius: 4.0,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Text(
-                                          item.date ?? "",
-                                          style: TextStyle(
-                                              color: theme.baseColorShade1,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 13),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          }),
-                        ),
-                        AmityMessageComposer(
-                          // key: UniqueKey(),
-                          pageId: pageId,
-                          subChannelId: state.channelId,
-                          avatarUrl: avatarUrl,
-                          action: MessageComposerAction(
-                            onDissmiss: () {},
-                            onMessageCreated: () {
-                              scrollController.animateTo(
-                                0.0,
-                                curve: Curves.easeOut,
-                                duration: const Duration(milliseconds: 300),
-                              );
-                            },
+                                    }
+                                  },
+                                );
+                              }),
+                              if (newMessage != null)
+                                _buildNewMessageNotification(state, newMessage),
+                              if (state.showScrollButton &&
+                                  isScrollable &&
+                                  newMessage == null)
+                                _buildScrollToLatestButton(state, isScrollable),
+                            ],
                           ),
                         ),
+                        // Show blocked message if current user is blocking the other user
+                        if (state.isUserBlocked)
+                          SafeArea(
+                            top: false,
+                            child: Container(
+                              height: 42,
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0, left: 16.0, right: 16.0),
+                              decoration: BoxDecoration(
+                                color: theme.backgroundShade1Color,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "You can't send messages to this person.",
+                                  style: AmityTextStyle.caption(
+                                      theme.baseColorShade1),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          AmityMessageComposer(
+                            key: Key('${state.channelId}'),
+                            pageId: pageId,
+                            replyingMessage: state.replyingMessage,
+                            editingMessage: state.editingMessage,
+                            subChannelId: state.channelId,
+                            avatarUrl: avatarUrl,
+                            action: MessageComposerAction(
+                              onDissmiss: () {
+                                context
+                                    .read<ChatPageBloc>()
+                                    .add(const ChatPageRemoveReplyEvent());
+                              },
+                              onMessageCreated: () {
+                                context
+                                    .read<ChatPageBloc>()
+                                    .add(const ChatPageRemoveReplyEvent());
+                                state.scrollController.animateTo(
+                                  0.0,
+                                  curve: Curves.easeOut,
+                                  duration: const Duration(milliseconds: 300),
+                                );
+                              },
+                            ),
+                          ),
                       ],
                     ),
                   ),
                 );
-              }),
-        ),
-        AmityToast(elementId: "toast"),
-      ],
-    );
-  }
-
-  Widget skeletonHeader() {
-    return Shimmer(
-      linearGradient: configProvider.getShimmerGradient(),
-      child: const SizedBox(
-        child: ShimmerLoading(
-          isLoading: true,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SkeletonImage(
-                height: 40,
-                width: 40,
-                borderRadius: 40,
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              SkeletonText(
-                width: 140,
-                height: 10,
-              ),
-            ],
+              },
+            ),
           ),
-        ),
+          AmityToast(pageId: pageId, elementId: "toast"),
+        ],
       ),
     );
-  }
-}
-
-extension GlobalKeyExtension on GlobalKey {
-  Rect? get globalPaintBounds {
-    final renderObject = currentContext?.findRenderObject();
-    final translation = renderObject?.getTransformTo(null).getTranslation();
-    if (translation != null && renderObject?.paintBounds != null) {
-      final offset = Offset(translation.x, translation.y);
-      return renderObject!.paintBounds.shift(offset);
-    } else {
-      return null;
-    }
   }
 }

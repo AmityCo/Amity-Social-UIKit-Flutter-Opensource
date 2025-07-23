@@ -1,12 +1,12 @@
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/shared/user/user_list.dart';
 import 'package:amity_uikit_beta_service/v4/social/global_search/view_model/global_search_view_model.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityUserSearchResultComponent extends NewBaseComponent {
-  AmityGlobalSearchViewModel viewModel;
+  final AmityGlobalSearchViewModel viewModel;
 
   AmityUserSearchResultComponent({
     Key? key,
@@ -55,15 +55,16 @@ class AmityUserSearchResultComponent extends NewBaseComponent {
             scrollController: viewModel.scrollController,
             users: viewModel.users,
             theme: theme,
+            memberRoles: null,
             loadMore: viewModel.onLoadMore?.call ?? () {},
             onTap: (user) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      AmityUserProfilePage(userId: user.userId ?? ""),
-                ),
-              );
-            }),
+              final userId = user.userId;
+              if (userId != null && userId.isNotEmpty) {
+                AmityUIKit4Manager.behavior.userSearchResultBehavior
+                    .goToUserProfilePage(context, userId);
+              }
+            },
+            isLoadingMore: viewModel.isUsersFetching == true && viewModel.users.isNotEmpty),
       );
     }
   }

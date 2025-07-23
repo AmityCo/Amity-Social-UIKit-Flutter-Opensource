@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/bloc/community_profile_bloc.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +58,9 @@ class AmityCommunityJoinButton extends BaseElement {
               ),
             ),
             const SizedBox(width: 8),
-            const Text(
-              'Join',
-              style: TextStyle(
+            Text(
+              context.l10n.community_join,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,

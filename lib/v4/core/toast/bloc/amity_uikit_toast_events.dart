@@ -41,3 +41,5 @@ class AmityToastLoading extends AmityToastEvent {
 
 
 class AmityToastDismiss extends AmityToastEvent {}
+
+class AmityToastDismissIfLoading extends AmityToastEvent {}

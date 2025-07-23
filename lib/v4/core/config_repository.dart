@@ -203,7 +203,7 @@ extension ThemeConfig on ConfigRepository {
 
 class AmityReactionType {
   final String name;
-  final String imagePath; // Assuming image is a path to the asset
+  final String imagePath;
 
   AmityReactionType({required this.name, required this.imagePath});
 }

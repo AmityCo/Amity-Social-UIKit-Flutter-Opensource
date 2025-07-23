@@ -37,12 +37,15 @@ class FeedVM extends ChangeNotifier {
         .deletePost(postId: post.postId!)
         .then((value) {
       // Find the post by postId and remove it
-      // int postIndex =
-      //     _amityGlobalFeedPosts.indexWhere((p) => p.postId == post.postId);
-
-      _amityGlobalFeedPosts.removeAt(postIndex);
-      notifyListeners();
-      callback(true, "Post deleted successfully.");
+      int postIndex =
+          _amityGlobalFeedPosts.indexWhere((p) => p.postId == post.postId);
+      if (postIndex != -1) {
+        _amityGlobalFeedPosts.removeAt(postIndex);
+        notifyListeners();
+        callback(true, "Post deleted successfully.");
+      } else {
+        callback(false, "Post not found in the list.");
+      }
     }).onError((error, stackTrace) async {
       String errorMessage = error.toString();
       await AmityDialog()
@@ -59,6 +62,7 @@ class FeedVM extends ChangeNotifier {
     isLoading = true;
     print("isloading1: $isLoading");
     print("isCustomPostRanking:$isCustomPostRanking");
+
     if (isCustomPostRanking) {
       customRankingLiveCollection = AmitySocialClient.newFeedRepository()
           .getCustomRankingGlobalFeed()
@@ -73,8 +77,7 @@ class FeedVM extends ChangeNotifier {
 
           notifyListeners();
         } else if (posts.isNotEmpty) {
-          final feedItems =
-                  await onCustomPost(posts);
+          final feedItems = await onCustomPost(posts);
           _amityGlobalFeedPosts.clear();
           _amityGlobalFeedPosts.addAll(feedItems);
           isLoading = false;
@@ -98,8 +101,7 @@ class FeedVM extends ChangeNotifier {
           isLoading = true;
           notifyListeners();
         } else if (posts.isNotEmpty) {
-          final feedItems =
-                  await onCustomPost(posts);
+          final feedItems = await onCustomPost(posts);
           _amityGlobalFeedPosts.clear();
           _amityGlobalFeedPosts.addAll(feedItems);
           isLoading = false;

@@ -1,21 +1,35 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/chat/home/base_chat_list_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
+import 'package:amity_uikit_beta_service/v4/utils/error_util.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'chat_list_events.dart';
 part 'chat_list_state.dart';
 
 class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
-  AmityChannelType channelType;
+  ChatListType chatListType;
+  List<AmityChannelType> channelTypes;
+  AmityToastBloc toastBloc;
 
-  late final ChannelLiveCollection channelLiveCollection;
+  late final LiveCollectionStream<AmityChannel> channelLiveCollection;
 
-  ChatListBloc({required this.channelType}) : super(ChatListState()) {
-    channelLiveCollection = AmityChatClient.newChannelRepository()
-        .getChannels()
-        .conversationType()
-        .getLiveCollection();
+  ChatListBloc({required this.chatListType, required this.channelTypes, required this.toastBloc})
+      : super(const ChatListState()) {
+    if (chatListType == ChatListType.ARCHIVED) {
+      channelLiveCollection =
+          AmityChatClient.newChannelRepository().getArchivedChannels();
+    } else {
+      channelLiveCollection = AmityChatClient.newChannelRepository()
+          .getChannels()
+          .types(channelTypes)
+          .filter(AmityChannelFilter.MEMBER)
+          .excludeArchives(true)
+          .getLiveCollection();
+    }
 
     on<ChatListEventChannelsUpdated>((event, emit) {
       final channelIds = event.channels
@@ -27,8 +41,13 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
 
       addEvent(ChatListEventFetchMembers(channelIds: channelIds));
 
+      // Calculate if there are any unread messages
+      final hasUnreadMessages = event.channels
+          .any((channel) => (channel.unreadCount ?? 0) > 0);
+
       emit(state.copyWith(
         channels: event.channels,
+        hasUnreadMessages: hasUnreadMessages,
       ));
     });
 
@@ -76,15 +95,54 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       ));
     });
 
-    channelLiveCollection.observeLoadingState().listen((isLoading) {
-      addEvent(ChatListEventLoadingStateUpdated(isLoading: isLoading));
+    on<ChatListEventChannelArchive>((event, emit) async {
+      try {
+        await AmityChatClient.newChannelRepository()
+            .archiveChannel(event.channelId);
+        toastBloc.add(const AmityToastShort(
+            message: 'Chat archived.', icon: AmityToastIcon.success));
+      } catch (error) {
+        String errorMessage = error.toString();
+        if (errorMessage.contains('Archive limit exceeded')) {
+          emit(state.copyWith(
+            error: const AmityErrorInfo(
+              title: 'Too many chats archived',
+              message: 'You can archive a maximum of 100 chat lists.',
+            ),
+            showArchiveErrorDialog: true,
+          ));
+        } else {
+          toastBloc.add(const AmityToastShort(
+              message: 'Failed to archive chat. Please try again', 
+              icon: AmityToastIcon.warning));
+        }
+      }
     });
 
-    channelLiveCollection.getStreamController().stream.listen((channels) {
-      addEvent(ChatListEventChannelsUpdated(channels: channels));
+    on<ChatListEventChannelUnarchive>((event, emit) async {
+      try {
+        await AmityChatClient.newChannelRepository()
+            .unarchiveChannel(event.channelId);
+        toastBloc.add(const AmityToastShort(
+            message: 'Chat unarchived.', icon: AmityToastIcon.success));
+      } catch (error) {
+        toastBloc.add(const AmityToastShort(
+            message: 'Failed to unarchive chat. Please try again', 
+            icon: AmityToastIcon.warning));
+      }
     });
 
-    channelLiveCollection.loadNext();
+    on<ChatListEventResetDialogState>((event, emit) {
+      emit(state.copyWith(
+        showArchiveErrorDialog: false,
+        error: null,
+      ));
+    });
+
+    channelLiveCollection.getStream().listen((event) {
+      addEvent(ChatListEventLoadingStateUpdated(isLoading: event.isFetching));
+      addEvent(ChatListEventChannelsUpdated(channels: event.data));
+    });
 
     // Query for notification settings
     fetchNotificationSettings();

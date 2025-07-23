@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/member/community_add_member_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/bloc/community_membership_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -171,14 +171,15 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         : _placeholderAvatar(),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return AmityUserProfilePage(
-                              userId: member.user?.userId ?? "");
-                        },
-                      ),
-                    );
+                    final userId = member.user?.userId;
+                    if (userId != null && userId.isNotEmpty) {
+                      AmityUIKit4Manager
+                          .behavior.communityMembershipPageBehavior
+                          .goToUserProfilePage(
+                        context,
+                        userId,
+                      );
+                    }
                   },
                 ),
                 if (member.isModerator())
@@ -188,7 +189,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color:
-                          theme.primaryColor.blend(ColorBlendingOption.shade2),
+                          theme.primaryColor.blend(ColorBlendingOption.shade3),
                     ),
                     child: Center(
                       child: SvgPicture.asset(
@@ -205,29 +206,35 @@ class AmityCommunityMembershipPage extends NewBasePage {
             const SizedBox(
                 width: 8), // Add some spacing between the icon and text
             Expanded(
-              child: GestureDetector(
-                child: Text(
-                  member.user?.displayName ?? 'Unknown',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: theme.baseColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                child: Row(
+              children: [
+                Flexible(
+                  child: GestureDetector(
+                    child: Text(
+                      member.user?.displayName ?? 'Unknown',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: theme.baseColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onTap: () {
+                      final userId = member.user?.userId;
+                                        if (userId != null && userId.isNotEmpty) {
+                                          AmityUIKit4Manager.behavior.communityMembershipPageBehavior
+                                              .goToUserProfilePage(
+                                            context,
+                                            userId,
+                                          );
+                                        }
+                    },
                   ),
                 ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return AmityUserProfilePage(
-                            userId: member.user?.userId ?? "");
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
+                if(member.user?.isBrand ?? false) brandBadge()
+              ],
+            )),
 
             if (member.user != null &&
                 member.user!.userId != AmityCoreClient.getUserId())
@@ -251,7 +258,6 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   void _showBottomSheet(BuildContext context,
       CommunityMembershipPageState state, AmityCommunityMember member) {
-    print('Member isFlaggedByMe: ${member.user?.isFlaggedByMe}');
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -419,4 +425,17 @@ extension on AmityCommunityMember {
 
     return false;
   }
+}
+
+Widget brandBadge() {
+  return Container(
+    padding: const EdgeInsets.only(left: 4),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
+    ),
+  );
 }

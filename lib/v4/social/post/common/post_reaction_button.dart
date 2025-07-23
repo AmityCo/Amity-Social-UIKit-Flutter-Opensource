@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
@@ -93,7 +94,7 @@ class PostReactionButton extends StatelessWidget {
     bool hasMyReaction = post.myReactions?.isNotEmpty ?? false;
     var text = (post.reactionCount ?? 0).formattedCompactString();
     if (showLabel) {
-      text = hasMyReaction ? 'Like' : 'Like';
+      text = hasMyReaction ? context.l10n.post_like: context.l10n.post_like;
     }
     return Text(
       text,
@@ -118,7 +119,7 @@ class PostReactionButton extends StatelessWidget {
     }
     var text = count.formattedCompactString();
     if (showLabel) {
-      text = hasMyReaction ? 'Like' : 'Like';
+      text = hasMyReaction ? context.l10n.post_like : context.l10n.post_like;
     }
     return Text(
       text,

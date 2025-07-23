@@ -1,11 +1,13 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/video_post_player/pager/video_post_player.dart';
 import 'package:flutter/material.dart';
 
 class PostContentVideo extends StatelessWidget {
   final List<AmityPost> posts;
+  final AmityThemeColor theme;
 
-  const PostContentVideo({super.key, required this.posts});
+  const PostContentVideo({super.key, required this.posts, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class PostContentVideo extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
+                color: theme.baseColorShade4,
                 borderRadius: borderRadius,
                 image: DecorationImage(
                   image: NetworkImage(fileUrl),

@@ -320,9 +320,7 @@ class CommentScreenState extends State<CommentScreen> {
                                             isFromFeed: false,
                                           ),
 
-                                          const Divider(
-                                            height: 0,
-                                          ),
+                                          const Divider(),
                                           CommentComponent(
                                             postId: widget.amityPost.postId!,
                                             theme: theme,

@@ -1,12 +1,18 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/replying_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/bloc/message_composer_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_action.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_file_picker.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_with_camera.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/single_video_player/pager/video_message_player.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,11 +21,14 @@ import 'package:image_picker/image_picker.dart';
 
 class AmityMessageComposer extends NewBaseComponent {
   final String subChannelId;
-  final AmityMessage? replyTo;
   final String? avatarUrl;
   final MessageComposerAction action;
   AmityThemeColor? localTheme;
-  FileType? selectedMediaType = null;
+  FileType? selectedMediaType;
+  ReplyingMesage? replyingMessage;
+  AmityMessage? editingMessage;
+
+  final GlobalKey composerKey = GlobalKey();
 
   TextEditingController controller = TextEditingController();
   ScrollController scrollController = ScrollController();
@@ -33,7 +42,8 @@ class AmityMessageComposer extends NewBaseComponent {
     super.pageId,
     required this.subChannelId,
     required this.avatarUrl,
-    this.replyTo,
+    this.replyingMessage,
+    this.editingMessage,
     required this.action,
     this.localTheme,
   }) : super(componentId: "message_composer");
@@ -41,20 +51,42 @@ class AmityMessageComposer extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     toastBloc = context.read<AmityToastBloc>();
+    if (replyingMessage != null) {
+      // focusNode.requestFocus();
+    }
+    if (editingMessage != null) {
+      final currentText = (editingMessage?.data as MessageTextData).text ?? "";
+      controller.text = currentText;
+      // focusNode.requestFocus();
+    } else {
+      if (MessageComposerCache().savedText != "") {
+        controller.text = MessageComposerCache().savedText;
+        // focusNode.requestFocus();
+      }
+    }
+
     return BlocProvider(
-      key: ValueKey("$subChannelId$avatarUrl${replyTo?.messageId ?? ""}"),
+      key: ValueKey(
+          "$subChannelId$avatarUrl${replyingMessage?.message.messageId ?? ""}}"),
       create: (context) => MessageComposerBloc(
         subChannelId: subChannelId,
         controller: controller,
         scrollController: scrollController,
-        replyTo: replyTo,
+        replyTo: replyingMessage?.message,
+        editingMessage: editingMessage,
         toastBloc: toastBloc,
       ),
       child: BlocBuilder<MessageComposerBloc, MessageComposerState>(
         builder: (context, state) {
+          context
+              .read<MessageComposerBloc>()
+              .add(MessageComposerTextChange(text: controller.text));
           return Column(
             children: [
-              if (state.replyTo != null) renderReplyPanel(state.replyTo!),
+              if (editingMessage != null)
+                renderEditPanel(context, editingMessage, state),
+              if (state.replyTo != null)
+                renderReplyPanel(state.replyTo!, context),
               SafeArea(
                 top: false,
                 child: renderComposer(context, state, subChannelId),
@@ -68,11 +100,25 @@ class AmityMessageComposer extends NewBaseComponent {
 
   Widget renderComposer(
       BuildContext context, MessageComposerState state, String subChannelId) {
-    String? avatarUrl = AmityCoreClient.getCurrentUser().avatarUrl;
+    bool isSendable = false;
+
+    if (state.text.trim().isEmpty) {
+      isSendable = true;
+    } else {
+      if (editingMessage != null) {
+        final currentText = (editingMessage!.data as MessageTextData).text;
+        if (state.text.trim() == currentText) {
+          isSendable = true;
+        }
+      } else {
+        isSendable = false;
+      }
+    }
     return Column(
       children: [
         Container(
-          decoration: BoxDecoration(
+          key: composerKey,
+          decoration: const BoxDecoration(
             color: Colors.white,
             border: Border(
               top: BorderSide(width: 1, color: Color(0xFFEBECEE)),
@@ -86,34 +132,35 @@ class AmityMessageComposer extends NewBaseComponent {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 6, right: 12),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (state.showMediaSection) {
-                            focusNode.requestFocus();
-                            context
-                                .read<MessageComposerBloc>()
-                                .add(MessageComposerMediaCollapsed());
-                          } else {
-                            focusNode.unfocus();
-                            context
-                                .read<MessageComposerBloc>()
-                                .add(MessageComposerMediaExpanded());
-                          }
-                        },
-                        child: SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: SvgPicture.asset(
-                            (state.showMediaSection)
-                                ? "assets/Icons/amity_ic_close_message_media_section.svg"
-                                : "assets/Icons/amity_ic_open_message_media_section.svg",
-                            package: 'amity_uikit_beta_service',
+                    if (editingMessage == null)
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 6, right: 12),
+                        child: GestureDetector(
+                          onTap: () {
+                            if (state.showMediaSection) {
+                              focusNode.requestFocus();
+                              context
+                                  .read<MessageComposerBloc>()
+                                  .add(MessageComposerMediaCollapsed());
+                            } else {
+                              focusNode.unfocus();
+                              context
+                                  .read<MessageComposerBloc>()
+                                  .add(MessageComposerMediaExpanded());
+                            }
+                          },
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: SvgPicture.asset(
+                              (state.showMediaSection)
+                                  ? "assets/Icons/amity_ic_close_message_media_section.svg"
+                                  : "assets/Icons/amity_ic_open_message_media_section.svg",
+                              package: 'amity_uikit_beta_service',
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     Expanded(
                       child: Container(
                         constraints:
@@ -149,7 +196,7 @@ class AmityMessageComposer extends NewBaseComponent {
                                     .add(MessageComposerMediaCollapsed()),
                                 onChanged: (value) {
                                   context.read<MessageComposerBloc>().add(
-                                      MessageComposerTextChage(text: value));
+                                      MessageComposerTextChange(text: value));
                                 },
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
@@ -191,13 +238,24 @@ class AmityMessageComposer extends NewBaseComponent {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              if (state.text.trim().isNotEmpty) {
-                                context
-                                    .read<MessageComposerBloc>()
-                                    .add(MessageComposerCreateTextMessage(
-                                      text: controller.text,
-                                    ));
-                                action.onMessageCreated();
+                              if (!isSendable) {
+                                if (editingMessage != null) {
+                                  context.read<MessageComposerBloc>().add(
+                                      MessageComposerUpdateTextMessage(
+                                          text: controller.text,
+                                          messageId:
+                                              editingMessage!.messageId!));
+                                  action.onMessageCreated();
+                                } else {
+                                  context
+                                      .read<MessageComposerBloc>()
+                                      .add(MessageComposerCreateTextMessage(
+                                        text: controller.text,
+                                        parentId:
+                                            replyingMessage?.message.messageId,
+                                      ));
+                                  action.onMessageCreated();
+                                }
 
                                 controller.clear();
                               }
@@ -208,7 +266,7 @@ class AmityMessageComposer extends NewBaseComponent {
                               child: SizedBox(
                                 width: 32,
                                 height: 32,
-                                child: (state.text.trim().isEmpty)
+                                child: (isSendable)
                                     ? SvgPicture.asset(
                                         "assets/Icons/amity_ic_sent_message_button_disable.svg",
                                         package: 'amity_uikit_beta_service',
@@ -239,45 +297,37 @@ class AmityMessageComposer extends NewBaseComponent {
     );
   }
 
-  Widget renderReplyPanel(AmityMessage message) {
-    final MessageComposer = message.user?.displayName ?? "";
+  Widget renderEditPanel(
+      BuildContext context, AmityMessage? message, MessageComposerState state) {
     return Container(
       width: double.infinity,
-      height: 40,
+      height: 48,
       padding: const EdgeInsets.only(top: 10, left: 16, right: 12, bottom: 10),
       decoration: BoxDecoration(color: theme.baseColorShade4),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: SizedBox(
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Replying to ',
-                      style: TextStyle(
-                        color: theme.baseColorShade1,
-                        fontSize: 15,
-                        fontFamily: 'SF Pro Text',
-                        fontWeight: FontWeight.w400,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Editing message',
+                        style: AmityTextStyle.captionBold(theme.baseColor),
                       ),
-                    ),
-                    TextSpan(
-                      text: MessageComposer,
-                      style: TextStyle(
-                        color: theme.baseColorShade1,
-                        fontSize: 15,
-                        fontFamily: 'SF Pro Text',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
+              ],
             ),
+          ),
+          const SizedBox(
+            width: 12,
           ),
           GestureDetector(
             onTap: () {
@@ -293,6 +343,174 @@ class AmityMessageComposer extends NewBaseComponent {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget renderReplyPanel(AmityMessage message, BuildContext context) {
+    final userDisplayName = message.user?.userId == AmityCoreClient.getUserId()
+        ? "yourself"
+        : message.user?.displayName ?? "";
+
+    Stack? imagePreview;
+
+    if (replyingMessage?.previewImage != null) {
+      imagePreview = Stack(
+        alignment: Alignment.center,
+        children: [
+          Image(
+            image: replyingMessage!.previewImage!.image,
+            width: 38,
+            height: 38,
+            fit: BoxFit.cover,
+          ),
+          if (message.data is MessageVideoData) ...[
+            Container(
+              width: 38,
+              height: 38,
+              color: Colors.black.withAlpha((0.4 * 255).toInt()),
+            ),
+            SizedBox(
+              width: 14,
+              height: 14,
+              child: SvgPicture.asset(
+                'assets/Icons/amity_ic_video_reply_play.svg',
+                package: 'amity_uikit_beta_service',
+              ),
+            ),
+          ]
+        ],
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        // TODO Remove this condition when jump to replied message is implemented
+        if (message.data is MessageTextData) {
+          final parentTextMessage =
+              (message.data as MessageTextData).text ?? "";
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FullTextScreen(
+                fullText: parentTextMessage,
+                displayName: "Replied message",
+                theme: theme,
+              ),
+            ),
+          );
+        } else if (message.data is MessageImageData) {
+          final image = (message.data as MessageImageData).image;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AmityImageViewer(
+                imageUrl: image?.getUrl(AmityImageSize.LARGE) ?? "",
+                showDeleteButton: message.userId == AmityCoreClient.getUserId(),
+                showSaveButton: true,
+                onSave: () async {
+                  await saveImageMessage(context, message);
+                },
+              ),
+            ),
+          );
+        } else if (message.data is MessageVideoData) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VideoMessagePlayer(
+                message: message,
+                onDelete: () {},
+              ),
+            ),
+          );
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        height: 62,
+        padding:
+            const EdgeInsets.only(top: 10, left: 16, right: 12, bottom: 10),
+        decoration: BoxDecoration(color: theme.baseColorShade4),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Replying to $userDisplayName',
+                          style: AmityTextStyle.captionBold(theme.baseColor),
+                        ),
+                      ],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (message.data is MessageTextData)
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: (message.data as MessageTextData).text,
+                            style:
+                                AmityTextStyle.caption(theme.baseColorShade1),
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  if (message.data is MessageImageData)
+                    Row(
+                      children: [
+                        Text(
+                          "Photo",
+                          style: AmityTextStyle.caption(theme.baseColorShade1),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  if (message.data is MessageVideoData)
+                    Text(
+                      "Video",
+                      style: AmityTextStyle.caption(theme.baseColorShade1),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
+              ),
+            ),
+            if (message.data is MessageVideoData ||
+                message.data is MessageImageData) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: imagePreview,
+              ),
+              const SizedBox(width: 8),
+            ],
+            const SizedBox(
+              width: 12,
+            ),
+            GestureDetector(
+              onTap: () {
+                action.onDissmiss();
+              },
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: SvgPicture.asset(
+                  "assets/Icons/amity_ic_gray_close.svg",
+                  package: 'amity_uikit_beta_service',
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -356,5 +574,18 @@ class AmityMessageComposer extends NewBaseComponent {
         ],
       ),
     );
+  }
+}
+
+class MessageComposerCache {
+  MessageComposerCache._privateConstructor();
+  static final MessageComposerCache _instance =
+      MessageComposerCache._privateConstructor();
+  factory MessageComposerCache() => _instance;
+
+  String savedText = "";
+
+  void updateText(String text) {
+    savedText = text;
   }
 }

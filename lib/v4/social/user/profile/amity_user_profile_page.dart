@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -38,9 +39,27 @@ class AmityUserProfilePage extends NewBasePage {
       child: Builder(builder: (context) {
         return BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state) {
+            _scrollController.addListener(() {
+              if (_scrollController.hasClients &&
+                  _scrollController.offset > 100) {
+                context
+                    .read<UserProfileBloc>()
+                    .add(const ShowUserNameOnAppBarEvent(showUserName: true));
+              } else {
+                context
+                    .read<UserProfileBloc>()
+                    .add(const ShowUserNameOnAppBarEvent(showUserName: false));
+              }
+            });
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
+                title: state.showUserNameOnAppBar
+                    ? Text(
+                        state.user?.displayName ?? "",
+                        style: AmityTextStyle.titleBold(theme.baseColor),
+                      )
+                    : null,
                 scrolledUnderElevation: 0,
                 backgroundColor: theme.backgroundColor,
                 leading: IconButton(
@@ -90,61 +109,31 @@ class AmityUserProfilePage extends NewBasePage {
                       },
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      color: theme.baseColorShade4,
-                      width: double.infinity,
-                      child: (state.selectedIndex == UserProfileTabIndex.feed)
-                          ? Container(
-                              color: theme.baseColorShade4,
-                              width: double.infinity,
-                              child: UserFeedComponent(
-                                key: Key(
-                                    "user_feed_${state.userId}_${state.userFollowInfo?.status.name ?? ""}"),
-                                pageId: pageId,
-                                userId: state.userId,
-                                scrollController: _scrollController,
-                                userFollowInfo: state.userFollowInfo,
-                              ))
-                          : Container(),
+                  if (state.selectedIndex == UserProfileTabIndex.feed)
+                    UserFeedComponent(
+                      key: Key(
+                          "user_feed_${state.userId}_${state.userFollowInfo?.status.name ?? ""}"),
+                      pageId: pageId,
+                      userId: state.userId,
+                      scrollController: _scrollController,
+                      userFollowInfo: state.userFollowInfo,
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      color: theme.baseColorShade4,
-                      width: double.infinity,
-                      child: (state.selectedIndex == UserProfileTabIndex.image)
-                          ? Container(
-                              color: theme.baseColorShade4,
-                              width: double.infinity,
-                              child: UserImageFeedComponent(
-                                key: Key(
-                                    "image_feed_${state.userId}_${state.userFollowInfo?.status.name ?? ""}"),
-                                pageId: pageId,
-                                userId: state.userId,
-                                scrollController: _scrollController,
-                              ))
-                          : Container(),
+                  if (state.selectedIndex == UserProfileTabIndex.image)
+                    UserImageFeedComponent(
+                      key: Key(
+                          "image_feed_${state.userId}_${state.userFollowInfo?.status.name ?? ""}"),
+                      pageId: pageId,
+                      userId: state.userId,
+                      scrollController: _scrollController,
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      color: theme.baseColorShade4,
-                      width: double.infinity,
-                      child: (state.selectedIndex == UserProfileTabIndex.video)
-                          ? Container(
-                              color: theme.baseColorShade4,
-                              width: double.infinity,
-                              child: UserVideoFeedComponent(
-                                key: Key(
-                                    "video_feed_${state.userId}_${state.userFollowInfo?.status.name ?? ""}"),
-                                pageId: pageId,
-                                userId: state.userId,
-                                scrollController: _scrollController,
-                              ))
-                          : Container(),
-                    ),
-                  ),
+                  if (state.selectedIndex == UserProfileTabIndex.video)
+                    UserVideoFeedComponent(
+                      key: Key(
+                          "video_feed_${state.userId}_${state.userFollowInfo?.status.name ?? ""}"),
+                      pageId: pageId,
+                      userId: state.userId,
+                      scrollController: _scrollController,
+                    )
                   // AmityToast(elementId: "toast"),
                 ],
               ),

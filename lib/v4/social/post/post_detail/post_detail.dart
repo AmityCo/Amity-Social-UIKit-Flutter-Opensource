@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/preview_link_widget.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content.dart';
@@ -33,7 +34,7 @@ class PostDetail extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     return BlocProvider(
-      create: (context) => PostItemBloc(post),
+      create: (context) => PostItemBloc(context, post),
       child:
           BlocBuilder<PostItemBloc, PostItemState>(builder: (context, state) {
         onAddReaction(reactionType) {
@@ -70,6 +71,14 @@ class PostDetail extends NewBaseComponent {
               post: post,
               theme: theme,
             ),
+            if (post.children?.isEmpty ?? true && post.data is TextData)
+              Container(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+                child: PreviewLinkWidget(
+                  text: (post.data as TextData).text ?? '',
+                  theme: theme,
+                ),
+              ),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

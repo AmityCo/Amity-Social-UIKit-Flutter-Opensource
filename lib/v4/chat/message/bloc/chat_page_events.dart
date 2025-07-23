@@ -43,7 +43,7 @@ class ChatPageEventFetchMuteState extends ChatPageEvent {
 
 class ChatPageEventCreateNewChannel extends ChatPageEvent {
   final String userId;
-  const ChatPageEventCreateNewChannel({ required this.userId });
+  const ChatPageEventCreateNewChannel({required this.userId});
 
   @override
   List<Object> get props => [userId];
@@ -55,7 +55,7 @@ class ChatPageEventMuteUnmute extends ChatPageEvent {
 
 class ChatPageEventResendMessage extends ChatPageEvent {
   final AmityMessage message;
-  const ChatPageEventResendMessage({ required this.message });
+  const ChatPageEventResendMessage({required this.message});
 
   @override
   List<Object> get props => [message];
@@ -73,8 +73,7 @@ class ChatPageEventLoadingStateUpdated extends ChatPageEvent {
 class ChatPageHeaderEventChanged extends ChatPageEvent {
   final AmityChannelMember channelMember;
 
-  const ChatPageHeaderEventChanged(
-      {required this.channelMember});
+  const ChatPageHeaderEventChanged({required this.channelMember});
 
   @override
   List<Object> get props => [channelMember];
@@ -93,7 +92,8 @@ class ChatPageEventFetchLocalVideoThumbnail extends ChatPageEvent {
   final String uniqueId;
   final String videoPath;
 
-  const ChatPageEventFetchLocalVideoThumbnail({required this.uniqueId, required this.videoPath});
+  const ChatPageEventFetchLocalVideoThumbnail(
+      {required this.uniqueId, required this.videoPath});
 
   @override
   List<Object> get props => [uniqueId, videoPath];
@@ -102,9 +102,103 @@ class ChatPageEventFetchLocalVideoThumbnail extends ChatPageEvent {
 class ChatPageNetworkConnectivityChanged extends ChatPageEvent {
   final bool isConnected;
 
-  const ChatPageNetworkConnectivityChanged(
-      {required this.isConnected});
+  const ChatPageNetworkConnectivityChanged({required this.isConnected});
 
   @override
   List<Object> get props => [isConnected];
 }
+
+class ChatPageReplyEvent extends ChatPageEvent {
+  final ReplyingMesage message;
+
+  const ChatPageReplyEvent({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ChatPageRemoveReplyEvent extends ChatPageEvent {
+  const ChatPageRemoveReplyEvent();
+}
+
+class ChatPageEditEvent extends ChatPageEvent {
+  final AmityMessage message;
+
+  const ChatPageEditEvent({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ChatPageShowScrollButtonEvent extends ChatPageEvent {
+  final bool showScrollButton;
+
+  const ChatPageShowScrollButtonEvent({required this.showScrollButton});
+
+  @override
+  List<Object> get props => [showScrollButton];
+}
+
+class ChatPageNewMessageUpdated extends ChatPageEvent {
+  final AmityMessage? newMessage;
+
+  const ChatPageNewMessageUpdated({required this.newMessage});
+
+  @override
+  List<Object> get props => [];
+}
+
+class ChatPageEventMarkReadMessage extends ChatPageEvent {
+  final AmityMessage message;
+
+  const ChatPageEventMarkReadMessage({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ChatPageEventFlagUser extends ChatPageEvent {
+  final bool isFlagging; // true for flag, false for unflag
+
+  const ChatPageEventFlagUser({required this.isFlagging});
+
+  @override
+  List<Object> get props => [isFlagging];
+}
+
+class ChatPageUserFlagStateChanged extends ChatPageEvent {
+  final bool isFlagged;
+  final AmityUser user;
+
+  const ChatPageUserFlagStateChanged({required this.isFlagged,required this.user});
+
+  @override
+  List<Object> get props => [isFlagged, user];
+}
+
+class ChatPageEventFetchFollowInfo extends ChatPageEvent {
+  const ChatPageEventFetchFollowInfo();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ChatPageFollowInfoUpdated extends ChatPageEvent {
+  final bool isUserBlocked;
+
+  const ChatPageFollowInfoUpdated({required this.isUserBlocked});
+
+  @override
+  List<Object> get props => [isUserBlocked];
+}
+
+class ChatPageEventBlockUser extends ChatPageEvent {
+  final bool isUserBlocked;
+
+  const ChatPageEventBlockUser({required this.isUserBlocked});
+
+  @override
+  List<Object> get props => [isUserBlocked];
+}
+
+

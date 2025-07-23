@@ -39,6 +39,7 @@ class AmityCommentTrayComponent extends NewBaseComponent {
       shouldAllowComments: shouldAllowComments,
       scrollController: scrollController,
       referenceType: referenceType,
+      community: community, // Add this missing parameter
     );
   }
 }
@@ -49,6 +50,7 @@ class CommentTrayComponent extends StatefulWidget {
   final bool shouldAllowComments;
   final AmityCommentReferenceType referenceType;
   final ScrollController scrollController;
+  final AmityCommunity? community; // Add this missing property
   AmityThemeColor theme;
   CommentTrayComponent({
     super.key,
@@ -58,6 +60,7 @@ class CommentTrayComponent extends StatefulWidget {
     required this.shouldAllowInteraction,
     required this.shouldAllowComments,
     required this.scrollController,
+    this.community, // Include in constructor
   });
 
   @override
@@ -150,6 +153,7 @@ class _CommentTrayComponentState extends State<CommentTrayComponent> {
                                   removeReplyToComment();
                                 },
                               ),
+                              communityId: widget.community?.communityId,
                             )
                           : Padding(
                               padding: const EdgeInsets.symmetric(

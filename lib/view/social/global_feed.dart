@@ -236,8 +236,8 @@ class _PostWidgetState
             .check();
     bool isPostOwner =
         widget.post.postedUserId == AmityCoreClient.getCurrentUser().userId;
-    final isFlaggedByMe = widget.post.isFlaggedByMe;
     List<String> postOwnerMenu = ['Edit Post', 'Delete Post'];
+    final isFlaggedByMe = widget.post.isFlaggedByMe;
     List<String> otherPostMenu = [
       isFlaggedByMe ? 'Unreport Post' : 'Report Post',
       // 'Block User',
@@ -246,8 +246,126 @@ class _PostWidgetState
 
     return Semantics(
       identifier: 'amityFeedMore',
-      child: IconButton(
-        icon: Icon(
+      child: PopupMenuButton(
+        color:
+            Provider.of<AmityUIConfiguration>(context).appColors.baseBackground,
+        surfaceTintColor: Colors.white,
+        onSelected: (value) {
+          switch (value) {
+            case 'Report Post':
+            case 'Unreport Post':
+              log("isflag by me $isFlaggedByMe");
+              if (isFlaggedByMe) {
+                Provider.of<PostVM>(context, listen: false)
+                    .unflagPost(widget.post);
+              } else {
+                Provider.of<PostVM>(context, listen: false)
+                    .flagPost(widget.post);
+              }
+
+              break;
+            case 'Edit Post':
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider<EditPostVM>(
+                      create: (context) => EditPostVM(),
+                      child: AmityEditPostScreen(
+                        amityPost: widget.post,
+                      ))));
+              break;
+            case 'Delete Post':
+              if (widget.feedType == FeedType.global) {
+                ConfirmationDialog().show(
+                  context: context,
+                  title: 'Delete Post?',
+                  detailText: 'Do you want to Delete your post?',
+                  leftButtonText: 'Cancel',
+                  rightButtonText: 'Delete',
+                  onConfirm: () {
+                    Provider.of<FeedVM>(context, listen: false).deletePost(
+                        widget.post, widget.postIndex, (isSuccess, error) {
+                      if (isSuccess) {
+                        if (widget.isPostDetail) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    });
+                  },
+                );
+              } else if (widget.feedType == FeedType.community) {
+                ConfirmationDialog().show(
+                  context: context,
+                  title: 'Delete Post?',
+                  detailText: 'Do you want to Delete your post?',
+                  leftButtonText: 'Cancel',
+                  rightButtonText: 'Delete',
+                  onConfirm: () {
+                    Provider.of<CommuFeedVM>(context, listen: false).deletePost(
+                        widget.post, widget.postIndex, (isSuccess, error) {
+                      if (isSuccess) {
+                        if (widget.isPostDetail) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    });
+                  },
+                );
+              } else if (widget.feedType == FeedType.user) {
+                ConfirmationDialog().show(
+                  context: context,
+                  title: 'Delete Post?',
+                  detailText: 'Do you want to Delete your post?',
+                  leftButtonText: 'Cancel',
+                  rightButtonText: 'Delete',
+                  onConfirm: () {
+                    Provider.of<UserFeedVM>(context, listen: false)
+                        .deletePost(widget.post, (isSuccess, error) {
+                      if (isSuccess) {
+                        if (widget.isPostDetail) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    });
+                  },
+                );
+              } else if (widget.feedType == FeedType.pending) {
+                ConfirmationDialog().show(
+                  context: context,
+                  title: 'Delete Post?',
+                  detailText: 'Do you want to Delete your post?',
+                  leftButtonText: 'Cancel',
+                  rightButtonText: 'Delete',
+                  onConfirm: () {
+                    Provider.of<CommuFeedVM>(context, listen: false)
+                        .deletePendingPost(widget.post, widget.postIndex);
+                  },
+                );
+              } else {
+                print("unhandle postType");
+              }
+              break;
+            case 'Block User':
+              Provider.of<UserVM>(context, listen: false)
+                  .blockUser(widget.post.postedUserId!, () {
+                if (widget.feedType == FeedType.global) {
+                  // Provider.of<FeedVM>(context, listen: false).reload();
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Provider.of<FeedVM>(context, listen: false)
+                        .initAmityGlobalfeed(
+                            onCustomPost: AmityUIConfiguration.onCustomPost);
+                  });
+                } else if (widget.feedType == FeedType.community) {
+                  Provider.of<CommuFeedVM>(context, listen: false)
+                      .initAmityCommunityFeed(
+                          (widget.post.target as CommunityTarget)
+                              .targetCommunityId!);
+                }
+              });
+
+              break;
+            default:
+          }
+        },
+        child: Icon(
           Icons.more_horiz_rounded,
           size: 24,
           color: widget.feedType == FeedType.user
@@ -256,142 +374,52 @@ class _PostWidgetState
                   .userProfileTextColor
               : Colors.grey,
         ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Provider.of<AmityUIConfiguration>(context)
-                      .appColors
-                      .baseBackground,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                ),
-                padding: const EdgeInsets.only(
-                  top: 16,
-                  left: 16,
-                  right: 16,
-                  bottom: 32,
-                ),
-                child: Wrap(
-                  children: [
-                    if (isPostOwner)
-                      ...postOwnerMenu.map(
-                        (option) => ListTile(
-                          title: Text(
-                            option,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            handleMenuOption(context, option, isFlaggedByMe);
-                          },
-                        ),
+        itemBuilder: (context) {
+          List<PopupMenuEntry<String>> menuItems = [];
+          // Add post owner options
+          if (isPostOwner) {
+            menuItems.addAll(postOwnerMenu.map((option) => PopupMenuItem(
+                  value: option,
+                  child: Builder(builder: (context) {
+                    return Text(
+                      option,
+                      style: TextStyle(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
                       ),
-                    if (!isPostOwner)
-                      ...otherPostMenu.map(
-                        (option) => ListTile(
-                          title: Text(
-                            option,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            handleMenuOption(context, option, isFlaggedByMe);
-                          },
-                        ),
+                    );
+                  }),
+                )));
+          }
+
+          // Add report/unreport option
+          if (!isPostOwner) {
+            menuItems.addAll(otherPostMenu.map((option) => PopupMenuItem(
+                  value: option,
+                  child: Builder(builder: (context) {
+                    return Text(
+                      option,
+                      style: TextStyle(
+                        color: Provider.of<AmityUIConfiguration>(context)
+                            .appColors
+                            .base,
                       ),
-                  ],
-                ),
-              );
-            },
-          );
+                    );
+                  }),
+                )));
+          }
+          // Add block user option
+          // if (!isPostOwner) {
+          //   menuItems.add(const PopupMenuItem(
+          //     value: 'Block User',
+          //     child: Text('Block User'),
+          //   ));
+          // }
+
+          return menuItems;
         },
       ),
-    );
-  }
-
-  void handleMenuOption(_, String option, bool isFlaggedByMe) {
-    switch (option) {
-      case 'Report Post':
-      case 'Unreport Post':
-        log("isflag by me $isFlaggedByMe");
-        if (isFlaggedByMe) {
-          Provider.of<PostVM>(context, listen: false).unflagPost(widget.post);
-        } else {
-          Provider.of<PostVM>(context, listen: false).flagPost(widget.post);
-        }
-        break;
-      case 'Edit Post':
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ChangeNotifierProvider<EditPostVM>(
-                create: (context) => EditPostVM(),
-                child: AmityEditPostScreen(
-                  amityPost: widget.post,
-                ))));
-        break;
-      case 'Delete Post':
-        showDeleteConfirmationDialog(context);
-        break;
-      case 'Block User':
-        Provider.of<UserVM>(context, listen: false)
-            .blockUser(widget.post.postedUserId!, () {
-          if (widget.feedType == FeedType.global) {
-            // Provider.of<FeedVM>(context, listen: false).reload();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Provider.of<FeedVM>(context, listen: false).initAmityGlobalfeed(
-                  onCustomPost: AmityUIConfiguration.onCustomPost);
-            });
-          } else if (widget.feedType == FeedType.community) {
-            Provider.of<CommuFeedVM>(context, listen: false)
-                .initAmityCommunityFeed(
-                    (widget.post.target as CommunityTarget).targetCommunityId!);
-          }
-        });
-        break;
-      default:
-    }
-  }
-
-  void showDeleteConfirmationDialog(BuildContext context) {
-    ConfirmationDialog().show(
-      context: context,
-      title: 'Delete Post?',
-      detailText: 'Do you want to Delete your post?',
-      leftButtonText: 'Cancel',
-      rightButtonText: 'Delete',
-      onConfirm: () {
-        if (widget.feedType == FeedType.global) {
-          Provider.of<FeedVM>(context, listen: false)
-              .deletePost(widget.post, widget.postIndex, (isSuccess, error) {
-            if (isSuccess && widget.isPostDetail) {
-              Navigator.of(context).pop();
-            }
-          });
-        } else if (widget.feedType == FeedType.community) {
-          Provider.of<CommuFeedVM>(context, listen: false)
-              .deletePost(widget.post, widget.postIndex, (isSuccess, error) {
-            if (isSuccess && widget.isPostDetail) {
-              Navigator.of(context).pop();
-            }
-          });
-        } else if (widget.feedType == FeedType.user) {
-          Provider.of<UserFeedVM>(context, listen: false)
-              .deletePost(widget.post, (isSuccess, error) {
-            if (isSuccess && widget.isPostDetail) {
-              Navigator.of(context).pop();
-            }
-          });
-        } else if (widget.feedType == FeedType.pending) {
-          Provider.of<CommuFeedVM>(context, listen: false)
-              .deletePendingPost(widget.post, widget.postIndex);
-        } else {
-          print("unhandled postType");
-        }
-      },
     );
   }
 
@@ -822,81 +850,85 @@ class _PostWidgetState
                                         .targetCommunityId!,
                               )
                             : const SizedBox()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              ReactionWidget(
-                                post: widget.post,
-                                feedType: widget.feedType,
-                                feedReactionCountSize: feedReactionCountSize,
-                              ),
-
-                              GestureDetector(
-                                onTap: () {
-                                  if (widget.isFromFeed) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => CommentScreen(
-                                          amityPost: widget.post,
-                                          theme: widget.theme,
-                                          isFromFeed: true,
-                                          feedType: widget.feedType,
+                        : Container(
+                            padding: const EdgeInsets.only(bottom: 12, top: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                ReactionWidget(
+                                    post: widget.post,
+                                    feedType: widget.feedType,
+                                    feedReactionCountSize:
+                                        feedReactionCountSize),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (widget.isFromFeed) {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CommentScreen(
+                                                    amityPost: widget.post,
+                                                    theme: widget.theme,
+                                                    isFromFeed: true,
+                                                    feedType: widget.feedType,
+                                                  )));
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Provider.of<AmityUIConfiguration>(context)
+                                          .iconConfig
+                                          .commentIcon(),
+                                      const SizedBox(width: 5.5),
+                                      Text(
+                                        'Comment',
+                                        style: TextStyle(
+                                          color:
+                                              Provider.of<AmityUIConfiguration>(
+                                                      context)
+                                                  .appColors
+                                                  .userProfileIconColor,
+                                          fontSize: feedReactionCountSize,
+                                          letterSpacing: 0.5,
                                         ),
                                       ),
-                                    );
-                                  }
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Provider.of<AmityUIConfiguration>(context)
-                                        .iconConfig
-                                        .commentIcon(),
-                                    const SizedBox(width: 5.5),
-                                    Text(
-                                      'Comment',
-                                      style: TextStyle(
-                                        color:
-                                            Provider.of<AmityUIConfiguration>(
-                                                    context)
-                                                .appColors
-                                                .userProfileIconColor,
-                                        fontSize: feedReactionCountSize,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              // GestureDetector(
-                              //   onTap: () {},
-                              //   child: Row(
-                              //     children: [
-                              //       Provider.of<AmityUIConfiguration>(context)
-                              //           .iconConfig
-                              //           .shareIcon(iconSize: 16),
-                              //       const SizedBox(width: 4),
-                              //       Text(
-                              //         "Share",
-                              //         style: TextStyle(
-                              //           color: Colors.grey,
-                              //           fontSize: feedReactionCountSize,
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                            ],
-                          ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                // GestureDetector(
+                                //   onTap: () {},
+                                //   child: Row(
+                                //     children: [
+                                //       Provider.of<AmityUIConfiguration>(context)
+                                //           .iconConfig
+                                //           .shareIcon(iconSize: 16),
+                                //       const SizedBox(width: 4),
+                                //       Text(
+                                //         "Share",
+                                //         style: TextStyle(
+                                //           color: Colors.grey,
+                                //           fontSize: feedReactionCountSize,
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                              ],
+                            ),
 
-                    // Divider(),
-                    // CommentComponent(
-                    //     key: Key(widget.post.postId!),
-                    //     postId: widget.post.postId!,
-                    //     theme: widget.theme)
+                            // Divider(),
+                            // CommentComponent(
+                            //     key: Key(widget.post.postId!),
+                            //     postId: widget.post.postId!,
+                            //     theme: widget.theme)
+                          ),
                   ],
                 ),
               ),

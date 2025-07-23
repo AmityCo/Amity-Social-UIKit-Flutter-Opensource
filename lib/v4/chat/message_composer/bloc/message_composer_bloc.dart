@@ -1,5 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/utils/error_util.dart';
@@ -19,6 +21,7 @@ class MessageComposerBloc
   final TextEditingController controller;
   final ScrollController scrollController;
   final AmityMessage? replyTo;
+  final AmityMessage? editingMessage;
   final AmityToastBloc toastBloc;
 
   MessageComposerBloc({
@@ -26,6 +29,7 @@ class MessageComposerBloc
     required this.controller,
     required this.scrollController,
     required this.replyTo,
+    required this.editingMessage,
     required this.toastBloc,
   }) : super(MessageComposerState(
             controller: controller,
@@ -39,17 +43,48 @@ class MessageComposerBloc
       emit(state.copyWith(appName: packageInfo.appName));
     });
 
-    on<MessageComposerTextChage>((event, emit) {
+    on<MessageComposerTextChange>((event, emit) {
+      if (editingMessage == null) {
+        MessageComposerCache().updateText(event.text);
+      }
       emit(state.copyWith(text: event.text));
     });
 
     on<MessageComposerCreateTextMessage>((event, emit) async {
+      MessageComposerCache().updateText("");
+      emit(state.copyWith(
+        text: "",
+        replyTo: null,
+      ));
+      try {
+        final replyTo = this.replyTo;
+        if (replyTo != null) {
+          ParentMessageCache().addMessage(replyTo.messageId!, replyTo);
+        }
+        await AmityChatClient.newMessageRepository()
+            .createMessage(subChannelId)
+            .parentId(replyTo?.messageId)
+            .text(event.text.trim())
+            .send();
+      } catch (error) {
+        if (error != null && error is AmityException) {
+          if (error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
+            toastBloc.add(const AmityToastShort(
+                message:
+                    "Your message contains inappropriate word. Please review and delete it."));
+          }
+        }
+      }
+    });
+
+    on<MessageComposerUpdateTextMessage>((event, emit) async {
+      MessageComposerCache().updateText("");
       emit(state.copyWith(text: "", replyTo: null));
       try {
         await AmityChatClient.newMessageRepository()
-            .newCreateMessage(subChannelId)
+            .updateMessage(subChannelId, event.messageId)
             .text(event.text.trim())
-            .send();
+            .update();
       } catch (error) {
         if (error != null && error is AmityException) {
           if (error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
@@ -82,8 +117,13 @@ class MessageComposerBloc
             final imagePath = event.selectedMedia.path;
             final uri = Uri(path: imagePath);
             try {
+              final replyTo = this.replyTo;
+              if (replyTo != null) {
+                ParentMessageCache().addMessage(replyTo.messageId!, replyTo);
+              }
               await AmityChatClient.newMessageRepository()
-                  .newCreateMessage(subChannelId)
+                  .createMessage(subChannelId)
+                  .parentId(state.replyTo?.messageId)
                   .image(uri)
                   .send();
             } catch (error) {
@@ -98,8 +138,13 @@ class MessageComposerBloc
               final videoPath = event.selectedMedia.path;
               final uri = Uri(path: videoPath);
               try {
+                final replyTo = this.replyTo;
+                if (replyTo != null) {
+                  ParentMessageCache().addMessage(replyTo.messageId!, replyTo);
+                }
                 await AmityChatClient.newMessageRepository()
-                    .newCreateMessage(subChannelId)
+                    .createMessage(subChannelId)
+                    .parentId(state.replyTo?.messageId)
                     .video(uri)
                     .send();
               } catch (error) {

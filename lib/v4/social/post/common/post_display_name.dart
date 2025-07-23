@@ -1,9 +1,12 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
@@ -36,7 +39,7 @@ class PostDisplayName extends StatelessWidget {
 
     var timestampText = post.createdAt?.toSocialTimestamp() ?? "";
     if (post.editedAt != post.createdAt) {
-      timestampText += " (edited)";
+      timestampText += context.l10n.general_edited_suffix;
     }
 
     return Container(
@@ -55,14 +58,29 @@ class PostDisplayName extends StatelessWidget {
                             (post.target as UserTarget).targetUserId !=
                                 post.postedUserId)))
                 ? [
-                    Flexible(child: DisplayName(context, post.postedUser)),
+                    Flexible(
+                        flex: 4, child: DisplayName(context, post.postedUser)),
+                    if (post.postedUser?.isBrand ?? false) brandBadge(),
                     TargetArrow(),
-                    Expanded(flex: 2, child: PostTarget(context, post.target!)),
+                    Expanded(
+                      flex: 5,
+                      child: Row(
+                        children: [
+                          Flexible(child: PostTarget(context, post.target!)),
+                          if ((post.target as CommunityTarget)
+                                  .targetCommunity
+                                  ?.isOfficial ==
+                              true)
+                            verifiedBadge(),
+                        ],
+                      ),
+                    )
                   ]
                 : [
                     Flexible(
                         fit: FlexFit.loose,
-                        child: DisplayName(context, post.postedUser))
+                        child: DisplayName(context, post.postedUser)),
+                    if (post.postedUser?.isBrand ?? false) brandBadge(),
                   ],
           ),
           Row(
@@ -100,12 +118,13 @@ class PostDisplayName extends StatelessWidget {
   Widget DisplayName(BuildContext context, AmityUser? user) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                AmityUserProfilePage(userId: user?.userId ?? ""),
-          ),
-        );
+        final userId = user?.userId;
+        if (userId != null && userId.isNotEmpty) {
+          AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+            context,
+            userId,
+          );
+        }
       },
       child: Text(
         user?.displayName ?? "Unknown",
@@ -139,12 +158,14 @@ class PostDisplayName extends StatelessWidget {
               (post.target as UserTarget).targetUser?.displayName ?? 'Unknown';
         }
         onTap = () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  AmityUserProfilePage(userId: target.targetUser?.userId ?? ''),
-            ),
-          );
+          final userId = target.targetUser?.userId;
+          if (userId != null && userId.isNotEmpty) {
+            AmityUIKit4Manager.behavior.postContentComponentBehavior
+                .goToUserProfilePage(
+              context,
+              userId,
+            );
+          }
         };
       }
     }
@@ -171,5 +192,26 @@ class PostDisplayName extends StatelessWidget {
         height: 10,
       ),
     );
+  }
+
+  Widget brandBadge() {
+    return Container(
+      padding: const EdgeInsets.only(left: 4),
+      child: SvgPicture.asset(
+        'assets/Icons/amity_ic_brand.svg',
+        package: 'amity_uikit_beta_service',
+        fit: BoxFit.fill,
+        width: 18,
+        height: 18,
+      ),
+    );
+  }
+
+  Widget verifiedBadge() {
+    return Container(
+        width: 23,
+        height: 23,
+        margin: const EdgeInsets.only(top: 2),
+        child: AmityOfficialBadgeElement());
   }
 }

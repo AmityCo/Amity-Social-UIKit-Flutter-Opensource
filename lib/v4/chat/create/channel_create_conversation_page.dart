@@ -12,7 +12,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
   AmityChannelCreateConversationPage({Key? key})
       : super(key: key, pageId: 'create_conversation_page');
   final ScrollController scrollController = ScrollController();
-  var textcontroller = TextEditingController();
+  final textcontroller = TextEditingController();
   final _debouncer = Debouncer(milliseconds: 300);
 
   @override
@@ -79,40 +79,48 @@ class AmityChannelCreateConversationPage extends NewBasePage {
   Widget userContainer(
       BuildContext context, ChannelCreateConversationState state) {
     if (state is ChannelCreateConversationLoaded) {
-      if (state.isFetching) {
+      if (state.isFetching && state.list.isEmpty) {
         return userSkeletonList(theme, configProvider, itemCount: 10);
       } else {
         if (state.list.isEmpty) {
-          return Center(
+            final isInitialSearch = state.searchText.isNotEmpty && state.searchText.length < 3;
+            
+            return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SvgPicture.asset(
-                  'assets/Icons/amity_ic_search_not_found.svg',
-                  package: 'amity_uikit_beta_service',
-                  colorFilter:
-                      ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
-                  width: 47,
-                  height: 47,
+              SvgPicture.asset(
+                isInitialSearch
+                  ? 'assets/Icons/amity_ic_search_user.svg'
+                  : 'assets/Icons/amity_ic_search_not_found.svg',
+                package: 'amity_uikit_beta_service',
+                colorFilter:
+                  ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
+                width: 47,
+                height: 47,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                isInitialSearch
+                  ? 'Start your search by typing\n at least 3 letters'
+                  : 'No results found',
+                style: TextStyle(
+                color: theme.baseColorShade3,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  'No results found',
-                  style: TextStyle(
-                    color: theme.baseColorShade3,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
-                  ),
-                ),
+                textAlign: TextAlign.center,
+              ),
               ],
             ),
-          );
+            );
         } else {
           return userList(
             context: context,
             scrollController: scrollController,
             users: state.list,
             theme: theme,
+            memberRoles: null,
             loadMore: () {
               context
                   .read<ChannelCreateConversationBloc>()
@@ -129,6 +137,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
               ));
             },
             excludeCurrentUser: true,
+            isLoadingMore: state.isFetching == true && state.list.isNotEmpty,
           );
         }
       }

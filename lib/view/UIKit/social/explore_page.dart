@@ -1,6 +1,9 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_custom_snack_bar.dart';
 import 'package:amity_uikit_beta_service/components/theme_config.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
+import 'package:amity_uikit_beta_service/view/UIKit/social/create_action_bottom_sheet.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/search_communities.dart';
 import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
@@ -10,6 +13,7 @@ import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -240,23 +244,21 @@ class CommunityPageState extends State<CommunityPage>
                         key: Key('amityGlobalPage'),
                         shape: const CircleBorder(),
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const ThemeConfig(
-                                child: Scaffold(
-                                  body: PostToPage(),
-                                ),
-                              ),
-                            ),
-                          );
+                          CreateActionBottomSheet.show(context,
+                              storyCreated: () {
+                            context.read<AmityToastBloc>().add(
+                                const AmityToastShort(
+                                    message: "Successfully shared story",
+                                    icon: AmityToastIcon.success));
+                          });
                         },
                         backgroundColor:
                             Provider.of<AmityUIConfiguration>(context)
                                 .appColors
                                 .primary,
                         child: Semantics(
-                          identifier: 'amityPostButton',
-                          label: 'amityPostButton',
+                          identifier: 'amityStoryButton',
+                          label: 'amityStoryButton',
                           child: Provider.of<AmityUIConfiguration>(context)
                               .iconConfig
                               .postIcon(iconSize: 28, color: Colors.white),

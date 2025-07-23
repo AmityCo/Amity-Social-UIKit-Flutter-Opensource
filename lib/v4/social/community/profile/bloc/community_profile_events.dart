@@ -40,6 +40,8 @@ class CommunityProfileEventJoining extends CommunityProfileEvent {
 
 class CommunityProfileEventGetPendingPosts extends CommunityProfileEvent { }
 
+class CommunityProfileEventRefreshFromPendingPage extends CommunityProfileEvent { }
+
 class CommunityProfileEventExpandDetail extends CommunityProfileEvent { }
 
 class CommunityProfileEventTabSelected extends CommunityProfileEvent {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "528879668872",
+    "project_id": "uikitexample-5fc66",
+    "storage_bucket": "uikitexample-5fc66.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528879668872:android:85441d3b86cdb8d0bb593d",
+        "android_client_info": {
+          "package_name": "com.ekoenterprise.flutter_social_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBjqvBBjBbqInSVfT3rWZrthS45KtcyfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

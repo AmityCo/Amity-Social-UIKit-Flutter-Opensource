@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +38,7 @@ class AmityVM extends ChangeNotifier {
             .displayName(displayName)
             .submit()
             .then((value) async {
+          log("success");
           currentamityUser = value;
           notifyListeners();
         }).catchError((error, stackTrace) async {

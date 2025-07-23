@@ -595,7 +595,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 0),
+                  const SizedBox(height: 10),
                 ],
               ),
               theme: theme,
@@ -921,7 +921,6 @@ class AppScaffold extends StatelessWidget {
             AmityUIConfiguration.onRefreshSocialRating(amityUser.userId!);
           },
           child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
             controller: Provider.of<UserFeedVM>(context).scrollcontroller,
             slivers: slivers,
             reverse: reverse,

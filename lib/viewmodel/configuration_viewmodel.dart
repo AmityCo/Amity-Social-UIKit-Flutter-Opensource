@@ -24,7 +24,7 @@ class AmityUIConfiguration extends ChangeNotifier {
     color: Colors.black,
     fontWeight: FontWeight.w600,
   );
-  double textheight = 1.2;
+
   TextStyle hintTextStyle = const TextStyle(
     fontSize: 15,
     color: Colors.black,

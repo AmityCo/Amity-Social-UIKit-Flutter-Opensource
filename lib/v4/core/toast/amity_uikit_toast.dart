@@ -1,16 +1,40 @@
-import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/utils/rotating_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 enum AmityToastIcon { success, warning, loading }
 
-class AmityToast extends BaseElement {
-  AmityToast({super.key, required super.elementId});
+class AmityToast extends StatefulWidget {
+  final String? pageId;
+  final String? componentId;
+  final String elementId;
+
+  const AmityToast({super.key, this.pageId, this.componentId, required this.elementId});
 
   @override
-  Widget buildElement(BuildContext context) {
+  State<AmityToast> createState() => _AmityToastState();
+}
+
+class _AmityToastState extends State<AmityToast> {
+  late final AmityThemeColor theme;
+  late final ConfigProvider configProvider;
+  late final AmityUIConfig uiConfig;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    configProvider = context.watch<ConfigProvider>();
+    theme = configProvider.getTheme(widget.pageId, widget.componentId);
+    uiConfig = configProvider.getUIConfig(widget.pageId, widget.componentId, widget.elementId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<AmityToastBloc, AmityToastState>(
         builder: (context, state) {
       return renderToast(context, state);
@@ -19,24 +43,37 @@ class AmityToast extends BaseElement {
 
   Widget renderToast(BuildContext context, AmityToastState state) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return; // Check if widget is still mounted
+      
       if (state.style == AmityToastStyle.short) {
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
-            content:
-                renderToastContent(message: state.message, icon: state.icon, bottomPadding: state.bottomPadding),
+            content: renderToastContent(
+                message: state.message,
+                icon: state.icon,
+                bottomPadding: state.bottomPadding),
             elevation: 0,
             backgroundColor: const Color(0x00000000),
             onVisible: () => Future.delayed(const Duration(seconds: 3), () {
-              context.read<AmityToastBloc>().add(AmityToastDismiss());
+              // Safely access the context by checking if widget is still mounted
+              if (mounted) {
+                try {
+                  context.read<AmityToastBloc>().add(AmityToastDismiss());
+                } catch (e) {
+                  // Widget might be disposed, ignore the error
+                }
+              }
             }),
           ));
       } else if (state.style == AmityToastStyle.loading) {
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
-            content:
-                renderToastContent(message: state.message, icon: state.icon, bottomPadding: state.bottomPadding),
+            content: renderToastContent(
+                message: state.message,
+                icon: state.icon,
+                bottomPadding: state.bottomPadding),
             elevation: 0,
             backgroundColor: const Color(0x00000000),
             duration: const Duration(days: 1),
@@ -48,7 +85,10 @@ class AmityToast extends BaseElement {
     return Container();
   }
 
-  Widget renderToastContent({required String message, AmityToastIcon? icon, double bottomPadding = 0}) {
+  Widget renderToastContent(
+      {required String message,
+      AmityToastIcon? icon,
+      double bottomPadding = 0}) {
     final toastIcon = icon ?? AmityToastIcon.warning;
     String iconAsset;
     var shouldRotate = false;
@@ -56,9 +96,6 @@ class AmityToast extends BaseElement {
       iconAsset = 'assets/Icons/amity_ic_toast_success.svg';
     } else if (toastIcon == AmityToastIcon.warning) {
       iconAsset = 'assets/Icons/amity_ic_toast_warning.svg';
-    } else if (toastIcon == AmityToastIcon.loading) {
-      iconAsset = 'assets/Icons/amity_ic_toast_loading.svg';
-      shouldRotate = true;
     } else {
       iconAsset = 'assets/Icons/amity_ic_toast_warning.svg';
     }
@@ -67,11 +104,11 @@ class AmityToast extends BaseElement {
       child: IntrinsicHeight(
         child: Container(
           width: double.infinity,
-          // height: 56,
           clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
             color: theme.secondaryColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             shadows: const [
               BoxShadow(
                 color: Color(0x28000000),
@@ -92,57 +129,38 @@ class AmityToast extends BaseElement {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: 48,
-                height: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: RotatingSvgPicture(iconAsset: iconAsset, shouldRotate: shouldRotate),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 18, right: 16, bottom: 18),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          child: Text(
-                            message,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                child: toastIcon == AmityToastIcon.loading
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          backgroundColor: Colors.white.withOpacity(0.5),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                        ),
+                      )
+                    : SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: RotatingSvgPicture(
+                          iconAsset: iconAsset,
+                          shouldRotate: shouldRotate,
                         ),
                       ),
-                    ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 18, right: 16, bottom: 18),
+                  child: Text(
+                    message,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AmityTextStyle.body(Colors.white),
                   ),
                 ),
               ),

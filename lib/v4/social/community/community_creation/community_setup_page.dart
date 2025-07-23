@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -82,7 +83,7 @@ class AmityCommunitySetupPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: mode is CreateMode ? 'Create community' : 'Edit community',
+          title: mode is CreateMode ? context.l10n.community_create : context.l10n.community_edit,
           configProvider: configProvider,
           theme: theme,
           leadingButton: GestureDetector(
@@ -117,8 +118,8 @@ class AmityCommunitySetupPage extends NewBasePage {
                           child: Column(
                             children: [
                               InfoTextField(
-                                  title: 'Community name',
-                                  hint: 'Name your community',
+                                  title: context.l10n.community_name,
+                                  hint: context.l10n.community_name_hint,
                                   initialText: community?.displayName ?? '',
                                   maxLength: 30,
                                   expandable: false,
@@ -129,9 +130,9 @@ class AmityCommunitySetupPage extends NewBasePage {
                                   }),
                               const SizedBox(height: 24),
                               InfoTextField(
-                                  title: 'About',
+                                  title: context.l10n.community_about,
                                   isOptional: true,
-                                  hint: 'Enter description',
+                                  hint: context.l10n.community_description_hint,
                                   initialText: community?.description ?? '',
                                   maxLength: 180,
                                   expandable: true,
@@ -206,7 +207,7 @@ class AmityCommunitySetupPage extends NewBasePage {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Categories',
+          context.l10n.categories_title,
           style: AmityTextStyle.titleBold(theme.baseColor),
         ),
         const SizedBox(height: 22),
@@ -217,7 +218,7 @@ class AmityCommunitySetupPage extends NewBasePage {
             Expanded(
                 child: state.communityCategories.isEmpty
                     ? Text(
-                        'Select category',
+                        context.l10n.category_hint,
                         style: TextStyle(
                           color: theme.baseColorShade3,
                           fontSize: 15,
@@ -251,14 +252,13 @@ class AmityCommunitySetupPage extends NewBasePage {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Privacy',
+          context.l10n.settings_privacy,
           style: AmityTextStyle.titleBold(theme.baseColor),
         ),
         const SizedBox(height: 16),
         _getRadioButtonTile(
-            title: 'Public',
-            description:
-                'Anyone can join, view, and search the posts in this community.',
+            title: context.l10n.community_public,
+            description: context.l10n.community_public_description,
             iconPath: 'assets/Icons/amity_ic_public_badge.svg',
             value: state.communityPrivacy,
             groupValue: CommunityPrivacy.public,
@@ -268,9 +268,8 @@ class AmityCommunitySetupPage extends NewBasePage {
                       CommunityPrivacy.public));
             }),
         _getRadioButtonTile(
-            title: 'Private',
-            description:
-                'Only members invited by the moderators can join, view, and search the posts in this community.',
+            title: context.l10n.community_private,
+            description: context.l10n.community_private_description,
             value: state.communityPrivacy,
             iconPath: 'assets/Icons/amity_ic_private_community.svg',
             groupValue: CommunityPrivacy.private,
@@ -287,8 +286,7 @@ class AmityCommunitySetupPage extends NewBasePage {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Members',
+        Text(context.l10n.community_members,
           style: AmityTextStyle.titleBold(theme.baseColor),
         ),
         const SizedBox(height: 16),
@@ -309,7 +307,7 @@ class AmityCommunitySetupPage extends NewBasePage {
                 onTap: () {
                   _goToMemberPage(context, state);
                 },
-                child: _addMemberButtonWidget())
+                child: _addMemberButtonWidget(context))
           ],
         )
       ],
@@ -359,9 +357,9 @@ class AmityCommunitySetupPage extends NewBasePage {
                       ),
                     ),
                   ),
-                  const Text(
-                    "Create Community",
-                    style: TextStyle(
+                  Text(
+                    context.l10n.community_create,
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w600),
@@ -480,7 +478,7 @@ class AmityCommunitySetupPage extends NewBasePage {
     );
   }
 
-  Widget _addMemberButtonWidget() {
+  Widget _addMemberButtonWidget(BuildContext context) {
     return ConstrainedBox(
         constraints: const BoxConstraints(minWidth: 62, maxWidth: 62),
         child: Column(
@@ -503,7 +501,7 @@ class AmityCommunitySetupPage extends NewBasePage {
                   ),
                 )),
             const SizedBox(height: 4),
-            Text('Add',
+            Text(context.l10n.general_add,
                 style: TextStyle(
                     color: theme.baseColor,
                     fontSize: 13,
@@ -607,7 +605,7 @@ class AmityCommunitySetupPage extends NewBasePage {
                 ),
                 _buildListTile(
                   assetPath: 'assets/Icons/amity_ic_camera_button.svg',
-                  title: 'Camera',
+                  title: context.l10n.general_camera,
                   onTap: () {
                     Navigator.pop(context);
                     _goToCameraPage(context);
@@ -615,7 +613,7 @@ class AmityCommunitySetupPage extends NewBasePage {
                 ),
                 _buildListTile(
                     assetPath: 'assets/Icons/amity_ic_image_button.svg',
-                    title: 'Photo',
+                    title: context.l10n.general_photo,
                     onTap: () {
                       context
                           .read<CommunitySetupPageBloc>()
@@ -743,10 +741,10 @@ class AmityCommunitySetupPage extends NewBasePage {
   void _backAction(BuildContext context) {
     ConfirmationV4Dialog().show(
         context: context,
-        title: 'Leave without finishing?',
-        detailText: 'Your progress won’t be saved and your community won’t be created.',
-        leftButtonText: 'Cancel',
-        rightButtonText: 'Leave',
+        title: context.l10n.community_discard_confirmation,
+        detailText: context.l10n.community_discard_description,
+        leftButtonText: context.l10n.general_cancel,
+        rightButtonText: context.l10n.general_leave,
         onConfirm: () {
           Navigator.pop(context);
         });
@@ -755,9 +753,8 @@ class AmityCommunitySetupPage extends NewBasePage {
   void _showPrivacyChangedDialog(BuildContext context, Function onConfirm) {
     ConfirmationV4Dialog().show(
         context: context,
-        title: 'Change community privacy settings?',
-        detailText:
-            'This community has globally featured posts. Changing the community from public to private will remove these posts from being featured globally.',
+        title: context.l10n.settings_privacy_confirmation,
+        detailText: context.l10n.settings_privacy_description,
         leftButtonColor: Colors.blueAccent,
         onConfirm: () {
           onConfirm(context);

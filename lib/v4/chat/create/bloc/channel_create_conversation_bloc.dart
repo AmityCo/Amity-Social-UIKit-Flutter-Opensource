@@ -12,6 +12,7 @@ class ChannelCreateConversationBloc extends Bloc<ChannelCreateConversationEvent,
     ChannelCreateConversationState> {
   late UserLiveCollection userLiveCollection;
   late StreamSubscription<List<AmityUser>> _subscription;
+  String searchText = '';
 
   ChannelCreateConversationBloc()
       : super(const ChannelCreateConversationState()) {
@@ -44,7 +45,7 @@ class ChannelCreateConversationBloc extends Bloc<ChannelCreateConversationEvent,
     queryUser("", isFirstLoad: true);
 
     on<SearchUsersEvent>((event, emit) async {
-      emit(UserSearchTextChange(event.searchText));
+      searchText = event.searchText;
       queryUser(event.searchText);
     });
 
@@ -52,14 +53,16 @@ class ChannelCreateConversationBloc extends Bloc<ChannelCreateConversationEvent,
       emit(ChannelCreateConversationLoaded(
           list: event.users,
           hasMoreItems: event.hasMoreItems,
-          isFetching: state.isFetching));
+          isFetching: state.isFetching,
+          searchText: searchText));
     });
 
     on<LoadingStateUpdatedEvent>((event, emit) async {
       emit(ChannelCreateConversationLoaded(
           list: state.list,
           hasMoreItems: state.hasMoreItems,
-          isFetching: event.isFetching));
+          isFetching: event.isFetching,
+          searchText: searchText));
     });
 
     on<ChannelCreateConversationEventInitial>((event, emit) async {});

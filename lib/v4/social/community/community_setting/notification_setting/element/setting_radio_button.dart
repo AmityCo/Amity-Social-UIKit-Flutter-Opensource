@@ -1,5 +1,5 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/post/community_post_notification_setting_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +11,6 @@ class SettingRadioButtonWidget extends StatelessWidget {
   final RadioButtonSetting groupValue;
   final ValueChanged<RadioButtonSetting?> onChanged;
   final AmityThemeColor theme;
-  final String radioButtonTitle1;
-  final String radioButtonTitle2;
-  final String radioButtonTitle3;
 
   const SettingRadioButtonWidget({
     Key? key,
@@ -22,9 +19,6 @@ class SettingRadioButtonWidget extends StatelessWidget {
     required this.groupValue,
     required this.onChanged,
     required this.theme,
-    this.radioButtonTitle1 = 'Everyone',
-    this.radioButtonTitle2 = 'Only moderator',
-    this.radioButtonTitle3 = 'Off',
   }) : super(key: key);
 
   @override
@@ -58,21 +52,21 @@ class SettingRadioButtonWidget extends StatelessWidget {
             ),
             const SizedBox(height: 24.0),
             _getRadioButtonTile(
-              title: radioButtonTitle1,
+              title: context.l10n.settings_everyone,
               value: RadioButtonSetting.everyone,
               groupValue: groupValue,
               onChanged: onChanged,
             ),
             const SizedBox(height: 32.0),
             _getRadioButtonTile(
-              title: radioButtonTitle2,
+              title: context.l10n.settings_only_moderators,
               value: RadioButtonSetting.onlyModerator,
               groupValue: groupValue,
               onChanged: onChanged,
             ),
             const SizedBox(height: 32.0),
             _getRadioButtonTile(
-              title: radioButtonTitle3,
+              title: "Only admins can post",
               value: RadioButtonSetting.off,
               groupValue: groupValue,
               onChanged: onChanged,

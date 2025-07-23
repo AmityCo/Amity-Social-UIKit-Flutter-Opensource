@@ -11,11 +11,13 @@ import 'package:provider/provider.dart';
 class VideoPostPlayerPager extends StatelessWidget with ChangeNotifier {
   final List<AmityPost> posts;
   final int initialIndex;
+  bool autoPlay;
 
   VideoPostPlayerPager({
     Key? key,
     required this.posts,
     required this.initialIndex,
+    this.autoPlay = true,
   }) : super(key: key);
 
   @override
@@ -24,7 +26,7 @@ class VideoPostPlayerPager extends StatelessWidget with ChangeNotifier {
       create: (context) =>
           VideoPostPlayerBloc(posts: posts, initialIndex: initialIndex),
       child:
-          VideoPostPlayerBuilder(context: context, initialIndex: initialIndex)
+          VideoPostPlayerBuilder(context: context, initialIndex: initialIndex, autoPlay: autoPlay)
               .build(),
     );
   }
@@ -33,8 +35,9 @@ class VideoPostPlayerPager extends StatelessWidget with ChangeNotifier {
 class VideoPostPlayerBuilder with ChangeNotifier {
   final BuildContext context;
   final int initialIndex;
+  final bool autoPlay;
 
-  VideoPostPlayerBuilder({required this.context, required this.initialIndex});
+  VideoPostPlayerBuilder({required this.context, required this.initialIndex, required this.autoPlay});
 
   Widget build() {
     return BlocBuilder<VideoPostPlayerBloc, VideoPostPlayerState>(
@@ -46,10 +49,10 @@ class VideoPostPlayerBuilder with ChangeNotifier {
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text(
+          title: state.posts.length > 1 ? Text(
             '${state.currentIndex + 1}/${state.posts.length}',
             style: const TextStyle(color: Colors.white),
-          ),
+          ) : Container(),
           titleTextStyle: const TextStyle(
             color: Colors.white,
             fontSize: 17,
@@ -104,7 +107,7 @@ class VideoPostPlayerBuilder with ChangeNotifier {
                       showControlsOnInitialize: false,
                       autoInitialize: true,
                       aspectRatio: state.videoController!.value.aspectRatio,
-                      autoPlay: true,
+                      autoPlay: autoPlay,
                       looping: true,
                     ),
                   );

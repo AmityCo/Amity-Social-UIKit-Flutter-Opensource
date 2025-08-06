@@ -283,7 +283,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                   ? GestureDetector(
                       onTap: () {
                         showCommunityProfileAction(context, theme,
-                            state.canManageStory, state.community, state.isModerator);
+                            state.canManageStory, state.community, state.isModerator, communityId);
                       },
                       child: Container(
                         width: 64,
@@ -339,12 +339,13 @@ class AmityCommunityProfilePage extends NewBasePage {
     );
   }
 
-  void showCommunityProfileAction(
+  static void showCommunityProfileAction(
     BuildContext context,
     AmityThemeColor theme,
     bool canManageStory,
     AmityCommunity? community,
     bool isModerator,
+      String communityId,
   ) {
     double height = 0;
     double baseHeight = 80;
@@ -424,7 +425,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                                 Navigator.of(context).pop();
                                 // Show dialog if post review is enabled and user is not a moderator
                                 if (community?.isPostReviewEnabled == true && !isModerator) {
-                                  _showPostReviewDialog(context);
+                                  showPostReviewDialog(context);
                                 }
                               }
                             },
@@ -545,7 +546,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                                 Navigator.of(context).pop();
                                 // Show dialog if post review is enabled and user is not a moderator
                                 if (community?.isPostReviewEnabled == true && !isModerator) {
-                                  _showPostReviewDialog(context);
+                                  showPostReviewDialog(context);
                                 }
                               }
                             },
@@ -591,7 +592,7 @@ class AmityCommunityProfilePage extends NewBasePage {
         });
   }
 
-  void _showPostReviewDialog(BuildContext context) {
+  static void showPostReviewDialog(BuildContext context) {
     AmityV4Dialog().showAlertErrorDialog(
       title: "Posts sent for review",
       message: "Your post has been submitted to the pending list. It will be published once approved by the community moderator.",

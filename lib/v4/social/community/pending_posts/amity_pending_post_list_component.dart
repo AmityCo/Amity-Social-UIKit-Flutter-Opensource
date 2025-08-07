@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/pending_posts_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/pending_posts_state.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/amity_global_feed_component.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -100,6 +101,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
         await cubit.getPendingCommunityFeedPosts();
       },
       child: ListView.separated(
+        controller: AmityUIConfiguration.postReviewScrollerController,
         key: ValueKey('pending_posts_list_${community.communityId}'),
         itemCount: state.posts.length,
         separatorBuilder: (context, index) => Divider(

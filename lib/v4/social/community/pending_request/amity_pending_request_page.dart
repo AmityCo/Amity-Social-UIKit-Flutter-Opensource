@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_state.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_tab_indicator.dart';
+import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +14,7 @@ enum AmityPendingRequestPageTab {
   pendingPosts(0);
 
   final int rawValue;
+
   const AmityPendingRequestPageTab(this.rawValue);
 }
 
@@ -59,8 +61,20 @@ class AmityPendingRequestPage extends NewBasePage {
                 appBar: AppBar(
                   backgroundColor: theme.backgroundColor,
                   foregroundColor: theme.baseColor,
-                  title: Text("Pending Requests",
-                      style: AmityTextStyle.titleBold(theme.baseColor)),
+                  title: IgnorePointer(
+                    child: Text("Pending Requests",
+                        style: AmityTextStyle.titleBold(theme.baseColor)),
+                  ),
+                  flexibleSpace: GestureDetector(
+                    onDoubleTap: () {
+                      AmityUIConfiguration.postReviewScrollerController
+                          ?.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 150),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
                   leading: IconButton(
                     icon: SvgPicture.asset(
                       'assets/Icons/amity_ic_back_button.svg',

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
@@ -150,7 +151,7 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                         child: Row(
                           children: [
                             GestureDetector(
-                              child: FollowInfo(followingCount, "following"),
+                              child: FollowInfo(followingCount, context.l10n.profile_following.toLowerCase()),
                               onTap: () {
                                 showUserRelationshipPage(context,
                                     AmityUserRelationshipPageTab.following);
@@ -168,7 +169,7 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                             ),
 
                             GestureDetector(
-                              child: FollowInfo(followerCount, "followers"),
+                              child: FollowInfo(followerCount, context.l10n.profile_followers.toLowerCase()),
                               onTap: () {
                                 showUserRelationshipPage(context,
                                     AmityUserRelationshipPageTab.follower);

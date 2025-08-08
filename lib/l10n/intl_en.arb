@@ -21,6 +21,10 @@
   "@global_search_hint": {
     "description": "Hint text for the search communities and users field on the homepage"
   },
+  "search_my_community_hint": "Search my community",
+  "@search_my_community_hint": {
+    "description": "Hint text for searching my communities"
+  },
   "search_no_results": "No results found",
   "@search_no_results": {
     "description": "Message displayed when no search results are found"
@@ -37,13 +41,17 @@
   "@general_cancel": {
     "description": "Label for the cancel button"
   },
+  "general_ok": "OK",
+  "@general_ok": {
+    "description": "Label for the OK button"
+  },
+  "general_confirm": "Confirm",
+  "@general_confirm": {
+    "description": "Label for the confirm button"
+  },
   "general_featured": "Featured",
   "@general_featured": {
     "description": "Label for the featured posts"
-  },
-  "profile_edit": "Edit Profile",
-  "@profile_edit": {
-    "description": "Label for edit profile button"
   },
   "profile_followers": "Followers",
   "@profile_followers": {
@@ -65,6 +73,10 @@
   "post_edit": "Edit Post",
   "@post_edit": {
     "description": "Label for edit post button"
+  },
+  "post_create_hint": "What's going on...",
+  "@post_create_hint": {
+    "description": "Hint text for post creation input field"
   },
   "post_delete": "Delete Post",
   "@post_delete": {
@@ -291,13 +303,29 @@
   "@community_close": {
     "description": "Label for close button"
   },
-  "community_close_description": "All members will be removed from  the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.",
+  "community_close_description": "All members will be removed from the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.",
   "@community_close_description": {
     "description": "Confirmation message for closing a community"
   },
   "community_join": "Join",
   "@community_join": {
     "description": "Label for join community button"
+  },
+  "community_joined": "Joined",
+  "@community_joined": {
+    "description": "Label for joined community status"
+  },
+  "community_recommended_for_you": "Recommended for you",
+  "@community_recommended_for_you": {
+    "description": "Section title for recommended communities"
+  },
+  "community_trending_now": "Trending now",
+  "@community_trending_now": {
+    "description": "Section title for trending communities"
+  },
+  "community_placeholder_members": "1.2K members",
+  "@community_placeholder_members": {
+    "description": "Placeholder text for community members count in recommended communities"
   },
   "community_leave": "Leave community",
   "@community_leave": {
@@ -358,6 +386,14 @@
   "category_hint": "Select category",
   "@category_hint": {
     "description": "Hint text for category select field"
+  },
+  "category_select_title": "Select Category",
+  "@category_select_title": {
+    "description": "Title for category selection page"
+  },
+  "category_add": "Add Category",
+  "@category_add": {
+    "description": "Label for add category button"
   },
   "community_pending_posts": "Pending Posts",
   "@community_pending_posts": {
@@ -515,6 +551,10 @@
   "@settings_only_moderators": {
     "description": "Label for only moderators settings"
   },
+  "settings_only_admins": "Only admins can post",
+  "@settings_only_admins": {
+    "description": "Label for only admins can post setting"
+  },
   "settings_privacy": "Privacy",
   "@settings_privacy": {
     "description": "Label for privacy settings"
@@ -630,6 +670,14 @@
   "general_off": "Off",
   "@general_off": {
     "description": "Label for off state"
+  },
+  "settings_allow_notification": "Allow Notification",
+  "@settings_allow_notification": {
+    "description": "Label for allow notification toggle"
+  },
+  "settings_allow_notification_description": "Turn on to receive push notifications from this community.",
+  "@settings_allow_notification_description": {
+    "description": "Description for allow notification setting"
   },
   "general_reported": "reported",
   "@general_reported": {
@@ -815,5 +863,101 @@
   "error_create_poll": "Failed to create poll. Please try again.",
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
+  },
+  "user_profile_unknown_name": "Unknown",
+  "@user_profile_unknown_name": {
+    "description": "Fallback display name for users with no display name"
+  },
+  "community_all_members": "All members",
+  "@community_all_members": {
+    "description": "Tab label for all members in community membership page"
+  },
+  "community_moderators": "Moderators",
+  "@community_moderators": {
+    "description": "Tab label for moderators in community membership page"
+  },
+  "community_search_member_hint": "Search member",
+  "@community_search_member_hint": {
+    "description": "Hint text for member search field"
+  },
+  "community_promote_moderator": "Promote to moderator",
+  "@community_promote_moderator": {
+    "description": "Action to promote a member to moderator role"
+  },
+  "community_demote_member": "Demote to member",
+  "@community_demote_member": {
+    "description": "Action to demote a moderator to member role"
+  },
+  "community_remove_member": "Remove from community",
+  "@community_remove_member": {
+    "description": "Action to remove a member from the community"
+  },
+  "user_report": "Report user",
+  "@user_report": {
+    "description": "Action to report a user"
+  },
+  "user_unreport": "Unreport user",
+  "@user_unreport": {
+    "description": "Action to unreport a user"
+  },
+  "feed_no_videos": "No videos yet",
+  "@feed_no_videos": {
+    "description": "Empty state message when there are no videos in the feed"
+  },
+  "feed_no_photos": "No photos yet",
+  "@feed_no_photos": {
+    "description": "Empty state message when there are no photos in the feed"
+  },
+  "feed_no_pinned_posts": "No pinned post yet",
+  "@feed_no_pinned_posts": {
+    "description": "Empty state message when there are no pinned posts in the community"
+  },
+  "feed_no_posts": "No posts yet",
+  "@feed_no_posts": {
+    "description": "Empty state message when there are no posts in the community feed"
+  },
+  "member_add": "Add member",
+  "@member_add": {
+    "description": "Button text and title for adding members"
+  },
+  "search_user_hint": "Search user",
+  "@search_user_hint": {
+    "description": "Hint text for searching users"
+  },
+  "profile_edit": "Edit profile",
+  "@profile_edit": {
+    "description": "Button text for editing user profile"
+  },
+  "profile_update_success": "Successfully updated your profile!",
+  "@profile_update_success": {
+    "description": "Success message when profile is updated"
+  },
+  "profile_update_failed": "Failed to save your profile. Please try again.",
+  "@profile_update_failed": {
+    "description": "Error message when profile update fails"
+  },
+  "community_post_permission": "Post permission",
+  "@community_post_permission": {
+    "description": "Community post permissions setting option"
+  },
+  "community_story_comments": "Story comments",
+  "@user_block": {
+    "description": "Community story comments setting option"
+  },
+  "community_setting_close_label": "Close community",
+  "@community_setting_close_label": {
+    "description": "Label for close community setting"
+  },
+  "community_setting_close_description": "Closing this community will remove the community  page and all its content and comments.",
+  "@community_setting_close_description": {
+    "description": "Description for close community setting"
+  },
+  "community_post_permission_title_label": "Who can post on this community",
+  "@community_post_permission_title_label": {
+    "description": "label for post permissions page title"
+  },
+  "community_post_permission_description_label": "You can control who can create posts in your community.",
+  "@community_post_permission_description_label": {
+    "description": "label for post permissions page description"
   }
 }

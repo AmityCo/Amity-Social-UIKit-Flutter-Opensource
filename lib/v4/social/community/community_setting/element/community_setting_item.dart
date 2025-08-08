@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CommunitySettingItem extends BaseElement {
+  final String title;
   final String iconPath;
   final GestureTapCallback? onTap;
 
-  CommunitySettingItem(this.iconPath,
+  CommunitySettingItem(this.title, this.iconPath,
       {this.onTap, super.key, required super.pageId, required super.componentId, required super.elementId});
 
   @override
   Widget buildElement(BuildContext context) {
-    String title =
-        configProvider.getConfig('$pageId/$componentId/$elementId')['text'] ?? '';
     return _getSettingItemWidget(
         iconPath, title,
         onTap: onTap);

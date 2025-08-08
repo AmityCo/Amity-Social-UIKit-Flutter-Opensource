@@ -1,5 +1,5 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -24,6 +24,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get global_search_hint => 'Pesquisar comunidade e usuário';
 
   @override
+  String get search_my_community_hint => 'Pesquisar minha comunidade';
+
+  @override
   String get search_no_results => 'Nenhum resultado encontrado';
 
   @override
@@ -36,10 +39,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get general_cancel => 'Cancelar';
 
   @override
-  String get general_featured => 'Destaque';
+  String get general_ok => 'OK';
 
   @override
-  String get profile_edit => 'Editar Perfil';
+  String get general_confirm => 'Confirmar';
+
+  @override
+  String get general_featured => 'Destaque';
 
   @override
   String get profile_followers => 'Seguidores';
@@ -55,6 +61,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get post_edit => 'Editar Publicação';
+
+  @override
+  String get post_create_hint => 'O que você quer compartilhar?';
 
   @override
   String get post_delete => 'Excluir Publicação';
@@ -244,6 +253,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get community_join => 'Entrar';
 
   @override
+  String get community_joined => 'Entrou';
+
+  @override
+  String get community_recommended_for_you => 'Recommended for you';
+
+  @override
+  String get community_trending_now => 'Trending now';
+
+  @override
+  String get community_placeholder_members => '1.2K members';
+
+  @override
   String get community_leave => 'Sair da comunidade';
 
   @override
@@ -287,6 +308,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get category_hint => 'Selecione a categoria';
+
+  @override
+  String get category_select_title => 'Select Category';
+
+  @override
+  String get category_add => 'Add Category';
 
   @override
   String get community_pending_posts => 'Publicações Pendentes';
@@ -412,6 +439,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings_only_moderators => 'Apenas moderadores';
 
   @override
+  String get settings_only_admins => 'Only admins can post';
+
+  @override
   String get settings_privacy => 'Privacidade';
 
   @override
@@ -497,6 +527,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get general_off => 'Desligado';
+
+  @override
+  String get settings_allow_notification => 'Allow Notification';
+
+  @override
+  String get settings_allow_notification_description => 'Turn on to receive push notifications from this community.';
 
   @override
   String get general_reported => 'denunciado';
@@ -654,6 +690,78 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get error_create_poll => 'Falha ao criar a enquete. Por favor, tente novamente.';
+
+  @override
+  String get user_profile_unknown_name => 'Unknown';
+
+  @override
+  String get community_all_members => 'All members';
+
+  @override
+  String get community_moderators => 'Moderators';
+
+  @override
+  String get community_search_member_hint => 'Search member';
+
+  @override
+  String get community_promote_moderator => 'Promote to moderator';
+
+  @override
+  String get community_demote_member => 'Demote to member';
+
+  @override
+  String get community_remove_member => 'Remove from community';
+
+  @override
+  String get user_report => 'Report user';
+
+  @override
+  String get user_unreport => 'Unreport user';
+
+  @override
+  String get feed_no_videos => 'No videos yet';
+
+  @override
+  String get feed_no_photos => 'No photos yet';
+
+  @override
+  String get feed_no_pinned_posts => 'No pinned post yet';
+
+  @override
+  String get feed_no_posts => 'No posts yet';
+
+  @override
+  String get member_add => 'Add member';
+
+  @override
+  String get search_user_hint => 'Search user';
+
+  @override
+  String get profile_edit => 'Editar Perfil';
+
+  @override
+  String get profile_update_success => 'Successfully updated your profile!';
+
+  @override
+  String get profile_update_failed => 'Failed to save your profile. Please try again.';
+
+  @override
+  String get community_post_permission => 'Post permission';
+
+  @override
+  String get community_story_comments => 'Story comments';
+
+  @override
+  String get community_setting_close_label => 'Close community';
+
+  @override
+  String get community_setting_close_description => 'Closing this community will remove the community  page and all its content and comments.';
+
+  @override
+  String get community_post_permission_title_label => 'Who can post on this community';
+
+  @override
+  String get community_post_permission_description_label => 'You can control who can create posts in your community.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -676,6 +784,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get global_search_hint => 'Pesquisar comunidade e usuário';
 
   @override
+  String get search_my_community_hint => 'Buscar minha comunidade';
+
+  @override
   String get search_no_results => 'Nenhum resultado encontrado';
 
   @override
@@ -688,10 +799,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get general_cancel => 'Cancelar';
 
   @override
-  String get general_featured => 'Destaque';
+  String get general_ok => 'OK';
 
   @override
-  String get profile_edit => 'Editar Perfil';
+  String get general_confirm => 'Confirmar';
+
+  @override
+  String get general_featured => 'Destaque';
 
   @override
   String get profile_followers => 'Seguidores';
@@ -707,6 +821,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get post_edit => 'Editar Publicação';
+
+  @override
+  String get post_create_hint => 'O que você quer compartilhar?';
 
   @override
   String get post_delete => 'Excluir Publicação';
@@ -894,6 +1011,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get community_join => 'Entrar';
+
+  @override
+  String get community_joined => 'Entrou';
 
   @override
   String get community_leave => 'Sair da comunidade';
@@ -1306,4 +1426,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get error_create_poll => 'Falha ao criar a enquete. Por favor, tente novamente.';
+
+  @override
+  String get profile_edit => 'Editar Perfil';
 }

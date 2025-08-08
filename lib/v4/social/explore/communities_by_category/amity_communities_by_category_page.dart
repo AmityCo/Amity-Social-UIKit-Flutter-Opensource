@@ -145,6 +145,7 @@ class AmityCommunitiesByCategoryPage extends NewBasePage {
                       padding: const EdgeInsets.only(bottom: 6),
                       child: AmityCommunityCategoryView(
                         categories: community.categories!,
+                        theme: theme,
                         maxPreview: 2,
                       ),
                     ),

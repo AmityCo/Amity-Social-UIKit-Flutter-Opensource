@@ -29,32 +29,43 @@ class AmityTheme {
     required this.highlightColor,
   });
 
-  factory AmityTheme.fromJson(Map<String, dynamic> json) {
+  factory AmityTheme.fromJson(Map<String, dynamic> json, AmityTheme fallbackTheme) {
     return AmityTheme(
-      primaryColor: _colorFromHex(json['primary_color']),
-      secondaryColor: _colorFromHex(json['secondary_color']),
-      baseColor: _colorFromHex(json['base_color']),
-      baseInverseColor: _colorFromHex(json['base_inverse_color']),
-      baseColorShade1: _colorFromHex(json['base_shade1_color']),
-      baseColorShade2: _colorFromHex(json['base_shade2_color']),
-      baseColorShade3: _colorFromHex(json['base_shade3_color']),
-      baseColorShade4: _colorFromHex(json['base_shade4_color']),
-      alertColor: _colorFromHex(json['alert_color']),
-      backgroundColor: _colorFromHex(json['background_color']),
-      backgroundShade1Color: _colorFromHex(json['background_shade1_color']),
+      primaryColor: _colorFromHex(json['primary_color']) ?? fallbackTheme.primaryColor,
+      secondaryColor: _colorFromHex(json['secondary_color']) ?? fallbackTheme.secondaryColor,
+      baseColor: _colorFromHex(json['base_color']) ?? fallbackTheme.baseColor,
+      baseInverseColor: _colorFromHex(json['base_inverse_color']) ?? fallbackTheme.baseInverseColor,
+      baseColorShade1: _colorFromHex(json['base_shade1_color']) ?? fallbackTheme.baseColorShade1,
+      baseColorShade2: _colorFromHex(json['base_shade2_color']) ?? fallbackTheme.baseColorShade2,
+      baseColorShade3: _colorFromHex(json['base_shade3_color']) ?? fallbackTheme.baseColorShade3,
+      baseColorShade4: _colorFromHex(json['base_shade4_color']) ?? fallbackTheme.baseColorShade4,
+      alertColor: _colorFromHex(json['alert_color']) ?? fallbackTheme.alertColor,
+      backgroundColor: _colorFromHex(json['background_color']) ?? fallbackTheme.backgroundColor,
+      backgroundShade1Color: _colorFromHex(json['background_shade1_color']) ?? fallbackTheme.backgroundShade1Color,
       highlightColor: _colorFromHex(
         json['highlight_color'],
-      ),
+      ) ?? fallbackTheme.highlightColor,
     );
   }
 
-  static Color _colorFromHex(String? hexColor) {
-    if (hexColor == null) return const Color(0x00000000);
+  static Color? _colorFromHex(String? hexColor) {
+    if (hexColor == null) return null;
     hexColor = hexColor.replaceAll('#', '');
-    if (hexColor.length == 6) {
+    
+    // Validate hex characters
+    if (!RegExp(r'^[0-9A-Fa-f]+$').hasMatch(hexColor)) {
+      return null;
+    }
+        if (hexColor.length == 6) {
       hexColor = 'FF$hexColor';
     }
-    return Color(int.parse(hexColor, radix: 16));
+    
+    try {
+      final colorValue = int.parse(hexColor, radix: 16);
+      return Color(colorValue);
+    } catch (e) {
+      return null;
+    }
   }
 }
 

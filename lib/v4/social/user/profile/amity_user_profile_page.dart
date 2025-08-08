@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/bottom_sheet_menu.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 
 import 'bloc/user_profile_bloc.dart';
 import 'component/user_profile_tab.dart';
@@ -51,6 +52,12 @@ class AmityUserProfilePage extends NewBasePage {
                     .add(const ShowUserNameOnAppBarEvent(showUserName: false));
               }
             });
+
+            final isEditButtonHidden =
+                configProvider.isHidden(pageId, null, "menu_button");
+            final isHeaderHidden =
+                configProvider.isHidden(pageId, "user_profile_header", null);
+
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
@@ -75,16 +82,19 @@ class AmityUserProfilePage extends NewBasePage {
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 actions: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.more_horiz,
-                      color: theme.baseColor,
+                  Visibility(
+                    visible: !isEditButtonHidden,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.more_horiz,
+                        color: theme.baseColor,
+                      ),
+                      iconSize: 24,
+                      onPressed: () {
+                        showUserEditActions(context, state.user,
+                            state.userFollowInfo?.status, theme);
+                      },
                     ),
-                    iconSize: 24,
-                    onPressed: () {
-                      showUserEditActions(context, state.user,
-                          state.userFollowInfo?.status, theme);
-                    },
                   )
                 ],
               ),
@@ -93,12 +103,16 @@ class AmityUserProfilePage extends NewBasePage {
                 controller: _scrollController,
                 slivers: <Widget>[
                   SliverToBoxAdapter(
-                    child: AmityUserProfileHeaderComponent(
-                      user: state.user,
-                      myFollowInfo: state.myFollowInfo,
-                      userFollowInfo: state.userFollowInfo,
+                    child: Visibility(
+                      visible: !isHeaderHidden,
+                      child: AmityUserProfileHeaderComponent(
+                        user: state.user,
+                        myFollowInfo: state.myFollowInfo,
+                        userFollowInfo: state.userFollowInfo,
+                      ),
                     ),
                   ),
+
                   SliverToBoxAdapter(
                     child: UserProfileTab(
                       selectedIndex: state.selectedIndex,
@@ -109,6 +123,7 @@ class AmityUserProfilePage extends NewBasePage {
                       },
                     ),
                   ),
+                  
                   if (state.selectedIndex == UserProfileTabIndex.feed)
                     UserFeedComponent(
                       key: Key(
@@ -174,7 +189,7 @@ class AmityUserProfilePage extends NewBasePage {
 
   void showUserProfileActions(BuildContext context) {
     final postOption = BottomSheetMenuOption(
-        title: "Post",
+        title: context.l10n.general_post,
         icon: "assets/Icons/amity_ic_create_post_button.svg",
         onTap: () {
           // Dismiss popup
@@ -192,29 +207,8 @@ class AmityUserProfilePage extends NewBasePage {
           ));
         });
 
-    final storyOption = BottomSheetMenuOption(
-        title: "Story",
-        icon: "assets/Icons/ic_create_stroy_black.svg",
-        onTap: () {
-          // Dismiss bottom sheet
-          Navigator.pop(context);
-
-          // Show story creation screen
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return CreateStoryConfigProviderWidget(
-                  targetType: AmityStoryTargetType.USER,
-                  targetId: AmityCoreClient.getUserId(),
-                  pageId: 'create_story_page',
-                );
-              },
-            ),
-          );
-        });
-
     final pollOption = BottomSheetMenuOption(
-        title: "Poll",
+        title: context.l10n.general_poll,
         icon: "assets/Icons/amity_ic_create_poll_button.svg",
         onTap: () {
           // Dismiss popup
@@ -229,12 +223,17 @@ class AmityUserProfilePage extends NewBasePage {
           ));
         });
 
-    // Setup all actions
-    List<BottomSheetMenuOption> userActions = [
-      postOption,
-      storyOption,
-      pollOption
-    ];
+    List<BottomSheetMenuOption> userActions = [];
+
+    final featureConfig = configProvider.getFeatureConfig();
+
+    if (featureConfig.post.isPostCreationEnabled()) {
+      userActions.add(postOption);
+    }
+    
+    if (featureConfig.post.poll.createEnabled) {
+      userActions.add(pollOption);
+    }
 
     BottomSheetMenu(options: userActions).show(context, theme);
   }
@@ -245,7 +244,7 @@ class AmityUserProfilePage extends NewBasePage {
     final AmityToastBloc toastBloc = context.read<AmityToastBloc>();
 
     final editAction = BottomSheetMenuOption(
-        title: "Edit profile",
+        title: context.l10n.profile_edit,
         icon: 'assets/Icons/amity_ic_edit_comment.svg',
         onTap: () {
           // Dismiss popup
@@ -262,13 +261,12 @@ class AmityUserProfilePage extends NewBasePage {
                       profileBloc
                           .addEvent(UserProfileEventRefresh(userId: userId));
 
-                      toastBloc.add(const AmityToastShort(
-                          message: "Successfully updated your profile!",
+                      toastBloc.add(AmityToastShort(
+                          message: context.l10n.profile_update_success,
                           icon: AmityToastIcon.success));
                     } else {
-                      toastBloc.add(const AmityToastShort(
-                          message:
-                              "Failed to save your profile. Please try again.",
+                      toastBloc.add(AmityToastShort(
+                          message: context.l10n.profile_update_failed,
                           icon: AmityToastIcon.warning));
                     }
                   },
@@ -279,7 +277,7 @@ class AmityUserProfilePage extends NewBasePage {
         });
 
     final reportAction = BottomSheetMenuOption(
-        title: "Report User",
+        title: context.l10n.user_report,
         icon: "assets/Icons/amity_ic_report_user.svg",
         onTap: () {
           Navigator.of(context).pop();
@@ -292,7 +290,7 @@ class AmityUserProfilePage extends NewBasePage {
         });
 
     final unreportAction = BottomSheetMenuOption(
-        title: "Unreport User",
+        title: context.l10n.user_unreport,
         icon: "assets/Icons/amity_ic_unreport_user.svg",
         onTap: () {
           Navigator.of(context).pop();
@@ -305,7 +303,7 @@ class AmityUserProfilePage extends NewBasePage {
         });
 
     final blockUserAction = BottomSheetMenuOption(
-      title: "Block User",
+      title: context.l10n.user_block,
       icon: "assets/Icons/amity_ic_block_user.svg",
       onTap: () {
         Navigator.of(context).pop();

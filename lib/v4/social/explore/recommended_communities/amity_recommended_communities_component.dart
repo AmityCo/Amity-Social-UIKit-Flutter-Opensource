@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -29,69 +30,48 @@ class AmityRecommendedCommunitiesComponent extends NewBaseComponent {
     return BlocProvider(
       create: (context) => RecommendedCommunitiesCubit(refreshController)
         ..loadRecommendedCommunities(),
-      child: AmityRecommendedCommunitiesView(
-          theme: theme, onStateChanged: onStateChanged),
-    );
-  }
-}
+      child: BlocConsumer<RecommendedCommunitiesCubit, CommunityState>(
+        listener: (context, state) {
+          onStateChanged(
+              context.read<RecommendedCommunitiesCubit>().getCurrentState());
+        },
+        builder: (context, state) {
+          if (state.isLoading) {
+            return AmityRecommendedCommunityShimmer();
+          }
 
-class AmityRecommendedCommunitiesView extends StatelessWidget {
-  final AmityThemeColor theme;
-  final Function(CommunityListState) onStateChanged;
+          if (state.hasError || state.communities.isEmpty) {
+            return const SizedBox.shrink();
+          }
 
-  const AmityRecommendedCommunitiesView({
-    Key? key,
-    required this.theme,
-    required this.onStateChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<RecommendedCommunitiesCubit, CommunityState>(
-      listener: (context, state) {
-        onStateChanged(
-            context.read<RecommendedCommunitiesCubit>().getCurrentState());
-      },
-      builder: (context, state) {
-        if (state.isLoading) {
-          return AmityRecommendedCommunityShimmer();
-        }
-
-        if (state.hasError || state.communities.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 16, bottom: 16),
-              child: Text(
-                'Recommended for you',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 16),
+                child: Text(context.l10n.community_recommended_for_you,
+                    style: AmityTextStyle.titleBold(theme.baseColor)),
+              ),
+              SizedBox(
+                height: 219,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: state.communities.length,
+                  itemBuilder: (context, index) =>
+                      AmityRecommendedCommunityCard(
+                    theme: theme,
+                    community: state.communities[index],
+                    onJoinTap: () => context
+                        .read<RecommendedCommunitiesCubit>()
+                        .joinCommunity(state.communities[index].communityId!),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 219,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: state.communities.length,
-                itemBuilder: (context, index) => AmityRecommendedCommunityCard(
-                  theme: theme,
-                  community: state.communities[index],
-                  onJoinTap: () => context
-                      .read<RecommendedCommunitiesCubit>()
-                      .joinCommunity(state.communities[index].communityId!),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -127,6 +107,7 @@ class AmityRecommendedCommunityCard extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: theme.baseColorShade4),
           borderRadius: BorderRadius.circular(8),
+          color: theme.backgroundColor,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,10 +142,7 @@ class AmityRecommendedCommunityCard extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 community.displayName ?? '',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                ),
+                                style: AmityTextStyle.body(theme.baseColor),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -202,16 +180,14 @@ class AmityRecommendedCommunityCard extends StatelessWidget {
                                   padding: const EdgeInsets.only(bottom: 6),
                                   child: AmityCommunityCategoryView(
                                     categories: community.categories!,
+                                    theme: theme,
                                     maxPreview: 2,
                                   ),
                                 ),
                               ),
                             Text(
-                              '${(community.membersCount ?? 0).formattedCompactString()} members',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(context).hintColor,
-                              ),
+                              '${(community.membersCount ?? 0).formattedCompactString()} ${context.l10n.profile_members_count(community.membersCount ?? 0)}',
+                              style: AmityTextStyle.caption(theme.baseColorShade1),
                             ),
                           ],
                         ),
@@ -306,7 +282,7 @@ class AmityCommunityJoinButton extends StatelessWidget {
           children: [
             _getButtonIcon(),
             const SizedBox(width: 4),
-            _getButtonLabel(),
+            _getButtonLabel(context),
           ],
         ),
       ),
@@ -330,13 +306,13 @@ class AmityCommunityJoinButton extends StatelessWidget {
 
   Widget _getButtonIcon() {
     return community.isJoined ?? false
-        ? const Icon(Icons.check, color: Colors.black, size: 16)
+        ? Icon(Icons.check, color: theme.baseColor, size: 16)
         : const Icon(Icons.add, color: Colors.white, size: 16);
   }
 
-  Widget _getButtonLabel() {
+  Widget _getButtonLabel(BuildContext context) {
     return community.isJoined ?? false
-        ? Text('Joined', style: AmityTextStyle.captionBold(Colors.black))
-        : Text('Join', style: AmityTextStyle.captionBold(Colors.white));
+        ? Text(context.l10n.community_joined, style: AmityTextStyle.captionBold(theme.baseColor))
+        : Text(context.l10n.community_join, style: AmityTextStyle.captionBold(Colors.white));
   }
 }

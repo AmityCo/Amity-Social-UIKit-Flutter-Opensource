@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/warakorn/Applications/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/warakorn/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/warakorn/Documents/GitHub/Amity-Social-Cloud-UIKit-Flutter/example/android/app/.cxx/Debug/68194l4h/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/warakorn/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/warakorn/Documents/GitHub/Amity-Social-Cloud-UIKit-Flutter/example/android/app/.cxx/Debug/68194l4h/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

@@ -1,5 +1,5 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -24,6 +24,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get global_search_hint => 'Search community and user';
 
   @override
+  String get search_my_community_hint => 'Search my community';
+
+  @override
   String get search_no_results => 'No results found';
 
   @override
@@ -36,10 +39,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get general_cancel => 'Cancel';
 
   @override
-  String get general_featured => 'Featured';
+  String get general_ok => 'OK';
 
   @override
-  String get profile_edit => 'Edit Profile';
+  String get general_confirm => 'Confirm';
+
+  @override
+  String get general_featured => 'Featured';
 
   @override
   String get profile_followers => 'Followers';
@@ -55,6 +61,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get post_edit => 'Edit Post';
+
+  @override
+  String get post_create_hint => 'What\'s going on...';
 
   @override
   String get post_delete => 'Delete Post';
@@ -238,10 +247,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get community_close => 'Close community?';
 
   @override
-  String get community_close_description => 'All members will be removed from  the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.';
+  String get community_close_description => 'All members will be removed from the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.';
 
   @override
   String get community_join => 'Join';
+
+  @override
+  String get community_joined => 'Joined';
+
+  @override
+  String get community_recommended_for_you => 'Recommended for you';
+
+  @override
+  String get community_trending_now => 'Trending now';
+
+  @override
+  String get community_placeholder_members => '1.2K members';
 
   @override
   String get community_leave => 'Leave community';
@@ -287,6 +308,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get category_hint => 'Select category';
+
+  @override
+  String get category_select_title => 'Select Category';
+
+  @override
+  String get category_add => 'Add Category';
 
   @override
   String get community_pending_posts => 'Pending Posts';
@@ -412,6 +439,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_only_moderators => 'Only moderators';
 
   @override
+  String get settings_only_admins => 'Only admins can post';
+
+  @override
   String get settings_privacy => 'Privacy';
 
   @override
@@ -497,6 +527,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get general_off => 'Off';
+
+  @override
+  String get settings_allow_notification => 'Allow Notification';
+
+  @override
+  String get settings_allow_notification_description => 'Turn on to receive push notifications from this community.';
 
   @override
   String get general_reported => 'reported';
@@ -654,4 +690,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_create_poll => 'Failed to create poll. Please try again.';
+
+  @override
+  String get user_profile_unknown_name => 'Unknown';
+
+  @override
+  String get community_all_members => 'All members';
+
+  @override
+  String get community_moderators => 'Moderators';
+
+  @override
+  String get community_search_member_hint => 'Search member';
+
+  @override
+  String get community_promote_moderator => 'Promote to moderator';
+
+  @override
+  String get community_demote_member => 'Demote to member';
+
+  @override
+  String get community_remove_member => 'Remove from community';
+
+  @override
+  String get user_report => 'Report user';
+
+  @override
+  String get user_unreport => 'Unreport user';
+
+  @override
+  String get feed_no_videos => 'No videos yet';
+
+  @override
+  String get feed_no_photos => 'No photos yet';
+
+  @override
+  String get feed_no_pinned_posts => 'No pinned post yet';
+
+  @override
+  String get feed_no_posts => 'No posts yet';
+
+  @override
+  String get member_add => 'Add member';
+
+  @override
+  String get search_user_hint => 'Search user';
+
+  @override
+  String get profile_edit => 'Edit profile';
+
+  @override
+  String get profile_update_success => 'Successfully updated your profile!';
+
+  @override
+  String get profile_update_failed => 'Failed to save your profile. Please try again.';
+
+  @override
+  String get community_post_permission => 'Post permission';
+
+  @override
+  String get community_story_comments => 'Story comments';
+
+  @override
+  String get community_setting_close_label => 'Close community';
+
+  @override
+  String get community_setting_close_description => 'Closing this community will remove the community  page and all its content and comments.';
+
+  @override
+  String get community_post_permission_title_label => 'Who can post on this community';
+
+  @override
+  String get community_post_permission_description_label => 'You can control who can create posts in your community.';
 }

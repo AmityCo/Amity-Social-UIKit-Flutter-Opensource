@@ -1,10 +1,9 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_media_feed/bloc/community_media_feed_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/globalfeed/amity_global_feed_component.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/image_feed/element/user_image_feed_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/video_feed/element/user_video_feed_element.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
@@ -49,7 +48,7 @@ class AmityCommunityVideoFeedComponent extends NewBaseComponent {
               width: double.infinity,
               height: 550,
               color: theme.backgroundColor,
-              child: _getEmptyFeed(theme),
+              child: _getEmptyFeed(context, theme),
             ));
           } else if (state.posts.isEmpty && state.isLoading) {
             return SliverToBoxAdapter(
@@ -126,7 +125,7 @@ class AmityCommunityVideoFeedComponent extends NewBaseComponent {
     );
   }
 
-  Widget _getEmptyFeed(AmityThemeColor theme) {
+  Widget _getEmptyFeed(BuildContext context, AmityThemeColor theme) {
     return Container(
       width: double.infinity,
       height: 138,
@@ -157,7 +156,7 @@ class AmityCommunityVideoFeedComponent extends NewBaseComponent {
           ),
           SizedBox(
             width: 252,
-            child: Text('No videos yet',
+            child: Text(context.l10n.feed_no_videos,
                 textAlign: TextAlign.center,
                 style: AmityTextStyle.titleBold(theme.baseColorShade3)),
           ),

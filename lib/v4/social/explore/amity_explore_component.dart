@@ -1,6 +1,5 @@
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/community_setup_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/category/amity_community_categories_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/category/amity_explore_category_shimmer.dart';
@@ -16,6 +15,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityExploreComponent extends NewBaseComponent {
+  final ExploreComponentRefreshController _refreshController =
+      ExploreComponentRefreshController();
+
   AmityExploreComponent({
     super.key,
     super.pageId,
@@ -25,30 +27,18 @@ class AmityExploreComponent extends NewBaseComponent {
   Widget buildComponent(BuildContext context) {
     return BlocProvider(
       create: (context) => ExploreComponentCubit(),
-      child: _ExploreComponentView(theme),
-    );
-  }
-}
-
-class _ExploreComponentView extends StatelessWidget {
-  final ExploreComponentRefreshController _refreshController =
-      ExploreComponentRefreshController();
-  final AmityThemeColor theme;
-  _ExploreComponentView(this.theme);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ExploreComponentCubit, ExploreComponentState>(
-      builder: (context, state) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            context.read<ExploreComponentCubit>().setRefreshing();
-          },
-          child: state.isRefreshing
-              ? _buildLoadingState()
-              : _buildContent(context, state),
-        );
-      },
+      child: BlocBuilder<ExploreComponentCubit, ExploreComponentState>(
+        builder: (context, state) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<ExploreComponentCubit>().setRefreshing();
+            },
+            child: state.isRefreshing
+                ? _buildLoadingState()
+                : _buildContent(context, state),
+          );
+        },
+      ),
     );
   }
 
@@ -75,17 +65,20 @@ class _ExploreComponentView extends StatelessWidget {
         children: [
           _getDivider(),
           AmityCommunityCategoriesComponent(
+            pageId: pageId,
             onStateChanged: (state) {
               context.read<ExploreComponentCubit>().setCategoryState(state);
             },
           ),
           AmityRecommendedCommunitiesComponent(
+            pageId: pageId,
             refreshController: _refreshController,
             onStateChanged: (state) {
               context.read<ExploreComponentCubit>().setRecommendedState(state);
             },
           ),
           AmityTrendingCommunitiesComponent(
+            pageId: pageId,
             refreshController: _refreshController,
             onStateChanged: (state) {
               context.read<ExploreComponentCubit>().setTrendingState(state);

@@ -9,8 +9,9 @@ import 'package:amity_uikit_beta_service/v4/social/community/community_setting/p
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 
-// ignore: must_be_immutable
+
 class AmityCommunityPostPermissionPage extends NewBasePage {
   AmityCommunityPostPermissionPage({super.key, required this.community})
       : super(pageId: 'community_posts_notification_page');
@@ -35,7 +36,7 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: "Post permissions",
+            title: context.l10n.community_post_permission,
             configProvider: configProvider,
             theme: theme,
             leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
@@ -53,7 +54,7 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
               child: Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
-                  'Save',
+                  context.l10n.general_save,
                   style: TextStyle(
                       color: state.settingsChanged
                           ? theme.primaryColor
@@ -67,9 +68,9 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
         body: ListView(
           children: [
             SettingRadioButtonWidget(
-                title: 'Who can post on this community',
+                title: context.l10n.community_post_permission_title_label,
                 description:
-                    'You can control who can create posts in your community. ',
+                    context.l10n.community_post_permission_description_label,
                 groupValue: state.postPermissionSetting,
                 onChanged: (value) {
                   context.read<CommunityPostPermissionPageBloc>().add(

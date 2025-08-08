@@ -12,7 +12,6 @@ import 'package:amity_uikit_beta_service/v4/social/post/featured_badge.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +70,7 @@ class AmityPostHeader extends StatelessWidget {
             category == AmityPostCategory.globalFeatured)
           Row(
             children: [
-              FeaturedBadge(text: "Featured"),
+              FeaturedBadge(text: context.l10n.general_featured),
             ],
           ),
         Row(

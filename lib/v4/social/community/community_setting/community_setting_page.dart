@@ -37,7 +37,7 @@ class AmityCommunitySettingPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: community.displayName ?? "Unknown",
+            title: community.displayName ?? context.l10n.user_profile_unknown_name,
             configProvider: configProvider,
             theme: theme),
         body: ListView(
@@ -46,12 +46,12 @@ class AmityCommunitySettingPage extends NewBasePage {
             _getSectionTitleWidget(context.l10n.community_basic_info),
 
             if (state.shouldShowEditProfile)
-              CommunitySettingItem(
+              CommunitySettingItem(context.l10n.profile_edit,
                   'assets/Icons/amity_ic_edit_profile_setting.svg', onTap: () {
                 _goToEditProfilePage(context);
               }, pageId: pageId, componentId: '*', elementId: 'edit_profile'),
 
-            CommunitySettingItem('assets/Icons/amity_icon_member_setting.svg',
+            CommunitySettingItem(context.l10n.community_members,'assets/Icons/amity_icon_member_setting.svg',
                 onTap: () {
               _goToCommunityMemberPage(context);
             }, pageId: pageId, componentId: '*', elementId: 'members'),
@@ -60,7 +60,7 @@ class AmityCommunitySettingPage extends NewBasePage {
               Stack(
                 alignment: Alignment.centerRight,
                 children: [
-                  CommunitySettingItem(
+                  CommunitySettingItem(context.l10n.settings_notifications,
                       'assets/Icons/amity_ic_notification_setting.svg',
                       onTap: () {
                     _goToNotificationSettingPage(context, state);
@@ -89,7 +89,7 @@ class AmityCommunitySettingPage extends NewBasePage {
               _getSectionTitleWidget(context.l10n.settings_permissions),
 
             if (state.shouldShowPostPermission)
-              CommunitySettingItem(
+              CommunitySettingItem(context.l10n.community_post_permission,
                   'assets/Icons/amity_ic_post_permission_setting.svg',
                   onTap: () {
                 _goToPostPermissionSettingPage(context);
@@ -99,7 +99,7 @@ class AmityCommunitySettingPage extends NewBasePage {
                   elementId: 'post_permission'),
 
             if (state.shouldShowStoryComments)
-              CommunitySettingItem(
+              CommunitySettingItem(context.l10n.community_story_comments,
                   'assets/Icons/amity_ic_story_comment_setting.svg', onTap: () {
                 _goToStoryCommentSettingPage(context);
               }, pageId: pageId, componentId: '*', elementId: 'story_setting'),
@@ -108,8 +108,7 @@ class AmityCommunitySettingPage extends NewBasePage {
               _getDividerWidget(),
 
             // Leave Community
-            _getSettingDetailItemWidget(
-                configProvider.getConfig('$pageId/*/leave_community')['text'],
+            _getSettingDetailItemWidget(context.l10n.community_leave,
                 null, onTap: () {
               ConfirmationDialog().show(
                   context: context,
@@ -137,10 +136,8 @@ class AmityCommunitySettingPage extends NewBasePage {
 
             // Close Community
             if (state.shouldShowCloseCommunity)
-              _getSettingDetailItemWidget(
-                  configProvider.getConfig('$pageId/*/close_community')['text'],
-                  configProvider.getConfig(
-                      '$pageId/*/close_community_description')['text'],
+              _getSettingDetailItemWidget(context.l10n.community_setting_close_label,
+                  context.l10n.community_setting_close_description,
                   onTap: () {
                 ConfirmationDialog().show(
                     context: context,

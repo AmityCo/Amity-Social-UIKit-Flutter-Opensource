@@ -1,12 +1,11 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/category/amity_all_categories_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/category/amity_explore_category_shimmer.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/category/category_list_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/communities_by_category/amity_communities_by_category_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/list_state/amity_list_states.dart';
-import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,57 +17,40 @@ class AmityCommunityCategoriesComponent extends NewBaseComponent {
     super.key,
     super.pageId,
     required this.onStateChanged,
-  }) : super(componentId: 'amity_community_categories_component');
+  }) : super(componentId: 'community_categories');
 
   @override
   Widget buildComponent(BuildContext context) {
     return BlocProvider(
       create: (context) => CategoryListCubit()..loadCategories(),
-      child: AmityCommunityCategoriesView(
-          onStateChanged: onStateChanged, theme: theme),
-    );
-  }
-}
+      child: BlocConsumer<CategoryListCubit, CategoryState>(
+        listener: (context, state) {
+          onStateChanged(context.read<CategoryListCubit>().getCurrentState());
+        },
+        builder: (context, state) {
+          if (state.isLoading) {
+            return AmityExploreCategoryShimmer();
+          }
 
-class AmityCommunityCategoriesView extends StatelessWidget {
-  final Function(CategoryListState) onStateChanged;
-  final AmityThemeColor theme;
+          if (state.hasError || state.categories.isEmpty) {
+            return const SizedBox.shrink();
+          }
 
-  const AmityCommunityCategoriesView({
-    Key? key,
-    required this.onStateChanged,
-    required this.theme,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<CategoryListCubit, CategoryState>(
-      listener: (context, state) {
-        onStateChanged(context.read<CategoryListCubit>().getCurrentState());
-      },
-      builder: (context, state) {
-        if (state.isLoading) {
-          return AmityExploreCategoryShimmer();
-        }
-
-        if (state.hasError || state.categories.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              ...state.categories.take(5).map((category) => Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: _buildCategoryChip(context, category),
-                  )),
-              if (state.categories.length > 5) _buildSeeMoreButton(context),
-            ],
-          ),
-        );
-      },
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                ...state.categories.take(5).map((category) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: _buildCategoryChip(context, category),
+                    )),
+                if (state.categories.length > 5) _buildSeeMoreButton(context),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -82,6 +64,7 @@ class AmityCommunityCategoriesView extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: theme.baseColorShade4),
           borderRadius: BorderRadius.circular(24),
+          color: theme.backgroundColor
         ),
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Row(
@@ -104,7 +87,7 @@ class AmityCommunityCategoriesView extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8, right: 12),
               child: Text(
                 category.name ?? '',
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style: AmityTextStyle.body(theme.baseColor)
               ),
             ),
           ],

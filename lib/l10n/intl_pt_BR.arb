@@ -16,6 +16,10 @@
   "@tab_my_communities": {
     "description": "Label for the my communities tab in the main navigation"
   },
+  "search_my_community_hint": "Buscar minha comunidade",
+  "@search_my_community_hint": {
+    "description": "Hint text for search my community field"
+  },
   "global_search_hint": "Pesquisar comunidade e usuário",
   "@global_search_hint": {
     "description": "Hint text for the search communities and users field on the homepage"
@@ -31,6 +35,14 @@
   "title_users": "Usuários",
   "@title_users": {
     "description": "Title for the users section"
+  },
+  "general_ok": "OK",
+  "@general_ok": {
+    "description": "Label for OK button"
+  },
+  "general_confirm": "Confirmar",
+  "@general_confirm": {
+    "description": "Label for confirm button"
   },
   "general_cancel": "Cancelar",
   "@general_cancel": {
@@ -55,6 +67,10 @@
   "profile_posts": "Publicações",
   "@profile_posts": {
     "description": "Label for user posts"
+  },
+  "post_create_hint": "O que você quer compartilhar?",
+  "@post_create_hint": {
+    "description": "Hint text for create post field"
   },
   "post_create": "Criar Publicação",
   "@post_create": {
@@ -293,6 +309,10 @@
   "@community_close_description": {
     "description": "Confirmation message for closing a community"
   },
+  "community_joined": "Entrou",
+  "@community_joined": {
+    "description": "Label for joined community"
+  },
   "community_join": "Entrar",
   "@community_join": {
     "description": "Label for join community button"
@@ -349,9 +369,21 @@
   "@community_about": {
     "description": "Label for community about section"
   },
+  "recommended_for_you": "Recomendado pra você",
+  "@recommended_for_you": {
+    "description": "Label for recommended for you section"
+  },
+  "trending_now": "Bombando agora",
+  "@trending_now": {
+    "description": "Label for trending now section"
+  },
   "categories_title": "Categorias",
   "@categories_title": {
     "description": "Title for categories section"
+  },
+  "category_managed": "Gerenciado",
+  "@category_managed": {
+    "description": "Label for managed category"
   },
   "category_hint": "Selecione a categoria",
   "@category_hint": {
@@ -418,6 +450,14 @@
   "message_placeholder": "Digite uma mensagem...",
   "@message_placeholder": {
     "description": "Placeholder for message input"
+  },
+  "settings_update_successful": "Configurações atualizadas com sucesso",
+  "@settings_update_successful": {
+    "description": "Success message for settings update"
+  },
+  "settings_allow_posts_approval": "Permitir aprovação de posts",
+  "@settings_allow_posts_approval": {
+    "description": "Label for allow posts approval setting"
   },
   "settings_title": "Configurações",
   "@settings_title": {
@@ -725,6 +765,14 @@
       }
     }
   },
+  "user_display_name_updated": "Nome de exibição atualizado",
+  "@user_display_name_updated": {
+    "description": "Success message for display name update"
+  },
+  "user_description_updated": "Descrição atualizada",
+  "@user_description_updated": {
+    "description": "Success message for description update"
+  },
   "user_block": "Bloquear usuário",
   "@user_block": {
     "description": "Label for block user button"
@@ -733,9 +781,49 @@
   "@user_unblock": {
     "description": "Label for unblock user button"
   },
+  "feed_empty_state_title": "Nenhum post ainda",
+  "@feed_empty_state_title": {
+    "description": "Title for empty feed state"
+  },
+  "feed_empty_state_description": "Seja o primeiro a postar algo nesta comunidade.",
+  "@feed_empty_state_description": {
+    "description": "Description for empty feed state"
+  },
+  "blocked_feed_empty_state": "Você não tem conteúdo bloqueado",
+  "@blocked_feed_empty_state": {
+    "description": "Empty state for blocked feed"
+  },
+  "blocked_users_empty_state": "Você não bloqueou nenhum usuário",
+  "@blocked_users_empty_state": {
+    "description": "Empty state for blocked users"
+  },
   "error_delete_post": "Falha ao excluir a publicação. Por favor, tente novamente.",
   "@error_delete_post": {
     "description": "Error message when deleting a post fails"
+  },
+  "member_management_title": "Gerenciar membros",
+  "@member_management_title": {
+    "description": "Title for member management screen"
+  },
+  "member_management_all_members": "Todos os membros",
+  "@member_management_all_members": {
+    "description": "Label for all members tab"
+  },
+  "member_management_moderators": "Moderadores",
+  "@member_management_moderators": {
+    "description": "Label for moderators tab"
+  },
+  "member_management_remove_user": "Remover usuário",
+  "@member_management_remove_user": {
+    "description": "Label for remove user action"
+  },
+  "member_management_assign_moderator": "Definir como moderador",
+  "@member_management_assign_moderator": {
+    "description": "Label for assign moderator action"
+  },
+  "member_management_dismiss_moderator": "Remover moderador",
+  "@member_management_dismiss_moderator": {
+    "description": "Label for dismiss moderator action"
   },
   "error_leave_community": "Não foi possível sair da comunidade",
   "@error_leave_community": {
@@ -800,6 +888,22 @@
         "type": "int"
       }
     }
+  },
+  "user_follow": "Seguir",
+  "@user_follow": {
+    "description": "Label for follow user action"
+  },
+  "user_unfollow": "Deixar de seguir",
+  "@user_unfollow": {
+    "description": "Label for unfollow user action"
+  },
+  "user_profile_posts_tab": "Posts",
+  "@user_profile_posts_tab": {
+    "description": "Label for posts tab on user profile"
+  },
+  "user_profile_communities_tab": "Comunidades",
+  "@user_profile_communities_tab": {
+    "description": "Label for communities tab on user profile"
   },
   "error_create_poll": "Falha ao criar a enquete. Por favor, tente novamente.",
   "@error_create_poll": {

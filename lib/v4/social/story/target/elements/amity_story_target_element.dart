@@ -63,9 +63,12 @@ class AmityStoryTargetElement extends BaseElement {
   Widget buildElement(BuildContext context) {
     String? badge;
 
+    final featureConfig = configProvider.getFeatureConfig();
+    final isStoryCreationEnabled = featureConfig.story.createEnabled;
+
     if (ringUiState == AmityStoryTargetRingUiState.FAILED) {
       badge = "assets/Icons/ic_warning_circle_red.svg";
-    } else if (hasManageStoryPermission) {
+    } else if (hasManageStoryPermission && isStoryCreationEnabled) {
       badge = "assets/Icons/ic_add_circle_blue.svg";
     } else if (isOfficialCommunity && !isCommunityTarget) {
       badge = "assets/Icons/ic_verified_blue.svg";

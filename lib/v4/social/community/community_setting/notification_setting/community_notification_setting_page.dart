@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/bloc/community_notification_setting_page_bloc.dart';
@@ -33,7 +34,7 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: "Notifications",
+            title: context.l10n.settings_notifications,
             configProvider: configProvider,
             theme: theme),
         body: ListView(
@@ -49,21 +50,21 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
                       if (state.isPostNetworkEnabled)
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_post_notification_setting.svg',
-                            'Posts', onTap: () {
+                            context.l10n.profile_posts, onTap: () {
                           _goToPostSettingPage(context);
                         }),
 
                       if (state.isCommentNetworkEnabled)
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_comment_notification_setting.svg',
-                            'Comments', onTap: () {
+                            context.l10n.general_comments, onTap: () {
                           _goToCommentSettingPage(context);
                         }),
                         
                       if (state.isStoryNetworkEnabled)
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_story_notification_setting.svg',
-                            'Stories', onTap: () {
+                            context.l10n.general_stories, onTap: () {
                           _goToStorySettingPage(context);
                         }),
                     ],
@@ -82,7 +83,7 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Allow Notification',
+                  context.l10n.settings_allow_notification,
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -101,8 +102,7 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Turn on to receive push notifications  from this community.',
+              child: Text(context.l10n.settings_allow_notification_description,
                 style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w400,

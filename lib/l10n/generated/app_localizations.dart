@@ -132,6 +132,12 @@ abstract class AppLocalizations {
   /// **'Search community and user'**
   String get global_search_hint;
 
+  /// Hint text for searching my communities
+  ///
+  /// In en, this message translates to:
+  /// **'Search my community'**
+  String get search_my_community_hint;
+
   /// Message displayed when no search results are found
   ///
   /// In en, this message translates to:
@@ -156,17 +162,23 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get general_cancel;
 
+  /// Label for the OK button
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get general_ok;
+
+  /// Label for the confirm button
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get general_confirm;
+
   /// Label for the featured posts
   ///
   /// In en, this message translates to:
   /// **'Featured'**
   String get general_featured;
-
-  /// Label for edit profile button
-  ///
-  /// In en, this message translates to:
-  /// **'Edit Profile'**
-  String get profile_edit;
 
   /// Label for followers count
   ///
@@ -197,6 +209,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Post'**
   String get post_edit;
+
+  /// Hint text for post creation input field
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s going on...'**
+  String get post_create_hint;
 
   /// Label for delete post button
   ///
@@ -489,7 +507,7 @@ abstract class AppLocalizations {
   /// Confirmation message for closing a community
   ///
   /// In en, this message translates to:
-  /// **'All members will be removed from  the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.'**
+  /// **'All members will be removed from the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.'**
   String get community_close_description;
 
   /// Label for join community button
@@ -497,6 +515,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Join'**
   String get community_join;
+
+  /// Label for joined community status
+  ///
+  /// In en, this message translates to:
+  /// **'Joined'**
+  String get community_joined;
+
+  /// Section title for recommended communities
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get community_recommended_for_you;
+
+  /// Section title for trending communities
+  ///
+  /// In en, this message translates to:
+  /// **'Trending now'**
+  String get community_trending_now;
+
+  /// Placeholder text for community members count in recommended communities
+  ///
+  /// In en, this message translates to:
+  /// **'1.2K members'**
+  String get community_placeholder_members;
 
   /// Label for leave community button
   ///
@@ -587,6 +629,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select category'**
   String get category_hint;
+
+  /// Title for category selection page
+  ///
+  /// In en, this message translates to:
+  /// **'Select Category'**
+  String get category_select_title;
+
+  /// Label for add category button
+  ///
+  /// In en, this message translates to:
+  /// **'Add Category'**
+  String get category_add;
 
   /// Label for pending posts section
   ///
@@ -786,6 +840,12 @@ abstract class AppLocalizations {
   /// **'Only moderators'**
   String get settings_only_moderators;
 
+  /// Label for only admins can post setting
+  ///
+  /// In en, this message translates to:
+  /// **'Only admins can post'**
+  String get settings_only_admins;
+
   /// Label for privacy settings
   ///
   /// In en, this message translates to:
@@ -960,6 +1020,18 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get general_off;
 
+  /// Label for allow notification toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Notification'**
+  String get settings_allow_notification;
+
+  /// Description for allow notification setting
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on to receive push notifications from this community.'**
+  String get settings_allow_notification_description;
+
   /// Label for reported content
   ///
   /// In en, this message translates to:
@@ -1068,7 +1140,7 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{member} other{members}}'**
   String profile_members_count(int count);
 
-  /// Label for block user button
+  /// Community story comments setting option
   ///
   /// In en, this message translates to:
   /// **'Block user'**
@@ -1157,6 +1229,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to create poll. Please try again.'**
   String get error_create_poll;
+
+  /// Fallback display name for users with no display name
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get user_profile_unknown_name;
+
+  /// Tab label for all members in community membership page
+  ///
+  /// In en, this message translates to:
+  /// **'All members'**
+  String get community_all_members;
+
+  /// Tab label for moderators in community membership page
+  ///
+  /// In en, this message translates to:
+  /// **'Moderators'**
+  String get community_moderators;
+
+  /// Hint text for member search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search member'**
+  String get community_search_member_hint;
+
+  /// Action to promote a member to moderator role
+  ///
+  /// In en, this message translates to:
+  /// **'Promote to moderator'**
+  String get community_promote_moderator;
+
+  /// Action to demote a moderator to member role
+  ///
+  /// In en, this message translates to:
+  /// **'Demote to member'**
+  String get community_demote_member;
+
+  /// Action to remove a member from the community
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from community'**
+  String get community_remove_member;
+
+  /// Action to report a user
+  ///
+  /// In en, this message translates to:
+  /// **'Report user'**
+  String get user_report;
+
+  /// Action to unreport a user
+  ///
+  /// In en, this message translates to:
+  /// **'Unreport user'**
+  String get user_unreport;
+
+  /// Empty state message when there are no videos in the feed
+  ///
+  /// In en, this message translates to:
+  /// **'No videos yet'**
+  String get feed_no_videos;
+
+  /// Empty state message when there are no photos in the feed
+  ///
+  /// In en, this message translates to:
+  /// **'No photos yet'**
+  String get feed_no_photos;
+
+  /// Empty state message when there are no pinned posts in the community
+  ///
+  /// In en, this message translates to:
+  /// **'No pinned post yet'**
+  String get feed_no_pinned_posts;
+
+  /// Empty state message when there are no posts in the community feed
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet'**
+  String get feed_no_posts;
+
+  /// Button text and title for adding members
+  ///
+  /// In en, this message translates to:
+  /// **'Add member'**
+  String get member_add;
+
+  /// Hint text for searching users
+  ///
+  /// In en, this message translates to:
+  /// **'Search user'**
+  String get search_user_hint;
+
+  /// Button text for editing user profile
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get profile_edit;
+
+  /// Success message when profile is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully updated your profile!'**
+  String get profile_update_success;
+
+  /// Error message when profile update fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save your profile. Please try again.'**
+  String get profile_update_failed;
+
+  /// Community post permissions setting option
+  ///
+  /// In en, this message translates to:
+  /// **'Post permission'**
+  String get community_post_permission;
+
+  /// No description provided for @community_story_comments.
+  ///
+  /// In en, this message translates to:
+  /// **'Story comments'**
+  String get community_story_comments;
+
+  /// Label for close community setting
+  ///
+  /// In en, this message translates to:
+  /// **'Close community'**
+  String get community_setting_close_label;
+
+  /// Description for close community setting
+  ///
+  /// In en, this message translates to:
+  /// **'Closing this community will remove the community  page and all its content and comments.'**
+  String get community_setting_close_description;
+
+  /// label for post permissions page title
+  ///
+  /// In en, this message translates to:
+  /// **'Who can post on this community'**
+  String get community_post_permission_title_label;
+
+  /// label for post permissions page description
+  ///
+  /// In en, this message translates to:
+  /// **'You can control who can create posts in your community.'**
+  String get community_post_permission_description_label;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

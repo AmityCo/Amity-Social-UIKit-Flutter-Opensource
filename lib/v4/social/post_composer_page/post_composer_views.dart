@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/bloc/post_composer_bloc.dart';
@@ -17,7 +18,7 @@ extension PostComposerView on AmityPostComposerPage {
     return AppBar(
       backgroundColor: theme.backgroundColor,
       title: Text(
-        getPageTitle(),
+        getPageTitle(context),
         style: TextStyle(
             fontWeight: FontWeight.w600, fontSize: 17, color: theme.baseColor),
       ),
@@ -36,11 +37,11 @@ extension PostComposerView on AmityPostComposerPage {
     );
   }
 
-  String getPageTitle() {
+  String getPageTitle(BuildContext context) {
     if (options.mode == AmityPostComposerMode.edit) {
-      return "Edit Post";
+      return context.l10n.post_edit;
     } else if (options.targetType == AmityPostTargetType.USER) {
-      return "My Timeline";
+      return context.l10n.general_my_timeline;
     } else {
       return options.community?.displayName ?? '';
     }
@@ -50,7 +51,7 @@ extension PostComposerView on AmityPostComposerPage {
     return TextButton(
       onPressed: isPostButtonEnabled ? () => handleAction(context) : null,
       child: Text(
-        options.mode == AmityPostComposerMode.edit ? "Save" : "Post",
+        options.mode == AmityPostComposerMode.edit ? context.l10n.general_save : context.l10n.general_post,
         style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w400,
@@ -74,7 +75,7 @@ extension PostComposerView on AmityPostComposerPage {
       maxLines: null,
       enabled: true,
       decoration: InputDecoration(
-        hintText: "What’s going on...",
+        hintText: context.l10n.post_create_hint,
         border: InputBorder.none,
         focusedBorder: InputBorder.none,
         enabledBorder: InputBorder.none,

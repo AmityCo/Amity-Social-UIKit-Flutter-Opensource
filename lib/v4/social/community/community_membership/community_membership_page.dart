@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -43,7 +44,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: 'All members',
+          title: context.l10n.community_all_members,
           configProvider: configProvider,
           theme: theme,
           tailingButton: state.isCurrentUserModerator
@@ -86,9 +87,9 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   indicatorColor: theme.primaryColor,
                   dividerColor: theme.baseColorShade4,
                   dividerHeight: 1.0, // Makes indicator match text width
-                  tabs: const [
-                    Tab(text: 'Members'),
-                    Tab(text: 'Moderators'),
+                  tabs: [
+                    Tab(text: context.l10n.community_members),
+                    Tab(text: context.l10n.community_moderators),
                   ],
                 ),
                 Expanded(
@@ -98,7 +99,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         children: [
                           AmityTopSearchBarComponent(
                             textcontroller: _textcontroller,
-                            hintText: 'Search member',
+                            hintText: context.l10n.community_search_member_hint,
                             showCancelButton: false,
                             onTextChanged: (value) {
                               context.read<CommunityMembershipPageBloc>().add(
@@ -166,7 +167,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                     child: member.user != null
                         ? AmityUserAvatar(
                             avatarUrl: member.user?.avatarUrl,
-                            displayName: member.user?.displayName ?? 'Unknown',
+                            displayName: member.user?.displayName ?? context.l10n.user_profile_unknown_name,
                             isDeletedUser: false)
                         : _placeholderAvatar(),
                   ),
@@ -211,7 +212,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                 Flexible(
                   child: GestureDetector(
                     child: Text(
-                      member.user?.displayName ?? 'Unknown',
+                      member.user?.displayName ?? context.l10n.user_profile_unknown_name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -300,8 +301,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         ? 'assets/Icons/amity_ic_demote_member.svg'
                         : 'assets/Icons/amity_ic_promote_moderator.svg',
                     title: member.isModerator()
-                        ? 'Demote to member'
-                        : 'Promote to moderator',
+                        ? context.l10n.community_demote_member
+                        : context.l10n.community_promote_moderator,
                     onTap: () {
                       context.read<CommunityMembershipPageBloc>().add(
                           CommunityMembershipPageBottomSheetEvent(
@@ -318,8 +319,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? 'Unreport user'
-                          : 'Report user',
+                          ? context.l10n.user_unreport
+                          : context.l10n.user_report,
                       onTap: () {
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
@@ -334,7 +335,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                       }),
                   _buildListTile(
                       assetPath: 'assets/Icons/ic_bin_red.svg',
-                      title: 'Remove from community',
+                      title: context.l10n.community_remove_member,
                       isDestructive: true,
                       onTap: () {
                         context.read<CommunityMembershipPageBloc>().add(
@@ -348,8 +349,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? 'Unreport user'
-                          : 'Report user',
+                          ? context.l10n.user_unreport
+                          : context.l10n.user_report,
                       onTap: () {
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(

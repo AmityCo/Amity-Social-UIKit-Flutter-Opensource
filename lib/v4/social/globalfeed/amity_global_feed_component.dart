@@ -51,8 +51,11 @@ class AmityGlobalFeedComponent extends NewBaseComponent {
                 controller: scrollController,
                 slivers: [
                   SliverToBoxAdapter(
-                    child: AmityStoryTabComponent(
-                      type: GlobalFeedStoryTab(),
+                    child: Visibility(
+                      visible: configProvider.getFeatureConfig().story.viewStoryTabEnabled,
+                      child: AmityStoryTabComponent(
+                        type: GlobalFeedStoryTab(),
+                      ),
                     ),
                   ),
                   SliverToBoxAdapter(

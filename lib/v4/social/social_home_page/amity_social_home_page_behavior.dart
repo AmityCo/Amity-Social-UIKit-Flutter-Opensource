@@ -1,4 +1,5 @@
 class AmitySocialHomePageBehavior {
-  final bool showMyCommunitiesTab = true;
+  final bool showTopNavigation = true;
   final bool showExploreTab = true;
+  final bool showMyCommunitiesTab = true;
 }

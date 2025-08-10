@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/social/global_search/global_search_page.dart';
@@ -12,6 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AmitySocialHomePage extends NewBasePage {
   AmitySocialHomePage({super.key}) : super(pageId: 'social_home_page');
+
+  final bool showTopNavigation = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.showTopNavigation;
 
   @override
   Widget buildPage(BuildContext context) {
@@ -33,27 +37,33 @@ class AmitySocialHomePage extends NewBasePage {
             }
             return Scaffold(
               appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight),
-                child: AmitySocialHomeTopNavigationComponent(
-                  pageId: pageId,
-                  selectedTab: currentTab,
-                  searchButtonAction: () {
-                    if (currentTab == AmitySocialHomePageTab.newsFeed) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AmitySocialGlobalSearchPage(),
-                        ),
-                      );
-                    } else if (currentTab ==
-                        AmitySocialHomePageTab.myCommunities) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AmityMyCommunitiesSearchPage(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                preferredSize: showTopNavigation
+                    ? const Size.fromHeight(kToolbarHeight)
+                    : Size.zero,
+                child: showTopNavigation
+                    ? AmitySocialHomeTopNavigationComponent(
+                        pageId: pageId,
+                        selectedTab: currentTab,
+                        searchButtonAction: () {
+                          if (currentTab == AmitySocialHomePageTab.newsFeed) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AmitySocialGlobalSearchPage(),
+                              ),
+                            );
+                          } else if (currentTab ==
+                              AmitySocialHomePageTab.myCommunities) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AmityMyCommunitiesSearchPage(),
+                              ),
+                            );
+                          }
+                        },
+                      )
+                    : const SizedBox.shrink(),
               ),
               backgroundColor: theme.backgroundColor,
               body: Column(

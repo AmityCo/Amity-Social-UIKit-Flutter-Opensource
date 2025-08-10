@@ -25,9 +25,16 @@ class ScrollableTabs extends NewBaseComponent {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildTabButton(context, context.l10n.community_title, 0, selectedIndex),
-                _buildTabButton(context, context.l10n.tab_explore, 1, selectedIndex),
-                _buildTabButton(context, context.l10n.tab_my_communities, 2, selectedIndex),
+                _buildTabButton(
+                    context, context.l10n.community_title, 0, selectedIndex),
+                if (AmityUIKit4Manager
+                    .freedomBehavior.socialHomePageBehavior.showExploreTab)
+                  _buildTabButton(
+                      context, context.l10n.tab_explore, 1, selectedIndex),
+                if (AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior
+                    .showMyCommunitiesTab)
+                  _buildTabButton(context, context.l10n.tab_my_communities, 2,
+                      selectedIndex),
               ],
             ),
           ),

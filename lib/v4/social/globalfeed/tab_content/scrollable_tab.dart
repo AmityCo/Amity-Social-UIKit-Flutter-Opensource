@@ -1,6 +1,7 @@
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_event.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_state.dart';
@@ -15,6 +16,9 @@ class ScrollableTabs extends NewBaseComponent {
       AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showExploreTab;
   final bool showMyCommunitiesTab = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.showMyCommunitiesTab;
+  final Widget Function(AmityThemeColor, int, int, String, void Function())?
+      buildCustomTabButton = AmityUIKit4Manager
+          .freedomBehavior.socialHomePageBehavior.buildCustomTabButton;
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -48,69 +52,46 @@ class ScrollableTabs extends NewBaseComponent {
 
   Widget _buildTabButton(
       BuildContext context, String text, int index, int selectedIndex) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: ElevatedButton(
-        onPressed: () =>
-            context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
-        style: ElevatedButton.styleFrom(
-          foregroundColor: selectedIndex == index
-              ? theme.primaryColor
-              : theme.baseColorShade1,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        child: Column(
-          children: [
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Divider(
-              height: 2,
-              thickness: 2,
-              color: selectedIndex == index
+    if (buildCustomTabButton == null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ElevatedButton(
+          onPressed: () =>
+              context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
+          style: ElevatedButton.styleFrom(
+              foregroundColor:
+                  selectedIndex == index ? Colors.white : theme.baseColorShade1,
+              backgroundColor: selectedIndex == index
                   ? theme.primaryColor
                   : Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              side: BorderSide(
+                  color: selectedIndex == index
+                      ? theme.primaryColor
+                      : theme.baseColorShade4,
+                  width: 1.0),
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight:
+                  selectedIndex == index ? FontWeight.bold : FontWeight.normal,
             ),
-          ],
+          ),
         ),
-      ),
-    );
-    // return Padding(
-    //   padding: const EdgeInsets.symmetric(horizontal: 4.0),
-    //   child: ElevatedButton(
-    //     onPressed: () =>
-    //         context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
-    //     style: ElevatedButton.styleFrom(
-    //         foregroundColor:
-    //             selectedIndex == index ? Colors.white : theme.baseColorShade1,
-    //         backgroundColor: selectedIndex == index
-    //             ? theme.primaryColor
-    //             : Colors.transparent,
-    //         shape: RoundedRectangleBorder(
-    //           borderRadius: BorderRadius.circular(24),
-    //         ),
-    //         side: BorderSide(
-    //             color: selectedIndex == index
-    //                 ? theme.primaryColor
-    //                 : theme.baseColorShade4,
-    //             width: 1.0),
-    //         elevation: 0,
-    //         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
-    //     child: Text(
-    //       text,
-    //       style: TextStyle(
-    //         fontSize: 17,
-    //         fontWeight:
-    //             selectedIndex == index ? FontWeight.bold : FontWeight.normal,
-    //       ),
-    //     ),
-    //   ),
-    // );
+      );
+    } else {
+      return buildCustomTabButton!(
+        theme,
+        selectedIndex,
+        index,
+        text,
+        () => context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
+      );
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -59,8 +60,12 @@ class ConfigRepository {
 
   Future<Map<String, dynamic>> _loadConfigFile(String fileName) async {
     try {
-      final jsonString = await rootBundle.loadString(
-          'packages/amity_uikit_beta_service/assets/config/$fileName.json');
+      final Future<String> Function()? loadCustomJsonString = AmityUIKit4Manager
+          .freedomBehavior.configBehavior.loadCustomJsonString;
+      final jsonString = (loadCustomJsonString == null)
+          ? await rootBundle.loadString(
+              'packages/amity_uikit_beta_service/assets/config/$fileName.json')
+          : await loadCustomJsonString();
       return json.decode(jsonString);
     } catch (e) {
       return {};

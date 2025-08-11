@@ -11,6 +11,11 @@ class ScrollableTabs extends NewBaseComponent {
   ScrollableTabs({Key? key, required String pageId})
       : super(key: key, pageId: pageId, componentId: '');
 
+  final bool showExploreTab =
+      AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showExploreTab;
+  final bool showMyCommunitiesTab = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.showMyCommunitiesTab;
+
   @override
   Widget buildComponent(BuildContext context) {
     return BlocBuilder<SocialHomeBloc, SocialHomeState>(
@@ -27,12 +32,10 @@ class ScrollableTabs extends NewBaseComponent {
               children: [
                 _buildTabButton(
                     context, context.l10n.community_title, 0, selectedIndex),
-                if (AmityUIKit4Manager
-                    .freedomBehavior.socialHomePageBehavior.showExploreTab)
+                if (showExploreTab)
                   _buildTabButton(
                       context, context.l10n.tab_explore, 1, selectedIndex),
-                if (AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior
-                    .showMyCommunitiesTab)
+                if (showMyCommunitiesTab)
                   _buildTabButton(context, context.l10n.tab_my_communities, 2,
                       selectedIndex),
               ],
@@ -46,35 +49,68 @@ class ScrollableTabs extends NewBaseComponent {
   Widget _buildTabButton(
       BuildContext context, String text, int index, int selectedIndex) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ElevatedButton(
         onPressed: () =>
             context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
         style: ElevatedButton.styleFrom(
-            foregroundColor:
-                selectedIndex == index ? Colors.white : theme.baseColorShade1,
-            backgroundColor: selectedIndex == index
-                ? theme.primaryColor
-                : Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
+          foregroundColor: selectedIndex == index
+              ? theme.primaryColor
+              : theme.baseColorShade1,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        child: Column(
+          children: [
+            Text(
+              text,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            side: BorderSide(
-                color: selectedIndex == index
-                    ? theme.primaryColor
-                    : theme.baseColorShade4,
-                width: 1.0),
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight:
-                selectedIndex == index ? FontWeight.bold : FontWeight.normal,
-          ),
+            const SizedBox(height: 12),
+            Divider(
+              height: 2,
+              thickness: 2,
+              color: selectedIndex == index
+                  ? theme.primaryColor
+                  : Colors.transparent,
+            ),
+          ],
         ),
       ),
     );
+    // return Padding(
+    //   padding: const EdgeInsets.symmetric(horizontal: 4.0),
+    //   child: ElevatedButton(
+    //     onPressed: () =>
+    //         context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
+    //     style: ElevatedButton.styleFrom(
+    //         foregroundColor:
+    //             selectedIndex == index ? Colors.white : theme.baseColorShade1,
+    //         backgroundColor: selectedIndex == index
+    //             ? theme.primaryColor
+    //             : Colors.transparent,
+    //         shape: RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(24),
+    //         ),
+    //         side: BorderSide(
+    //             color: selectedIndex == index
+    //                 ? theme.primaryColor
+    //                 : theme.baseColorShade4,
+    //             width: 1.0),
+    //         elevation: 0,
+    //         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+    //     child: Text(
+    //       text,
+    //       style: TextStyle(
+    //         fontSize: 17,
+    //         fontWeight:
+    //             selectedIndex == index ? FontWeight.bold : FontWeight.normal,
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }

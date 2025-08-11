@@ -16,6 +16,8 @@ class AmitySocialHomePage extends NewBasePage {
 
   final bool showTopNavigation = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.showTopNavigation;
+  final PreferredSizeWidget topNavigationReplacement = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.topNavigationReplacement;
 
   @override
   Widget buildPage(BuildContext context) {
@@ -36,12 +38,10 @@ class AmitySocialHomePage extends NewBasePage {
               }
             }
             return Scaffold(
-              appBar: PreferredSize(
-                preferredSize: showTopNavigation
-                    ? const Size.fromHeight(kToolbarHeight)
-                    : Size.zero,
-                child: showTopNavigation
-                    ? AmitySocialHomeTopNavigationComponent(
+              appBar: showTopNavigation
+                  ? PreferredSize(
+                      preferredSize: const Size.fromHeight(kToolbarHeight),
+                      child: AmitySocialHomeTopNavigationComponent(
                         pageId: pageId,
                         selectedTab: currentTab,
                         searchButtonAction: () {
@@ -62,9 +62,9 @@ class AmitySocialHomePage extends NewBasePage {
                             );
                           }
                         },
-                      )
-                    : const SizedBox.shrink(),
-              ),
+                      ),
+                    )
+                  : topNavigationReplacement,
               backgroundColor: theme.backgroundColor,
               body: Column(
                 children: [

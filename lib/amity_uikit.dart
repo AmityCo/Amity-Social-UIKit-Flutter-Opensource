@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
@@ -327,4 +328,5 @@ class AmityUIKitProvider extends StatelessWidget {
 
 class AmityUIKit4Manager {
   static UIKitBehavior behavior = UIKitBehavior();
+  static FreedomUIKitBehavior freedomBehavior = FreedomUIKitBehavior();
 }

@@ -8,21 +8,20 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/preview_link_widget.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/pending_post_action_cubit.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/pending_posts_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/amity_global_feed_component.dart';
-import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_image.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_children_content_video.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_poll.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/pending_post_action_cubit.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/pending_posts_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
-import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:linkify/linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:linkify/linkify.dart';
 
 class AmityPendingPostContentComponent extends NewBaseComponent {
   final AmityPost post;
@@ -76,102 +75,101 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
 
   Widget _buildPostActions(BuildContext context, PendingPostActionState state) {
     final cubit = context.read<PendingPostActionCubit>();
+    final behavior =
+        AmityUIKit4Manager.behavior.pendingPostContentComponentBehavior;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
           // Left button (Accept) - taking up half the width minus padding
-          if (AmityUIConfiguration.buildPostAcceptButton != null)
-            AmityUIConfiguration.buildPostAcceptButton!(
-              context,
-              isApprovingPost: state.isApprovingPost,
-              onPressed:
-                  state.isApprovingPost ? null : () => cubit.approvePost(),
-            )
-          else
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: state.isApprovingPost
-                        ? null
-                        : () => cubit.approvePost(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: state.isApprovingPost
-                          ? theme.primaryColor.withOpacity(0.6)
-                          : theme.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.center,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+          behavior.buildPostAcceptButton?.call(
+                context,
+                isApprovingPost: state.isApprovingPost,
+                onPressed:
+                    state.isApprovingPost ? null : () => cubit.approvePost(),
+              ) ??
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: state.isApprovingPost
+                          ? null
+                          : () => cubit.approvePost(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: state.isApprovingPost
+                            ? theme.primaryColor.withOpacity(0.6)
+                            : theme.primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.center,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    child: state.isApprovingPost
-                        ? const SizedBox(
-                            height: 16,
-                            width: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
+                      child: state.isApprovingPost
+                          ? const SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
+                            )
+                          : const Text(
+                              'Accept',
+                              style: TextStyle(color: Colors.white),
                             ),
-                          )
-                        : const Text(
-                            'Accept',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                    ),
                   ),
                 ),
               ),
-            ),
           // Right button (Decline) - taking up half the width minus padding
-          if (AmityUIConfiguration.buildPostDeclineButton != null)
-            AmityUIConfiguration.buildPostDeclineButton!(
-              context,
-              isDecliningPost: state.isDecliningPost,
-              onPressed:
-                  state.isDecliningPost ? null : () => cubit.declinePost(),
-            )
-          else
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: state.isDecliningPost
-                        ? null
-                        : () => cubit.declinePost(),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: theme.baseColorShade3, width: 1),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+          behavior.buildPostDeclineButton?.call(
+                context,
+                isDecliningPost: state.isDecliningPost,
+                onPressed:
+                    state.isDecliningPost ? null : () => cubit.declinePost(),
+              ) ??
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: state.isDecliningPost
+                          ? null
+                          : () => cubit.declinePost(),
+                      style: OutlinedButton.styleFrom(
+                        side:
+                            BorderSide(color: theme.baseColorShade3, width: 1),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    child: state.isDecliningPost
-                        ? SizedBox(
-                            height: 16,
-                            width: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                theme.secondaryColor,
+                      child: state.isDecliningPost
+                          ? SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  theme.secondaryColor,
+                                ),
                               ),
+                            )
+                          : Text(
+                              'Decline',
+                              style: TextStyle(color: theme.secondaryColor),
                             ),
-                          )
-                        : Text(
-                            'Decline',
-                            style: TextStyle(color: theme.secondaryColor),
-                          ),
+                    ),
                   ),
                 ),
               ),
-            ),
         ],
       ),
     );

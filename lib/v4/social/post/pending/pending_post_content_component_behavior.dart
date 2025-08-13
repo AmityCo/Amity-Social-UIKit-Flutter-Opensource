@@ -2,7 +2,7 @@ import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profi
 import 'package:flutter/material.dart';
 
 class AmityPendingPostContentComponentBehavior {
-
+  
   void goToUserProfilePage(
     BuildContext context,
     String userId,
@@ -17,4 +17,15 @@ class AmityPendingPostContentComponentBehavior {
     );
   }
 
+  Widget Function(
+    BuildContext context, {
+    VoidCallback? onPressed,
+    required bool isApprovingPost,
+  })? buildPostAcceptButton;
+
+  Widget Function(
+    BuildContext context, {
+    VoidCallback? onPressed,
+    required bool isDecliningPost,
+  })? buildPostDeclineButton;
 }

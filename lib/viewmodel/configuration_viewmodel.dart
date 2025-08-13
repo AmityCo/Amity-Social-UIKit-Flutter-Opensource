@@ -115,17 +115,6 @@ class AmityUIConfiguration extends ChangeNotifier {
   // Build custom widgets:
   final widgetBuilders = AmityWidgetBuilders();
 
-  static Widget Function(
-    BuildContext context, {
-    VoidCallback? onPressed,
-    required bool isApprovingPost,
-  })? buildPostAcceptButton;
-  static Widget Function(
-    BuildContext context, {
-    VoidCallback? onPressed,
-    required bool isDecliningPost,
-  })? buildPostDeclineButton;
-  static ScrollController? postReviewScrollerController;
   static AppLocalizations? customLocalization;
 }
 

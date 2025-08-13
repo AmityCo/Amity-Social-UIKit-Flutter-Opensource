@@ -1,11 +1,11 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity_pending_post_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_state.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_tab_indicator.dart';
-import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,7 +14,6 @@ enum AmityPendingRequestPageTab {
   pendingPosts(0);
 
   final int rawValue;
-
   const AmityPendingRequestPageTab(this.rawValue);
 }
 
@@ -61,20 +60,17 @@ class AmityPendingRequestPage extends NewBasePage {
                 appBar: AppBar(
                   backgroundColor: theme.backgroundColor,
                   foregroundColor: theme.baseColor,
-                  title: IgnorePointer(
-                    child: Text("Pending Requests",
-                        style: AmityTextStyle.titleBold(theme.baseColor)),
-                  ),
-                  flexibleSpace: GestureDetector(
-                    onDoubleTap: () {
-                      AmityUIConfiguration.postReviewScrollerController
-                          ?.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 150),
-                        curve: Curves.ease,
-                      );
-                    },
-                  ),
+                  title: AmityUIKit4Manager
+                          .behavior.pendingRequestPageBehavior.buildTitle
+                          ?.call() ??
+                      Text("Pending Requests",
+                          style: AmityTextStyle.titleBold(theme.baseColor)),
+                  flexibleSpace: AmityUIKit4Manager.behavior
+                      .pendingRequestPageBehavior.buildHeaderFlexibleSpace
+                      ?.call(AmityUIKit4Manager
+                          .behavior
+                          .pendingRequestPageBehavior
+                          .postReviewScrollerController),
                   leading: IconButton(
                     icon: SvgPicture.asset(
                       'assets/Icons/amity_ic_back_button.svg',

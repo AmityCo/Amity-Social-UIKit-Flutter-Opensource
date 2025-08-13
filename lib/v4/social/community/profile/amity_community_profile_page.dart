@@ -283,7 +283,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                   ? GestureDetector(
                       onTap: () {
                         showCommunityProfileAction(context, theme,
-                            state.canManageStory, state.community, state.isModerator, communityId);
+                            state.canManageStory, state.community, state.isModerator);
                       },
                       child: Container(
                         width: 64,
@@ -345,7 +345,6 @@ class AmityCommunityProfilePage extends NewBasePage {
     bool canManageStory,
     AmityCommunity? community,
     bool isModerator,
-      String communityId,
   ) {
     double height = 0;
     double baseHeight = 80;
@@ -392,7 +391,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                   onTap: () {
                     final createOptions =
                         AmityPostComposerOptions.createOptions(
-                            targetId: communityId,
+                            targetId: community?.communityId,
                             community: community,
                             targetType: AmityPostTargetType.COMMUNITY);
                     Navigator.of(context).push(
@@ -474,7 +473,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                           builder: (BuildContext context) {
                             return CreateStoryConfigProviderWidget(
                               targetType: AmityStoryTargetType.COMMUNITY,
-                              targetId: communityId,
+                              targetId: community?.communityId ?? '',
                               pageId: 'create_story_page',
                             );
                           },
@@ -538,7 +537,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                             PopScope(
                           canPop: true,
                           child: AmityPollPostComposerPage(
-                            targetId: communityId,
+                            targetId: community?.communityId ?? '',
                             targetType: AmityPostTargetType.COMMUNITY,
                             targetCommunityName: community?.displayName ?? '',
                             onPopRequested: (shouldPopCaller) {

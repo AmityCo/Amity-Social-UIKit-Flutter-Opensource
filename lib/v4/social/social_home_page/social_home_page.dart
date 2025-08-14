@@ -18,6 +18,8 @@ class AmitySocialHomePage extends NewBasePage {
       .freedomBehavior.socialHomePageBehavior.showTopNavigation;
   final PreferredSizeWidget topNavigationReplacement = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.topNavigationReplacement;
+  final Widget? Function(AmitySocialHomePageTab) buildCreatePostWidget = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.buildCreatePostWidget;
 
   @override
   Widget buildPage(BuildContext context) {
@@ -75,6 +77,7 @@ class AmitySocialHomePage extends NewBasePage {
                   AmityToast(pageId: pageId, elementId: "toast"),
                 ],
               ),
+              floatingActionButton: buildCreatePostWidget(currentTab),
             );
           },
         );

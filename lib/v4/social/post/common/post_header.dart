@@ -39,7 +39,7 @@ class AmityPostHeader extends StatelessWidget {
     this.action,
   });
 
-  
+
 
   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
     context
@@ -186,9 +186,17 @@ class AmityPostHeader extends StatelessWidget {
         };
 
     onDelete() {
-      context
-          .read<PostItemBloc>()
-          .add(PostItemDelete(post: post, action: action));
+      AmitySocialClient.newPostRepository()
+          .deletePost(postId: post.postId!)
+          .then((value) {
+        context
+            .read<PostItemBloc>()
+            .add(PostItemDelete(post: post, action: action));
+        //success
+      }).onError((error, stackTrace) {
+        _showToast(
+            context, context.l10n.error_delete_post, AmityToastIcon.warning);
+      });
     }
 
     double height = 0;

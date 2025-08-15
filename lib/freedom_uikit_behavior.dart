@@ -1,4 +1,3 @@
-import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_config_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_social_home_page_behavior.dart';
 
@@ -9,8 +8,6 @@ class FreedomUIKitBehavior {
   static final FreedomUIKitBehavior _instance =
       FreedomUIKitBehavior._internal();
   FreedomUIKitBehavior._internal();
-
-  FreedomConfigBehavior configBehavior = FreedomConfigBehavior();
 
   FreedomPostContentComponentBehavior postContentComponentBehavior =
       FreedomPostContentComponentBehavior();

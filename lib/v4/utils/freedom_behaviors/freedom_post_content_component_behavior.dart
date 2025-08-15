@@ -2,15 +2,15 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 
 class FreedomPostContentComponentBehavior {
-  bool isCreatedByAdmin(AmityPost post) => false;
+  bool getIsCreatedByAdmin(AmityPost post) => false;
 
-  String? communityAvatarUrl(AmityPost post) => null;
+  String? getCommunityAvatarUrl(AmityPost post) => null;
 
-  String communityDisplayName(AmityPost post) => '';
+  String getCommunityDisplayName(AmityPost post) => '';
 
-  bool isCommunityDeleted(AmityPost post) => false;
+  bool getIsCommunityDeleted(AmityPost post) => false;
 
-  String? userPublicProfile(AmityPost post) => null;
+  String? getUserPublicProfile(AmityPost post) => null;
 
   List<Widget> buildTitleWidget(
     AmityPost post,

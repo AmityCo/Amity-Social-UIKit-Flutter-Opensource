@@ -11,11 +11,13 @@ class ScrollableTabs extends NewBaseComponent {
   ScrollableTabs({Key? key, required String pageId})
       : super(key: key, pageId: pageId, componentId: '');
 
-  final bool showExploreTab =
+  final bool _showExploreTab =
       AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showExploreTab;
-  final bool showMyCommunitiesTab = AmityUIKit4Manager
+  final bool _showMyCommunitiesTab = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.showMyCommunitiesTab;
-  final buildCustomTabButton = AmityUIKit4Manager
+  final bool _useCustomTabButton = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.useCustomTabButton;
+  final _buildCustomTabButton = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.buildCustomTabButton;
 
   @override
@@ -34,10 +36,10 @@ class ScrollableTabs extends NewBaseComponent {
               children: [
                 _buildTabButton(
                     context, context.l10n.community_title, 0, selectedIndex),
-                if (showExploreTab)
+                if (_showExploreTab)
                   _buildTabButton(
                       context, context.l10n.tab_explore, 1, selectedIndex),
-                if (showMyCommunitiesTab)
+                if (_showMyCommunitiesTab)
                   _buildTabButton(context, context.l10n.tab_my_communities, 2,
                       selectedIndex),
               ],
@@ -50,7 +52,15 @@ class ScrollableTabs extends NewBaseComponent {
 
   Widget _buildTabButton(
       BuildContext context, String text, int index, int selectedIndex) {
-    if (buildCustomTabButton == null) {
+    if (_useCustomTabButton) {
+      return _buildCustomTabButton(
+        theme,
+        selectedIndex,
+        index,
+        text,
+        () => context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
+      );
+    } else {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
         child: ElevatedButton(
@@ -81,14 +91,6 @@ class ScrollableTabs extends NewBaseComponent {
             ),
           ),
         ),
-      );
-    } else {
-      return buildCustomTabButton!(
-        theme,
-        selectedIndex,
-        index,
-        text,
-        () => context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
       );
     }
   }

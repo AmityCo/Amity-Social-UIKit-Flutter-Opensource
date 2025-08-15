@@ -6,19 +6,15 @@ class FreedomSocialHomePageBehavior {
   final bool showTopNavigation = true;
   final bool showExploreTab = true;
   final bool showMyCommunitiesTab = true;
+  final bool useCustomTabButton = false;
 
-  final PreferredSizeWidget topNavigationReplacement = const PreferredSize(
-    preferredSize: Size.zero,
-    child: SizedBox.shrink(),
-  );
-
-  final Widget Function(
+  Widget buildCustomTabButton(
     AmityThemeColor theme,
     int selectedIndex,
     int index,
     String text,
     void Function() onPressed,
-  )? buildCustomTabButton = null;
+  ) => const SizedBox.shrink();
 
   Widget? buildCreatePostWidget(AmitySocialHomePageTab currentTab) => null;
 }

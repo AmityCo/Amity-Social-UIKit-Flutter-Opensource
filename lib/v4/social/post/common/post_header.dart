@@ -39,16 +39,16 @@ class AmityPostHeader extends StatelessWidget {
     this.action,
   });
 
-  final _isCreatedByAdmin = AmityUIKit4Manager
-      .freedomBehavior.postContentComponentBehavior.isCreatedByAdmin;
-  final _communityAvatarUrl = AmityUIKit4Manager
-      .freedomBehavior.postContentComponentBehavior.communityAvatarUrl;
-  final _communityDisplayName = AmityUIKit4Manager
-      .freedomBehavior.postContentComponentBehavior.communityDisplayName;
-  final _isCommunityDeleted = AmityUIKit4Manager
-      .freedomBehavior.postContentComponentBehavior.isCommunityDeleted;
-  final userPublicProfile = AmityUIKit4Manager
-      .freedomBehavior.postContentComponentBehavior.userPublicProfile;
+  final _getIsCreatedByAdmin = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getIsCreatedByAdmin;
+  final _getCommunityAvatarUrl = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getCommunityAvatarUrl;
+  final _getCommunityDisplayName = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getCommunityDisplayName;
+  final _getIsCommunityDeleted = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getIsCommunityDeleted;
+  final _getUserPublicProfile = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getUserPublicProfile;
 
   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
     context
@@ -75,7 +75,7 @@ class AmityPostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isCreatedByAdmin = _isCreatedByAdmin(post);
+    final bool getIsCreatedByAdmin = _getIsCreatedByAdmin(post);
 
     return Column(
       children: [
@@ -105,14 +105,14 @@ class AmityPostHeader extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     top: 8, left: 12, right: 4, bottom: 8),
                 child: AmityUserAvatar(
-                  avatarUrl: isCreatedByAdmin
-                      ? _communityAvatarUrl(post)
-                      : userPublicProfile(post),
-                  displayName: isCreatedByAdmin
-                      ? _communityDisplayName(post)
+                  avatarUrl: getIsCreatedByAdmin
+                      ? _getCommunityAvatarUrl(post)
+                      : _getUserPublicProfile(post),
+                  displayName: getIsCreatedByAdmin
+                      ? _getCommunityDisplayName(post)
                       : (post.postedUser?.displayName ?? ''),
-                  isDeletedUser: isCreatedByAdmin
-                      ? _isCommunityDeleted(post)
+                  isDeletedUser: getIsCreatedByAdmin
+                      ? _getIsCommunityDeleted(post)
                       : (post.postedUser?.isDeleted ?? false),
                   characterTextStyle: AmityTextStyle.titleBold(Colors.white),
                   avatarSize: const Size(32, 32),

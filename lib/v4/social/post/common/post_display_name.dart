@@ -24,8 +24,8 @@ class PostDisplayName extends StatelessWidget {
     required this.hideTarget,
   }) : super(key: key);
 
-  final _isCreatedByAdmin = AmityUIKit4Manager
-      .freedomBehavior.postContentComponentBehavior.isCreatedByAdmin;
+  final _getIsCreatedByAdmin = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getIsCreatedByAdmin;
   final _buildTitleWidget = AmityUIKit4Manager
       .freedomBehavior.postContentComponentBehavior.buildTitleWidget;
 
@@ -51,7 +51,7 @@ class PostDisplayName extends StatelessWidget {
         ((post.target is CommunityTarget) ||
             (post.target is UserTarget &&
                 (post.target as UserTarget).targetUserId != post.postedUserId));
-    final bool isCreatedByAdmin = _isCreatedByAdmin(post);
+    final bool getIsCreatedByAdmin = _getIsCreatedByAdmin(post);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -62,7 +62,7 @@ class PostDisplayName extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: isCreatedByAdmin
+            children: getIsCreatedByAdmin
                 ? _buildTitleWidget(
                     post,
                     PostTarget(context, post.target!),
@@ -99,9 +99,9 @@ class PostDisplayName extends StatelessWidget {
           ),
           Row(
             children: [
-              if (isModerator && !isCreatedByAdmin)
+              if (isModerator && !getIsCreatedByAdmin)
                 const CommunityModeratorBadge(),
-              if (isModerator && !isCreatedByAdmin)
+              if (isModerator && !getIsCreatedByAdmin)
                 Container(
                     padding: const EdgeInsets.only(left: 2),
                     child: Text(

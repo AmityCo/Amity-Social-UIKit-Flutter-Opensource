@@ -1,7 +1,6 @@
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_event.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_state.dart';
@@ -16,9 +15,8 @@ class ScrollableTabs extends NewBaseComponent {
       AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showExploreTab;
   final bool showMyCommunitiesTab = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.showMyCommunitiesTab;
-  final Widget Function(AmityThemeColor, int, int, String, void Function())?
-      buildCustomTabButton = AmityUIKit4Manager
-          .freedomBehavior.socialHomePageBehavior.buildCustomTabButton;
+  final buildCustomTabButton = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.buildCustomTabButton;
 
   @override
   Widget buildComponent(BuildContext context) {

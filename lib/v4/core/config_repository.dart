@@ -60,7 +60,7 @@ class ConfigRepository {
 
   Future<Map<String, dynamic>> _loadConfigFile(String fileName) async {
     try {
-      final Future<String> Function()? loadCustomJsonString = AmityUIKit4Manager
+      final loadCustomJsonString = AmityUIKit4Manager
           .freedomBehavior.configBehavior.loadCustomJsonString;
       final jsonString = (loadCustomJsonString == null)
           ? await rootBundle.loadString(

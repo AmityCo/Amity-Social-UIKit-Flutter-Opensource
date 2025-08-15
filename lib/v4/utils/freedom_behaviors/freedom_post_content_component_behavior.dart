@@ -10,6 +10,8 @@ class FreedomPostContentComponentBehavior {
 
   bool isCommunityDeleted(AmityPost post) => false;
 
+  String? userPublicProfile(AmityPost post) => null;
+
   List<Widget> buildTitleWidget(
     AmityPost post,
     Widget targetWidget,

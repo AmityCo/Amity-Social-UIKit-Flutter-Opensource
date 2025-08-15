@@ -47,6 +47,8 @@ class AmityPostHeader extends StatelessWidget {
       .freedomBehavior.postContentComponentBehavior.communityDisplayName;
   final _isCommunityDeleted = AmityUIKit4Manager
       .freedomBehavior.postContentComponentBehavior.isCommunityDeleted;
+  final userPublicProfile = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.userPublicProfile;
 
   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
     context
@@ -105,7 +107,7 @@ class AmityPostHeader extends StatelessWidget {
                 child: AmityUserAvatar(
                   avatarUrl: isCreatedByAdmin
                       ? _communityAvatarUrl(post)
-                      : post.postedUser?.avatarUrl,
+                      : userPublicProfile(post),
                   displayName: isCreatedByAdmin
                       ? _communityDisplayName(post)
                       : (post.postedUser?.displayName ?? ''),

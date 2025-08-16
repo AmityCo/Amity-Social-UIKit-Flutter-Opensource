@@ -7,6 +7,7 @@ class FreedomSocialHomePageBehavior {
   final bool showExploreTab = true;
   final bool showMyCommunitiesTab = true;
   final bool useCustomTabButton = false;
+  final bool showCreateCommunityButton = true;
 
   Widget buildCustomTabButton(
     AmityThemeColor theme,

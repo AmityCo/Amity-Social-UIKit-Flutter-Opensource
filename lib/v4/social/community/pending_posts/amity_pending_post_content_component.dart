@@ -1,6 +1,7 @@
 // filepath: /Users/zryte/Documents/Amity-Social-Cloud-UIKit-Flutter/lib/v4/social/community/pending_posts/amity_pending_post_content_component.dart
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -75,8 +76,7 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
 
   Widget _buildPostActions(BuildContext context, PendingPostActionState state) {
     final cubit = context.read<PendingPostActionCubit>();
-    final behavior =
-        AmityUIKit4Manager.behavior.pendingPostContentComponentBehavior;
+    final behavior = FreedomUIKitBehavior.instance.pendingPostContentComponentBehavior;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

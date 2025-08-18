@@ -2,8 +2,6 @@
 
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_tray_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/community_membership_page_behavior.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page_behavior.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/community_profile_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/global_feed_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/pending/pending_post_content_component_behavior.dart';
@@ -51,10 +49,4 @@ class UIKitBehavior {
 
   AmityUserRelationshipPageBehavior userRelationshipPageBehavior =
       AmityUserRelationshipPageBehavior();
-
-  AmityCommunitySettingPageBehavior communitySettingPageBehavior =
-      AmityCommunitySettingPageBehavior();
-
-  AmityPendingRequestPageBehavior pendingRequestPageBehavior =
-    AmityPendingRequestPageBehavior();
 }

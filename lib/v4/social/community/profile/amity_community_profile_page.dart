@@ -391,6 +391,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                   onTap: () {
                     final createOptions =
                         AmityPostComposerOptions.createOptions(
+                            /// Freedom Customization for static function
                             targetId: community?.communityId,
                             community: community,
                             targetType: AmityPostTargetType.COMMUNITY);

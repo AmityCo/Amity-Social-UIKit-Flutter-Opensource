@@ -1,5 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity_pending_post_list_component.dart';
@@ -60,15 +60,15 @@ class AmityPendingRequestPage extends NewBasePage {
                 appBar: AppBar(
                   backgroundColor: theme.backgroundColor,
                   foregroundColor: theme.baseColor,
-                  title: AmityUIKit4Manager
-                          .behavior.pendingRequestPageBehavior.buildTitle
+                  title: FreedomUIKitBehavior
+                          .instance.pendingRequestPageBehavior.buildTitle
                           ?.call() ??
                       Text("Pending Requests",
                           style: AmityTextStyle.titleBold(theme.baseColor)),
-                  flexibleSpace: AmityUIKit4Manager.behavior
+                  flexibleSpace: FreedomUIKitBehavior.instance
                       .pendingRequestPageBehavior.buildHeaderFlexibleSpace
-                      ?.call(AmityUIKit4Manager
-                          .behavior
+                      ?.call(FreedomUIKitBehavior
+                          .instance
                           .pendingRequestPageBehavior
                           .postReviewScrollerController),
                   leading: IconButton(

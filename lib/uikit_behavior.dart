@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/v4/social/post/pending/pending_post_con
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/pending_requests/user_pending_follow_request_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/user_profile_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/user_search_result/user_search_result_behavior.dart';
 
 class UIKitBehavior {
@@ -49,4 +50,7 @@ class UIKitBehavior {
 
   AmityUserRelationshipPageBehavior userRelationshipPageBehavior =
       AmityUserRelationshipPageBehavior();
+
+  AmityUserProfilePageBehavior userProfilePageBehavior =
+      AmityUserProfilePageBehavior();
 }

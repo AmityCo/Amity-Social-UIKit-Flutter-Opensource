@@ -13,6 +13,8 @@ class AmityTheme {
   final Color backgroundColor;
   final Color backgroundShade1Color;
   final Color highlightColor;
+  final Color greenColor;
+  final Color lightGreenColor;
 
   AmityTheme({
     required this.primaryColor,
@@ -27,6 +29,8 @@ class AmityTheme {
     required this.backgroundColor,
     required this.backgroundShade1Color,
     required this.highlightColor,
+    required this.greenColor,
+    required this.lightGreenColor,
   });
 
   factory AmityTheme.fromJson(Map<String, dynamic> json) {
@@ -45,6 +49,8 @@ class AmityTheme {
       highlightColor: _colorFromHex(
         json['highlight_color'],
       ),
+      greenColor: _colorFromHex(json['green_color']),
+      lightGreenColor: _colorFromHex(json['light_green_color']),
     );
   }
 
@@ -71,6 +77,8 @@ class AmityThemeColor {
   final Color backgroundColor;
   final Color backgroundShade1Color;
   final Color highlightColor;
+  final Color greenColor;
+  final Color lightGreenColor;
 
   AmityThemeColor({
     required this.primaryColor,
@@ -85,6 +93,8 @@ class AmityThemeColor {
     required this.backgroundColor,
     required this.backgroundShade1Color,
     required this.highlightColor,
+    required this.greenColor,
+    required this.lightGreenColor,
   });
 }
 
@@ -104,6 +114,8 @@ final lightTheme = AmityTheme(
   backgroundColor: const Color(0xFFFFFFFF),
   backgroundShade1Color: const Color(0xFFF6F7F8),
   highlightColor: const Color(0xFF1054DE),
+  greenColor: const Color(0xff00CA8D),
+  lightGreenColor: const Color(0xff10F48B),
 );
 
 final darkTheme = AmityTheme(
@@ -119,6 +131,8 @@ final darkTheme = AmityTheme(
   backgroundColor: const Color(0xFF191919),
   backgroundShade1Color: const Color(0xFF40434E),
   highlightColor: const Color(0xFF1054DE),
+  greenColor: const Color(0xff00CA8D),
+  lightGreenColor: const Color(0xff10F48B),
 );
 
 enum ColorBlendingOption {

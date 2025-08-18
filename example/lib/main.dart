@@ -22,7 +22,6 @@ import 'package:amity_uikit_beta_service_example/sample_v4.dart';
 import 'package:amity_uikit_beta_service_example/social_v4_compatible.dart';
 import 'package:amity_uikit_beta_service_example/splash_screen.dart';
 import 'package:camera/camera.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';

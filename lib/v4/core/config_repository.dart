@@ -156,8 +156,10 @@ extension ThemeConfig on ConfigRepository {
       backgroundColor: theme?.backgroundColor ?? fallbackTheme.backgroundColor,
       baseInverseColor:
           theme?.baseInverseColor ?? fallbackTheme.baseInverseColor,
-      backgroundShade1Color: fallbackTheme.backgroundShade1Color,
-      highlightColor: fallbackTheme.highlightColor,
+      backgroundShade1Color: theme?.backgroundShade1Color ?? fallbackTheme.backgroundShade1Color,
+      highlightColor: theme?.highlightColor ?? fallbackTheme.highlightColor,
+      greenColor: theme?.greenColor ?? fallbackTheme.greenColor,
+      lightGreenColor: theme?.lightGreenColor ?? fallbackTheme.lightGreenColor,
     );
   }
 

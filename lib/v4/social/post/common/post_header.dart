@@ -29,7 +29,7 @@ class AmityPostHeader extends StatelessWidget {
   final bool hideTarget;
   final AmityPostAction? action;
 
-  const AmityPostHeader({
+  AmityPostHeader({
     super.key,
     required this.post,
     this.isShowOption = true,
@@ -39,7 +39,16 @@ class AmityPostHeader extends StatelessWidget {
     this.action,
   });
 
-
+  final _getIsCreatedByAdmin = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getIsCreatedByAdmin;
+  final _getCommunityAvatarUrl = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getCommunityAvatarUrl;
+  final _getCommunityDisplayName = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getCommunityDisplayName;
+  final _getIsCommunityDeleted = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getIsCommunityDeleted;
+  final _getUserPublicProfile = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getUserPublicProfile;
 
   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
     context
@@ -66,6 +75,8 @@ class AmityPostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool getIsCreatedByAdmin = _getIsCreatedByAdmin(post);
+
     return Column(
       children: [
         if (category == AmityPostCategory.announcement ||
@@ -83,7 +94,8 @@ class AmityPostHeader extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 if (post.postedUserId?.isNotEmpty ?? false) {
-                  AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+                  AmityUIKit4Manager.behavior.postContentComponentBehavior
+                      .goToUserProfilePage(
                     context,
                     post.postedUserId!,
                   );
@@ -93,9 +105,15 @@ class AmityPostHeader extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     top: 8, left: 12, right: 4, bottom: 8),
                 child: AmityUserAvatar(
-                  avatarUrl: post.postedUser?.avatarUrl,
-                  displayName: post.postedUser?.displayName ?? "",
-                  isDeletedUser: post.postedUser?.isDeleted ?? false,
+                  avatarUrl: getIsCreatedByAdmin
+                      ? _getCommunityAvatarUrl(post)
+                      : _getUserPublicProfile(post),
+                  displayName: getIsCreatedByAdmin
+                      ? _getCommunityDisplayName(post)
+                      : (post.postedUser?.displayName ?? ''),
+                  isDeletedUser: getIsCreatedByAdmin
+                      ? _getIsCommunityDeleted(post)
+                      : (post.postedUser?.isDeleted ?? false),
                   characterTextStyle: AmityTextStyle.titleBold(Colors.white),
                   avatarSize: const Size(32, 32),
                 ),
@@ -343,9 +361,7 @@ class AmityPostHeader extends StatelessWidget {
             //success
           }).onError((error, stackTrace) {
             _showToast(
-                 context,
-                 context.l10n.general_error,
-                 AmityToastIcon.warning);
+                context, context.l10n.general_error, AmityToastIcon.warning);
           })
         };
 

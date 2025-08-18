@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_event.dart';
@@ -9,6 +10,11 @@ import 'package:flutter_svg/svg.dart';
 class AmityEmptyNewsFeedComponent extends NewBaseComponent {
   AmityEmptyNewsFeedComponent({Key? key, String? pageId})
       : super(key: key, pageId: pageId, componentId: 'empty_newsfeed');
+
+  final bool showExploreTab =
+      AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showExploreTab;
+  final bool showCreateCommunityButton = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.showCreateCommunityButton;
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -66,92 +72,95 @@ class AmityEmptyNewsFeedComponent extends NewBaseComponent {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          context
-                              .read<SocialHomeBloc>()
-                              .add(TabSelectedEvent(1));
-                        },
-                        child: Container(
-                          width: 220,
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            left: 12,
-                            right: 16,
-                            bottom: 10,
-                          ),
-                          decoration: ShapeDecoration(
-                            color: theme.primaryColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 20,
-                                height: 20,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 2),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 20,
-                                      child: SvgPicture.asset(
-                                        'assets/Icons/amity_ic_globe.svg',
-                                        package: 'amity_uikit_beta_service',
+                      if (showExploreTab)
+                        GestureDetector(
+                          onTap: () {
+                            context
+                                .read<SocialHomeBloc>()
+                                .add(TabSelectedEvent(1));
+                          },
+                          child: Container(
+                            width: 220,
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              left: 12,
+                              right: 16,
+                              bottom: 10,
+                            ),
+                            decoration: ShapeDecoration(
+                              color: theme.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 2),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
                                         width: 20,
-                                        height: 16,
+                                        child: SvgPicture.asset(
+                                          'assets/Icons/amity_ic_globe.svg',
+                                          package: 'amity_uikit_beta_service',
+                                          width: 20,
+                                          height: 16,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const Text(
-                                'Explore community',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                                const Text(
+                                  'Explore community',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                       const SizedBox(height: 4),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const CreateCommunityPage()));
-                        },
-                        child: Container(
-                          width: 220,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 10),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Create community',
-                                style: TextStyle(
-                                  color: theme.primaryColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
+                      if (showCreateCommunityButton)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const CreateCommunityPage()));
+                          },
+                          child: Container(
+                            width: 220,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Create community',
+                                  style: TextStyle(
+                                    color: theme.primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),

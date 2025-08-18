@@ -14,10 +14,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AmitySocialHomePage extends NewBasePage {
   AmitySocialHomePage({super.key}) : super(pageId: 'social_home_page');
 
-  final bool showTopNavigation = AmityUIKit4Manager
+  final bool _showTopNavigation = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.showTopNavigation;
-  final PreferredSizeWidget topNavigationReplacement = AmityUIKit4Manager
-      .freedomBehavior.socialHomePageBehavior.topNavigationReplacement;
+  final _buildCreatePostWidget = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.buildCreatePostWidget;
 
   @override
   Widget buildPage(BuildContext context) {
@@ -38,7 +38,7 @@ class AmitySocialHomePage extends NewBasePage {
               }
             }
             return Scaffold(
-              appBar: showTopNavigation
+              appBar: _showTopNavigation
                   ? PreferredSize(
                       preferredSize: const Size.fromHeight(kToolbarHeight),
                       child: AmitySocialHomeTopNavigationComponent(
@@ -64,7 +64,7 @@ class AmitySocialHomePage extends NewBasePage {
                         },
                       ),
                     )
-                  : topNavigationReplacement,
+                  : null,
               backgroundColor: theme.backgroundColor,
               body: Column(
                 children: [
@@ -75,6 +75,7 @@ class AmitySocialHomePage extends NewBasePage {
                   AmityToast(pageId: pageId, elementId: "toast"),
                 ],
               ),
+              floatingActionButton: _buildCreatePostWidget(currentTab),
             );
           },
         );

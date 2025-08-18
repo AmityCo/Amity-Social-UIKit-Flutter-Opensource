@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/community_setup_page.dart';
@@ -122,8 +123,11 @@ class AmityCommunitySettingPage extends NewBasePage {
                             toastBloc: context.read<AmityToastBloc>(),
                             onSuccess: () {
                               // Navigate back to the social home page
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
+                              FreedomUIKitBehavior
+                                  .instance.communitySettingPageBehavior
+                                  .backToSocialHomePage(
+                                context,
+                              );
                             },
                             onFailure: () {
                               AmityDialog().showAlertErrorDialog(
@@ -153,8 +157,11 @@ class AmityCommunitySettingPage extends NewBasePage {
                               toastBloc: context.read<AmityToastBloc>(),
                               onSuccess: () {
                                 // Navigate back to the social home page
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
+                                FreedomUIKitBehavior
+                                    .instance.communitySettingPageBehavior
+                                    .backToSocialHomePage(
+                                  context,
+                                );
                               },
                               onFailure: () {
                                 AmityDialog().showAlertErrorDialog(

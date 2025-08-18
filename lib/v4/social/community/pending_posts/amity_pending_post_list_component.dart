@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity_pending_post_content_component.dart';
@@ -100,13 +101,12 @@ class AmityPendingPostListComponent extends NewBaseComponent {
         await cubit.getPendingCommunityFeedPosts();
       },
       child: ListView.separated(
+        controller: FreedomUIKitBehavior
+            .instance.pendingRequestPageBehavior.postReviewScrollerController,
         key: ValueKey('pending_posts_list_${community.communityId}'),
         itemCount: state.posts.length,
-        separatorBuilder: (context, index) => Divider(
-          height: 8,
-          thickness: 8,
-          color: theme.baseColorShade4
-        ),
+        separatorBuilder: (context, index) =>
+            Divider(height: 8, thickness: 8, color: theme.baseColorShade4),
         itemBuilder: (context, index) {
           final post = state.posts[index];
 

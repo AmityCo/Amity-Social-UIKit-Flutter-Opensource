@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 class AmityUIConfiguration extends ChangeNotifier {
   var appColors = AppColors();
   Color displaynameColor = Colors.black;
+
   Color get primaryColor => appColors.primary;
   ChannelListConfig channelListConfig = ChannelListConfig();
   MessageRoomConfig messageRoomConfig = MessageRoomConfig();
@@ -116,12 +117,15 @@ class AmityUIConfiguration extends ChangeNotifier {
 
 class AppColors {
   final Color primary;
+
   // final Color primaryShade1;
   // final Color primaryShade2;
   final Color primaryShade3;
+
   // final Color primaryShade4;
 
   final Color base;
+
   // final Color baseInverse;
   // final Color baseDefault;
   // final Color baseShade1;

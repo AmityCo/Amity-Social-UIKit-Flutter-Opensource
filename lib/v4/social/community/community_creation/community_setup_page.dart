@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -762,12 +763,7 @@ class AmityCommunitySetupPage extends NewBasePage {
   }
 
   void _goToCommunityProfilePage(BuildContext context, AmityCommunity community) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => AmityCommunityProfilePage(
-          communityId: community.communityId ?? '',
-        ),
-      ),
-    );
+    UIKitBehavior.instance.postContentComponentBehavior
+        .goToCommunityProfilePage(context, community.communityId ?? '');
   }
 }

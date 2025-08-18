@@ -23,7 +23,7 @@ dependencies:
   flutter_phoenix: ^1.0.0
   flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
-  amity_sdk: ^7.5.1
+  amity_sdk: ^7.5.2
       #path: ../Amity-Social-Cloud-SDK-Flutter-Internal
   image_gallery_saver_plus: ^4.0.1
   dio: ^5.0.0

@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -12,7 +13,6 @@ import 'package:amity_uikit_beta_service/v4/social/post/featured_badge.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -204,9 +204,17 @@ class AmityPostHeader extends StatelessWidget {
         };
 
     onDelete() {
-      context
-          .read<PostItemBloc>()
-          .add(PostItemDelete(post: post, action: action));
+      FreedomUIKitBehavior.instance.postContentComponentBehavior
+          .onModulatorPostDelete(
+        context,
+        post: post,
+        action: action,
+        onError: () => _showToast(
+          context,
+          context.l10n.error_delete_post,
+          AmityToastIcon.warning,
+        ),
+      );
     }
 
     double height = 0;

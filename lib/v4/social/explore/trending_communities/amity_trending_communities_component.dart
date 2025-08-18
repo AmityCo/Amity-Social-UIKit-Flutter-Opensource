@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -84,11 +85,8 @@ class AmityTrendingCommunitiesView extends StatelessWidget {
                 theme: theme,
                 community: entry.value,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AmityCommunityProfilePage(
-                      communityId: entry.value.communityId!,
-                    ),
-                  ));
+                  UIKitBehavior.instance.postContentComponentBehavior
+                      .goToCommunityProfilePage(context, entry.value.communityId!);
                 },
                 onJoinTap: () {
                   if (entry.value.isJoined == true) {

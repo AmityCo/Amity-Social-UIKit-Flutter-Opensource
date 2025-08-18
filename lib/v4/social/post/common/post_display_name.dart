@@ -160,12 +160,8 @@ class PostDisplayName extends StatelessWidget {
               'Unknown';
 
       onTap = () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AmityCommunityProfilePage(
-                communityId: target.targetCommunityId!),
-          ),
-        );
+        UIKitBehavior.instance.postContentComponentBehavior
+            .goToCommunityProfilePage(context, target.targetCommunityId!);
       };
     } else if (target is UserTarget) {
       if (post.postedUserId != target.targetUserId) {

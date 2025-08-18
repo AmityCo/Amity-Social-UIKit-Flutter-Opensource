@@ -339,7 +339,7 @@ class AmityCommunityProfilePage extends NewBasePage {
     );
   }
 
-  void showCommunityProfileAction(
+  static void showCommunityProfileAction(
     BuildContext context,
     AmityThemeColor theme,
     bool canManageStory,
@@ -391,7 +391,8 @@ class AmityCommunityProfilePage extends NewBasePage {
                   onTap: () {
                     final createOptions =
                         AmityPostComposerOptions.createOptions(
-                            targetId: communityId,
+                            /// Freedom Customization for static function
+                            targetId: community?.communityId,
                             community: community,
                             targetType: AmityPostTargetType.COMMUNITY);
                     Navigator.of(context).push(
@@ -424,7 +425,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                                 Navigator.of(context).pop();
                                 // Show dialog if post review is enabled and user is not a moderator
                                 if (community?.isPostReviewEnabled == true && !isModerator) {
-                                  _showPostReviewDialog(context);
+                                  showPostReviewDialog(context);
                                 }
                               }
                             },
@@ -473,7 +474,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                           builder: (BuildContext context) {
                             return CreateStoryConfigProviderWidget(
                               targetType: AmityStoryTargetType.COMMUNITY,
-                              targetId: communityId,
+                              targetId: community?.communityId ?? '',
                               pageId: 'create_story_page',
                             );
                           },
@@ -537,7 +538,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                             PopScope(
                           canPop: true,
                           child: AmityPollPostComposerPage(
-                            targetId: communityId,
+                            targetId: community?.communityId ?? '',
                             targetType: AmityPostTargetType.COMMUNITY,
                             targetCommunityName: community?.displayName ?? '',
                             onPopRequested: (shouldPopCaller) {
@@ -545,7 +546,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                                 Navigator.of(context).pop();
                                 // Show dialog if post review is enabled and user is not a moderator
                                 if (community?.isPostReviewEnabled == true && !isModerator) {
-                                  _showPostReviewDialog(context);
+                                  showPostReviewDialog(context);
                                 }
                               }
                             },
@@ -591,7 +592,7 @@ class AmityCommunityProfilePage extends NewBasePage {
         });
   }
 
-  void _showPostReviewDialog(BuildContext context) {
+  static void showPostReviewDialog(BuildContext context) {
     AmityV4Dialog().showAlertErrorDialog(
       title: "Posts sent for review",
       message: "Your post has been submitted to the pending list. It will be published once approved by the community moderator.",

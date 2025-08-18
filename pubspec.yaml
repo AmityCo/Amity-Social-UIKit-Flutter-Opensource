@@ -117,7 +117,6 @@ flutter:
     - assets/images/noVideo.png
     - assets/config/config.json
     - assets/
-    - assets/lang/
 
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

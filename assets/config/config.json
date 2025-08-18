@@ -2,10 +2,10 @@
     "preferred_theme": "default",
     "theme": {
         "light": {
-            "primary_color": "#1054DE",
+            "primary_color": "#00CA8D",
             "secondary_color": "#292B32",
             "base_color": "#292B32",
-            "base_shade1_color": "#636878",
+            "base_shade1_color": "#A6A7B5",
             "base_shade2_color": "#898E9E",
             "base_shade3_color": "#A5A9b5",
             "base_shade4_color": "#EBECEF",

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FreedomPostContentComponentBehavior {
+  final bool usePublicProfile = false;
+
   bool getIsCreatedByAdmin(AmityPost post) => false;
 
   String? getCommunityAvatarUrl(AmityPost post) => null;

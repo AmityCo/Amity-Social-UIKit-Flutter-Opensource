@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:flutter/material.dart';
 
 import '../core/theme.dart';
@@ -10,14 +11,20 @@ class AmityUserImage extends StatelessWidget {
   // final String? imageUrl;
   // final String displayName;
 
-  const AmityUserImage({
+  AmityUserImage({
     super.key,
     required this.user,
     required this.size,
     required this.theme,
   });
 
-  String? get imageUrl => user?.avatarUrl;
+  final bool _usePublicProfile = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.usePublicProfile;
+  final _getUserPublicProfile = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getUserPublicProfile;
+
+  String? get imageUrl =>
+      _usePublicProfile ? _getUserPublicProfile(user: user) : user?.avatarUrl;
   String get displayName => user?.displayName ?? "";
 
   double _mapSizeToFontSize(double size) {
@@ -35,7 +42,9 @@ class AmityUserImage extends StatelessWidget {
       color: theme.primaryColor.blend(ColorBlendingOption.shade2),
       child: Center(
         child: Text(
-          displayName.trim().isNotEmpty ? displayName.trim()[0].toUpperCase() : '?',
+          displayName.trim().isNotEmpty
+              ? displayName.trim()[0].toUpperCase()
+              : '?',
           style: TextStyle(
             color: Colors.white,
             fontSize: _mapSizeToFontSize(size),

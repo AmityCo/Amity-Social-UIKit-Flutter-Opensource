@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FreedomPostContentComponentBehavior {
+  final bool usePublicProfile = false;
+
   bool getIsCreatedByAdmin(AmityPost post) => false;
 
   String? getCommunityAvatarUrl(AmityPost post) => null;
@@ -12,7 +14,7 @@ class FreedomPostContentComponentBehavior {
 
   bool getIsCommunityDeleted(AmityPost post) => false;
 
-  String? getUserPublicProfile(AmityPost post) => null;
+  String? getUserPublicProfile({AmityPost? post, AmityUser? user}) => null;
 
   List<Widget> buildTitleWidget(
     AmityPost post,

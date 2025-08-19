@@ -39,6 +39,8 @@ class AmityPostHeader extends StatelessWidget {
     this.action,
   });
 
+  final bool _usePublicProfile = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.usePublicProfile;
   final _getIsCreatedByAdmin = AmityUIKit4Manager
       .freedomBehavior.postContentComponentBehavior.getIsCreatedByAdmin;
   final _getCommunityAvatarUrl = AmityUIKit4Manager
@@ -107,7 +109,9 @@ class AmityPostHeader extends StatelessWidget {
                 child: AmityUserAvatar(
                   avatarUrl: getIsCreatedByAdmin
                       ? _getCommunityAvatarUrl(post)
-                      : _getUserPublicProfile(post),
+                      : _usePublicProfile
+                          ? _getUserPublicProfile(post: post)
+                          : post.postedUser?.avatarUrl,
                   displayName: getIsCreatedByAdmin
                       ? _getCommunityDisplayName(post)
                       : (post.postedUser?.displayName ?? ''),

@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/utils/processed_text_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -20,7 +21,7 @@ class ExpandableText extends StatefulWidget {
   // LayoutBuilder approach doesn't work if ExpandableText is used within IntrinsicWidth widget. Set false to use RenderBox approach.
   final bool useLayoutBuilder;
 
-  const ExpandableText({
+  ExpandableText({
     Key? key,
     required this.text,
     required this.mentionedUsers,
@@ -35,6 +36,9 @@ class ExpandableText extends StatefulWidget {
     this.useLayoutBuilder = true,
   }) : super(key: key);
 
+  final LaunchMode urlLaunchMode = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.urlLaunchMode;
+
   @override
   _ExpandableTextState createState() => _ExpandableTextState();
 }
@@ -44,11 +48,11 @@ class _ExpandableTextState extends State<ExpandableText> {
   final GlobalKey _textKey = GlobalKey();
   double? _containerWidth;
   bool _measuringInProgress = false;
-  
+
   // Store processed spans synchronously when available
   List<TextSpan>? _processedSpans;
   List<TextSpan>? _truncatedSpans;
-  
+
   // To track if processing is in progress
   bool _isProcessing = false;
 
@@ -95,7 +99,7 @@ class _ExpandableTextState extends State<ExpandableText> {
       _processedSpans = _entitiesToTextSpans(text, _textCache.get(text)!);
       return; // Return early, we have the spans
     }
-    
+
     // No cache hit, we need async processing
     _isProcessing = true;
     _processTextAsync(text).then((spans) {
@@ -112,10 +116,11 @@ class _ExpandableTextState extends State<ExpandableText> {
   void _processTruncatedText(String truncatedText) {
     // Check cache first - synchronous
     if (_textCache.contains(truncatedText)) {
-      _truncatedSpans = _entitiesToTextSpans(truncatedText, _textCache.get(truncatedText)!);
+      _truncatedSpans =
+          _entitiesToTextSpans(truncatedText, _textCache.get(truncatedText)!);
       return; // Return early, we have the spans
     }
-    
+
     // No cache hit, we need async processing
     _processTextAsync(truncatedText).then((spans) {
       if (mounted) {
@@ -188,7 +193,7 @@ class _ExpandableTextState extends State<ExpandableText> {
               }
               final Uri uri = Uri.parse(url);
               if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
+                await launchUrl(uri, mode: widget.urlLaunchMode);
               }
             },
         ));
@@ -265,7 +270,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         overflow: TextOverflow.ellipsis,
       );
     }
-    
+
     // If we have processed spans, use them directly
     if (_processedSpans != null) {
       final TextSpan fullTextSpan = TextSpan(
@@ -301,20 +306,20 @@ class _ExpandableTextState extends State<ExpandableText> {
       showMorePainter.layout(maxWidth: maxWidth);
 
       // Find position to truncate original text to fit with "...showMore"
-      int endPosition = _calculateTruncatePosition(widget.text, maxWidth,
-          showMorePainter.width, widget.maxLines ?? 3);
+      int endPosition = _calculateTruncatePosition(
+          widget.text, maxWidth, showMorePainter.width, widget.maxLines ?? 3);
 
       if (endPosition < 0) endPosition = 0;
 
       // Create truncated text
       final String truncatedText =
           safeSubstring(widget.text, 0, endPosition).trim();
-          
+
       // Process truncated text if not yet available
       if (_truncatedSpans == null) {
         _processTruncatedText(truncatedText);
       }
-      
+
       // If truncated spans are available, use them
       if (_truncatedSpans != null) {
         return GestureDetector(
@@ -349,7 +354,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           ),
         );
       }
-      
+
       // Fallback while truncated spans are being processed
       return Text(
         truncatedText + "...",
@@ -358,7 +363,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         overflow: TextOverflow.ellipsis,
       );
     }
-    
+
     // Fallback when no spans available yet
     return Text(
       widget.text,
@@ -455,7 +460,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         ),
       );
     }
-    
+
     // Fallback while still processing
     return Text(
       widget.text,

@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/utils/processed_text_cache.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
@@ -12,12 +13,15 @@ class PreviewLinkWidget extends StatefulWidget {
   final AmityThemeColor theme;
   final VoidCallback? onTap;
 
-  const PreviewLinkWidget({
+  PreviewLinkWidget({
     Key? key,
     required this.text,
     required this.theme,
     this.onTap,
   }) : super(key: key);
+
+  final LaunchMode urlLaunchMode = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.urlLaunchMode;
 
   @override
   State<PreviewLinkWidget> createState() => _PreviewLinkWidgetState();
@@ -251,7 +255,7 @@ class _PreviewLinkWidgetState extends State<PreviewLinkWidget> {
       }
       Uri uri = Uri.parse(link);
       if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
+        await launchUrl(uri, mode: widget.urlLaunchMode);
       }
     }
   }

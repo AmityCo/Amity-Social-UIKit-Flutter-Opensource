@@ -2,9 +2,14 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FreedomPostContentComponentBehavior {
   final bool usePublicProfile = false;
+
+  final LaunchMode urlLaunchMode = LaunchMode.platformDefault;
+
+  String? getUserPublicProfile({AmityPost? post, AmityUser? user}) => null;
 
   bool getIsCreatedByAdmin(AmityPost post) => false;
 
@@ -13,8 +18,6 @@ class FreedomPostContentComponentBehavior {
   String getCommunityDisplayName(AmityPost post) => '';
 
   bool getIsCommunityDeleted(AmityPost post) => false;
-
-  String? getUserPublicProfile({AmityPost? post, AmityUser? user}) => null;
 
   List<Widget> buildTitleWidget(
     AmityPost post,

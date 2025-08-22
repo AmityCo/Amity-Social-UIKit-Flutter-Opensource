@@ -35,6 +35,7 @@ class AmityCommunitySettingPage extends NewBasePage {
   }
 
   Widget _getPageWidget(BuildContext context, CommunitySettingPageState state) {
+    final behavior = FreedomUIKitBehavior.instance.communitySettingPageBehavior;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
@@ -110,12 +111,43 @@ class AmityCommunitySettingPage extends NewBasePage {
 
             // Leave Community
             _getSettingDetailItemWidget(
-                configProvider.getConfig('$pageId/*/leave_community')['text'],
+                behavior.settingItemTitle?.call(context, 'leave_community') ??
+                    configProvider
+                        .getConfig('$pageId/*/leave_community')['text'],
                 null, onTap: () {
+              final showLeaveDialog = behavior.showLeaveCommunityDialog;
+              if (showLeaveDialog != null) {
+                showLeaveDialog.call(
+                  context,
+                  onGoBack: (_) {
+                    Navigator.of(context).pop();
+                  },
+                  onLeave: (_) {
+                    Navigator.of(context).pop();
+                    context.read<CommunitySettingPageBloc>().add(
+                          LeaveCommunityEvent(
+                            toastBloc: context.read<AmityToastBloc>(),
+                            onSuccess: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            onFailure: () {
+                              Navigator.of(context).pop();
+                              AmityDialog().showAlertErrorDialog(
+                                  title: context.l10n.error_leave_community,
+                                  message: context
+                                      .l10n.error_leave_community_description);
+                            },
+                          ),
+                        );
+                  },
+                  communityName: community.displayName,
+                );
+                return;
+              }
               ConfirmationDialog().show(
                   context: context,
                   title: context.l10n.community_leave,
-                  detailText:context.l10n.community_leave_description,
+                  detailText: context.l10n.community_leave_description,
                   onConfirm: () {
                     context
                         .read<CommunitySettingPageBloc>()
@@ -123,16 +155,15 @@ class AmityCommunitySettingPage extends NewBasePage {
                             toastBloc: context.read<AmityToastBloc>(),
                             onSuccess: () {
                               // Navigate back to the social home page
-                              FreedomUIKitBehavior
-                                  .instance.communitySettingPageBehavior
-                                  .backToSocialHomePage(
+                              behavior.backToSocialHomePage(
                                 context,
                               );
                             },
                             onFailure: () {
                               AmityDialog().showAlertErrorDialog(
                                   title: context.l10n.error_leave_community,
-                                  message:context.l10n.error_leave_community_description);
+                                  message: context
+                                      .l10n.error_leave_community_description);
                             }));
                   });
             }),
@@ -142,9 +173,13 @@ class AmityCommunitySettingPage extends NewBasePage {
             // Close Community
             if (state.shouldShowCloseCommunity)
               _getSettingDetailItemWidget(
-                  configProvider.getConfig('$pageId/*/close_community')['text'],
-                  configProvider.getConfig(
-                      '$pageId/*/close_community_description')['text'],
+                  behavior.settingItemTitle?.call(context, 'close_community') ??
+                      configProvider
+                          .getConfig('$pageId/*/close_community')['text'],
+                  behavior.settingItemTitle
+                          ?.call(context, 'close_community_description') ??
+                      configProvider.getConfig(
+                          '$pageId/*/close_community_description')['text'],
                   onTap: () {
                 ConfirmationDialog().show(
                     context: context,
@@ -157,9 +192,7 @@ class AmityCommunitySettingPage extends NewBasePage {
                               toastBloc: context.read<AmityToastBloc>(),
                               onSuccess: () {
                                 // Navigate back to the social home page
-                                FreedomUIKitBehavior
-                                    .instance.communitySettingPageBehavior
-                                    .backToSocialHomePage(
+                                behavior.backToSocialHomePage(
                                   context,
                                 );
                               },

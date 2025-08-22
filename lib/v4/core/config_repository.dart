@@ -162,7 +162,7 @@ extension ThemeConfig on ConfigRepository {
       baseInverseColor:
           theme?.baseInverseColor ?? fallbackTheme.baseInverseColor,
       backgroundShade1Color: fallbackTheme.backgroundShade1Color,
-      highlightColor: fallbackTheme.highlightColor,
+      highlightColor: theme?.highlightColor ?? fallbackTheme.highlightColor,
     );
   }
 

@@ -762,4 +762,406 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get community_post_permission_description_label => 'You can control who can create posts in your community.';
+
+  @override
+  String get post_item_bottom_nonmember_label => 'Join community to interact with all posts';
+
+  @override
+  String get notification_turn_on_success => 'Notification turned on';
+
+  @override
+  String get notification_turn_on_error => 'Failed to turn on notification. Please try again.';
+
+  @override
+  String get notification_turn_off_success => 'Notification turned off';
+
+  @override
+  String get notification_turn_off_error => 'Failed to turn off notification. Please try again.';
+
+  @override
+  String get user_report_success => 'User reported.';
+
+  @override
+  String get user_report_error => 'Failed to report user. Please try again.';
+
+  @override
+  String get user_unreport_success => 'User unreported.';
+
+  @override
+  String get user_unreport_error => 'Failed to unreport user. Please try again.';
+
+  @override
+  String get user_block_success => 'User blocked.';
+
+  @override
+  String get user_block_error => 'Failed to block user. Please try again.';
+
+  @override
+  String get user_unblock_success => 'User unblocked.';
+
+  @override
+  String get user_unblock_error => 'Failed to unblock user. Please try again.';
+
+  @override
+  String get search_no_members_found => 'No members found';
+
+  @override
+  String get moderator_promotion_title => 'Moderator promotion';
+
+  @override
+  String get moderator_promotion_description => 'Are you sure you want to promote this member to Moderator? They will gain access to all moderator features.';
+
+  @override
+  String get moderator_promote_button => 'Promote';
+
+  @override
+  String get moderator_demotion_title => 'Moderator demotion';
+
+  @override
+  String get moderator_demotion_description => 'Are you sure you want to demote this Moderator? They will lose access to all moderator features.';
+
+  @override
+  String get moderator_demote_button => 'Demote';
+
+  @override
+  String get member_removal_confirm_title => 'Confirm removal';
+
+  @override
+  String get member_removal_confirm_description => 'Are you sure you want to remove this member from the group? They will be aware of their removal.';
+
+  @override
+  String get member_remove_button => 'Remove';
+
+  @override
+  String get user_ban_confirm_title => 'Confirm ban';
+
+  @override
+  String get user_ban_confirm_description => 'Are you sure you want to ban this user? They will be removed from the group and won\'t be able to find it or rejoin unless they are unbanned.';
+
+  @override
+  String get user_ban_button => 'Ban';
+
+  @override
+  String get member_add_success => 'Successfully added member to this community.';
+
+  @override
+  String get member_add_error => 'Failed to add member. Please try again.';
+
+  @override
+  String get moderator_promote_success => 'Successfully promoted to moderator.';
+
+  @override
+  String get moderator_promote_error => 'Failed to promote member. Please try again.';
+
+  @override
+  String get moderator_demote_success => 'Successfully demoted to member.';
+
+  @override
+  String get moderator_demote_error => 'Failed to demote member. Please try again.';
+
+  @override
+  String get member_remove_success => 'Member removed from this community.';
+
+  @override
+  String get member_remove_error => 'Failed to remove member. Please try again.';
+
+  @override
+  String get user_follow_success => 'User followed.';
+
+  @override
+  String get user_follow_error => 'Oops, something went wrong.';
+
+  @override
+  String get user_unfollow_success => 'User unfollowed.';
+
+  @override
+  String get user_unfollow_error => 'Oops, something went wrong.';
+
+  @override
+  String get post_target_selection_title => 'Post to';
+
+  @override
+  String get user_feed_blocked_title => 'You\'ve blocked this user';
+
+  @override
+  String get user_feed_blocked_description => 'Unblock to see their posts.';
+
+  @override
+  String get user_feed_private_title => 'This account is private';
+
+  @override
+  String get user_feed_private_description => 'Follow this user to see their posts.';
+
+  @override
+  String get timestamp_just_now => 'Just now';
+
+  @override
+  String get timestamp_now => 'now';
+
+  @override
+  String get chat_notification_turn_on => 'Turn on notifications';
+
+  @override
+  String get chat_notification_turn_off => 'Turn off notifications';
+
+  @override
+  String get chat_block_user_title => 'Block user?';
+
+  @override
+  String chat_block_user_description(String displayName) {
+    return '$displayName won\'t be able to send you the message. They won\'t be notified that you\'ve blocked them.';
+  }
+
+  @override
+  String get chat_unblock_user_title => 'Unblock user?';
+
+  @override
+  String chat_unblock_user_description(String displayName) {
+    return '$displayName will now be able to send you the message. They won\'t be notified that you\'ve unblocked them.';
+  }
+
+  @override
+  String get chat_message_photo => 'Send a photo';
+
+  @override
+  String get chat_message_video => 'Send a video';
+
+  @override
+  String get user_follow_request_new => 'New follow requests';
+
+  @override
+  String user_follow_request_approval(String count) {
+    return '$count requests need your approval';
+  }
+
+  @override
+  String get user_unfollow => 'Unfollow';
+
+  @override
+  String get user_follow_unable_title => 'Unable to follow this user';
+
+  @override
+  String get user_follow_unable_description => 'Oops! something went wrong. Please try again later.';
+
+  @override
+  String get user_follow => 'Follow';
+
+  @override
+  String get user_follow_cancel => 'Cancel Request';
+
+  @override
+  String get user_following => 'Following';
+
+  @override
+  String get user_block_confirm_title => 'Block user?';
+
+  @override
+  String user_block_confirm_description(String displayName) {
+    return '$displayName won\'t be able to see posts and comments that you\'ve created. They won\'t be notified that you\'ve blocked them.';
+  }
+
+  @override
+  String get user_block_confirm_button => 'Block';
+
+  @override
+  String get user_unblock_confirm_title => 'Unblock user?';
+
+  @override
+  String user_unblock_confirm_description(String displayName) {
+    return '$displayName will now be able to see posts and comments that you\'ve created. They won\'t be notified that you\'ve unblocked them.';
+  }
+
+  @override
+  String get user_unblock_confirm_button => 'Unblock';
+
+  @override
+  String get user_unfollow_confirm_title => 'Unfollow this user?';
+
+  @override
+  String get user_unfollow_confirm_description => 'If you change your mind, you\'ll have to request to follow them again.';
+
+  @override
+  String get user_unfollow_confirm_button => 'Unfollow';
+
+  @override
+  String get category_default_title => 'Category';
+
+  @override
+  String get community_empty_state => 'No community yet';
+
+  @override
+  String get community_pending_requests_title => 'Pending Requests';
+
+  @override
+  String get community_pending_requests_empty_title => 'No pending requests available';
+
+  @override
+  String get community_pending_requests_empty_description => 'Enable post review or join approval in community settings to manage requests.';
+
+  @override
+  String get community_join_requests_coming_soon => 'Join requests feature coming soon';
+
+  @override
+  String get community_pending_posts_warning => 'Decline pending post will permanently delete the selected post from community.';
+
+  @override
+  String get community_pending_posts_empty => 'No pending posts';
+
+  @override
+  String get community_pending_post_accept => 'Accept';
+
+  @override
+  String get community_pending_post_decline => 'Decline';
+
+  @override
+  String get community_pending_post_delete_success => 'Post deleted.';
+
+  @override
+  String get community_pending_post_delete_error => 'Failed to delete post. Please try again.';
+
+  @override
+  String get community_pending_post_approve_success => 'Post accepted.';
+
+  @override
+  String get community_pending_post_approve_error => 'Failed to accept post. This post has been reviewed by another moderator.';
+
+  @override
+  String get community_pending_post_decline_success => 'Post declined.';
+
+  @override
+  String get community_pending_post_decline_error => 'Failed to decline post. This post has been reviewed by another moderator.';
+
+  @override
+  String poll_option_hint(int optionNumber) {
+    return 'Option $optionNumber';
+  }
+
+  @override
+  String get poll_add_option => 'Add option';
+
+  @override
+  String get poll_multiple_selection_title => 'Multiple selection';
+
+  @override
+  String get poll_multiple_selection_description => 'Let participants vote more than one option.';
+
+  @override
+  String poll_ends_on(String endDate) {
+    return 'Ends on $endDate';
+  }
+
+  @override
+  String get poll_ends_on_label => 'Ends on';
+
+  @override
+  String get poll_select_date => 'Select Date';
+
+  @override
+  String get poll_select_time => 'Select Time';
+
+  @override
+  String poll_duration_days(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get poll_time_hour => 'Hour';
+
+  @override
+  String get poll_time_minute => 'Minute';
+
+  @override
+  String get profile_edit_display_name => 'Display Name';
+
+  @override
+  String get profile_edit_about => 'About';
+
+  @override
+  String get profile_edit_unsupported_image_title => 'Unsupported image type';
+
+  @override
+  String get profile_edit_unsupported_image_description => 'Please upload a PNG or JPG image.';
+
+  @override
+  String get profile_edit_inappropriate_image_title => 'Inappropriate image';
+
+  @override
+  String get profile_edit_inappropriate_image_description => 'Please choose a different image to upload.';
+
+  @override
+  String get profile_edit_unsaved_changes_title => 'Unsaved changes';
+
+  @override
+  String get profile_edit_unsaved_changes_description => 'Are you sure you want to discard the changes? They will be lost when you leave this page.';
+
+  @override
+  String get chat_title => 'Chat';
+
+  @override
+  String get chat_tab_all => 'All';
+
+  @override
+  String get chat_tab_direct => 'Direct';
+
+  @override
+  String get chat_tab_groups => 'Groups';
+
+  @override
+  String get chat_waiting_for_network => 'Waiting for network...';
+
+  @override
+  String get chat_direct_chat => 'Direct chat';
+
+  @override
+  String get chat_group_chat => 'Group chat';
+
+  @override
+  String get chat_archived => 'Archived';
+
+  @override
+  String get message_editing_message => 'Editing message';
+
+  @override
+  String get message_replying_yourself => 'yourself';
+
+  @override
+  String get message_replied_message => 'Replied message';
+
+  @override
+  String message_replying_to(String displayName) {
+    return 'Replying to $displayName';
+  }
+
+  @override
+  String get message_media => 'Media';
+
+  @override
+  String get chat_loading => 'Loading chat...';
+
+  @override
+  String get chat_blocked_message => 'You can\'t send messages to this person.';
+
+  @override
+  String get chat_notifications_disabled => 'You have disabled notifications for chat';
+
+  @override
+  String get chat_archive => 'Archive';
+
+  @override
+  String get chat_unarchive => 'Unarchive';
+
+  @override
+  String get chat_message_deleted => 'This message was deleted';
+
+  @override
+  String get chat_message_no_preview => 'No preview supported for this message type';
+
+  @override
+  String get chat_no_message_yet => 'No message yet';
 }

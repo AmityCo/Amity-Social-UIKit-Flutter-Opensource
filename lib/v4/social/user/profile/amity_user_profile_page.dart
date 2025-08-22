@@ -15,7 +15,6 @@ import 'package:amity_uikit_beta_service/v4/social/user/profile/edit_profile_pag
 import 'package:amity_uikit_beta_service/v4/social/user/profile/user_moderation_confirmation_handler.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/video_feed/user_video_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
-import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -123,7 +122,7 @@ class AmityUserProfilePage extends NewBasePage {
                       },
                     ),
                   ),
-                  
+
                   if (state.selectedIndex == UserProfileTabIndex.feed)
                     UserFeedComponent(
                       key: Key(
@@ -230,7 +229,7 @@ class AmityUserProfilePage extends NewBasePage {
     if (featureConfig.post.isPostCreationEnabled()) {
       userActions.add(postOption);
     }
-    
+
     if (featureConfig.post.poll.createEnabled) {
       userActions.add(pollOption);
     }
@@ -286,6 +285,8 @@ class AmityUserProfilePage extends NewBasePage {
               action: UserModerationAction.report,
               userId: userId,
               toastBloc: context.read<AmityToastBloc>(),
+              successMessage: context.l10n.user_report_success,
+              errorMessage: context.l10n.user_report_error,
               onError: () {}));
         });
 
@@ -299,6 +300,8 @@ class AmityUserProfilePage extends NewBasePage {
               action: UserModerationAction.unreport,
               userId: userId,
               toastBloc: toastBloc,
+              successMessage: context.l10n.user_unreport_success,
+              errorMessage: context.l10n.user_unreport_error,
               onError: () {}));
         });
 
@@ -317,6 +320,8 @@ class AmityUserProfilePage extends NewBasePage {
                 action: UserModerationAction.block,
                 userId: userId,
                 toastBloc: toastBloc,
+                successMessage: context.l10n.user_block_success,
+                errorMessage: context.l10n.user_block_error,
                 onError: () {},
               ));
             });

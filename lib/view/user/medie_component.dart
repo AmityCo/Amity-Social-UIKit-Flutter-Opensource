@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/video_player.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/view/social/imag_viewer.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -34,11 +35,13 @@ class MediaGalleryPage extends StatelessWidget {
               const SizedBox(
                 width: 12,
               ),
-              _mediaButton(context, "Photos", MediaType.photos),
+              _mediaButton(
+                  context, context.l10n.general_photo, MediaType.photos),
               const SizedBox(
                 width: 6,
               ),
-              _mediaButton(context, "Videos", MediaType.videos),
+              _mediaButton(
+                  context, context.l10n.general_video, MediaType.videos),
             ],
           ),
           const SizedBox(
@@ -48,15 +51,15 @@ class MediaGalleryPage extends StatelessWidget {
               ? Consumer<CommuFeedVM>(
                   builder: (context, vm, child) {
                     return vm.getMediaType() == MediaType.photos
-                        ? _buildMediaGrid(vm.getCommunityImagePosts())
-                        : _buildVideoGrid(vm.getCommunityVideoPosts());
+                        ? _buildMediaGrid(context, vm.getCommunityImagePosts())
+                        : _buildVideoGrid(context, vm.getCommunityVideoPosts());
                   },
                 )
               : Consumer<UserFeedVM>(
                   builder: (context, vm, child) {
                     return vm.getMediaType() == MediaType.photos
-                        ? _buildMediaGrid(vm.amityImagePosts)
-                        : _buildVideoGrid(vm.amityVideoPosts);
+                        ? _buildMediaGrid(context, vm.amityImagePosts)
+                        : _buildVideoGrid(context, vm.amityVideoPosts);
                   },
                 ),
         ],
@@ -104,7 +107,7 @@ class MediaGalleryPage extends StatelessWidget {
     );
   }
 
-  Widget buildPrivateAccountWidget() {
+  Widget buildPrivateAccountWidget(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -114,16 +117,16 @@ class MediaGalleryPage extends StatelessWidget {
           package: "amity_uikit_beta_service",
         ),
         const SizedBox(height: 12),
-        const Text(
-          "This account is private",
-          style: TextStyle(
+        Text(
+          context.l10n.user_feed_private_title,
+          style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w600,
               color: Color(0xff292B32)),
         ),
-        const Text(
-          "Follow this user to see all posts",
-          style: TextStyle(
+        Text(
+          context.l10n.user_feed_private_description,
+          style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w400,
               color: Color(0xffA5A9B5)),
@@ -132,7 +135,7 @@ class MediaGalleryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMediaGrid(List<AmityPost> amityPosts) {
+  Widget _buildMediaGrid(BuildContext context, List<AmityPost> amityPosts) {
     Widget noPostWidget = SingleChildScrollView(
       child: SizedBox(
         height: 300,
@@ -144,9 +147,9 @@ class MediaGalleryPage extends StatelessWidget {
               package: "amity_uikit_beta_service",
             ),
             const SizedBox(height: 12),
-            const Text(
-              "No photos yet",
-              style: TextStyle(
+            Text(
+              context.l10n.feed_no_photos,
+              style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
                   color: Color(0xffA5A9B5)),
@@ -199,7 +202,7 @@ class MediaGalleryPage extends StatelessWidget {
         builder: (context, vm, child) {
           if (vm.amityMyFollowInfo.status != AmityFollowStatus.ACCEPTED &&
               vm.amityUser!.userId != AmityCoreClient.getUserId()) {
-            return buildPrivateAccountWidget();
+            return buildPrivateAccountWidget(context);
           } else if (vm.amityImagePosts.isEmpty) {
             return noPostWidget;
           } else {
@@ -223,7 +226,7 @@ class MediaGalleryPage extends StatelessWidget {
     }
   }
 
-  Widget _buildVideoGrid(List<AmityPost> amityPosts) {
+  Widget _buildVideoGrid(BuildContext context, List<AmityPost> amityPosts) {
     var noPostWidget = SingleChildScrollView(
       child: SizedBox(
         height: 300,
@@ -235,9 +238,9 @@ class MediaGalleryPage extends StatelessWidget {
               package: "amity_uikit_beta_service",
             ),
             const SizedBox(height: 12),
-            const Text(
-              "No videos yet",
-              style: TextStyle(
+            Text(
+              context.l10n.feed_no_videos,
+              style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
                   color: Color(0xffA5A9B5)),
@@ -312,7 +315,7 @@ class MediaGalleryPage extends StatelessWidget {
         builder: (context, vm, child) {
           if (vm.amityMyFollowInfo.status != AmityFollowStatus.ACCEPTED &&
               vm.amityUser!.userId != AmityCoreClient.getUserId()) {
-            return buildPrivateAccountWidget();
+            return buildPrivateAccountWidget(context);
           } else if (vm.amityVideoPosts.isEmpty) {
             return noPostWidget;
           } else {

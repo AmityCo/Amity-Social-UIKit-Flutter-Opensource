@@ -387,7 +387,7 @@ class CommentItem extends BaseElement {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "${comment.createdAt?.toSocialTimestamp() ?? ""}${(comment.editedAt != comment.createdAt) ? context.l10n.general_edited_suffix : ""}",
+                "${comment.createdAt?.toSocialTimestamp(context) ?? ""}${(comment.editedAt != comment.createdAt) ? context.l10n.general_edited_suffix : ""}",
                 style: TextStyle(
                   color: theme.baseColorShade2,
                   fontSize: 13,

@@ -42,9 +42,7 @@ class AmityTheme {
       alertColor: _colorFromHex(json['alert_color']) ?? fallbackTheme.alertColor,
       backgroundColor: _colorFromHex(json['background_color']) ?? fallbackTheme.backgroundColor,
       backgroundShade1Color: _colorFromHex(json['background_shade1_color']) ?? fallbackTheme.backgroundShade1Color,
-      highlightColor: _colorFromHex(
-        json['highlight_color'],
-      ) ?? fallbackTheme.highlightColor,
+      highlightColor: _colorFromHex(json['highlight_color']) ?? fallbackTheme.highlightColor,
     );
   }
 

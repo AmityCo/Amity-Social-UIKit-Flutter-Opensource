@@ -44,31 +44,34 @@ class AmityRecommendedCommunitiesComponent extends NewBaseComponent {
             return const SizedBox.shrink();
           }
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 16),
-                child: Text(context.l10n.community_recommended_for_you,
-                    style: AmityTextStyle.titleBold(theme.baseColor)),
-              ),
-              SizedBox(
-                height: 219,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: state.communities.length,
-                  itemBuilder: (context, index) =>
-                      AmityRecommendedCommunityCard(
-                    theme: theme,
-                    community: state.communities[index],
-                    onJoinTap: () => context
-                        .read<RecommendedCommunitiesCubit>()
-                        .joinCommunity(state.communities[index].communityId!),
+          return Container(
+            color: theme.backgroundColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, bottom: 16),
+                  child: Text(context.l10n.community_recommended_for_you,
+                      style: AmityTextStyle.titleBold(theme.baseColor)),
+                ),
+                SizedBox(
+                  height: 219,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: state.communities.length,
+                    itemBuilder: (context, index) =>
+                        AmityRecommendedCommunityCard(
+                      theme: theme,
+                      community: state.communities[index],
+                      onJoinTap: () => context
+                          .read<RecommendedCommunitiesCubit>()
+                          .joinCommunity(state.communities[index].communityId!),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

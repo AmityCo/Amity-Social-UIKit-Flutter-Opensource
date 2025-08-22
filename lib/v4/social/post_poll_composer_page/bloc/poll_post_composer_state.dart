@@ -7,7 +7,7 @@ class PollComposerState extends Equatable {
   final int selectedPollDurationIndex;
   final DateTime? customDate;
   final bool isPosting;
-  final List<String> durationOptions;
+  final List<int> durationDays; // Store days as integers instead of strings
 
   const PollComposerState({
     this.question = '',
@@ -16,7 +16,7 @@ class PollComposerState extends Equatable {
     this.selectedPollDurationIndex = 4, // Default to the first duration option
     this.customDate,
     this.isPosting = false,
-    this.durationOptions = const ['1 day', '3 days', '7 days', '14 days', '30 days'],
+    this.durationDays = const [1, 3, 7, 14, 30], // Store as integers
   });
 
   int get pollDurationInMilliseconds {
@@ -25,9 +25,10 @@ class PollComposerState extends Equatable {
       final now = DateTime.now();
       final difference = customDate!.difference(now);
       return difference.isNegative ? 0 : difference.inMilliseconds;
-    } else if (selectedPollDurationIndex >= 0 && selectedPollDurationIndex < durationOptions.length) {
+    } else if (selectedPollDurationIndex >= 0 &&
+        selectedPollDurationIndex < durationDays.length) {
       // Calculate duration from predefined options
-      final days = int.parse(durationOptions[selectedPollDurationIndex].split(' ')[0]);
+      final days = durationDays[selectedPollDurationIndex];
       return Duration(days: days).inMilliseconds;
     }
     return 0; // Default to 0 if no valid duration is found
@@ -40,40 +41,41 @@ class PollComposerState extends Equatable {
     int? selectedPollDurationIndex,
     DateTime? customDate,
     bool? isPosting,
-    List<String>? durationOptions,
+    List<int>? durationDays,
   }) {
     return PollComposerState(
       question: question ?? this.question,
       options: options ?? this.options,
       isMultipleChoice: isMultipleChoice ?? this.isMultipleChoice,
-      selectedPollDurationIndex: selectedPollDurationIndex ?? this.selectedPollDurationIndex,
+      selectedPollDurationIndex:
+          selectedPollDurationIndex ?? this.selectedPollDurationIndex,
       customDate: customDate ?? this.customDate,
       isPosting: isPosting ?? this.isPosting,
-      durationOptions: durationOptions ?? this.durationOptions,
+      durationDays: durationDays ?? this.durationDays,
     );
   }
 
   @override
   List<Object?> get props => [
-    question,
-    options,
-    isMultipleChoice,
-    selectedPollDurationIndex,
-    customDate,
-    isPosting,
-    durationOptions,
-  ];
+        question,
+        options,
+        isMultipleChoice,
+        selectedPollDurationIndex,
+        customDate,
+        isPosting,
+        durationDays,
+      ];
 }
 
 class PollComposerInitial extends PollComposerState {
   const PollComposerInitial()
       : super(
-    question: '',
-    options: const ['', ''],
-    isMultipleChoice: false,
-    selectedPollDurationIndex: 0,
-    customDate: null,
-    isPosting: false,
-    durationOptions: const ['1 day', '3 days', '7 days', '14 days', '30 days'],
-  );
+          question: '',
+          options: const ['', ''],
+          isMultipleChoice: false,
+          selectedPollDurationIndex: 0,
+          customDate: null,
+          isPosting: false,
+          durationDays: const [1, 3, 7, 14, 30],
+        );
 }

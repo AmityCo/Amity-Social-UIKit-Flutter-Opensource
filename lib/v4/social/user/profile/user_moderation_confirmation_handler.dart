@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,29 +17,27 @@ class UserModerationConfirmationHandler {
       {required String displayName, required Function onConfirm}) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return CupertinoAlertDialog(
-          title: const Text("Block user?"),
-          content: Text(
-              "$displayName won't be able to see posts and comments that you've created. They won't be notified that you've blocked them."),
+          title: Text(context.l10n.user_block_confirm_title),
+          content: Text(context.l10n.user_block_confirm_description(displayName)),
           actions: [
             CupertinoDialogAction(
               child: Text(
-                "Cancel",
+                context.l10n.general_cancel,
                 style: AmityTextStyle.body(theme.highlightColor),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
             ),
             CupertinoDialogAction(
               child: Text(
-                "Block",
+                context.l10n.user_block_confirm_button,
                 style: AmityTextStyle.bodyBold(theme.alertColor),
               ),
               onPressed: () {
-                Navigator.pop(context);
-
+                Navigator.pop(dialogContext);
                 onConfirm();
               },
             ),
@@ -52,29 +51,27 @@ class UserModerationConfirmationHandler {
       {required String displayName, required Function onConfirm}) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return CupertinoAlertDialog(
-          title: const Text("Unblock user?"),
-          content: Text(
-              "$displayName will now be able to see posts and comments that you've created. They won't be notified that you've unblocked them."),
+          title: Text(context.l10n.user_unblock_confirm_title),
+          content: Text(context.l10n.user_unblock_confirm_description(displayName)),
           actions: [
             CupertinoDialogAction(
               child: Text(
-                "Cancel",
+                context.l10n.general_cancel,
                 style: AmityTextStyle.body(theme.highlightColor),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
             ),
             CupertinoDialogAction(
               child: Text(
-                "Unblock",
+                context.l10n.user_unblock_confirm_button,
                 style: AmityTextStyle.bodyBold(theme.alertColor),
               ),
               onPressed: () {
-                Navigator.pop(context);
-
+                Navigator.pop(dialogContext);
                 onConfirm();
               },
             ),
@@ -87,29 +84,27 @@ class UserModerationConfirmationHandler {
   void askConfirmationToUnfollowUser({required Function onConfirm}) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (dialogContext) {
         return CupertinoAlertDialog(
-          title: const Text("Unfollow this user?"),
-          content: const Text(
-              "If you change your mind, you'll have to request to follow them again."),
+          title: Text(context.l10n.user_unfollow_confirm_title),
+          content: Text(context.l10n.user_unfollow_confirm_description),
           actions: [
             CupertinoDialogAction(
               child: Text(
-                "Cancel",
+                context.l10n.general_cancel,
                 style: AmityTextStyle.body(theme.highlightColor),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
             ),
             CupertinoDialogAction(
               child: Text(
-                "Unfollow",
+                context.l10n.user_unfollow_confirm_button,
                 style: AmityTextStyle.bodyBold(theme.alertColor),
               ),
               onPressed: () {
-                Navigator.pop(context);
-
+                Navigator.pop(dialogContext);
                 onConfirm();
               },
             ),

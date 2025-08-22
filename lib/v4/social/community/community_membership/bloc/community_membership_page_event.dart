@@ -7,7 +7,8 @@ class CommunityMembershipPageEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class CommunityMembershipPageMemberLoadedEvent extends CommunityMembershipPageEvent {
+class CommunityMembershipPageMemberLoadedEvent
+    extends CommunityMembershipPageEvent {
   final List<AmityCommunityMember> members;
   const CommunityMembershipPageMemberLoadedEvent(this.members);
 
@@ -15,7 +16,8 @@ class CommunityMembershipPageMemberLoadedEvent extends CommunityMembershipPageEv
   List<Object> get props => [members];
 }
 
-class CommunityMembershipPageModeratorLoadedEvent extends CommunityMembershipPageEvent {
+class CommunityMembershipPageModeratorLoadedEvent
+    extends CommunityMembershipPageEvent {
   final List<AmityCommunityMember> moderators;
 
   const CommunityMembershipPageModeratorLoadedEvent(this.moderators);
@@ -38,8 +40,15 @@ class CommunityMembershipPageAddMemberEvent
     extends CommunityMembershipPageEvent {
   final List<String> userIds;
   final AmityToastBloc toastBloc;
+  final String successMessage;
+  final String errorMessage;
 
-  const CommunityMembershipPageAddMemberEvent(this.userIds, this.toastBloc);
+  const CommunityMembershipPageAddMemberEvent(
+    this.userIds,
+    this.toastBloc, 
+    this.successMessage,
+    this.errorMessage,
+  );
 
   @override
   List<Object> get props => [userIds, toastBloc];
@@ -55,14 +64,29 @@ class CommunityMembershipPageSearchMemberEvent
   List<Object> get props => [keyword];
 }
 
-enum CommunityMembershipPageBottomSheetAction { promote, demote, remove, report, unreport }
+enum CommunityMembershipPageBottomSheetAction {
+  promote,
+  demote,
+  remove,
+  report,
+  unreport
+}
 
-class CommunityMembershipPageBottomSheetEvent extends CommunityMembershipPageEvent {
+class CommunityMembershipPageBottomSheetEvent
+    extends CommunityMembershipPageEvent {
   final AmityCommunityMember member;
   final CommunityMembershipPageBottomSheetAction action;
   final AmityToastBloc toastBloc;
+  final String successMessage;
+  final String errorMessage;
 
-  const CommunityMembershipPageBottomSheetEvent(this.member, this.action, this.toastBloc);
+  const CommunityMembershipPageBottomSheetEvent(
+    this.member,
+    this.action,
+    this.toastBloc, 
+    this.successMessage,
+    this.errorMessage,
+  );
 
   @override
   List<Object> get props => [action, toastBloc];

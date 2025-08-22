@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
@@ -36,11 +37,11 @@ class AmityCommunitiesByCategoryPage extends NewBasePage {
     return Scaffold(
       backgroundColor: theme.backgroundColor,
       appBar: AmityAppBar(
-          title: category.name ?? 'Category',
+          title: category.name ?? context.l10n.category_default_title,
           configProvider: configProvider,
           theme: theme),
       body: state.communities.isEmpty
-          ? _getEmptyState()
+          ? _getEmptyState(context)
           : CustomScrollView(
               controller: _scrollController,
               slivers: [
@@ -152,7 +153,8 @@ class AmityCommunitiesByCategoryPage extends NewBasePage {
                   ),
                 const SizedBox(height: 4),
                 Text(
-                  '${(community.membersCount ?? 0).formattedCompactString()} members',
+                  context.l10n
+                      .community_members_count(community.membersCount ?? 0),
                   style: TextStyle(
                     fontSize: 12,
                     color: Theme.of(context).hintColor,
@@ -166,7 +168,7 @@ class AmityCommunitiesByCategoryPage extends NewBasePage {
     );
   }
 
-  Widget _getEmptyState() {
+  Widget _getEmptyState(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -180,7 +182,7 @@ class AmityCommunitiesByCategoryPage extends NewBasePage {
               package: 'amity_uikit_beta_service',
             ),
             const SizedBox(height: 16),
-            Text('No community yet',
+            Text(context.l10n.community_empty_state,
                 style: AmityTextStyle.titleBold(theme.baseColorShade3)),
             const SizedBox(height: 40)
           ],

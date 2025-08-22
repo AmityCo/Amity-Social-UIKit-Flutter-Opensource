@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/v4/core/freedom_theme_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/freedom_community_membership_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_page_behavior.dart';
@@ -37,4 +38,6 @@ class FreedomUIKitBehavior {
 
   FreedomCommunityMembershipBehavior communityMembershipBehavior =
       FreedomCommunityMembershipBehavior();
+
+  FreedomThemeBehavior themeBehavior = FreedomThemeBehavior();
 }

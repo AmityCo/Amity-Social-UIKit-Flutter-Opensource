@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -70,13 +71,15 @@ class ConfigRepository {
 
 extension ThemeConfig on ConfigRepository {
   AmityThemeStyle _getCurrentThemeStyle() {
-    final systemStyle =
+    final behavior = AmityUIKit4Manager.freedomBehavior.themeBehavior;
+    final systemStyle = behavior.systemStyle ??
         SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    final configStyle = _config['preferred_theme'] == 'dark'
-        ? AmityThemeStyle.dark
-        : _config['preferred_theme'] == 'light'
-            ? AmityThemeStyle.light
-            : AmityThemeStyle.system;
+    final configStyle = behavior.theme ??
+        (_config['preferred_theme'] == 'dark'
+            ? AmityThemeStyle.dark
+            : _config['preferred_theme'] == 'light'
+                ? AmityThemeStyle.light
+                : AmityThemeStyle.system);
 
     final style = configStyle == AmityThemeStyle.system
         ? (systemStyle == Brightness.light

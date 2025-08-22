@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -112,7 +113,8 @@ class UserFollowListComponent extends NewBaseComponent {
                     // Go to that user profile
                     final userId = user?.userId;
                     if (userId != null && userId.isNotEmpty) {
-                      AmityUIKit4Manager.behavior.userRelationshipPageBehavior.goToUserProfilePage(context, userId);
+                      AmityUIKit4Manager.behavior.userRelationshipPageBehavior
+                          .goToUserProfilePage(context, userId);
                     }
                   },
                 );
@@ -134,7 +136,7 @@ class UserFollowListComponent extends NewBaseComponent {
     final userId = user?.userId ?? "";
 
     final reportAction = BottomSheetMenuOption(
-        title: "Report user",
+        title: context.l10n.user_report,
         icon: "assets/Icons/amity_ic_report_user.svg",
         onTap: () {
           Navigator.of(context).pop();
@@ -142,11 +144,13 @@ class UserFollowListComponent extends NewBaseComponent {
           relationshipBloc.addEvent(UserModerationEvent(
               action: UserModerationAction.report,
               userId: userId,
-              toastBloc: context.read<AmityToastBloc>()));
+              toastBloc: context.read<AmityToastBloc>(),
+              successMessage: context.l10n.user_report_success,
+              errorMessage: context.l10n.user_report_error));
         });
 
     final unreportAction = BottomSheetMenuOption(
-        title: "Unreport user",
+        title: context.l10n.user_unreport,
         icon: "assets/Icons/amity_ic_unreport_user.svg",
         onTap: () {
           Navigator.of(context).pop();
@@ -154,11 +158,13 @@ class UserFollowListComponent extends NewBaseComponent {
           relationshipBloc.addEvent(UserModerationEvent(
               action: UserModerationAction.unreport,
               userId: userId,
-              toastBloc: toastBloc));
+              toastBloc: toastBloc,
+              successMessage: context.l10n.user_unreport_success,
+              errorMessage: context.l10n.user_unreport_error));
         });
 
     final blockUser = BottomSheetMenuOption(
-        title: "Block user",
+        title: context.l10n.user_block,
         icon: "assets/Icons/amity_ic_block_user.svg",
         onTap: () {
           Navigator.of(context).pop();
@@ -171,12 +177,14 @@ class UserFollowListComponent extends NewBaseComponent {
                 relationshipBloc.addEvent(UserModerationEvent(
                     action: UserModerationAction.block,
                     userId: userId,
-                    toastBloc: toastBloc));
+                    toastBloc: toastBloc,
+                    successMessage: context.l10n.user_block_success,
+                    errorMessage: context.l10n.user_block_error));
               });
         });
 
     final unblockUser = BottomSheetMenuOption(
-        title: "Unblock user",
+        title: context.l10n.user_unblock,
         icon: "assets/Icons/amity_ic_block_user.svg",
         onTap: () {
           Navigator.of(context).pop();
@@ -189,7 +197,9 @@ class UserFollowListComponent extends NewBaseComponent {
                 relationshipBloc.addEvent(UserModerationEvent(
                     action: UserModerationAction.unblock,
                     userId: userId,
-                    toastBloc: toastBloc));
+                    toastBloc: toastBloc,
+                    successMessage: context.l10n.user_unblock_success,
+                    errorMessage: context.l10n.user_unblock_error));
               });
         });
 

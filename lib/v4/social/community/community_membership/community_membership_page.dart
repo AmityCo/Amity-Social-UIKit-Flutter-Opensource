@@ -167,7 +167,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                     child: member.user != null
                         ? AmityUserAvatar(
                             avatarUrl: member.user?.avatarUrl,
-                            displayName: member.user?.displayName ?? context.l10n.user_profile_unknown_name,
+                            displayName: member.user?.displayName ??
+                                context.l10n.user_profile_unknown_name,
                             isDeletedUser: false)
                         : _placeholderAvatar(),
                   ),
@@ -212,7 +213,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                 Flexible(
                   child: GestureDetector(
                     child: Text(
-                      member.user?.displayName ?? context.l10n.user_profile_unknown_name,
+                      member.user?.displayName ??
+                          context.l10n.user_profile_unknown_name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -223,17 +225,18 @@ class AmityCommunityMembershipPage extends NewBasePage {
                     ),
                     onTap: () {
                       final userId = member.user?.userId;
-                                        if (userId != null && userId.isNotEmpty) {
-                                          AmityUIKit4Manager.behavior.communityMembershipPageBehavior
-                                              .goToUserProfilePage(
-                                            context,
-                                            userId,
-                                          );
-                                        }
+                      if (userId != null && userId.isNotEmpty) {
+                        AmityUIKit4Manager
+                            .behavior.communityMembershipPageBehavior
+                            .goToUserProfilePage(
+                          context,
+                          userId,
+                        );
+                      }
                     },
                   ),
                 ),
-                if(member.user?.isBrand ?? false) brandBadge()
+                if (member.user?.isBrand ?? false) brandBadge()
               ],
             )),
 
@@ -304,15 +307,22 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         ? context.l10n.community_demote_member
                         : context.l10n.community_promote_moderator,
                     onTap: () {
+                      final action = member.isModerator()
+                          ? CommunityMembershipPageBottomSheetAction.demote
+                          : CommunityMembershipPageBottomSheetAction.promote;
+
+                      final successMessage = member.isModerator()
+                          ? context.l10n.moderator_demote_success
+                          : context.l10n.moderator_promote_success;
+
+                      final errorMessage = member.isModerator()
+                          ? context.l10n.moderator_demote_error
+                          : context.l10n.moderator_promote_error;
+
                       context.read<CommunityMembershipPageBloc>().add(
                           CommunityMembershipPageBottomSheetEvent(
-                              member,
-                              member.isModerator()
-                                  ? CommunityMembershipPageBottomSheetAction
-                                      .demote
-                                  : CommunityMembershipPageBottomSheetAction
-                                      .promote,
-                              context.read<AmityToastBloc>()));
+                              member, action, context.read<AmityToastBloc>(),
+                              successMessage, errorMessage));
                       Navigator.pop(context);
                     },
                   ),
@@ -322,15 +332,24 @@ class AmityCommunityMembershipPage extends NewBasePage {
                           ? context.l10n.user_unreport
                           : context.l10n.user_report,
                       onTap: () {
+                        final isReporting =
+                            !(member.user?.isFlaggedByMe ?? false);
+                        final action = isReporting
+                            ? CommunityMembershipPageBottomSheetAction.report
+                            : CommunityMembershipPageBottomSheetAction.unreport;
+
+                        final successMessage = isReporting
+                            ? context.l10n.user_report_success
+                            : context.l10n.user_unreport_success;
+
+                        final errorMessage = isReporting
+                            ? context.l10n.user_report_error
+                            : context.l10n.user_unreport_error;
+
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
-                                member,
-                                member.user?.isFlaggedByMe ?? false
-                                    ? CommunityMembershipPageBottomSheetAction
-                                        .unreport
-                                    : CommunityMembershipPageBottomSheetAction
-                                        .report,
-                                context.read<AmityToastBloc>()));
+                                member, action, context.read<AmityToastBloc>(),
+                                successMessage, errorMessage));
                         Navigator.pop(context);
                       }),
                   _buildListTile(
@@ -342,7 +361,9 @@ class AmityCommunityMembershipPage extends NewBasePage {
                             CommunityMembershipPageBottomSheetEvent(
                                 member,
                                 CommunityMembershipPageBottomSheetAction.remove,
-                                context.read<AmityToastBloc>()));
+                                context.read<AmityToastBloc>(),
+                                context.l10n.member_remove_success,
+                                context.l10n.member_remove_error));
                         Navigator.pop(context);
                       })
                 ] else ...[
@@ -352,15 +373,24 @@ class AmityCommunityMembershipPage extends NewBasePage {
                           ? context.l10n.user_unreport
                           : context.l10n.user_report,
                       onTap: () {
+                        final isReporting =
+                            !(member.user?.isFlaggedByMe ?? false);
+                        final action = isReporting
+                            ? CommunityMembershipPageBottomSheetAction.report
+                            : CommunityMembershipPageBottomSheetAction.unreport;
+
+                        final successMessage = isReporting
+                            ? context.l10n.user_report_success
+                            : context.l10n.user_unreport_success;
+
+                        final errorMessage = isReporting
+                            ? context.l10n.user_report_error
+                            : context.l10n.user_unreport_error;
+
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
-                                member,
-                                member.user?.isFlaggedByMe ?? false
-                                    ? CommunityMembershipPageBottomSheetAction
-                                        .unreport
-                                    : CommunityMembershipPageBottomSheetAction
-                                        .report,
-                                context.read<AmityToastBloc>()));
+                                member, action, context.read<AmityToastBloc>(),
+                                successMessage, errorMessage));
                         Navigator.pop(context);
                       }),
                 ],
@@ -411,7 +441,9 @@ class AmityCommunityMembershipPage extends NewBasePage {
               context.read<CommunityMembershipPageBloc>().add(
                   CommunityMembershipPageAddMemberEvent(
                       users.map((e) => e.userId).whereType<String>().toList(),
-                      context.read<AmityToastBloc>()));
+                      context.read<AmityToastBloc>(),
+                      context.l10n.member_add_success,
+                      context.l10n.member_add_error));
               Navigator.of(context).pop();
             })));
   }

@@ -762,6 +762,408 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get community_post_permission_description_label => 'You can control who can create posts in your community.';
+
+  @override
+  String get post_item_bottom_nonmember_label => 'Súmate a la comunidad para interactuar con todos los posts';
+
+  @override
+  String get notification_turn_on_success => 'Notificación activada';
+
+  @override
+  String get notification_turn_on_error => 'Error al activar la notificación. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get notification_turn_off_success => 'Notificación desactivada';
+
+  @override
+  String get notification_turn_off_error => 'Error al desactivar la notificación. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_report_success => 'Usuario reportado.';
+
+  @override
+  String get user_report_error => 'Error al reportar usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_unreport_success => 'Usuario no reportado.';
+
+  @override
+  String get user_unreport_error => 'Error al cancelar el reporte del usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_block_success => 'Usuario bloqueado.';
+
+  @override
+  String get user_block_error => 'Error al bloquear usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_unblock_success => 'Usuario desbloqueado.';
+
+  @override
+  String get user_unblock_error => 'Error al desbloquear usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get search_no_members_found => 'No se encontraron miembros';
+
+  @override
+  String get moderator_promotion_title => 'Promoción a moderador';
+
+  @override
+  String get moderator_promotion_description => '¿Estás seguro de que quieres promover a este miembro a Moderador? Tendrá acceso a todas las funciones de moderador.';
+
+  @override
+  String get moderator_promote_button => 'Promover';
+
+  @override
+  String get moderator_demotion_title => 'Degradación de moderador';
+
+  @override
+  String get moderator_demotion_description => '¿Estás seguro de que quieres degradar a este Moderador? Perderá el acceso a todas las funciones de moderador.';
+
+  @override
+  String get moderator_demote_button => 'Degradar';
+
+  @override
+  String get member_removal_confirm_title => 'Confirmar eliminación';
+
+  @override
+  String get member_removal_confirm_description => '¿Estás seguro de que quieres eliminar a este miembro del grupo? Se dará cuenta de su eliminación.';
+
+  @override
+  String get member_remove_button => 'Eliminar';
+
+  @override
+  String get user_ban_confirm_title => 'Confirmar prohibición';
+
+  @override
+  String get user_ban_confirm_description => '¿Estás seguro de que quieres prohibir a este usuario? Será eliminado del grupo y no podrá encontrarlo ni volver a unirse a menos que sea desbloqueado.';
+
+  @override
+  String get user_ban_button => 'Prohibir';
+
+  @override
+  String get member_add_success => 'Miembro agregado exitosamente a esta comunidad.';
+
+  @override
+  String get member_add_error => 'Error al agregar miembro. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get moderator_promote_success => 'Promovido exitosamente a moderador.';
+
+  @override
+  String get moderator_promote_error => 'Error al promover miembro. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get moderator_demote_success => 'Degradado exitosamente a miembro.';
+
+  @override
+  String get moderator_demote_error => 'Error al degradar miembro. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get member_remove_success => 'Miembro eliminado de esta comunidad.';
+
+  @override
+  String get member_remove_error => 'Error al eliminar miembro. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_follow_success => 'Usuario seguido.';
+
+  @override
+  String get user_follow_error => 'Ups, algo salió mal.';
+
+  @override
+  String get user_unfollow_success => 'Usuario no seguido.';
+
+  @override
+  String get user_unfollow_error => 'Ups, algo salió mal.';
+
+  @override
+  String get post_target_selection_title => 'Publicar en';
+
+  @override
+  String get user_feed_blocked_title => 'Has bloqueado a este usuario';
+
+  @override
+  String get user_feed_blocked_description => 'Desbloquea para ver sus publicaciones.';
+
+  @override
+  String get user_feed_private_title => 'Esta cuenta es privada';
+
+  @override
+  String get user_feed_private_description => 'Sigue a este usuario para ver sus publicaciones.';
+
+  @override
+  String get timestamp_just_now => 'Ahora mismo';
+
+  @override
+  String get timestamp_now => 'ahora';
+
+  @override
+  String get chat_notification_turn_on => 'Activar notificaciones';
+
+  @override
+  String get chat_notification_turn_off => 'Desactivar notificaciones';
+
+  @override
+  String get chat_block_user_title => '¿Bloquear usuario?';
+
+  @override
+  String chat_block_user_description(String displayName) {
+    return '$displayName no podrá enviarte mensajes. No se le notificará que lo has bloqueado.';
+  }
+
+  @override
+  String get chat_unblock_user_title => '¿Desbloquear usuario?';
+
+  @override
+  String chat_unblock_user_description(String displayName) {
+    return '$displayName ahora podrá enviarte mensajes. No se le notificará que lo has desbloqueado.';
+  }
+
+  @override
+  String get chat_message_photo => 'Enviar una foto';
+
+  @override
+  String get chat_message_video => 'Enviar un video';
+
+  @override
+  String get user_follow_request_new => 'Nuevas solicitudes de seguimiento';
+
+  @override
+  String user_follow_request_approval(String count) {
+    return '$count solicitudes necesitan tu aprobación';
+  }
+
+  @override
+  String get user_unfollow => 'Dejar de seguir';
+
+  @override
+  String get user_follow_unable_title => 'No se puede seguir a este usuario';
+
+  @override
+  String get user_follow_unable_description => '¡Ups! Algo salió mal. Por favor, inténtalo de nuevo más tarde.';
+
+  @override
+  String get user_follow => 'Seguir';
+
+  @override
+  String get user_follow_cancel => 'Cancelar solicitud';
+
+  @override
+  String get user_following => 'Siguiendo';
+
+  @override
+  String get user_block_confirm_title => '¿Bloquear usuario?';
+
+  @override
+  String user_block_confirm_description(String displayName) {
+    return '$displayName no podrá ver las publicaciones ni los comentarios que hayas creado. No se le notificará que lo has bloqueado.';
+  }
+
+  @override
+  String get user_block_confirm_button => 'Bloquear';
+
+  @override
+  String get user_unblock_confirm_title => '¿Desbloquear usuario?';
+
+  @override
+  String user_unblock_confirm_description(String displayName) {
+    return '$displayName ahora podrá ver las publicaciones y los comentarios que hayas creado. No se le notificará que lo has desbloqueado.';
+  }
+
+  @override
+  String get user_unblock_confirm_button => 'Desbloquear';
+
+  @override
+  String get user_unfollow_confirm_title => '¿Dejar de seguir a este usuario?';
+
+  @override
+  String get user_unfollow_confirm_description => 'Si cambias de opinión, tendrás que enviar una solicitud para seguirlo nuevamente.';
+
+  @override
+  String get user_unfollow_confirm_button => 'Dejar de seguir';
+
+  @override
+  String get category_default_title => 'Categoría';
+
+  @override
+  String get community_empty_state => 'Aún no hay comunidad';
+
+  @override
+  String get community_pending_requests_title => 'Solicitudes pendientes';
+
+  @override
+  String get community_pending_requests_empty_title => 'No hay solicitudes pendientes';
+
+  @override
+  String get community_pending_requests_empty_description => 'Habilita la revisión de publicaciones o la aprobación de unirse en la configuración de la comunidad para gestionar solicitudes.';
+
+  @override
+  String get community_join_requests_coming_soon => 'La función de solicitudes para unirse estará disponible pronto';
+
+  @override
+  String get community_pending_posts_warning => 'Rechazar una publicación pendiente eliminará permanentemente la publicación seleccionada de la comunidad.';
+
+  @override
+  String get community_pending_posts_empty => 'No hay publicaciones pendientes';
+
+  @override
+  String get community_pending_post_accept => 'Aceptar';
+
+  @override
+  String get community_pending_post_decline => 'Rechazar';
+
+  @override
+  String get community_pending_post_delete_success => 'Publicación eliminada.';
+
+  @override
+  String get community_pending_post_delete_error => 'No se pudo eliminar la publicación. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get community_pending_post_approve_success => 'Publicación aceptada.';
+
+  @override
+  String get community_pending_post_approve_error => 'No se pudo aceptar la publicación. Esta publicación ya ha sido revisada por otro moderador.';
+
+  @override
+  String get community_pending_post_decline_success => 'Publicación rechazada.';
+
+  @override
+  String get community_pending_post_decline_error => 'No se pudo rechazar la publicación. Esta publicación ya ha sido revisada por otro moderador.';
+
+  @override
+  String poll_option_hint(int optionNumber) {
+    return 'Opción $optionNumber';
+  }
+
+  @override
+  String get poll_add_option => 'Agregar opción';
+
+  @override
+  String get poll_multiple_selection_title => 'Selección múltiple';
+
+  @override
+  String get poll_multiple_selection_description => 'Permitir que los participantes voten más de una opción.';
+
+  @override
+  String poll_ends_on(String endDate) {
+    return 'Termina el $endDate';
+  }
+
+  @override
+  String get poll_ends_on_label => 'Termina el';
+
+  @override
+  String get poll_select_date => 'Seleccionar fecha';
+
+  @override
+  String get poll_select_time => 'Seleccionar hora';
+
+  @override
+  String poll_duration_days(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days días',
+      one: '1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get poll_time_hour => 'Hora';
+
+  @override
+  String get poll_time_minute => 'Minuto';
+
+  @override
+  String get profile_edit_display_name => 'Nombre para mostrar';
+
+  @override
+  String get profile_edit_about => 'Acerca de';
+
+  @override
+  String get profile_edit_unsupported_image_title => 'Tipo de imagen no compatible';
+
+  @override
+  String get profile_edit_unsupported_image_description => 'Por favor, sube una imagen en formato PNG o JPG.';
+
+  @override
+  String get profile_edit_inappropriate_image_title => 'Imagen inapropiada';
+
+  @override
+  String get profile_edit_inappropriate_image_description => 'Por favor, elige una imagen diferente para subir.';
+
+  @override
+  String get profile_edit_unsaved_changes_title => 'Cambios no guardados';
+
+  @override
+  String get profile_edit_unsaved_changes_description => '¿Estás seguro de que quieres descartar los cambios? Se perderán al salir de esta página.';
+
+  @override
+  String get chat_title => 'Chat';
+
+  @override
+  String get chat_tab_all => 'Todos';
+
+  @override
+  String get chat_tab_direct => 'Directos';
+
+  @override
+  String get chat_tab_groups => 'Grupos';
+
+  @override
+  String get chat_waiting_for_network => 'Esperando conexión de red...';
+
+  @override
+  String get chat_direct_chat => 'Chat directo';
+
+  @override
+  String get chat_group_chat => 'Chat grupal';
+
+  @override
+  String get chat_archived => 'Archivados';
+
+  @override
+  String get message_editing_message => 'Editando mensaje';
+
+  @override
+  String get message_replying_yourself => 'tú mismo';
+
+  @override
+  String get message_replied_message => 'Mensaje respondido';
+
+  @override
+  String message_replying_to(String displayName) {
+    return 'Respondiendo a $displayName';
+  }
+
+  @override
+  String get message_media => 'Multimedia';
+
+  @override
+  String get chat_loading => 'Cargando chat...';
+
+  @override
+  String get chat_blocked_message => 'No puedes enviar mensajes a esta persona.';
+
+  @override
+  String get chat_notifications_disabled => 'Has desactivado las notificaciones del chat';
+
+  @override
+  String get chat_archive => 'Archivar';
+
+  @override
+  String get chat_unarchive => 'Desarchivar';
+
+  @override
+  String get chat_message_deleted => 'Este mensaje fue eliminado';
+
+  @override
+  String get chat_message_no_preview => 'No se admite vista previa para este tipo de mensaje';
+
+  @override
+  String get chat_no_message_yet => 'Aún no hay mensajes';
 }
 
 /// The translations for Spanish Castilian, as used in Chile (`es_CL`).

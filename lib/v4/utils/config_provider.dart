@@ -162,8 +162,8 @@ class StoryFeatureFlag {
 
   factory StoryFeatureFlag.fromJson(Map<String, dynamic> json) {
     return StoryFeatureFlag(
-      createEnabled: json['create_enabled'] ?? false,
-      viewStoryTabEnabled: json['view_story_tab_enabled'] ?? false,
+      createEnabled: json['create_enabled'] ?? true,
+      viewStoryTabEnabled: json['view_story_tab_enabled'] ?? true,
     );
   }
 }
@@ -213,9 +213,9 @@ class PostFeatureToggle {
 
   factory PostFeatureToggle.fromJson(Map<String, dynamic> json) {
     return PostFeatureToggle(
-      createEnabled: json['create_enabled'] ?? false,
-      viewImageTabEnabled: json['view_image_tab_enabled'] ?? false,
-      viewVideoTabEnabled: json['view_video_tab_enabled'] ?? false,
+      createEnabled: json['create_enabled'] ?? true,
+      viewImageTabEnabled: json['view_image_tab_enabled'] ?? true,
+      viewVideoTabEnabled: json['view_video_tab_enabled'] ?? true,
     );
   }
 }

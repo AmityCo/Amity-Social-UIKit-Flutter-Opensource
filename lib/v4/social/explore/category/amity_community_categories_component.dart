@@ -38,15 +38,18 @@ class AmityCommunityCategoriesComponent extends NewBaseComponent {
 
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                ...state.categories.take(5).map((category) => Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: _buildCategoryChip(context, category),
-                    )),
-                if (state.categories.length > 5) _buildSeeMoreButton(context),
-              ],
+            child: Container(
+              color: theme.backgroundColor,
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  ...state.categories.take(5).map((category) => Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: _buildCategoryChip(context, category),
+                      )),
+                  if (state.categories.length > 5) _buildSeeMoreButton(context),
+                ],
+              ),
             ),
           );
         },

@@ -1,6 +1,7 @@
 // filepath: /Users/zryte/Documents/Amity-Social-Cloud-UIKit-Flutter/lib/v4/social/community/pending_posts/amity_pending_post_content_component.dart
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -110,9 +111,9 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
                             ),
                           ),
                         )
-                      : const Text(
-                          'Accept',
-                          style: TextStyle(color: Colors.white),
+                      : Text(
+                          context.l10n.community_pending_post_accept,
+                          style: const TextStyle(color: Colors.white),
                         ),
                 ),
               ),
@@ -146,7 +147,7 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
                           ),
                         )
                       : Text(
-                          'Decline',
+                          context.l10n.community_pending_post_decline,
                           style: TextStyle(color: theme.secondaryColor),
                         ),
                 ),
@@ -164,7 +165,8 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
       builder: (context, state) {
         // Use data from state if available (not loading), otherwise use initial post
         final displayPost = state.isLoadingPost ? post : state.post;
-        var timestampText = displayPost.createdAt?.toSocialTimestamp() ?? "";
+        var timestampText =
+            displayPost.createdAt?.toSocialTimestamp(context) ?? "";
 
         return Padding(
           padding:
@@ -193,7 +195,8 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
                       onTap: () => _goToUserProfilePage(
                           context, displayPost.postedUser?.userId ?? ""),
                       child: Text(
-                          displayPost.postedUser?.displayName ?? "Unknown User",
+                          displayPost.postedUser?.displayName ??
+                              context.l10n.user_profile_unknown_name,
                           style: AmityTextStyle.body(theme.baseColor)),
                     ),
 
@@ -276,7 +279,7 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
                 ),
                 _buildListTile(
                     assetPath: 'assets/Icons/amity_ic_delete.svg',
-                    title: 'Delete post',
+                    title: context.l10n.post_delete,
                     isDestructive: true,
                     onTap: () {
                       Navigator.pop(context);
@@ -334,13 +337,13 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
       // Call the onDelete callback to remove from list
       onDelete?.call();
 
-      toastBloc.add(const AmityToastShort(
-        message: "Post deleted.",
+      toastBloc.add(AmityToastShort(
+        message: context.l10n.community_pending_post_delete_success,
         icon: AmityToastIcon.success,
       ));
     } catch (error) {
-      toastBloc.add(const AmityToastShort(
-        message: "Failed to delete post. Please try again.",
+      toastBloc.add(AmityToastShort(
+        message: context.l10n.community_pending_post_delete_error,
         icon: AmityToastIcon.warning,
       ));
     }

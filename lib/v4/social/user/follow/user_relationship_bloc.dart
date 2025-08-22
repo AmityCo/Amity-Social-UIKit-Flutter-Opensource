@@ -39,61 +39,67 @@ class UserRelationshipBloc
       switch (event.action) {
         case UserModerationAction.report:
           relationshipManager.reportUser(userId, onSuccess: () {
-            event.toastBloc.add(const AmityToastShort(
-                message: "User reported.", icon: AmityToastIcon.success));
+            event.toastBloc.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }, onError: () {
-            toast.addEvent(const AmityToastShort(
-                message: "Failed to report user. Please try again.",
+            toast.addEvent(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case UserModerationAction.unreport:
           relationshipManager.unreportUser(userId, onSuccess: () {
-            toast.add(const AmityToastShort(
-                message: "User unreported.", icon: AmityToastIcon.success));
+            toast.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }, onError: () {
-            toast.add(const AmityToastShort(
-                message: "Failed to unreport user. Please try again.",
+            toast.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case UserModerationAction.block:
           relationshipManager.blockUser(userId, onSuccess: () {
-            toast.add(const AmityToastShort(
-                message: "User blocked.", icon: AmityToastIcon.success));
+            toast.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }, onError: () {
-            toast.add(const AmityToastShort(
-                message: "Failed to block user. Please try again.",
+            toast.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case UserModerationAction.unblock:
           relationshipManager.unblockUser(userId, onSuccess: () {
-            toast.add(const AmityToastShort(
-                message: "User unblocked.", icon: AmityToastIcon.success));
+            toast.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }, onError: () {
-            toast.add(const AmityToastShort(
-                message: "Failed to unblock user. Please try again.",
+            toast.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case UserModerationAction.unfollow:
           relationshipManager.unfollowUser(userId, onSuccess: () {
-            event.toastBloc.add(const AmityToastShort(
-                message: "User unfollowed.", icon: AmityToastIcon.success));
+            event.toastBloc.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }, onError: () {
-            toast.add(const AmityToastShort(
-                message: "Oops, something went wrong.",
+            toast.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case UserModerationAction.follow:
           relationshipManager.followUser(userId, onSuccess: () {
-            event.toastBloc.add(const AmityToastShort(
-                message: "User followed.", icon: AmityToastIcon.success));
+            event.toastBloc.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }, onError: (error) {
-            toast.add(const AmityToastShort(
-                message: "Oops, something went wrong.",
+            toast.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;

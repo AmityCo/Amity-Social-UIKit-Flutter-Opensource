@@ -38,7 +38,7 @@ class AmitySocialHomePage extends NewBasePage {
                   pageId: pageId,
                   selectedTab: currentTab,
                   searchButtonAction: () {
-                    if (currentTab == AmitySocialHomePageTab.newsFeed) {
+                    if (currentTab == AmitySocialHomePageTab.newsFeed || currentTab == AmitySocialHomePageTab.explore) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => AmitySocialGlobalSearchPage(),

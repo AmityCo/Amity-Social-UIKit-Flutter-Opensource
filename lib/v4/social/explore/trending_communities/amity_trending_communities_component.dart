@@ -63,41 +63,44 @@ class AmityTrendingCommunitiesView extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16, top: 20, bottom: 16),
-              child: Text(
-                context.l10n.community_trending_now,
-                style: AmityTextStyle.titleBold(theme.baseColor),
+        return Container(
+          color: theme.backgroundColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 20, bottom: 16),
+                child: Text(
+                  context.l10n.community_trending_now,
+                  style: AmityTextStyle.titleBold(theme.baseColor),
+                ),
               ),
-            ),
-            for (var entry in state.communities.asMap().entries)
-              AmityJoinCommunityView(
-                index: entry.key,
-                theme: theme,
-                community: entry.value,
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AmityCommunityProfilePage(
-                      communityId: entry.value.communityId!,
-                    ),
-                  ));
-                },
-                onJoinTap: () {
-                  if (entry.value.isJoined == true) {
-                    context
-                        .read<TrendingCommunitiesCubit>()
-                        .leaveCommunity(entry.value.communityId!);
-                  } else {
-                    context
-                        .read<TrendingCommunitiesCubit>()
-                        .joinCommunity(entry.value.communityId!);
-                  }
-                },
-              )
-          ],
+              for (var entry in state.communities.asMap().entries)
+                AmityJoinCommunityView(
+                  index: entry.key,
+                  theme: theme,
+                  community: entry.value,
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AmityCommunityProfilePage(
+                        communityId: entry.value.communityId!,
+                      ),
+                    ));
+                  },
+                  onJoinTap: () {
+                    if (entry.value.isJoined == true) {
+                      context
+                          .read<TrendingCommunitiesCubit>()
+                          .leaveCommunity(entry.value.communityId!);
+                    } else {
+                      context
+                          .read<TrendingCommunitiesCubit>()
+                          .joinCommunity(entry.value.communityId!);
+                    }
+                  },
+                )
+            ],
+          ),
         );
       },
     );

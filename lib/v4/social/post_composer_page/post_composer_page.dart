@@ -45,7 +45,7 @@ class AmityPostComposerPage extends NewBasePage {
   String appName = '';
 
   AmityPostComposerPage({Key? key, required this.options, this.onPopRequested})
-      : super(key: key, pageId: '');
+      : super(key: key, pageId: 'post_composer_page');
 
   @override
   Widget buildPage(BuildContext context) {
@@ -293,14 +293,18 @@ class AmityPostComposerPage extends NewBasePage {
   }
 
   void onCameraTap(BuildContext context) {
-    Navigator.push(
-      context,
+    final localize = context.l10n;
+
+    // Use a different context for navigation to avoid conflicts
+    Navigator.of(context)
+        .push(
       MaterialPageRoute(
-        builder: (context) => AmityPostCameraScreen(
+        builder: (dialogContext) => AmityPostCameraScreen(
           selectedType: selectedMediaType,
         ),
       ),
-    ).then(
+    )
+    .then(
       (value) {
         AmityCameraResult? result = value;
 
@@ -308,10 +312,10 @@ class AmityPostComposerPage extends NewBasePage {
           if (result.type == FileType.video) {
             if (selectedFiles.length == 10) {
               AmityV4Dialog().showAlertErrorDialog(
-                title: context.l10n.error_max_upload_reached,
-                message: context.l10n
-                    .error_max_upload_videos_reached_description(10),
-                closeText: context.l10n.general_close,
+                title: localize.error_max_upload_reached,
+                message:
+                    localize.error_max_upload_videos_reached_description(10),
+                closeText: localize.general_close,
               );
             } else {
               context.read<PostComposerBloc>().add(
@@ -321,10 +325,10 @@ class AmityPostComposerPage extends NewBasePage {
           } else {
             if (selectedFiles.length == 10) {
               AmityV4Dialog().showAlertErrorDialog(
-                  title: context.l10n.error_max_upload_reached,
-                  message: context.l10n
-                      .error_max_upload_image_reached_description(10),
-                  closeText: context.l10n.general_close);
+                  title: localize.error_max_upload_reached,
+                  message:
+                      localize.error_max_upload_image_reached_description(10),
+                  closeText: localize.general_close);
             } else {
               context.read<PostComposerBloc>().add(
                     PostComposerSelectImagesEvent(selectedImage: result.file),

@@ -1,9 +1,10 @@
 part of '../chat_page.dart';
 
 extension ChatPageHelpers on AmityChatPage {
-  void _showChatUserActionBottomSheet(BuildContext context, ChatPageState state) {
+  void _showChatUserActionBottomSheet(
+      BuildContext context, ChatPageState state) {
     final chatPageBloc = context.read<ChatPageBloc>();
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -51,25 +52,27 @@ extension ChatPageHelpers on AmityChatPage {
     }
   }
 
-  void _showBlockConfirmation(BuildContext context, String displayName, VoidCallback onConfirm) {
+  void _showBlockConfirmation(
+      BuildContext context, String displayName, VoidCallback onConfirm) {
     ConfirmationV4Dialog().show(
       context: context,
-      title: "Block user?",
-      detailText: "$displayName won’t be able to send you the message. They won’t be notified that you’ve blocked them.",
-      leftButtonText: "Cancel",
-      rightButtonText: "Block",
+      title: context.l10n.chat_block_user_title,
+      detailText: context.l10n.chat_block_user_description(displayName),
+      leftButtonText: context.l10n.general_cancel,
+      rightButtonText: context.l10n.user_block,
       leftButtonColor: theme.alertColor,
       onConfirm: onConfirm,
     );
   }
 
-  void _showUnblockConfirmation(BuildContext context, String displayName, VoidCallback onConfirm) {
+  void _showUnblockConfirmation(
+      BuildContext context, String displayName, VoidCallback onConfirm) {
     ConfirmationV4Dialog().show(
       context: context,
-      title: "Unblock user?",
-      detailText: "$displayName will now be able to send you the message. They won’t be notified that you’ve unblocked them.",
-      leftButtonText: "Cancel",
-      rightButtonText: "Unblock",
+      title: context.l10n.chat_unblock_user_title,
+      detailText: context.l10n.chat_unblock_user_description(displayName),
+      leftButtonText: context.l10n.general_cancel,
+      rightButtonText: context.l10n.user_unblock,
       leftButtonColor: theme.alertColor,
       onConfirm: onConfirm,
     );
@@ -106,7 +109,7 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // New message notification widget
-  Widget _buildNewMessageNotification(
+  Widget _buildNewMessageNotification(BuildContext context,
       ChatPageState state, AmityMessage newMessage) {
     return Positioned(
       right: 16,
@@ -130,7 +133,7 @@ extension ChatPageHelpers on AmityChatPage {
             width: 1,
           ),
         ),
-        child: _buildNewMessageContent(state, newMessage),
+        child: _buildNewMessageContent(context, state, newMessage),
       ),
     );
   }
@@ -161,7 +164,7 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // Helper method for notification content
-  Widget _buildNewMessageContent(ChatPageState state, AmityMessage message) {
+  Widget _buildNewMessageContent(BuildContext context, ChatPageState state, AmityMessage message) {
     return Stack(
       children: [
         ClipRRect(
@@ -169,7 +172,10 @@ extension ChatPageHelpers on AmityChatPage {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => _scrollToBottom(state, shouldAnimated: true, millisecBeforeAnimated: (message.data is MessageTextData) ? 50 : 300),
+              onTap: () => _scrollToBottom(state,
+                  shouldAnimated: true,
+                  millisecBeforeAnimated:
+                      (message.data is MessageTextData) ? 50 : 300),
               child: Padding(
                 padding: const EdgeInsets.only(left: 6, top: 6, bottom: 6),
                 child: Row(
@@ -180,7 +186,8 @@ extension ChatPageHelpers on AmityChatPage {
                         children: [
                           AmityUserAvatar(
                             avatarUrl: message.user?.avatarUrl,
-                            displayName: message.user?.displayName ?? 'Unknown',
+                            displayName: message.user?.displayName ??
+                                context.l10n.user_profile_unknown_name,
                             isDeletedUser: false,
                             avatarSize: Size(28, 28),
                           ),
@@ -198,8 +205,8 @@ extension ChatPageHelpers on AmityChatPage {
                                   )
                                 : Text(
                                     message.data is MessageImageData
-                                        ? "Send a photo"
-                                        : "Send a video",
+                                        ? context.l10n.chat_message_photo
+                                        : context.l10n.chat_message_video,
                                     style: AmityTextStyle.body(theme
                                         .secondaryColor
                                         .blend(ColorBlendingOption.shade2)),
@@ -241,7 +248,11 @@ extension ChatPageHelpers on AmityChatPage {
             borderRadius: BorderRadius.circular(20),
             child: Material(
               color: theme.secondaryColor.withOpacity(0.05),
-              child: InkWell(onTap: () => _scrollToBottom(state, shouldAnimated: true, millisecBeforeAnimated: (message.data is MessageTextData) ? 50 : 300)),
+              child: InkWell(
+                  onTap: () => _scrollToBottom(state,
+                      shouldAnimated: true,
+                      millisecBeforeAnimated:
+                          (message.data is MessageTextData) ? 50 : 300)),
             ),
           ),
         ),
@@ -289,7 +300,9 @@ extension ChatPageHelpers on AmityChatPage {
           child: ClipOval(
             child: Material(
               color: theme.secondaryColor.withOpacity(0.05),
-              child: InkWell(onTap: () => _scrollToBottom(state),),
+              child: InkWell(
+                onTap: () => _scrollToBottom(state),
+              ),
             ),
           ),
         ),
@@ -298,12 +311,15 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // Helper method to scroll to bottom
-  void _scrollToBottom(ChatPageState state, {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
-    state.scrollController.animateTo(
+  void _scrollToBottom(ChatPageState state,
+      {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
+    state.scrollController
+        .animateTo(
       0.0,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
-    ).then((_) {
+    )
+        .then((_) {
       if (shouldAnimated) {
         if (millisecBeforeAnimated > 0) {
           // Delay the bounce animation to allow the media content to load

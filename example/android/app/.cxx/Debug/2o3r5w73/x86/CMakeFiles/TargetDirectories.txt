@@ -1,0 +1,2 @@
+/Users/warakorn/Documents/GitHub/Amity-Social-Cloud-UIKit-Flutter/example/android/app/.cxx/Debug/2o3r5w73/x86/CMakeFiles/edit_cache.dir
+/Users/warakorn/Documents/GitHub/Amity-Social-Cloud-UIKit-Flutter/example/android/app/.cxx/Debug/2o3r5w73/x86/CMakeFiles/rebuild_cache.dir

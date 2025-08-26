@@ -43,9 +43,9 @@ class AmityPostTargetSelectionPage extends NewBasePage {
               backgroundColor: theme.backgroundColor,
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
-                title: const Text(
-                  'Post to',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
+                title: Text(
+                  context.l10n.post_target_selection_title,
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(

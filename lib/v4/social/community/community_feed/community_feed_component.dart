@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_feed/bloc/community_feed_bloc.dart';
@@ -53,7 +54,7 @@ class CommunityFeedComponent extends NewBaseComponent {
               width: double.infinity,
               height: 550,
               color: theme.backgroundColor,
-              child: getEmptyFeed(theme),
+              child: getEmptyFeed(context, theme),
             ));
           } else {
             return SliverMainAxisGroup(
@@ -126,7 +127,7 @@ class CommunityFeedComponent extends NewBaseComponent {
     );
   }
 
-  Widget getEmptyFeed(AmityThemeColor theme) {
+  Widget getEmptyFeed(BuildContext context, AmityThemeColor theme) {
     return Container(
       width: double.infinity,
       height: 138,
@@ -158,7 +159,7 @@ class CommunityFeedComponent extends NewBaseComponent {
           SizedBox(
             width: 252,
             child: Text(
-              'No posts yet',
+              context.l10n.feed_no_posts,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.baseColorShade3,

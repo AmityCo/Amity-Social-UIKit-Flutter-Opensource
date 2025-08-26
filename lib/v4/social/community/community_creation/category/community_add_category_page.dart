@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/category/bloc/community_add_category_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/element/category_grid_view.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -52,7 +53,7 @@ class AmityCommunityAddCategoryPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: 'Select Category',
+            title: context.l10n.category_select_title,
             configProvider: configProvider,
             theme: theme,
             displayBottomLine: true,
@@ -202,10 +203,10 @@ class AmityCommunityAddCategoryPage extends NewBasePage {
                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    "Add Category",
-                    style: TextStyle(
+                    context.l10n.category_add,
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w600),

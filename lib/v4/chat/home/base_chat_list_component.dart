@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/archive/archived_chat_list_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/chat/group_message/amity_group_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/bloc/chat_list_bloc.dart';
@@ -76,7 +77,7 @@ class BaseChatListComponent extends NewBaseComponent {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        "You have disabled notifications for chat",
+                        context.l10n.chat_notifications_disabled,
                         style: TextStyle(
                             color: theme.baseColorShade1,
                             fontSize: 13,
@@ -140,18 +141,23 @@ class BaseChatListComponent extends NewBaseComponent {
 
   void _showArchiveErrorDialog(
       BuildContext context, String errorTitle, String errorMessage) {
+    final localize = context.l10n;
     AmityV4Dialog().showAlertErrorDialog(
       title: errorTitle,
       message: errorMessage,
-      closeText: 'OK',
+      closeText: localize.general_ok,
     );
   }
 
   Widget renderChatListItem(BuildContext context, ChatListType chatListType,
       AmityChannel channel, AmityChannelMember? channelMember) {
     if (chatListType == ChatListType.CONVERSATION) {
-      return renderDismissibleListItem(chatListType, channel, channelMember,
-          "assets/Icons/amity_ic_channel_archive.svg", "Archive", (direction) {
+      return renderDismissibleListItem(
+          chatListType,
+          channel,
+          channelMember,
+          "assets/Icons/amity_ic_channel_archive.svg",
+          context.l10n.chat_archive, (direction) {
         context.read<ChatListBloc>().addEvent(
             ChatListEventChannelArchive(channelId: channel.channelId!));
       });
@@ -161,7 +167,7 @@ class BaseChatListComponent extends NewBaseComponent {
           channel,
           channelMember,
           "assets/Icons/amity_ic_channel_unarchive.svg",
-          "Unarchive", (direction) {
+          context.l10n.chat_unarchive, (direction) {
         context.read<ChatListBloc>().addEvent(
             ChatListEventChannelUnarchive(channelId: channel.channelId!));
       });
@@ -243,7 +249,7 @@ class ChatListItem extends BaseElement {
     String? previewText;
     Widget? previewIcon;
     if (channel.messagePreview?.isDeleted == true) {
-      previewText = "This message was deleted";
+      previewText = context.l10n.chat_message_deleted;
       previewIcon = SvgPicture.asset(
         'assets/Icons/amity_ic_preview_deleted_message.svg',
         package: 'amity_uikit_beta_service',
@@ -257,7 +263,7 @@ class ChatListItem extends BaseElement {
       if (previewMessage is MessageTextData) {
         previewText = previewMessage.text;
       } else if (previewMessage is MessageImageData) {
-        previewText = "Sent a photo";
+        previewText = context.l10n.chat_message_photo;
         previewIcon = SvgPicture.asset(
           'assets/Icons/amity_ic_preview_image_message.svg',
           package: 'amity_uikit_beta_service',
@@ -266,7 +272,7 @@ class ChatListItem extends BaseElement {
           color: theme.baseColorShade2,
         );
       } else if (previewMessage is MessageVideoData) {
-        previewText = "Sent a video";
+        previewText = context.l10n.chat_message_video;
         previewIcon = SvgPicture.asset(
           'assets/Icons/amity_ic_preview_video_message.svg',
           package: 'amity_uikit_beta_service',
@@ -278,9 +284,9 @@ class ChatListItem extends BaseElement {
           previewMessage is MessageAudioData ||
           previewMessage is MessageCustomData) {
         // To be implement
-        previewText = "No preview supported for this message type";
+        previewText = context.l10n.chat_message_no_preview;
       } else {
-        previewText = "No message yet";
+        previewText = context.l10n.chat_no_message_yet;
       }
     }
     if (channel.amityChannelType == AmityChannelType.COMMUNITY) {
@@ -307,7 +313,7 @@ class ChatListItem extends BaseElement {
       if (channelMember?.user?.isDeleted == true ||
           displayName == null ||
           displayName.isEmpty) {
-        displayName = "Unknown User";
+        displayName = context.l10n.user_profile_unknown_name;
       }
 
       displayNameWidget = Text(
@@ -361,7 +367,7 @@ class ChatListItem extends BaseElement {
           const SizedBox(width: 12),
           Column(
             children: [
-              Text(channel.lastActivity?.toChatTimestamp() ?? "",
+              Text(channel.lastActivity?.toChatTimestamp(context) ?? "",
                   style: AmityTextStyle.caption(theme.baseColorShade2)),
               const SizedBox(height: 10),
               unreadCountWidget(channel.unreadCount ?? 0)

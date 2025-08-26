@@ -41,7 +41,7 @@ class PostDisplayName extends StatelessWidget {
       }
     }
 
-    var timestampText = post.createdAt?.toSocialTimestamp() ?? "";
+    var timestampText = post.createdAt?.toSocialTimestamp(context) ?? "";
     if (post.editedAt != post.createdAt) {
       timestampText += context.l10n.general_edited_suffix;
     }

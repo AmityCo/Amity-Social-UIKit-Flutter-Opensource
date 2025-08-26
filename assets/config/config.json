@@ -259,6 +259,12 @@
         "post_detail_page/*/back_button": {
             "icon": "backButtonIcon"
         },
+        "social_home_page/community_categories/*": {
+        },
+        "social_home_page/recommended_communities/*": {
+        },
+        "social_home_page/trending_communities/*": {
+        },
         "post_detail_page/*/menu_button": {
             "icon": "menuIcon"
         },

@@ -77,6 +77,7 @@ class AmityPostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = context.l10n;
     final bool getIsCreatedByAdmin = _getIsCreatedByAdmin(post);
 
     return Column(
@@ -86,7 +87,7 @@ class AmityPostHeader extends StatelessWidget {
             category == AmityPostCategory.globalFeatured)
           Row(
             children: [
-              FeaturedBadge(text: "Featured"),
+              FeaturedBadge(text: localizations.general_featured),
             ],
           ),
         Row(
@@ -198,6 +199,7 @@ class AmityPostHeader extends StatelessWidget {
 
   void showPostGeneralAction(
       BuildContext context, AmityPost post, bool isModerator) {
+    final localizations = context.l10n;
     onReport() => {
           context.read<PostItemBloc>().add(PostItemFlag(
               post: post, toastBloc: context.read<AmityToastBloc>()))
@@ -291,7 +293,7 @@ class AmityPostHeader extends StatelessWidget {
                               ),
                               const SizedBox(width: 12),
                               Text(
-                                context.l10n.post_report,
+                                localizations.post_report,
                                 style: const TextStyle(
                                   color: Color(0xFF292B32),
                                   fontSize: 15,
@@ -328,7 +330,7 @@ class AmityPostHeader extends StatelessWidget {
                               ),
                               const SizedBox(width: 12),
                               Text(
-                                context.l10n.post_unreport,
+                                localizations.post_unreport,
                                 style: const TextStyle(
                                   color: Color(0xFF292B32),
                                   fontSize: 15,
@@ -349,6 +351,7 @@ class AmityPostHeader extends StatelessWidget {
   void showPostOwnerAction(BuildContext context, AmityPost post,
       AmityThemeColor theme, bool isModerator) {
     final editOption = AmityPostComposerOptions.editOptions(post: post);
+    final localizations = context.l10n;
 
     onEdit() => {
           Navigator.of(context).push(MaterialPageRoute(
@@ -365,7 +368,9 @@ class AmityPostHeader extends StatelessWidget {
             //success
           }).onError((error, stackTrace) {
             _showToast(
-                context, context.l10n.general_error, AmityToastIcon.warning);
+                 context,
+                 localizations.general_error,
+                 AmityToastIcon.warning);
           })
         };
 
@@ -379,7 +384,7 @@ class AmityPostHeader extends StatelessWidget {
         //success
       }).onError((error, stackTrace) {
         _showToast(
-            context, context.l10n.error_delete_post, AmityToastIcon.warning);
+            context, localizations.error_delete_post, AmityToastIcon.warning);
       });
     }
 
@@ -436,12 +441,12 @@ class AmityPostHeader extends StatelessWidget {
                           builder: (BuildContext innerContext) {
                             return CupertinoAlertDialog(
                               title: Text(
-                                  context.l10n.post_edit_globally_featured),
-                              content: Text(context.l10n
+                                  localizations.post_edit_globally_featured),
+                              content: Text(localizations
                                   .post_edit_globally_featured_description),
                               actions: [
                                 CupertinoDialogAction(
-                                  child: Text(context.l10n.general_cancel,
+                                  child: Text(localizations.general_cancel,
                                       style: const TextStyle(
                                         color: Color(0xFF007AFF),
                                         fontSize: 17,
@@ -453,7 +458,7 @@ class AmityPostHeader extends StatelessWidget {
                                 ),
                                 CupertinoDialogAction(
                                   child: Text(
-                                    context.l10n.general_edit,
+                                    localizations.general_edit,
                                     style: TextStyle(
                                       color: theme.alertColor,
                                       fontSize: 17,
@@ -494,7 +499,7 @@ class AmityPostHeader extends StatelessWidget {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            context.l10n.post_edit,
+                            localizations.post_edit,
                             style: const TextStyle(
                               color: Color(0xFF292B32),
                               fontSize: 15,
@@ -516,6 +521,7 @@ class AmityPostHeader extends StatelessWidget {
 
   Widget _getClosePoll(
       BuildContext context, AmityPost post, Function onClosePoll) {
+    final localizations = context.l10n;
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
@@ -525,11 +531,11 @@ class AmityPostHeader extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
-              title: Text(context.l10n.poll_close),
-              content: Text(context.l10n.poll_close_description),
+              title: Text(localizations.poll_close),
+              content: Text(localizations.poll_close_description),
               actions: [
                 CupertinoDialogAction(
-                  child: Text(context.l10n.general_cancel,
+                  child: Text(localizations.general_cancel,
                       style: const TextStyle(
                         color: Color(0xFF007AFF),
                         fontSize: 17,
@@ -541,7 +547,7 @@ class AmityPostHeader extends StatelessWidget {
                 ),
                 CupertinoDialogAction(
                   child: Text(
-                    context.l10n.poll_close,
+                    localizations.poll_close,
                     style: TextStyle(
                       color: theme.alertColor,
                       fontSize: 17,
@@ -577,7 +583,7 @@ class AmityPostHeader extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              context.l10n.poll_close,
+              localizations.poll_close,
               style: const TextStyle(
                 color: Color(0xFF292B32),
                 fontSize: 15,
@@ -592,6 +598,7 @@ class AmityPostHeader extends StatelessWidget {
 
   Widget _getDeletePost(
       BuildContext context, AmityPost post, Function onDelete) {
+    final localizations = context.l10n;
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
@@ -599,11 +606,11 @@ class AmityPostHeader extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
-              title: Text(context.l10n.post_delete),
-              content: Text(context.l10n.post_delete_description),
+              title: Text(localizations.post_delete),
+              content: Text(localizations.post_delete_description),
               actions: [
                 CupertinoDialogAction(
-                  child: Text(context.l10n.general_cancel,
+                  child: Text(localizations.general_cancel,
                       style: const TextStyle(
                         color: Color(0xFF007AFF),
                         fontSize: 17,
@@ -615,7 +622,7 @@ class AmityPostHeader extends StatelessWidget {
                 ),
                 CupertinoDialogAction(
                   child: Text(
-                    context.l10n.general_delete,
+                    localizations.general_delete,
                     style: TextStyle(
                       color: theme.alertColor,
                       fontSize: 17,
@@ -653,7 +660,7 @@ class AmityPostHeader extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              context.l10n.post_delete,
+              localizations.post_delete,
               style: TextStyle(
                 color: theme.alertColor,
                 fontSize: 15,

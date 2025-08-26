@@ -1,5 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/bloc/community_profile_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/profile_tab_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -35,239 +36,7 @@ class CommunityProfileTab extends BaseElement {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Feed tab
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (selectedIndex != CommunityProfileTabIndex.feed) {
-                          onTabSelected(CommunityProfileTabIndex.feed);
-                        }
-                      },
-                      child: Container(
-                        decoration:
-                            (selectedIndex == CommunityProfileTabIndex.feed)
-                                ? BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          width: 2, color: theme.primaryColor),
-                                    ),
-                                  )
-                                : null,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              color: theme.backgroundColor,
-                              width: double.infinity,
-                              height: 37,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: ColorFiltered(
-                                      colorFilter: ColorFilter.mode(
-                                        (selectedIndex ==
-                                                CommunityProfileTabIndex.feed)
-                                            ? theme.baseColor
-                                            : theme.baseColorShade3,
-                                        BlendMode.srcIn,
-                                      ),
-                                      child: SvgPicture.asset(
-                                        'assets/Icons/amity_ic_community_feed.svg',
-                                        package: 'amity_uikit_beta_service',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Pin tab
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (selectedIndex != CommunityProfileTabIndex.pin) {
-                          onTabSelected(CommunityProfileTabIndex.pin);
-                        }
-                      },
-                      child: Container(
-                        decoration:
-                            (selectedIndex == CommunityProfileTabIndex.pin)
-                                ? BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          width: 2, color: theme.primaryColor),
-                                    ),
-                                  )
-                                : null,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              color: theme.backgroundColor,
-                              width: double.infinity,
-                              height: 37,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: ColorFiltered(
-                                      colorFilter: ColorFilter.mode(
-                                        (selectedIndex ==
-                                                CommunityProfileTabIndex.pin)
-                                            ? theme.baseColor
-                                            : theme.baseColorShade3,
-                                        BlendMode.srcIn,
-                                      ),
-                                      child: SvgPicture.asset(
-                                        'assets/Icons/amity_ic_community_pin.svg',
-                                        package: 'amity_uikit_beta_service',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Image tab
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (selectedIndex != CommunityProfileTabIndex.image) {
-                          onTabSelected(CommunityProfileTabIndex.image);
-                        }
-                      },
-                      child: Container(
-                        decoration:
-                            (selectedIndex == CommunityProfileTabIndex.image)
-                                ? BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          width: 2, color: theme.primaryColor),
-                                    ),
-                                  )
-                                : null,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              color: theme.backgroundColor,
-                              width: double.infinity,
-                              height: 37,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: ColorFiltered(
-                                      colorFilter: ColorFilter.mode(
-                                        (selectedIndex ==
-                                                CommunityProfileTabIndex.image)
-                                            ? theme.baseColor
-                                            : theme.baseColorShade3,
-                                        BlendMode.srcIn,
-                                      ),
-                                      child: SvgPicture.asset(
-                                        'assets/Icons/amity_ic_user_image.svg',
-                                        package: 'amity_uikit_beta_service',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Video tab
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (selectedIndex != CommunityProfileTabIndex.video) {
-                          onTabSelected(CommunityProfileTabIndex.video);
-                        }
-                      },
-                      child: Container(
-                        decoration:
-                            (selectedIndex == CommunityProfileTabIndex.video)
-                                ? BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          width: 2, color: theme.primaryColor),
-                                    ),
-                                  )
-                                : null,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              color: theme.backgroundColor,
-                              width: double.infinity,
-                              height: 37,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: ColorFiltered(
-                                      colorFilter: ColorFilter.mode(
-                                        (selectedIndex ==
-                                                CommunityProfileTabIndex.video)
-                                            ? theme.baseColor
-                                            : theme.baseColorShade3,
-                                        BlendMode.srcIn,
-                                      ),
-                                      child: SvgPicture.asset(
-                                        'assets/Icons/amity_ic_user_video.svg',
-                                        package: 'amity_uikit_beta_service',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                children: getProfileTabs(context)
               ),
             ],
           ),
@@ -279,5 +48,76 @@ class CommunityProfileTab extends BaseElement {
         ),
       ],
     );
+  }
+
+  ProfileTabItem  profileTab() {
+    return ProfileTabItem(
+      image: 'assets/Icons/amity_ic_community_feed.svg',
+      isSelected: selectedIndex == CommunityProfileTabIndex.feed,
+      theme: theme,
+      onTap: () {
+        if (selectedIndex != CommunityProfileTabIndex.feed) {
+          onTabSelected(CommunityProfileTabIndex.feed);
+        }
+      },
+    );
+  }
+
+  ProfileTabItem pinTab() {
+    return ProfileTabItem(
+      image: 'assets/Icons/amity_ic_community_pin.svg',
+      isSelected: selectedIndex == CommunityProfileTabIndex.pin,
+      theme: theme,
+      onTap: () {
+        if (selectedIndex != CommunityProfileTabIndex.pin) {
+          onTabSelected(CommunityProfileTabIndex.pin);
+        }
+      },
+    );
+  }
+
+  ProfileTabItem imageTab() {
+    return ProfileTabItem(
+      image: 'assets/Icons/amity_ic_user_image.svg',
+      isSelected: selectedIndex == CommunityProfileTabIndex.image,
+      theme: theme,
+      onTap: () {
+        if (selectedIndex != CommunityProfileTabIndex.image) {
+          onTabSelected(CommunityProfileTabIndex.image);
+        }
+      },
+    );
+  }
+
+  ProfileTabItem videoTab() {
+    return ProfileTabItem(
+      image: 'assets/Icons/amity_ic_user_video.svg',
+      isSelected: selectedIndex == CommunityProfileTabIndex.video,
+      theme: theme,
+      onTap: () {
+        if (selectedIndex != CommunityProfileTabIndex.video) {
+          onTabSelected(CommunityProfileTabIndex.video);
+        }
+      },
+    );
+  }
+
+  List<Widget> getProfileTabs(BuildContext context) {
+    final featureConfig = configProvider.getFeatureConfig();
+    final isImageTabEnabled = featureConfig.post.image.viewImageTabEnabled;
+    final isVideoTabEnabled = featureConfig.post.video.viewVideoTabEnabled;
+
+    var items = <Widget>[];
+    items.add(profileTab());
+    items.add(pinTab());
+
+    if (isImageTabEnabled) {
+      items.add(imageTab());
+    }
+
+    if (isVideoTabEnabled) {
+      items.add(videoTab());
+    }
+    return items;
   }
 }

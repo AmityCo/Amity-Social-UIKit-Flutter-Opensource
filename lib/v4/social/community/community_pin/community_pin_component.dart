@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_pin/bloc/community_pin_bloc.dart';
@@ -43,7 +44,7 @@ class CommunityPinComponent extends NewBaseComponent {
               width: double.infinity,
               height: 550,
               color: theme.backgroundColor,
-              child: getEmptyFeed(theme),
+              child: getEmptyFeed(context, theme),
             ));
           } else {
             bool hasAnnouncement = state.announcements.any((element) =>
@@ -74,7 +75,7 @@ class CommunityPinComponent extends NewBaseComponent {
     );
   }
 
-  Widget getEmptyFeed(AmityThemeColor theme) {
+  Widget getEmptyFeed(BuildContext context, AmityThemeColor theme) {
     return Container(
       width: double.infinity,
       height: 138,
@@ -106,7 +107,7 @@ class CommunityPinComponent extends NewBaseComponent {
           SizedBox(
             width: 252,
             child: Text(
-              'No pinned post yet',
+              context.l10n.feed_no_pinned_posts,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.baseColorShade3,

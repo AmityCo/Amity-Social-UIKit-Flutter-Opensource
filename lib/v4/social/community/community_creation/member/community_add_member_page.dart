@@ -9,6 +9,7 @@ import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 
 // ignore: must_be_immutable
 class AmityCommunityAddMemberPage extends NewBasePage {
@@ -41,7 +42,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: 'Add member',
+          title: context.l10n.member_add,
           configProvider: configProvider,
           theme: theme,
         ),
@@ -50,7 +51,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
             AmityTopSearchBarComponent(
               pageId: pageId,
               textcontroller: _textcontroller,
-              hintText: 'Search user',
+              hintText: context.l10n.search_user_hint,
               showCancelButton: false,
               onTextChanged: (value) {
                 _debouncer.run(() {
@@ -74,7 +75,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                                 CommunityAddMemberPageSelectUserEvent(
                                     state.selectedUsers[index]));
                           },
-                          child: _userItemWidget(state.selectedUsers[index]));
+                          child: _userItemWidget(context, state.selectedUsers[index]));
                     },
                   )),
               _getDividerWidget()
@@ -122,7 +123,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                 shape: BoxShape.circle,
                 color: theme.baseColorShade4,
               ),
-              child:  AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? 'Unknown', isDeletedUser: false)),
+              child:  AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
           const SizedBox(
               width: 8), // Add some spacing between the icon and text
           Expanded(
@@ -155,7 +156,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
         ]));
   }
 
-  Widget _userItemWidget(AmityUser user) {
+  Widget _userItemWidget(BuildContext context, AmityUser user) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
           minWidth: 62, maxWidth: 62), // Set the maximum width constraint
@@ -171,7 +172,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                     shape: BoxShape.circle,
                     color: theme.primaryColor.blend(ColorBlendingOption.shade2),
                   ),
-                  child:  AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? 'Unknown', isDeletedUser: false)),
+                  child:  AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
               Transform.translate(
                 offset: const Offset(5, -2),
                 child: Container(
@@ -197,7 +198,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
           ),
           const SizedBox(height: 4),
           Text(
-            user.displayName ?? 'Unknown',
+            user.displayName ?? context.l10n.user_profile_unknown_name,
             style: TextStyle(
               color: theme.baseColor,
               fontSize: 13,
@@ -233,10 +234,10 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    "Add member",
-                    style: TextStyle(
+                    context.l10n.member_add,
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w600),

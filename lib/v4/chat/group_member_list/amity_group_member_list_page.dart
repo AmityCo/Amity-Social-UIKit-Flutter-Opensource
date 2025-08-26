@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/add_group_member/amity_add_group_member_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/group_message/components/amity_group_member_action_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
@@ -66,7 +67,7 @@ class AmityGroupMemberListPage extends NewBasePage {
                   appBar: AppBar(
                     backgroundColor: theme.backgroundColor,
                     title: Text(
-                      'All members',
+                      context.l10n.community_all_members,
                       style: AmityTextStyle.titleBold(theme.baseColor),
                     ),
                     leading: IconButton(
@@ -116,9 +117,9 @@ class AmityGroupMemberListPage extends NewBasePage {
                         indicatorColor: theme.primaryColor,
                         dividerColor: theme.baseColorShade4,
                         dividerHeight: 1.0,
-                        tabs: const [
-                          Tab(text: 'Members'),
-                          Tab(text: 'Moderators'),
+                        tabs: [
+                          Tab(text: context.l10n.community_members),
+                          Tab(text: context.l10n.community_moderators),
                         ],
                       ),
                       Expanded(
@@ -146,7 +147,7 @@ class AmityGroupMemberListPage extends NewBasePage {
         AmityTopSearchBarComponent(
           pageId: pageId,
           textcontroller: textController,
-          hintText: 'Search member',
+          hintText: context.l10n.community_search_member_hint,
           showCancelButton: false,
           onTextChanged: (value) {
             _debouncer.run(() {
@@ -170,13 +171,13 @@ class AmityGroupMemberListPage extends NewBasePage {
     if (state.isLoading && filteredMembers.isEmpty) {
       return userSkeletonList(theme, configProvider, itemCount: 10);
     } else if (!state.isLoading && filteredMembers.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(context);
     } else {
       return _buildMembersListView(context, state, scrollController);
     }
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -191,7 +192,7 @@ class AmityGroupMemberListPage extends NewBasePage {
           ),
           const SizedBox(height: 10),
           Text(
-            'No members found',
+            context.l10n.search_no_members_found,
             style: TextStyle(
               color: theme.baseColorShade3,
               fontWeight: FontWeight.w600,
@@ -291,12 +292,11 @@ class AmityGroupMemberListPage extends NewBasePage {
     final cubit = context.read<AmityGroupMemberListCubit>();
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Moderator promotion',
-      detailText:
-          "Are you sure you want to promote this member to Moderator? They will gain access to all moderator features.",
-      leftButtonText: 'Cancel',
+      title: context.l10n.moderator_promotion_title,
+      detailText: context.l10n.moderator_promotion_description,
+      leftButtonText: context.l10n.general_cancel,
       leftButtonColor: theme.primaryColor,
-      rightButtonText: 'Promote',
+      rightButtonText: context.l10n.moderator_promote_button,
       onConfirm: () {
         cubit.addModerator(user.userId!);
       },
@@ -307,11 +307,10 @@ class AmityGroupMemberListPage extends NewBasePage {
     final cubit = context.read<AmityGroupMemberListCubit>();
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Moderator demotion',
-      detailText:
-          "Are you sure you want to demote this Moderator? They will lose access to all moderator features.",
-      leftButtonText: 'Cancel',
-      rightButtonText: 'Demote',
+      title: context.l10n.moderator_demotion_title,
+      detailText: context.l10n.moderator_demotion_description,
+      leftButtonText: context.l10n.general_cancel,
+      rightButtonText: context.l10n.moderator_demote_button,
       onConfirm: () {
         cubit.removeModerator(user.userId!);
       },
@@ -322,11 +321,10 @@ class AmityGroupMemberListPage extends NewBasePage {
     final cubit = context.read<AmityGroupMemberListCubit>();
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Confirm removal',
-      detailText:
-          "Are you sure you want to remove this member from the group? They will be aware of their removal.",
-      leftButtonText: 'Cancel',
-      rightButtonText: 'Remove',
+      title: context.l10n.member_removal_confirm_title,
+      detailText: context.l10n.member_removal_confirm_description,
+      leftButtonText: context.l10n.general_cancel,
+      rightButtonText: context.l10n.member_remove_button,
       leftButtonColor: theme.alertColor,
       onConfirm: () {
         cubit.removeMember(user.userId!);
@@ -338,11 +336,10 @@ class AmityGroupMemberListPage extends NewBasePage {
     final cubit = context.read<AmityGroupMemberListCubit>();
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Confirm ban',
-      detailText:
-          "Are you sure you want to ban this user? They will be removed from the group and won't be able to find it or rejoin unless they are unbanned.",
-      leftButtonText: 'Cancel',
-      rightButtonText: 'Ban',
+      title: context.l10n.user_ban_confirm_title,
+      detailText: context.l10n.user_ban_confirm_description,
+      leftButtonText: context.l10n.general_cancel,
+      rightButtonText: context.l10n.user_ban_button,
       onConfirm: () {
         cubit.banUser(user.userId!);
       },

@@ -302,7 +302,7 @@ class AmityCommunitySetupPage extends NewBasePage {
                       .read<CommunitySetupPageBloc>()
                       .add(CommunitySetupPageRemoveMemberEvent(member));
                 },
-                child: _userItemWidget(member),
+                child: _userItemWidget(context, member),
               ),
             GestureDetector(
                 onTap: () {
@@ -397,10 +397,10 @@ class AmityCommunitySetupPage extends NewBasePage {
                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    "Save",
-                    style: TextStyle(
+                    context.l10n.general_save,
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w600),
@@ -511,7 +511,7 @@ class AmityCommunitySetupPage extends NewBasePage {
         ));
   }
 
-  Widget _userItemWidget(AmityUser user) {
+  Widget _userItemWidget(BuildContext context, AmityUser user) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
           minWidth: 62, maxWidth: 62), // Set the maximum width constraint
@@ -527,7 +527,7 @@ class AmityCommunitySetupPage extends NewBasePage {
                     shape: BoxShape.circle,
                     color: theme.primaryColor.blend(ColorBlendingOption.shade2),
                   ),
-                  child: AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? 'Unknown', isDeletedUser: false)),
+                  child: AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
               Transform.translate(
                 offset: const Offset(5, -2),
                 child: Container(
@@ -553,7 +553,7 @@ class AmityCommunitySetupPage extends NewBasePage {
           ),
           const SizedBox(height: 4),
           Text(
-            user.displayName ?? 'Unknown',
+            user.displayName ?? context.l10n.user_profile_unknown_name,
             style: TextStyle(
               color: theme.baseColor,
               fontSize: 13,

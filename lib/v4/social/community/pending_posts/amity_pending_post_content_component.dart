@@ -2,6 +2,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -84,92 +85,89 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
         children: [
           // Left button (Accept) - taking up half the width minus padding
           behavior.buildPostAcceptButton?.call(
-                context,
-                isApprovingPost: state.isApprovingPost,
-                onPressed:
-                    state.isApprovingPost ? null : () => cubit.approvePost(),
-              ) ??
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: state.isApprovingPost
-                          ? null
-                          : () => cubit.approvePost(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: state.isApprovingPost
-                            ? theme.primaryColor.withOpacity(0.6)
-                            : theme.primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        alignment: Alignment.center,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: state.isApprovingPost
-                          ? const SizedBox(
-                              height: 16,
-                              width: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
-                                ),
-                              ),
-                            )
-                          : const Text(
-                              'Accept',
-                              style: TextStyle(color: Colors.white),
-                            ),
+            context,
+            isApprovingPost: state.isApprovingPost,
+            onPressed:
+            state.isApprovingPost ? null : () => cubit.approvePost(),
+          ) ??
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed:
+                      state.isApprovingPost ? null : () => cubit.approvePost(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: state.isApprovingPost
+                        ? theme.primaryColor.withOpacity(0.6)
+                        : theme.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
+                  child: state.isApprovingPost
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          context.l10n.community_pending_post_accept,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                 ),
               ),
+            ),
+          ),
           // Right button (Decline) - taking up half the width minus padding
           behavior.buildPostDeclineButton?.call(
-                context,
-                isDecliningPost: state.isDecliningPost,
-                onPressed:
-                    state.isDecliningPost ? null : () => cubit.declinePost(),
-              ) ??
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 6),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: state.isDecliningPost
-                          ? null
-                          : () => cubit.declinePost(),
-                      style: OutlinedButton.styleFrom(
-                        side:
-                            BorderSide(color: theme.baseColorShade3, width: 1),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: state.isDecliningPost
-                          ? SizedBox(
-                              height: 16,
-                              width: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  theme.secondaryColor,
-                                ),
-                              ),
-                            )
-                          : Text(
-                              'Decline',
-                              style: TextStyle(color: theme.secondaryColor),
-                            ),
+            context,
+            isDecliningPost: state.isDecliningPost,
+            onPressed:
+            state.isDecliningPost ? null : () => cubit.declinePost(),
+          ) ??
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed:
+                      state.isDecliningPost ? null : () => cubit.declinePost(),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: theme.baseColorShade3, width: 1),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
+                  child: state.isDecliningPost
+                      ? SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              theme.secondaryColor,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          context.l10n.community_pending_post_decline,
+                          style: TextStyle(color: theme.secondaryColor),
+                        ),
                 ),
               ),
+            ),
+          ),
         ],
       ),
     );
@@ -181,7 +179,8 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
       builder: (context, state) {
         // Use data from state if available (not loading), otherwise use initial post
         final displayPost = state.isLoadingPost ? post : state.post;
-        var timestampText = displayPost.createdAt?.toSocialTimestamp() ?? "";
+        var timestampText =
+            displayPost.createdAt?.toSocialTimestamp(context) ?? "";
 
         return Padding(
           padding:
@@ -210,7 +209,8 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
                       onTap: () => _goToUserProfilePage(
                           context, displayPost.postedUser?.userId ?? ""),
                       child: Text(
-                          displayPost.postedUser?.displayName ?? "Unknown User",
+                          displayPost.postedUser?.displayName ??
+                              context.l10n.user_profile_unknown_name,
                           style: AmityTextStyle.body(theme.baseColor)),
                     ),
 
@@ -293,7 +293,7 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
                 ),
                 _buildListTile(
                     assetPath: 'assets/Icons/amity_ic_delete.svg',
-                    title: 'Delete post',
+                    title: context.l10n.post_delete,
                     isDestructive: true,
                     onTap: () {
                       Navigator.pop(context);
@@ -351,13 +351,13 @@ class AmityPendingPostContentComponent extends NewBaseComponent {
       // Call the onDelete callback to remove from list
       onDelete?.call();
 
-      toastBloc.add(const AmityToastShort(
-        message: "Post deleted.",
+      toastBloc.add(AmityToastShort(
+        message: context.l10n.community_pending_post_delete_success,
         icon: AmityToastIcon.success,
       ));
     } catch (error) {
-      toastBloc.add(const AmityToastShort(
-        message: "Failed to delete post. Please try again.",
+      toastBloc.add(AmityToastShort(
+        message: context.l10n.community_pending_post_delete_error,
         icon: AmityToastIcon.warning,
       ));
     }

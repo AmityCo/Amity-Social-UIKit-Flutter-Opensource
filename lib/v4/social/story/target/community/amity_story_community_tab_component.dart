@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/target/community/bloc/c
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_target_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_story_page.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,9 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
               );
             }
 
+            final featureConfig = context.read<ConfigProvider>().getFeatureConfig();
+            final isStoryCreationEnabled = featureConfig.story.createEnabled;
+
             return Container(
               color: widget.theme.backgroundColor,
               child: AmityStoryTargetElement(
@@ -112,7 +116,7 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                 targetId: state.community!.communityId!,
                 target: state.storyTarget!,
                 onClick: (targetId, storyTarget) {
-                  if (state.haveStoryPermission && (state.stories == null || state.stories?.isEmpty == true)) {
+                  if (state.haveStoryPermission && isStoryCreationEnabled && (state.stories == null || state.stories?.isEmpty == true)) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (BuildContext context) {

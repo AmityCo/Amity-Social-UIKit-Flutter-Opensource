@@ -1,7 +1,7 @@
 part of '../amity_group_chat_page.dart';
 
 extension GroupChatPageHelpers on AmityGroupChatPage {
-  Widget _buildNewMessageNotification(
+  Widget _buildNewMessageNotification(BuildContext context,
       GroupChatPageState state, AmityMessage newMessage) {
     return Positioned(
       right: 16,
@@ -25,12 +25,12 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
             width: 1,
           ),
         ),
-        child: _buildNewMessageContent(state, newMessage),
+        child: _buildNewMessageContent(context, state, newMessage),
       ),
     );
   }
 
-  Widget _buildNewMessageContent(
+  Widget _buildNewMessageContent(BuildContext context,
       GroupChatPageState state, AmityMessage message) {
     return Stack(
       children: [

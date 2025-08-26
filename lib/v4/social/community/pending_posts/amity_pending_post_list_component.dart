@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity_pending_post_content_component.dart';
@@ -54,7 +55,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  "Decline pending post will permanently delete the selected post from community.",
+                  context.l10n.community_pending_posts_warning,
                   style: AmityTextStyle.caption(theme.baseColor),
                 ),
               ),
@@ -83,7 +84,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
             height: 60,
           ),
           const SizedBox(height: 8),
-          Text('No pending posts',
+          Text(context.l10n.community_pending_posts_empty,
               style: AmityTextStyle.titleBold(theme.baseColorShade3)),
         ],
       ),

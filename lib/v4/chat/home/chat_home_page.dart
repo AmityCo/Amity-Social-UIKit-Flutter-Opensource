@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/archive/archived_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/create/channel_create_conversation_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/createGroup/ui/amity_select_group_member_page.dart';
@@ -37,8 +38,9 @@ class AmityChatHomePage extends NewBasePage {
           animationDuration: const Duration(milliseconds: 200),
           child: Builder(
             builder: (context) {
-              final TabController tabController = DefaultTabController.of(context);
-              
+              final TabController tabController =
+                  DefaultTabController.of(context);
+
               return AnimatedBuilder(
                 animation: tabController,
                 builder: (context, _) {
@@ -116,6 +118,22 @@ class _ChatTabs extends NewBaseComponent {
       TabController tabController) {
     final isSelected = tabController.index == index;
 
+    // Get localized text based on index
+    String localizedText;
+    switch (index) {
+      case 0:
+        localizedText = context.l10n.chat_tab_all;
+        break;
+      case 1:
+        localizedText = context.l10n.chat_tab_direct;
+        break;
+      case 2:
+        localizedText = context.l10n.chat_tab_groups;
+        break;
+      default:
+        localizedText = text;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: IntrinsicWidth(
@@ -138,7 +156,7 @@ class _ChatTabs extends NewBaseComponent {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           child: Text(
-            text,
+            localizedText,
             style: TextStyle(
               fontSize: 17,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -173,7 +191,7 @@ class ChatHomePageNavigationBar extends NewBaseComponent {
                     radius: 8,
                   ),
                   const SizedBox(width: 4),
-                  Text("Waiting for network...",
+                  Text(context.l10n.chat_waiting_for_network,
                       style: AmityTextStyle.caption(theme.baseColorShade1)),
                 ],
               ),
@@ -186,7 +204,8 @@ class ChatHomePageNavigationBar extends NewBaseComponent {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Chat", style: AmityTextStyle.headline(theme.baseColor)),
+                  Text(context.l10n.chat_title,
+                      style: AmityTextStyle.headline(theme.baseColor)),
                 ],
               ),
             ),
@@ -254,14 +273,14 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
                 value: 1,
                 padding: EdgeInsets.zero,
                 child: getMenu(
-                    text: "Direct chat",
+                    text: context.l10n.chat_direct_chat,
                     iconPath: "amity_ic_chat_create_button.svg"),
               ),
               PopupMenuItem<int>(
                 value: 2,
                 padding: EdgeInsets.zero,
                 child: getMenu(
-                    text: "Group chat",
+                    text: context.l10n.chat_group_chat,
                     iconPath: "amity_ic_create_group_chat_button.svg"),
               ),
             ],
@@ -342,7 +361,7 @@ class AmityChatMenuComponent extends NewBaseComponent {
                 value: 1,
                 padding: EdgeInsets.zero,
                 child: getMenu(
-                    text: "Archived",
+                    text: context.l10n.chat_archived,
                     iconPath: "amity_ic_archived_chat_menu.svg"),
               ),
             ],

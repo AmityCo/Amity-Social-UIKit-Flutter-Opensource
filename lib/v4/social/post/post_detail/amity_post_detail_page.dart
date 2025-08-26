@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator_action.dart';
@@ -92,7 +93,7 @@ class AmityPostDetailPage extends NewBasePage {
             slivers: [
               SliverAppBar(
                 backgroundColor: theme.backgroundColor,
-                title: const Text('Post'),
+                title: Text(context.l10n.general_post),
                 titleTextStyle: TextStyle(
                   color: theme.baseColor,
                   fontSize: 17,

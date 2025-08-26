@@ -44,7 +44,6 @@ class ConfigProvider extends ChangeNotifier {
   }
 
   AmityThemeColor getTheme(String? pageId, String? componentId) {
-    // print("getTheme called with $configId");
     String configId = '${getId(pageId)}/${getId(componentId)}/*';
     final theme = _configRepository.getTheme(configId);
     return theme;
@@ -74,9 +73,31 @@ class ConfigProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isHidden(String? pageId, String? componentId, String? elementId) {
+    String configId =
+        '${getId(pageId)}/${getId(componentId)}/${getId(elementId)}';
+    final excludeList = _configRepository.excludedList;
+    if (excludeList.isEmpty) {
+      return false;
+    }
+
+    var variations = [
+      configId,
+      '*/${getId(componentId)}/*',
+      '*/${getId(componentId)}/${getId(elementId)}',
+      '*/*/${getId(elementId)}',
+    ];
+
+    return variations.any((variation) => excludeList.contains(variation));
+  }
+
   AmityUIConfig getUIConfig(
       String? pageId, String? componentId, String? elementId) {
     return AmityUIConfig(_configRepository, pageId, componentId, elementId);
+  }
+
+  AmityFeatureFlag getFeatureConfig() {
+    return AmityFeatureFlag(_configRepository.getFeatureFlags());
   }
 }
 
@@ -115,5 +136,86 @@ class AmityUIConfig {
     String configId =
         '${_pageId ?? "*"}/${_componentId ?? "*"}/${_elementId ?? "*"}';
     return configId;
+  }
+}
+
+class AmityFeatureFlag {
+  final Map<String, dynamic> _featureFlags;
+
+  late final StoryFeatureFlag story;
+  late final PostFeatureFlag post;
+
+  AmityFeatureFlag(this._featureFlags) {
+    story = StoryFeatureFlag.fromJson(_featureFlags['story'] ?? {});
+    post = PostFeatureFlag.fromJson(_featureFlags['post'] ?? {});
+  }
+}
+
+class StoryFeatureFlag {
+  final bool createEnabled;
+  final bool viewStoryTabEnabled;
+
+  StoryFeatureFlag({
+    required this.createEnabled,
+    required this.viewStoryTabEnabled,
+  });
+
+  factory StoryFeatureFlag.fromJson(Map<String, dynamic> json) {
+    return StoryFeatureFlag(
+      createEnabled: json['create_enabled'] ?? true,
+      viewStoryTabEnabled: json['view_story_tab_enabled'] ?? true,
+    );
+  }
+}
+
+class PostFeatureFlag {
+  final PostFeatureToggle text;
+  final PostFeatureToggle image;
+  final PostFeatureToggle video;
+  final PostFeatureToggle poll;
+  final PostFeatureToggle livestream;
+  final PostFeatureToggle clip;
+
+  PostFeatureFlag({
+    required this.text,
+    required this.image,
+    required this.video,
+    required this.poll,
+    required this.livestream,
+    required this.clip,
+  });
+
+  factory PostFeatureFlag.fromJson(Map<String, dynamic> json) {
+    return PostFeatureFlag(
+      text: PostFeatureToggle.fromJson(json['text'] ?? {}),
+      image: PostFeatureToggle.fromJson(json['image'] ?? {}),
+      video: PostFeatureToggle.fromJson(json['video'] ?? {}),
+      poll: PostFeatureToggle.fromJson(json['poll'] ?? {}),
+      livestream: PostFeatureToggle.fromJson(json['livestream'] ?? {}),
+      clip: PostFeatureToggle.fromJson(json['clip'] ?? {}),
+    );
+  }
+
+  bool isPostCreationEnabled() {
+    return text.createEnabled || image.createEnabled || video.createEnabled;
+  }
+}
+
+class PostFeatureToggle {
+  final bool createEnabled;
+  final bool viewImageTabEnabled;
+  final bool viewVideoTabEnabled;
+
+  PostFeatureToggle(
+      {required this.viewImageTabEnabled,
+      required this.viewVideoTabEnabled,
+      required this.createEnabled});
+
+  factory PostFeatureToggle.fromJson(Map<String, dynamic> json) {
+    return PostFeatureToggle(
+      createEnabled: json['create_enabled'] ?? true,
+      viewImageTabEnabled: json['view_image_tab_enabled'] ?? true,
+      viewVideoTabEnabled: json['view_video_tab_enabled'] ?? true,
+    );
   }
 }

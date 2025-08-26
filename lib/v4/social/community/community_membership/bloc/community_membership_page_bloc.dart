@@ -42,9 +42,9 @@ class CommunityMembershipPageBloc
 
     memberStreamSubscription =
         memberLiveCollection.getStreamController().stream.listen((event) {
-          var count = event.length;
-          log("pageCount: $count");
-          log("1st member: ${event[0].user?.displayName}");
+      var count = event.length;
+      log("pageCount: $count");
+      log("1st member: ${event[0].user?.displayName}");
       add(CommunityMembershipPageMemberLoadedEvent(event));
     });
 
@@ -106,12 +106,13 @@ class CommunityMembershipPageBloc
           .membership(community.communityId ?? '')
           .addMembers(event.userIds)
           .then((value) {
-        event.toastBloc.add(const AmityToastShort(
-            message: 'Successfully added member to this community.',
+        event.toastBloc.add(AmityToastShort(
+            message: event.successMessage,
             icon: AmityToastIcon.success));
       }).onError((error, stackTrace) {
-        event.toastBloc.add(const AmityToastShort(
-            message: 'Failed to add member. Please try again.',
+        event.toastBloc.add(AmityToastShort(
+            message:
+                event.errorMessage,
             icon: AmityToastIcon.warning));
       });
     });
@@ -127,9 +128,9 @@ class CommunityMembershipPageBloc
       memberStreamSubscription?.cancel();
       memberStreamSubscription =
           memberLiveCollection.getStreamController().stream.listen((event) {
-            var count = event.length;
-            log("pageCount: $count");
-            log("1st member: ${event[0].user?.displayName}");
+        var count = event.length;
+        log("pageCount: $count");
+        log("1st member: ${event[0].user?.displayName}");
         add(CommunityMembershipPageMemberLoadedEvent(event));
       });
 
@@ -143,24 +144,25 @@ class CommunityMembershipPageBloc
         case CommunityMembershipPageBottomSheetAction.promote:
           repository.moderation(community.communityId ?? '').addRole(
               'community-moderator', [event.member.userId ?? '']).then((value) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Successfully promoted to moderator.',
+            event.toastBloc.add(AmityToastShort(
+                message: event.successMessage,
                 icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Failed to promote member. Please try again.',
+            event.toastBloc.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case CommunityMembershipPageBottomSheetAction.demote:
           repository.moderation(community.communityId ?? '').removeRole(
               'community-moderator', [event.member.userId ?? '']).then((value) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Successfully demoted to member.',
+            event.toastBloc.add(AmityToastShort(
+                message:
+                    event.successMessage,
                 icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Failed to demote member. Please try again.',
+            event.toastBloc.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
@@ -168,32 +170,34 @@ class CommunityMembershipPageBloc
           repository
               .membership(community.communityId ?? '')
               .removeMembers([event.member.userId ?? '']).then((value) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Member removed from this community.',
+            event.toastBloc.add(AmityToastShort(
+                message: event.successMessage,
                 icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Failed to remove member. Please try again.',
+            event.toastBloc.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case CommunityMembershipPageBottomSheetAction.report:
           event.member.user?.report().flag().then((value) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'User reported.', icon: AmityToastIcon.success));
+            event.toastBloc.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Failed to report user. Please try again.',
+            event.toastBloc.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;
         case CommunityMembershipPageBottomSheetAction.unreport:
           event.member.user?.report().unflag().then((value) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'User unreported.', icon: AmityToastIcon.success));
+            event.toastBloc.add(AmityToastShort(
+                message: event.successMessage,
+                icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
-            event.toastBloc.add(const AmityToastShort(
-                message: 'Failed to unreport user. Please try again.',
+            event.toastBloc.add(AmityToastShort(
+                message: event.errorMessage,
                 icon: AmityToastIcon.warning));
           });
           break;

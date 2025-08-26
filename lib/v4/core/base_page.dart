@@ -37,9 +37,11 @@ abstract class NewBasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ConfigProvider>(
       builder: (context, provider, child) {
-        configProvider = provider;
-        theme = configProvider.getTheme(pageId, '');
-        uiConfig = configProvider.getUIConfig(pageId, null, null);
+        if (!isInitialized()) {
+          configProvider = provider;
+          theme = configProvider.getTheme(pageId, '');
+          uiConfig = configProvider.getUIConfig(pageId, null, null);
+        }
         return Theme(
             data: Theme.of(context).copyWith(
                 textSelectionTheme: TextSelectionThemeData(
@@ -61,6 +63,17 @@ abstract class NewBasePage extends StatelessWidget {
     //     },
     //   ),
     // );
+  }
+
+  bool isInitialized() {
+    try {
+      configProvider;
+      theme;
+      uiConfig;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
 

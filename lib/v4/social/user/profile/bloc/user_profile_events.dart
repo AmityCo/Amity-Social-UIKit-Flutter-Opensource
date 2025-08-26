@@ -56,13 +56,18 @@ class UserProfileUserModerationEvent extends UserProfileEvent {
   final UserModerationAction action;
   final String userId;
   final AmityToastBloc toastBloc;
+  final String successMessage;
+  final String errorMessage;
   final Function onError;
 
-  const UserProfileUserModerationEvent(
-      {required this.action,
-      required this.userId,
-      required this.toastBloc,
-      required this.onError});
+  const UserProfileUserModerationEvent({
+    required this.action,
+    required this.userId,
+    required this.toastBloc,
+    required this.successMessage,
+    required this.errorMessage,
+    required this.onError,
+  });
 
   @override
   List<Object> get props => [action, userId, toastBloc];

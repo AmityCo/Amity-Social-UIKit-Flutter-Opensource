@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/element/bloc/info_text_field_bloc.dart';
@@ -52,7 +53,7 @@ class InfoTextField extends BaseElement {
             ),
             if (isOptional)
               Text(
-                ' (Optional)',
+                ' (${context.l10n.general_optional})',
                 style: AmityTextStyle.caption(theme.baseColorShade3),
               ),
           ]),

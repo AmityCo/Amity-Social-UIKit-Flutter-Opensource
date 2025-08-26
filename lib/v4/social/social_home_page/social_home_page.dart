@@ -38,33 +38,29 @@ class AmitySocialHomePage extends NewBasePage {
               }
             }
             return Scaffold(
-              appBar: _showTopNavigation
-                  ? PreferredSize(
-                      preferredSize: const Size.fromHeight(kToolbarHeight),
-                      child: AmitySocialHomeTopNavigationComponent(
-                        pageId: pageId,
-                        selectedTab: currentTab,
-                        searchButtonAction: () {
-                          if (currentTab == AmitySocialHomePageTab.newsFeed) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AmitySocialGlobalSearchPage(),
-                              ),
-                            );
-                          } else if (currentTab ==
-                              AmitySocialHomePageTab.myCommunities) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AmityMyCommunitiesSearchPage(),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    )
-                  : null,
+              appBar: _showTopNavigation ? PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: AmitySocialHomeTopNavigationComponent(
+                  pageId: pageId,
+                  selectedTab: currentTab,
+                  searchButtonAction: () {
+                    if (currentTab == AmitySocialHomePageTab.newsFeed || currentTab == AmitySocialHomePageTab.explore) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => AmitySocialGlobalSearchPage(),
+                        ),
+                      );
+                    } else if (currentTab ==
+                        AmitySocialHomePageTab.myCommunities) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => AmityMyCommunitiesSearchPage(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ) : null,
               backgroundColor: theme.backgroundColor,
               body: Column(
                 children: [

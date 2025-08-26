@@ -132,6 +132,12 @@ abstract class AppLocalizations {
   /// **'Search community and user'**
   String get global_search_hint;
 
+  /// Hint text for searching my communities
+  ///
+  /// In en, this message translates to:
+  /// **'Search my community'**
+  String get search_my_community_hint;
+
   /// Message displayed when no search results are found
   ///
   /// In en, this message translates to:
@@ -156,17 +162,23 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get general_cancel;
 
+  /// Label for the OK button
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get general_ok;
+
+  /// Label for the confirm button
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get general_confirm;
+
   /// Label for the featured posts
   ///
   /// In en, this message translates to:
   /// **'Featured'**
   String get general_featured;
-
-  /// Label for edit profile button
-  ///
-  /// In en, this message translates to:
-  /// **'Edit Profile'**
-  String get profile_edit;
 
   /// Label for followers count
   ///
@@ -197,6 +209,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Post'**
   String get post_edit;
+
+  /// Hint text for post creation input field
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s going on...'**
+  String get post_create_hint;
 
   /// Label for delete post button
   ///
@@ -489,7 +507,7 @@ abstract class AppLocalizations {
   /// Confirmation message for closing a community
   ///
   /// In en, this message translates to:
-  /// **'All members will be removed from  the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.'**
+  /// **'All members will be removed from the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.'**
   String get community_close_description;
 
   /// Label for join community button
@@ -497,6 +515,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Join'**
   String get community_join;
+
+  /// Label for joined community status
+  ///
+  /// In en, this message translates to:
+  /// **'Joined'**
+  String get community_joined;
+
+  /// Section title for recommended communities
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get community_recommended_for_you;
+
+  /// Section title for trending communities
+  ///
+  /// In en, this message translates to:
+  /// **'Trending now'**
+  String get community_trending_now;
+
+  /// Placeholder text for community members count in recommended communities
+  ///
+  /// In en, this message translates to:
+  /// **'1.2K members'**
+  String get community_placeholder_members;
 
   /// Label for leave community button
   ///
@@ -587,6 +629,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select category'**
   String get category_hint;
+
+  /// Title for category selection page
+  ///
+  /// In en, this message translates to:
+  /// **'Select Category'**
+  String get category_select_title;
+
+  /// Label for add category button
+  ///
+  /// In en, this message translates to:
+  /// **'Add Category'**
+  String get category_add;
 
   /// Label for pending posts section
   ///
@@ -786,6 +840,12 @@ abstract class AppLocalizations {
   /// **'Only moderators'**
   String get settings_only_moderators;
 
+  /// Label for only admins can post setting
+  ///
+  /// In en, this message translates to:
+  /// **'Only admins can post'**
+  String get settings_only_admins;
+
   /// Label for privacy settings
   ///
   /// In en, this message translates to:
@@ -960,6 +1020,18 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get general_off;
 
+  /// Label for allow notification toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Notification'**
+  String get settings_allow_notification;
+
+  /// Description for allow notification setting
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on to receive push notifications from this community.'**
+  String get settings_allow_notification_description;
+
   /// Label for reported content
   ///
   /// In en, this message translates to:
@@ -1068,7 +1140,7 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{member} other{members}}'**
   String profile_members_count(int count);
 
-  /// Label for block user button
+  /// Community story comments setting option
   ///
   /// In en, this message translates to:
   /// **'Block user'**
@@ -1157,6 +1229,906 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to create poll. Please try again.'**
   String get error_create_poll;
+
+  /// Fallback display name for users with no display name
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get user_profile_unknown_name;
+
+  /// Tab label for all members in community membership page
+  ///
+  /// In en, this message translates to:
+  /// **'All members'**
+  String get community_all_members;
+
+  /// Tab label for moderators in community membership page
+  ///
+  /// In en, this message translates to:
+  /// **'Moderators'**
+  String get community_moderators;
+
+  /// Hint text for member search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search member'**
+  String get community_search_member_hint;
+
+  /// Action to promote a member to moderator role
+  ///
+  /// In en, this message translates to:
+  /// **'Promote to moderator'**
+  String get community_promote_moderator;
+
+  /// Action to demote a moderator to member role
+  ///
+  /// In en, this message translates to:
+  /// **'Demote to member'**
+  String get community_demote_member;
+
+  /// Action to remove a member from the community
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from community'**
+  String get community_remove_member;
+
+  /// Action to report a user
+  ///
+  /// In en, this message translates to:
+  /// **'Report user'**
+  String get user_report;
+
+  /// Action to unreport a user
+  ///
+  /// In en, this message translates to:
+  /// **'Unreport user'**
+  String get user_unreport;
+
+  /// Empty state message when there are no videos in the feed
+  ///
+  /// In en, this message translates to:
+  /// **'No videos yet'**
+  String get feed_no_videos;
+
+  /// Empty state message when there are no photos in the feed
+  ///
+  /// In en, this message translates to:
+  /// **'No photos yet'**
+  String get feed_no_photos;
+
+  /// Empty state message when there are no pinned posts in the community
+  ///
+  /// In en, this message translates to:
+  /// **'No pinned post yet'**
+  String get feed_no_pinned_posts;
+
+  /// Empty state message when there are no posts in the community feed
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet'**
+  String get feed_no_posts;
+
+  /// Button text and title for adding members
+  ///
+  /// In en, this message translates to:
+  /// **'Add member'**
+  String get member_add;
+
+  /// Hint text for searching users
+  ///
+  /// In en, this message translates to:
+  /// **'Search user'**
+  String get search_user_hint;
+
+  /// Button text for editing user profile
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get profile_edit;
+
+  /// Success message when profile is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully updated your profile!'**
+  String get profile_update_success;
+
+  /// Error message when profile update fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save your profile. Please try again.'**
+  String get profile_update_failed;
+
+  /// Community post permissions setting option
+  ///
+  /// In en, this message translates to:
+  /// **'Post permission'**
+  String get community_post_permission;
+
+  /// No description provided for @community_story_comments.
+  ///
+  /// In en, this message translates to:
+  /// **'Story comments'**
+  String get community_story_comments;
+
+  /// Label for close community setting
+  ///
+  /// In en, this message translates to:
+  /// **'Close community'**
+  String get community_setting_close_label;
+
+  /// Description for close community setting
+  ///
+  /// In en, this message translates to:
+  /// **'Closing this community will remove the community  page and all its content and comments.'**
+  String get community_setting_close_description;
+
+  /// label for post permissions page title
+  ///
+  /// In en, this message translates to:
+  /// **'Who can post on this community'**
+  String get community_post_permission_title_label;
+
+  /// label for post permissions page description
+  ///
+  /// In en, this message translates to:
+  /// **'You can control who can create posts in your community.'**
+  String get community_post_permission_description_label;
+
+  /// label for post item bottom text for non members
+  ///
+  /// In en, this message translates to:
+  /// **'Join community to interact with all posts'**
+  String get post_item_bottom_nonmember_label;
+
+  /// success toast message for turning on notification
+  ///
+  /// In en, this message translates to:
+  /// **'Notification turned on'**
+  String get notification_turn_on_success;
+
+  /// error toast message for turning on notification
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to turn on notification. Please try again.'**
+  String get notification_turn_on_error;
+
+  /// success toast message for turning off notification
+  ///
+  /// In en, this message translates to:
+  /// **'Notification turned off'**
+  String get notification_turn_off_success;
+
+  /// error toast message for turning off notification
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to turn off notification. Please try again.'**
+  String get notification_turn_off_error;
+
+  /// success toast message for reporting user
+  ///
+  /// In en, this message translates to:
+  /// **'User reported.'**
+  String get user_report_success;
+
+  /// error toast message for reporting user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to report user. Please try again.'**
+  String get user_report_error;
+
+  /// success toast message for unreporting user
+  ///
+  /// In en, this message translates to:
+  /// **'User unreported.'**
+  String get user_unreport_success;
+
+  /// error toast message for unreporting user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unreport user. Please try again.'**
+  String get user_unreport_error;
+
+  /// success toast message for blocking user
+  ///
+  /// In en, this message translates to:
+  /// **'User blocked.'**
+  String get user_block_success;
+
+  /// error toast message for blocking user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to block user. Please try again.'**
+  String get user_block_error;
+
+  /// success toast message for unblocking user
+  ///
+  /// In en, this message translates to:
+  /// **'User unblocked.'**
+  String get user_unblock_success;
+
+  /// error toast message for unblocking user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unblock user. Please try again.'**
+  String get user_unblock_error;
+
+  /// Message displayed when no members are found in search
+  ///
+  /// In en, this message translates to:
+  /// **'No members found'**
+  String get search_no_members_found;
+
+  /// Title for moderator promotion confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Moderator promotion'**
+  String get moderator_promotion_title;
+
+  /// Description for moderator promotion confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to promote this member to Moderator? They will gain access to all moderator features.'**
+  String get moderator_promotion_description;
+
+  /// Button text for promoting to moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Promote'**
+  String get moderator_promote_button;
+
+  /// Title for moderator demotion confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Moderator demotion'**
+  String get moderator_demotion_title;
+
+  /// Description for moderator demotion confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to demote this Moderator? They will lose access to all moderator features.'**
+  String get moderator_demotion_description;
+
+  /// Button text for demoting moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Demote'**
+  String get moderator_demote_button;
+
+  /// Title for member removal confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm removal'**
+  String get member_removal_confirm_title;
+
+  /// Description for member removal confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove this member from the group? They will be aware of their removal.'**
+  String get member_removal_confirm_description;
+
+  /// Button text for removing member
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get member_remove_button;
+
+  /// Title for user ban confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm ban'**
+  String get user_ban_confirm_title;
+
+  /// Description for user ban confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to ban this user? They will be removed from the group and won\'t be able to find it or rejoin unless they are unbanned.'**
+  String get user_ban_confirm_description;
+
+  /// Button text for banning user
+  ///
+  /// In en, this message translates to:
+  /// **'Ban'**
+  String get user_ban_button;
+
+  /// Success message when adding member to community
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully added member to this community.'**
+  String get member_add_success;
+
+  /// Error message when adding member fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add member. Please try again.'**
+  String get member_add_error;
+
+  /// Success message when promoting member to moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully promoted to moderator.'**
+  String get moderator_promote_success;
+
+  /// Error message when promoting member fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to promote member. Please try again.'**
+  String get moderator_promote_error;
+
+  /// Success message when demoting moderator to member
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully demoted to member.'**
+  String get moderator_demote_success;
+
+  /// Error message when demoting moderator fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to demote member. Please try again.'**
+  String get moderator_demote_error;
+
+  /// Success message when removing member from community
+  ///
+  /// In en, this message translates to:
+  /// **'Member removed from this community.'**
+  String get member_remove_success;
+
+  /// Error message when removing member fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove member. Please try again.'**
+  String get member_remove_error;
+
+  /// Success message when following user
+  ///
+  /// In en, this message translates to:
+  /// **'User followed.'**
+  String get user_follow_success;
+
+  /// Error message when following user fails
+  ///
+  /// In en, this message translates to:
+  /// **'Oops, something went wrong.'**
+  String get user_follow_error;
+
+  /// Success message when unfollowing user
+  ///
+  /// In en, this message translates to:
+  /// **'User unfollowed.'**
+  String get user_unfollow_success;
+
+  /// Error message when unfollowing user fails
+  ///
+  /// In en, this message translates to:
+  /// **'Oops, something went wrong.'**
+  String get user_unfollow_error;
+
+  /// Title for post target selection page
+  ///
+  /// In en, this message translates to:
+  /// **'Post to'**
+  String get post_target_selection_title;
+
+  /// Title for blocked user feed empty state
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve blocked this user'**
+  String get user_feed_blocked_title;
+
+  /// Description for blocked user feed empty state
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock to see their posts.'**
+  String get user_feed_blocked_description;
+
+  /// Title for private user feed empty state
+  ///
+  /// In en, this message translates to:
+  /// **'This account is private'**
+  String get user_feed_private_title;
+
+  /// Description for private user feed empty state
+  ///
+  /// In en, this message translates to:
+  /// **'Follow this user to see their posts.'**
+  String get user_feed_private_description;
+
+  /// Timestamp text for content posted just now in social feeds
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get timestamp_just_now;
+
+  /// Timestamp text for content posted just now in chat
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get timestamp_now;
+
+  /// Text for turning on chat notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on notifications'**
+  String get chat_notification_turn_on;
+
+  /// Text for turning off chat notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off notifications'**
+  String get chat_notification_turn_off;
+
+  /// Title for blocking user confirmation dialog in chat
+  ///
+  /// In en, this message translates to:
+  /// **'Block user?'**
+  String get chat_block_user_title;
+
+  /// Description for blocking user confirmation dialog in chat
+  ///
+  /// In en, this message translates to:
+  /// **'{displayName} won\'t be able to send you the message. They won\'t be notified that you\'ve blocked them.'**
+  String chat_block_user_description(String displayName);
+
+  /// Title for unblocking user confirmation dialog in chat
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock user?'**
+  String get chat_unblock_user_title;
+
+  /// Description for unblocking user confirmation dialog in chat
+  ///
+  /// In en, this message translates to:
+  /// **'{displayName} will now be able to send you the message. They won\'t be notified that you\'ve unblocked them.'**
+  String chat_unblock_user_description(String displayName);
+
+  /// Text shown for photo messages in chat notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Send a photo'**
+  String get chat_message_photo;
+
+  /// Text shown for video messages in chat notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Send a video'**
+  String get chat_message_video;
+
+  /// Text for new follow requests notification
+  ///
+  /// In en, this message translates to:
+  /// **'New follow requests'**
+  String get user_follow_request_new;
+
+  /// Text showing number of requests needing approval
+  ///
+  /// In en, this message translates to:
+  /// **'{count} requests need your approval'**
+  String user_follow_request_approval(String count);
+
+  /// Button text for unfollowing a user
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get user_unfollow;
+
+  /// Title for dialog when unable to follow user
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to follow this user'**
+  String get user_follow_unable_title;
+
+  /// Description for dialog when unable to follow user
+  ///
+  /// In en, this message translates to:
+  /// **'Oops! something went wrong. Please try again later.'**
+  String get user_follow_unable_description;
+
+  /// Button text for following a user
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get user_follow;
+
+  /// Button text for canceling follow request
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Request'**
+  String get user_follow_cancel;
+
+  /// Button text showing user is being followed
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get user_following;
+
+  /// Title for blocking user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Block user?'**
+  String get user_block_confirm_title;
+
+  /// Description for blocking user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'{displayName} won\'t be able to see posts and comments that you\'ve created. They won\'t be notified that you\'ve blocked them.'**
+  String user_block_confirm_description(String displayName);
+
+  /// Button text for confirming block action
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get user_block_confirm_button;
+
+  /// Title for unblocking user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock user?'**
+  String get user_unblock_confirm_title;
+
+  /// Description for unblocking user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'{displayName} will now be able to see posts and comments that you\'ve created. They won\'t be notified that you\'ve unblocked them.'**
+  String user_unblock_confirm_description(String displayName);
+
+  /// Button text for confirming unblock action
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get user_unblock_confirm_button;
+
+  /// Title for unfollowing user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow this user?'**
+  String get user_unfollow_confirm_title;
+
+  /// Description for unfollowing user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'If you change your mind, you\'ll have to request to follow them again.'**
+  String get user_unfollow_confirm_description;
+
+  /// Button text for confirming unfollow action
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get user_unfollow_confirm_button;
+
+  /// Default title for category page when category name is not available
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category_default_title;
+
+  /// Empty state message when there are no communities in the category
+  ///
+  /// In en, this message translates to:
+  /// **'No community yet'**
+  String get community_empty_state;
+
+  /// Title for the pending requests page
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Requests'**
+  String get community_pending_requests_title;
+
+  /// Title for empty state when no pending requests are available
+  ///
+  /// In en, this message translates to:
+  /// **'No pending requests available'**
+  String get community_pending_requests_empty_title;
+
+  /// Description for empty state when no pending requests are available
+  ///
+  /// In en, this message translates to:
+  /// **'Enable post review or join approval in community settings to manage requests.'**
+  String get community_pending_requests_empty_description;
+
+  /// Placeholder text for join requests feature that is not yet implemented
+  ///
+  /// In en, this message translates to:
+  /// **'Join requests feature coming soon'**
+  String get community_join_requests_coming_soon;
+
+  /// Warning message for moderators about declining pending posts
+  ///
+  /// In en, this message translates to:
+  /// **'Decline pending post will permanently delete the selected post from community.'**
+  String get community_pending_posts_warning;
+
+  /// Empty state message when there are no pending posts
+  ///
+  /// In en, this message translates to:
+  /// **'No pending posts'**
+  String get community_pending_posts_empty;
+
+  /// Button text for accepting a pending post
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get community_pending_post_accept;
+
+  /// Button text for declining a pending post
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get community_pending_post_decline;
+
+  /// Success message when pending post is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Post deleted.'**
+  String get community_pending_post_delete_success;
+
+  /// Error message when deleting pending post fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete post. Please try again.'**
+  String get community_pending_post_delete_error;
+
+  /// Success message when pending post is approved
+  ///
+  /// In en, this message translates to:
+  /// **'Post accepted.'**
+  String get community_pending_post_approve_success;
+
+  /// Error message when approving pending post fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to accept post. This post has been reviewed by another moderator.'**
+  String get community_pending_post_approve_error;
+
+  /// Success message when pending post is declined
+  ///
+  /// In en, this message translates to:
+  /// **'Post declined.'**
+  String get community_pending_post_decline_success;
+
+  /// Error message when declining pending post fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to decline post. This post has been reviewed by another moderator.'**
+  String get community_pending_post_decline_error;
+
+  /// Hint text for poll option input field
+  ///
+  /// In en, this message translates to:
+  /// **'Option {optionNumber}'**
+  String poll_option_hint(int optionNumber);
+
+  /// Button text for adding a new poll option
+  ///
+  /// In en, this message translates to:
+  /// **'Add option'**
+  String get poll_add_option;
+
+  /// Title for multiple selection toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple selection'**
+  String get poll_multiple_selection_title;
+
+  /// Description for multiple selection toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Let participants vote more than one option.'**
+  String get poll_multiple_selection_description;
+
+  /// Text showing when poll ends with formatted date
+  ///
+  /// In en, this message translates to:
+  /// **'Ends on {endDate}'**
+  String poll_ends_on(String endDate);
+
+  /// Label for poll end date
+  ///
+  /// In en, this message translates to:
+  /// **'Ends on'**
+  String get poll_ends_on_label;
+
+  /// Placeholder text for date picker
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date'**
+  String get poll_select_date;
+
+  /// Placeholder text for time picker
+  ///
+  /// In en, this message translates to:
+  /// **'Select Time'**
+  String get poll_select_time;
+
+  /// Poll duration options with proper pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
+  String poll_duration_days(int days);
+
+  /// Label for hour in time picker
+  ///
+  /// In en, this message translates to:
+  /// **'Hour'**
+  String get poll_time_hour;
+
+  /// Label for minute in time picker
+  ///
+  /// In en, this message translates to:
+  /// **'Minute'**
+  String get poll_time_minute;
+
+  /// Label for display name field in edit profile
+  ///
+  /// In en, this message translates to:
+  /// **'Display Name'**
+  String get profile_edit_display_name;
+
+  /// Label for about field in edit profile
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get profile_edit_about;
+
+  /// Title for unsupported image type dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported image type'**
+  String get profile_edit_unsupported_image_title;
+
+  /// Description for unsupported image type dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload a PNG or JPG image.'**
+  String get profile_edit_unsupported_image_description;
+
+  /// Title for inappropriate image dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Inappropriate image'**
+  String get profile_edit_inappropriate_image_title;
+
+  /// Description for inappropriate image dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a different image to upload.'**
+  String get profile_edit_inappropriate_image_description;
+
+  /// Title for unsaved changes confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get profile_edit_unsaved_changes_title;
+
+  /// Description for unsaved changes confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to discard the changes? They will be lost when you leave this page.'**
+  String get profile_edit_unsaved_changes_description;
+
+  /// Title for chat home page
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get chat_title;
+
+  /// Tab label for all chats
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get chat_tab_all;
+
+  /// Tab label for direct chats
+  ///
+  /// In en, this message translates to:
+  /// **'Direct'**
+  String get chat_tab_direct;
+
+  /// Tab label for group chats
+  ///
+  /// In en, this message translates to:
+  /// **'Groups'**
+  String get chat_tab_groups;
+
+  /// Message shown when waiting for network connection
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for network...'**
+  String get chat_waiting_for_network;
+
+  /// Menu option for creating direct chat
+  ///
+  /// In en, this message translates to:
+  /// **'Direct chat'**
+  String get chat_direct_chat;
+
+  /// Menu option for creating group chat
+  ///
+  /// In en, this message translates to:
+  /// **'Group chat'**
+  String get chat_group_chat;
+
+  /// Menu option for archived chats
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get chat_archived;
+
+  /// Text shown when editing a message
+  ///
+  /// In en, this message translates to:
+  /// **'Editing message'**
+  String get message_editing_message;
+
+  /// Text shown when replying to your own message
+  ///
+  /// In en, this message translates to:
+  /// **'yourself'**
+  String get message_replying_yourself;
+
+  /// Title for replied message display
+  ///
+  /// In en, this message translates to:
+  /// **'Replied message'**
+  String get message_replied_message;
+
+  /// Text shown when replying to a message
+  ///
+  /// In en, this message translates to:
+  /// **'Replying to {displayName}'**
+  String message_replying_to(String displayName);
+
+  /// Label for media button in message composer
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
+  String get message_media;
+
+  /// Loading message shown when chat is initializing
+  ///
+  /// In en, this message translates to:
+  /// **'Loading chat...'**
+  String get chat_loading;
+
+  /// Message shown when user is blocked and cannot send messages
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t send messages to this person.'**
+  String get chat_blocked_message;
+
+  /// Message shown when chat notifications are disabled
+  ///
+  /// In en, this message translates to:
+  /// **'You have disabled notifications for chat'**
+  String get chat_notifications_disabled;
+
+  /// Action text for archiving a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get chat_archive;
+
+  /// Action text for unarchiving a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive'**
+  String get chat_unarchive;
+
+  /// Preview text for deleted messages
+  ///
+  /// In en, this message translates to:
+  /// **'This message was deleted'**
+  String get chat_message_deleted;
+
+  /// Preview text for unsupported message types
+  ///
+  /// In en, this message translates to:
+  /// **'No preview supported for this message type'**
+  String get chat_message_no_preview;
+
+  /// Preview text when there are no messages in the chat
+  ///
+  /// In en, this message translates to:
+  /// **'No message yet'**
+  String get chat_no_message_yet;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

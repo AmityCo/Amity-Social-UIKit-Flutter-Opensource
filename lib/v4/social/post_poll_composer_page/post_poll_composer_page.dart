@@ -14,37 +14,35 @@ import '../../utils/amity_dialog.dart';
 import '../globalfeed/bloc/global_feed_bloc.dart';
 import 'bloc/poll_post_composer_bloc.dart';
 
-
 class AmityPollPostComposerPage extends NewBasePage {
   final String targetId;
   final AmityPostTargetType targetType;
   final String? targetCommunityName;
   final void Function(bool shouldPopCaller)? onPopRequested;
 
-  final MentionTextEditingController _questionController = MentionTextEditingController();
+  final MentionTextEditingController _questionController =
+      MentionTextEditingController();
 
   static const int maxQuestionLength = 500;
   static const int maxOptionLength = 60;
   static const int minOptionsRequired = 2;
   static const int maxPollDurationDays = 30;
 
-  AmityPollPostComposerPage({
-    Key? key,
-    required this.targetId,
-    required this.targetType,
-    this.targetCommunityName,
-    this.onPopRequested
-  }) : super(key: key, pageId: 'poll_post_composer_page');
+  AmityPollPostComposerPage(
+      {Key? key,
+      required this.targetId,
+      required this.targetType,
+      this.targetCommunityName,
+      this.onPopRequested})
+      : super(key: key, pageId: 'poll_post_composer_page');
 
   @override
   Widget buildPage(BuildContext context) {
-    String? communityId = (targetType == AmityPostTargetType.COMMUNITY)
-        ? targetId
-        : null;
+    String? communityId =
+        (targetType == AmityPostTargetType.COMMUNITY) ? targetId : null;
     return BlocProvider(
       create: (context) =>
-      PollComposerBloc()
-        ..add(UpdateOptionsEvent(options: ['', ''])),
+          PollComposerBloc()..add(UpdateOptionsEvent(options: ['', ''])),
       child: BlocBuilder<PollComposerBloc, PollComposerState>(
         builder: (context, state) {
           final bloc = context.read<PollComposerBloc>();
@@ -54,7 +52,7 @@ class AmityPollPostComposerPage extends NewBasePage {
             appBar: AppBar(
               backgroundColor: theme.backgroundColor,
               title: Text(
-                targetCommunityName ?? 'My Timeline',
+                targetCommunityName ?? context.l10n.general_my_timeline,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -70,15 +68,11 @@ class AmityPollPostComposerPage extends NewBasePage {
               actions: [
                 TextButton(
                   onPressed: state.isPosting ||
-                      state.question
-                          .trim()
-                          .isEmpty ||
-                      state.options
-                          .where((o) =>
-                      o
-                          .trim()
-                          .isNotEmpty)
-                          .length < minOptionsRequired
+                          state.question.trim().isEmpty ||
+                          state.options
+                                  .where((o) => o.trim().isNotEmpty)
+                                  .length <
+                              minOptionsRequired
                       ? null
                       : () => _createPollPost(state, bloc, context),
                   child: Text(
@@ -87,15 +81,11 @@ class AmityPollPostComposerPage extends NewBasePage {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: state.isPosting ||
-                          state.question
-                              .trim()
-                              .isEmpty ||
-                          state.options
-                              .where((o) =>
-                          o
-                              .trim()
-                              .isNotEmpty)
-                              .length < minOptionsRequired
+                              state.question.trim().isEmpty ||
+                              state.options
+                                      .where((o) => o.trim().isNotEmpty)
+                                      .length <
+                                  minOptionsRequired
                           ? theme.primaryColor.blend(ColorBlendingOption.shade3)
                           : theme.primaryColor,
                     ),
@@ -107,18 +97,17 @@ class AmityPollPostComposerPage extends NewBasePage {
             body: ListView(
               padding: const EdgeInsets.all(16.0),
               children: [
-                _buildPollQuestionSection(context, state, bloc, _questionController, communityId),
+                _buildPollQuestionSection(
+                    context, state, bloc, _questionController, communityId),
                 const SizedBox(height: 24),
-
                 _buildSectionTitle(context.l10n.general_options,
-                    description: context.l10n.poll_options_description(minOptionsRequired)),
+                    description: context.l10n
+                        .poll_options_description(minOptionsRequired)),
                 ..._buildOptionFields(context, state, bloc),
-                _buildAddOptionButton(state, bloc),
+                _buildAddOptionButton(context, state, bloc),
                 Divider(color: theme.baseColorShade4, height: 32),
-
-                _buildMultipleSelectionRow(state, bloc),
+                _buildMultipleSelectionRow(context, state, bloc),
                 Divider(color: theme.baseColorShade4, height: 32),
-
                 _buildPollDurationSection(state, bloc, context),
               ],
             ),
@@ -129,12 +118,12 @@ class AmityPollPostComposerPage extends NewBasePage {
   }
 
   Widget _buildPollQuestionSection(
-      BuildContext context,
-      PollComposerState state,
-      PollComposerBloc bloc,
-      TextEditingController controller,
-      String? communityId,
-      ) {
+    BuildContext context,
+    PollComposerState state,
+    PollComposerBloc bloc,
+    TextEditingController controller,
+    String? communityId,
+  ) {
     const int maxQuestionLength = 500;
     // Only set the controller's text if the state.question differs to prevent cursor reset.
     if (controller.text.isEmpty && state.question.isNotEmpty) {
@@ -196,19 +185,13 @@ class AmityPollPostComposerPage extends NewBasePage {
             bloc.add(UpdateQuestionEvent(question: value));
           },
         ),
-        if (state.question
-            .trim()
-            .length <= maxQuestionLength) ...[
+        if (state.question.trim().length <= maxQuestionLength) ...[
           Divider(
             color: theme.baseColorShade4,
           ),
         ],
-        if (state.question
-            .trim()
-            .length > maxQuestionLength) ...[
-          Divider(
-              color: theme.alertColor
-          ),
+        if (state.question.trim().length > maxQuestionLength) ...[
+          Divider(color: theme.alertColor),
           Text(
             context.l10n.error_max_poll_characters(maxQuestionLength),
             style: TextStyle(
@@ -221,7 +204,6 @@ class AmityPollPostComposerPage extends NewBasePage {
       ],
     );
   }
-
 
   Widget _buildSectionTitle(String title, {String? description}) {
     return Padding(
@@ -253,12 +235,9 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  List<Widget> _buildOptionFields(BuildContext context, PollComposerState state,
-      PollComposerBloc bloc) {
-    return state.options
-        .asMap()
-        .entries
-        .map((entry) {
+  List<Widget> _buildOptionFields(
+      BuildContext context, PollComposerState state, PollComposerBloc bloc) {
+    return state.options.asMap().entries.map((entry) {
       final index = entry.key;
       final option = entry.value;
 
@@ -291,7 +270,7 @@ class AmityPollPostComposerPage extends NewBasePage {
                       }
                     },
                     decoration: InputDecoration(
-                      hintText: 'Option ${index + 1}',
+                      hintText: context.l10n.poll_option_hint(index + 1),
                       // Dynamic hint text
                       hintStyle: TextStyle(
                         fontSize: 14,
@@ -306,9 +285,7 @@ class AmityPollPostComposerPage extends NewBasePage {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: option
-                              .trim()
-                              .length > maxOptionLength
+                          color: option.trim().length > maxOptionLength
                               ? theme.alertColor
                               : theme.baseColorShade4,
                           width: 1,
@@ -317,9 +294,7 @@ class AmityPollPostComposerPage extends NewBasePage {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: option
-                              .trim()
-                              .length > maxOptionLength
+                          color: option.trim().length > maxOptionLength
                               ? theme.alertColor
                               : theme.baseColorShade4,
                           width: 1,
@@ -344,15 +319,16 @@ class AmityPollPostComposerPage extends NewBasePage {
                     onTap: state.isPosting
                         ? null
                         : () {
-                      final updatedOptions = [...state.options];
-                      updatedOptions.removeAt(
-                          index); // Remove the tapped option
-                      if (updatedOptions.isEmpty) {
-                        // Ensure at least one empty row remains
-                        updatedOptions.add('');
-                      }
-                      bloc.add(UpdateOptionsEvent(options: updatedOptions));
-                    },
+                            final updatedOptions = [...state.options];
+                            updatedOptions
+                                .removeAt(index); // Remove the tapped option
+                            if (updatedOptions.isEmpty) {
+                              // Ensure at least one empty row remains
+                              updatedOptions.add('');
+                            }
+                            bloc.add(
+                                UpdateOptionsEvent(options: updatedOptions));
+                          },
                     child: Icon(
                       Icons.delete_outline_outlined,
                       color: state.isPosting
@@ -365,13 +341,12 @@ class AmityPollPostComposerPage extends NewBasePage {
               ],
             ),
             // Error text for exceeding max length
-            if (option
-                .trim()
-                .length > maxOptionLength)
+            if (option.trim().length > maxOptionLength)
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
-                  context.l10n.error_max_poll_option_characters(maxOptionLength),
+                  context.l10n
+                      .error_max_poll_option_characters(maxOptionLength),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.normal,
@@ -385,58 +360,67 @@ class AmityPollPostComposerPage extends NewBasePage {
     }).toList();
   }
 
-  Widget _buildAddOptionButton(PollComposerState state, PollComposerBloc bloc) {
+  Widget _buildAddOptionButton(
+      BuildContext context, PollComposerState state, PollComposerBloc bloc) {
     return state.options.length < 10
         ? Padding(
-      padding: const EdgeInsets.only(bottom: 12.0), // Matches option spacing
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: state.isPosting ? null : () {
-                final updatedOptions = [...state.options, ''];
-                bloc.add(UpdateOptionsEvent(options: updatedOptions));
-              },
-              child: Container(
-                height: 40.0, // Consistent with text field height
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: state.isPosting ? theme.secondaryColor.blend(
-                        ColorBlendingOption.shade3) : theme.baseColorShade3,
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add, size: 16,
-                        color: state.isPosting ? theme.secondaryColor : theme
-                            .baseColor),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Add option',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: state.isPosting ? theme.secondaryColor : theme
-                            .baseColor,
+            padding:
+                const EdgeInsets.only(bottom: 12.0), // Matches option spacing
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: state.isPosting
+                        ? null
+                        : () {
+                            final updatedOptions = [...state.options, ''];
+                            bloc.add(
+                                UpdateOptionsEvent(options: updatedOptions));
+                          },
+                    child: Container(
+                      height: 40.0, // Consistent with text field height
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: state.isPosting
+                              ? theme.secondaryColor
+                                  .blend(ColorBlendingOption.shade3)
+                              : theme.baseColorShade3,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add,
+                              size: 16,
+                              color: state.isPosting
+                                  ? theme.secondaryColor
+                                  : theme.baseColor),
+                          const SizedBox(width: 8),
+                          Text(
+                            context.l10n.poll_add_option,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                              color: state.isPosting
+                                  ? theme.secondaryColor
+                                  : theme.baseColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                // Right padding to align with delete button space
+                const SizedBox(width: 32.0),
+                // Adjust width to match delete button's width
+              ],
             ),
-          ),
-          // Right padding to align with delete button space
-          const SizedBox(width: 32.0),
-          // Adjust width to match delete button's width
-        ],
-      ),
-    )
+          )
         : const SizedBox.shrink();
   }
-
 
   Widget buildPollOptionsSection(PollComposerState state, PollComposerBloc bloc,
       BuildContext context, AmityThemeColor theme) {
@@ -467,8 +451,12 @@ class AmityPollPostComposerPage extends NewBasePage {
           ),
         ),
         const SizedBox(height: 12),
-        ..._buildOptionFields(context, state, bloc,),
-        _buildAddOptionButton(state, bloc),
+        ..._buildOptionFields(
+          context,
+          state,
+          bloc,
+        ),
+        _buildAddOptionButton(context, state, bloc),
         const SizedBox(height: 24),
         Divider(
           color: theme.baseColorShade4,
@@ -480,9 +468,8 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-
-  Widget _buildMultipleSelectionRow(PollComposerState state,
-      PollComposerBloc bloc) {
+  Widget _buildMultipleSelectionRow(
+      BuildContext context, PollComposerState state, PollComposerBloc bloc) {
     return Row(
       children: [
         Expanded(
@@ -490,7 +477,7 @@ class AmityPollPostComposerPage extends NewBasePage {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Multiple selection',
+                context.l10n.poll_multiple_selection_title,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -499,7 +486,7 @@ class AmityPollPostComposerPage extends NewBasePage {
               ),
               const SizedBox(height: 4),
               Text(
-                'Let participants vote more than one option.',
+                context.l10n.poll_multiple_selection_description,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
@@ -511,8 +498,10 @@ class AmityPollPostComposerPage extends NewBasePage {
         ),
         Switch(
           value: state.isMultipleChoice,
-          onChanged: state.isPosting ? null : (value) =>
-              bloc.add(UpdateMultipleChoiceEvent(isMultipleChoice: value)),
+          onChanged: state.isPosting
+              ? null
+              : (value) =>
+                  bloc.add(UpdateMultipleChoiceEvent(isMultipleChoice: value)),
           activeColor: theme.backgroundColor,
           activeTrackColor: theme.primaryColor,
           inactiveThumbColor: theme.backgroundColor,
@@ -522,9 +511,9 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  Widget _buildPollDurationSection(PollComposerState state,
-      PollComposerBloc bloc, BuildContext context) {
-    final DateFormat formatter = DateFormat("dd MMM 'at' hh:mm a");
+  Widget _buildPollDurationSection(
+      PollComposerState state, PollComposerBloc bloc, BuildContext context) {
+    final DateFormat formatter = DateFormat("dd MMM 'at' hh:mm a", Localizations.localeOf(context).toLanguageTag());
     final bool isCustomSelected = state.selectedPollDurationIndex == -1;
 
     return Column(
@@ -539,143 +528,145 @@ class AmityPollPostComposerPage extends NewBasePage {
           onTap: state.isPosting
               ? null
               : () async {
-            final selectedIndex = await showModalBottomSheet<int>(
-              context: context,
-              backgroundColor: theme.backgroundColor,
-              builder: (context) {
-                return ListView(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                  children: [
-                    ...state.durationOptions
-                        .asMap()
-                        .entries
-                        .map((entry) {
-                      final index = entry.key;
-                      final option = entry.value;
-
-                      return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, // Adjust as needed for left and right spacing
-                        ),
-                        title: Text(
-                          option,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: theme.baseColor,
-                          ),
-                        ),
-                        trailing: Radio<int>(
-                          value: index,
-                          groupValue: state.selectedPollDurationIndex,
-                          onChanged: state.isPosting
-                              ? null
-                              : (value) {
-                            Navigator.pop(context, value);
-                          },
-                          activeColor: theme.primaryColor,
-                          // Customize color
-                          visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity,
-                            vertical: VisualDensity.minimumDensity,
-                          ),
-                          // Remove extra padding
-                          materialTapTargetSize: MaterialTapTargetSize
-                              .shrinkWrap, // Shrink tap area
-                        ),
-                        onTap: state.isPosting
-                            ? null
-                            : () {
-                          Navigator.pop(context, index);
-                        },
-                      );
-                    }),
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, // Adjust as needed for left and right spacing
-                      ),
-                      title: Text(
-                        'Custom end date',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: theme.baseColor,
-                        ),
-                      ),
-                      trailing: Radio<int>(
-                        value: -1,
-                        groupValue: state.selectedPollDurationIndex,
-                        onChanged: state.isPosting
-                            ? null
-                            : (value) {
-                          Navigator.pop(context, value);
-                        },
-                        activeColor: theme.primaryColor,
-                        // Customize color
-                        visualDensity: const VisualDensity(
-                          horizontal: VisualDensity.minimumDensity,
-                          vertical: VisualDensity.minimumDensity,
-                        ),
-                        // Remove extra padding
-                        materialTapTargetSize: MaterialTapTargetSize
-                            .shrinkWrap, // Shrink tap area
-                      ),
-                      onTap: state.isPosting
-                          ? null
-                          : () {
-                        Navigator.pop(context, -1);
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-
-            if (selectedIndex != null) {
-              bloc.add(UpdateDurationEvent(durationIndex: selectedIndex));
-              if (selectedIndex == -1) {
-                final DateTime? customDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate:
-                  DateTime.now().add(Duration(days: maxPollDurationDays)),
-                  builder: (BuildContext context, Widget? child) {
-                    return Theme(
-                      data: getDatePickerTheme(context, theme),
-                      child: child!,
-                    );
-                  },
-                );
-
-                if (customDate != null) {
-                  final TimeOfDay? customTime = await showTimePicker(
+                  final selectedIndex = await showModalBottomSheet<int>(
                     context: context,
-                    initialTime: TimeOfDay.now(),
-                    builder: (BuildContext context, Widget? child) {
-                      return Theme(
-                        data: getTimePickerTheme(context, theme),
-                        child: child!,
+                    backgroundColor: theme.backgroundColor,
+                    builder: (context) {
+                      return ListView(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        children: [
+                          ...state.durationDays.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final days = entry.value;
+                            final localizedDuration =
+                                context.l10n.poll_duration_days(days);
+
+                            return ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                              ),
+                              title: Text(
+                                localizedDuration,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.baseColor,
+                                ),
+                              ),
+                              trailing: Radio<int>(
+                                value: index,
+                                groupValue: state.selectedPollDurationIndex,
+                                onChanged: state.isPosting
+                                    ? null
+                                    : (value) {
+                                        Navigator.pop(context, value);
+                                      },
+                                activeColor: theme.primaryColor,
+                                visualDensity: const VisualDensity(
+                                  horizontal: VisualDensity.minimumDensity,
+                                  vertical: VisualDensity.minimumDensity,
+                                ),
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              onTap: state.isPosting
+                                  ? null
+                                  : () {
+                                      Navigator.pop(context, index);
+                                    },
+                            );
+                          }),
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            title: Text(
+                              context.l10n.poll_custom_edn_date,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: theme.baseColor,
+                              ),
+                            ),
+                            trailing: Radio<int>(
+                              value: -1,
+                              groupValue: state.selectedPollDurationIndex,
+                              onChanged: state.isPosting
+                                  ? null
+                                  : (value) {
+                                      Navigator.pop(context, value);
+                                    },
+                              activeColor: theme.primaryColor,
+                              visualDensity: const VisualDensity(
+                                horizontal: VisualDensity.minimumDensity,
+                                vertical: VisualDensity.minimumDensity,
+                              ),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onTap: state.isPosting
+                                ? null
+                                : () {
+                                    Navigator.pop(context, -1);
+                                  },
+                          ),
+                        ],
                       );
                     },
                   );
 
-                  if (customTime != null) {
-                    final customDateTime = DateTime(
-                      customDate.year,
-                      customDate.month,
-                      customDate.day,
-                      customTime.hour,
-                      customTime.minute,
-                    );
+                  if (selectedIndex != null) {
+                    bloc.add(UpdateDurationEvent(durationIndex: selectedIndex));
+                    if (selectedIndex == -1) {
+                      final DateTime? customDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now()
+                            .add(Duration(days: maxPollDurationDays)),
+                        locale: Localizations.localeOf(context),
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: getDatePickerTheme(context, theme),
+                            child: child!,
+                          );
+                        },
+                      );
 
-                    bloc.add(UpdateCustomDateEvent(customDate: customDateTime));
+                      if (customDate != null) {
+                        final TimeOfDay? customTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                          builder: (BuildContext context, Widget? child) {
+                            return Theme(
+                              data: getTimePickerTheme(context, theme),
+                              child: child!,
+                            );
+                          },
+                          helpText: context.l10n.poll_select_time,
+                          hourLabelText: context.l10n.poll_time_hour,
+                          minuteLabelText: context.l10n.poll_time_minute,
+                          cancelText: context.l10n.general_cancel,
+                          confirmText: context.l10n.general_confirm,
+                        );
+
+                        if (customTime != null) {
+                          final customDateTime = DateTime(
+                            customDate.year,
+                            customDate.month,
+                            customDate.day,
+                            customTime.hour,
+                            customTime.minute,
+                          );
+
+                          bloc.add(UpdateCustomDateEvent(
+                              customDate: customDateTime));
+                        }
+                      }
+                    }
                   }
-                }
-              }
-            }
-          },
+                },
           child: Column(
             children: [
               Row(
@@ -684,8 +675,8 @@ class AmityPollPostComposerPage extends NewBasePage {
                     child: Text(
                       isCustomSelected
                           ? context.l10n.poll_custom_edn_date
-                          : state.durationOptions[state
-                          .selectedPollDurationIndex],
+                          : context.l10n.poll_duration_days(state
+                              .durationDays[state.selectedPollDurationIndex]),
                       style: TextStyle(
                         fontSize: 14,
                         color: theme.baseColor,
@@ -704,36 +695,33 @@ class AmityPollPostComposerPage extends NewBasePage {
             ],
           ),
         ),
-
-        //const SizedBox(height: 16),
         if (isCustomSelected && state.customDate != null) ...[
           _buildCustomDatePicker(context, state, bloc),
-
-        ] else
-          if (!isCustomSelected && state.selectedPollDurationIndex >= 0) ...[
-            Text(
-              'Ends on ${formatter.format(DateTime.now().add(Duration(
-                  days: int.parse(
-                      state.durationOptions[state.selectedPollDurationIndex]
-                          .split(" ")[0]))))}',
-              style: TextStyle(
-                fontSize: 12,
-                color: theme.baseColorShade1,
-              ),
+        ] else if (!isCustomSelected &&
+            state.selectedPollDurationIndex >= 0) ...[
+          Text(
+            context.l10n.poll_ends_on(formatter.format(DateTime.now().add(
+                Duration(
+                    days:
+                        state.durationDays[state.selectedPollDurationIndex])))),
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.baseColorShade1,
             ),
-          ],
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildCustomDatePicker(BuildContext context, PollComposerState state,
-      PollComposerBloc bloc) {
+  Widget _buildCustomDatePicker(
+      BuildContext context, PollComposerState state, PollComposerBloc bloc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Ends on',
+          context.l10n.poll_ends_on_label,
           style: TextStyle(
             fontSize: 14,
             color: theme.baseColorShade1,
@@ -742,31 +730,35 @@ class AmityPollPostComposerPage extends NewBasePage {
         const SizedBox(width: 8),
         // Date Picker Trigger
         GestureDetector(
-          onTap: state.isPosting ? null : () async {
-            final DateTime? customDate = await showDatePicker(
-              context: context,
-              initialDate: state.customDate ?? DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(Duration(days: maxPollDurationDays)),
-              builder: (BuildContext context, Widget? child) {
-                return Theme(
-                  data: getDatePickerTheme(context, theme),
-                  child: child!,
-                );
-              },
-            );
+          onTap: state.isPosting
+              ? null
+              : () async {
+                  final DateTime? customDate = await showDatePicker(
+                    context: context,
+                    initialDate: state.customDate ?? DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate:
+                        DateTime.now().add(Duration(days: maxPollDurationDays)),
+                    locale: Localizations.localeOf(context),
+                    builder: (BuildContext context, Widget? child) {
+                      return Theme(
+                        data: getDatePickerTheme(context, theme),
+                        child: child!,
+                      );
+                    },
+                  );
 
-            if (customDate != null) {
-              final updatedDate = DateTime(
-                customDate.year,
-                customDate.month,
-                customDate.day,
-                state.customDate?.hour ?? 0,
-                state.customDate?.minute ?? 0,
-              );
-              bloc.add(UpdateCustomDateEvent(customDate: updatedDate));
-            }
-          },
+                  if (customDate != null) {
+                    final updatedDate = DateTime(
+                      customDate.year,
+                      customDate.month,
+                      customDate.day,
+                      state.customDate?.hour ?? 0,
+                      state.customDate?.minute ?? 0,
+                    );
+                    bloc.add(UpdateCustomDateEvent(customDate: updatedDate));
+                  }
+                },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
@@ -775,8 +767,8 @@ class AmityPollPostComposerPage extends NewBasePage {
             ),
             child: Text(
               state.customDate != null
-                  ? DateFormat("dd MMM yyyy").format(state.customDate!)
-                  : 'Select Date',
+                  ? DateFormat("dd MMM yyyy", Localizations.localeOf(context).toLanguageTag()).format(state.customDate!)
+                  : context.l10n.poll_select_date,
               style: TextStyle(
                 fontSize: 14,
                 color: theme.baseColor,
@@ -787,40 +779,41 @@ class AmityPollPostComposerPage extends NewBasePage {
         const SizedBox(width: 8),
         // Time Picker Trigger
         GestureDetector(
-          onTap: state.isPosting ? null : () async {
-            final TimeOfDay? customTime = await showTimePicker(
-              context: context,
-              initialTime: state.customDate != null
-                  ? TimeOfDay(
-                hour: state.customDate!.hour,
-                minute: state.customDate!.minute,
-              )
-                  : TimeOfDay.now(),
-              builder: (BuildContext context, Widget? child) {
-                return Theme(
-                  data: getTimePickerTheme(context, theme),
-                  child: child!,
-                );
-              },
-            );
+          onTap: state.isPosting
+              ? null
+              : () async {
+                  final TimeOfDay? customTime = await showTimePicker(
+                    context: context,
+                    initialTime: state.customDate != null
+                        ? TimeOfDay(
+                            hour: state.customDate!.hour,
+                            minute: state.customDate!.minute,
+                          )
+                        : TimeOfDay.now(),
+                    builder: (BuildContext context, Widget? child) {
+                      return Theme(
+                        data: getTimePickerTheme(context, theme),
+                        child: child!,
+                      );
+                    },
+                    helpText: context.l10n.poll_select_time,
+                    hourLabelText: context.l10n.poll_time_hour,
+                    minuteLabelText: context.l10n.poll_time_minute,
+                    cancelText: context.l10n.general_cancel,
+                    confirmText: context.l10n.general_confirm,
+                  );
 
-            if (customTime != null) {
-              final updatedDate = DateTime(
-                state.customDate?.year ?? DateTime
-                    .now()
-                    .year,
-                state.customDate?.month ?? DateTime
-                    .now()
-                    .month,
-                state.customDate?.day ?? DateTime
-                    .now()
-                    .day,
-                customTime.hour,
-                customTime.minute,
-              );
-              bloc.add(UpdateCustomDateEvent(customDate: updatedDate));
-            }
-          },
+                  if (customTime != null) {
+                    final updatedDate = DateTime(
+                      state.customDate?.year ?? DateTime.now().year,
+                      state.customDate?.month ?? DateTime.now().month,
+                      state.customDate?.day ?? DateTime.now().day,
+                      customTime.hour,
+                      customTime.minute,
+                    );
+                    bloc.add(UpdateCustomDateEvent(customDate: updatedDate));
+                  }
+                },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
@@ -830,7 +823,7 @@ class AmityPollPostComposerPage extends NewBasePage {
             child: Text(
               state.customDate != null
                   ? DateFormat("hh:mm a").format(state.customDate!)
-                  : 'Select Time',
+                  : context.l10n.poll_select_time,
               style: TextStyle(
                 fontSize: 14,
                 color: theme.baseColor,
@@ -842,8 +835,8 @@ class AmityPollPostComposerPage extends NewBasePage {
     );
   }
 
-  void _createPollPost(PollComposerState state, PollComposerBloc bloc,
-      BuildContext context) {
+  void _createPollPost(
+      PollComposerState state, PollComposerBloc bloc, BuildContext context) {
     bloc.add(UpdatePostingStateEvent(isPosting: true));
 
     context.read<AmityToastBloc>().add(AmityToastLoading(
@@ -861,29 +854,25 @@ class AmityPollPostComposerPage extends NewBasePage {
     // Create the poll first
     AmitySocialClient.newPollRepository()
         .createPoll(question: state.question.trim())
-        .answers(answers:
-    state.options
-        .where((option) =>
-    option
-        .trim()
-        .isNotEmpty)
-        .map((option) => AmityPollAnswer.text(option))
-        .toList(),
-    )
-        .answerType(answerType:
-    state.isMultipleChoice
-        ? AmityPollAnswerType.MULTIPLE
-        : AmityPollAnswerType.SINGLE,
-    )
-        .closedIn(closedIn: Duration(
-        milliseconds: state.pollDurationInMilliseconds))
+        .answers(
+          answers: state.options
+              .where((option) => option.trim().isNotEmpty)
+              .map((option) => AmityPollAnswer.text(option))
+              .toList(),
+        )
+        .answerType(
+          answerType: state.isMultipleChoice
+              ? AmityPollAnswerType.MULTIPLE
+              : AmityPollAnswerType.SINGLE,
+        )
+        .closedIn(
+            closedIn: Duration(milliseconds: state.pollDurationInMilliseconds))
         .create()
         .then((amityPoll) {
-
       final mentionMetadataList = _questionController.getAmityMentionMetadata();
       final mentionUserIds = _questionController.getMentionUserIds();
       final mentionMetadataJson =
-      AmityMentionMetadataCreator(mentionMetadataList).create();
+          AmityMentionMetadataCreator(mentionMetadataList).create();
       dataTypeSelector
           .poll(amityPoll.pollId!)
           .text(amityPoll.question!)
@@ -894,14 +883,13 @@ class AmityPollPostComposerPage extends NewBasePage {
         _onPostSuccess(context, post);
       }).onError((error, stackTrace) {
         bloc.add(UpdatePostingStateEvent(isPosting: false));
-        _showToast(context, context.l10n.error_create_poll,
-            AmityToastIcon.warning);
+        _showToast(
+            context, context.l10n.error_create_poll, AmityToastIcon.warning);
       });
-    })
-        .onError((error, stackTrace) {
+    }).onError((error, stackTrace) {
       bloc.add(UpdatePostingStateEvent(isPosting: false));
-      _showToast(context, context.l10n.error_create_poll,
-          AmityToastIcon.warning);
+      _showToast(
+          context, context.l10n.error_create_poll, AmityToastIcon.warning);
     });
   }
 
@@ -966,5 +954,4 @@ class AmityPollPostComposerPage extends NewBasePage {
       },
     );
   }
-
 }

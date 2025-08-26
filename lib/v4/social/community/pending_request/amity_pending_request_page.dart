@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity_pending_post_list_component.dart';
@@ -61,10 +62,9 @@ class AmityPendingRequestPage extends NewBasePage {
                   backgroundColor: theme.backgroundColor,
                   foregroundColor: theme.baseColor,
                   title: FreedomUIKitBehavior
-                          .instance.pendingRequestPageBehavior.buildTitle
-                          ?.call() ??
-                      Text("Pending Requests",
-                          style: AmityTextStyle.titleBold(theme.baseColor)),
+                      .instance.pendingRequestPageBehavior.buildTitle
+                      ?.call() ?? Text(context.l10n.community_pending_requests_title,
+                      style: AmityTextStyle.titleBold(theme.baseColor)),
                   flexibleSpace: FreedomUIKitBehavior.instance
                       .pendingRequestPageBehavior.buildHeaderFlexibleSpace
                       ?.call(FreedomUIKitBehavior
@@ -139,7 +139,7 @@ class AmityPendingRequestPage extends NewBasePage {
     return [
       if (state.community.isPostReviewEnabled ?? false)
         AmityTabIndicator(
-          title: "Posts",
+          title: context.l10n.profile_posts,
           count: state.pendingPostCount,
           selected: tabController.index == 0,
           selectedColor: theme.primaryColor,
@@ -175,8 +175,8 @@ class AmityPendingRequestPage extends NewBasePage {
       tabContents.add(
         Center(
           child: Text(
-            "Join requests feature coming soon",
-            style: TextStyle(color: theme.baseColor), // Using baseColor
+            context.l10n.community_join_requests_coming_soon,
+            style: TextStyle(color: theme.baseColor),
           ),
         ),
       );
@@ -198,25 +198,25 @@ class AmityPendingRequestPage extends NewBasePage {
           Icon(
             Icons.check_circle_outline,
             size: 60,
-            color: theme.baseColor.withOpacity(0.6), // Using baseColor
+            color: theme.baseColor.withOpacity(0.6),
           ),
           const SizedBox(height: 16),
           Text(
-            'No pending requests available',
+            context.l10n.community_pending_requests_empty_title,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: theme.baseColor, // Using baseColor
+              color: theme.baseColor,
             ),
           ),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
-              'Enable post review or join approval in community settings to manage requests.',
+              context.l10n.community_pending_requests_empty_description,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: theme.baseColor.withOpacity(0.6), // Using baseColor
+                color: theme.baseColor.withOpacity(0.6),
               ),
             ),
           ),

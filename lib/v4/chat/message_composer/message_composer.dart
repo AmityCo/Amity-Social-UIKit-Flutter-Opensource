@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/replying_message.dart';
@@ -213,7 +214,7 @@ class AmityMessageComposer extends NewBaseComponent {
                                   isDense: true,
                                   contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 10),
-                                  hintText: 'Write a message',
+                                  hintText: context.l10n.message_placeholder,
                                   border: InputBorder.none,
                                   prefixIconColor: theme.primaryColor,
                                   suffixIconColor: theme.primaryColor,
@@ -315,7 +316,7 @@ class AmityMessageComposer extends NewBaseComponent {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Editing message',
+                        text: context.l10n.message_editing_message,
                         style: AmityTextStyle.captionBold(theme.baseColor),
                       ),
                     ],
@@ -349,7 +350,7 @@ class AmityMessageComposer extends NewBaseComponent {
 
   Widget renderReplyPanel(AmityMessage message, BuildContext context) {
     final userDisplayName = message.user?.userId == AmityCoreClient.getUserId()
-        ? "yourself"
+        ? context.l10n.message_replying_yourself
         : message.user?.displayName ?? "";
 
     Stack? imagePreview;
@@ -393,7 +394,7 @@ class AmityMessageComposer extends NewBaseComponent {
             MaterialPageRoute(
               builder: (context) => FullTextScreen(
                 fullText: parentTextMessage,
-                displayName: "Replied message",
+                displayName: context.l10n.message_replied_message,
                 theme: theme,
               ),
             ),
@@ -442,7 +443,8 @@ class AmityMessageComposer extends NewBaseComponent {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Replying to $userDisplayName',
+                          text:
+                              context.l10n.message_replying_to(userDisplayName),
                           style: AmityTextStyle.captionBold(theme.baseColor),
                         ),
                       ],
@@ -468,7 +470,7 @@ class AmityMessageComposer extends NewBaseComponent {
                     Row(
                       children: [
                         Text(
-                          "Photo",
+                          context.l10n.general_photo,
                           style: AmityTextStyle.caption(theme.baseColorShade1),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -477,7 +479,7 @@ class AmityMessageComposer extends NewBaseComponent {
                     ),
                   if (message.data is MessageVideoData)
                     Text(
-                      "Video",
+                      context.l10n.general_video,
                       style: AmityTextStyle.caption(theme.baseColorShade1),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -526,7 +528,7 @@ class AmityMessageComposer extends NewBaseComponent {
         children: [
           renderMediaButton(
             "assets/Icons/amity_ic_camera_button.svg",
-            "Camera",
+            context.l10n.general_camera,
             () {
               onCameraTap(context);
             },
@@ -536,7 +538,7 @@ class AmityMessageComposer extends NewBaseComponent {
           ),
           renderMediaButton(
             "assets/Icons/amity_ic_image_button.svg",
-            "Media",
+            context.l10n.message_media,
             () {
               pickMultipleFiles(context, appName, FileType.video);
             },

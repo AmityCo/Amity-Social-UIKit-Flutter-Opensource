@@ -35,9 +35,16 @@ class UserModerationEvent extends UserRelationshipEvent {
   final UserModerationAction action;
   final String userId;
   final AmityToastBloc toastBloc;
+  final String successMessage;
+  final String errorMessage;
 
-  const UserModerationEvent(
-      {required this.action, required this.userId, required this.toastBloc});
+  const UserModerationEvent({
+    required this.action,
+    required this.userId,
+    required this.toastBloc,
+    required this.successMessage,
+    required this.errorMessage,
+  });
 
   @override
   List<Object> get props => [action, userId, toastBloc];

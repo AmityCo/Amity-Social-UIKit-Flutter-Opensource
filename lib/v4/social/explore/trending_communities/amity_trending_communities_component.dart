@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/uikit_behavior.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -10,9 +11,7 @@ import 'package:amity_uikit_beta_service/v4/social/explore/list_state/amity_list
 import 'package:amity_uikit_beta_service/v4/social/explore/recommended_communities/amity_recommended_communities_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/trending_communities/amity_trending_community_shimmer.dart';
 import 'package:amity_uikit_beta_service/v4/social/explore/trending_communities/trending_communities_cubit.dart';
-import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
-import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -65,42 +64,41 @@ class AmityTrendingCommunitiesView extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 16, top: 20, bottom: 16),
-              child: Text(
-                'Trending now',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
+        return Container(
+          color: theme.backgroundColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 20, bottom: 16),
+                child: Text(
+                  context.l10n.community_trending_now,
+                  style: AmityTextStyle.titleBold(theme.baseColor),
                 ),
               ),
-            ),
-            // ...state.communities.asMap().entries((index, community) => ),
-            for (var entry in state.communities.asMap().entries)
-              AmityJoinCommunityView(
-                index: entry.key,
-                theme: theme,
-                community: entry.value,
-                onTap: () {
-                  UIKitBehavior.instance.postContentComponentBehavior
-                      .goToCommunityProfilePage(context, entry.value.communityId!);
-                },
-                onJoinTap: () {
-                  if (entry.value.isJoined == true) {
-                    context
-                        .read<TrendingCommunitiesCubit>()
-                        .leaveCommunity(entry.value.communityId!);
-                  } else {
-                    context
-                        .read<TrendingCommunitiesCubit>()
-                        .joinCommunity(entry.value.communityId!);
-                  }
-                },
-              )
-          ],
+              for (var entry in state.communities.asMap().entries)
+                AmityJoinCommunityView(
+                  index: entry.key,
+                  theme: theme,
+                  community: entry.value,
+                  onTap: () {
+                    UIKitBehavior.instance.postContentComponentBehavior
+                        .goToCommunityProfilePage(context, entry.value.communityId!);
+                  },
+                  onJoinTap: () {
+                    if (entry.value.isJoined == true) {
+                      context
+                          .read<TrendingCommunitiesCubit>()
+                          .leaveCommunity(entry.value.communityId!);
+                    } else {
+                      context
+                          .read<TrendingCommunitiesCubit>()
+                          .joinCommunity(entry.value.communityId!);
+                    }
+                  },
+                )
+            ],
+          ),
         );
       },
     );
@@ -204,10 +202,7 @@ class AmityJoinCommunityView extends StatelessWidget {
                                 Flexible(
                                   child: Text(
                                     community.displayName ?? '',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                    ),
+                                    style: AmityTextStyle.body(theme.baseColor),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -235,17 +230,15 @@ class AmityJoinCommunityView extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 6),
                             child: AmityCommunityCategoryView(
                               categories: community.categories!,
+                              theme: theme,
                               maxPreview: 2,
                             ),
                           ),
                         ),
                       const SizedBox(height: 4),
                       Text(
-                        '${(community.membersCount ?? 0).formattedCompactString()} members',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).hintColor,
-                        ),
+                        '${(community.membersCount ?? 0).formattedCompactString()} ${context.l10n.profile_members_count(community.membersCount ?? 0)}',
+                        style: AmityTextStyle.caption(theme.baseColorShade1),
                       ),
                     ],
                   ),

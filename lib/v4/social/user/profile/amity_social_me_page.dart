@@ -37,6 +37,7 @@ class AmitySocialMePage extends NewBasePage {
   final Widget? customHeader;
   final String? avatarUrl;
   final Widget avatar;
+  final String rarity;
 
   AmitySocialMePage({
     super.key,
@@ -47,6 +48,7 @@ class AmitySocialMePage extends NewBasePage {
     this.customProfile,
     this.customHeader,
     this.avatarUrl,
+    this.rarity = "Common",
   }) : super(pageId: 'user_profile_page');
 
   final ScrollController _scrollController = ScrollController();
@@ -63,7 +65,6 @@ class AmitySocialMePage extends NewBasePage {
               if (_scrollController.hasClients &&
                   _scrollController.offset >
                       MediaQuery.of(context).size.height * 0.3) {
-                print('xxxx');
                 context
                     .read<UserProfileBloc>()
                     .add(const ShowUserNameOnAppBarEvent(showUserName: true));
@@ -151,6 +152,13 @@ class AmitySocialMePage extends NewBasePage {
                                     fit: BoxFit.cover,
                                   ),
                           ),
+                          if (_getRarityTintColor(rarity) != null)
+                            Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              color:
+                                  _getRarityTintColor(rarity)!.withOpacity(0.3),
+                            ),
                           if (!state.showUserNameOnAppBar) avatar
                         ],
                       ),
@@ -272,6 +280,25 @@ class AmitySocialMePage extends NewBasePage {
         );
       }),
     );
+  }
+
+  Color? _getRarityTintColor(String? avatarRarity) {
+    if (avatarRarity == null) return null;
+
+    switch (avatarRarity) {
+      case 'Epic':
+        return const Color(0xFF7223CD);
+      case 'Uncommon':
+        return const Color(0xFF68E075);
+      case 'Rare':
+        return const Color(0xFF2532CE);
+      case 'Common':
+        return null; // No tint for common, just blur
+      case 'Legendary':
+        return const Color(0xFF7223CD);
+      default:
+        return null;
+    }
   }
 
   Widget _buildItems(

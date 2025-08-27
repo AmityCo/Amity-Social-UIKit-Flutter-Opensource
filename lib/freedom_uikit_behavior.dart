@@ -1,3 +1,5 @@
+import 'package:amity_uikit_beta_service/v4/core/freedom_theme_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_membership/freedom_community_membership_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/pending/freedom_amity_pending_post_content_component_behavior.dart';
@@ -33,4 +35,9 @@ class FreedomUIKitBehavior {
   FreedomAmityPendingPostContentComponentBehavior
       pendingPostContentComponentBehavior =
       FreedomAmityPendingPostContentComponentBehavior();
+
+  FreedomCommunityMembershipBehavior communityMembershipBehavior =
+      FreedomCommunityMembershipBehavior();
+
+  FreedomThemeBehavior themeBehavior = FreedomThemeBehavior();
 }

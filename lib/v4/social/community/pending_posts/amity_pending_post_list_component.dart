@@ -44,6 +44,8 @@ class AmityPendingPostListComponent extends NewBaseComponent {
   }
 
   Widget _buildContent(BuildContext context, PendingPostsState state) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Column(
       children: [
         if (state.isModerator)
@@ -54,7 +56,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  "Decline pending post will permanently delete the selected post from community.",
+                  phrase?.call(context, 'pending_posts_desc') ?? "Decline pending post will permanently delete the selected post from community.",
                   style: AmityTextStyle.caption(theme.baseColor),
                 ),
               ),
@@ -72,6 +74,8 @@ class AmityPendingPostListComponent extends NewBaseComponent {
   }
 
   Widget _buildEmptyView(BuildContext context) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +87,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
             height: 60,
           ),
           const SizedBox(height: 8),
-          Text('No pending posts',
+          Text(phrase?.call(context, 'community_pending_request_no_pending_posts') ?? 'No pending posts',
               style: AmityTextStyle.titleBold(theme.baseColorShade3)),
         ],
       ),

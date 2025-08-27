@@ -40,10 +40,11 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityMembershipPageState state) {
+    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: 'All members',
+          title: phrase?.call(context, 'all_members_title') ?? 'All members',
           configProvider: configProvider,
           theme: theme,
           tailingButton: state.isCurrentUserModerator
@@ -86,9 +87,9 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   indicatorColor: theme.primaryColor,
                   dividerColor: theme.baseColorShade4,
                   dividerHeight: 1.0, // Makes indicator match text width
-                  tabs: const [
-                    Tab(text: 'Members'),
-                    Tab(text: 'Moderators'),
+                  tabs: [
+                    Tab(text: phrase?.call(context, 'all_members_members') ?? 'Members'),
+                    Tab(text: phrase?.call(context, 'all_members_moderators') ?? 'Moderators'),
                   ],
                 ),
                 Expanded(
@@ -98,7 +99,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         children: [
                           AmityTopSearchBarComponent(
                             textcontroller: _textcontroller,
-                            hintText: 'Search member',
+                            hintText: phrase?.call(context, 'all_members_search_input') ?? 'Search member',
                             showCancelButton: false,
                             onTextChanged: (value) {
                               context.read<CommunityMembershipPageBloc>().add(
@@ -258,6 +259,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   void _showBottomSheet(BuildContext context,
       CommunityMembershipPageState state, AmityCommunityMember member) {
+    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -300,8 +302,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         ? 'assets/Icons/amity_ic_demote_member.svg'
                         : 'assets/Icons/amity_ic_promote_moderator.svg',
                     title: member.isModerator()
-                        ? 'Demote to member'
-                        : 'Promote to moderator',
+                        ? phrase?.call(context, 'members_demote_to_moderator') ?? 'Demote to member'
+                        : phrase?.call(context, 'members_promote_to_moderator') ?? 'Promote to moderator',
                     onTap: () {
                       context.read<CommunityMembershipPageBloc>().add(
                           CommunityMembershipPageBottomSheetEvent(
@@ -318,8 +320,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? 'Unreport user'
-                          : 'Report user',
+                          ? phrase?.call(context, 'members_unreport_user') ?? 'Unreport user'
+                          : phrase?.call(context, 'members_report_user') ?? 'Report user',
                       onTap: () {
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
@@ -334,7 +336,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                       }),
                   _buildListTile(
                       assetPath: 'assets/Icons/ic_bin_red.svg',
-                      title: 'Remove from community',
+                      title: phrase?.call(context, 'members_remove_from_community') ?? 'Remove from community',
                       isDestructive: true,
                       onTap: () {
                         context.read<CommunityMembershipPageBloc>().add(
@@ -348,8 +350,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? 'Unreport user'
-                          : 'Report user',
+                          ? phrase?.call(context, 'members_unreport_user') ?? 'Unreport user'
+                          : phrase?.call(context, 'members_report_user') ?? 'Report user',
                       onTap: () {
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(

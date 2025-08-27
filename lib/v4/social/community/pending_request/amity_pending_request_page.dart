@@ -55,18 +55,17 @@ class AmityPendingRequestPage extends NewBasePage {
                 });
               }
 
+              final behavior = FreedomUIKitBehavior.instance.pendingRequestPageBehavior;
+
               return Scaffold(
                 backgroundColor: theme.backgroundColor,
                 appBar: AppBar(
                   backgroundColor: theme.backgroundColor,
                   foregroundColor: theme.baseColor,
-                  title: FreedomUIKitBehavior
-                          .instance.pendingRequestPageBehavior.buildTitle
-                          ?.call() ??
+                  title: behavior.buildTitle?.call(context) ??
                       Text("Pending Requests",
                           style: AmityTextStyle.titleBold(theme.baseColor)),
-                  flexibleSpace: FreedomUIKitBehavior.instance
-                      .pendingRequestPageBehavior.buildHeaderFlexibleSpace
+                  flexibleSpace: behavior.buildHeaderFlexibleSpace
                       ?.call(FreedomUIKitBehavior
                           .instance
                           .pendingRequestPageBehavior
@@ -135,11 +134,12 @@ class AmityPendingRequestPage extends NewBasePage {
   List<Widget> _buildTabIndicators(BuildContext context, List<String> tabs) {
     final state = context.watch<AmityPendingRequestCubit>().state;
     final tabController = DefaultTabController.of(context);
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
 
     return [
       if (state.community.isPostReviewEnabled ?? false)
         AmityTabIndicator(
-          title: "Posts",
+          title: phrase?.call(context, 'pending_posts_title') ?? "Posts",
           count: state.pendingPostCount,
           selected: tabController.index == 0,
           selectedColor: theme.primaryColor,
@@ -151,6 +151,7 @@ class AmityPendingRequestPage extends NewBasePage {
   List<Widget> _buildTabContent(BuildContext context) {
     final state = context.read<AmityPendingRequestCubit>().state;
     final List<Widget> tabContents = [];
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
 
     // Add pending posts tab content if enabled
     if (state.community.isPostReviewEnabled ?? false) {
@@ -175,7 +176,7 @@ class AmityPendingRequestPage extends NewBasePage {
       tabContents.add(
         Center(
           child: Text(
-            "Join requests feature coming soon",
+            phrase?.call(context, 'community_pending_request_join_coming_soon') ?? "Join requests feature coming soon",
             style: TextStyle(color: theme.baseColor), // Using baseColor
           ),
         ),
@@ -191,6 +192,8 @@ class AmityPendingRequestPage extends NewBasePage {
   }
 
   Widget _buildEmptyStateView(BuildContext context) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -202,7 +205,7 @@ class AmityPendingRequestPage extends NewBasePage {
           ),
           const SizedBox(height: 16),
           Text(
-            'No pending requests available',
+            phrase?.call(context, 'community_pending_request_no_pending_requests_title') ?? 'No pending requests available',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -213,7 +216,7 @@ class AmityPendingRequestPage extends NewBasePage {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
-              'Enable post review or join approval in community settings to manage requests.',
+              phrase?.call(context, 'community_pending_request_no_pending_requests_desc') ?? 'Enable post review or join approval in community settings to manage requests.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.baseColor.withOpacity(0.6), // Using baseColor

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
@@ -38,10 +39,11 @@ class AmityCommunityAddMemberPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityAddMemberPageState state) {
+    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: 'Add member',
+          title: phrase?.call(context, 'add_members_title') ?? 'Add member',
           configProvider: configProvider,
           theme: theme,
         ),
@@ -50,7 +52,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
             AmityTopSearchBarComponent(
               pageId: pageId,
               textcontroller: _textcontroller,
-              hintText: 'Search user',
+              hintText: phrase?.call(context, 'add_members_search_input') ?? 'Search user',
               showCancelButton: false,
               onTextChanged: (value) {
                 _debouncer.run(() {
@@ -213,6 +215,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
 
   Widget _getAddMemberButton(
       BuildContext context, CommunityAddMemberPageState state) {
+    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     return Container(
       color: theme.backgroundColor,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -233,10 +236,10 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    "Add member",
-                    style: TextStyle(
+                    phrase?.call(context, 'add_members_cta') ?? "Add member",
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w600),

@@ -1,3 +1,4 @@
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 
 class AmityCommunitySettingPageBehavior {
@@ -13,5 +14,9 @@ class AmityCommunitySettingPageBehavior {
   void backToSocialHomePage(BuildContext context) {
     Navigator.of(context).pop();
     Navigator.of(context).pop();
+  }
+
+  bool shouldShowLeave(AmityCommunity community) {
+    return true;
   }
 }

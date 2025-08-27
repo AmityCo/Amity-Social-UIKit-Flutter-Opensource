@@ -110,65 +110,67 @@ class AmityCommunitySettingPage extends NewBasePage {
               _getDividerWidget(),
 
             // Leave Community
-            _getSettingDetailItemWidget(
-                behavior.settingItemTitle?.call(context, 'leave_community') ??
-                    configProvider
-                        .getConfig('$pageId/*/leave_community')['text'],
-                null, onTap: () {
-              final showLeaveDialog = behavior.showLeaveCommunityDialog;
-              if (showLeaveDialog != null) {
-                showLeaveDialog.call(
-                  context,
-                  onGoBack: (_) {
-                    Navigator.of(context).pop();
-                  },
-                  onLeave: (_) {
-                    Navigator.of(context).pop();
-                    context.read<CommunitySettingPageBloc>().add(
-                          LeaveCommunityEvent(
-                            toastBloc: context.read<AmityToastBloc>(),
-                            onSuccess: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            onFailure: () {
-                              Navigator.of(context).pop();
-                              AmityDialog().showAlertErrorDialog(
-                                  title: context.l10n.error_leave_community,
-                                  message: context
-                                      .l10n.error_leave_community_description);
-                            },
-                          ),
-                        );
-                  },
-                  communityName: community.displayName,
-                );
-                return;
-              }
-              ConfirmationDialog().show(
-                  context: context,
-                  title: context.l10n.community_leave,
-                  detailText: context.l10n.community_leave_description,
-                  onConfirm: () {
-                    context
-                        .read<CommunitySettingPageBloc>()
-                        .add(LeaveCommunityEvent(
-                            toastBloc: context.read<AmityToastBloc>(),
-                            onSuccess: () {
-                              // Navigate back to the social home page
-                              behavior.backToSocialHomePage(
-                                context,
-                              );
-                            },
-                            onFailure: () {
-                              AmityDialog().showAlertErrorDialog(
-                                  title: context.l10n.error_leave_community,
-                                  message: context
-                                      .l10n.error_leave_community_description);
-                            }));
-                  });
-            }),
+            if (behavior.shouldShowLeave(community))
+              _getSettingDetailItemWidget(
+                  behavior.settingItemTitle?.call(context, 'leave_community') ??
+                      configProvider
+                          .getConfig('$pageId/*/leave_community')['text'],
+                  null, onTap: () {
+                final showLeaveDialog = behavior.showLeaveCommunityDialog;
+                if (showLeaveDialog != null) {
+                  showLeaveDialog.call(
+                    context,
+                    onGoBack: (_) {
+                      Navigator.of(context).pop();
+                    },
+                    onLeave: (_) {
+                      Navigator.of(context).pop();
+                      context.read<CommunitySettingPageBloc>().add(
+                            LeaveCommunityEvent(
+                              toastBloc: context.read<AmityToastBloc>(),
+                              onSuccess: () {
+                                Navigator.of(context).pop(true);
+                              },
+                              onFailure: () {
+                                Navigator.of(context).pop();
+                                AmityDialog().showAlertErrorDialog(
+                                    title: context.l10n.error_leave_community,
+                                    message: context
+                                        .l10n.error_leave_community_description);
+                              },
+                            ),
+                          );
+                    },
+                    communityName: community.displayName,
+                  );
+                  return;
+                }
+                ConfirmationDialog().show(
+                    context: context,
+                    title: context.l10n.community_leave,
+                    detailText: context.l10n.community_leave_description,
+                    onConfirm: () {
+                      context
+                          .read<CommunitySettingPageBloc>()
+                          .add(LeaveCommunityEvent(
+                              toastBloc: context.read<AmityToastBloc>(),
+                              onSuccess: () {
+                                // Navigate back to the social home page
+                                behavior.backToSocialHomePage(
+                                  context,
+                                );
+                              },
+                              onFailure: () {
+                                AmityDialog().showAlertErrorDialog(
+                                    title: context.l10n.error_leave_community,
+                                    message: context
+                                        .l10n.error_leave_community_description);
+                              }));
+                    });
+              }),
 
-            _getDividerWidget(),
+            if (behavior.shouldShowLeave(community))
+              _getDividerWidget(),
 
             // Close Community
             if (state.shouldShowCloseCommunity)

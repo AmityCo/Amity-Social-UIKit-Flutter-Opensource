@@ -139,3 +139,10 @@ class ActiveStoriesFetched extends ViewStoryEvent {
   @override
   List<Object> get props => [stories];
 }
+
+class ActiveStoriesFailed extends ViewStoryEvent {
+  const ActiveStoriesFailed();
+
+  @override
+  List<Object> get props => [];
+}

@@ -3,6 +3,7 @@ import 'package:amity_uikit_beta_service/v4/social/community/pending_request/ami
 import 'package:amity_uikit_beta_service/v4/social/post/pending/freedom_amity_pending_post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_social_home_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_view_story_page_behavior.dart';
 
 import 'l10n/localization_behavior.dart';
 
@@ -21,6 +22,9 @@ class FreedomUIKitBehavior {
 
   FreedomSocialHomePageBehavior socialHomePageBehavior =
       FreedomSocialHomePageBehavior();
+
+  FreedomViewStoryPageBehavior viewStoryPageBehavior =
+      FreedomViewStoryPageBehavior();
 
   LocalizationBehavior localizationBehavior = LocalizationBehavior();
 

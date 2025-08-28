@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:equatable/equatable.dart';
@@ -9,6 +10,8 @@ part 'comment_list_state.dart';
 
 class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
   var commentCount = 0;
+  final bool handleNoCommentsState = AmityUIKit4Manager
+      .freedomBehavior.viewStoryPageBehavior.handleNoCommentsState;
 
   CommentListBloc(
     String referenceId,
@@ -28,6 +31,14 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
     liveCollection.observeLoadingState().listen((event) {
       addEvent(CommentListEventLoadingStateUpdated(isFetching: event));
     });
+
+    if (handleNoCommentsState) {
+      liveCollection.onError(
+        (_, __) {
+          addEvent(const CommentListEventFailed());
+        },
+      );
+    }
 
     on<CommentListEventRefresh>((event, emit) async {
       emit(CommentListStateChanged(
@@ -100,6 +111,16 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
     on<CommentListEventDisposed>((event, emit) async {
       liveCollection.getStreamController().close();
     });
+
+    on<CommentListEventFailed>(
+      (event, emit) {
+        emit(
+          state.copyWith(
+            hasError: true,
+          ),
+        );
+      },
+    );
   }
 
   CommentLiveCollection getNewLiveCollection(String referenceId,

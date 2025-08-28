@@ -1,6 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
-import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
@@ -65,12 +65,8 @@ Widget communityRow(
   return GestureDetector(
     behavior: HitTestBehavior.translucent,
     onTap: () {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>
-              AmityCommunityProfilePage(communityId: community.communityId!),
-        ),
-      );
+      UIKitBehavior.instance.postContentComponentBehavior
+          .goToCommunityProfilePage(context, community.communityId!);
     },
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,

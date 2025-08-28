@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_posts/amity_pending_post_content_component.dart';
@@ -43,6 +44,8 @@ class AmityPendingPostListComponent extends NewBaseComponent {
   }
 
   Widget _buildContent(BuildContext context, PendingPostsState state) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Column(
       children: [
         if (state.isModerator)
@@ -53,7 +56,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  "Decline pending post will permanently delete the selected post from community.",
+                  phrase?.call(context, 'pending_posts_desc') ?? "Decline pending post will permanently delete the selected post from community.",
                   style: AmityTextStyle.caption(theme.baseColor),
                 ),
               ),
@@ -71,6 +74,8 @@ class AmityPendingPostListComponent extends NewBaseComponent {
   }
 
   Widget _buildEmptyView(BuildContext context) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +87,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
             height: 60,
           ),
           const SizedBox(height: 8),
-          Text('No pending posts',
+          Text(phrase?.call(context, 'community_pending_request_no_pending_posts') ?? 'No pending posts',
               style: AmityTextStyle.titleBold(theme.baseColorShade3)),
         ],
       ),
@@ -100,13 +105,12 @@ class AmityPendingPostListComponent extends NewBaseComponent {
         await cubit.getPendingCommunityFeedPosts();
       },
       child: ListView.separated(
+        controller: FreedomUIKitBehavior
+            .instance.pendingRequestPageBehavior.postReviewScrollerController,
         key: ValueKey('pending_posts_list_${community.communityId}'),
         itemCount: state.posts.length,
-        separatorBuilder: (context, index) => Divider(
-          height: 8,
-          thickness: 8,
-          color: theme.baseColorShade4
-        ),
+        separatorBuilder: (context, index) =>
+            Divider(height: 8, thickness: 8, color: theme.baseColorShade4),
         itemBuilder: (context, index) {
           final post = state.posts[index];
 

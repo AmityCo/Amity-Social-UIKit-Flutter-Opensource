@@ -11,6 +11,15 @@ class ScrollableTabs extends NewBaseComponent {
   ScrollableTabs({Key? key, required String pageId})
       : super(key: key, pageId: pageId, componentId: '');
 
+  final bool _showExploreTab =
+      AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showExploreTab;
+  final bool _showMyCommunitiesTab = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.showMyCommunitiesTab;
+  final bool _useCustomTabButton = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.useCustomTabButton;
+  final _buildCustomTabButton = AmityUIKit4Manager
+      .freedomBehavior.socialHomePageBehavior.buildCustomTabButton;
+
   @override
   Widget buildComponent(BuildContext context) {
     return BlocBuilder<SocialHomeBloc, SocialHomeState>(
@@ -25,9 +34,14 @@ class ScrollableTabs extends NewBaseComponent {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildTabButton(context, context.l10n.community_title, 0, selectedIndex),
-                _buildTabButton(context, context.l10n.tab_explore, 1, selectedIndex),
-                _buildTabButton(context, context.l10n.tab_my_communities, 2, selectedIndex),
+                _buildTabButton(
+                    context, context.l10n.community_title, 0, selectedIndex),
+                if (_showExploreTab)
+                  _buildTabButton(
+                      context, context.l10n.tab_explore, 1, selectedIndex),
+                if (_showMyCommunitiesTab)
+                  _buildTabButton(context, context.l10n.tab_my_communities, 2,
+                      selectedIndex),
               ],
             ),
           ),
@@ -38,36 +52,46 @@ class ScrollableTabs extends NewBaseComponent {
 
   Widget _buildTabButton(
       BuildContext context, String text, int index, int selectedIndex) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: ElevatedButton(
-        onPressed: () =>
-            context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
-        style: ElevatedButton.styleFrom(
-            foregroundColor:
-                selectedIndex == index ? Colors.white : theme.baseColorShade1,
-            backgroundColor: selectedIndex == index
-                ? theme.primaryColor
-                : Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
+    if (_useCustomTabButton) {
+      return _buildCustomTabButton(
+        theme,
+        selectedIndex,
+        index,
+        text,
+        () => context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ElevatedButton(
+          onPressed: () =>
+              context.read<SocialHomeBloc>().add(TabSelectedEvent(index)),
+          style: ElevatedButton.styleFrom(
+              foregroundColor:
+                  selectedIndex == index ? Colors.white : theme.baseColorShade1,
+              backgroundColor: selectedIndex == index
+                  ? theme.primaryColor
+                  : Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              side: BorderSide(
+                  color: selectedIndex == index
+                      ? theme.primaryColor
+                      : theme.baseColorShade4,
+                  width: 1.0),
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight:
+                  selectedIndex == index ? FontWeight.bold : FontWeight.normal,
             ),
-            side: BorderSide(
-                color: selectedIndex == index
-                    ? theme.primaryColor
-                    : theme.baseColorShade4,
-                width: 1.0),
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight:
-                selectedIndex == index ? FontWeight.bold : FontWeight.normal,
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

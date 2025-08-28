@@ -8,7 +8,6 @@ import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_commu
 import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_moderator_badge.dart';
 import 'package:amity_uikit_beta_service/v4/utils/date_time_extension.dart';
-import 'package:amity_uikit_beta_service/view/social/community_feedV2.dart';
 import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,12 +17,17 @@ class PostDisplayName extends StatelessWidget {
   final AmityThemeColor theme;
   final bool hideTarget;
 
-  const PostDisplayName({
+  PostDisplayName({
     Key? key,
     required this.post,
     required this.theme,
     required this.hideTarget,
   }) : super(key: key);
+
+  final _getIsCreatedByAdmin = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.getIsCreatedByAdmin;
+  final _buildTitleWidget = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.buildTitleWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,13 @@ class PostDisplayName extends StatelessWidget {
       timestampText += context.l10n.general_edited_suffix;
     }
 
+    final bool showTarget = !hideTarget &&
+        post.target != null &&
+        ((post.target is CommunityTarget) ||
+            (post.target is UserTarget &&
+                (post.target as UserTarget).targetUserId != post.postedUserId));
+    final bool getIsCreatedByAdmin = _getIsCreatedByAdmin(post);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Column(
@@ -51,42 +62,46 @@ class PostDisplayName extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: (!hideTarget &&
-                    post.target != null &&
-                    ((post.target is CommunityTarget) ||
-                        (post.target is UserTarget &&
-                            (post.target as UserTarget).targetUserId !=
-                                post.postedUserId)))
-                ? [
-                    Flexible(
-                        flex: 4, child: DisplayName(context, post.postedUser)),
-                    if (post.postedUser?.isBrand ?? false) brandBadge(),
-                    TargetArrow(),
-                    Expanded(
-                      flex: 5,
-                      child: Row(
-                        children: [
-                          Flexible(child: PostTarget(context, post.target!)),
-                          if ((post.target as CommunityTarget)
-                                  .targetCommunity
-                                  ?.isOfficial ==
-                              true)
-                            verifiedBadge(),
-                        ],
-                      ),
-                    )
-                  ]
-                : [
-                    Flexible(
-                        fit: FlexFit.loose,
-                        child: DisplayName(context, post.postedUser)),
-                    if (post.postedUser?.isBrand ?? false) brandBadge(),
-                  ],
+            children: getIsCreatedByAdmin
+                ? _buildTitleWidget(
+                    post,
+                    PostTarget(context, post.target!),
+                    verifiedBadge(),
+                  )
+                : showTarget
+                    ? [
+                        Flexible(
+                            flex: 4,
+                            child: DisplayName(context, post.postedUser)),
+                        if (post.postedUser?.isBrand ?? false) brandBadge(),
+                        TargetArrow(),
+                        Expanded(
+                          flex: 5,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                  child: PostTarget(context, post.target!)),
+                              if ((post.target as CommunityTarget)
+                                      .targetCommunity
+                                      ?.isOfficial ==
+                                  true)
+                                verifiedBadge(),
+                            ],
+                          ),
+                        )
+                      ]
+                    : [
+                        Flexible(
+                            fit: FlexFit.loose,
+                            child: DisplayName(context, post.postedUser)),
+                        if (post.postedUser?.isBrand ?? false) brandBadge(),
+                      ],
           ),
           Row(
             children: [
-              if (isModerator) const CommunityModeratorBadge(),
-              if (isModerator)
+              if (isModerator && !getIsCreatedByAdmin)
+                const CommunityModeratorBadge(),
+              if (isModerator && !getIsCreatedByAdmin)
                 Container(
                     padding: const EdgeInsets.only(left: 2),
                     child: Text(
@@ -120,7 +135,8 @@ class PostDisplayName extends StatelessWidget {
       onTap: () {
         final userId = user?.userId;
         if (userId != null && userId.isNotEmpty) {
-          AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+          AmityUIKit4Manager.behavior.postContentComponentBehavior
+              .goToUserProfilePage(
             context,
             userId,
           );
@@ -144,12 +160,8 @@ class PostDisplayName extends StatelessWidget {
               'Unknown';
 
       onTap = () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AmityCommunityProfilePage(
-                communityId: target.targetCommunityId!),
-          ),
-        );
+        UIKitBehavior.instance.postContentComponentBehavior
+            .goToCommunityProfilePage(context, target.targetCommunityId!);
       };
     } else if (target is UserTarget) {
       if (post.postedUserId != target.targetUserId) {

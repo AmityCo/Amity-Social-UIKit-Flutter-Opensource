@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
@@ -190,10 +191,7 @@ class AmityCommunitiesByCategoryPage extends NewBasePage {
 
   void _goToCommunityProfilePage(
       BuildContext context, AmityCommunity community) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => AmityCommunityProfilePage(
-        communityId: community.communityId ?? '',
-      ),
-    ));
+    UIKitBehavior.instance.postContentComponentBehavior
+        .goToCommunityProfilePage(context, community.communityId ?? '');
   }
 }

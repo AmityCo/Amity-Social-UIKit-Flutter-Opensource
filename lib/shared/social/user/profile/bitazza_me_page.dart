@@ -11,8 +11,6 @@ import 'package:amity_uikit_beta_service/v4/social/post_poll_composer_page/post_
 import 'package:amity_uikit_beta_service/v4/social/user/feed/user_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/image_feed/user_image_feed_component.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/component/me_profile_header_component.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/component/me_profile_tab_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/profile/edit_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/profile/user_moderation_confirmation_handler.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/video_feed/user_video_feed_component.dart';
@@ -27,9 +25,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/bottom_sheet_menu.dart';
 import 'package:provider/provider.dart';
 
-import 'bloc/user_profile_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/bloc/user_profile_bloc.dart';
+import 'components/bitazza_me_profile_header_component.dart';
+import 'components/bitazza_me_profile_tab_component.dart';
 
-class AmitySocialMePage extends NewBasePage {
+class BitazzaMePage extends NewBasePage {
   final String userId;
   final bool? isEnableAppbar;
   final Widget? customActions;
@@ -39,7 +39,7 @@ class AmitySocialMePage extends NewBasePage {
   final Widget avatar;
   final String rarity;
 
-  AmitySocialMePage({
+  BitazzaMePage({
     super.key,
     required this.userId,
     required this.avatar,
@@ -49,7 +49,7 @@ class AmitySocialMePage extends NewBasePage {
     this.customHeader,
     this.avatarUrl,
     this.rarity = "Common",
-  }) : super(pageId: 'user_profile_page');
+  }) : super(pageId: 'bitazza_me_page');
 
   final ScrollController _scrollController = ScrollController();
 
@@ -60,7 +60,6 @@ class AmitySocialMePage extends NewBasePage {
       child: Builder(builder: (context) {
         return BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state) {
-            // var isCurrentUser = AmityCoreClient.getUserId() == userId;
             _scrollController.addListener(() {
               if (_scrollController.hasClients &&
                   _scrollController.offset >
@@ -88,7 +87,6 @@ class AmitySocialMePage extends NewBasePage {
                       scrolledUnderElevation: 0,
                       backgroundColor: theme.backgroundColor,
                       leading: IconButton(
-                        //iconSize: 24,
                         icon: ColorFiltered(
                           colorFilter: ColorFilter.mode(
                               theme.baseColor, BlendMode.srcIn),
@@ -159,7 +157,7 @@ class AmitySocialMePage extends NewBasePage {
                               color:
                                   _getRarityTintColor(rarity)!.withOpacity(0.3),
                             ),
-                          if (!state.showUserNameOnAppBar) avatar
+                          if (!state.showUserNameOnAppBar) avatar,
                         ],
                       ),
                     ),
@@ -168,24 +166,6 @@ class AmitySocialMePage extends NewBasePage {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-                        // SizedBox(
-                        //   height: MediaQuery.of(context).size.height * 0.45,
-                        //   child: Stack(
-                        //     children: [
-                        //       Align(
-                        //         alignment: Alignment.center,
-                        //         child: SizedBox(
-                        //           width: double.infinity,
-                        //           child: avatar,
-                        //         ),
-                        //       ),
-                        //       // Align(
-                        //       //   alignment: Alignment.topCenter,
-                        //       //   child: customHeader ?? Container(),
-                        //       // ),
-                        //     ],
-                        //   ),
-                        // ),
                         Container(
                           decoration: const BoxDecoration(
                             color: Colors.white,
@@ -195,7 +175,7 @@ class AmitySocialMePage extends NewBasePage {
                             ),
                           ),
                           padding: const EdgeInsets.all(10),
-                          child: MeProfileHeaderComponent(
+                          child: BitazzaMeProfileHeaderComponent(
                             user: state.user,
                             myFollowInfo: state.myFollowInfo,
                             userFollowInfo: state.userFollowInfo,
@@ -209,7 +189,7 @@ class AmitySocialMePage extends NewBasePage {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: MeProfileTabComponent(
+                      child: BitazzaMeProfileTabComponent(
                         selectedIndex: state.selectedIndex,
                         onTabSelected: (index) {
                           context
@@ -244,7 +224,6 @@ class AmitySocialMePage extends NewBasePage {
                       userId: state.userId,
                       scrollController: _scrollController,
                     )
-                  // AmityToast(elementId: "toast"),
                 ],
               ),
               floatingActionButtonLocation:
@@ -353,13 +332,7 @@ class AmitySocialMePage extends NewBasePage {
                                               ? const SizedBox()
                                               : GestureDetector(
                                                   onTap: () {
-                                                    // TODO
-                                                    // vm.followButtonAction(
-                                                    //     vm
-                                                    //         .amityUser!,
-                                                    //     snapshot
-                                                    //         .data!
-                                                    //         .status);
+                                                    // TODO: Implement follow action
                                                   },
                                                   child: Semantics(
                                                     identifier:
@@ -412,11 +385,6 @@ class AmitySocialMePage extends NewBasePage {
                                                                     .status),
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            // style: theme.textTheme.titleSmall!.copyWith(
-                                                            //   fontWeight: FontWeight.w700,
-                                                            //   color: getFollowingStatusTextColor(snapshot.data!.status),
-                                                            //   fontSize: 15,
-                                                            // ),
                                                           ),
                                                         ],
                                                       ),
@@ -482,7 +450,6 @@ class AmitySocialMePage extends NewBasePage {
         title: "Post",
         icon: "assets/Icons/amity_ic_create_post_button.svg",
         onTap: () {
-          // Dismiss popup
           Navigator.of(context).pop();
 
           final createOptions = AmityPostComposerOptions.createOptions(
@@ -501,10 +468,8 @@ class AmitySocialMePage extends NewBasePage {
         title: "Story",
         icon: "assets/Icons/ic_create_stroy_black.svg",
         onTap: () {
-          // Dismiss bottom sheet
           Navigator.pop(context);
 
-          // Show story creation screen
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
@@ -522,7 +487,6 @@ class AmitySocialMePage extends NewBasePage {
         title: "Poll",
         icon: "assets/Icons/amity_ic_create_poll_button.svg",
         onTap: () {
-          // Dismiss popup
           Navigator.of(context).pop();
 
           Navigator.of(context).push(MaterialPageRoute(
@@ -534,7 +498,6 @@ class AmitySocialMePage extends NewBasePage {
           ));
         });
 
-    // Setup all actions
     List<BottomSheetMenuOption> userActions = [
       postOption,
       storyOption,
@@ -557,7 +520,6 @@ class AmitySocialMePage extends NewBasePage {
         title: "Edit profile",
         icon: 'assets/Icons/amity_ic_edit_comment.svg',
         onTap: () {
-          // Dismiss popup
           Navigator.of(context).pop();
 
           if (onTappedEditProfile != null) {
@@ -572,7 +534,6 @@ class AmitySocialMePage extends NewBasePage {
                   userId: userId,
                   userEditAction: (status) {
                     if (status) {
-                      // Refresh
                       profileBloc
                           .addEvent(UserProfileEventRefresh(userId: userId));
 
@@ -641,14 +602,12 @@ class AmitySocialMePage extends NewBasePage {
 
     final currentUserId = AmityCoreClient.getUserId();
 
-    // Setup all actions
     List<BottomSheetMenuOption> userActions = [];
     if (userId == currentUserId) {
       userActions = [editAction];
     } else {
       final isReported = user?.isFlaggedByMe;
 
-      // Report / Unreport
       if (isReported == true) {
         userActions.add(unreportAction);
       } else {
@@ -656,7 +615,6 @@ class AmitySocialMePage extends NewBasePage {
       }
 
       if (status != AmityFollowStatus.BLOCKED) {
-        // Block
         userActions.add(blockUserAction);
       }
     }

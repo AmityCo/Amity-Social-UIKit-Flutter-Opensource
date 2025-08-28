@@ -22,20 +22,20 @@ import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class MeProfileHeaderComponent extends NewBaseComponent {
+class BitazzaMeProfileHeaderComponent extends NewBaseComponent {
   final AmityUser? user;
   final AmityMyFollowInfo? myFollowInfo;
   final AmityUserFollowInfo? userFollowInfo;
   final Widget? customProfile;
 
-  MeProfileHeaderComponent({
+  BitazzaMeProfileHeaderComponent({
     super.key,
-    String? pageId = "user_profile_page",
+    String? pageId = "bitazza_me_page",
     required this.user,
     this.myFollowInfo,
     this.userFollowInfo,
     this.customProfile,
-  }) : super(pageId: pageId, componentId: "user_profile_header");
+  }) : super(pageId: pageId, componentId: "bitazza_me_profile_header");
 
   Color get greyColor => const Color(0xff5D5F71);
 
@@ -68,9 +68,7 @@ class MeProfileHeaderComponent extends NewBaseComponent {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           _buildAvatar(context),
-                          const SizedBox(
-                            width: 8,
-                          ),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,62 +82,36 @@ class MeProfileHeaderComponent extends NewBaseComponent {
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
-
                       if (user?.description?.isNotEmpty ?? false) ...[
-                        _buildDescription(
-                          profileBloc,
-                        )
+                        _buildDescription(profileBloc),
                       ],
-
-                      // If this is current user profile, we show pending request count
                       if (myFollowInfo != null &&
                           (myFollowInfo?.pendingRequestCount ?? 0) > 0) ...[
-                        _buildPendingFollowRequest(
-                          context,
-                          profileBloc,
-                        )
+                        _buildPendingFollowRequest(context, profileBloc),
                       ],
-
                       if (userFollowInfo != null &&
                           userFollowInfo?.status == AmityFollowStatus.NONE) ...[
-                        _buildFollowButton(
-                          context,
-                          profileBloc,
-                          toastBloc,
-                        )
+                        _buildFollowButton(context, profileBloc, toastBloc),
                       ],
-
                       if (userFollowInfo != null &&
                           userFollowInfo?.status ==
                               AmityFollowStatus.PENDING) ...[
                         _buildCancelFollowRequestButton(
-                          context,
-                          profileBloc,
-                          toastBloc,
-                        )
+                            context, profileBloc, toastBloc),
                       ],
-
                       if (userFollowInfo != null &&
                           userFollowInfo?.status ==
                               AmityFollowStatus.ACCEPTED) ...[
                         _buildShowFollowingButton(
-                          context,
-                          profileBloc,
-                          toastBloc,
-                        )
+                            context, profileBloc, toastBloc),
                       ],
-
                       if (userFollowInfo != null &&
                           userFollowInfo?.status ==
                               AmityFollowStatus.BLOCKED) ...[
-                        _buildShowUnblockButton(
-                          context,
-                          profileBloc,
-                          toastBloc,
-                        )
+                        _buildShowUnblockButton(context, profileBloc, toastBloc),
                       ],
                     ],
                   ),
@@ -286,19 +258,17 @@ class MeProfileHeaderComponent extends NewBaseComponent {
                     decoration: ShapeDecoration(
                         shape: const CircleBorder(), color: theme.primaryColor),
                   ),
-                  const SizedBox(
-                    width: 6,
-                  ),
+                  const SizedBox(width: 6),
                   Text(
                     "New follow requests",
                     style: AmityTextStyle.bodyBold(theme.baseColor),
-                  )
+                  ),
                 ],
               ),
               Text(
                 "${myFollowInfo?.pendingRequestCount ?? 0} requests need your approval",
                 style: AmityTextStyle.caption(theme.baseColorShade2),
-              )
+              ),
             ],
           ),
         ),
@@ -313,15 +283,14 @@ class MeProfileHeaderComponent extends NewBaseComponent {
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-      child: UserProfileHeaderActionButton(
-        state: UserProfileHeaderState.followRequest,
+      child: BitazzaUserProfileHeaderActionButton(
+        state: BitazzaUserProfileHeaderState.followRequest,
         tapAction: () {
           profileBloc.addEvent(UserProfileUserModerationEvent(
             action: UserModerationAction.follow,
             userId: user?.userId ?? "",
             toastBloc: toastBloc,
             onError: () {
-              // Need to show popup when user who has been already blocked tries to follow that user.
               showDialog(
                   context: context,
                   builder: (context) {
@@ -357,8 +326,8 @@ class MeProfileHeaderComponent extends NewBaseComponent {
   ) {
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-        child: UserProfileHeaderActionButton(
-          state: UserProfileHeaderState.cancelRequest,
+        child: BitazzaUserProfileHeaderActionButton(
+          state: BitazzaUserProfileHeaderState.cancelRequest,
           tapAction: () {
             profileBloc.addEvent(
               UserProfileUserModerationEvent(
@@ -380,8 +349,8 @@ class MeProfileHeaderComponent extends NewBaseComponent {
   ) {
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-        child: UserProfileHeaderActionButton(
-          state: UserProfileHeaderState.following,
+        child: BitazzaUserProfileHeaderActionButton(
+          state: BitazzaUserProfileHeaderState.following,
           tapAction: () {
             final unfollowOption = BottomSheetMenuOption(
               title: "Unfollow",
@@ -418,8 +387,8 @@ class MeProfileHeaderComponent extends NewBaseComponent {
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-      child: UserProfileHeaderActionButton(
-        state: UserProfileHeaderState.unblockUser,
+      child: BitazzaUserProfileHeaderActionButton(
+        state: BitazzaUserProfileHeaderState.unblockUser,
         tapAction: () {
           final confirmationHandler =
               UserModerationConfirmationHandler(context: context, theme: theme);
@@ -455,9 +424,7 @@ class MeProfileHeaderComponent extends NewBaseComponent {
             color: greyColor,
           ),
         ),
-        const SizedBox(
-          width: 3,
-        ),
+        const SizedBox(width: 3),
         Text(
           title,
           maxLines: 1,
@@ -477,7 +444,6 @@ class MeProfileHeaderComponent extends NewBaseComponent {
       linearGradient: configProvider.getShimmerGradient(),
       child: Container(
         width: double.infinity,
-        // height: 156,
         decoration: BoxDecoration(color: theme.backgroundColor),
         child: ShimmerLoading(
           isLoading: true,
@@ -488,49 +454,24 @@ class MeProfileHeaderComponent extends NewBaseComponent {
               children: [
                 Row(
                   children: [
-                    // Circle
                     SkeletonCircle(size: 56),
-
                     const SizedBox(width: 12),
-
-                    SkeletonRectangle(width: 200, height: 12)
+                    SkeletonRectangle(width: 200, height: 12),
                   ],
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
-                SkeletonRectangle(
-                  height: 8,
-                  width: 240,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                SkeletonRectangle(
-                  height: 8,
-                  width: 300,
-                ),
-                const SizedBox(
-                  height: 22,
-                ),
+                const SizedBox(height: 16),
+                SkeletonRectangle(height: 8, width: 240),
+                const SizedBox(height: 12),
+                SkeletonRectangle(height: 8, width: 300),
+                const SizedBox(height: 22),
                 Row(
                   children: [
-                    SkeletonRectangle(
-                      height: 12,
-                      width: 54,
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    SkeletonRectangle(
-                      height: 12,
-                      width: 54,
-                    ),
+                    SkeletonRectangle(height: 12, width: 54),
+                    const SizedBox(width: 16),
+                    SkeletonRectangle(height: 12, width: 54),
                   ],
                 ),
-                const SizedBox(
-                  height: 16,
-                )
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -552,7 +493,6 @@ class MeProfileHeaderComponent extends NewBaseComponent {
     );
   }
 
-  // Actions
   void showUserRelationshipPage(
     BuildContext context,
     AmityUserRelationshipPageTab selectedTab,
@@ -566,25 +506,25 @@ class MeProfileHeaderComponent extends NewBaseComponent {
   }
 }
 
-enum UserProfileHeaderState {
+enum BitazzaUserProfileHeaderState {
   followRequest,
   cancelRequest,
   following,
   unblockUser,
 }
 
-class UserProfileHeaderActionButton extends BaseElement {
-  final UserProfileHeaderState state;
+class BitazzaUserProfileHeaderActionButton extends BaseElement {
+  final BitazzaUserProfileHeaderState state;
   final Function tapAction;
 
-  UserProfileHeaderActionButton(
-      {Key? key,
-      String? pageId = "user_profile_page",
-      String? componentId = "user_profile_header",
-      required this.state,
-      required this.tapAction,
-      required String elementId})
-      : super(
+  BitazzaUserProfileHeaderActionButton({
+    Key? key,
+    String? pageId = "bitazza_me_page",
+    String? componentId = "bitazza_me_profile_header",
+    required this.state,
+    required this.tapAction,
+    required String elementId,
+  }) : super(
             key: key,
             pageId: pageId,
             componentId: componentId,
@@ -595,13 +535,8 @@ class UserProfileHeaderActionButton extends BaseElement {
     return Container(
       height: 40,
       width: double.infinity,
-      padding: const EdgeInsets.only(
-        top: 10,
-        left: 0,
-        right: 0,
-        bottom: 10,
-      ),
-      decoration: (state == UserProfileHeaderState.followRequest)
+      padding: const EdgeInsets.only(top: 10, left: 0, right: 0, bottom: 10),
+      decoration: (state == BitazzaUserProfileHeaderState.followRequest)
           ? ShapeDecoration(
               color: theme.primaryColor,
               shape: RoundedRectangleBorder(
@@ -634,15 +569,10 @@ class UserProfileHeaderActionButton extends BaseElement {
             const SizedBox(width: 4),
             Text(
               uiConfig.text ?? "",
-              style: (state == UserProfileHeaderState.followRequest)
-                  ? AmityTextStyle.bodyBold(
-                      Colors.white,
-                      textHeight: 1.0,
-                    )
-                  : AmityTextStyle.bodyBold(
-                      theme.secondaryColor,
-                      textHeight: 1.0,
-                    ),
+              style: (state == BitazzaUserProfileHeaderState.followRequest)
+                  ? AmityTextStyle.bodyBold(Colors.white, textHeight: 1.0)
+                  : AmityTextStyle.bodyBold(theme.secondaryColor,
+                      textHeight: 1.0),
             ),
           ],
         ),
@@ -652,13 +582,13 @@ class UserProfileHeaderActionButton extends BaseElement {
 
   String getAsset() {
     switch (state) {
-      case UserProfileHeaderState.followRequest:
+      case BitazzaUserProfileHeaderState.followRequest:
         return 'assets/Icons/amity_ic_follow_button.svg';
-      case UserProfileHeaderState.cancelRequest:
+      case BitazzaUserProfileHeaderState.cancelRequest:
         return 'assets/Icons/amity_ic_follow_request_cancel_button.svg';
-      case UserProfileHeaderState.following:
+      case BitazzaUserProfileHeaderState.following:
         return 'assets/Icons/amity_ic_follow_following_button.svg';
-      case UserProfileHeaderState.unblockUser:
+      case BitazzaUserProfileHeaderState.unblockUser:
         return 'assets/Icons/amity_ic_block_user.svg';
     }
   }

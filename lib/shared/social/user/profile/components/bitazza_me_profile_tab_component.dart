@@ -4,15 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class MeProfileTabComponent extends BaseElement {
+class BitazzaMeProfileTabComponent extends BaseElement {
   UserProfileTabIndex selectedIndex;
   Function(UserProfileTabIndex) onTabSelected;
 
-  MeProfileTabComponent({
+  BitazzaMeProfileTabComponent({
     super.key,
     required this.selectedIndex,
     required this.onTabSelected,
-  }) : super(elementId: "user_profile_tab");
+  }) : super(elementId: "bitazza_me_profile_tab");
 
   @override
   Widget buildElement(BuildContext context) {
@@ -21,13 +21,11 @@ class MeProfileTabComponent extends BaseElement {
         Container(
           width: double.infinity,
           height: 40,
-
           padding: const EdgeInsets.only(
             top: 8,
             left: 16,
             right: 16,
           ),
-          // clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             color: theme.backgroundColor,
           ),
@@ -49,8 +47,8 @@ class MeProfileTabComponent extends BaseElement {
                         decoration: (selectedIndex == UserProfileTabIndex.feed)
                             ? BoxDecoration(
                                 border: Border(
-                                  bottom:
-                                      BorderSide(width: 2, color: theme.greenColor),
+                                  bottom: BorderSide(
+                                      width: 2, color: theme.greenColor),
                                 ),
                               )
                             : null,
@@ -98,8 +96,8 @@ class MeProfileTabComponent extends BaseElement {
                         decoration: (selectedIndex == UserProfileTabIndex.image)
                             ? BoxDecoration(
                                 border: Border(
-                                  bottom:
-                                      BorderSide(width: 2, color: theme.greenColor),
+                                  bottom: BorderSide(
+                                      width: 2, color: theme.greenColor),
                                 ),
                               )
                             : null,

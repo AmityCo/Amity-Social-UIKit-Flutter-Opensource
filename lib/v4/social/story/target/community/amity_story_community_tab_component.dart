@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -36,22 +37,33 @@ class AmityStoryCommunityTabComponent extends NewBaseComponent {
 class AmityStoryCommunityTabBuilder extends StatefulWidget {
   final String communityId;
   final AmityThemeColor theme;
-  const AmityStoryCommunityTabBuilder({
+  AmityStoryCommunityTabBuilder({
     super.key,
     required this.theme,
     required this.communityId,
   });
 
+  final showStorySuccessToast = AmityUIKit4Manager
+      .freedomBehavior.postContentComponentBehavior.showStorySuccessToast;
+
   @override
-  State<AmityStoryCommunityTabBuilder> createState() => _AmityStoryCommunityTabBuilderState();
+  State<AmityStoryCommunityTabBuilder> createState() =>
+      _AmityStoryCommunityTabBuilderState();
 }
 
-class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBuilder> {
+class _AmityStoryCommunityTabBuilderState
+    extends State<AmityStoryCommunityTabBuilder> {
   @override
   void initState() {
-    context.read<CommunityFeedStoryBloc>().add(ObserveStoryTargetEvent(communityId: widget.communityId));
-    context.read<CommunityFeedStoryBloc>().add(CheckMangeStoryPermissionEvent(communityId: widget.communityId));
-    context.read<CommunityFeedStoryBloc>().add(FetchStories(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(ObserveStoryTargetEvent(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(CheckMangeStoryPermissionEvent(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(FetchStories(communityId: widget.communityId));
     super.initState();
   }
 
@@ -60,7 +72,7 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
     return BlocListener<CreateStoryBloc, CreateStoryState>(
       listener: (context, state) {
         if (state is CreateStorySuccess) {
-          context.read<AmityToastBloc>().add(const AmityToastShort(message: "Successfully shared story", icon: AmityToastIcon.success));
+          widget.showStorySuccessToast(context);
         }
       },
       child: BlocBuilder<CommunityFeedStoryBloc, CommunityFeedStoryState>(
@@ -77,14 +89,21 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100)),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Shimmer.fromColors(
                     baseColor: const Color.fromARGB(255, 243, 242, 242),
                     highlightColor: const Color.fromARGB(255, 225, 225, 225),
-                    child: Container(width: 80, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                    child: Container(
+                        width: 80,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 ],
               ),
@@ -92,7 +111,8 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
           }
 
           if (state.community != null) {
-            if (!state.haveStoryPermission && (state.stories == null || state.stories!.isEmpty)) {
+            if (!state.haveStoryPermission &&
+                (state.stories == null || state.stories!.isEmpty)) {
               return const SizedBox(
                 width: 0,
                 height: 0,
@@ -102,7 +122,9 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
             return Container(
               color: widget.theme.backgroundColor,
               child: AmityStoryTargetElement(
-                avatarUrl: state.community!.avatarImage?.getUrl(AmityImageSize.LARGE) ?? "",
+                avatarUrl: state.community!.avatarImage
+                        ?.getUrl(AmityImageSize.LARGE) ??
+                    "",
                 isCommunityTarget: true,
                 communityDisplayName: state.community!.displayName ?? "",
                 ringUiState: state.storyTarget!.toRingUiState(),
@@ -112,7 +134,9 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                 targetId: state.community!.communityId!,
                 target: state.storyTarget!,
                 onClick: (targetId, storyTarget) {
-                  if (state.haveStoryPermission && (state.stories == null || state.stories?.isEmpty == true)) {
+                  if (state.haveStoryPermission &&
+                      (state.stories == null ||
+                          state.stories?.isEmpty == true)) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -129,7 +153,8 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                       MaterialPageRoute(
                         builder: (BuildContext context) {
                           return AmityViewStoryPage(
-                            type: AmityViewStoryCommunityFeed(communityId: widget.communityId),
+                            type: AmityViewStoryCommunityFeed(
+                                communityId: widget.communityId),
                           );
                         },
                       ),

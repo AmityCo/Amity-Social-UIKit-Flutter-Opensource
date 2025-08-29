@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -14,6 +15,8 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
     AmityStorySortingOrder _sortOption = AmityStorySortingOrder.FIRST_CREATED;
     late StreamSubscription<List<AmityStory>> _subscription;
     late StreamSubscription<AmityStoryTarget> _subscriptionTarget;
+    final bool handleNoStoriesState = AmityUIKit4Manager
+      .freedomBehavior.viewStoryPageBehavior.handleNoStoriesState;
 
   ViewStoryBloc()
       : super(
@@ -239,7 +242,12 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
       _subscription =  storyLiveCollection.getStreamController().stream.asBroadcastStream().listen((stoies) {
         add(ActiveStoriesFetched(stories: stoies));
       });
-      storyLiveCollection.getData();
+      storyLiveCollection.getData().catchError((_) {
+        if (handleNoStoriesState) {
+          add(const ActiveStoriesFailed());
+        }
+        return <AmityStory>[];
+      });
     });
 
     on<ActiveStoriesFetched>(
@@ -273,6 +281,23 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
             }
           }
         }
+      },
+    );
+
+    on<ActiveStoriesFailed>(
+      (event, emit) {
+        emit(
+          ErrorState(
+            community: state.community,
+            stories: state.stories,
+            currentStory: state.currentStory,
+            isCommunityJoined: state.isCommunityJoined,
+            storyTarget: state.storyTarget,
+            shouldPause: state.shouldPause,
+            jumpToUnSeen: state.jumpToUnSeen,
+            hasManageStoryPermission: state.hasManageStoryPermission,
+          ),
+        );
       },
     );
   }

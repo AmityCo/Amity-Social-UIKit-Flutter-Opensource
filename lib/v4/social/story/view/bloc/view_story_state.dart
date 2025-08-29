@@ -183,7 +183,7 @@ class StoryDeletedState extends ViewStoryState {
 
 class ShouldPauseState extends ViewStoryState {
   Random random = Random();
-   ShouldPauseState({
+  ShouldPauseState({
     required super.community,
     required super.stories,
     required super.currentStory,
@@ -205,10 +205,8 @@ class ShouldPauseState extends ViewStoryState {
       ];
 }
 
-
 class TryingReuploadingState extends ViewStoryState {
-
-   const TryingReuploadingState({
+  const TryingReuploadingState({
     required super.community,
     required super.stories,
     required super.currentStory,
@@ -251,3 +249,24 @@ class JumpToUnSeenState extends ViewStoryState {
       ];
 }
 
+class ErrorState extends ViewStoryState {
+  const ErrorState({
+    required super.community,
+    required super.stories,
+    required super.currentStory,
+    required super.isCommunityJoined,
+    required super.storyTarget,
+    required super.jumpToUnSeen,
+    required super.shouldPause,
+    required super.hasManageStoryPermission,
+  });
+
+  @override
+  List<Object> get props => [
+        stories ?? [],
+        currentStory ?? "",
+        community ?? "",
+        isCommunityJoined ?? "",
+        storyTarget ?? "",
+      ];
+}

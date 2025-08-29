@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_tray.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/amity_story_body_row.dart';
@@ -37,6 +38,9 @@ class AmityViewCommunityStoryPage extends StatefulWidget {
     this.navigateToCommunityProfilePage,
     required String communityId,
   });
+
+  final buildNoStoriesWidget = AmityUIKit4Manager
+      .freedomBehavior.viewStoryPageBehavior.buildNoStoriesWidget;
 
   @override
   State<AmityViewCommunityStoryPage> createState() => _AmityViewCommunityStoryPageState();
@@ -109,6 +113,10 @@ class _AmityViewCommunityStoryPageState extends State<AmityViewCommunityStoryPag
             },
             builder: (context, state) {
               var stories = state.stories;
+
+              if (state is ErrorState) {
+                return widget.buildNoStoriesWidget();
+              }
 
               return SizedBox(
                 width: double.infinity,

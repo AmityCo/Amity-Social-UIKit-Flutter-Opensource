@@ -42,7 +42,7 @@ class AmityStoryCommunityTabBuilder extends StatefulWidget {
   });
 
   final showStorySuccessToast = AmityUIKit4Manager
-      .freedomBehavior.viewStoryPageBehavior.showStorySuccessToast;
+      .freedomBehavior.createPostMenuComponentBehavior.showStorySuccessToast;
 
   @override
   State<AmityStoryCommunityTabBuilder> createState() =>

@@ -107,16 +107,21 @@ extension PostComposerView on AmityPostComposerPage {
       case 2:
         return AspectRatio(
           aspectRatio: 1,
-          child: Row(children: [
-            Expanded(child: _mediaView(context, files.entries.toList()[0], 0)),
-            Expanded(child: _mediaView(context, files.entries.toList()[1], 1))
-          ]),
+          child: Row(
+            spacing: 8,
+            children: [
+              Expanded(child: _mediaView(context, files.entries.toList()[0], 0)),
+              Expanded(child: _mediaView(context, files.entries.toList()[1], 1))
+            ],
+          ),
         );
 
       default:
         final entriesList = files.entries.toList();
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
             crossAxisCount: 3,
           ),
           shrinkWrap: true,
@@ -221,7 +226,7 @@ extension PostComposerView on AmityPostComposerPage {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(0.0),
       child: Stack(
         fit: StackFit.expand,
         children: [

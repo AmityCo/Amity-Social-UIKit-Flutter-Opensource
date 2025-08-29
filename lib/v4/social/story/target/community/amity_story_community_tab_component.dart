@@ -2,8 +2,6 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
-import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
-import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/community/bloc/community_feed_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_target_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
@@ -44,7 +42,7 @@ class AmityStoryCommunityTabBuilder extends StatefulWidget {
   });
 
   final showStorySuccessToast = AmityUIKit4Manager
-      .freedomBehavior.postContentComponentBehavior.showStorySuccessToast;
+      .freedomBehavior.viewStoryPageBehavior.showStorySuccessToast;
 
   @override
   State<AmityStoryCommunityTabBuilder> createState() =>

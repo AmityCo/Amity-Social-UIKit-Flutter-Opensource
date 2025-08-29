@@ -368,6 +368,7 @@ class CommentItem extends BaseElement {
     }
 
     return ExpandableText(
+      key: ValueKey(textContent),
       text: textContent,
       mentionedUsers: mentionedUsers,
       maxLines: 8,
@@ -837,6 +838,8 @@ class CommentItem extends BaseElement {
     onDelete() => context
         .read<CommentItemBloc>()
         .add(CommentItemDelete(comment: comment));
+
+    final localize = context.l10n;
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -898,8 +901,8 @@ class CommentItem extends BaseElement {
                         const SizedBox(width: 12),
                         Text(
                           (comment.parentId == null)
-                              ? context.l10n.comment_edit
-                              : context.l10n.comment_reply_edit,
+                              ? localize.comment_edit
+                              : localize.comment_reply_edit,
                           style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,
@@ -918,16 +921,15 @@ class CommentItem extends BaseElement {
                       builder: (BuildContext context) {
                         return CupertinoAlertDialog(
                           title: Text((comment.parentId == null)
-                              ? context.l10n.comment_delete
-                              : context.l10n.comment_reply_delete),
-                          content: Text(
-                              context.l10n.comment_delete_description(
+                              ? localize.comment_delete
+                              : localize.comment_reply_delete),
+                          content: Text(localize.comment_delete_description(
                               (comment.parentId == null)
-                                  ? context.l10n.post_comment.toLowerCase()
-                                  : context.l10n.comment_reply.toLowerCase())),
+                                  ? localize.post_comment.toLowerCase()
+                                  : localize.comment_reply.toLowerCase())),
                           actions: [
                             CupertinoDialogAction(
-                              child: Text(context.l10n.general_cancel,
+                              child: Text(localize.general_cancel,
                                   style: TextStyle(
                                     color: theme.primaryColor,
                                     fontSize: 17,
@@ -939,7 +941,7 @@ class CommentItem extends BaseElement {
                             ),
                             CupertinoDialogAction(
                               child: Text(
-                                context.l10n.general_delete,
+                                localize.general_delete,
                                 style: TextStyle(
                                   color: theme.alertColor,
                                   fontSize: 17,

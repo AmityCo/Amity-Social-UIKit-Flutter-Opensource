@@ -37,6 +37,10 @@ class MyCommunityVM with ChangeNotifier {
       pageSize: storyTargetsPageSize,
     );
     communityLiveCollection.getStreamController().stream.listen((event) async {
+      if (communityLiveCollection.isFetching) {
+        return;
+      }
+
       final List<AmityCommunity> storyTargets = await getStoryTargets(
         communities: event,
       );

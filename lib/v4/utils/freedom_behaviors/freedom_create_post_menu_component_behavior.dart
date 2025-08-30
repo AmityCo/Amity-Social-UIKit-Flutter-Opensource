@@ -5,7 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FreedomCreatePostMenuComponentBehavior {
+  final int postTargetsPageSize = 50;
+
   final int storyTargetsPageSize = 50;
+
+  Future<List<AmityCommunity>> getPostTargets({
+    required List<AmityCommunity> communities,
+  }) async {
+    return communities;
+  }
 
   Future<List<AmityCommunity>> getStoryTargets({
     required List<AmityCommunity> communities,

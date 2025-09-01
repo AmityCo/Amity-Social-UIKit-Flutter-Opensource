@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_gradient_ring_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
@@ -62,9 +63,12 @@ class AmityStoryTargetElement extends BaseElement {
   Widget buildElement(BuildContext context) {
     String? badge;
 
+    final featureConfig = configProvider.getFeatureConfig();
+    final isStoryCreationEnabled = featureConfig.story.createEnabled;
+
     if (ringUiState == AmityStoryTargetRingUiState.FAILED) {
       badge = "assets/Icons/ic_warning_circle_red.svg";
-    } else if (hasManageStoryPermission) {
+    } else if (hasManageStoryPermission && isStoryCreationEnabled) {
       badge = "assets/Icons/ic_add_circle_blue.svg";
     } else if (isOfficialCommunity && !isCommunityTarget) {
       badge = "assets/Icons/ic_verified_blue.svg";
@@ -152,7 +156,7 @@ class AmityStoryTargetElement extends BaseElement {
                 Expanded(
                   child: Center(
                     child: Text(
-                      isCommunityTarget ? "Story" : communityDisplayName,
+                      isCommunityTarget ? context.l10n.general_story : communityDisplayName,
                       overflow: TextOverflow.ellipsis,
                       style:  TextStyle(
                         fontSize: 13,

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/components/amity_conversation_chat_user_action_component.dart';
@@ -58,14 +59,19 @@ class AmityChatPage extends NewBasePage {
         children: [
           BlocProvider(
             key: Key("${channelId ?? ""}_${userId ?? ""}"),
-            create: (context) => ChatPageBloc(channelId, userId,
-                userDisplayName, avatarUrl, context.read<AmityToastBloc>()),
+            create: (context) => ChatPageBloc(
+                channelId,
+                userId,
+                userDisplayName,
+                avatarUrl,
+                context.read<AmityToastBloc>(),
+                context),
             child: BlocBuilder<ChatPageBloc, ChatPageState>(
               key: Key("${channelId ?? ""}_${userId ?? ""}"),
               builder: (context, state) {
                 if (state is ChatPageStateInitial) {
                   context.read<AmityToastBloc>().add(AmityToastLoading(
-                      message: "Loading chat...",
+                      message: context.l10n.chat_loading,
                       icon: AmityToastIcon.loading,
                       bottomPadding: toastBottomPadding));
                 }
@@ -134,7 +140,7 @@ class AmityChatPage extends NewBasePage {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        "Waiting for network...",
+                                        context.l10n.chat_waiting_for_network,
                                         style: TextStyle(
                                           fontSize: 13,
                                           color: theme.baseColorShade1,
@@ -393,7 +399,8 @@ class AmityChatPage extends NewBasePage {
                                 );
                               }),
                               if (newMessage != null)
-                                _buildNewMessageNotification(state, newMessage),
+                                _buildNewMessageNotification(
+                                    context, state, newMessage),
                               if (state.showScrollButton &&
                                   isScrollable &&
                                   newMessage == null)
@@ -408,13 +415,16 @@ class AmityChatPage extends NewBasePage {
                             child: Container(
                               height: 42,
                               padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0, left: 16.0, right: 16.0),
+                                  top: 12.0,
+                                  bottom: 12.0,
+                                  left: 16.0,
+                                  right: 16.0),
                               decoration: BoxDecoration(
                                 color: theme.backgroundShade1Color,
                               ),
                               child: Center(
                                 child: Text(
-                                  "You can't send messages to this person.",
+                                  context.l10n.chat_blocked_message,
                                   style: AmityTextStyle.caption(
                                       theme.baseColorShade1),
                                   textAlign: TextAlign.center,

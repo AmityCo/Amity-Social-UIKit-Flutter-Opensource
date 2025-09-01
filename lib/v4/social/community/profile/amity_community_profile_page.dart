@@ -4,6 +4,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/bottom_sheet_menu.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_feed/community_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_media_feed/community_image_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_media_feed/community_video_feed_component.dart';
@@ -58,6 +59,10 @@ class AmityCommunityProfilePage extends NewBasePage {
                     .add(CommunityProfileEventExpanded());
               }
             });
+
+            final featureConfig = configProvider.getFeatureConfig();
+
+
             return Scaffold(
               backgroundColor: theme.baseColorShade4,
               body: CustomScrollView(
@@ -208,19 +213,22 @@ class AmityCommunityProfilePage extends NewBasePage {
                         : Container(),
                   ),
                   SliverToBoxAdapter(
-                    child: Container(
-                      color: theme.backgroundColor,
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AmityStoryTabComponent(
-                            type:
-                                CommunityFeedStoryTab(communityId: communityId),
-                          ),
-                        ],
+                    child: Visibility(
+                      visible: featureConfig.story.viewStoryTabEnabled,
+                      child: Container(
+                        color: theme.backgroundColor,
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AmityStoryTabComponent(
+                              type:
+                                  CommunityFeedStoryTab(communityId: communityId),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -237,9 +245,8 @@ class AmityCommunityProfilePage extends NewBasePage {
                               pendingPostCount: state.pendingPostCount,
                               isModerator: state.isModerator,
                               onReturnCallback: () {
-                                context
-                                    .read<CommunityProfileBloc>()
-                                    .add(CommunityProfileEventRefreshFromPendingPage());
+                                context.read<CommunityProfileBloc>().add(
+                                    CommunityProfileEventRefreshFromPendingPage());
                               },
                             ),
                           )
@@ -282,8 +289,11 @@ class AmityCommunityProfilePage extends NewBasePage {
               floatingActionButton: (state.isJoined)
                   ? GestureDetector(
                       onTap: () {
-                        showCommunityProfileAction(context, theme,
-                            state.canManageStory, state.community, state.isModerator);
+                        showActions(
+                            context,
+                            state.canManageStory,
+                            state.community,
+                            state.isModerator);
                       },
                       child: Container(
                         width: 64,
@@ -337,6 +347,100 @@ class AmityCommunityProfilePage extends NewBasePage {
         );
       }),
     );
+  }
+
+  void showActions(BuildContext context, bool canManageStory,
+      AmityCommunity? community, bool isModerator) {
+    final postOption = BottomSheetMenuOption(
+        title: context.l10n.general_post,
+        icon: "assets/Icons/amity_ic_create_post_button.svg",
+        onTap: () {
+          // Dismiss popup
+          Navigator.of(context).pop();
+
+          final createOptions = AmityPostComposerOptions.createOptions(
+              targetId: communityId,
+              community: community,
+              targetType: AmityPostTargetType.COMMUNITY);
+
+          Navigator.of(context).push(MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => AmityPostComposerPage(
+              options: createOptions,
+              onPopRequested: (shouldPopCaller) {
+                if (shouldPopCaller) {
+                  // Show dialog if post review is enabled and user is not a moderator
+                  if (community?.isPostReviewEnabled == true && !isModerator) {
+                    showPostReviewDialog(context);
+                  }
+                }
+              },
+            ),
+          ));
+        });
+
+    final storyOption = BottomSheetMenuOption(
+        title: context.l10n.general_story,
+        icon: "assets/Icons/ic_create_stroy_black.svg",
+        onTap: () {
+          // Dismiss bottom sheet
+          Navigator.pop(context);
+
+          // Show story creation screen
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return CreateStoryConfigProviderWidget(
+                  targetType: AmityStoryTargetType.COMMUNITY,
+                  targetId: communityId,
+                  pageId: 'create_story_page',
+                );
+              },
+            ),
+          );
+        });
+
+    final pollOption = BottomSheetMenuOption(
+        title: context.l10n.general_poll,
+        icon: "assets/Icons/amity_ic_create_poll_button.svg",
+        onTap: () {
+          // Dismiss popup
+          Navigator.of(context).pop();
+
+          Navigator.of(context).push(MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => AmityPollPostComposerPage(
+              targetId: communityId,
+              targetType: AmityPostTargetType.COMMUNITY,
+              onPopRequested: (shouldPopCaller) {
+                if (shouldPopCaller) {
+                  // Show dialog if post review is enabled and user is not a moderator
+                  if (community?.isPostReviewEnabled == true && !isModerator) {
+                    showPostReviewDialog(context);
+                  }
+                }
+              },
+            ),
+          ));
+        });
+
+    List<BottomSheetMenuOption> userActions = [];
+
+    final featureConfig = configProvider.getFeatureConfig();
+
+    if (featureConfig.post.isPostCreationEnabled()) {
+      userActions.add(postOption);
+    }
+
+    if (featureConfig.story.createEnabled && canManageStory) {
+      userActions.add(storyOption);
+    }
+
+    if (featureConfig.post.poll.createEnabled) {
+      userActions.add(pollOption);
+    }
+
+    BottomSheetMenu(options: userActions).show(context, theme);
   }
 
   static void showCommunityProfileAction(
@@ -595,7 +699,8 @@ class AmityCommunityProfilePage extends NewBasePage {
   static void showPostReviewDialog(BuildContext context) {
     AmityV4Dialog().showAlertErrorDialog(
       title: "Posts sent for review",
-      message: "Your post has been submitted to the pending list. It will be published once approved by the community moderator.",
+      message:
+          "Your post has been submitted to the pending list. It will be published once approved by the community moderator.",
       closeText: "OK",
     );
   }

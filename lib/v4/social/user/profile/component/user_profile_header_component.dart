@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
@@ -150,7 +151,8 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                         child: Row(
                           children: [
                             GestureDetector(
-                              child: FollowInfo(followingCount, "following"),
+                              child: FollowInfo(followingCount,
+                                  context.l10n.profile_following.toLowerCase()),
                               onTap: () {
                                 showUserRelationshipPage(context,
                                     AmityUserRelationshipPageTab.following);
@@ -168,7 +170,8 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                             ),
 
                             GestureDetector(
-                              child: FollowInfo(followerCount, "followers"),
+                              child: FollowInfo(followerCount,
+                                  context.l10n.profile_followers.toLowerCase()),
                               onTap: () {
                                 showUserRelationshipPage(context,
                                     AmityUserRelationshipPageTab.follower);
@@ -223,14 +226,14 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                                         width: 6,
                                       ),
                                       Text(
-                                        "New follow requests",
+                                        context.l10n.user_follow_request_new,
                                         style: AmityTextStyle.bodyBold(
                                             theme.baseColor),
                                       )
                                     ],
                                   ),
                                   Text(
-                                    "${myFollowInfo?.pendingRequestCount ?? 0} requests need your approval",
+                                    context.l10n.user_follow_request_approval('${myFollowInfo?.pendingRequestCount ?? 0}'),
                                     style: AmityTextStyle.caption(
                                         theme.baseColorShade2),
                                   )
@@ -248,26 +251,30 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                               vertical: 12, horizontal: 0),
                           child: UserProfileHeaderActionButton(
                             state: UserProfileHeaderState.followRequest,
+                            text: context.l10n.user_follow,
                             tapAction: () {
                               profileBloc
                                   .addEvent(UserProfileUserModerationEvent(
                                 action: UserModerationAction.follow,
                                 userId: user?.userId ?? "",
                                 toastBloc: toastBloc,
+                                successMessage:
+                                    context.l10n.user_follow_success,
+                                errorMessage: context.l10n.user_follow_error,
                                 onError: () {
                                   // Need to show popup when user who has been already blocked tries to follow that user.
                                   showDialog(
                                       context: context,
                                       builder: (context) {
                                         return CupertinoAlertDialog(
-                                          title: const Text(
-                                              "Unable to follow this user"),
-                                          content: const Text(
-                                              "Oops! something went wrong. Please try again later."),
+                                          title: Text(context
+                                              .l10n.user_follow_unable_title),
+                                          content: Text(context.l10n
+                                              .user_follow_unable_description),
                                           actions: [
                                             CupertinoDialogAction(
                                               child: Text(
-                                                "OK",
+                                                context.l10n.general_ok,
                                                 style: AmityTextStyle.body(
                                                     theme.highlightColor),
                                               ),
@@ -294,12 +301,17 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                                 vertical: 12, horizontal: 0),
                             child: UserProfileHeaderActionButton(
                               state: UserProfileHeaderState.cancelRequest,
+                              text: context.l10n.user_follow_cancel,
                               tapAction: () {
                                 profileBloc.addEvent(
                                   UserProfileUserModerationEvent(
                                     action: UserModerationAction.unfollow,
                                     userId: user?.userId ?? "",
                                     toastBloc: toastBloc,
+                                    successMessage:
+                                        context.l10n.user_unfollow_success,
+                                    errorMessage:
+                                        context.l10n.user_unfollow_error,
                                     onError: () {},
                                   ),
                                 );
@@ -316,9 +328,10 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                                 vertical: 12, horizontal: 0),
                             child: UserProfileHeaderActionButton(
                               state: UserProfileHeaderState.following,
+                              text: context.l10n.user_following,
                               tapAction: () {
                                 final unfollowOption = BottomSheetMenuOption(
-                                  title: "Unfollow",
+                                  title: context.l10n.user_unfollow,
                                   icon:
                                       "assets/Icons/amity_ic_unfollow_option.svg",
                                   onTap: () {
@@ -335,6 +348,10 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                                           action: UserModerationAction.unfollow,
                                           userId: user?.userId ?? "",
                                           toastBloc: toastBloc,
+                                          successMessage: context
+                                              .l10n.user_unfollow_success,
+                                          errorMessage:
+                                              context.l10n.user_unfollow_error,
                                           onError: () {},
                                         ),
                                       );
@@ -357,6 +374,7 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                               vertical: 12, horizontal: 0),
                           child: UserProfileHeaderActionButton(
                             state: UserProfileHeaderState.unblockUser,
+                            text: context.l10n.user_unblock,
                             tapAction: () {
                               final confirmationHandler =
                                   UserModerationConfirmationHandler(
@@ -369,6 +387,10 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                                       action: UserModerationAction.unblock,
                                       userId: user?.userId ?? "",
                                       toastBloc: toastBloc,
+                                      successMessage:
+                                          context.l10n.user_unblock_success,
+                                      errorMessage:
+                                          context.l10n.user_unblock_error,
                                       onError: () {},
                                     ),
                                   );
@@ -513,19 +535,21 @@ enum UserProfileHeaderState {
 class UserProfileHeaderActionButton extends BaseElement {
   final UserProfileHeaderState state;
   final Function tapAction;
+  final String text;
 
-  UserProfileHeaderActionButton(
-      {Key? key,
-      String? pageId = "user_profile_page",
-      String? componentId = "user_profile_header",
-      required this.state,
-      required this.tapAction,
-      required String elementId})
-      : super(
-            key: key,
-            pageId: pageId,
-            componentId: componentId,
-            elementId: elementId);
+  UserProfileHeaderActionButton({
+    Key? key,
+    String? pageId = "user_profile_page",
+    String? componentId = "user_profile_header",
+    required this.state,
+    required this.tapAction,
+    required this.text,
+    required String elementId,
+  }) : super(
+          key: key,
+          pageId: pageId,
+          componentId: componentId,
+          elementId: elementId);
 
   @override
   Widget buildElement(BuildContext context) {
@@ -570,7 +594,7 @@ class UserProfileHeaderActionButton extends BaseElement {
             ),
             const SizedBox(width: 4),
             Text(
-              uiConfig.text ?? "",
+              text,
               style: (state == UserProfileHeaderState.followRequest)
                   ? AmityTextStyle.bodyBold(
                       Colors.white,

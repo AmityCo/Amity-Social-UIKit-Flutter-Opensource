@@ -20,6 +20,10 @@
   "@global_search_hint": {
     "description": "Hint text for the search communities and users field on the homepage"
   },
+  "search_my_community_hint": "Buscar mi comunidad",
+  "@search_my_community_hint": {
+    "description": "Hint text for searching my communities"
+  },
   "search_no_results": "No se encontraron resultados",
   "@search_no_results": {
     "description": "Message displayed when no search results are found"
@@ -35,6 +39,14 @@
   "general_cancel": "Cancelar",
   "@general_cancel": {
     "description": "Label for the cancel button"
+  },
+  "general_ok": "OK",
+  "@general_ok": {
+    "description": "Label for the OK button"
+  },
+  "general_confirm": "Confirmar",
+  "@general_confirm": {
+    "description": "Label for the confirm button"
   },
   "general_featured": "Destacado",
   "@general_featured": {
@@ -63,6 +75,10 @@
   "post_edit": "Editar publicación",
   "@post_edit": {
     "description": "Label for edit post button"
+  },
+  "post_create_hint": "¿Qué está pasando...?",
+  "@post_create_hint": {
+    "description": "Hint text for post creation input field"
   },
   "post_delete": "Eliminar publicación",
   "@post_delete": {
@@ -297,6 +313,22 @@
   "@community_join": {
     "description": "Label for join community button"
   },
+  "community_joined": "Unido",
+  "@community_joined": {
+    "description": "Label for joined community status"
+  },
+  "community_recommended_for_you": "Recomendado para ti",
+  "@community_recommended_for_you": {
+    "description": "Section title for recommended communities"
+  },
+  "community_trending_now": "Popular ahora",
+  "@community_trending_now": {
+    "description": "Section title for trending communities"
+  },
+  "community_placeholder_members": "1.2K miembros",
+  "@community_placeholder_members": {
+    "description": "Placeholder text for community members count in recommended communities"
+  },
   "community_leave": "Dejar comunidad",
   "@community_leave": {
     "description": "Label for leave community button"
@@ -356,6 +388,14 @@
   "category_hint": "Seleccionar categoría",
   "@category_hint": {
     "description": "Hint text for category select field"
+  },
+  "category_select_title": "Seleccionar Categoría",
+  "@category_select_title": {
+    "description": "Title for category selection page"
+  },
+  "category_add": "Añadir Categoría",
+  "@category_add": {
+    "description": "Label for add category button"
   },
   "community_pending_posts": "Publicaciones pendientes",
   "@community_pending_posts": {
@@ -507,6 +547,10 @@
   "@settings_only_moderators": {
     "description": "Label for only moderators settings"
   },
+  "settings_only_admins": "Solo los administradores pueden publicar",
+  "@settings_only_admins": {
+    "description": "Label for only admins can post setting"
+  },
   "settings_privacy": "Privacidad",
   "@settings_privacy": {
     "description": "Label for privacy settings"
@@ -622,6 +666,14 @@
   "general_off": "Apagado",
   "@general_off": {
     "description": "Label for off state"
+  },
+  "settings_allow_notification": "Permitir Notificaciones",
+  "@settings_allow_notification": {
+    "description": "Label for allow notification toggle"
+  },
+  "settings_allow_notification_description": "Activa para recibir notificaciones push de esta comunidad.",
+  "@settings_allow_notification_description": {
+    "description": "Description for allow notification setting"
   },
   "general_reported": "reportado",
   "@general_reported": {
@@ -804,5 +856,77 @@
   "error_create_poll": "Error al crear la encuesta. Por favor, inténtalo de nuevo.",
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
+  },
+  "user_profile_unknown_name": "Desconocido",
+  "@user_profile_unknown_name": {
+    "description": "Fallback display name for users with no display name"
+  },
+  "community_all_members": "Todos los miembros",
+  "@community_all_members": {
+    "description": "Tab label for all members in community membership page"
+  },
+  "community_moderators": "Moderadores",
+  "@community_moderators": {
+    "description": "Tab label for moderators in community membership page"
+  },
+  "community_search_member_hint": "Buscar miembro",
+  "@community_search_member_hint": {
+    "description": "Hint text for member search field"
+  },
+  "community_promote_moderator": "Promover a moderador",
+  "@community_promote_moderator": {
+    "description": "Action to promote a member to moderator role"
+  },
+  "community_demote_member": "Degradar a miembro",
+  "@community_demote_member": {
+    "description": "Action to demote a moderator to member role"
+  },
+  "community_remove_member": "Eliminar de la comunidad",
+  "@community_remove_member": {
+    "description": "Action to remove a member from the community"
+  },
+  "user_report": "Reportar usuario",
+  "@user_report": {
+    "description": "Action to report a user"
+  },
+  "user_unreport": "Desreportar usuario",
+  "@user_unreport": {
+    "description": "Action to unreport a user"
+  },
+  "feed_no_videos": "Aún no hay videos",
+  "@feed_no_videos": {
+    "description": "Empty state message when there are no videos in the feed"
+  },
+  "feed_no_photos": "Aún no hay fotos",
+  "@feed_no_photos": {
+    "description": "Empty state message when there are no photos in the feed"
+  },
+  "feed_no_pinned_posts": "Aún no hay publicaciones fijadas",
+  "@feed_no_pinned_posts": {
+    "description": "Empty state message when there are no pinned posts in the community"
+  },
+  "feed_no_posts": "Aún no hay publicaciones",
+  "@feed_no_posts": {
+    "description": "Empty state message when there are no posts in the community feed"
+  },
+  "member_add": "Añadir miembro",
+  "@member_add": {
+    "description": "Button text and title for adding members"
+  },
+  "search_user_hint": "Buscar usuario",
+  "@search_user_hint": {
+    "description": "Hint text for searching users"
+  },
+  "profile_update_success": "¡Perfil actualizado correctamente!",
+  "@profile_update_success": {
+    "description": "Success message when profile is updated"
+  },
+  "profile_update_failed": "Error al guardar tu perfil. Por favor, inténtalo de nuevo.",
+  "@profile_update_failed": {
+    "description": "Error message when profile update fails"
+  },
+  "user_block": "Bloquear Usuario",
+  "@user_block": {
+    "description": "Button text for blocking a user"
   }
 }

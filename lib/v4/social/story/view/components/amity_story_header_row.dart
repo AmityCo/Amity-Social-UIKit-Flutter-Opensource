@@ -150,7 +150,7 @@ class AmityStoryHeaderRow extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  story!.createdAt!.toSocialTimestamp(),
+                                  story!.createdAt!.toSocialTimestamp(context),
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w400,

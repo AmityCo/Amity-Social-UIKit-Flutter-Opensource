@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -108,8 +109,8 @@ class PendingPostActionCubit extends Cubit<PendingPostActionState> {
           .approve();
 
       toastBloc.add(
-        const AmityToastShort(
-          message: 'Post accepted.',
+        AmityToastShort(
+          message: context.l10n.community_pending_post_approve_success,
           icon: AmityToastIcon.success,
         ),
       );
@@ -119,9 +120,8 @@ class PendingPostActionCubit extends Cubit<PendingPostActionState> {
       emit(state.copyWith(isApprovingPost: false));
     } catch (error) {
       toastBloc.add(
-        const AmityToastShort(
-          message:
-              'Failed to accept post. This post has been reviewed by another moderator.',
+        AmityToastShort(
+          message: context.l10n.community_pending_post_approve_error,
           icon: AmityToastIcon.warning,
         ),
       );
@@ -146,8 +146,8 @@ class PendingPostActionCubit extends Cubit<PendingPostActionState> {
           .decline();
 
       toastBloc.add(
-        const AmityToastShort(
-          message: 'Post declined.',
+        AmityToastShort(
+          message: context.l10n.community_pending_post_decline_success,
           icon: AmityToastIcon.warning,
         ),
       );
@@ -157,9 +157,8 @@ class PendingPostActionCubit extends Cubit<PendingPostActionState> {
       emit(state.copyWith(isDecliningPost: false));
     } catch (error) {
       toastBloc.add(
-        const AmityToastShort(
-          message:
-              'Failed to decline post. This post has been reviewed by another moderator.',
+        AmityToastShort(
+          message: context.l10n.community_pending_post_decline_error,
           icon: AmityToastIcon.warning,
         ),
       );
@@ -187,8 +186,8 @@ class PendingPostActionCubit extends Cubit<PendingPostActionState> {
           .deletePost(postId: state.post.postId!);
 
       toastBloc.add(
-        const AmityToastShort(
-          message: 'Post deleted successfully',
+        AmityToastShort(
+          message: context.l10n.community_pending_post_delete_success,
           icon: AmityToastIcon.success,
         ),
       );
@@ -201,7 +200,7 @@ class PendingPostActionCubit extends Cubit<PendingPostActionState> {
     } catch (error) {
       toastBloc.add(
         AmityToastShort(
-          message: 'Failed to delete post: $error',
+          message: context.l10n.community_pending_post_delete_error,
           icon: AmityToastIcon.warning,
         ),
       );
@@ -214,3 +213,4 @@ class PendingPostActionCubit extends Cubit<PendingPostActionState> {
     }
   }
 }
+

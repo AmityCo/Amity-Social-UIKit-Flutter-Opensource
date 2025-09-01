@@ -28,6 +28,11 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
           Expanded(
             child: TextField(
               controller: textcontroller,
+              style: TextStyle(
+                  color: theme.baseColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
               decoration: InputDecoration(
                 prefixIcon: Container(
                   width: 20,

@@ -169,10 +169,10 @@ class AmityPostComposerPage extends NewBasePage {
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 10),
                                 buildTextField(context, communityId,
                                     minBottomSheetSize, maxBottomSheetSize),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 10),
                                 Container(
                                   color: Colors.transparent,
                                   child: mediaListView(context, selectedFiles),

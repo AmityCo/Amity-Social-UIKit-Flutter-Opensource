@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,9 +13,9 @@ class CommunitySettingItem extends BaseElement {
 
   @override
   Widget buildElement(BuildContext context) {
-    return _getSettingItemWidget(
-        iconPath, title,
-        onTap: onTap);
+    final behavior = FreedomUIKitBehavior.instance.communitySettingPageBehavior;
+    String title = behavior.settingItemTitle?.call(context, elementId) ?? this.title;
+    return _getSettingItemWidget(iconPath, title, onTap: onTap);
   }
 
   Widget _getSettingItemWidget(String iconPath, String title,

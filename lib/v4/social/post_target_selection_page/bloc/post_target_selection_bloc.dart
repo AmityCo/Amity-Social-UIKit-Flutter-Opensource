@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -9,16 +10,20 @@ part 'post_target_selection_state.dart';
 
 class PostTargetSelectionBloc
     extends Bloc<PostTargetSelectionEvent, PostTargetSelectionState> {
-  final int pageSize = 20;
   late CommunityLiveCollection communityLiveCollection;
   late StreamSubscription<List<AmityCommunity>> _subscription;
+
+  final int postTargetsPageSize = AmityUIKit4Manager
+      .freedomBehavior.createPostMenuComponentBehavior.postTargetsPageSize;
+  final getPostTargets = AmityUIKit4Manager
+      .freedomBehavior.createPostMenuComponentBehavior.getPostTargets;
 
   PostTargetSelectionBloc() : super(const PostTargetSelectionState()) {
     communityLiveCollection = AmitySocialClient.newCommunityRepository()
         .getCommunities()
         .filter(AmityCommunityFilter.MEMBER)
         .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
-        .getLiveCollection(pageSize: 20);
+        .getLiveCollection(pageSize: postTargetsPageSize);
 
     _subscription = communityLiveCollection
         .getStreamController()
@@ -27,8 +32,11 @@ class PostTargetSelectionBloc
       if (communityLiveCollection.isFetching == true && communities.isEmpty) {
         emit(PostTargetSelectionLoading());
       } else if (communities.isNotEmpty) {
-        add(CommunitiesLoadedEvent(
+        final List<AmityCommunity> postTargets = await getPostTargets(
           communities: communities,
+        );
+        add(CommunitiesLoadedEvent(
+          communities: postTargets,
           hasMoreItems: communityLiveCollection.hasNextPage(),
           isFetching: communityLiveCollection.isFetching,
         ));

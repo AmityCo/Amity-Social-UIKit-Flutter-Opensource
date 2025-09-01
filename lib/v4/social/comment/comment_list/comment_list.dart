@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/bloc/comment_item_bloc.dart';
@@ -23,11 +24,17 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
     required this.commentAction,
   }) : super(key: key, pageId: pageId, componentId: "comment_list_component");
 
+  final buildNoCommentsWidget = AmityUIKit4Manager
+      .freedomBehavior.viewStoryPageBehavior.buildNoCommentsWidget;
+
   @override
   Widget buildComponent(BuildContext context) {
     return BlocBuilder<CommentListBloc, CommentListState>(
       builder: (context, state) {
         final commentCount = state.comments.length;
+        if (state.hasError) {
+          return buildNoCommentsWidget();
+        }
         if (state is CommentListStateInitial) {
           context.read<CommentListBloc>().add(CommentListEventRefresh(
               toastBloc: context.read<AmityToastBloc>()));

@@ -4,5 +4,6 @@ class AmityPendingRequestPageBehavior {
   ScrollController? postReviewScrollerController;
 
   Widget? Function(ScrollController? scroll)? buildHeaderFlexibleSpace;
-  Widget? Function()? buildTitle;
+  Widget? Function(BuildContext context)? buildTitle;
+  String? Function(BuildContext context, String key)? phrase;
 }

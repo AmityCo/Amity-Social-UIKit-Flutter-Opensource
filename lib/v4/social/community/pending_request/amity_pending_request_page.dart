@@ -56,17 +56,17 @@ class AmityPendingRequestPage extends NewBasePage {
                 });
               }
 
+              final behavior = FreedomUIKitBehavior.instance.pendingRequestPageBehavior;
+
               return Scaffold(
                 backgroundColor: theme.backgroundColor,
                 appBar: AppBar(
                   backgroundColor: theme.backgroundColor,
                   foregroundColor: theme.baseColor,
-                  title: FreedomUIKitBehavior
-                      .instance.pendingRequestPageBehavior.buildTitle
-                      ?.call() ?? Text(context.l10n.community_pending_requests_title,
-                      style: AmityTextStyle.titleBold(theme.baseColor)),
-                  flexibleSpace: FreedomUIKitBehavior.instance
-                      .pendingRequestPageBehavior.buildHeaderFlexibleSpace
+                  title: behavior.buildTitle?.call(context) ??
+                      Text(context.l10n.community_pending_requests_title,
+                          style: AmityTextStyle.titleBold(theme.baseColor)),
+                  flexibleSpace: behavior.buildHeaderFlexibleSpace
                       ?.call(FreedomUIKitBehavior
                           .instance
                           .pendingRequestPageBehavior
@@ -135,11 +135,12 @@ class AmityPendingRequestPage extends NewBasePage {
   List<Widget> _buildTabIndicators(BuildContext context, List<String> tabs) {
     final state = context.watch<AmityPendingRequestCubit>().state;
     final tabController = DefaultTabController.of(context);
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
 
     return [
       if (state.community.isPostReviewEnabled ?? false)
         AmityTabIndicator(
-          title: context.l10n.profile_posts,
+          title: phrase?.call(context, 'pending_posts_title') ?? context.l10n.profile_posts,
           count: state.pendingPostCount,
           selected: tabController.index == 0,
           selectedColor: theme.primaryColor,
@@ -151,6 +152,7 @@ class AmityPendingRequestPage extends NewBasePage {
   List<Widget> _buildTabContent(BuildContext context) {
     final state = context.read<AmityPendingRequestCubit>().state;
     final List<Widget> tabContents = [];
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
 
     // Add pending posts tab content if enabled
     if (state.community.isPostReviewEnabled ?? false) {
@@ -175,7 +177,7 @@ class AmityPendingRequestPage extends NewBasePage {
       tabContents.add(
         Center(
           child: Text(
-            context.l10n.community_join_requests_coming_soon,
+            phrase?.call(context, 'community_pending_request_join_coming_soon') ?? context.l10n.community_join_requests_coming_soon,
             style: TextStyle(color: theme.baseColor),
           ),
         ),
@@ -191,6 +193,8 @@ class AmityPendingRequestPage extends NewBasePage {
   }
 
   Widget _buildEmptyStateView(BuildContext context) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -202,7 +206,7 @@ class AmityPendingRequestPage extends NewBasePage {
           ),
           const SizedBox(height: 16),
           Text(
-            context.l10n.community_pending_requests_empty_title,
+            phrase?.call(context, 'community_pending_request_no_pending_requests_title') ?? context.l10n.community_pending_requests_empty_title,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -213,7 +217,7 @@ class AmityPendingRequestPage extends NewBasePage {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
-              context.l10n.community_pending_requests_empty_description,
+              phrase?.call(context, 'community_pending_request_no_pending_requests_desc') ?? context.l10n.community_pending_requests_empty_description,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.baseColor.withOpacity(0.6),

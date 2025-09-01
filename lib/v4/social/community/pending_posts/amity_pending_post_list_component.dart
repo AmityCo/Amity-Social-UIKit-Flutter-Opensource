@@ -45,6 +45,8 @@ class AmityPendingPostListComponent extends NewBaseComponent {
   }
 
   Widget _buildContent(BuildContext context, PendingPostsState state) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Column(
       children: [
         if (state.isModerator)
@@ -55,7 +57,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  context.l10n.community_pending_posts_warning,
+                  phrase?.call(context, 'pending_posts_desc') ?? context.l10n.community_pending_posts_warning,
                   style: AmityTextStyle.caption(theme.baseColor),
                 ),
               ),
@@ -73,6 +75,8 @@ class AmityPendingPostListComponent extends NewBaseComponent {
   }
 
   Widget _buildEmptyView(BuildContext context) {
+    final phrase = FreedomUIKitBehavior.instance.pendingRequestPageBehavior.phrase;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -84,7 +88,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
             height: 60,
           ),
           const SizedBox(height: 8),
-          Text(context.l10n.community_pending_posts_empty,
+          Text(phrase?.call(context, 'community_pending_request_no_pending_posts') ?? context.l10n.community_pending_posts_empty,
               style: AmityTextStyle.titleBold(theme.baseColorShade3)),
         ],
       ),

@@ -7,7 +7,7 @@ import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_social_home_page_behavior.dart';
 
 import 'l10n/localization_behavior.dart';
-import 'shared/social/user/profile/bitazza_user_profile_behavior.dart';
+import 'shared/social/user/profile/freedom_user_profile_behavior.dart';
 
 class FreedomUIKitBehavior {
   factory FreedomUIKitBehavior() => _instance;
@@ -42,5 +42,5 @@ class FreedomUIKitBehavior {
 
   FreedomThemeBehavior themeBehavior = FreedomThemeBehavior();
 
-  BitazzaUserProfileBehavior userProfileBehavior = BitazzaUserProfileBehavior();
+  FreedomUserProfileBehavior userProfileBehavior = FreedomUserProfileBehavior();
 }

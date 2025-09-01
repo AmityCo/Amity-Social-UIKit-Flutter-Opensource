@@ -47,14 +47,6 @@ import 'viewmodel/user_viewmodel.dart';
 
 export 'package:amity_sdk/src/domain/model/session/session_state.dart';
 
-// Export custom Bitazza components
-export 'shared/social/user/profile/bitazza_me_page.dart';
-export 'shared/social/user/profile/bitazza_user_profile_behavior.dart';
-export 'shared/social/user/profile/components/bitazza_me_profile_header_component.dart';
-export 'shared/social/user/profile/components/bitazza_me_profile_tab_component.dart';
-
-// Export backward compatibility behavior
-export 'v4/social/user/profile/user_profile_page_behavior.dart';
 
 enum AmityEndpointRegion {
   sg,

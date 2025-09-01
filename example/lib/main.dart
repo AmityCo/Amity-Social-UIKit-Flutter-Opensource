@@ -661,33 +661,7 @@ class SocialPage extends StatelessWidget {
                 ));
               },
             ),
-            ListTile(
-              title: const Text('Bitazza Me Page (Custom)'),
-              onTap: () {
-                // Navigate to custom Bitazza Me Page
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => BitazzaMePage(
-                    userId: username,
-                    avatar: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue.withOpacity(0.3),
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        size: 60,
-                        color: Colors.white,
-                      ),
-                    ),
-                    avatarUrl: null,
-                    rarity: "Epic",
-                  ),
-                ));
-              },
-            ),
-            const ListTile(),
+                        const ListTile(),
           ],
         ),
       ),

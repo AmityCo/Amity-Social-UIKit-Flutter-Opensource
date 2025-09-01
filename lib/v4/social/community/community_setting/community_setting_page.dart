@@ -118,31 +118,7 @@ class AmityCommunitySettingPage extends NewBasePage {
                   null, onTap: () {
                 final showLeaveDialog = behavior.showLeaveCommunityDialog;
                 if (showLeaveDialog != null) {
-                  showLeaveDialog.call(
-                    context,
-                    onGoBack: (_) {
-                      Navigator.of(context).pop();
-                    },
-                    onLeave: (_) {
-                      Navigator.of(context).pop();
-                      context.read<CommunitySettingPageBloc>().add(
-                            LeaveCommunityEvent(
-                              toastBloc: context.read<AmityToastBloc>(),
-                              onSuccess: () {
-                                Navigator.of(context).pop(true);
-                              },
-                              onFailure: () {
-                                Navigator.of(context).pop();
-                                AmityDialog().showAlertErrorDialog(
-                                    title: context.l10n.error_leave_community,
-                                    message: context
-                                        .l10n.error_leave_community_description);
-                              },
-                            ),
-                          );
-                    },
-                    communityName: community.displayName,
-                  );
+                  showLeaveDialog.call(context, community: community);
                   return;
                 }
                 ConfirmationDialog().show(

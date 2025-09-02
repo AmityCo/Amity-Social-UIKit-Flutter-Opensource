@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
@@ -46,6 +47,8 @@ class AmityChatPage extends NewBasePage {
 
   @override
   Widget buildPage(BuildContext context) {
+    final phrase = AmityUIKit4Manager.freedomBehavior.dmPageBehavior.phrase;
+
     MessageComposerCache().updateText("");
 
     return SimpleTickerProvider(
@@ -71,7 +74,8 @@ class AmityChatPage extends NewBasePage {
               builder: (context, state) {
                 if (state is ChatPageStateInitial) {
                   context.read<AmityToastBloc>().add(AmityToastLoading(
-                      message: context.l10n.chat_loading,
+                      message: phrase?.call(context, 'chat_loading') ??
+                          context.l10n.chat_loading,
                       icon: AmityToastIcon.loading,
                       bottomPadding: toastBottomPadding));
                 }
@@ -140,7 +144,10 @@ class AmityChatPage extends NewBasePage {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        context.l10n.chat_waiting_for_network,
+                                        phrase?.call(context,
+                                                'chat_waiting_for_network') ??
+                                            context
+                                                .l10n.chat_waiting_for_network,
                                         style: TextStyle(
                                           fontSize: 13,
                                           color: theme.baseColorShade1,
@@ -324,7 +331,10 @@ class AmityChatPage extends NewBasePage {
                                                             displayName: (!isReplied)
                                                                 ? state.userDisplayName ??
                                                                     ""
-                                                                : "Replied message",
+                                                                : phrase?.call(
+                                                                        context,
+                                                                        'chat_replied_message') ??
+                                                                    '',
                                                             theme: theme,
                                                           ),
                                                         ),
@@ -424,7 +434,9 @@ class AmityChatPage extends NewBasePage {
                               ),
                               child: Center(
                                 child: Text(
-                                  context.l10n.chat_blocked_message,
+                                  phrase?.call(context,
+                                          'chat_cant_send_message_desc') ??
+                                      context.l10n.chat_blocked_message,
                                   style: AmityTextStyle.caption(
                                       theme.baseColorShade1),
                                   textAlign: TextAlign.center,

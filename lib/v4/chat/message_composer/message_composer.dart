@@ -39,6 +39,8 @@ class AmityMessageComposer extends NewBaseComponent {
   Map<String, AmityFileInfoWithUploadStatus> selectedFiles = {};
   late AmityToastBloc toastBloc;
 
+  final phrase = AmityUIKit4Manager.freedomBehavior.dmPageBehavior.phrase;
+
   AmityMessageComposer({
     super.key,
     super.pageId,
@@ -219,7 +221,9 @@ class AmityMessageComposer extends NewBaseComponent {
                                   isDense: true,
                                   contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 10),
-                                  hintText: context.l10n.message_placeholder,
+                                  hintText: (phrase?.call(context,
+                                          'chat_message_placeholder') ??
+                                      context.l10n.message_placeholder),
                                   border: InputBorder.none,
                                   prefixIconColor: theme.primaryColor,
                                   suffixIconColor: theme.primaryColor,
@@ -304,7 +308,10 @@ class AmityMessageComposer extends NewBaseComponent {
   }
 
   Widget renderEditPanel(
-      BuildContext context, AmityMessage? message, MessageComposerState state) {
+    BuildContext context,
+    AmityMessage? message,
+    MessageComposerState state,
+  ) {
     return Container(
       width: double.infinity,
       height: 48,
@@ -321,7 +328,9 @@ class AmityMessageComposer extends NewBaseComponent {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: context.l10n.message_editing_message,
+                        text:
+                            (phrase?.call(context, 'message_editing_message') ??
+                                context.l10n.message_editing_message),
                         style: AmityTextStyle.captionBold(theme.baseColor),
                       ),
                     ],
@@ -355,7 +364,8 @@ class AmityMessageComposer extends NewBaseComponent {
 
   Widget renderReplyPanel(AmityMessage message, BuildContext context) {
     final userDisplayName = message.user?.userId == AmityCoreClient.getUserId()
-        ? context.l10n.message_replying_yourself
+        ? (phrase?.call(context, 'message_replying_yourself') ??
+            context.l10n.message_replying_yourself)
         : message.user?.displayName ?? "";
 
     Stack? imagePreview;
@@ -399,7 +409,9 @@ class AmityMessageComposer extends NewBaseComponent {
             MaterialPageRoute(
               builder: (context) => FullTextScreen(
                 fullText: parentTextMessage,
-                displayName: context.l10n.message_replied_message,
+                displayName:
+                    (phrase?.call(context, 'message_replied_message') ??
+                        context.l10n.message_replied_message),
                 theme: theme,
               ),
             ),
@@ -414,7 +426,7 @@ class AmityMessageComposer extends NewBaseComponent {
                 showDeleteButton: message.userId == AmityCoreClient.getUserId(),
                 showSaveButton: true,
                 onSave: () async {
-                  await saveImageMessage(context, message);
+                  await saveImageMessage(context, message, phrase);
                 },
               ),
             ),
@@ -448,8 +460,12 @@ class AmityMessageComposer extends NewBaseComponent {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text:
-                              context.l10n.message_replying_to(userDisplayName),
+                          text: (phrase?.call(
+                                context,
+                                'message_replying_to',
+                              ) ??
+                              context.l10n
+                                  .message_replying_to(userDisplayName)),
                           style: AmityTextStyle.captionBold(theme.baseColor),
                         ),
                       ],
@@ -475,7 +491,8 @@ class AmityMessageComposer extends NewBaseComponent {
                     Row(
                       children: [
                         Text(
-                          context.l10n.general_photo,
+                          (phrase?.call(context, 'chat_pick_photo') ??
+                              context.l10n.general_photo),
                           style: AmityTextStyle.caption(theme.baseColorShade1),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -484,7 +501,8 @@ class AmityMessageComposer extends NewBaseComponent {
                     ),
                   if (message.data is MessageVideoData)
                     Text(
-                      context.l10n.general_video,
+                      (phrase?.call(context, 'chat_pick_video') ??
+                          context.l10n.general_video),
                       style: AmityTextStyle.caption(theme.baseColorShade1),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -533,7 +551,8 @@ class AmityMessageComposer extends NewBaseComponent {
         children: [
           renderMediaButton(
             "assets/Icons/amity_ic_camera_button.svg",
-            context.l10n.general_camera,
+            (phrase?.call(context, 'chat_pick_camera') ??
+                context.l10n.general_camera),
             () {
               onCameraTap(context);
             },
@@ -543,7 +562,8 @@ class AmityMessageComposer extends NewBaseComponent {
           ),
           renderMediaButton(
             "assets/Icons/amity_ic_image_button.svg",
-            context.l10n.message_media,
+            (phrase?.call(context, 'chat_pick_media') ??
+                context.l10n.message_media),
             () {
               pickMultipleFiles(context, appName, FileType.video);
             },

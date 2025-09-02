@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
@@ -25,6 +26,8 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
+    final phrase = AmityUIKit4Manager.freedomBehavior.dmPageBehavior.phrase;
+
     return Container(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 32),
@@ -95,8 +98,12 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                   Expanded(
                     child: Text(
                       isMute
-                          ? context.l10n.notification_turn_on_success
-                          : context.l10n.notification_turn_off_success,
+                          ? (phrase?.call(
+                                  context, 'chat_turn_on_notifications') ??
+                              context.l10n.notification_turn_on_success)
+                          : (phrase?.call(
+                                  context, 'chat_turn_off_notifications') ??
+                              context.l10n.notification_turn_off_success),
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ),
@@ -136,8 +143,10 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                   Expanded(
                     child: Text(
                       user.isFlaggedByMe
-                          ? context.l10n.user_unreport
-                          : context.l10n.user_report,
+                          ? (phrase?.call(context, 'chat_unreport_user') ??
+                              context.l10n.user_unreport)
+                          : (phrase?.call(context, 'chat_report_user') ??
+                              context.l10n.user_report),
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ),
@@ -180,8 +189,10 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                   Expanded(
                     child: Text(
                       isUserBlocked
-                          ? context.l10n.user_unblock
-                          : context.l10n.user_block,
+                          ? (phrase?.call(context, 'chat_unblock_user') ??
+                              context.l10n.user_unblock)
+                          : (phrase?.call(context, 'chat_block_user') ??
+                              context.l10n.user_block),
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ),

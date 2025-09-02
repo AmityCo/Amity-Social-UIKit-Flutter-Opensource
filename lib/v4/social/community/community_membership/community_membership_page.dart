@@ -41,11 +41,13 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityMembershipPageState state) {
-    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
+    final phrase =
+        AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: phrase?.call(context, 'all_members_title') ?? context.l10n.community_all_members,
+          title: phrase?.call(context, 'all_members_title') ??
+              context.l10n.community_all_members,
           configProvider: configProvider,
           theme: theme,
           tailingButton: state.isCurrentUserModerator
@@ -89,8 +91,12 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   dividerColor: theme.baseColorShade4,
                   dividerHeight: 1.0, // Makes indicator match text width
                   tabs: [
-                    Tab(text: phrase?.call(context, 'all_members_members') ?? context.l10n.community_members),
-                    Tab(text: phrase?.call(context, 'all_members_members') ?? context.l10n.community_moderators),
+                    Tab(
+                        text: phrase?.call(context, 'all_members_moderators') ??
+                            context.l10n.community_members),
+                    Tab(
+                        text: phrase?.call(context, 'all_members_moderators') ??
+                            context.l10n.community_moderators),
                   ],
                 ),
                 Expanded(
@@ -100,7 +106,9 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         children: [
                           AmityTopSearchBarComponent(
                             textcontroller: _textcontroller,
-                            hintText: phrase?.call(context, 'all_members_search_input') ?? context.l10n.community_search_member_hint,
+                            hintText: phrase?.call(
+                                    context, 'all_members_search_input') ??
+                                context.l10n.community_search_member_hint,
                             showCancelButton: false,
                             onTextChanged: (value) {
                               context.read<CommunityMembershipPageBloc>().add(
@@ -263,7 +271,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   void _showBottomSheet(BuildContext context,
       CommunityMembershipPageState state, AmityCommunityMember member) {
-    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
+    final phrase =
+        AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -306,8 +315,12 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         ? 'assets/Icons/amity_ic_demote_member.svg'
                         : 'assets/Icons/amity_ic_promote_moderator.svg',
                     title: member.isModerator()
-                        ? phrase?.call(context, 'members_demote_to_moderator') ?? context.l10n.community_demote_member
-                        : phrase?.call(context, 'members_promote_to_moderator') ?? context.l10n.community_promote_moderator,
+                        ? phrase?.call(
+                                context, 'members_demote_to_moderator') ??
+                            context.l10n.community_demote_member
+                        : phrase?.call(
+                                context, 'members_promote_to_moderator') ??
+                            context.l10n.community_promote_moderator,
                     onTap: () {
                       final action = member.isModerator()
                           ? CommunityMembershipPageBottomSheetAction.demote
@@ -323,16 +336,21 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
                       context.read<CommunityMembershipPageBloc>().add(
                           CommunityMembershipPageBottomSheetEvent(
-                              member, action, context.read<AmityToastBloc>(),
-                              successMessage, errorMessage));
+                              member,
+                              action,
+                              context.read<AmityToastBloc>(),
+                              successMessage,
+                              errorMessage));
                       Navigator.pop(context);
                     },
                   ),
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? phrase?.call(context, 'members_unreport_user') ?? context.l10n.user_unreport
-                          : phrase?.call(context, 'members_report_user') ?? context.l10n.user_report,
+                          ? phrase?.call(context, 'members_unreport_user') ??
+                              context.l10n.user_unreport
+                          : phrase?.call(context, 'members_report_user') ??
+                              context.l10n.user_report,
                       onTap: () {
                         final isReporting =
                             !(member.user?.isFlaggedByMe ?? false);
@@ -350,13 +368,18 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
-                                member, action, context.read<AmityToastBloc>(),
-                                successMessage, errorMessage));
+                                member,
+                                action,
+                                context.read<AmityToastBloc>(),
+                                successMessage,
+                                errorMessage));
                         Navigator.pop(context);
                       }),
                   _buildListTile(
                       assetPath: 'assets/Icons/ic_bin_red.svg',
-                      title: phrase?.call(context, 'members_remove_from_community') ?? context.l10n.community_remove_member,
+                      title: phrase?.call(
+                              context, 'members_remove_from_community') ??
+                          context.l10n.community_remove_member,
                       isDestructive: true,
                       onTap: () {
                         context.read<CommunityMembershipPageBloc>().add(
@@ -372,8 +395,10 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? phrase?.call(context, 'members_unreport_user') ?? context.l10n.user_unreport
-                          : phrase?.call(context, 'members_report_user') ?? context.l10n.user_report,
+                          ? phrase?.call(context, 'members_unreport_user') ??
+                              context.l10n.user_unreport
+                          : phrase?.call(context, 'members_report_user') ??
+                              context.l10n.user_report,
                       onTap: () {
                         final isReporting =
                             !(member.user?.isFlaggedByMe ?? false);
@@ -391,8 +416,11 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
-                                member, action, context.read<AmityToastBloc>(),
-                                successMessage, errorMessage));
+                                member,
+                                action,
+                                context.read<AmityToastBloc>(),
+                                successMessage,
+                                errorMessage));
                         Navigator.pop(context);
                       }),
                 ],

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/components/message_report_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_avatar.dart';
@@ -58,6 +59,8 @@ class MessageBubbleView extends NewBaseComponent {
   BounceAnimator? bounceAnimator;
   double bounce;
   bool isGroupChat;
+
+  final phrase = AmityUIKit4Manager.freedomBehavior.dmPageBehavior.phrase;
 
   MessageBubbleView({
     super.key,
@@ -224,9 +227,13 @@ class MessageBubbleView extends NewBaseComponent {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Your message wasn’t sent',
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        title: Text(
+          phrase?.call(
+                context,
+                'chat_your_message_wasnt_sent',
+              ) ??
+              'Your message wasn’t sent',
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
@@ -234,9 +241,9 @@ class MessageBubbleView extends NewBaseComponent {
               onResend?.call(message);
               Navigator.pop(context);
             },
-            child: const Text(
-              'Resend',
-              style: TextStyle(
+            child: Text(
+              phrase?.call(context, 'chat_resend') ?? 'Resend',
+              style: const TextStyle(
                   color: Color(0xff007AFF),
                   fontSize: 17,
                   fontWeight: FontWeight.w400),
@@ -247,9 +254,9 @@ class MessageBubbleView extends NewBaseComponent {
             onPressed: () async {
               deleteMessage(context, true);
             },
-            child: const Text(
-              'Delete',
-              style: TextStyle(
+            child: Text(
+              phrase?.call(context, 'chat_delete') ?? 'Delete',
+              style: const TextStyle(
                   color: Color(0xffFF3B30),
                   fontSize: 17,
                   fontWeight: FontWeight.w400),
@@ -260,9 +267,9 @@ class MessageBubbleView extends NewBaseComponent {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text(
-              "Cancel",
-              style: TextStyle(
+            child: Text(
+              phrase?.call(context, 'chat_cancel') ?? "Cancel",
+              style: const TextStyle(
                   color: Color(0xff007AFF),
                   fontSize: 17,
                   fontWeight: FontWeight.w600),

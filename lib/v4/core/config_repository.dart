@@ -99,8 +99,7 @@ extension ThemeConfig on ConfigRepository {
     final fallbackTheme = _getCurrentThemeStyle() == AmityThemeStyle.light
         ? lightTheme
         : darkTheme;
-    final globalTheme =
-        _getGlobalTheme(_getCurrentThemeStyle(), fallbackTheme);
+    final globalTheme = _getGlobalTheme(_getCurrentThemeStyle(), fallbackTheme);
 
     if (configId == null) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -124,7 +123,8 @@ extension ThemeConfig on ConfigRepository {
       if (componentTheme != null) {
         final theme = _getThemeColor(
             AmityTheme.fromJson(
-                componentTheme["theme"]?[style.toString().split('.').last], fallbackTheme),
+                componentTheme["theme"]?[style.toString().split('.').last],
+                fallbackTheme),
             fallbackTheme);
         return theme;
       }
@@ -132,7 +132,8 @@ extension ThemeConfig on ConfigRepository {
       if (pageTheme != null) {
         return _getThemeColor(
             AmityTheme.fromJson(
-                pageTheme["theme"]?[style.toString().split('.').last], fallbackTheme),
+                pageTheme["theme"]?[style.toString().split('.').last],
+                fallbackTheme),
             fallbackTheme);
       }
     } catch (error) {
@@ -164,8 +165,11 @@ extension ThemeConfig on ConfigRepository {
       backgroundColor: theme?.backgroundColor ?? fallbackTheme.backgroundColor,
       baseInverseColor:
           theme?.baseInverseColor ?? fallbackTheme.baseInverseColor,
-      backgroundShade1Color: fallbackTheme.backgroundShade1Color,
+      backgroundShade1Color:
+          theme?.backgroundShade1Color ?? fallbackTheme.backgroundShade1Color,
       highlightColor: theme?.highlightColor ?? fallbackTheme.highlightColor,
+      greenColor: theme?.greenColor ?? fallbackTheme.greenColor,
+      lightGreenColor: theme?.lightGreenColor ?? fallbackTheme.lightGreenColor,
     );
   }
 

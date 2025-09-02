@@ -47,6 +47,7 @@ import 'viewmodel/user_viewmodel.dart';
 
 export 'package:amity_sdk/src/domain/model/session/session_state.dart';
 
+
 enum AmityEndpointRegion {
   sg,
   eu,
@@ -68,7 +69,7 @@ class AmityUIKit {
     Stopwatch stopwatch = Stopwatch()..start();
     AmityRegionalHttpEndpoint? amityEndpoint;
     AmityRegionalMqttEndpoint? amityMqttEndpoint;
-    AmityUploadEndpoint? amityUploadEndpoint;    
+    AmityUploadEndpoint? amityUploadEndpoint;
 
     switch (region) {
       case AmityEndpointRegion.custom:

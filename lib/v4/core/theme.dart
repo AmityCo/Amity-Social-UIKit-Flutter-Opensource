@@ -13,6 +13,8 @@ class AmityTheme {
   final Color backgroundColor;
   final Color backgroundShade1Color;
   final Color highlightColor;
+  final Color greenColor;
+  final Color lightGreenColor;
 
   AmityTheme({
     required this.primaryColor,
@@ -27,37 +29,55 @@ class AmityTheme {
     required this.backgroundColor,
     required this.backgroundShade1Color,
     required this.highlightColor,
+    required this.greenColor,
+    required this.lightGreenColor,
   });
 
-  factory AmityTheme.fromJson(Map<String, dynamic> json, AmityTheme fallbackTheme) {
+  factory AmityTheme.fromJson(
+      Map<String, dynamic> json, AmityTheme fallbackTheme) {
     return AmityTheme(
-      primaryColor: _colorFromHex(json['primary_color']) ?? fallbackTheme.primaryColor,
-      secondaryColor: _colorFromHex(json['secondary_color']) ?? fallbackTheme.secondaryColor,
+      primaryColor:
+          _colorFromHex(json['primary_color']) ?? fallbackTheme.primaryColor,
+      secondaryColor: _colorFromHex(json['secondary_color']) ??
+          fallbackTheme.secondaryColor,
       baseColor: _colorFromHex(json['base_color']) ?? fallbackTheme.baseColor,
-      baseInverseColor: _colorFromHex(json['base_inverse_color']) ?? fallbackTheme.baseInverseColor,
-      baseColorShade1: _colorFromHex(json['base_shade1_color']) ?? fallbackTheme.baseColorShade1,
-      baseColorShade2: _colorFromHex(json['base_shade2_color']) ?? fallbackTheme.baseColorShade2,
-      baseColorShade3: _colorFromHex(json['base_shade3_color']) ?? fallbackTheme.baseColorShade3,
-      baseColorShade4: _colorFromHex(json['base_shade4_color']) ?? fallbackTheme.baseColorShade4,
-      alertColor: _colorFromHex(json['alert_color']) ?? fallbackTheme.alertColor,
-      backgroundColor: _colorFromHex(json['background_color']) ?? fallbackTheme.backgroundColor,
-      backgroundShade1Color: _colorFromHex(json['background_shade1_color']) ?? fallbackTheme.backgroundShade1Color,
-      highlightColor: _colorFromHex(json['highlight_color']) ?? fallbackTheme.highlightColor,
+      baseInverseColor: _colorFromHex(json['base_inverse_color']) ??
+          fallbackTheme.baseInverseColor,
+      baseColorShade1: _colorFromHex(json['base_shade1_color']) ??
+          fallbackTheme.baseColorShade1,
+      baseColorShade2: _colorFromHex(json['base_shade2_color']) ??
+          fallbackTheme.baseColorShade2,
+      baseColorShade3: _colorFromHex(json['base_shade3_color']) ??
+          fallbackTheme.baseColorShade3,
+      baseColorShade4: _colorFromHex(json['base_shade4_color']) ??
+          fallbackTheme.baseColorShade4,
+      alertColor:
+          _colorFromHex(json['alert_color']) ?? fallbackTheme.alertColor,
+      backgroundColor: _colorFromHex(json['background_color']) ??
+          fallbackTheme.backgroundColor,
+      backgroundShade1Color: _colorFromHex(json['background_shade1_color']) ??
+          fallbackTheme.backgroundShade1Color,
+      highlightColor: _colorFromHex(json['highlight_color']) ??
+          fallbackTheme.highlightColor,
+      greenColor:
+          _colorFromHex(json['green_color']) ?? fallbackTheme.greenColor,
+      lightGreenColor: _colorFromHex(json['light_green_color']) ??
+          fallbackTheme.lightGreenColor,
     );
   }
 
   static Color? _colorFromHex(String? hexColor) {
     if (hexColor == null) return null;
     hexColor = hexColor.replaceAll('#', '');
-    
+
     // Validate hex characters
     if (!RegExp(r'^[0-9A-Fa-f]+$').hasMatch(hexColor)) {
       return null;
     }
-        if (hexColor.length == 6) {
+    if (hexColor.length == 6) {
       hexColor = 'FF$hexColor';
     }
-    
+
     try {
       final colorValue = int.parse(hexColor, radix: 16);
       return Color(colorValue);
@@ -80,6 +100,8 @@ class AmityThemeColor {
   final Color backgroundColor;
   final Color backgroundShade1Color;
   final Color highlightColor;
+  final Color greenColor;
+  final Color lightGreenColor;
 
   AmityThemeColor({
     required this.primaryColor,
@@ -94,6 +116,8 @@ class AmityThemeColor {
     required this.backgroundColor,
     required this.backgroundShade1Color,
     required this.highlightColor,
+    required this.greenColor,
+    required this.lightGreenColor,
   });
 }
 
@@ -113,6 +137,8 @@ final lightTheme = AmityTheme(
   backgroundColor: const Color(0xFFFFFFFF),
   backgroundShade1Color: const Color(0xFFF6F7F8),
   highlightColor: const Color(0xFF1054DE),
+  greenColor: const Color(0xff00CA8D),
+  lightGreenColor: const Color(0xff10F48B),
 );
 
 final darkTheme = AmityTheme(
@@ -128,6 +154,8 @@ final darkTheme = AmityTheme(
   backgroundColor: const Color(0xFF191919),
   backgroundShade1Color: const Color(0xFF40434E),
   highlightColor: const Color(0xFF1054DE),
+  greenColor: const Color(0xff00CA8D),
+  lightGreenColor: const Color(0xff10F48B),
 );
 
 enum ColorBlendingOption {

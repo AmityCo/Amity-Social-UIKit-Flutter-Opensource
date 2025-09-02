@@ -10,6 +10,7 @@ import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_soci
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_view_story_page_behavior.dart';
 
 import 'l10n/localization_behavior.dart';
+import 'shared/social/user/profile/freedom_user_profile_behavior.dart';
 
 class FreedomUIKitBehavior {
   factory FreedomUIKitBehavior() => _instance;
@@ -51,4 +52,6 @@ class FreedomUIKitBehavior {
   FreedomDmPageBehavior dmPageBehavior = FreedomDmPageBehavior();
 
   FreedomThemeBehavior themeBehavior = FreedomThemeBehavior();
+
+  FreedomUserProfileBehavior userProfileBehavior = FreedomUserProfileBehavior();
 }

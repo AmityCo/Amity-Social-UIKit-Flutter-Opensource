@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dart';
@@ -202,6 +203,10 @@ class AmityMessageComposer extends NewBaseComponent {
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
                                 minLines: 1,
+                                textCapitalization: AmityUIKit4Manager
+                                    .freedomBehavior
+                                    .dmPageBehavior
+                                    .textCapitalization,
                                 textAlignVertical: TextAlignVertical.bottom,
                                 cursorColor: theme.primaryColor,
                                 style: TextStyle(

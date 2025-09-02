@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -33,7 +34,7 @@ class AmityEditUserProfilePage extends NewBasePage {
               return Scaffold(
                 backgroundColor: theme.backgroundColor,
                 appBar: AppBar(
-                  title: Text('Edit profile',
+                  title: Text(context.l10n.profile_edit,
                       style: AmityTextStyle.titleBold(theme.baseColor)),
                   leading: IconButton(
                     //iconSize: 24,
@@ -70,18 +71,17 @@ class AmityEditUserProfilePage extends NewBasePage {
                                       .read<EditProfileBloc>()
                                       .addEvent(EditProfileImagePickerEvent(
                                     onError: () {
+                                      final localize = context.l10n;
                                       showDialog(
                                         context: context,
                                         builder: (context) {
                                           return CupertinoAlertDialog(
-                                            title: const Text(
-                                                "Unsupported image type"),
-                                            content: const Text(
-                                                "Please upload a PNG or JPG image."),
+                                            title: Text(localize.profile_edit_unsupported_image_title),
+                                            content: Text(localize.profile_edit_unsupported_image_description),
                                             actions: [
                                               CupertinoDialogAction(
                                                 child: Text(
-                                                  "OK",
+                                                  localize.general_ok,
                                                   style: AmityTextStyle.body(
                                                       theme.highlightColor),
                                                 ),
@@ -153,7 +153,7 @@ class AmityEditUserProfilePage extends NewBasePage {
                               InfoTextField(
                                 key: Key(
                                     "name_field_${state.user?.userId ?? ""}"),
-                                title: "Display Name",
+                                title: context.l10n.profile_edit_display_name,
                                 initialText: state.user?.displayName ?? "",
                                 maxLength: 100,
                                 expandable: false,
@@ -166,7 +166,7 @@ class AmityEditUserProfilePage extends NewBasePage {
                               InfoTextField(
                                 key: Key(
                                     "about_field_${state.user?.userId ?? ""}"),
-                                title: "About",
+                                title: context.l10n.profile_edit_about,
                                 isOptional: true,
                                 initialText: state.user?.description ?? "",
                                 maxLength: 180,
@@ -220,17 +220,17 @@ class AmityEditUserProfilePage extends NewBasePage {
                         }
                       } else {
                         if (isUnsafeUploadError) {
+                          final localize = context.l10n;
                           showDialog(
                             context: context,
                             builder: (context) {
                               return CupertinoAlertDialog(
-                                title: const Text("Inappropriate image"),
-                                content: const Text(
-                                    "Please choose a different image to upload."),
+                                title: Text(localize.profile_edit_inappropriate_image_title),
+                                content: Text(localize.profile_edit_inappropriate_image_description),
                                 actions: [
                                   CupertinoDialogAction(
                                     child: Text(
-                                      "OK",
+                                      localize.general_ok,
                                       style: AmityTextStyle.body(
                                           theme.highlightColor),
                                     ),
@@ -244,9 +244,8 @@ class AmityEditUserProfilePage extends NewBasePage {
                           );
                         } else {
                           toastBloc.add(
-                            const AmityToastShort(
-                                message:
-                                    "Failed to save your profile. Please try again.",
+                            AmityToastShort(
+                                message: context.l10n.profile_update_failed,
                                 icon: AmityToastIcon.warning),
                           );
                         }
@@ -266,7 +265,7 @@ class AmityEditUserProfilePage extends NewBasePage {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 child: Center(
                   child: Text(
-                    "Save",
+                    context.l10n.general_save,
                     style: AmityTextStyle.bodyBold(Colors.white),
                   ),
                 ),
@@ -282,18 +281,17 @@ class AmityEditUserProfilePage extends NewBasePage {
     dismissScreen() {
       Navigator.of(context).pop();
     }
-
+    final localize = context.l10n;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: const Text("Unsaved changes"),
-          content: const Text(
-              "Are you sure you want to discard the changes? They will be lost when you leave this page."),
+          title: Text(localize.profile_edit_unsaved_changes_title),
+          content: Text(localize.profile_edit_unsaved_changes_description),
           actions: [
             CupertinoDialogAction(
               child: Text(
-                "Cancel",
+                localize.general_cancel,
                 style: AmityTextStyle.body(theme.highlightColor),
               ),
               onPressed: () {
@@ -302,7 +300,7 @@ class AmityEditUserProfilePage extends NewBasePage {
             ),
             CupertinoDialogAction(
               child: Text(
-                "Discard",
+                localize.general_discard,
                 style: AmityTextStyle.bodyBold(theme.alertColor),
               ),
               onPressed: () {

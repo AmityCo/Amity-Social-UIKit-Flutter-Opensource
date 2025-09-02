@@ -6,9 +6,7 @@ class AmityCommunitySettingPageBehavior {
 
   void Function(
     BuildContext context, {
-    required void Function(BuildContext context) onGoBack,
-    required void Function(BuildContext context) onLeave,
-    required String? communityName,
+    required AmityCommunity community,
   })? showLeaveCommunityDialog;
 
   void backToSocialHomePage(BuildContext context) {

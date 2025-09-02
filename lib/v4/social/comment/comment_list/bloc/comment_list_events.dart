@@ -46,3 +46,7 @@ class CommentListEventExpandItem extends CommentListEvent {
 
   const CommentListEventExpandItem({required this.commentId});
 }
+
+class CommentListEventFailed extends CommentListEvent {
+  const CommentListEventFailed();
+}

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:flutter/material.dart';
 
 class MyCommunityVM with ChangeNotifier {
@@ -18,6 +19,11 @@ class MyCommunityVM with ChangeNotifier {
   List<AmityCommunity> get amityCommunitiesForFeed => _amityCommunitiesForFeed;
   final textEditingController = TextEditingController();
 
+  final getStoryTargets = AmityUIKit4Manager
+      .freedomBehavior.createPostMenuComponentBehavior.getStoryTargets;
+  final storyTargetsPageSize = AmityUIKit4Manager
+      .freedomBehavior.createPostMenuComponentBehavior.storyTargetsPageSize;
+
   Future<void> initMyCommunity([String? keyword]) async {
     final repository = AmitySocialClient.newCommunityRepository()
         .getCommunities()
@@ -27,10 +33,19 @@ class MyCommunityVM with ChangeNotifier {
       repository.withKeyword(
           keyword); // Add keyword filtering only if keyword is provided and not empty
     }
-    communityLiveCollection = repository.getLiveCollection(pageSize: 50);
-    communityLiveCollection.getStreamController().stream.listen((event) {
+    communityLiveCollection = repository.getLiveCollection(
+      pageSize: storyTargetsPageSize,
+    );
+    communityLiveCollection.getStreamController().stream.listen((event) async {
+      if (communityLiveCollection.isFetching) {
+        return;
+      }
+
+      final List<AmityCommunity> storyTargets = await getStoryTargets(
+        communities: event,
+      );
       _amityCommunities.clear();
-      _amityCommunities.addAll(event);
+      _amityCommunities.addAll(storyTargets);
 
       notifyListeners();
     }).onError((error, stackTrace) {

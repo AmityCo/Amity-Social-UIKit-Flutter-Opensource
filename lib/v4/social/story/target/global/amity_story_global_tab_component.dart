@@ -1,8 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
-import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
-import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_target_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/global/bloc/global_story_target_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
@@ -29,28 +28,36 @@ class AmityStoryGlobalTabComponent extends NewBaseComponent {
 
 class AmityStoryGlobalTabBuilder extends StatefulWidget {
   final AmityThemeColor theme;
-  const AmityStoryGlobalTabBuilder({
+  AmityStoryGlobalTabBuilder({
     super.key,
     required this.theme,
   });
 
+  final showStorySuccessToast = AmityUIKit4Manager
+      .freedomBehavior.createPostMenuComponentBehavior.showStorySuccessToast;
+
   @override
-  State<AmityStoryGlobalTabBuilder> createState() => _AmityStoryGlobalTabBuilderState();
+  State<AmityStoryGlobalTabBuilder> createState() =>
+      _AmityStoryGlobalTabBuilderState();
 }
 
-class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder> {
+class _AmityStoryGlobalTabBuilderState
+    extends State<AmityStoryGlobalTabBuilder> {
   final scrollcontroller = ScrollController();
 
   @override
   void initState() {
-    BlocProvider.of<GlobalStoryTargetBloc>(context).add(ObserverGlobalStoryTarget());
+    BlocProvider.of<GlobalStoryTargetBloc>(context)
+        .add(ObserverGlobalStoryTarget());
     scrollcontroller.addListener(pagination);
     super.initState();
   }
 
   void pagination() {
-    if ((scrollcontroller.position.pixels == (scrollcontroller.position.maxScrollExtent))) {
-      BlocProvider.of<GlobalStoryTargetBloc>(context).add(LoadNextTargetStoriesEvent());
+    if ((scrollcontroller.position.pixels ==
+        (scrollcontroller.position.maxScrollExtent))) {
+      BlocProvider.of<GlobalStoryTargetBloc>(context)
+          .add(LoadNextTargetStoriesEvent());
     }
   }
 
@@ -59,7 +66,7 @@ class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder>
     return BlocListener<CreateStoryBloc, CreateStoryState>(
       listener: (context, state) {
         if (state is CreateStorySuccess) {
-          context.read<AmityToastBloc>().add(const AmityToastShort(message: "Successfully shared story", icon: AmityToastIcon.success));
+          widget.showStorySuccessToast(context);
         }
       },
       child: BlocBuilder<GlobalStoryTargetBloc, GlobalStoryTargetState>(
@@ -86,7 +93,9 @@ class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder>
                     return const SizedBox();
                   }
                   return AmityStoryTargetElement(
-                    avatarUrl: community.avatarImage?.getUrl(AmityImageSize.LARGE) ?? "",
+                    avatarUrl:
+                        community.avatarImage?.getUrl(AmityImageSize.LARGE) ??
+                            "",
                     isCommunityTarget: false,
                     communityDisplayName: community.displayName ?? "",
                     ringUiState: target.toRingUiState(),
@@ -101,7 +110,8 @@ class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder>
                           return AmityViewStoryPage(
                             targets: state.storyTargets,
                             selectedTarget: target,
-                            type: AmityViewStoryGlobalFeed(communityId: community!.communityId!),
+                            type: AmityViewStoryGlobalFeed(
+                                communityId: community!.communityId!),
                           );
                         }),
                       );
@@ -136,14 +146,21 @@ class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder>
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100)),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Shimmer.fromColors(
                     baseColor: const Color.fromARGB(255, 243, 242, 242),
                     highlightColor: const Color.fromARGB(255, 225, 225, 225),
-                    child: Container(width: 100, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                    child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 ],
               ),
@@ -159,14 +176,21 @@ class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder>
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100)),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Shimmer.fromColors(
                     baseColor: const Color.fromARGB(255, 243, 242, 242),
                     highlightColor: const Color.fromARGB(255, 225, 225, 225),
-                    child: Container(width: 100, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                    child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 ],
               ),
@@ -182,14 +206,21 @@ class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder>
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100)),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Shimmer.fromColors(
                     baseColor: const Color.fromARGB(255, 243, 242, 242),
                     highlightColor: const Color.fromARGB(255, 225, 225, 225),
-                    child: Container(width: 100, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                    child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 ],
               ),
@@ -205,14 +236,21 @@ class _AmityStoryGlobalTabBuilderState extends State<AmityStoryGlobalTabBuilder>
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100)),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Shimmer.fromColors(
                     baseColor: const Color.fromARGB(255, 243, 242, 242),
                     highlightColor: const Color.fromARGB(255, 225, 225, 225),
-                    child: Container(width: 100, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                    child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 ],
               ),

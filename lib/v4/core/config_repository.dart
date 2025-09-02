@@ -25,6 +25,10 @@ class ConfigRepository {
     }
   }
 
+  Map<String, dynamic> getFeatureFlags() {
+    return _config['feature_flags'] as Map<String, dynamic>? ?? {};
+  }
+
   Map<String, dynamic> getConfig(String configId) {
     final id = configId.split('/');
     if (id.length != 3) {
@@ -95,8 +99,7 @@ extension ThemeConfig on ConfigRepository {
     final fallbackTheme = _getCurrentThemeStyle() == AmityThemeStyle.light
         ? lightTheme
         : darkTheme;
-    final globalTheme =
-        _getGlobalTheme(_getCurrentThemeStyle()) ?? fallbackTheme;
+    final globalTheme = _getGlobalTheme(_getCurrentThemeStyle(), fallbackTheme);
 
     if (configId == null) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -118,16 +121,19 @@ extension ThemeConfig on ConfigRepository {
 
     try {
       if (componentTheme != null) {
-        return _getThemeColor(
+        final theme = _getThemeColor(
             AmityTheme.fromJson(
-                componentTheme["theme"]?[style.toString().split('.').last]),
+                componentTheme["theme"]?[style.toString().split('.').last],
+                fallbackTheme),
             fallbackTheme);
+        return theme;
       }
 
       if (pageTheme != null) {
         return _getThemeColor(
             AmityTheme.fromJson(
-                pageTheme["theme"]?[style.toString().split('.').last]),
+                pageTheme["theme"]?[style.toString().split('.').last],
+                fallbackTheme),
             fallbackTheme);
       }
     } catch (error) {
@@ -137,11 +143,11 @@ extension ThemeConfig on ConfigRepository {
     return _getThemeColor(globalTheme, fallbackTheme);
   }
 
-  AmityTheme? _getGlobalTheme(AmityThemeStyle style) {
+  AmityTheme? _getGlobalTheme(AmityThemeStyle style, AmityTheme fallbackTheme) {
     final globalTheme = _config['theme']?[style.toString().split('.').last]
         as Map<String, dynamic>?;
     if (globalTheme != null) {
-      return AmityTheme.fromJson(globalTheme);
+      return AmityTheme.fromJson(globalTheme, fallbackTheme);
     }
     return null;
   }
@@ -159,7 +165,8 @@ extension ThemeConfig on ConfigRepository {
       backgroundColor: theme?.backgroundColor ?? fallbackTheme.backgroundColor,
       baseInverseColor:
           theme?.baseInverseColor ?? fallbackTheme.baseInverseColor,
-      backgroundShade1Color: theme?.backgroundShade1Color ?? fallbackTheme.backgroundShade1Color,
+      backgroundShade1Color:
+          theme?.backgroundShade1Color ?? fallbackTheme.backgroundShade1Color,
       highlightColor: theme?.highlightColor ?? fallbackTheme.highlightColor,
       greenColor: theme?.greenColor ?? fallbackTheme.greenColor,
       lightGreenColor: theme?.lightGreenColor ?? fallbackTheme.lightGreenColor,

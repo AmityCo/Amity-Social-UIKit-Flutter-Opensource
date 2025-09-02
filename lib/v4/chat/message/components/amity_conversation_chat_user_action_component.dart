@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:flutter/material.dart';
@@ -94,8 +95,8 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                   Expanded(
                     child: Text(
                       isMute
-                          ? 'Turn on notifications'
-                          : 'Turn off notifications',
+                          ? context.l10n.notification_turn_on_success
+                          : context.l10n.notification_turn_off_success,
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ),
@@ -134,7 +135,9 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      user.isFlaggedByMe ? 'Unreport user' : 'Report user',
+                      user.isFlaggedByMe
+                          ? context.l10n.user_unreport
+                          : context.l10n.user_report,
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ),
@@ -176,7 +179,9 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      isUserBlocked ? 'Unblock user' : 'Block user',
+                      isUserBlocked
+                          ? context.l10n.user_unblock
+                          : context.l10n.user_block,
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ),

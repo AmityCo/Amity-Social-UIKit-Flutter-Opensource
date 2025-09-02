@@ -21,6 +21,11 @@ class AmityMediaAttachmentComponent extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
+    
+    final featureConfig = configProvider.getFeatureConfig();
+    final isVideoPostEnabled = featureConfig.post.video.createEnabled;
+    final isImagePostEnabled = featureConfig.post.image.createEnabled;
+
     return Column(
       children: [
         Container(
@@ -28,20 +33,21 @@ class AmityMediaAttachmentComponent extends NewBaseComponent {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/Icons/amity_ic_camera_button.svg',
-                  package: 'amity_uikit_beta_service',
-                  width: 32,
-                  height: 32,
+              if (isImagePostEnabled || isVideoPostEnabled)
+                IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/Icons/amity_ic_camera_button.svg',
+                    package: 'amity_uikit_beta_service',
+                    width: 32,
+                    height: 32,
+                  ),
+                  onPressed: () async {
+                    if (onCameraTap != null) {
+                      onCameraTap!();
+                    }
+                  },
                 ),
-                onPressed: () async {
-                  if (onCameraTap != null) {
-                    onCameraTap!();
-                  }
-                },
-              ),
-              if (mediaType == FileType.image || mediaType == null)
+              if ((mediaType == FileType.image || mediaType == null) && isImagePostEnabled)
                 IconButton(
                   icon: SvgPicture.asset(
                     'assets/Icons/amity_ic_image_button.svg',
@@ -55,7 +61,7 @@ class AmityMediaAttachmentComponent extends NewBaseComponent {
                     }
                   },
                 ),
-              if (mediaType == FileType.video || mediaType == null)
+              if ((mediaType == FileType.video || mediaType == null) && isVideoPostEnabled)
                 IconButton(
                   icon: SvgPicture.asset(
                     'assets/Icons/amity_ic_video_button.svg',

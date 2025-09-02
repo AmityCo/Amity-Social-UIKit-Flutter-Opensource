@@ -4,18 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CommunitySettingItem extends BaseElement {
+  final String title;
   final String iconPath;
   final GestureTapCallback? onTap;
 
-  CommunitySettingItem(this.iconPath,
+  CommunitySettingItem(this.title, this.iconPath,
       {this.onTap, super.key, required super.pageId, required super.componentId, required super.elementId});
 
   @override
   Widget buildElement(BuildContext context) {
     final behavior = FreedomUIKitBehavior.instance.communitySettingPageBehavior;
-    String title = behavior.settingItemTitle?.call(context, elementId) ??
-        configProvider.getConfig('$pageId/$componentId/$elementId')['text'] ??
-        '';
+    String title = behavior.settingItemTitle?.call(context, elementId) ?? this.title;
     return _getSettingItemWidget(iconPath, title, onTap: onTap);
   }
 

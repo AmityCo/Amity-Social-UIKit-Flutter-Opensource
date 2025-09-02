@@ -378,7 +378,7 @@ class AmityGroupChatPage extends NewBasePage {
                                 );
                               }),
                               if (newMessage != null)
-                                _buildNewMessageNotification(state, newMessage),
+                                _buildNewMessageNotification(context, state, newMessage),
                               if (state.showScrollButton &&
                                   isScrollable &&
                                   newMessage == null)

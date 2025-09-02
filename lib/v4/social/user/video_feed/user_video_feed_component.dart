@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/amity_global_feed_component.dart';
@@ -42,10 +43,10 @@ class UserVideoFeedComponent extends NewBaseComponent {
           if (!state.isLoading && state.posts.isEmpty) {
             final UserFeedEmptyStateInfo info;
             if (userFollowInfo?.status == AmityFollowStatus.BLOCKED) {
-              info = getEmptyStateInfo(UserFeedEmptyStateType.blocked);
+              info = getEmptyStateInfo(context, UserFeedEmptyStateType.blocked);
             } else {
               info = getEmptyStateInfo(
-                  state.emptyState ?? UserFeedEmptyStateType.empty);
+                  context, state.emptyState ?? UserFeedEmptyStateType.empty);
             }
             return SliverToBoxAdapter(child: UserFeedEmptyState(info: info));
           } else if (state.posts.isEmpty && state.isLoading) {
@@ -123,20 +124,21 @@ class UserVideoFeedComponent extends NewBaseComponent {
     );
   }
 
-  UserFeedEmptyStateInfo getEmptyStateInfo(UserFeedEmptyStateType type) {
+  UserFeedEmptyStateInfo getEmptyStateInfo(
+      BuildContext context, UserFeedEmptyStateType type) {
     switch (type) {
       case UserFeedEmptyStateType.empty:
-        return UserFeedEmptyStateInfo(
-            "No videos yet", "", "assets/Icons/amity_ic_feed_empty.svg");
+        return UserFeedEmptyStateInfo(context.l10n.feed_no_videos, "",
+            "assets/Icons/amity_ic_feed_empty.svg");
       case UserFeedEmptyStateType.blocked:
         return UserFeedEmptyStateInfo(
-            "You've blocked this user",
-            "Unblock to see their posts.",
+            context.l10n.user_feed_blocked_title,
+            context.l10n.user_feed_blocked_description,
             "assets/Icons/amity_ic_blocked_feed_empty_state.svg");
       case UserFeedEmptyStateType.private:
         return UserFeedEmptyStateInfo(
-            "This account is private",
-            "Follow this user to see their posts.",
+            context.l10n.user_feed_private_title,
+            context.l10n.user_feed_private_description,
             "assets/Icons/amity_ic_private_feed_empty_state.svg");
     }
   }

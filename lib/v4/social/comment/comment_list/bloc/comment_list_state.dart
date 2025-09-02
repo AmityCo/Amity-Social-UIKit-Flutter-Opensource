@@ -8,6 +8,7 @@ class CommentListState extends Equatable {
     this.isFetching = false,
     this.hasNextPage = true,
     required this.expandedId,
+    this.hasError = false,
   });
 
   final String referenceId;
@@ -16,6 +17,7 @@ class CommentListState extends Equatable {
   final bool isFetching;
   final bool hasNextPage;
   final List<String> expandedId;
+  final bool hasError;
 
   @override
   List<Object?> get props => [
@@ -24,7 +26,8 @@ class CommentListState extends Equatable {
         comments,
         isFetching,
         hasNextPage,
-        expandedId
+        expandedId,
+        hasError,
       ];
 
   CommentListState copyWith({
@@ -34,6 +37,7 @@ class CommentListState extends Equatable {
     bool? isFetching,
     bool? hasNextPage,
     List<String>? expandedId,
+    bool? hasError,
   }) {
     return CommentListState(
       referenceId: referenceId ?? this.referenceId,
@@ -42,6 +46,7 @@ class CommentListState extends Equatable {
       isFetching: isFetching ?? this.isFetching,
       hasNextPage: hasNextPage ?? this.hasNextPage,
       expandedId: expandedId ?? this.expandedId,
+      hasError: hasError ?? this.hasError,
     );
   }
 }

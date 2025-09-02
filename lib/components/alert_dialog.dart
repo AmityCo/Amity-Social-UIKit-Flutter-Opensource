@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amity_uikit_beta_service/components/custom_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,7 @@ class AmityDialog {
                 content: Text(message),
                 actions: <Widget>[
                   CupertinoDialogAction(
-                    child: const Text('OK'),
+                    child: Text(context.l10n.general_ok),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -52,7 +53,7 @@ class AmityDialog {
                 content: Text(message),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('OK'),
+                    child: Text(context.l10n.general_ok),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -92,17 +93,17 @@ class AmityLoadingDialog {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 padding: const EdgeInsets.all(16.0),
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CupertinoActivityIndicator(
+                    const CupertinoActivityIndicator(
                       color: Colors.white,
                       radius: 20,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
-                      "Loading",
-                      style: TextStyle(
+                      context.l10n.general_loading,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -162,11 +163,15 @@ class ConfirmationDialog {
     required BuildContext context,
     required String title,
     required String detailText,
-    String leftButtonText = 'Cancel',
-    String rightButtonText = 'Confirm',
+    String? leftButtonText,
+    String? rightButtonText,
     required Function onConfirm,
     Color confrimColor = Colors.red, 
   }) async {
+    // Set default localized values
+    final String leftBtnText = leftButtonText ?? context.l10n.general_cancel;
+    final String rightBtnText = rightButtonText ?? context.l10n.general_confirm;
+    
     // Check the platform
     if (Platform.isAndroid) {
       // Android-specific code
@@ -178,7 +183,7 @@ class ConfirmationDialog {
             content: Text(detailText),
             actions: <Widget>[
               TextButton(
-                child: Text(leftButtonText),
+                child: Text(leftBtnText),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -191,7 +196,7 @@ class ConfirmationDialog {
                 style: TextButton.styleFrom(
                   foregroundColor: confrimColor, // Set the text color
                 ),
-                child: Text(rightButtonText),
+                child: Text(rightBtnText),
               ),
             ],
           );
@@ -209,7 +214,7 @@ class ConfirmationDialog {
               content: Text(detailText),
               actions: <Widget>[
                 CupertinoDialogAction(
-                  child: Text(leftButtonText),
+                  child: Text(leftBtnText),
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                   },
@@ -221,7 +226,7 @@ class ConfirmationDialog {
                     onConfirm();
                   },
                   isDefaultAction: true,
-                  child: Text(rightButtonText),
+                  child: Text(rightBtnText),
                 ),
               ],
             ),
@@ -240,13 +245,16 @@ class AmityAlertDialogWithThreeActions {
     required String detailText,
     required String actionOneText,
     required String actionTwoText,
-    String dismissText = 'Cancel',
+    String? dismissText,
     required Function actionOne,
     required Function actionTwo,
     required Function onDismissRequest,
      Color actionOneColor = Colors.red,
      Color actionTwoColor = Colors.red,
   }) async {
+    // Set default localized values
+    final String dismissBtnText = dismissText ?? context.l10n.general_cancel;
+    
     // Check the platform
     if (Platform.isAndroid) {
       // Android-specific code
@@ -259,7 +267,7 @@ class AmityAlertDialogWithThreeActions {
             
             actions: <Widget>[
               TextButton(
-                child: Text(dismissText),
+                child: Text(dismissBtnText),
                 onPressed: () {
                   onDismissRequest();
                   Navigator.of(context).pop(); // Close the dialog
@@ -322,7 +330,7 @@ class AmityAlertDialogWithThreeActions {
                   child: Text(actionTwoText),
                 ),
                 CupertinoDialogAction(
-                  child: Text(dismissText),
+                  child: Text(dismissBtnText),
                   onPressed: () {
                     onDismissRequest();
                     Navigator.of(context).pop(); // Close the dialog

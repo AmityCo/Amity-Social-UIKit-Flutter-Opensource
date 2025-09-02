@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/replying_message.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -26,9 +27,10 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
   bool _isScrollListenerAdded = false;
 
   final AmityToastBloc toastBloc;
+  BuildContext _context;
 
   ChatPageBloc(String? channelId, String? userId, String? userDisplayName,
-      String? avatarUrl, this.toastBloc)
+      String? avatarUrl, this.toastBloc, this._context)
       : super(ChatPageStateInitial(
             channelId: channelId ?? "",
             userDisplayName: userDisplayName,
@@ -65,7 +67,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
         user: event.channelMember.user,
         hasNextPage: liveCollection?.hasNextPage(),
       ));
-      
+
       // Fetch follow info to determine blocking status
       if (event.channelMember.user != null) {
         addEvent(const ChatPageEventFetchFollowInfo());
@@ -94,13 +96,13 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
 
           await Future.delayed(const Duration(milliseconds: 300));
 
-          toastBloc.add(const AmityToastShort(
-            message: "Notification turned on",
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.notification_turn_on_success,
             icon: AmityToastIcon.success,
           ));
         } catch (error) {
-          toastBloc.add(
-              const AmityToastShort(message: "Failed to turn on notification. Please try again."));
+          toastBloc.add(AmityToastShort(
+              message: _context.l10n.notification_turn_on_error));
         }
       } else {
         try {
@@ -112,13 +114,13 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
 
           await Future.delayed(const Duration(milliseconds: 300));
 
-          toastBloc.add(const AmityToastShort(
-            message: "Notification turned off",
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.notification_turn_off_success,
             icon: AmityToastIcon.success,
           ));
         } catch (error) {
-          toastBloc.add(
-              const AmityToastShort(message: "Failed to turn off notification. Please try again."));
+          toastBloc.add(AmityToastShort(
+              message: _context.l10n.notification_turn_off_error));
         }
       }
     });
@@ -358,13 +360,13 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
           await Future.delayed(const Duration(milliseconds: 300));
 
           // Then show toast message
-          toastBloc.add(const AmityToastShort(
-            message: "User reported.",
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.user_report_success,
             icon: AmityToastIcon.success,
           ));
         } catch (error) {
-          toastBloc.add(const AmityToastShort(
-            message: "Failed to report user. Please try again.",
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.user_report_error,
             icon: AmityToastIcon.warning,
           ));
         }
@@ -381,13 +383,13 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
           await Future.delayed(const Duration(milliseconds: 300));
 
           // Then show toast message
-          toastBloc.add(const AmityToastShort(
-            message: "User unreported.",
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.user_unreport_success,
             icon: AmityToastIcon.success,
           ));
         } catch (error) {
-          toastBloc.add(const AmityToastShort(
-            message: "Failed to unreport user. Please try again.",
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.user_unreport_error,
             icon: AmityToastIcon.warning,
           ));
         }
@@ -405,7 +407,7 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
         final followInfo = await AmityCoreClient.newUserRepository()
             .relationship()
             .getFollowInfo(user.userId!);
-        
+
         final isBlocking = followInfo.status == AmityFollowStatus.BLOCKED;
         addEvent(ChatPageFollowInfoUpdated(isUserBlocked: isBlocking));
       } catch (error) {
@@ -431,15 +433,15 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
           await AmityCoreClient.newUserRepository()
               .relationship()
               .blockUser(user.userId!);
-          
+
           // Update state to reflect blocking
           addEvent(const ChatPageFollowInfoUpdated(isUserBlocked: true));
-          
+
           // Use a small delay before showing toast
           await Future.delayed(const Duration(milliseconds: 300));
-          
-          toastBloc.add(const AmityToastShort(
-            message: "User blocked.",
+
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.user_block_success,
             icon: AmityToastIcon.success,
           ));
         } else {
@@ -447,23 +449,23 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
           await AmityCoreClient.newUserRepository()
               .relationship()
               .unblockUser(user.userId!);
-          
+
           // Update state to reflect unblocking
           addEvent(const ChatPageFollowInfoUpdated(isUserBlocked: false));
-          
+
           // Use a small delay before showing toast
           await Future.delayed(const Duration(milliseconds: 300));
-          
-          toastBloc.add(const AmityToastShort(
-            message: "User unblocked.",
+
+          toastBloc.add(AmityToastShort(
+            message: _context.l10n.user_unblock_success,
             icon: AmityToastIcon.success,
           ));
         }
       } catch (error) {
         toastBloc.add(AmityToastShort(
-          message: event.isUserBlocked 
-              ? "Failed to block user. Please try again."
-              : "Failed to unblock user. Please try again.",
+          message: event.isUserBlocked
+              ? _context.l10n.user_block_error
+              : _context.l10n.user_unblock_error,
           icon: AmityToastIcon.warning,
         ));
       }

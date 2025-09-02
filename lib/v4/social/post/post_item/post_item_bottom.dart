@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_reaction_button.dart';
@@ -41,30 +42,24 @@ class PostItemBottom extends NewBaseComponent {
           ),
         ),
         Container(
-            width: double.infinity,
-            padding:
-                const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                PostReactionButton(
-                  post: post,
-                  action: action,
-                  isReacting: isReacting,
-                  showLabel: hideReactionCount,
-                  isOptimisticUi: isOptimisticUi,
-                ),
-                const SizedBox(width: 12),
-                getCommentButton(hideReactionCount),
-              ],
-            ))
+          width: double.infinity,
+          padding: const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              PostReactionButton(post: post, action: action, isReacting: isReacting, showLabel: hideReactionCount, isOptimisticUi: isOptimisticUi,),
+              const SizedBox(width: 12),
+              getCommentButton(context, hideReactionCount),
+            ],
+          )
+        )
       ],
     );
   }
 
-  Widget getCommentButton(bool hideCommentCount) {
+  Widget getCommentButton(BuildContext context, bool hideCommentCount) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -78,9 +73,7 @@ class PostItemBottom extends NewBaseComponent {
         ),
         const SizedBox(width: 4),
         Text(
-          hideCommentCount
-              ? "Comment"
-              : (post.commentCount ?? 0).formattedCompactString(),
+          hideCommentCount ? context.l10n.post_comment : (post.commentCount ?? 0).formattedCompactString(),
           style: TextStyle(
             color: theme.baseColorShade2,
             fontSize: 15,
@@ -91,7 +84,7 @@ class PostItemBottom extends NewBaseComponent {
     );
   }
 
-  Widget getShareButton() {
+  Widget getShareButton(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -105,7 +98,7 @@ class PostItemBottom extends NewBaseComponent {
         ),
         const SizedBox(width: 4),
         Text(
-          "Share",
+          context.l10n.post_share,
           style: TextStyle(
             color: theme.baseColorShade2,
             fontSize: 15,

@@ -1,8 +1,10 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/community_notification_setting_extension.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/element/setting_radio_button.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/freedom_community_notification_setting_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/post/bloc/community_post_notification_setting_page_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -18,13 +20,18 @@ class CommunityCommentNotificationSettingPageBloc extends Bloc<
   late AmityCommunityNotification _communityNotification;
   AmityCommunityNotificationSettings? notificationSettings;
 
+  FreedomCommunityNotificationSettingBehavior get _behavior => FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
+
   CommunityCommentNotificationSettingPageBloc(AmityCommunity community,
       AmityCommunityNotificationSettings? notificationSettings)
       : super(CommunityCommentNotificationSettingPageState()) {
     _communityNotification =
         AmityCommunityNotification(community.communityId ?? '');
 
-    if (notificationSettings != null) {
+    final initialCommentSetting = _behavior.initialCommentSetting;
+    if (initialCommentSetting != null) {
+      initialCommentSetting(community: community, emit: emit, state: state);
+    } else if (notificationSettings != null) {
       _emitInitialState(notificationSettings);
     } else {
       _communityNotification.getSettings().then((settings) {
@@ -46,6 +53,12 @@ class CommunityCommentNotificationSettingPageBloc extends Bloc<
     });
 
     on<CommunityCommentNotificationSettingSaveEvent>((event, emit) async {
+      final saveCommentSetting = _behavior.saveCommentSetting;
+      if (saveCommentSetting != null) {
+        saveCommentSetting(community: community, event: event, state: state);
+        return;
+      }
+
       final commentReactSetting =
           state.reactCommentSetting == RadioButtonSetting.off
               ? CommentReacted.disable()

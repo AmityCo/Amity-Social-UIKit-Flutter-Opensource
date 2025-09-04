@@ -49,11 +49,15 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
                           .read<CommunityCommentNotificationSettingPageBloc>()
                           .add(CommunityCommentNotificationSettingSaveEvent(
                               context.read<AmityToastBloc>(), () {
+                                if (behavior.onSaveSuccess != null) {
+                                  behavior.onSaveSuccess?.call(context);
+                                  return;
+                                }
                             Navigator.of(context)..pop()..pop()..pop();
                           }));
                     }
                   : null,
-              child: Padding(
+              child: behavior.buildSaveButton?.call(context, state.settingsChanged) ?? Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
                   context.l10n.general_save,
@@ -67,7 +71,7 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
                 ),
               ),
             )),
-        body: ListView(
+        body: (state.isLoading) ? Container() : ListView(
           children: [
             if (state.isReactCommentNetworkEnabled || behavior.forceShowComment()) ...[
               SettingRadioButtonWidget(

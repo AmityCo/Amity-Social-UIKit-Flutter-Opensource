@@ -2,6 +2,7 @@ import 'package:amity_uikit_beta_service/v4/core/freedom_theme_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/freedom_community_membership_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/freedom_community_notification_setting_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_setting/permission_setting/freedom_community_permission_setting_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/pending_request/amity_pending_request_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/pending/freedom_amity_pending_post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_create_post_menu_component_behavior.dart';
@@ -59,4 +60,7 @@ class FreedomUIKitBehavior {
   FreedomCommunityNotificationSettingBehavior
       communityNotificationSettingBehavior =
       FreedomCommunityNotificationSettingBehavior();
+
+  FreedomCommunityPermissionSettingBehavior communityPermissionSettingBehavior =
+      FreedomCommunityPermissionSettingBehavior();
 }

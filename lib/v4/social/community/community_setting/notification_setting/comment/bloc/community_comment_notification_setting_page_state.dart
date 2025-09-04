@@ -11,6 +11,7 @@ class CommunityCommentNotificationSettingPageState extends Equatable {
   final bool isReactCommentNetworkEnabled;
   final bool isNewCommentNetworkEnabled;
   final bool isReplyCommentNetworkEnabled;
+  final bool isLoading;
 
   CommunityCommentNotificationSettingPageState({
     this.reactCommentSetting = RadioButtonSetting.everyone,
@@ -23,6 +24,7 @@ class CommunityCommentNotificationSettingPageState extends Equatable {
     this.isReactCommentNetworkEnabled = false,
     this.isNewCommentNetworkEnabled = false,
     this.isReplyCommentNetworkEnabled = false,
+    this.isLoading = false,
   });
 
   CommunityCommentNotificationSettingPageState copyWith({
@@ -36,6 +38,7 @@ class CommunityCommentNotificationSettingPageState extends Equatable {
     bool? isReactCommentNetworkEnabled,
     bool? isNewCommentNetworkEnabled,
     bool? isReplyCommentNetworkEnabled,
+    bool? isLoading,
   }) {
     return CommunityCommentNotificationSettingPageState(
       reactCommentSetting: reactCommentSetting ?? this.reactCommentSetting,
@@ -54,6 +57,7 @@ class CommunityCommentNotificationSettingPageState extends Equatable {
           isNewCommentNetworkEnabled ?? this.isNewCommentNetworkEnabled,
       isReplyCommentNetworkEnabled:
           isReplyCommentNetworkEnabled ?? this.isReplyCommentNetworkEnabled,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 
@@ -66,6 +70,7 @@ class CommunityCommentNotificationSettingPageState extends Equatable {
         settingsChanged,
         isReactCommentNetworkEnabled,
         isNewCommentNetworkEnabled,
-        isReplyCommentNetworkEnabled
+        isReplyCommentNetworkEnabled,
+        isLoading
       ];
 }

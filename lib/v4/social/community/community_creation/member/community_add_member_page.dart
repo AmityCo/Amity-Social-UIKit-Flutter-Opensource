@@ -40,11 +40,10 @@ class AmityCommunityAddMemberPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityAddMemberPageState state) {
-    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: phrase?.call(context, 'add_members_title') ?? context.l10n.member_add,
+          title: context.l10n.member_add,
           configProvider: configProvider,
           theme: theme,
         ),
@@ -53,7 +52,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
             AmityTopSearchBarComponent(
               pageId: pageId,
               textcontroller: _textcontroller,
-              hintText: phrase?.call(context, 'add_members_search_input') ?? context.l10n.search_user_hint,
+              hintText: context.l10n.search_user_hint,
               showCancelButton: false,
               onTextChanged: (value) {
                 _debouncer.run(() {
@@ -115,6 +114,12 @@ class AmityCommunityAddMemberPage extends NewBasePage {
 
   Widget _getUserListItem(
       BuildContext context, CommunityAddMemberPageState state, AmityUser user) {
+    final bool usePublicProfile = AmityUIKit4Manager
+        .freedomBehavior.postContentComponentBehavior.usePublicProfile;
+    final getUserPublicProfile = AmityUIKit4Manager
+        .freedomBehavior.postContentComponentBehavior.getUserPublicProfile;
+    final imageUrl = usePublicProfile ? getUserPublicProfile(user: user) : user.avatarUrl;
+
     return Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
         child: Row(children: [
@@ -125,7 +130,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                 shape: BoxShape.circle,
                 color: theme.baseColorShade4,
               ),
-              child:  AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
+              child:  AmityUserAvatar(avatarUrl: imageUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
           const SizedBox(
               width: 8), // Add some spacing between the icon and text
           Expanded(
@@ -159,6 +164,12 @@ class AmityCommunityAddMemberPage extends NewBasePage {
   }
 
   Widget _userItemWidget(BuildContext context, AmityUser user) {
+    final bool usePublicProfile = AmityUIKit4Manager
+        .freedomBehavior.postContentComponentBehavior.usePublicProfile;
+    final getUserPublicProfile = AmityUIKit4Manager
+        .freedomBehavior.postContentComponentBehavior.getUserPublicProfile;
+    final imageUrl = usePublicProfile ? getUserPublicProfile(user: user) : user.avatarUrl;
+
     return ConstrainedBox(
       constraints: const BoxConstraints(
           minWidth: 62, maxWidth: 62), // Set the maximum width constraint
@@ -174,7 +185,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                     shape: BoxShape.circle,
                     color: theme.primaryColor.blend(ColorBlendingOption.shade2),
                   ),
-                  child:  AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
+                  child:  AmityUserAvatar(avatarUrl: imageUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
               Transform.translate(
                 offset: const Offset(5, -2),
                 child: Container(
@@ -216,7 +227,6 @@ class AmityCommunityAddMemberPage extends NewBasePage {
 
   Widget _getAddMemberButton(
       BuildContext context, CommunityAddMemberPageState state) {
-    final phrase = AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     return Container(
       color: theme.backgroundColor,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -239,7 +249,7 @@ class AmityCommunityAddMemberPage extends NewBasePage {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Center(
                   child: Text(
-                    phrase?.call(context, 'add_members_cta') ?? context.l10n.member_add,
+                    context.l10n.member_add,
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,

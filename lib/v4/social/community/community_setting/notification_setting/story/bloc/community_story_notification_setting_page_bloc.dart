@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/community_notification_setting_extension.dart';
@@ -73,6 +74,11 @@ class CommunityStoryNotificationSettingPageBloc extends Bloc<
         storyCreationSetting,
         storyCommentSetting
       ]).then((value) {
+        final behavior = FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
+        if (behavior.onSaveSuccess != null) {
+          event.onSuccess();
+          return;
+        }
         event.toastBloc.add(const AmityToastShort(
             message: "Successfully updated community profile!", icon: AmityToastIcon.success));
         event.onSuccess();

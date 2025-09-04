@@ -12,7 +12,9 @@
             "alert_color": "#FA4D30",
             "background_color": "#FFFFFF",
             "base_inverse_color": "#000000",
-            "highlight_color": "#1054DE"
+            "highlight_color": "#1054DE",
+            "green_color": "#00CA8D",
+            "light_green_color": "#10F48B"
         },
         "dark": {
             "primary_color": "#1054DE",
@@ -25,7 +27,9 @@
             "alert_color": "#FA4D30",
             "background_color": "#191919",
             "base_inverse_color": "#FFFFFF",
-            "highlight_color": "#1054DE"
+            "highlight_color": "#1054DE",
+            "green_color": "#00CA8D",
+            "light_green_color": "#10F48B"
         }
     },
     "excludes": [],

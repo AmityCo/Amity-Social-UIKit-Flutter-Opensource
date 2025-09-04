@@ -284,6 +284,8 @@ extension MessagePopup on MessageBubbleView {
     MessageBubbleState state,
     bool isUser,
   ) async {
+    final phrase = AmityUIKit4Manager.freedomBehavior.dmPageBehavior.phrase;
+
     if (offset != null) {
       // Adjust the vertical position based on screen position
       final yPos = offset.dy;
@@ -376,7 +378,7 @@ extension MessagePopup on MessageBubbleView {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        "Edit",
+                        phrase?.call(context, 'chat_edit_message') ?? "Edit",
                         style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,
@@ -404,7 +406,7 @@ extension MessagePopup on MessageBubbleView {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      "Reply",
+                      phrase?.call(context, 'chat_reply') ?? "Reply",
                       style: TextStyle(
                           color: theme.baseColor,
                           fontSize: 15,
@@ -434,7 +436,7 @@ extension MessagePopup on MessageBubbleView {
                       ),
                       const SizedBox(width: 13),
                       Text(
-                        "Save",
+                        phrase?.call(context, 'chat_save') ?? "Save",
                         style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,
@@ -464,7 +466,7 @@ extension MessagePopup on MessageBubbleView {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      "Copy",
+                      phrase?.call(context, 'chat_copy') ?? "Copy",
                       style: TextStyle(
                           color: theme.baseColor,
                           fontSize: 15,
@@ -494,7 +496,10 @@ extension MessagePopup on MessageBubbleView {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      message.isFlaggedByMe == true ? "Unreport" : "Report",
+                      message.isFlaggedByMe == true
+                          ? (phrase?.call(context, 'chat_unreport') ??
+                              "Unreport")
+                          : (phrase?.call(context, 'chat_report') ?? "Report"),
                       style: TextStyle(
                         color: theme.baseColor,
                         fontSize: 15,
@@ -524,7 +529,7 @@ extension MessagePopup on MessageBubbleView {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      "Delete",
+                      phrase?.call(context, 'chat_delete') ?? "Delete",
                       style: TextStyle(
                         color: theme.alertColor,
                         fontSize: 15,
@@ -543,7 +548,7 @@ extension MessagePopup on MessageBubbleView {
           if (message.data is MessageTextData) {
             final text = (message.data as MessageTextData).text ?? "";
             context.read<AmityToastBloc>().add(AmityToastShort(
-                message: "Copied.",
+                message: phrase?.call(context, 'chat_copied') ?? "Copied.",
                 icon: AmityToastIcon.success,
                 bottomPadding: AmityChatPage.toastBottomPadding));
             Clipboard.setData(ClipboardData(text: text));
@@ -578,11 +583,11 @@ extension MessagePopup on MessageBubbleView {
   }
 
   Future saveImage(BuildContext context) async {
-    await saveImageMessage(context, message);
+    await saveImageMessage(context, message, phrase);
   }
 
   Future saveVideo(BuildContext context) async {
-    await saveVideoMessage(context, message);
+    await saveVideoMessage(context, message, phrase);
   }
 
   replyMessage(BuildContext context) {
@@ -625,19 +630,21 @@ extension MessagePopup on MessageBubbleView {
         await AmityChatClient.newMessageRepository().unflag(messageId);
 
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Message unreported.",
+            message: phrase?.call(context, 'chat_unreported') ??
+                "Message unreported.",
             icon: AmityToastIcon.success,
             bottomPadding: AmityChatPage.toastBottomPadding));
       } else {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message:
+            message: phrase?.call(context, 'chat_unreported_error') ??
                 "Unable to unreport message - user information not available.",
             icon: AmityToastIcon.warning,
             bottomPadding: AmityChatPage.toastBottomPadding));
       }
     } catch (e) {
       context.read<AmityToastBloc>().add(AmityToastShort(
-          message: "Failed to unreport message. Please try again.",
+          message: phrase?.call(context, 'chat_unreported_error') ??
+              "Failed to unreport message. Please try again.",
           icon: AmityToastIcon.warning,
           bottomPadding: AmityChatPage.toastBottomPadding));
     }
@@ -647,17 +654,19 @@ extension MessagePopup on MessageBubbleView {
     showPermissionDialog() async {
       ConfirmationV4Dialog().show(
         context: context,
-        title: 'Delete this message?',
-        detailText:
+        title: phrase?.call(context, 'chat_delete_message') ??
+            'Delete this message?',
+        detailText: phrase?.call(context, 'chat_delete_message_detail') ??
             'This message will also be removed from your friend’s devices.',
-        leftButtonText: 'Cancel',
-        rightButtonText: 'Delete',
+        leftButtonText: phrase?.call(context, 'general_cancel') ?? 'Cancel',
+        rightButtonText: phrase?.call(context, 'general_delete') ?? 'Delete',
         onConfirm: () async {
           try {
             await message.delete();
           } catch (e) {
             context.read<AmityToastBloc>().add(AmityToastShort(
-                message: "Failed to delete message.",
+                message: phrase?.call(context, 'chat_delete_message_error') ??
+                    "Failed to delete message.",
                 icon: AmityToastIcon.warning,
                 bottomPadding: AmityChatPage.toastBottomPadding));
           }
@@ -672,14 +681,16 @@ extension MessagePopup on MessageBubbleView {
   }
 }
 
-Future saveImageMessage(BuildContext context, AmityMessage message) async {
+Future saveImageMessage(
+    BuildContext context, AmityMessage message, dynamic phrase) async {
   if (message.data is MessageImageData) {
     final permissionHandler = MediaPermissionHandler();
     final bool mediaPermissionGranted =
         await permissionHandler.handleMediaPermissions();
     if (mediaPermissionGranted == false) {
       context.read<AmityToastBloc>().add(AmityToastShort(
-          message: "Permission denied.",
+          message: phrase?.call(context, 'chat_permission_denied') ??
+              "Permission denied.",
           icon: AmityToastIcon.warning,
           bottomPadding: AmityChatPage.toastBottomPadding));
       return;
@@ -690,7 +701,7 @@ Future saveImageMessage(BuildContext context, AmityMessage message) async {
     if (await MediaPermissionHandler()
         .downloadAndSaveImage("${fileUrl ?? filePath ?? ''}/?size=large")) {
       context.read<AmityToastBloc>().add(AmityToastShort(
-          message: "Saved photo.",
+          message: phrase?.call(context, 'chat_saved_photo') ?? "Saved photo.",
           icon: AmityToastIcon.success,
           bottomPadding: AmityChatPage.toastBottomPadding));
     } else {
@@ -702,7 +713,8 @@ Future saveImageMessage(BuildContext context, AmityMessage message) async {
   }
 }
 
-Future saveVideoMessage(BuildContext context, AmityMessage message) async {
+Future saveVideoMessage(
+    BuildContext context, AmityMessage message, dynamic phrase) async {
   if (message.data is MessageVideoData) {
     final videoData = (message.data as MessageVideoData);
     final videoUrl =
@@ -713,12 +725,14 @@ Future saveVideoMessage(BuildContext context, AmityMessage message) async {
           await MediaPermissionHandler().downloadAndSaveVideo(videoUrl);
       if (result) {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Saved video.",
+            message:
+                phrase?.call(context, 'chat_saved_video') ?? "Saved video.",
             icon: AmityToastIcon.success,
             bottomPadding: AmityChatPage.toastBottomPadding));
       } else {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Failed to save video.",
+            message: phrase?.call(context, 'chat_save_video_error') ??
+                "Failed to save video.",
             icon: AmityToastIcon.warning,
             bottomPadding: AmityChatPage.toastBottomPadding));
       }

@@ -109,8 +109,8 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // New message notification widget
-  Widget _buildNewMessageNotification(BuildContext context,
-      ChatPageState state, AmityMessage newMessage) {
+  Widget _buildNewMessageNotification(
+      BuildContext context, ChatPageState state, AmityMessage newMessage) {
     return Positioned(
       right: 16,
       left: 16,
@@ -164,7 +164,8 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // Helper method for notification content
-  Widget _buildNewMessageContent(BuildContext context, ChatPageState state, AmityMessage message) {
+  Widget _buildNewMessageContent(
+      BuildContext context, ChatPageState state, AmityMessage message) {
     return Stack(
       children: [
         ClipRRect(

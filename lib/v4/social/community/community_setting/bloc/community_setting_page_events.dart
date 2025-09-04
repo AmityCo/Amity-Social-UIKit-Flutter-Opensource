@@ -7,8 +7,8 @@ abstract class CommunitySettingPageEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class CommunityNotificationSettingPageLoadEvent extends CommunitySettingPageEvent {
-  
+class CommunityNotificationSettingPageLoadEvent
+    extends CommunitySettingPageEvent {
   const CommunityNotificationSettingPageLoadEvent();
 
   @override
@@ -17,30 +17,34 @@ class CommunityNotificationSettingPageLoadEvent extends CommunitySettingPageEven
 
 class LeaveCommunityEvent extends CommunitySettingPageEvent {
   final AmityToastBloc toastBloc;
+  final BuildContext context;
   final Function onSuccess;
   final Function onFailure;
 
   const LeaveCommunityEvent(
       {required this.toastBloc,
+      required this.context,
       required this.onSuccess,
       required this.onFailure});
 
   @override
-  List<Object> get props => [toastBloc, onSuccess, onFailure];
+  List<Object> get props => [toastBloc, context, onSuccess, onFailure];
 }
 
 class CloseCommunityEvent extends CommunitySettingPageEvent {
   final AmityToastBloc toastBloc;
+  final BuildContext context;
   final Function onSuccess;
   final Function onFailure;
 
   const CloseCommunityEvent(
       {required this.toastBloc,
+      required this.context,
       required this.onSuccess,
       required this.onFailure});
-  
+
   @override
-  List<Object> get props => [toastBloc, onSuccess, onFailure];
+  List<Object> get props => [toastBloc, context, onSuccess, onFailure];
 }
 
 class CommunityNotificaitonSettingEvent extends CommunitySettingPageEvent {

@@ -36,6 +36,7 @@ class AmityAppBar extends StatelessWidget implements PreferredSizeWidget {
       alignment: AlignmentDirectional.bottomCenter,
       children: [
         AppBar(
+          iconTheme: IconThemeData(color: theme.baseColor),
           backgroundColor: theme.backgroundColor,
           scrolledUnderElevation: 0.0,
           title: Text(title),

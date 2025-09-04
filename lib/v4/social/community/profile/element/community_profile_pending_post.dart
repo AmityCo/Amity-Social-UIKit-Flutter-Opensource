@@ -2,6 +2,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:flutter/material.dart';
 
 class AmityCommunityPendingPost extends BaseElement {
@@ -24,7 +25,7 @@ class AmityCommunityPendingPost extends BaseElement {
       onTap: () {
         AmityUIKit4Manager.behavior.communityProfilePageBehavior
             .goToPendingRequestsPage(
-          context, 
+          context,
           community,
           onReturnCallback: onReturnCallback,
         );
@@ -33,7 +34,7 @@ class AmityCommunityPendingPost extends BaseElement {
           padding: const EdgeInsets.symmetric(vertical: 12),
           width: double.infinity,
           decoration: ShapeDecoration(
-            color: const Color(0xFFEBECEF),
+            color: theme.baseColorShade4,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           ),
@@ -54,28 +55,23 @@ class AmityCommunityPendingPost extends BaseElement {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    context.l10n.community_pending_request_title(pendingPostCount),
-                    style: TextStyle(
-                      color: theme.baseColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    context.l10n
+                        .community_pending_request_title(pendingPostCount),
+                    style: AmityTextStyle.bodyBold(theme.baseColor),
                   ),
                 ],
               ),
               Text(
                 isModerator
                     ? () {
-                        final displayCount = pendingPostCount > 10 ? "10+" : "$pendingPostCount";
-                        return context.l10n.community_pending_request_message(displayCount, pendingPostCount);
+                        final displayCount =
+                            pendingPostCount > 10 ? "10+" : "$pendingPostCount";
+                        return context.l10n.community_pending_request_message(
+                            displayCount, pendingPostCount);
                       }()
                     : context.l10n.commnuity_pending_post_reviewing,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF636878),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: AmityTextStyle.caption(theme.baseColorShade1),
               ),
             ],
           )),

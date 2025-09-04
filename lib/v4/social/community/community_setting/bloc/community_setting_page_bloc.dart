@@ -1,8 +1,8 @@
-import 'dart:developer';
-
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/community_notification_setting_extension.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:amity_sdk/amity_sdk.dart';
@@ -29,7 +29,8 @@ class CommunitySettingPageBloc
     // Check if the user has permission to delete the community
     state.shouldShowCloseCommunity = hasCommunityEditPermission;
 
-    _communityNotification = AmityCommunityNotification(_community.communityId ?? "");
+    _communityNotification =
+        AmityCommunityNotification(_community.communityId ?? "");
 
     _communityNotification.getSettings().then((settings) {
       state.notificationSettings = settings;
@@ -46,27 +47,30 @@ class CommunitySettingPageBloc
     });
 
     on<CommunityNotificaitonSettingEvent>((event, emit) async {
-        emit(state.copyWith(
-          shouldShowNotificationSetting: event.isSocialNetworkEnabled,
-          isNotificationEnabled: event.isNotificationEnabled,
-        ));
+      emit(state.copyWith(
+        shouldShowNotificationSetting: event.isSocialNetworkEnabled,
+        isNotificationEnabled: event.isNotificationEnabled,
+      ));
     });
 
     on<CommunityNotificationSettingPageLoadEvent>((event, emit) async {
       final settings = await _communityNotification.getSettings();
-      emit(state.copyWith(notificationSettings: settings, isNotificationEnabled: settings.isEnabled ?? false));
+      emit(state.copyWith(
+          notificationSettings: settings,
+          isNotificationEnabled: settings.isEnabled ?? false));
     });
 
     on<LeaveCommunityEvent>((event, emit) async {
       AmitySocialClient.newCommunityRepository()
           .leaveCommunity(_community.communityId ?? '')
           .then((value) {
-        event.toastBloc.add(const AmityToastShort(
-            message: "Successfully leaved the community.", icon: AmityToastIcon.success));
+        event.toastBloc.add(AmityToastShort(
+            message: event.context.l10n.community_leave_success_message,
+            icon: AmityToastIcon.success));
         event.onSuccess();
       }).onError((error, stackTrace) {
-        event.toastBloc.add(
-            const AmityToastShort(message: "Failed to leave the community."));
+        event.toastBloc.add(AmityToastShort(
+            message: event.context.l10n.community_leave_error_message));
         event.onFailure();
       });
     });
@@ -75,16 +79,15 @@ class CommunitySettingPageBloc
       AmitySocialClient.newCommunityRepository()
           .deleteCommunity(_community.communityId ?? '')
           .then((value) {
-        event.toastBloc.add(const AmityToastShort(
-            message: "Successfully closed the community.", icon: AmityToastIcon.success));
+        event.toastBloc.add(AmityToastShort(
+            message: event.context.l10n.community_close_success_message,
+            icon: AmityToastIcon.success));
         event.onSuccess();
       }).onError((error, stackTrace) {
-        event.toastBloc.add(
-            const AmityToastShort(message: "Failed to close the community."));
+        event.toastBloc.add(AmityToastShort(
+            message: event.context.l10n.community_close_error_message));
         event.onFailure();
       });
     });
   }
 }
-
-

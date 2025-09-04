@@ -8,13 +8,15 @@ class CommunitySettingItem extends BaseElement {
   final GestureTapCallback? onTap;
 
   CommunitySettingItem(this.title, this.iconPath,
-      {this.onTap, super.key, required super.pageId, required super.componentId, required super.elementId});
+      {this.onTap,
+      super.key,
+      required super.pageId,
+      required super.componentId,
+      required super.elementId});
 
   @override
   Widget buildElement(BuildContext context) {
-    return _getSettingItemWidget(
-        iconPath, title,
-        onTap: onTap);
+    return _getSettingItemWidget(iconPath, title, onTap: onTap);
   }
 
   Widget _getSettingItemWidget(String iconPath, String title,
@@ -39,6 +41,8 @@ class CommunitySettingItem extends BaseElement {
                       iconPath,
                       package: 'amity_uikit_beta_service',
                       fit: BoxFit.contain,
+                      colorFilter:
+                          ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
                     )),
                 title: Text(title,
                     style: TextStyle(

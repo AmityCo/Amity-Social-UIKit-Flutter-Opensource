@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
@@ -101,6 +100,7 @@ class AmityPostDetailPage extends NewBasePage {
                 ),
                 pinned: true,
                 centerTitle: true,
+                iconTheme: IconThemeData(color: theme.baseColor),
               ),
               SliverToBoxAdapter(
                 child: Container(

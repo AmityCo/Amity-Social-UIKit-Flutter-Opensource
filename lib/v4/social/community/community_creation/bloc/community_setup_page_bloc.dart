@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/community_setup_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/element/category_grid_view.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 part 'community_setup_page_event.dart';
@@ -81,7 +82,8 @@ class CommunitySetupPageBloc
       emit(state.copyWith(
           communityPrivacy: event.privacy,
           hasExistingDataChanged: hasDataChanged,
-          isCommunityPrivacyUpdatedToPrivate: hasDataChanged && event.privacy == CommunityPrivacy.private));
+          isCommunityPrivacyUpdatedToPrivate:
+              hasDataChanged && event.privacy == CommunityPrivacy.private));
     });
 
     on<CommunitySetupPageAddMemberEvent>((event, emit) {
@@ -116,24 +118,24 @@ class CommunitySetupPageBloc
         _uploadImage((image) {
           builder.avatar(image);
           builder.create().then((value) {
-            event.toastBloc.add(const AmityToastShort(
-                message: "Successfully created community.",
+            event.toastBloc.add(AmityToastShort(
+                message: event.context.l10n.community_create_success_message,
                 icon: AmityToastIcon.success));
             event.onSuccess(value);
           }, onError: (error) {
-            event.toastBloc.add(const AmityToastShort(
-                message: "Failed to create community. Please try again."));
+            event.toastBloc.add(AmityToastShort(
+                message: event.context.l10n.community_create_error_message));
           });
         });
       } else {
         builder.create().then((value) {
-          event.toastBloc.add(const AmityToastShort(
-              message: "Successfully created community.",
+          event.toastBloc.add(AmityToastShort(
+              message: event.context.l10n.community_create_success_message,
               icon: AmityToastIcon.success));
           event.onSuccess(value);
         }, onError: (error) {
-          event.toastBloc.add(const AmityToastShort(
-              message: "Failed to create community. Please try again."));
+          event.toastBloc.add(AmityToastShort(
+              message: event.context.l10n.community_create_error_message));
         });
       }
     });
@@ -153,26 +155,24 @@ class CommunitySetupPageBloc
         _uploadImage((image) {
           builder.avatar(image);
           builder.update().then((value) {
-            event.toastBloc.add(const AmityToastShort(
-                message: "Successfully updated community profile.",
+            event.toastBloc.add(AmityToastShort(
+                message: event.context.l10n.community_update_success_message,
                 icon: AmityToastIcon.success));
             event.onSuccess();
           }, onError: (error) {
-            event.toastBloc.add(const AmityToastShort(
-                message:
-                    "Failed to save your community profile. Please try again."));
+            event.toastBloc.add(AmityToastShort(
+                message: event.context.l10n.community_update_error_message));
           });
         });
       } else {
         builder.update().then((value) {
-          event.toastBloc.add(const AmityToastShort(
-              message: "Successfully updated community profile.",
+          event.toastBloc.add(AmityToastShort(
+              message: event.context.l10n.community_update_success_message,
               icon: AmityToastIcon.success));
           event.onSuccess();
         }, onError: (error) {
-          event.toastBloc.add(const AmityToastShort(
-              message:
-                  "Failed to save your community profile. Please try again."));
+          event.toastBloc.add(AmityToastShort(
+              message: event.context.l10n.community_update_error_message));
         });
       }
     });

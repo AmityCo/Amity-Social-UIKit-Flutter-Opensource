@@ -83,7 +83,9 @@ class AmityCommunitySetupPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: mode is CreateMode ? context.l10n.community_create : context.l10n.community_edit,
+          title: mode is CreateMode
+              ? context.l10n.community_create
+              : context.l10n.community_edit,
           configProvider: configProvider,
           theme: theme,
           leadingButton: GestureDetector(
@@ -286,7 +288,8 @@ class AmityCommunitySetupPage extends NewBasePage {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(context.l10n.community_members,
+        Text(
+          context.l10n.community_members,
           style: AmityTextStyle.titleBold(theme.baseColor),
         ),
         const SizedBox(height: 16),
@@ -327,10 +330,13 @@ class AmityCommunitySetupPage extends NewBasePage {
               if (state.communityName.isNotEmpty) {
                 context
                     .read<CommunitySetupPageBloc>()
-                    .add(CommunitySetupPageCreateCommunityEvent(onSuccess: (community) {
-                  Navigator.pop(context);
-                  _goToCommunityProfilePage(context, community);
-                }, toastBloc: context.read<AmityToastBloc>()));
+                    .add(CommunitySetupPageCreateCommunityEvent(
+                        onSuccess: (community) {
+                          Navigator.pop(context);
+                          _goToCommunityProfilePage(context, community);
+                        },
+                        toastBloc: context.read<AmityToastBloc>(),
+                        context: context));
               }
             },
             child: Container(
@@ -390,7 +396,8 @@ class AmityCommunitySetupPage extends NewBasePage {
             },
             child: Container(
                 decoration: BoxDecoration(
-                  color: state.communityName.isEmpty || !state.hasExistingDataChanged
+                  color: state.communityName.isEmpty ||
+                          !state.hasExistingDataChanged
                       ? theme.primaryColor.blend(ColorBlendingOption.shade2)
                       : theme.primaryColor, // Rectangle background color
                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
@@ -526,7 +533,11 @@ class AmityCommunitySetupPage extends NewBasePage {
                     shape: BoxShape.circle,
                     color: theme.primaryColor.blend(ColorBlendingOption.shade2),
                   ),
-                  child: AmityUserAvatar(avatarUrl: user.avatarUrl, displayName: user.displayName ?? context.l10n.user_profile_unknown_name, isDeletedUser: false)),
+                  child: AmityUserAvatar(
+                      avatarUrl: user.avatarUrl,
+                      displayName: user.displayName ??
+                          context.l10n.user_profile_unknown_name,
+                      isDeletedUser: false)),
               Transform.translate(
                 offset: const Offset(5, -2),
                 child: Container(
@@ -735,7 +746,8 @@ class AmityCommunitySetupPage extends NewBasePage {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            toastBloc: context.read<AmityToastBloc>()));
+            toastBloc: context.read<AmityToastBloc>(),
+            context: context));
   }
 
   void _backAction(BuildContext context) {
@@ -761,7 +773,8 @@ class AmityCommunitySetupPage extends NewBasePage {
         });
   }
 
-  void _goToCommunityProfilePage(BuildContext context, AmityCommunity community) {
+  void _goToCommunityProfilePage(
+      BuildContext context, AmityCommunity community) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AmityCommunityProfilePage(

@@ -1411,5 +1411,53 @@
   "chat_no_message_yet": "Aún no hay mensajes",
   "@chat_no_message_yet": {
     "description": "Preview text when there are no messages in the chat"
+  },
+  "comment_create_error_ban_word": "Tu comentario contiene una palabra inapropiada. Por favor, revísalo y elimínalo.",
+  "@comment_create_error_ban_word": {
+    "description": "Mensaje de aviso para la creación de comentarios con palabra prohibida"
+  },
+  "comment_create_error_story_deleted": "Esta historia ya no está disponible",
+  "@comment_create_error_story_deleted": {
+    "description": "Mensaje de aviso para la creación de comentarios"
+  },
+  "community_create_success_message": "Comunidad creada exitosamente.",
+  "@community_create_success_message": {
+    "description": "Mensaje de éxito para la creación de comunidad"
+  },
+  "community_create_error_message": "No se pudo crear la comunidad. Por favor, inténtalo de nuevo.",
+  "@community_create_error_message": {
+    "description": "Mensaje de error para la creación de comunidad"
+  },
+  "community_update_success_message": "Comunidad actualizada exitosamente.",
+  "@community_update_success_message": {
+    "description": "Mensaje de éxito para la actualización de comunidad"
+  },
+  "community_update_error_message": "No se pudo guardar el perfil de la comunidad. Por favor, inténtalo de nuevo.",
+  "@community_update_error_message": {
+    "description": "Mensaje de error para la actualización de comunidad"
+  },
+  "community_leave_success_message": "Has salido de la comunidad exitosamente.",
+  "@community_leave_success_message": {
+    "description": "Mensaje de éxito para salir de la comunidad"
+  },
+  "community_leave_error_message": "No se pudo salir de la comunidad.",
+  "@community_leave_error_message": {
+    "description": "Mensaje de error para salir de la comunidad"
+  },
+  "community_close_success_message": "Comunidad cerrada exitosamente.",
+  "@community_close_success_message": {
+    "description": "Mensaje de éxito para cerrar la comunidad"
+  },
+  "community_close_error_message": "No se pudo cerrar la comunidad.",
+  "@community_close_error_message": {
+    "description": "Mensaje de error para cerrar la comunidad"
+  },
+  "community_post_permission_title_label": "Quién puede publicar en esta comunidad",
+  "@community_post_permission_title_label": {
+    "description": "Etiqueta para el título de la página de permisos de publicación"
+  },
+  "community_post_permission_description_label": "Puedes controlar quién puede crear publicaciones en tu comunidad.",
+  "@community_post_permission_description_label": {
+    "description": "Etiqueta para la descripción de la página de permisos de publicación"
   }
 }

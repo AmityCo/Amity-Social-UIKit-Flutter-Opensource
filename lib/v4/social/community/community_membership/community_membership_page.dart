@@ -206,7 +206,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
               ],
             ),
             const SizedBox(
-                width: 8), // Add some spacing between the icon and text
+                width: 12), // Add some spacing between the icon and text
             Expanded(
                 child: Row(
               children: [
@@ -254,6 +254,10 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   height: 22,
                   package: 'amity_uikit_beta_service',
                   fit: BoxFit.contain,
+                  colorFilter: ColorFilter.mode(
+                    theme.baseColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               )
           ],
@@ -321,8 +325,11 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
                       context.read<CommunityMembershipPageBloc>().add(
                           CommunityMembershipPageBottomSheetEvent(
-                              member, action, context.read<AmityToastBloc>(),
-                              successMessage, errorMessage));
+                              member,
+                              action,
+                              context.read<AmityToastBloc>(),
+                              successMessage,
+                              errorMessage));
                       Navigator.pop(context);
                     },
                   ),
@@ -348,8 +355,11 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
-                                member, action, context.read<AmityToastBloc>(),
-                                successMessage, errorMessage));
+                                member,
+                                action,
+                                context.read<AmityToastBloc>(),
+                                successMessage,
+                                errorMessage));
                         Navigator.pop(context);
                       }),
                   _buildListTile(
@@ -389,8 +399,11 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
                         context.read<CommunityMembershipPageBloc>().add(
                             CommunityMembershipPageBottomSheetEvent(
-                                member, action, context.read<AmityToastBloc>(),
-                                successMessage, errorMessage));
+                                member,
+                                action,
+                                context.read<AmityToastBloc>(),
+                                successMessage,
+                                errorMessage));
                         Navigator.pop(context);
                       }),
                 ],

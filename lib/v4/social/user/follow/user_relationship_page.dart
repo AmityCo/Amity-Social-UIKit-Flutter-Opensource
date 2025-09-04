@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/user_follow_list_component.dart';
@@ -19,6 +20,8 @@ class AmityUserRelationshipPage extends NewBasePage {
 
   @override
   Widget buildPage(BuildContext context) {
+    final localizations = context.l10n;
+
     return BlocProvider(
       create: (context) => UserProfileBloc(userId),
       child: BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -50,9 +53,9 @@ class AmityUserRelationshipPage extends NewBasePage {
                     dividerColor: theme.baseColorShade4,
                     isScrollable: true,
                     labelStyle: AmityTextStyle.titleBold(theme.baseColorShade2),
-                    tabs: const [
-                      Tab(text: 'Following'),
-                      Tab(text: 'Followers'),
+                    tabs: [
+                      Tab(text: context.l10n.profile_following),
+                      Tab(text: context.l10n.profile_followers),
                     ],
                   ),
                   Expanded(

@@ -244,6 +244,36 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get comment_create_error_ban_word => 'Tu comentario contiene una palabra inapropiada. Por favor, revísalo y elimínalo.';
+
+  @override
+  String get comment_create_error_story_deleted => 'Esta historia ya no está disponible';
+
+  @override
+  String get community_create_success_message => 'Comunidad creada exitosamente.';
+
+  @override
+  String get community_create_error_message => 'No se pudo crear la comunidad. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get community_update_success_message => 'Comunidad actualizada exitosamente.';
+
+  @override
+  String get community_update_error_message => 'No se pudo guardar el perfil de la comunidad. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get community_leave_success_message => 'Has salido de la comunidad exitosamente.';
+
+  @override
+  String get community_leave_error_message => 'No se pudo salir de la comunidad.';
+
+  @override
+  String get community_close_success_message => 'Comunidad cerrada exitosamente.';
+
+  @override
+  String get community_close_error_message => 'No se pudo cerrar la comunidad.';
+
+  @override
   String get community_close => '¿Cerrar comunidad?';
 
   @override
@@ -758,10 +788,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get community_setting_close_description => 'Cerrar esta comunidad eliminará la página de la comunidad y todo su contenido y comentarios.';
 
   @override
-  String get community_post_permission_title_label => 'Who can post on this community';
+  String get community_post_permission_title_label => 'Quién puede publicar en esta comunidad';
 
   @override
-  String get community_post_permission_description_label => 'You can control who can create posts in your community.';
+  String get community_post_permission_description_label => 'Puedes controlar quién puede crear publicaciones en tu comunidad.';
 
   @override
   String get post_item_bottom_nonmember_label => 'Súmate a la comunidad para interactuar con todos los posts';

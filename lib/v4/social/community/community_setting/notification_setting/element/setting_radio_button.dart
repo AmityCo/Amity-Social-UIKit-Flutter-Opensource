@@ -95,13 +95,13 @@ class SettingRadioButtonWidget extends StatelessWidget {
           width: 25,
           height: 30,
           child: Center(
-          child: Radio(
-            value: value,
-            groupValue: groupValue,
-            onChanged: onChanged,
-            activeColor: theme.primaryColor,
+            child: Radio(
+              value: value,
+              groupValue: groupValue,
+              onChanged: onChanged,
+              activeColor: theme.primaryColor,
+            ),
           ),
-        ),
         )
       ],
     );

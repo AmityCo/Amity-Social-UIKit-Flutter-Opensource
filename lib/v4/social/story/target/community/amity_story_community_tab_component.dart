@@ -44,15 +44,23 @@ class AmityStoryCommunityTabBuilder extends StatefulWidget {
   });
 
   @override
-  State<AmityStoryCommunityTabBuilder> createState() => _AmityStoryCommunityTabBuilderState();
+  State<AmityStoryCommunityTabBuilder> createState() =>
+      _AmityStoryCommunityTabBuilderState();
 }
 
-class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBuilder> {
+class _AmityStoryCommunityTabBuilderState
+    extends State<AmityStoryCommunityTabBuilder> {
   @override
   void initState() {
-    context.read<CommunityFeedStoryBloc>().add(ObserveStoryTargetEvent(communityId: widget.communityId));
-    context.read<CommunityFeedStoryBloc>().add(CheckMangeStoryPermissionEvent(communityId: widget.communityId));
-    context.read<CommunityFeedStoryBloc>().add(FetchStories(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(ObserveStoryTargetEvent(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(CheckMangeStoryPermissionEvent(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(FetchStories(communityId: widget.communityId));
     super.initState();
   }
 
@@ -61,7 +69,9 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
     return BlocListener<CreateStoryBloc, CreateStoryState>(
       listener: (context, state) {
         if (state is CreateStorySuccess) {
-          context.read<AmityToastBloc>().add(const AmityToastShort(message: "Successfully shared story", icon: AmityToastIcon.success));
+          context.read<AmityToastBloc>().add(const AmityToastShort(
+              message: "Successfully shared story",
+              icon: AmityToastIcon.success));
         }
       },
       child: BlocBuilder<CommunityFeedStoryBloc, CommunityFeedStoryState>(
@@ -78,14 +88,21 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                      decoration: BoxDecoration(
+                          color: widget.theme.baseColor,
+                          borderRadius: BorderRadius.circular(100)),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Shimmer.fromColors(
                     baseColor: const Color.fromARGB(255, 243, 242, 242),
                     highlightColor: const Color.fromARGB(255, 225, 225, 225),
-                    child: Container(width: 80, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                    child: Container(
+                        width: 80,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            color: widget.theme.baseColor,
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 ],
               ),
@@ -93,20 +110,24 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
           }
 
           if (state.community != null) {
-            if (!state.haveStoryPermission && (state.stories == null || state.stories!.isEmpty)) {
+            if (!state.haveStoryPermission &&
+                (state.stories == null || state.stories!.isEmpty)) {
               return const SizedBox(
                 width: 0,
                 height: 0,
               );
             }
 
-            final featureConfig = context.read<ConfigProvider>().getFeatureConfig();
+            final featureConfig =
+                context.read<ConfigProvider>().getFeatureConfig();
             final isStoryCreationEnabled = featureConfig.story.createEnabled;
 
             return Container(
               color: widget.theme.backgroundColor,
               child: AmityStoryTargetElement(
-                avatarUrl: state.community!.avatarImage?.getUrl(AmityImageSize.LARGE) ?? "",
+                avatarUrl: state.community!.avatarImage
+                        ?.getUrl(AmityImageSize.LARGE) ??
+                    "",
                 isCommunityTarget: true,
                 communityDisplayName: state.community!.displayName ?? "",
                 ringUiState: state.storyTarget!.toRingUiState(),
@@ -116,7 +137,10 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                 targetId: state.community!.communityId!,
                 target: state.storyTarget!,
                 onClick: (targetId, storyTarget) {
-                  if (state.haveStoryPermission && isStoryCreationEnabled && (state.stories == null || state.stories?.isEmpty == true)) {
+                  if (state.haveStoryPermission &&
+                      isStoryCreationEnabled &&
+                      (state.stories == null ||
+                          state.stories?.isEmpty == true)) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -133,7 +157,8 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                       MaterialPageRoute(
                         builder: (BuildContext context) {
                           return AmityViewStoryPage(
-                            type: AmityViewStoryCommunityFeed(communityId: widget.communityId),
+                            type: AmityViewStoryCommunityFeed(
+                                communityId: widget.communityId),
                           );
                         },
                       ),

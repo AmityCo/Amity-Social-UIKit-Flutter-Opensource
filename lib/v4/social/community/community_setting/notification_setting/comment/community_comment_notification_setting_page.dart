@@ -39,7 +39,10 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
             title: context.l10n.general_comments,
             configProvider: configProvider,
             theme: theme,
-            leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
+            leadingButton: SettingConfirmationBackButton(
+              shouldShowConfirmationDialog: state.settingsChanged,
+              theme: theme,
+            ),
             tailingButton: GestureDetector(
               onTap: state.settingsChanged
                   ? () {
@@ -47,7 +50,10 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
                           .read<CommunityCommentNotificationSettingPageBloc>()
                           .add(CommunityCommentNotificationSettingSaveEvent(
                               context.read<AmityToastBloc>(), () {
-                            Navigator.of(context)..pop()..pop()..pop();
+                            Navigator.of(context)
+                              ..pop()
+                              ..pop()
+                              ..pop();
                           }));
                     }
                   : null,
@@ -84,7 +90,6 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
                   theme: theme),
               _getDividerWidget(),
             ],
-
             if (state.isNewCommentNetworkEnabled) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_new_comments,
@@ -102,7 +107,6 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
                   theme: theme),
               _getDividerWidget(),
             ],
-
             if (state.isReplyCommentNetworkEnabled) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_new_replies,

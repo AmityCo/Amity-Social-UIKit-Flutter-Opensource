@@ -82,7 +82,11 @@ class PostDetail extends NewBaseComponent {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: PostChildrenContent(post: post, style: AmityPostContentComponentStyle.detail, hideMenu: hideMenu, theme: theme),
+              child: PostChildrenContent(
+                  post: post,
+                  style: AmityPostContentComponentStyle.detail,
+                  hideMenu: hideMenu,
+                  theme: theme),
             ),
             PostDetailInfo(post: post, componentId: ''),
             hideMenu

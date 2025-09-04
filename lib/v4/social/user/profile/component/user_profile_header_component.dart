@@ -233,7 +233,8 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                                     ],
                                   ),
                                   Text(
-                                    context.l10n.user_follow_request_approval('${myFollowInfo?.pendingRequestCount ?? 0}'),
+                                    context.l10n.user_follow_request_approval(
+                                        '${myFollowInfo?.pendingRequestCount ?? 0}'),
                                     style: AmityTextStyle.caption(
                                         theme.baseColorShade2),
                                   )
@@ -546,10 +547,10 @@ class UserProfileHeaderActionButton extends BaseElement {
     required this.text,
     required String elementId,
   }) : super(
-          key: key,
-          pageId: pageId,
-          componentId: componentId,
-          elementId: elementId);
+            key: key,
+            pageId: pageId,
+            componentId: componentId,
+            elementId: elementId);
 
   @override
   Widget buildElement(BuildContext context) {
@@ -589,6 +590,12 @@ class UserProfileHeaderActionButton extends BaseElement {
               height: 24,
               child: SvgPicture.asset(
                 getAsset(),
+                colorFilter: ColorFilter.mode(
+                  (state == UserProfileHeaderState.followRequest)
+                      ? Colors.white
+                      : theme.baseColor,
+                  BlendMode.srcIn,
+                ),
                 package: 'amity_uikit_beta_service',
               ),
             ),
@@ -601,7 +608,7 @@ class UserProfileHeaderActionButton extends BaseElement {
                       textHeight: 1.0,
                     )
                   : AmityTextStyle.bodyBold(
-                      theme.secondaryColor,
+                      theme.baseColor,
                       textHeight: 1.0,
                     ),
             ),

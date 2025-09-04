@@ -23,14 +23,16 @@ class CommentCreatorCreated extends CommentCreatorEvent {
   final List<AmityMentionMetadata> mentionMetadataList;
   final List<String> mentionUserIds;
   final AmityToastBloc toastBloc;
+  final BuildContext context;
 
-  const CommentCreatorCreated({
-    required this.referenceId,
-    required this.text ,
-    required this.mentionMetadataList,
-    required this.mentionUserIds,
-    required this.referenceType,
-    required this.toastBloc});
+  const CommentCreatorCreated(
+      {required this.referenceId,
+      required this.text,
+      required this.mentionMetadataList,
+      required this.mentionUserIds,
+      required this.referenceType,
+      required this.toastBloc,
+      required this.context});
 
   @override
   List<Object> get props => [referenceId, text];

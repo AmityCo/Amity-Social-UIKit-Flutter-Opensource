@@ -62,7 +62,6 @@ class AmityCommunityProfilePage extends NewBasePage {
 
             final featureConfig = configProvider.getFeatureConfig();
 
-
             return Scaffold(
               backgroundColor: theme.baseColorShade4,
               body: CustomScrollView(
@@ -224,8 +223,8 @@ class AmityCommunityProfilePage extends NewBasePage {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AmityStoryTabComponent(
-                              type:
-                                  CommunityFeedStoryTab(communityId: communityId),
+                              type: CommunityFeedStoryTab(
+                                  communityId: communityId),
                             ),
                           ],
                         ),
@@ -289,11 +288,8 @@ class AmityCommunityProfilePage extends NewBasePage {
               floatingActionButton: (state.isJoined)
                   ? GestureDetector(
                       onTap: () {
-                        showActions(
-                            context,
-                            state.canManageStory,
-                            state.community,
-                            state.isModerator);
+                        showActions(context, state.canManageStory,
+                            state.community, state.isModerator);
                       },
                       child: Container(
                         width: 64,

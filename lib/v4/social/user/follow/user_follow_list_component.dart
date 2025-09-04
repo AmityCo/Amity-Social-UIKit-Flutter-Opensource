@@ -103,6 +103,7 @@ class UserFollowListComponent extends NewBaseComponent {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.more_horiz),
+                    color: theme.baseColor,
                     onPressed: () {
                       showAvailableActions(context, user,
                           relationship.status ?? AmityFollowStatus.NONE);

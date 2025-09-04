@@ -10,7 +10,6 @@ import 'package:flutter_svg/svg.dart';
 import '../post_poll_target_selection_page/post_poll_target_selection_page.dart';
 
 class AmityCreatePostMenuComponent extends NewBaseComponent {
-
   AmityCreatePostMenuComponent({Key? key, String? pageId})
       : super(key: key, pageId: pageId, componentId: 'componentId');
 
@@ -95,7 +94,9 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
         PopupMenuItem<int>(
           value: 1,
           child: getMenu(
-              context: context, text: context.l10n.general_post, iconPath: "amity_ic_create_post_button.svg"),
+              context: context,
+              text: context.l10n.general_post,
+              iconPath: "amity_ic_create_post_button.svg"),
         ),
       );
     }
@@ -105,7 +106,9 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
         PopupMenuItem<int>(
           value: 2,
           child: getMenu(
-              context: context, text: context.l10n.general_story, iconPath: "ic_create_stroy_black.svg"),
+              context: context,
+              text: context.l10n.general_story,
+              iconPath: "ic_create_stroy_black.svg"),
         ),
       );
     }
@@ -115,14 +118,19 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
         PopupMenuItem<int>(
           value: 3,
           child: getMenu(
-              context: context, text: context.l10n.general_poll, iconPath: "amity_ic_create_poll_button.svg"),
+              context: context,
+              text: context.l10n.general_poll,
+              iconPath: "amity_ic_create_poll_button.svg"),
         ),
       );
     }
     return menuItems;
-  } 
+  }
 
-  Widget getMenu({required BuildContext context, required String text, required String iconPath}) {
+  Widget getMenu(
+      {required BuildContext context,
+      required String text,
+      required String iconPath}) {
     return SizedBox(
       width: 200,
       child: Row(
@@ -133,8 +141,7 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
           SvgPicture.asset(
             "assets/Icons/$iconPath",
             package: 'amity_uikit_beta_service',
-            colorFilter:
-                ColorFilter.mode(theme.secondaryColor, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
           ),
           const SizedBox(
             width: 8,

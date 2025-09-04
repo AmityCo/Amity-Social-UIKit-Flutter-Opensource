@@ -498,6 +498,66 @@ abstract class AppLocalizations {
   /// **'This {content} will be permanently deleted.'**
   String comment_delete_description(String content);
 
+  /// Toast message for comment creation with banned word
+  ///
+  /// In en, this message translates to:
+  /// **'Your comment contains inappropriate word. Please review and delete it.'**
+  String get comment_create_error_ban_word;
+
+  /// Toast message for comment creation
+  ///
+  /// In en, this message translates to:
+  /// **'This story is no longer available'**
+  String get comment_create_error_story_deleted;
+
+  /// Toast message for community creation success
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully created community.'**
+  String get community_create_success_message;
+
+  /// Toast message for community creation failure
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create community. Please try again.'**
+  String get community_create_error_message;
+
+  /// Toast message for community update success
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully updated community.'**
+  String get community_update_success_message;
+
+  /// Toast message for community update failure
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save your community profile. Please try again.'**
+  String get community_update_error_message;
+
+  /// Toast message for community leave success
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully left the community.'**
+  String get community_leave_success_message;
+
+  /// Toast message for community leave error
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to leave the community.'**
+  String get community_leave_error_message;
+
+  /// Toast message for community close success
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully closed the community.'**
+  String get community_close_success_message;
+
+  /// Toast message for community close error
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to close the community.'**
+  String get community_close_error_message;
+
   /// Label for close button
   ///
   /// In en, this message translates to:

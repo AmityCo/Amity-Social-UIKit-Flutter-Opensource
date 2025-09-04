@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 
-
 class AmityCommunityPostPermissionPage extends NewBasePage {
   AmityCommunityPostPermissionPage({super.key, required this.community})
       : super(pageId: 'community_posts_notification_page');
@@ -39,7 +38,10 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
             title: context.l10n.community_post_permission,
             configProvider: configProvider,
             theme: theme,
-            leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
+            leadingButton: SettingConfirmationBackButton(
+              shouldShowConfirmationDialog: state.settingsChanged,
+              theme: theme,
+            ),
             tailingButton: GestureDetector(
               onTap: state.settingsChanged
                   ? () {

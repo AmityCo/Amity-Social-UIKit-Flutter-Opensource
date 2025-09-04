@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/bottom_sheet_menu.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
@@ -37,7 +38,6 @@ class AmityPostHeader extends StatelessWidget {
     required this.hideTarget,
     this.action,
   });
-
 
   void _showToast(BuildContext context, String message, AmityToastIcon icon) {
     context
@@ -81,7 +81,8 @@ class AmityPostHeader extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 if (post.postedUserId?.isNotEmpty ?? false) {
-                  AmityUIKit4Manager.behavior.postContentComponentBehavior.goToUserProfilePage(
+                  AmityUIKit4Manager.behavior.postContentComponentBehavior
+                      .goToUserProfilePage(
                     context,
                     post.postedUserId!,
                   );
@@ -142,6 +143,7 @@ class AmityPostHeader extends StatelessWidget {
       child: SvgPicture.asset(
         'assets/Icons/amity_ic_post_item_option.svg',
         package: 'amity_uikit_beta_service',
+        colorFilter: ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
         width: 16,
         height: 12,
       ),
@@ -166,15 +168,19 @@ class AmityPostHeader extends StatelessWidget {
     }
 
     if (post.postedUserId == currentUserId) {
-      showPostOwnerAction(context, post, theme, isModerator);
+      showBottomSheetForOwner(context, post, isModerator);
     } else {
-      showPostGeneralAction(context, post, isModerator);
+      showBottomSheetForGeneralActions(context, post, isModerator);
     }
   }
 
-  void showPostGeneralAction(
-      BuildContext context, AmityPost post, bool isModerator) {
-    final localizations = context.l10n;
+  void showBottomSheetForGeneralActions(
+    BuildContext context,
+    AmityPost post,
+    bool isModerator,
+  ) {
+    List<BottomSheetMenuOption> userActions = [];
+
     onReport() => {
           context.read<PostItemBloc>().add(PostItemFlag(
               post: post, toastBloc: context.read<AmityToastBloc>()))
@@ -184,139 +190,59 @@ class AmityPostHeader extends StatelessWidget {
               post: post, toastBloc: context.read<AmityToastBloc>()))
         };
 
-    onDelete() {
-      context
-          .read<PostItemBloc>()
-          .add(PostItemDelete(post: post, action: action));
-    }
+    onDelete() => {
+          context
+              .read<PostItemBloc>()
+              .add(PostItemDelete(post: post, action: action))
+        };
 
-    double height = 0;
-    double baseHeight = 80;
-    double itemHeight = 48;
-    if (isModerator) {
-      itemHeight += 48;
-    }
-    height = baseHeight + itemHeight;
-
-    showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        builder: (BuildContext context) {
-          return SizedBox(
-            height: height,
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 36,
-                  padding: const EdgeInsets.only(top: 12, bottom: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 36,
-                        height: 4,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFA5A9B5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                (!post.isFlaggedByMe)
-                    ? GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          onReport();
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 20),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding:
-                                    const EdgeInsets.only(top: 2, bottom: 2),
-                                child: SvgPicture.asset(
-                                  'assets/Icons/amity_ic_flag.svg',
-                                  package: 'amity_uikit_beta_service',
-                                  width: 24,
-                                  height: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                localizations.post_report,
-                                style: const TextStyle(
-                                  color: Color(0xFF292B32),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          onUnReport();
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 20),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding:
-                                    const EdgeInsets.only(top: 2, bottom: 2),
-                                child: SvgPicture.asset(
-                                  'assets/Icons/amity_ic_flag.svg',
-                                  package: 'amity_uikit_beta_service',
-                                  width: 24,
-                                  height: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                localizations.post_unreport,
-                                style: const TextStyle(
-                                  color: Color(0xFF292B32),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                if (isModerator) _getDeletePost(context, post, onDelete)
-              ],
-            ),
-          );
+    final reportOption = BottomSheetMenuOption(
+        title: context.l10n.post_report,
+        icon: "assets/Icons/amity_ic_flag.svg",
+        onTap: () {
+          Navigator.of(context).pop();
+          onReport();
         });
+
+    final unreportOption = BottomSheetMenuOption(
+        title: context.l10n.post_unreport,
+        icon: "assets/Icons/amity_ic_flag.svg",
+        onTap: () {
+          Navigator.of(context).pop();
+          onUnReport();
+        });
+
+    final deleteOption = BottomSheetMenuOption(
+        title: context.l10n.post_delete,
+        icon: "assets/Icons/amity_ic_delete.svg",
+        textStyle: AmityTextStyle.bodyBold(theme.alertColor),
+        colorFilter: ColorFilter.mode(theme.alertColor, BlendMode.srcIn),
+        onTap: () {
+          Navigator.of(context).pop();
+
+          showConfirmationAlert(
+              context,
+              context.l10n.post_delete,
+              context.l10n.post_delete_description,
+              context.l10n.general_delete,
+              onDelete);
+        });
+
+    if (!post.isFlaggedByMe) {
+      userActions.add(reportOption);
+    } else {
+      userActions.add(unreportOption);
+    }
+
+    if (isModerator) {
+      userActions.add(deleteOption);
+    }
+
+    BottomSheetMenu(options: userActions).show(context, theme);
   }
 
-  void showPostOwnerAction(BuildContext context, AmityPost post,
-      AmityThemeColor theme, bool isModerator) {
+  void showBottomSheetForOwner(
+      BuildContext context, AmityPost post, bool isModerator) {
     final editOption = AmityPostComposerOptions.editOptions(post: post);
     final localizations = context.l10n;
 
@@ -335,9 +261,7 @@ class AmityPostHeader extends StatelessWidget {
             //success
           }).onError((error, stackTrace) {
             _showToast(
-                 context,
-                 localizations.general_error,
-                 AmityToastIcon.warning);
+                context, localizations.general_error, AmityToastIcon.warning);
           })
         };
 
@@ -355,288 +279,113 @@ class AmityPostHeader extends StatelessWidget {
       });
     }
 
-    double height = 0;
-    double baseHeight = 80;
-    double itemsHeight = 96;
-    height = baseHeight + itemsHeight;
+    List<BottomSheetMenuOption> userActions = [];
 
-    showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        builder: (BuildContext context) {
-          return SizedBox(
-            height: height,
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 36,
-                  padding: const EdgeInsets.only(top: 12, bottom: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 36,
-                        height: 4,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFA5A9B5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (post.type == AmityDataType.TEXT &&
-                    (post.children == null ||
-                        post.children!.first.type != AmityDataType.POLL))
-                  GestureDetector(
-                    onTap: () {
-                      if (category == AmityPostCategory.globalFeatured) {
-                        Navigator.pop(context);
-
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext innerContext) {
-                            return CupertinoAlertDialog(
-                              title: Text(
-                                  localizations.post_edit_globally_featured),
-                              content: Text(localizations
-                                  .post_edit_globally_featured_description),
-                              actions: [
-                                CupertinoDialogAction(
-                                  child: Text(localizations.general_cancel,
-                                      style: const TextStyle(
-                                        color: Color(0xFF007AFF),
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w400,
-                                      )),
-                                  onPressed: () {
-                                    Navigator.of(innerContext).pop();
-                                  },
-                                ),
-                                CupertinoDialogAction(
-                                  child: Text(
-                                    localizations.general_edit,
-                                    style: TextStyle(
-                                      color: theme.alertColor,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(innerContext);
-                                    onEdit();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      } else {
-                        Navigator.pop(context);
-                        onEdit();
-                      }
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 20),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 2, bottom: 2),
-                            child: SvgPicture.asset(
-                              'assets/Icons/amity_ic_edit_comment.svg',
-                              package: 'amity_uikit_beta_service',
-                              width: 24,
-                              height: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            localizations.post_edit,
-                            style: const TextStyle(
-                              color: Color(0xFF292B32),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                if (showClosePollOption(post))
-                  _getClosePoll(context, post, onClosePoll),
-                _getDeletePost(context, post, onDelete),
-              ],
-            ),
-          );
+    final editMenuOption = BottomSheetMenuOption(
+        title: context.l10n.post_edit,
+        icon: "assets/Icons/amity_ic_edit_comment.svg",
+        onTap: () {
+          if (category == AmityPostCategory.globalFeatured) {
+            Navigator.pop(context);
+            showConfirmationAlert(
+                context,
+                localizations.post_edit_globally_featured,
+                localizations.post_edit_globally_featured_description,
+                localizations.general_edit, () {
+              onEdit();
+            });
+          } else {
+            Navigator.pop(context);
+            onEdit();
+          }
         });
+
+    final deleteOption = BottomSheetMenuOption(
+        title: context.l10n.post_delete,
+        icon: "assets/Icons/amity_ic_delete.svg",
+        textStyle: AmityTextStyle.bodyBold(theme.alertColor),
+        colorFilter: ColorFilter.mode(theme.alertColor, BlendMode.srcIn),
+        onTap: () {
+          Navigator.of(context).pop();
+
+          showConfirmationAlert(
+              context,
+              context.l10n.post_delete,
+              context.l10n.post_delete_description,
+              context.l10n.general_delete,
+              onDelete);
+        });
+
+    if (post.type == AmityDataType.TEXT &&
+        (post.children == null ||
+            post.children!.first.type != AmityDataType.POLL)) {
+      userActions.add(editMenuOption);
+    }
+
+    if (showClosePollOption(post)) {
+      final pollId = (post.children!.first.data as PollData).pollId;
+
+      final closePollOption = BottomSheetMenuOption(
+          title: context.l10n.post_delete,
+          icon: "assets/Icons/amity_ic_create_poll_button.svg",
+          onTap: () {
+            Navigator.pop(context);
+
+            showConfirmationAlert(
+                context,
+                localizations.poll_close,
+                localizations.poll_close_description,
+                localizations.poll_close, () {
+              onClosePoll(pollId);
+            });
+          });
+
+      userActions.add(closePollOption);
+    }
+
+    userActions.add(deleteOption);
+
+    BottomSheetMenu(options: userActions).show(context, theme);
   }
 
-  Widget _getClosePoll(
-      BuildContext context, AmityPost post, Function onClosePoll) {
+  void showConfirmationAlert(
+    BuildContext context,
+    String title,
+    String content,
+    String actionButtonTitle,
+    Function action,
+  ) {
     final localizations = context.l10n;
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-        final pollId = (post.children!.first.data as PollData).pollId;
-
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text(localizations.poll_close),
-              content: Text(localizations.poll_close_description),
-              actions: [
-                CupertinoDialogAction(
-                  child: Text(localizations.general_cancel,
-                      style: const TextStyle(
-                        color: Color(0xFF007AFF),
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                      )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: Text(
-                    localizations.poll_close,
-                    style: TextStyle(
-                      color: theme.alertColor,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    onClosePoll(pollId);
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 2, bottom: 2),
-              child: SvgPicture.asset(
-                'assets/Icons/amity_ic_create_poll_button.svg',
-                package: 'amity_uikit_beta_service',
-                width: 24,
-                height: 20,
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(
+                localizations.general_cancel,
+                style: AmityTextStyle.title(theme.primaryColor),
               ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            const SizedBox(width: 12),
-            Text(
-              localizations.poll_close,
-              style: const TextStyle(
-                color: Color(0xFF292B32),
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
+            CupertinoDialogAction(
+              child: Text(
+                actionButtonTitle,
+                style: AmityTextStyle.titleBold(theme.alertColor),
               ),
+              onPressed: () {
+                Navigator.of(context).pop();
+
+                action();
+              },
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _getDeletePost(
-      BuildContext context, AmityPost post, Function onDelete) {
-    final localizations = context.l10n;
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text(localizations.post_delete),
-              content: Text(localizations.post_delete_description),
-              actions: [
-                CupertinoDialogAction(
-                  child: Text(localizations.general_cancel,
-                      style: const TextStyle(
-                        color: Color(0xFF007AFF),
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                      )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: Text(
-                    localizations.general_delete,
-                    style: TextStyle(
-                      color: theme.alertColor,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    onDelete();
-                  },
-                ),
-              ],
-            );
-          },
         );
       },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 2, bottom: 2),
-              child: SvgPicture.asset(
-                'assets/Icons/amity_ic_delete.svg',
-                package: 'amity_uikit_beta_service',
-                width: 24,
-                height: 20,
-                colorFilter:
-                    ColorFilter.mode(theme.alertColor, BlendMode.srcIn),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              localizations.post_delete,
-              style: TextStyle(
-                color: theme.alertColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

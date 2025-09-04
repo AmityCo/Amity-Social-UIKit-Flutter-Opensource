@@ -42,7 +42,10 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
             title: context.l10n.profile_posts,
             configProvider: configProvider,
             theme: theme,
-            leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
+            leadingButton: SettingConfirmationBackButton(
+              shouldShowConfirmationDialog: state.settingsChanged,
+              theme: theme,
+            ),
             tailingButton: GestureDetector(
               onTap: state.settingsChanged
                   ? () {
@@ -50,14 +53,17 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
                           .read<CommunityPostNotificationSettingPageBloc>()
                           .add(CommunityPostNotificationSettingSaveEvent(
                               context.read<AmityToastBloc>(), () {
-                            Navigator.of(context)..pop()..pop()..pop();
+                            Navigator.of(context)
+                              ..pop()
+                              ..pop()
+                              ..pop();
                           }));
                     }
                   : null,
               child: Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
-                  context.l10n.general_edit,
+                  context.l10n.general_save,
                   style: TextStyle(
                       color: state.settingsChanged
                           ? theme.primaryColor
@@ -76,8 +82,9 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
                   description: context.l10n.settings_react_posts_description,
                   groupValue: state.reactPostSetting,
                   onChanged: (value) {
-                    context.read<CommunityPostNotificationSettingPageBloc>().add(
-                        CommunityPostNotificationSettingChangedEvent(
+                    context
+                        .read<CommunityPostNotificationSettingPageBloc>()
+                        .add(CommunityPostNotificationSettingChangedEvent(
                             reactPostSetting:
                                 value ?? RadioButtonSetting.everyone,
                             newPostSetting: state.newPostSetting));
@@ -85,21 +92,21 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
                   theme: theme),
               _getDividerWidget(),
             ],
-            
             if (state.isNewPostNetworkEnabled) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_new_posts,
                   description: context.l10n.settings_new_posts_description,
                   groupValue: state.newPostSetting,
                   onChanged: (value) {
-                    context.read<CommunityPostNotificationSettingPageBloc>().add(
-                        CommunityPostNotificationSettingChangedEvent(
+                    context
+                        .read<CommunityPostNotificationSettingPageBloc>()
+                        .add(CommunityPostNotificationSettingChangedEvent(
                             reactPostSetting: state.reactPostSetting,
                             newPostSetting:
                                 value ?? RadioButtonSetting.everyone));
                   },
                   theme: theme),
-            ] 
+            ]
           ],
         ));
   }

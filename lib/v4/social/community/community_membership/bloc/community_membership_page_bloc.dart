@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -42,9 +42,6 @@ class CommunityMembershipPageBloc
 
     memberStreamSubscription =
         memberLiveCollection.getStreamController().stream.listen((event) {
-      var count = event.length;
-      log("pageCount: $count");
-      log("1st member: ${event[0].user?.displayName}");
       add(CommunityMembershipPageMemberLoadedEvent(event));
     });
 
@@ -107,13 +104,10 @@ class CommunityMembershipPageBloc
           .addMembers(event.userIds)
           .then((value) {
         event.toastBloc.add(AmityToastShort(
-            message: event.successMessage,
-            icon: AmityToastIcon.success));
+            message: event.successMessage, icon: AmityToastIcon.success));
       }).onError((error, stackTrace) {
         event.toastBloc.add(AmityToastShort(
-            message:
-                event.errorMessage,
-            icon: AmityToastIcon.warning));
+            message: event.errorMessage, icon: AmityToastIcon.warning));
       });
     });
 
@@ -145,25 +139,20 @@ class CommunityMembershipPageBloc
           repository.moderation(community.communityId ?? '').addRole(
               'community-moderator', [event.member.userId ?? '']).then((value) {
             event.toastBloc.add(AmityToastShort(
-                message: event.successMessage,
-                icon: AmityToastIcon.success));
+                message: event.successMessage, icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
             event.toastBloc.add(AmityToastShort(
-                message: event.errorMessage,
-                icon: AmityToastIcon.warning));
+                message: event.errorMessage, icon: AmityToastIcon.warning));
           });
           break;
         case CommunityMembershipPageBottomSheetAction.demote:
           repository.moderation(community.communityId ?? '').removeRole(
               'community-moderator', [event.member.userId ?? '']).then((value) {
             event.toastBloc.add(AmityToastShort(
-                message:
-                    event.successMessage,
-                icon: AmityToastIcon.success));
+                message: event.successMessage, icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
             event.toastBloc.add(AmityToastShort(
-                message: event.errorMessage,
-                icon: AmityToastIcon.warning));
+                message: event.errorMessage, icon: AmityToastIcon.warning));
           });
           break;
         case CommunityMembershipPageBottomSheetAction.remove:
@@ -171,34 +160,28 @@ class CommunityMembershipPageBloc
               .membership(community.communityId ?? '')
               .removeMembers([event.member.userId ?? '']).then((value) {
             event.toastBloc.add(AmityToastShort(
-                message: event.successMessage,
-                icon: AmityToastIcon.success));
+                message: event.successMessage, icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
             event.toastBloc.add(AmityToastShort(
-                message: event.errorMessage,
-                icon: AmityToastIcon.warning));
+                message: event.errorMessage, icon: AmityToastIcon.warning));
           });
           break;
         case CommunityMembershipPageBottomSheetAction.report:
           event.member.user?.report().flag().then((value) {
             event.toastBloc.add(AmityToastShort(
-                message: event.successMessage,
-                icon: AmityToastIcon.success));
+                message: event.successMessage, icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
             event.toastBloc.add(AmityToastShort(
-                message: event.errorMessage,
-                icon: AmityToastIcon.warning));
+                message: event.errorMessage, icon: AmityToastIcon.warning));
           });
           break;
         case CommunityMembershipPageBottomSheetAction.unreport:
           event.member.user?.report().unflag().then((value) {
             event.toastBloc.add(AmityToastShort(
-                message: event.successMessage,
-                icon: AmityToastIcon.success));
+                message: event.successMessage, icon: AmityToastIcon.success));
           }).onError((error, stackTrace) {
             event.toastBloc.add(AmityToastShort(
-                message: event.errorMessage,
-                icon: AmityToastIcon.warning));
+                message: event.errorMessage, icon: AmityToastIcon.warning));
           });
           break;
       }

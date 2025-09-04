@@ -37,7 +37,8 @@ class AmityCommunitySettingPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: community.displayName ?? context.l10n.user_profile_unknown_name,
+            title:
+                community.displayName ?? context.l10n.user_profile_unknown_name,
             configProvider: configProvider,
             theme: theme),
         body: ListView(
@@ -51,8 +52,8 @@ class AmityCommunitySettingPage extends NewBasePage {
                 _goToEditProfilePage(context);
               }, pageId: pageId, componentId: '*', elementId: 'edit_profile'),
 
-            CommunitySettingItem(context.l10n.community_members,'assets/Icons/amity_icon_member_setting.svg',
-                onTap: () {
+            CommunitySettingItem(context.l10n.community_members,
+                'assets/Icons/amity_icon_member_setting.svg', onTap: () {
               _goToCommunityMemberPage(context);
             }, pageId: pageId, componentId: '*', elementId: 'members'),
 
@@ -108,17 +109,18 @@ class AmityCommunitySettingPage extends NewBasePage {
               _getDividerWidget(),
 
             // Leave Community
-            _getSettingDetailItemWidget(context.l10n.community_leave,
-                null, onTap: () {
+            _getSettingDetailItemWidget(context.l10n.community_leave, null,
+                onTap: () {
               ConfirmationDialog().show(
                   context: context,
                   title: context.l10n.community_leave,
-                  detailText:context.l10n.community_leave_description,
+                  detailText: context.l10n.community_leave_description,
                   onConfirm: () {
                     context
                         .read<CommunitySettingPageBloc>()
                         .add(LeaveCommunityEvent(
                             toastBloc: context.read<AmityToastBloc>(),
+                            context: context,
                             onSuccess: () {
                               // Navigate back to the social home page
                               Navigator.of(context).pop();
@@ -127,7 +129,8 @@ class AmityCommunitySettingPage extends NewBasePage {
                             onFailure: () {
                               AmityDialog().showAlertErrorDialog(
                                   title: context.l10n.error_leave_community,
-                                  message:context.l10n.error_leave_community_description);
+                                  message: context
+                                      .l10n.error_leave_community_description);
                             }));
                   });
             }),
@@ -136,9 +139,9 @@ class AmityCommunitySettingPage extends NewBasePage {
 
             // Close Community
             if (state.shouldShowCloseCommunity)
-              _getSettingDetailItemWidget(context.l10n.community_setting_close_label,
-                  context.l10n.community_setting_close_description,
-                  onTap: () {
+              _getSettingDetailItemWidget(
+                  context.l10n.community_setting_close_label,
+                  context.l10n.community_setting_close_description, onTap: () {
                 ConfirmationDialog().show(
                     context: context,
                     title: context.l10n.community_close,
@@ -148,6 +151,7 @@ class AmityCommunitySettingPage extends NewBasePage {
                           .read<CommunitySettingPageBloc>()
                           .add(CloseCommunityEvent(
                               toastBloc: context.read<AmityToastBloc>(),
+                              context: context,
                               onSuccess: () {
                                 // Navigate back to the social home page
                                 Navigator.of(context).pop();

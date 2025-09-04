@@ -22,7 +22,8 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
   @override
   Widget buildPage(BuildContext context) {
     return BlocProvider(
-        create: (_) => CommunityNotificationSettingPageBloc(community, notificationSettings),
+        create: (_) => CommunityNotificationSettingPageBloc(
+            community, notificationSettings),
         child: BlocBuilder<CommunityNotificationSettingPageBloc,
             CommunityNotificationSettingPageState>(builder: (context, state) {
           return _getPageWidget(context, state);
@@ -44,23 +45,22 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
                 ? const SizedBox()
                 : Column(
                     children: [
-                      if (state.isPostNetworkEnabled || state.isCommentNetworkEnabled || state.isStoryNetworkEnabled)
+                      if (state.isPostNetworkEnabled ||
+                          state.isCommentNetworkEnabled ||
+                          state.isStoryNetworkEnabled)
                         _getDividerWidget(),
-
                       if (state.isPostNetworkEnabled)
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_post_notification_setting.svg',
                             context.l10n.profile_posts, onTap: () {
                           _goToPostSettingPage(context);
                         }),
-
                       if (state.isCommentNetworkEnabled)
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_comment_notification_setting.svg',
                             context.l10n.general_comments, onTap: () {
                           _goToCommentSettingPage(context);
                         }),
-                        
                       if (state.isStoryNetworkEnabled)
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_story_notification_setting.svg',
@@ -102,7 +102,8 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(context.l10n.settings_allow_notification_description,
+              child: Text(
+                context.l10n.settings_allow_notification_description,
                 style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
@@ -138,6 +139,8 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
                       fit: BoxFit.contain,
                       width: 24,
                       height: 20,
+                      colorFilter:
+                          ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
                     )),
                 title: Text(title,
                     style: TextStyle(
@@ -161,8 +164,8 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
 
   void _goToPostSettingPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            AmityCommunityPostsNotificationSettingPage(community: community, notificationSettings: notificationSettings)));
+        builder: (context) => AmityCommunityPostsNotificationSettingPage(
+            community: community, notificationSettings: notificationSettings)));
   }
 
   void _goToCommentSettingPage(BuildContext context) {

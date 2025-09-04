@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/bottom_sheet_menu.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_text_editing_controller.dart';
@@ -101,7 +102,8 @@ class CommentItem extends BaseElement {
             onTap: () {
               final userId = comment.user?.userId;
               if (userId != null && userId.isNotEmpty) {
-                AmityUIKit4Manager.behavior.commentTrayBehavior.goToUserProfilePage(context, userId);
+                AmityUIKit4Manager.behavior.commentTrayBehavior
+                    .goToUserProfilePage(context, userId);
               }
             },
             child: SizedBox(
@@ -150,8 +152,12 @@ class CommentItem extends BaseElement {
                                       child: GestureDetector(
                                         onTap: () {
                                           final userId = comment.user?.userId;
-                                          if (userId != null && userId.isNotEmpty) {
-                                            AmityUIKit4Manager.behavior.commentTrayBehavior.goToUserProfilePage(context, userId);
+                                          if (userId != null &&
+                                              userId.isNotEmpty) {
+                                            AmityUIKit4Manager
+                                                .behavior.commentTrayBehavior
+                                                .goToUserProfilePage(
+                                                    context, userId);
                                           }
                                         },
                                         child: Row(
@@ -207,6 +213,8 @@ class CommentItem extends BaseElement {
                                                 controller: scrollController,
                                                 child: MentionTextField(
                                                   theme: theme,
+                                                  style: AmityTextStyle.body(
+                                                      theme.baseColor),
                                                   suggestionMaxRow: 2,
                                                   suggestionDisplayMode:
                                                       SuggestionDisplayMode
@@ -232,16 +240,12 @@ class CommentItem extends BaseElement {
                                                             .symmetric(
                                                             horizontal: 0,
                                                             vertical: 0),
-                                                    hintText:
-                                                        context.l10n.comment_create_hint,
+                                                    hintText: context.l10n
+                                                        .comment_create_hint,
                                                     border: InputBorder.none,
-                                                    hintStyle: TextStyle(
-                                                      color:
-                                                          theme.baseColorShade2,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
+                                                    hintStyle:
+                                                        AmityTextStyle.body(
+                                                            theme.baseColor),
                                                   ),
                                                 ),
                                               ),
@@ -285,6 +289,8 @@ class CommentItem extends BaseElement {
                                       padding: const EdgeInsets.all(12),
                                       child: MentionTextField(
                                         theme: theme,
+                                        style: AmityTextStyle.body(
+                                            theme.baseColor),
                                         suggestionMaxRow: 2,
                                         suggestionDisplayMode:
                                             SuggestionDisplayMode.inline,
@@ -302,15 +308,14 @@ class CommentItem extends BaseElement {
                                             .top, // Align text at the top
                                         decoration: InputDecoration(
                                           isDense: true,
-                                          contentPadding: const EdgeInsets.symmetric(
-                                              horizontal: 0, vertical: 0),
-                                          hintText: context.l10n.comment_create_hint,
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 0, vertical: 0),
+                                          hintText:
+                                              context.l10n.comment_create_hint,
                                           border: InputBorder.none,
-                                          hintStyle: TextStyle(
-                                            color: theme.baseColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          hintStyle: AmityTextStyle.body(
+                                              theme.baseColor),
                                         ),
                                       ),
                                     ),
@@ -719,15 +724,64 @@ class CommentItem extends BaseElement {
 
   void showCommentAction(BuildContext context, AmityComment comment) {
     final currentUserId = AmityCoreClient.getUserId();
-
     if (comment.userId == currentUserId) {
-      showCommentModerationAction(context, comment);
+      showCommentActionsForModerators(context, comment);
     } else {
-      showCommentGeneralAction(context, comment);
+      showCommentActionsForUsers(context, comment);
     }
   }
 
-  void showCommentGeneralAction(BuildContext context, AmityComment comment) {
+  void showCommentActionsForModerators(
+      BuildContext context, AmityComment comment) {
+    onEdit() => context.read<CommentItemBloc>().add(CommentItemEdit());
+    onDelete() => context
+        .read<CommentItemBloc>()
+        .add(CommentItemDelete(comment: comment));
+    final localize = context.l10n;
+
+    List<BottomSheetMenuOption> userActions = [];
+
+    // Edit
+    final editActionTitle = (comment.parentId == null)
+        ? localize.comment_edit
+        : localize.comment_reply_edit;
+    final editAction = BottomSheetMenuOption(
+        title: editActionTitle,
+        icon: "assets/Icons/amity_ic_edit_comment.svg",
+        onTap: () {
+          Navigator.pop(context);
+
+          onEdit();
+        });
+
+    userActions.add(editAction);
+
+    // Delete
+    final deleteActionTitle = (comment.parentId == null)
+        ? context.l10n.comment_delete
+        : context.l10n.comment_reply_delete;
+    final deleteAction = BottomSheetMenuOption(
+        title: deleteActionTitle,
+        icon: "assets/Icons/amity_ic_delete.svg",
+        onTap: () {
+          Navigator.pop(context);
+
+          final alertTitle = (comment.parentId == null)
+              ? localize.comment_delete
+              : localize.comment_reply_delete;
+          final alertContent = (comment.parentId == null)
+              ? localize.post_comment.toLowerCase()
+              : localize.comment_reply.toLowerCase();
+
+          showConfirmationAlert(context, alertTitle, alertContent,
+              localize.general_delete, onDelete);
+        });
+    userActions.add(deleteAction);
+
+    BottomSheetMenu(options: userActions).show(context, theme);
+  }
+
+  void showCommentActionsForUsers(BuildContext context, AmityComment comment) {
     onReport() => (comment.isFlaggedByMe)
         ? context.read<CommentItemBloc>().add(CommentItemUnFlag(
               comment: comment,
@@ -737,264 +791,33 @@ class CommentItem extends BaseElement {
               comment: comment,
               toastBloc: context.read<AmityToastBloc>(),
             ));
-    showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        backgroundColor: theme.backgroundColor,
-        builder: (BuildContext context) {
-          return SizedBox(
-            height: 140,
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 36,
-                  padding: const EdgeInsets.only(top: 12, bottom: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 36,
-                        height: 4,
-                        decoration: ShapeDecoration(
-                          color: theme.baseColorShade3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                renderReportButton(context, comment, onReport),
-              ],
-            ),
-          );
-        });
-  }
 
-  Widget renderReportButton(
-      BuildContext context, AmityComment comment, Function onReport) {
+    List<BottomSheetMenuOption> userActions = [];
+
     final isFlaggedByMe = comment.isFlaggedByMe;
     var reportButtonLabel = "";
     if (isFlaggedByMe) {
-      reportButtonLabel =
-          (comment.parentId == null) ? context.l10n.comment_unreport : context.l10n.comment_reply_unreport;
+      reportButtonLabel = (comment.parentId == null)
+          ? context.l10n.comment_unreport
+          : context.l10n.comment_reply_unreport;
     } else {
-      reportButtonLabel =
-          (comment.parentId == null) ? context.l10n.comment_report : context.l10n.comment_reply_report;
+      reportButtonLabel = (comment.parentId == null)
+          ? context.l10n.comment_report
+          : context.l10n.comment_reply_report;
     }
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-        onReport();
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 2, bottom: 2),
-              child: SvgPicture.asset(
-                'assets/Icons/amity_ic_flag.svg',
-                package: 'amity_uikit_beta_service',
-                width: 24,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  theme.baseInverseColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              reportButtonLabel,
-              style: TextStyle(
-                color: theme.baseColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    final reportOption = BottomSheetMenuOption(
+        title: reportButtonLabel,
+        icon: "assets/Icons/amity_ic_flag.svg",
+        onTap: () {
+          Navigator.pop(context);
 
-  void showCommentModerationAction(BuildContext context, AmityComment comment) {
-    onEdit() => context.read<CommentItemBloc>().add(CommentItemEdit());
-    onDelete() => context
-        .read<CommentItemBloc>()
-        .add(CommentItemDelete(comment: comment));
-
-    final localize = context.l10n;
-    showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        builder: (BuildContext context) {
-          return SizedBox(
-            height: 196,
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 36,
-                  padding: const EdgeInsets.only(top: 12, bottom: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 36,
-                        height: 4,
-                        decoration: ShapeDecoration(
-                          color: theme.baseColorShade3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    onEdit();
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(top: 2, bottom: 2),
-                          child: SvgPicture.asset(
-                            'assets/Icons/amity_ic_edit_comment.svg',
-                            package: 'amity_uikit_beta_service',
-                            width: 24,
-                            height: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          (comment.parentId == null)
-                              ? localize.comment_edit
-                              : localize.comment_reply_edit,
-                          style: TextStyle(
-                            color: theme.baseColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CupertinoAlertDialog(
-                          title: Text((comment.parentId == null)
-                              ? localize.comment_delete
-                              : localize.comment_reply_delete),
-                          content: Text(localize.comment_delete_description(
-                              (comment.parentId == null)
-                                  ? localize.post_comment.toLowerCase()
-                                  : localize.comment_reply.toLowerCase())),
-                          actions: [
-                            CupertinoDialogAction(
-                              child: Text(localize.general_cancel,
-                                  style: TextStyle(
-                                    color: theme.primaryColor,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w400,
-                                  )),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: Text(
-                                localize.general_delete,
-                                style: TextStyle(
-                                  color: theme.alertColor,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                onDelete();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(top: 2, bottom: 2),
-                          child: SvgPicture.asset(
-                            'assets/Icons/amity_ic_delete.svg',
-                            package: 'amity_uikit_beta_service',
-                            width: 24,
-                            height: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          (comment.parentId == null)
-                              ? context.l10n.comment_delete
-                              : context.l10n.comment_reply_delete,
-                          style: TextStyle(
-                            color: theme.baseColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
+          onReport();
         });
+
+    userActions.add(reportOption);
+
+    BottomSheetMenu(options: userActions).show(context, theme);
   }
 
   Widget renderCommentEditAction(BuildContext context, AmityComment comment) {
@@ -1017,7 +840,6 @@ class CommentItem extends BaseElement {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: ShapeDecoration(
-                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     side: BorderSide(width: 1, color: theme.baseColorShade2),
                     borderRadius: BorderRadius.circular(4),
@@ -1040,11 +862,7 @@ class CommentItem extends BaseElement {
                         children: [
                           Text(
                             context.l10n.general_cancel,
-                            style: TextStyle(
-                              color: theme.baseColorShade1,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: AmityTextStyle.captionBold(theme.baseColor),
                           ),
                         ],
                       ),
@@ -1129,6 +947,47 @@ class CommentItem extends BaseElement {
     AmityUIKit4Manager.behavior.commentTrayBehavior.goToUserProfilePage(
       context,
       userId,
+    );
+  }
+
+  void showConfirmationAlert(
+    BuildContext context,
+    String title,
+    String content,
+    String actionButtonTitle,
+    Function action,
+  ) {
+    final localizations = context.l10n;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(
+                localizations.general_cancel,
+                style: AmityTextStyle.title(theme.primaryColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text(
+                actionButtonTitle,
+                style: AmityTextStyle.titleBold(theme.alertColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+
+                action();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

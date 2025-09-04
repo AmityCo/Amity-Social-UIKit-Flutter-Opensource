@@ -244,6 +244,36 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get comment_create_error_ban_word => 'Your comment contains inappropriate word. Please review and delete it.';
+
+  @override
+  String get comment_create_error_story_deleted => 'This story is no longer available';
+
+  @override
+  String get community_create_success_message => 'Successfully created community.';
+
+  @override
+  String get community_create_error_message => 'Failed to create community. Please try again.';
+
+  @override
+  String get community_update_success_message => 'Successfully updated community.';
+
+  @override
+  String get community_update_error_message => 'Failed to save your community profile. Please try again.';
+
+  @override
+  String get community_leave_success_message => 'Successfully left the community.';
+
+  @override
+  String get community_leave_error_message => 'Failed to leave the community.';
+
+  @override
+  String get community_close_success_message => 'Successfully closed the community.';
+
+  @override
+  String get community_close_error_message => 'Failed to close the community.';
+
+  @override
   String get community_close => 'Fechar comunidade?';
 
   @override

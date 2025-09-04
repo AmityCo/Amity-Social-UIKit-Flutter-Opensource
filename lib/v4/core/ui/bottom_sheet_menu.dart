@@ -66,10 +66,16 @@ class BottomSheetMenu {
                         package: 'amity_uikit_beta_service',
                         width: 20,
                         height: 20,
+                        colorFilter: option.colorFilter ??
+                            ColorFilter.mode(
+                              theme.baseColor,
+                              BlendMode.srcIn,
+                            ),
                       ),
                       title: Text(
                         option.title,
-                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                        style: option.textStyle ??
+                            AmityTextStyle.bodyBold(theme.baseColor),
                       ),
                       onTap: () {
                         option.onTap();
@@ -87,8 +93,14 @@ class BottomSheetMenu {
 class BottomSheetMenuOption {
   final String title;
   final String icon;
+  final TextStyle? textStyle;
+  final ColorFilter? colorFilter;
   final Function onTap;
 
   BottomSheetMenuOption(
-      {required this.title, required this.icon, required this.onTap});
+      {required this.title,
+      required this.icon,
+      this.textStyle,
+      this.colorFilter,
+      required this.onTap});
 }

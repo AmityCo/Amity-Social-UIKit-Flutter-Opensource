@@ -78,15 +78,23 @@ class CommunitySetupPageRemoveMemberEvent extends CommunitySetupPageEvent {
 // ignore: must_be_immutable
 class CommunitySetupPageCreateCommunityEvent extends CommunitySetupPageEvent {
   final AmityToastBloc toastBloc;
+  final BuildContext context;
   Function(AmityCommunity) onSuccess;
 
-  CommunitySetupPageCreateCommunityEvent({required this.toastBloc, required this.onSuccess});
+  CommunitySetupPageCreateCommunityEvent(
+      {required this.toastBloc,
+      required this.context,
+      required this.onSuccess});
 }
 
 // ignore: must_be_immutable
 class CommunitySetupPageSaveCommunityEvent extends CommunitySetupPageEvent {
   final AmityToastBloc toastBloc;
+  final BuildContext context;
   Function onSuccess;
 
-  CommunitySetupPageSaveCommunityEvent({required this.toastBloc, required this.onSuccess});
+  CommunitySetupPageSaveCommunityEvent(
+      {required this.toastBloc,
+      required this.context,
+      required this.onSuccess});
 }

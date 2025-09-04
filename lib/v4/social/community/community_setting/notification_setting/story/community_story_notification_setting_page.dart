@@ -38,7 +38,9 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
             title: "Stories",
             configProvider: configProvider,
             theme: theme,
-            leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
+            leadingButton: SettingConfirmationBackButton(
+                shouldShowConfirmationDialog: state.settingsChanged,
+                theme: theme),
             tailingButton: GestureDetector(
               onTap: state.settingsChanged
                   ? () {
@@ -46,7 +48,10 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
                           .read<CommunityStoryNotificationSettingPageBloc>()
                           .add(CommunityStoryNotificationSettingSaveEvent(
                               context.read<AmityToastBloc>(), () {
-                            Navigator.of(context)..pop()..pop()..pop();
+                            Navigator.of(context)
+                              ..pop()
+                              ..pop()
+                              ..pop();
                           }));
                     }
                   : null,
@@ -83,11 +88,11 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
                   theme: theme),
               _getDividerWidget(),
             ],
-
             if (state.isReactStoryNetworkEnabled) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_story_reactions,
-                  description: context.l10n.settings_story_reactions_description,
+                  description:
+                      context.l10n.settings_story_reactions_description,
                   groupValue: state.reactStorySetting,
                   onChanged: (value) {
                     context
@@ -101,7 +106,6 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
                   theme: theme),
               _getDividerWidget(),
             ],
-            
             if (state.isCommentStoryNetworkEnabled) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_story_comments,

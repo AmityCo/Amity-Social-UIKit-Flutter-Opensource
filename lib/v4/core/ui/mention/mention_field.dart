@@ -27,7 +27,8 @@ enum SuggestionDisplayMode { bottom, inline }
 class SuggestionListOverlay extends StatefulWidget {
   final int itemCount;
   final double rowHeight;
-  final int suggestionMaxRow; // Maximum number of rows allowed (defaulted to 3 in parent).
+  final int
+      suggestionMaxRow; // Maximum number of rows allowed (defaulted to 3 in parent).
   final Widget Function(BuildContext, int) itemBuilder;
   final ScrollController scrollController;
   final Color backgroundColor;
@@ -57,7 +58,7 @@ class _SuggestionListOverlayState extends State<SuggestionListOverlay> {
     final bool isShrinking = dynamicHeight < maxAllowedHeight;
     // When shrinking, add an extra 8.0 pixels.
     final double computedHeight =
-    isShrinking ? dynamicHeight + 8.0 : maxAllowedHeight;
+        isShrinking ? dynamicHeight + 8.0 : maxAllowedHeight;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
@@ -306,25 +307,28 @@ class _MentionTextFieldState extends State<MentionTextField>
     if (useCommunitySearch) {
       final searchQuery = query;
       log("Initializing Community Live Collection with query: '$searchQuery'");
-      _communityMemberLiveCollection = AmitySocialClient.newCommunityRepository()
-          .membership(widget.communityId!)
-          .searchMembers(searchQuery)
-          .filter(AmityCommunityMembershipFilter.MEMBER)
-          .includeDeleted(false)
-          .getLiveCollection();
-      _communityMemberStreamSubscription =
-          _communityMemberLiveCollection!.getStreamController().stream.listen((members) {
-            if (members.isEmpty && _communityMembers.isNotEmpty) {
-              log("New community search returned 0, keeping previous results.");
-            } else {
-              setState(() {
-                _communityMembers = members;
-                _isFetching = false;
-                _hasMore = _communityMemberLiveCollection!.hasNextPage();
-              });
-            }
-            _updateOverlay();
+      _communityMemberLiveCollection =
+          AmitySocialClient.newCommunityRepository()
+              .membership(widget.communityId!)
+              .searchMembers(searchQuery)
+              .filter(AmityCommunityMembershipFilter.MEMBER)
+              .includeDeleted(false)
+              .getLiveCollection();
+      _communityMemberStreamSubscription = _communityMemberLiveCollection!
+          .getStreamController()
+          .stream
+          .listen((members) {
+        if (members.isEmpty && _communityMembers.isNotEmpty) {
+          log("New community search returned 0, keeping previous results.");
+        } else {
+          setState(() {
+            _communityMembers = members;
+            _isFetching = false;
+            _hasMore = _communityMemberLiveCollection!.hasNextPage();
           });
+        }
+        _updateOverlay();
+      });
       _communityMemberLiveCollection!.loadNext();
     } else {
       late PagingController<AmityUser> controller;
@@ -379,7 +383,10 @@ class _MentionTextFieldState extends State<MentionTextField>
   String _getCurrentLine() {
     final text = _mentionController.text;
     final selection = _mentionController.selection;
-    if (selection.baseOffset < 0 || selection.baseOffset > text.length) return "";
+    if (selection.baseOffset < 0 || selection.baseOffset > text.length)
+      return "";
+    final index = selection.baseOffset - 1;
+    if (index < 0) return "";
     final lastNewline = text.lastIndexOf('\n', selection.baseOffset - 1);
     return lastNewline == -1
         ? text.substring(0, selection.baseOffset)
@@ -462,7 +469,7 @@ class _MentionTextFieldState extends State<MentionTextField>
     final double maxAllowedHeight = widget.suggestionMaxRow * _rowHeight;
     final double dynamicHeight = itemCount * _rowHeight;
     final double containerHeight =
-    dynamicHeight < maxAllowedHeight ? dynamicHeight : maxAllowedHeight;
+        dynamicHeight < maxAllowedHeight ? dynamicHeight : maxAllowedHeight;
 
     // Build the suggestion list overlay using the subwidget.
     Widget suggestionList = SuggestionListOverlay(
@@ -493,9 +500,10 @@ class _MentionTextFieldState extends State<MentionTextField>
       const double horizontalMargin = 8.0;
       final double availableWidth = screenSize.width - (horizontalMargin * 2);
       final double topPosition =
-      (screenSize.height - (position.dy + size.height + containerHeight) < 0)
-          ? position.dy - containerHeight - 2
-          : position.dy + size.height;
+          (screenSize.height - (position.dy + size.height + containerHeight) <
+                  0)
+              ? position.dy - containerHeight - 2
+              : position.dy + size.height;
       log("Computed topPosition: $topPosition");
       return OverlayEntry(
         builder: (context) => GestureDetector(
@@ -534,8 +542,7 @@ class _MentionTextFieldState extends State<MentionTextField>
       );
     } else {
       final window = WidgetsBinding.instance.window;
-      final keyboardHeight =
-          window.viewInsets.bottom / window.devicePixelRatio;
+      final keyboardHeight = window.viewInsets.bottom / window.devicePixelRatio;
       final basePadding = (keyboardHeight > 0)
           ? widget.suggestionOverlayBottomPaddingWhenKeyboardOpen
           : widget.suggestionOverlayBottomPaddingWhenKeyboardClosed;
@@ -567,7 +574,8 @@ class _MentionTextFieldState extends State<MentionTextField>
                         decoration: BoxDecoration(
                           color: widget.theme.backgroundColor,
                           borderRadius: BorderRadius.circular(12.0),
-                          border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                          border:
+                              Border.all(color: Colors.grey.withOpacity(0.2)),
                         ),
                         child: suggestionList,
                       ),
@@ -624,7 +632,7 @@ class _MentionTextFieldState extends State<MentionTextField>
                       style: AmityTextStyle.bodyBold(widget.theme.baseColor),
                     ),
                   ),
-                  if(user.isBrand ?? false) brandBadge(),
+                  if (user.isBrand ?? false) brandBadge(),
                 ],
               ),
             )
@@ -711,15 +719,15 @@ class _MentionTextFieldState extends State<MentionTextField>
       switch (widget.mentionContentType) {
         case MentionContentType.post:
           errorMessage =
-          "You can only mention up to ${widget.maxMentions} users per post.";
+              "You can only mention up to ${widget.maxMentions} users per post.";
           break;
         case MentionContentType.comment:
           errorMessage =
-          "You can only mention up to ${widget.maxMentions} users per comment.";
+              "You can only mention up to ${widget.maxMentions} users per comment.";
           break;
         default:
           errorMessage =
-          "You can only mention up to ${widget.maxMentions} users.";
+              "You can only mention up to ${widget.maxMentions} users.";
           break;
       }
       AmityV4Dialog()

@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
@@ -31,6 +32,7 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityNotificationSettingPageState state) {
+    final behavior = FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
@@ -47,14 +49,14 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
                       if (state.isPostNetworkEnabled || state.isCommentNetworkEnabled || state.isStoryNetworkEnabled)
                         _getDividerWidget(),
 
-                      if (state.isPostNetworkEnabled)
+                      if (state.isPostNetworkEnabled || behavior.forceShowPost())
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_post_notification_setting.svg',
                             context.l10n.profile_posts, onTap: () {
                           _goToPostSettingPage(context);
                         }),
 
-                      if (state.isCommentNetworkEnabled)
+                      if (state.isCommentNetworkEnabled || behavior.forceShowComment())
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_comment_notification_setting.svg',
                             context.l10n.general_comments, onTap: () {

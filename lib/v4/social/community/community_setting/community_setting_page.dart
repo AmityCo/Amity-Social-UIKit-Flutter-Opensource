@@ -47,6 +47,7 @@ class AmityCommunitySettingPage extends NewBasePage {
             // Basic Info Section
             _getSectionTitleWidget(context.l10n.community_basic_info),
 
+            if (behavior.shouldShowEditCommunity())
             if (state.shouldShowEditProfile)
               CommunitySettingItem(context.l10n.profile_edit,
                   'assets/Icons/amity_ic_edit_profile_setting.svg', onTap: () {
@@ -58,6 +59,7 @@ class AmityCommunitySettingPage extends NewBasePage {
               _goToCommunityMemberPage(context);
             }, pageId: pageId, componentId: '*', elementId: 'members'),
 
+            if (behavior.shouldShowNotification(community))
             if (state.shouldShowNotificationSetting)
               Stack(
                 alignment: Alignment.centerRight,
@@ -145,6 +147,7 @@ class AmityCommunitySettingPage extends NewBasePage {
               _getDividerWidget(),
 
             // Close Community
+            if (behavior.shouldShowCloseCommunity())
             if (state.shouldShowCloseCommunity)
               _getSettingDetailItemWidget(behavior.settingItemTitle?.call(context, 'close_community') ?? context.l10n.community_setting_close_label,
                   behavior.settingItemTitle

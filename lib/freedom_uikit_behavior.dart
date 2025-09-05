@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/v4/social/community/pending_request/ami
 import 'package:amity_uikit_beta_service/v4/social/post/pending/freedom_amity_pending_post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_create_post_menu_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_dm_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_composer_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_social_home_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_view_story_page_behavior.dart';
@@ -24,6 +25,9 @@ class FreedomUIKitBehavior {
 
   FreedomCreatePostMenuComponentBehavior createPostMenuComponentBehavior =
       FreedomCreatePostMenuComponentBehavior();
+
+  FreedomPostComposerPageBehavior postComposerPageBehavior =
+      FreedomPostComposerPageBehavior();
 
   FreedomPostContentComponentBehavior postContentComponentBehavior =
       FreedomPostContentComponentBehavior();

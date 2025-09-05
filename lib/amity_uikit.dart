@@ -46,6 +46,7 @@ import 'viewmodel/user_feed_viewmodel.dart';
 import 'viewmodel/user_viewmodel.dart';
 
 export 'package:amity_sdk/src/domain/model/session/session_state.dart';
+export 'package:amity_sdk/src/core/enum/http_end_point.dart';
 
 enum AmityEndpointRegion {
   sg,

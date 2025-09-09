@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ class SettingRadioButtonWidget extends StatelessWidget {
   final RadioButtonSetting groupValue;
   final ValueChanged<RadioButtonSetting?> onChanged;
   final AmityThemeColor theme;
+  final bool isPermission;
 
   const SettingRadioButtonWidget({
     Key? key,
@@ -19,7 +21,10 @@ class SettingRadioButtonWidget extends StatelessWidget {
     required this.groupValue,
     required this.onChanged,
     required this.theme,
+    this.isPermission = false,
   }) : super(key: key);
+
+  get phrase => FreedomUIKitBehavior.instance.communityPermissionSettingBehavior.phrase;
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +57,21 @@ class SettingRadioButtonWidget extends StatelessWidget {
             ),
             const SizedBox(height: 24.0),
             _getRadioButtonTile(
-              title: context.l10n.settings_everyone,
+              title: isPermission ? phrase(context, 'post_permissions_everyone_can_post') : context.l10n.settings_everyone,
               value: RadioButtonSetting.everyone,
               groupValue: groupValue,
               onChanged: onChanged,
             ),
             const SizedBox(height: 32.0),
             _getRadioButtonTile(
-              title: context.l10n.settings_only_moderators,
+              title: isPermission ? phrase(context, 'post_permissions_admin_review_post') : context.l10n.settings_only_moderators,
               value: RadioButtonSetting.onlyModerator,
               groupValue: groupValue,
               onChanged: onChanged,
             ),
             const SizedBox(height: 32.0),
             _getRadioButtonTile(
-              title: context.l10n.settings_only_admins,
+              title: isPermission ? context.l10n.settings_only_admins : context.l10n.general_off,
               value: RadioButtonSetting.off,
               groupValue: groupValue,
               onChanged: onChanged,

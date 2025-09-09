@@ -11,6 +11,7 @@ class CommunityPostNotificationSettingPageState extends Equatable {
   RadioButtonSetting initialNewPostSetting = RadioButtonSetting.everyone;
 
   bool settingsChanged = false;
+  bool isLoading = false;
 
   copyWith(
       {RadioButtonSetting? reactPostSetting,
@@ -19,7 +20,8 @@ class CommunityPostNotificationSettingPageState extends Equatable {
       RadioButtonSetting? initialNewPostSetting,
       bool? isReactPostNetworkEnabled,
       bool? isNewPostNetworkEnabled,
-      bool settingsChanged = false}) {
+      bool settingsChanged = false,
+      bool? isLoading = false}) {
     return CommunityPostNotificationSettingPageState()
       ..reactPostSetting = reactPostSetting ?? this.reactPostSetting
       ..newPostSetting = newPostSetting ?? this.newPostSetting
@@ -31,7 +33,8 @@ class CommunityPostNotificationSettingPageState extends Equatable {
           isReactPostNetworkEnabled ?? this.isReactPostNetworkEnabled
       ..isNewPostNetworkEnabled =
           isNewPostNetworkEnabled ?? this.isNewPostNetworkEnabled
-      ..settingsChanged = settingsChanged;
+      ..settingsChanged = settingsChanged
+      ..isLoading = isLoading ?? this.isLoading;
   }
 
   @override
@@ -42,6 +45,7 @@ class CommunityPostNotificationSettingPageState extends Equatable {
         initialNewPostSetting,
         initialReactPostSetting,
         isReactPostNetworkEnabled,
-        isNewPostNetworkEnabled
+        isNewPostNetworkEnabled,
+        isLoading
       ];
 }

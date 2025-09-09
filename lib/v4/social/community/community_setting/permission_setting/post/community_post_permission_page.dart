@@ -1,5 +1,6 @@
 // ignore: must_be_immutable
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -33,6 +34,7 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityPostPermissionPageState state) {
+    final behavior = FreedomUIKitBehavior.instance.communityPermissionSettingBehavior;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
@@ -46,12 +48,16 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
                       context.read<CommunityPostPermissionPageBloc>().add(
                               CommunityPostPermissionSettingSaveEvent(
                                   context.read<AmityToastBloc>(), () {
+                                    if (behavior.onSaveSuccess != null) {
+                                      behavior.onSaveSuccess?.call(context);
+                                      return;
+                                    }
                             Navigator.pop(context);
                             Navigator.pop(context);
                           }));
                     }
                   : null,
-              child: Padding(
+              child: behavior.buildSaveButton?.call(context, state.settingsChanged) ?? Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
                   context.l10n.general_save,
@@ -65,7 +71,7 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
                 ),
               ),
             )),
-        body: ListView(
+        body: (state.isLoading) ? Container() : ListView(
           children: [
             SettingRadioButtonWidget(
                 title: context.l10n.community_post_permission_title_label,
@@ -78,7 +84,9 @@ class AmityCommunityPostPermissionPage extends NewBasePage {
                           postPermissionSetting:
                               value ?? RadioButtonSetting.everyone));
                 },
-                theme: theme),
+                theme: theme,
+                isPermission: true,
+            ),
           ],
         ));
   }

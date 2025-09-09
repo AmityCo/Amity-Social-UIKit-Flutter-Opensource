@@ -1,8 +1,10 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/community_notification_setting_extension.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/element/setting_radio_button.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_setting/notification_setting/freedom_community_notification_setting_behavior.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +19,17 @@ class CommunityPostNotificationSettingPageBloc extends Bloc<
   late AmityCommunityNotification _communityNotification;
   AmityCommunityNotificationSettings? notificationSettings;
 
+  FreedomCommunityNotificationSettingBehavior get _behavior => FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
+
   CommunityPostNotificationSettingPageBloc(AmityCommunity community, AmityCommunityNotificationSettings? notificationSettings)
       : super(CommunityPostNotificationSettingPageState()) {
     _communityNotification =
         AmityCommunityNotification(community.communityId ?? '');
 
-    if (notificationSettings != null) {
+    final initialPostSetting = _behavior.initialPostSetting;
+    if (initialPostSetting != null) {
+      initialPostSetting(community: community, emit: emit, state: state);
+    } else if (notificationSettings != null) {
         _emitInitialState(notificationSettings!);
     } else {
        _communityNotification.getSettings().then((settings) {
@@ -42,6 +49,12 @@ class CommunityPostNotificationSettingPageBloc extends Bloc<
     });
 
     on<CommunityPostNotificationSettingSaveEvent>((event, emit) async {
+      final savePostSetting = _behavior.savePostSetting;
+      if (savePostSetting != null) {
+        savePostSetting(community: community, event: event, state: state);
+        return;
+      }
+
       final postReactSetting = state.reactPostSetting == RadioButtonSetting.off ? PostReacted.disable() : state.reactPostSetting == RadioButtonSetting.everyone ? PostReacted.enable(All()) : PostReacted.enable(Only(AmityRoles(roles: ["moderator", "community-moderator"])));
       final postCreationSetting = state.newPostSetting == RadioButtonSetting.off ? PostCreated.disable() : state.newPostSetting == RadioButtonSetting.everyone ? PostCreated.enable(All()) : PostCreated.enable(Only(AmityRoles(roles: ["moderator", "community-moderator"])));
 

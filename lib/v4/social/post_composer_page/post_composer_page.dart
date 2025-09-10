@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'dart:math';
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -48,6 +49,13 @@ class AmityPostComposerPage extends NewBasePage {
 
   AmityPostComposerPage({Key? key, required this.options, this.onPopRequested})
       : super(key: key, pageId: 'post_composer_page');
+
+  final Cubit<int>? postAsCubit =
+      AmityUIKit4Manager.freedomBehavior.postComposerPageBehavior.postAsCubit;
+  final addIsCreateByAdminMetadata = AmityUIKit4Manager
+      .freedomBehavior.postComposerPageBehavior.addIsCreateByAdminMetadata;
+  final buildPostAsButton = AmityUIKit4Manager
+      .freedomBehavior.postComposerPageBehavior.buildPostAsButton;
 
   @override
   Widget buildPage(BuildContext context) {
@@ -170,6 +178,8 @@ class AmityPostComposerPage extends NewBasePage {
                             child: Column(
                               children: [
                                 const SizedBox(height: 10),
+                                if (options.community != null)
+                                  buildPostAsButton(options.community!),
                                 buildTextField(context, communityId,
                                     minBottomSheetSize, maxBottomSheetSize),
                                 const SizedBox(height: 10),
@@ -306,7 +316,7 @@ class AmityPostComposerPage extends NewBasePage {
         ),
       ),
     )
-    .then(
+        .then(
       (value) {
         AmityCameraResult? result = value;
 
@@ -515,6 +525,7 @@ class AmityPostComposerPage extends NewBasePage {
     final mentionUserIds = textController.getMentionUserIds();
     final mentionMetadataJson =
         AmityMentionMetadataCreator(mentionMetadataList).create();
+    addIsCreateByAdminMetadata(mentionMetadataJson);
 
     postCreatorBuilder
         .mentionUsers(mentionUserIds)

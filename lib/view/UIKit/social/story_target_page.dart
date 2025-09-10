@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
@@ -8,9 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class AmityStoryTargetSelectionPage extends StatefulWidget {
-  const AmityStoryTargetSelectionPage({
+  AmityStoryTargetSelectionPage({
     super.key,
   });
+
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
 
   @override
   State<AmityStoryTargetSelectionPage> createState() => _AmityStoryTargetSelectionPageState();
@@ -46,7 +50,7 @@ class _AmityStoryTargetSelectionPageState extends State<AmityStoryTargetSelectio
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            "Share to",
+            widget._getText(context, 'share_to_title') ?? "Share to",
             style: Provider.of<AmityUIConfiguration>(context).titleTextStyle.copyWith(color: Provider.of<AmityUIConfiguration>(context).appColors.base),
           ),
           backgroundColor: Colors.transparent,
@@ -63,7 +67,8 @@ class _AmityStoryTargetSelectionPageState extends State<AmityStoryTargetSelectio
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      "My community",
+                      widget._getText(context, 'share_to_my_community') ??
+                          "My community",
                       style: TextStyle(fontSize: 15, color: Provider.of<AmityUIConfiguration>(context).appColors.userProfileTextColor),
                     ),
                   ),

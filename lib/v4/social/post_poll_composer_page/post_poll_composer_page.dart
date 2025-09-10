@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
@@ -35,6 +36,9 @@ class AmityPollPostComposerPage extends NewBasePage {
       this.targetCommunityName,
       this.onPopRequested})
       : super(key: key, pageId: 'poll_post_composer_page');
+
+  final getEndDateFormat = AmityUIKit4Manager
+      .freedomBehavior.postPollComposerPageBehavior.getEndDateFormat;
 
   @override
   Widget buildPage(BuildContext context) {
@@ -513,7 +517,7 @@ class AmityPollPostComposerPage extends NewBasePage {
 
   Widget _buildPollDurationSection(
       PollComposerState state, PollComposerBloc bloc, BuildContext context) {
-    final DateFormat formatter = DateFormat("dd MMM 'at' hh:mm a", Localizations.localeOf(context).toLanguageTag());
+    final DateFormat formatter = getEndDateFormat(context);
     final bool isCustomSelected = state.selectedPollDurationIndex == -1;
 
     return Column(
@@ -767,7 +771,9 @@ class AmityPollPostComposerPage extends NewBasePage {
             ),
             child: Text(
               state.customDate != null
-                  ? DateFormat("dd MMM yyyy", Localizations.localeOf(context).toLanguageTag()).format(state.customDate!)
+                  ? DateFormat("dd MMM yyyy",
+                          Localizations.localeOf(context).toLanguageTag())
+                      .format(state.customDate!)
                   : context.l10n.poll_select_date,
               style: TextStyle(
                 fontSize: 14,

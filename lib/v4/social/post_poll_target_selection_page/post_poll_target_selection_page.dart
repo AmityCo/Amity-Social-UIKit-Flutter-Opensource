@@ -26,7 +26,7 @@ class AmityPostPollTargetSelectionPage extends NewBasePage {
             .add(PostTargetSelectionEventInitial());
 
         scrollController.addListener(
-              () {
+          () {
             if (scrollController.position.pixels ==
                 scrollController.position.maxScrollExtent) {
               context
@@ -42,9 +42,10 @@ class AmityPostPollTargetSelectionPage extends NewBasePage {
               backgroundColor: theme.backgroundColor,
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
-                title: const Text(
-                  'Post to',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
+                title: Text(
+                  context.l10n.post_target_selection_title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 17),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(
@@ -53,7 +54,7 @@ class AmityPostPollTargetSelectionPage extends NewBasePage {
                     width: 24,
                     height: 24,
                     colorFilter:
-                    ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                        ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -92,18 +93,18 @@ class AmityPostPollTargetSelectionPage extends NewBasePage {
                             reverseTransitionDuration: Duration.zero,
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
-                                PopScope(
-                                  canPop: true,
-                                  child: AmityPollPostComposerPage(
-                                    targetId: AmityCoreClient.getUserId(),
-                                    targetType: AmityPostTargetType.USER,
-                                    onPopRequested: (shouldPopCaller) {
-                                      if (shouldPopCaller) {
-                                        Navigator.of(context).pop();
-                                      }
-                                    },
-                                  ),
-                                ),
+                                    PopScope(
+                              canPop: true,
+                              child: AmityPollPostComposerPage(
+                                targetId: AmityCoreClient.getUserId(),
+                                targetType: AmityPostTargetType.USER,
+                                onPopRequested: (shouldPopCaller) {
+                                  if (shouldPopCaller) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                              ),
+                            ),
                           ),
                         );
                       },
@@ -345,7 +346,7 @@ class AmityPostPollTargetSelectionPage extends NewBasePage {
             width: 64,
             height: 56,
             padding:
-            const EdgeInsets.only(top: 8, left: 16, right: 8, bottom: 8),
+                const EdgeInsets.only(top: 8, left: 16, right: 8, bottom: 8),
             child: Container(
               width: 40,
               height: 40,

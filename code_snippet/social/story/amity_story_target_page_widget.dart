@@ -12,8 +12,7 @@ class AmityStoryTargetPageWidget {
   void gotoStoryTargetPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const AmityStoryTargetSelectionPage(
-        ),
+        builder: (context) => AmityStoryTargetSelectionPage(),
       ),
     );
   }

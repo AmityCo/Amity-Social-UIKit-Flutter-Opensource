@@ -11,6 +11,8 @@ class AmityEmptyNewsFeedComponent extends NewBaseComponent {
   AmityEmptyNewsFeedComponent({Key? key, String? pageId})
       : super(key: key, pageId: pageId, componentId: 'empty_newsfeed');
 
+  final getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
   final bool showExploreTab =
       AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showExploreTab;
   final bool showCreateCommunityButton = AmityUIKit4Manager
@@ -48,7 +50,8 @@ class AmityEmptyNewsFeedComponent extends NewBaseComponent {
                 SizedBox(
                   width: 252,
                   child: Text(
-                    'Your feed is empty',
+                    getText(context, 'feed_empty_title') ??
+                        'Your feed is empty',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: theme.baseColorShade1,
@@ -58,7 +61,8 @@ class AmityEmptyNewsFeedComponent extends NewBaseComponent {
                   ),
                 ),
                 Text(
-                  'Find community or create your own ',
+                  getText(context, 'feed_empty_desc') ??
+                      'Find community or create your own ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: theme.baseColorShade1,

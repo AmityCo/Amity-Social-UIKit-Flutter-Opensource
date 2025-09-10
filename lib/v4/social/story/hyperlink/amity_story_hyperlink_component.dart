@@ -1,5 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -65,6 +67,9 @@ class HyperLinkBottomSheetBuilder extends StatefulWidget {
     required this.onHyperLinkAdded,
     required this.onHyperLinkRemoved,
   });
+
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
 
   @override
   State<HyperLinkBottomSheetBuilder> createState() => _HyperLinkBottomSheetBuilderState();
@@ -143,10 +148,18 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                       } else {
                         ConfirmationDialog().show(
                           context: context,
-                          title: 'Unsaved changes',
-                          detailText: 'are you sure you want to cancel? Your Changes won\'t be saved.',
-                          leftButtonText: 'No',
-                          rightButtonText: 'Yes',
+                          title: widget._getText(
+                                  context, 'modal_unsaved_changes_title') ??
+                              'Unsaved changes',
+                          detailText: widget._getText(
+                                  context, 'modal_unsaved_changes_desc') ??
+                              'are you sure you want to cancel? Your Changes won\'t be saved.',
+                          leftButtonText: widget._getText(
+                                  context, 'modal_unsaved_changes_back') ??
+                              'No',
+                          rightButtonText: widget._getText(
+                                  context, 'modal_unsaved_changes_cta') ??
+                              'Yes',
                           confrimColor: Colors.blue,
                           onConfirm: () {
                             Navigator.of(context).pop();
@@ -155,7 +168,8 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                       }
                     },
                     child: Text(
-                      'Cancel',
+                      widget._getText(context, 'story_add_link_cancel') ??
+                          'Cancel',
                       style: TextStyle(
                         fontSize: 15,
                         fontFamily: "SF Pro Text",
@@ -166,7 +180,8 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                   (state is LoadingStateHyperLink)
                       ? const CircularProgressIndicator()
                       : Text(
-                          'Add Link',
+                          widget._getText(context, 'story_add_link_title') ??
+                              'Add Link',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
@@ -200,7 +215,7 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
               child: Row(
                 children: [
                   Text(
-                    "URL",
+                    widget._getText(context, 'story_add_link_url') ?? "URL",
                     style: TextStyle(fontFamily: "SF Pro Text", fontSize: 17, color: widget.theme.baseColor, fontWeight: FontWeight.w600),
                   ),
                   const Text(
@@ -228,7 +243,13 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                   setState(() {
                     var isValid = isURL(value, requireTld: true, requireProtocol: false);
                     if (!isValid) {
-                      BlocProvider.of<HyperlinkBloc>(context).add(OnURLErrorEvent(error: "Please enter a valid URL."));
+                      BlocProvider.of<HyperlinkBloc>(context).add(
+                        OnURLErrorEvent(
+                          error: widget._getText(
+                                  context, 'story_add_link_url_error') ??
+                              "Please enter a valid URL.",
+                        ),
+                      );
                     } else {
                       BlocProvider.of<HyperlinkBloc>(context).add(OnURLErrorEvent(error: null));
                     }
@@ -248,7 +269,9 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Customize link text",
+                      widget._getText(
+                              context, 'story_add_link_customize_link_text') ??
+                          "Customize link text",
                       style: TextStyle(fontFamily: "SF Pro Text", color: widget.theme.baseColor, fontSize: 17, fontWeight: FontWeight.w600),
                     ),
                     Text(
@@ -267,7 +290,9 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: AmityHyperlinkTextField(
-                hint: "Name your link",
+                hint: widget._getText(context,
+                        'story_add_link_customize_link_text_placeholder') ??
+                    "Name your link",
                 textColor: widget.theme.baseColor,
                 hintColor: widget.theme.baseColorShade3,
                 borderColor: widget.theme.baseColorShade3,
@@ -287,9 +312,11 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                 : Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    child: const Text(
-                      "This text will show on the link instead of URL.",
-                      style: TextStyle(
+                    child: Text(
+                      widget._getText(context,
+                              'story_add_link_customize_link_text_desc') ??
+                          "This text will show on the link instead of URL.",
+                      style: const TextStyle(
                         fontFamily: "SF Pro Text",
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
@@ -303,10 +330,16 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                         onTap: () {
                           ConfirmationDialog().show(
                             context: context,
-                            title: 'Remove Link?',
-                            detailText: 'This link will be removed from story.',
-                            leftButtonText: 'Cancel',
-                            rightButtonText: 'Remove',
+                            title: widget._getText(
+                                    context, 'modal_remove_link_title') ??
+                                'Remove Link?',
+                            detailText: widget._getText(
+                                    context, 'modal_remove_link_desc') ??
+                                'This link will be removed from story.',
+                            leftButtonText: context.l10n.general_cancel,
+                            rightButtonText: widget._getText(
+                                    context, 'modal_remove_link_cta') ??
+                                'Remove',
                             onConfirm: () {
                               context.read<HyperlinkBloc>().add(OnRemoveHyperLink());
                               Navigator.of(context).pop();
@@ -328,7 +361,9 @@ class _HyperLinkBottomSheetBuilderState extends State<HyperLinkBottomSheetBuilde
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                "Remove link",
+                                widget._getText(
+                                        context, 'story_add_link_remove') ??
+                                    "Remove link",
                                 style: TextStyle(
                                   fontFamily: "SF Pro Text",
                                   fontSize: 15,
@@ -361,6 +396,9 @@ class DoneButton extends BaseElement {
   final VoidCallback? onPressed;
   DoneButton({super.key, required this.onPressed, String? pageId, String? componentId}) : super(pageId: pageId, componentId: componentId, elementId: "done_button");
 
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
+  
   @override
   Widget buildElement(BuildContext context) {
     return TextButton(
@@ -370,8 +408,8 @@ class DoneButton extends BaseElement {
         disabledForegroundColor: theme.primaryColor.blend(ColorBlendingOption.shade2),
       ),
       onPressed: onPressed,
-      child: const Text(
-        'Done',
+      child: Text(
+        _getText(context, 'story_add_link_done') ?? 'Done',
       ),
     );
   }

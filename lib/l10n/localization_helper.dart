@@ -1,6 +1,5 @@
 import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:flutter/material.dart';
-
 import 'generated/app_localizations.dart';
 
 // Extension for easier access to localized strings

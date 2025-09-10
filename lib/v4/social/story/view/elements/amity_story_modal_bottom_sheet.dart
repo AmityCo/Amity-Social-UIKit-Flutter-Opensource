@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,10 @@ class AmityStoryModelBottomSheet extends StatelessWidget {
   final Function (String) deleteClicked;
   // final BuildContext parentContext ;
   // final Function (String) deleteStory;
-  const AmityStoryModelBottomSheet({super.key, required this.storyId, required this.onDeleted  , required this.deleteClicked});
+  AmityStoryModelBottomSheet({super.key, required this.storyId, required this.onDeleted  , required this.deleteClicked});
+
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +66,7 @@ class AmityStoryModelBottomSheet extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 22),
                 child: AmityBottomSheetActionItem(
                   icon: "assets/Icons/ic_bin_red.svg",
-                  text: 'Delete story',
+                  text: _getText(context, 'story_delete') ?? 'Delete story',
                   onTap: () {
                     deleteClicked(storyId);
                   },

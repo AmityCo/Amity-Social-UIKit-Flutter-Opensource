@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/create_story_page_bloc.dart';
@@ -116,7 +117,7 @@ class AmityCreateStoryPage extends NewBasePage {
                                         height: 44,
                                         child: Center(
                                           child: Text(
-                                            'Photo',
+                                            context.l10n.general_photo,
                                             style: (state is ImageSelectedState) ? getSelectedTextStyle(theme) : getUnselectedTextStyle(theme),
                                           ),
                                         ),
@@ -132,7 +133,7 @@ class AmityCreateStoryPage extends NewBasePage {
                                         height: 44,
                                         child: Center(
                                           child: Text(
-                                            'Video',
+                                            context.l10n.general_video,
                                             style: (state is VideoSelectedState) ? getSelectedTextStyle(theme) : getUnselectedTextStyle(theme),
                                           ),
                                         ),

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator.dart';
@@ -63,6 +64,9 @@ class CommentTrayComponent extends StatefulWidget {
     this.community, // Include in constructor
   });
 
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
+
   @override
   State<CommentTrayComponent> createState() => _CommentTrayComponentState();
 }
@@ -94,7 +98,10 @@ class _CommentTrayComponentState extends State<CommentTrayComponent> {
                   controller: widget.scrollController,
                   slivers: [
                     SliverAppBar(
-                      title: const Text('Comments'),
+                      title: Text(
+                        widget._getText(context, 'story_comments_title') ??
+                            'Comments',
+                      ),
                       titleTextStyle: TextStyle(
                         color: widget.theme.baseColor,
                         fontSize: 17,

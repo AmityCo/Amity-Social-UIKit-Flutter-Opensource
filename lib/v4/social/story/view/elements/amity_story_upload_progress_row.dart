@@ -1,18 +1,22 @@
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:flutter/material.dart';
 
 class AmityStoryUploadProgressRow extends StatelessWidget {
-  const AmityStoryUploadProgressRow({super.key});
+  AmityStoryUploadProgressRow({super.key});
+
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10),
-      child: const Row(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
+          const SizedBox(
             width: 20,
             height: 20,
             child: CircularProgressIndicator(
@@ -20,10 +24,10 @@ class AmityStoryUploadProgressRow extends StatelessWidget {
               backgroundColor: Colors.white,
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Text(
-            "Uploading...",
-            style: TextStyle(color: Colors.white , fontSize: 15 , fontFamily: "SF Pro Text" , fontWeight: FontWeight.w400),
+            _getText(context, 'story_uploading') ?? "Uploading...",
+            style: const TextStyle(color: Colors.white , fontSize: 15 , fontFamily: "SF Pro Text" , fontWeight: FontWeight.w400),
           ),
         ],
       ),

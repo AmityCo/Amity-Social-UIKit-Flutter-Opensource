@@ -1,5 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_story_engagement_row.dart';
@@ -40,7 +42,7 @@ class AmityStoryBottomRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state == AmityStorySyncState.SYNCING) {
-      return const AmityStoryUploadProgressRow();
+      return AmityStoryUploadProgressRow();
     }
 
     if (state == AmityStorySyncState.SYNCED) {
@@ -82,7 +84,10 @@ class AmityStoryUploadFailedRow extends StatelessWidget {
   final String storyId;
   final AmityStory story;
   final Function onStoryDelete;
-  const AmityStoryUploadFailedRow({super.key, required this.storyId, required this.story , required this.onStoryDelete});
+  AmityStoryUploadFailedRow({super.key, required this.storyId, required this.story , required this.onStoryDelete});
+
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
 
   @override
   Widget build(BuildContext context) {
@@ -104,9 +109,10 @@ class AmityStoryUploadFailedRow extends StatelessWidget {
                 width: 16,
               ),
               const SizedBox(width: 8),
-              const Text(
-                "Failed to upload",
-                style: TextStyle(
+              Text(
+                _getText(context, 'error_message_failed_to_upload_story') ??
+                    "Failed to upload",
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 15,
                   fontFamily: "SF Pro Text",
@@ -123,12 +129,14 @@ class AmityStoryUploadFailedRow extends StatelessWidget {
               }
               AmityAlertDialogWithThreeActions().show(
                   context: context,
-                  title: "Failed to upload story",
-                  detailText: "Would you like to discard or retry uploading?",
-                  actionOneText: "Retry",
-                  actionTwoText: "Discard",
+                  title: _getText(context, 'failed_upload_story_title') ??
+                      "Failed to upload story",
+                  detailText: _getText(context, 'failed_upload_story_desc') ??
+                      "Would you like to discard or retry uploading?",
+                  actionOneText: _getText(context, 'general_retry') ?? "Retry",
+                  actionTwoText: context.l10n.general_discard,
                   actionOneColor: Colors.blue,
-                  dismissText: "Cancel",
+                  dismissText: context.l10n.general_cancel,
                   actionOne: () {
                     BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
                     if (story.dataType == AmityStoryDataType.VIDEO) {

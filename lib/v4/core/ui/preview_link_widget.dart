@@ -20,6 +20,8 @@ class PreviewLinkWidget extends StatefulWidget {
     this.onTap,
   }) : super(key: key);
 
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
   final LaunchMode urlLaunchMode = AmityUIKit4Manager
       .freedomBehavior.postContentComponentBehavior.urlLaunchMode;
 
@@ -174,14 +176,18 @@ class _PreviewLinkWidgetState extends State<PreviewLinkWidget> {
     if (_metadata == null) {
       return [
         Text(
-          'Preview not available',
+          widget._getText(
+                  context, 'community_posts_preview_not_available_title') ??
+              'Preview not available',
           style: AmityTextStyle.bodyBold(widget.theme.baseColor),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 2),
         Text(
-          'Please make sure the URL is correct and try again.',
+          widget._getText(
+                  context, 'community_posts_preview_not_available_desc') ??
+              'Please make sure the URL is correct and try again.',
           style: AmityTextStyle.body(widget.theme.baseColorShade2),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,

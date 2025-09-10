@@ -92,7 +92,7 @@ class CreateActionBottomSheet {
                   } else {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const Scaffold(
+                        builder: (context) => Scaffold(
                           body: AmityStoryTargetSelectionPage(
                           ),
                         ),

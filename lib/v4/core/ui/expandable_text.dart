@@ -58,6 +58,11 @@ class _ExpandableTextState extends State<ExpandableText> {
 
   final ProcessedTextCache _textCache = ProcessedTextCache();
 
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
+  late final String localizedShowMoreText =
+      _getText(context, 'community_posts_see_more') ?? widget.showMoreText;
+
   @override
   void initState() {
     super.initState();
@@ -291,7 +296,7 @@ class _ExpandableTextState extends State<ExpandableText> {
       }
 
       // Calculate where to truncate the text
-      final String showMoreString = widget.showMoreText;
+      final String showMoreString = localizedShowMoreText;
       final TextSpan showMoreSpan = TextSpan(
         children: [
           TextSpan(text: '... ', style: widget.style),
@@ -420,7 +425,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         children: [
           TextSpan(text: safeSubstring(text, 0, mid), style: widget.style),
           TextSpan(text: '... ', style: widget.style),
-          TextSpan(text: widget.showMoreText, style: widget.linkStyle),
+          TextSpan(text: localizedShowMoreText, style: widget.linkStyle),
         ],
       );
 
@@ -438,7 +443,7 @@ class _ExpandableTextState extends State<ExpandableText> {
     // Ensure high value is in valid range
     high = max(0, min(high, maxSearchLength));
 
-    return max(0, high - widget.showMoreText.length + 4); // Add 4 for "... "
+    return max(0, high - localizedShowMoreText.length + 4); // Add 4 for "... "
   }
 
   Widget _buildExpandedText() {

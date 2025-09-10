@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
@@ -57,6 +59,9 @@ class StoryDarftPageBuilder extends StatefulWidget {
     required this.targetType,
     this.isFromGallery,
   });
+
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
 
   @override
   State<StoryDarftPageBuilder> createState() => _StoryDarftPageBuilderState();
@@ -223,10 +228,16 @@ class _StoryDarftPageBuilderState extends State<StoryDarftPageBuilder> {
                               onTap: () {
                                 ConfirmationDialog().show(
                                   context: context,
-                                  title: 'Discard this Story?',
-                                  detailText: 'The story will be permanently deleted. It cannot be undone.',
-                                  leftButtonText: 'Cancel',
-                                  rightButtonText: 'Discard',
+                                  title: widget._getText(context,
+                                          'modal_discard_story_title') ??
+                                      'Discard this Story?',
+                                  detailText: widget._getText(context,
+                                          'modal_discard_story_desc') ??
+                                      'modal_discard_story_desc',
+                                  leftButtonText: context.l10n.general_cancel,
+                                  rightButtonText: widget._getText(
+                                          context, 'modal_discard_story_cta') ??
+                                      'Discard',
                                   onConfirm: () {
                                     Navigator.of(context).pop();
                                   },
@@ -444,6 +455,9 @@ class ShareButton extends BaseElement {
   final String? pageId;
   ShareButton({super.key, required this.onClick, required this.storyTarget, this.componentId, this.pageId}) : super(pageId: pageId, componentId: componentId, elementId: "share_story_button");
 
+  final _getText =
+      AmityUIKit4Manager.freedomBehavior.localizationBehavior.getText;
+  
   @override
   Widget buildElement(BuildContext context) {
     return GestureDetector(
@@ -463,7 +477,7 @@ class ShareButton extends BaseElement {
             Container(
               margin: const EdgeInsets.only(left: 8, right: 8),
               child: Text(
-                "Share Story",
+                _getText(context, 'story_share_cta') ?? "Share Story",
                 style: TextStyle(
                   color: theme.baseColor,
                   fontSize: 16,

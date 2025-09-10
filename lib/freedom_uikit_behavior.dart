@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_crea
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_dm_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_composer_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_content_component_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_poll_composer_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_social_home_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_view_story_page_behavior.dart';
 
@@ -31,6 +32,9 @@ class FreedomUIKitBehavior {
 
   FreedomPostContentComponentBehavior postContentComponentBehavior =
       FreedomPostContentComponentBehavior();
+
+  FreedomPostPollComposerPageBehavior postPollComposerPageBehavior =
+      FreedomPostPollComposerPageBehavior();
 
   FreedomSocialHomePageBehavior socialHomePageBehavior =
       FreedomSocialHomePageBehavior();

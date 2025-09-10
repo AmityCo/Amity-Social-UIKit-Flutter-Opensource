@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
@@ -33,6 +34,7 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
 
   Widget _getPageWidget(BuildContext context,
       CommunityCommentNotificationSettingPageState state) {
+    final behavior = FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
@@ -47,11 +49,15 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
                           .read<CommunityCommentNotificationSettingPageBloc>()
                           .add(CommunityCommentNotificationSettingSaveEvent(
                               context.read<AmityToastBloc>(), () {
+                                if (behavior.onSaveSuccess != null) {
+                                  behavior.onSaveSuccess?.call(context);
+                                  return;
+                                }
                             Navigator.of(context)..pop()..pop()..pop();
                           }));
                     }
                   : null,
-              child: Padding(
+              child: behavior.buildSaveButton?.call(context, state.settingsChanged) ?? Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
                   context.l10n.general_save,
@@ -65,9 +71,9 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
                 ),
               ),
             )),
-        body: ListView(
+        body: (state.isLoading) ? Container() : ListView(
           children: [
-            if (state.isReactCommentNetworkEnabled) ...[
+            if (state.isReactCommentNetworkEnabled || behavior.forceShowComment()) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_react_comments,
                   description: context.l10n.settings_react_comments_description,
@@ -85,7 +91,7 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
               _getDividerWidget(),
             ],
 
-            if (state.isNewCommentNetworkEnabled) ...[
+            if (state.isNewCommentNetworkEnabled || behavior.forceShowComment()) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_new_comments,
                   description: context.l10n.settings_new_comments_description,
@@ -103,7 +109,7 @@ class AmityCommunityCommentsNotificationSettingPage extends NewBasePage {
               _getDividerWidget(),
             ],
 
-            if (state.isReplyCommentNetworkEnabled) ...[
+            if (state.isReplyCommentNetworkEnabled || behavior.forceShowComment()) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_new_replies,
                   description: context.l10n.settings_new_replies_description,

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_membership/freedom_community_membership_behavior.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ class CommunityAddMemberPageBloc
   final ScrollController scrollController;
   UserLiveCollection? _userLiveCollection;
   StreamSubscription<List<AmityUser>>? _userStreamSubscription;
+
+  FreedomCommunityMembershipBehavior get _behavior => FreedomUIKitBehavior.instance.communityMembershipBehavior;
 
   CommunityAddMemberPageBloc({required this.scrollController, required List<AmityUser> selectedUsers})
       : super(CommunityAddMemberPageState().copyWith(selectedUsers: selectedUsers)) {
@@ -45,7 +49,7 @@ class CommunityAddMemberPageBloc
     });
 
     on<CommunityAddMemberPageUserLoadEvent>((event, emit) {
-      emit(state.copyWith(users: event.users));
+      emit(state.copyWith(users: event.users.where(_behavior.noFreedomAdminUser).toList()));
     });
 
     on<CommunityAddMemberPageSelectUserEvent>((event, emit) {

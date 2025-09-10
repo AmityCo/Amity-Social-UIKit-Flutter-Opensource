@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_membership/freedom_community_membership_behavior.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,8 @@ class CommunityMembershipPageBloc
   StreamSubscription<List<AmityCommunityMember>>? memberStreamSubscription;
   StreamSubscription<List<AmityCommunityMember>>? moderatorStreamSubscription;
 
+  FreedomCommunityMembershipBehavior get _behavior => FreedomUIKitBehavior.instance.communityMembershipBehavior;
+
   CommunityMembershipPageBloc(
       {required this.community,
       required this.memberScrollController,
@@ -29,7 +33,7 @@ class CommunityMembershipPageBloc
       : super(CommunityMembershipPageState()) {
     on<CommunityMembershipPageMemberLoadedEvent>((event, emit) {
       emit(state.copyWith(
-        members: event.members,
+        members: event.members.where(_behavior.noFreedomAdminMember).toList(),
       ));
     });
 
@@ -72,7 +76,7 @@ class CommunityMembershipPageBloc
 
     on<CommunityMembershipPageModeratorLoadedEvent>((event, emit) {
       emit(state.copyWith(
-        moderators: event.moderators,
+        moderators: event.moderators.where(_behavior.noFreedomAdminMember).toList(),
       ));
     });
 
@@ -143,7 +147,12 @@ class CommunityMembershipPageBloc
       switch (event.action) {
         case CommunityMembershipPageBottomSheetAction.promote:
           repository.moderation(community.communityId ?? '').addRole(
-              'community-moderator', [event.member.userId ?? '']).then((value) {
+              'community-moderator', [event.member.userId ?? '']).then((value) async {
+            final promoteUser = _behavior.promoteUser;
+            if (promoteUser != null) {
+              await promoteUser(community, event.member);
+              return;
+            }
             event.toastBloc.add(AmityToastShort(
                 message: event.successMessage,
                 icon: AmityToastIcon.success));
@@ -155,7 +164,12 @@ class CommunityMembershipPageBloc
           break;
         case CommunityMembershipPageBottomSheetAction.demote:
           repository.moderation(community.communityId ?? '').removeRole(
-              'community-moderator', [event.member.userId ?? '']).then((value) {
+              'community-moderator', [event.member.userId ?? '']).then((value) async {
+            final demoteUser = _behavior.demoteUser;
+            if (demoteUser != null) {
+              await demoteUser(community, event.member);
+              return;
+            }
             event.toastBloc.add(AmityToastShort(
                 message:
                     event.successMessage,

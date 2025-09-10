@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -7,6 +8,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_creation/member/community_add_member_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/bloc/community_membership_page_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_membership/freedom_community_membership_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   AmityCommunityMembershipPage({super.key, required this.community})
       : super(pageId: 'community_membership_page');
+
+  FreedomCommunityMembershipBehavior get _behavior => FreedomUIKitBehavior.instance.communityMembershipBehavior;
 
   @override
   Widget buildPage(BuildContext context) {
@@ -41,13 +45,10 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityMembershipPageState state) {
-    final phrase =
-        AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-          title: phrase?.call(context, 'all_members_title') ??
-              context.l10n.community_all_members,
+          title: context.l10n.community_all_members,
           configProvider: configProvider,
           theme: theme,
           tailingButton: state.isCurrentUserModerator
@@ -91,12 +92,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   dividerColor: theme.baseColorShade4,
                   dividerHeight: 1.0, // Makes indicator match text width
                   tabs: [
-                    Tab(
-                        text: phrase?.call(context, 'all_members_moderators') ??
-                            context.l10n.community_members),
-                    Tab(
-                        text: phrase?.call(context, 'all_members_moderators') ??
-                            context.l10n.community_moderators),
+                    Tab(text: context.l10n.community_members),
+                    Tab(text: context.l10n.community_moderators),
                   ],
                 ),
                 Expanded(
@@ -106,9 +103,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         children: [
                           AmityTopSearchBarComponent(
                             textcontroller: _textcontroller,
-                            hintText: phrase?.call(
-                                    context, 'all_members_search_input') ??
-                                context.l10n.community_search_member_hint,
+                            hintText: context.l10n.community_search_member_hint,
                             showCancelButton: false,
                             onTextChanged: (value) {
                               context.read<CommunityMembershipPageBloc>().add(
@@ -158,6 +153,12 @@ class AmityCommunityMembershipPage extends NewBasePage {
       CommunityMembershipPageState state,
       AmityCommunityMember member,
       int index) {
+    final bool usePublicProfile = AmityUIKit4Manager
+        .freedomBehavior.postContentComponentBehavior.usePublicProfile;
+    final getUserPublicProfile = AmityUIKit4Manager
+        .freedomBehavior.postContentComponentBehavior.getUserPublicProfile;
+    final imageUrl = usePublicProfile ? getUserPublicProfile(user: member.user) : member.user?.avatarUrl;
+
     return Padding(
         padding: EdgeInsets.fromLTRB(16, (index == 0) ? 16 : 8, 16, 8),
         child: Row(
@@ -175,7 +176,7 @@ class AmityCommunityMembershipPage extends NewBasePage {
                     ),
                     child: member.user != null
                         ? AmityUserAvatar(
-                            avatarUrl: member.user?.avatarUrl,
+                            avatarUrl: imageUrl,
                             displayName: member.user?.displayName ??
                                 context.l10n.user_profile_unknown_name,
                             isDeletedUser: false)
@@ -271,8 +272,6 @@ class AmityCommunityMembershipPage extends NewBasePage {
 
   void _showBottomSheet(BuildContext context,
       CommunityMembershipPageState state, AmityCommunityMember member) {
-    final phrase =
-        AmityUIKit4Manager.freedomBehavior.communityMembershipBehavior.phrase;
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -315,12 +314,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                         ? 'assets/Icons/amity_ic_demote_member.svg'
                         : 'assets/Icons/amity_ic_promote_moderator.svg',
                     title: member.isModerator()
-                        ? phrase?.call(
-                                context, 'members_demote_to_moderator') ??
-                            context.l10n.community_demote_member
-                        : phrase?.call(
-                                context, 'members_promote_to_moderator') ??
-                            context.l10n.community_promote_moderator,
+                        ? context.l10n.community_demote_member
+                        : context.l10n.community_promote_moderator,
                     onTap: () {
                       final action = member.isModerator()
                           ? CommunityMembershipPageBottomSheetAction.demote
@@ -347,10 +342,8 @@ class AmityCommunityMembershipPage extends NewBasePage {
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? phrase?.call(context, 'members_unreport_user') ??
-                              context.l10n.user_unreport
-                          : phrase?.call(context, 'members_report_user') ??
-                              context.l10n.user_report,
+                          ? context.l10n.user_unreport
+                          : context.l10n.user_report,
                       onTap: () {
                         final isReporting =
                             !(member.user?.isFlaggedByMe ?? false);
@@ -375,30 +368,27 @@ class AmityCommunityMembershipPage extends NewBasePage {
                                 errorMessage));
                         Navigator.pop(context);
                       }),
-                  _buildListTile(
-                      assetPath: 'assets/Icons/ic_bin_red.svg',
-                      title: phrase?.call(
-                              context, 'members_remove_from_community') ??
-                          context.l10n.community_remove_member,
-                      isDestructive: true,
-                      onTap: () {
-                        context.read<CommunityMembershipPageBloc>().add(
-                            CommunityMembershipPageBottomSheetEvent(
-                                member,
-                                CommunityMembershipPageBottomSheetAction.remove,
-                                context.read<AmityToastBloc>(),
-                                context.l10n.member_remove_success,
-                                context.l10n.member_remove_error));
-                        Navigator.pop(context);
-                      })
+                  if (_behavior.showRemoveFromCommunity())
+                    _buildListTile(
+                        assetPath: 'assets/Icons/ic_bin_red.svg',
+                        title: context.l10n.community_remove_member,
+                        isDestructive: true,
+                        onTap: () {
+                          context.read<CommunityMembershipPageBloc>().add(
+                              CommunityMembershipPageBottomSheetEvent(
+                                  member,
+                                  CommunityMembershipPageBottomSheetAction.remove,
+                                  context.read<AmityToastBloc>(),
+                                  context.l10n.member_remove_success,
+                                  context.l10n.member_remove_error));
+                          Navigator.pop(context);
+                        })
                 ] else ...[
                   _buildListTile(
                       assetPath: 'assets/Icons/amity_ic_flag.svg',
                       title: member.user?.isFlaggedByMe ?? false
-                          ? phrase?.call(context, 'members_unreport_user') ??
-                              context.l10n.user_unreport
-                          : phrase?.call(context, 'members_report_user') ??
-                              context.l10n.user_report,
+                          ? context.l10n.user_unreport
+                          : context.l10n.user_report,
                       onTap: () {
                         final isReporting =
                             !(member.user?.isFlaggedByMe ?? false);

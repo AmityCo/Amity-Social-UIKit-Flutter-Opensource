@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -36,6 +37,7 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityPostNotificationSettingPageState state) {
+    final behavior = FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
@@ -50,11 +52,15 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
                           .read<CommunityPostNotificationSettingPageBloc>()
                           .add(CommunityPostNotificationSettingSaveEvent(
                               context.read<AmityToastBloc>(), () {
+                                if (behavior.onSaveSuccess != null) {
+                                  behavior.onSaveSuccess?.call(context);
+                                  return;
+                                }
                             Navigator.of(context)..pop()..pop()..pop();
                           }));
                     }
                   : null,
-              child: Padding(
+              child: behavior.buildSaveButton?.call(context, state.settingsChanged) ?? Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
                   context.l10n.general_edit,
@@ -68,9 +74,9 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
                 ),
               ),
             )),
-        body: ListView(
+        body: (state.isLoading) ? Container() : ListView(
           children: [
-            if (state.isReactPostNetworkEnabled) ...[
+            if (state.isReactPostNetworkEnabled || behavior.forceShowPost()) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_react_posts,
                   description: context.l10n.settings_react_posts_description,
@@ -86,7 +92,7 @@ class AmityCommunityPostsNotificationSettingPage extends NewBasePage {
               _getDividerWidget(),
             ],
             
-            if (state.isNewPostNetworkEnabled) ...[
+            if (state.isNewPostNetworkEnabled || behavior.forceShowPost()) ...[
               SettingRadioButtonWidget(
                   title: context.l10n.settings_new_posts,
                   description: context.l10n.settings_new_posts_description,

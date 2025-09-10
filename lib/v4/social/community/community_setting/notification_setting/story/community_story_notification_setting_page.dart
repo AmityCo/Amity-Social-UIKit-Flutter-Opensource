@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
@@ -32,10 +33,11 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
 
   Widget _getPageWidget(
       BuildContext context, CommunityStoryNotificationSettingPageState state) {
+    final behavior = FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title: "Stories",
+            title: context.l10n.general_stories,
             configProvider: configProvider,
             theme: theme,
             leadingButton: SettingConfirmationBackButton(shouldShowConfirmationDialog: state.settingsChanged),
@@ -46,11 +48,15 @@ class AmityCommunityStoriesNotificationSettingPage extends NewBasePage {
                           .read<CommunityStoryNotificationSettingPageBloc>()
                           .add(CommunityStoryNotificationSettingSaveEvent(
                               context.read<AmityToastBloc>(), () {
+                                if (behavior.onSaveSuccess != null) {
+                                  behavior.onSaveSuccess?.call(context);
+                                  return;
+                                }
                             Navigator.of(context)..pop()..pop()..pop();
                           }));
                     }
                   : null,
-              child: Padding(
+              child: behavior.buildSaveButton?.call(context, state.settingsChanged) ?? Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Text(
                   'Save',

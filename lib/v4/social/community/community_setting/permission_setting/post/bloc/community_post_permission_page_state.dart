@@ -4,17 +4,20 @@ class CommunityPostPermissionPageState extends Equatable {
   final RadioButtonSetting postPermissionSetting;
   final RadioButtonSetting initialPostPermissionSetting;
   final bool settingsChanged;
+  final bool isLoading;
 
   CommunityPostPermissionPageState({
     this.postPermissionSetting = RadioButtonSetting.everyone,
     this.initialPostPermissionSetting = RadioButtonSetting.everyone,
     this.settingsChanged = false,
+    this.isLoading = false,
   });
 
   CommunityPostPermissionPageState copyWith({
     RadioButtonSetting? postPermissionSetting,
     RadioButtonSetting? initialPostPermissionSetting,
     bool? settingsChanged,
+    bool? isLoading,
   }) {
     return CommunityPostPermissionPageState(
       postPermissionSetting:
@@ -22,6 +25,7 @@ class CommunityPostPermissionPageState extends Equatable {
       initialPostPermissionSetting:
           initialPostPermissionSetting ?? this.initialPostPermissionSetting,
       settingsChanged: settingsChanged ?? this.settingsChanged,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 
@@ -30,5 +34,6 @@ class CommunityPostPermissionPageState extends Equatable {
         postPermissionSetting,
         initialPostPermissionSetting,
         settingsChanged,
+        isLoading,
       ];
 }

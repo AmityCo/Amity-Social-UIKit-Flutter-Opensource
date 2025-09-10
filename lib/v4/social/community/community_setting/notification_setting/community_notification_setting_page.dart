@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/freedom_uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
@@ -12,6 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityCommunityNotificationSettingPage extends NewBasePage {
+  get _behavior => FreedomUIKitBehavior.instance.communityNotificationSettingBehavior;
+
   AmityCommunityNotificationSettingPage(
       {super.key, required this.community, this.notificationSettings})
       : super(pageId: 'community_setting_page');
@@ -47,14 +50,14 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
                       if (state.isPostNetworkEnabled || state.isCommentNetworkEnabled || state.isStoryNetworkEnabled)
                         _getDividerWidget(),
 
-                      if (state.isPostNetworkEnabled)
+                      if (state.isPostNetworkEnabled || _behavior.forceShowPost())
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_post_notification_setting.svg',
                             context.l10n.profile_posts, onTap: () {
                           _goToPostSettingPage(context);
                         }),
 
-                      if (state.isCommentNetworkEnabled)
+                      if (state.isCommentNetworkEnabled || _behavior.forceShowComment())
                         _getSettingItemWidget(
                             'assets/Icons/amity_icon_comment_notification_setting.svg',
                             context.l10n.general_comments, onTap: () {
@@ -162,18 +165,18 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
   void _goToPostSettingPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
-            AmityCommunityPostsNotificationSettingPage(community: community, notificationSettings: notificationSettings)));
+            AmityCommunityPostsNotificationSettingPage(community: community, notificationSettings: _behavior.notDefaultSetting() ? null : notificationSettings)));
   }
 
   void _goToCommentSettingPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => AmityCommunityCommentsNotificationSettingPage(
-            community: community, notificationSettings: notificationSettings)));
+            community: community, notificationSettings: _behavior.notDefaultSetting() ? null : notificationSettings)));
   }
 
   void _goToStorySettingPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => AmityCommunityStoriesNotificationSettingPage(
-            community: community, notificationSettings: notificationSettings)));
+            community: community, notificationSettings: _behavior.notDefaultSetting() ? null : notificationSettings)));
   }
 }

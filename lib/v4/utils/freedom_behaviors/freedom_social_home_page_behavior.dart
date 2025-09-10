@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class FreedomSocialHomePageBehavior {
   final bool showTopNavigation = true;
+  final bool showTabs = true;
   final bool showExploreTab = true;
   final bool showMyCommunitiesTab = true;
   final bool useCustomTabButton = false;
@@ -15,7 +16,8 @@ class FreedomSocialHomePageBehavior {
     int index,
     String text,
     void Function() onPressed,
-  ) => const SizedBox.shrink();
+  ) =>
+      const SizedBox.shrink();
 
   Widget? buildCreatePostWidget(AmitySocialHomePageTab currentTab) => null;
 }

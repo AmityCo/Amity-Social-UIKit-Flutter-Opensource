@@ -16,6 +16,8 @@ class AmitySocialHomePage extends NewBasePage {
 
   final bool _showTopNavigation = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.showTopNavigation;
+  final bool _showTabs =
+      AmityUIKit4Manager.freedomBehavior.socialHomePageBehavior.showTabs;
   final _buildCreatePostWidget = AmityUIKit4Manager
       .freedomBehavior.socialHomePageBehavior.buildCreatePostWidget;
 
@@ -64,9 +66,10 @@ class AmitySocialHomePage extends NewBasePage {
               backgroundColor: theme.backgroundColor,
               body: Column(
                 children: [
-                  ScrollableTabs(
-                    pageId: 'social_home_page',
-                  ),
+                  if (_showTabs)
+                    ScrollableTabs(
+                      pageId: 'social_home_page',
+                    ),
                   const Expanded(child: TabContent()),
                   AmityToast(pageId: pageId, elementId: "toast"),
                 ],

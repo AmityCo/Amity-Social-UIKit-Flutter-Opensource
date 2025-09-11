@@ -24,6 +24,7 @@ import 'package:amity_uikit_beta_service_example/splash_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<CameraDescription> camera = <CameraDescription>[];
@@ -68,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _customSocketUrl = TextEditingController();
   final TextEditingController _customMqttUrl = TextEditingController();
   final TextEditingController _customUploadUrl = TextEditingController();
+  final TextEditingController _serverKey = TextEditingController();
   @override
   void initState() {
     _customHttpUrl.text = "https://api.staging.amity.co/";
@@ -75,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _customUploadUrl.text = "https://upload.staging.amity.co/";
     _customMqttUrl.text = "ssq.staging.amity.co";
     _apiKey.text = "b0efe90c3bdda2304d628918520c1688845889e4bc363d2c";
+    _serverKey.text = "";
     super.initState();
     _loadPreferences();
   }
@@ -83,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _apiKey.text = prefs.getString('apiKey') ?? "";
+      _serverKey.text = prefs.getString('serverKey') ?? "";
 
       String? selectedRegionString = prefs.getString('selectedRegion');
       if (selectedRegionString != null) {
@@ -171,6 +175,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 controller: _customUploadUrl,
               ),
+              const SizedBox(height: 20),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Server key (when enable secure mode)',
+                  border: OutlineInputBorder(),
+                ),
+                controller: _serverKey,
+              ),
             ],
             const SizedBox(height: 40),
             ElevatedButton(
@@ -180,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     final prefs = await SharedPreferences.getInstance();
 
                     await prefs.setString('apiKey', _apiKey.text);
+                    await prefs.setString('serverKey', _serverKey.text);
                     await prefs.setString(
                         'selectedRegion', _selectedRegion.toString());
 
@@ -328,11 +341,35 @@ class _UserListPageState extends State<UserListPage> {
                   onLongPress: () async {
                     log("login");
 
+                    final prefs = await SharedPreferences.getInstance();
+                    String? selectedRegionString = prefs.getString('selectedRegion');
+                    String httpUrl = "";
+                    if (selectedRegionString != null) {
+                      AmityEndpointRegion _selectedRegion = AmityEndpointRegion.values.firstWhere(
+                        (e) => e.toString() == selectedRegionString,
+                        orElse: () => AmityEndpointRegion.sg,
+                      );
+                      if (_selectedRegion == AmityEndpointRegion.custom) {
+                        httpUrl = prefs.getString('customUrl') ?? "";
+                      } else if (_selectedRegion == AmityEndpointRegion.sg) {
+                        httpUrl = AmityRegionalHttpEndpoint.SG.endpoint;
+                      } else if (_selectedRegion == AmityEndpointRegion.eu) {
+                        httpUrl = AmityRegionalHttpEndpoint.EU.endpoint;
+                      } else if (_selectedRegion == AmityEndpointRegion.us) {
+                        httpUrl = AmityRegionalHttpEndpoint.US.endpoint;
+                      } else {
+                        httpUrl = AmityRegionalHttpEndpoint.SG.endpoint;
+                      }
+                    }
+                    String serverKey = prefs.getString('serverKey') ?? "";
+                    String baseUrl = prefs.getString('customUrl') ?? "";
+                    String authToken = serverKey.isEmpty ? "" : await getSecureModeAuthKey(httpUrl,_usernames[index], serverKey);
+
                     ///Step 3: login with Amity
                     await AmityUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
-                      authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
+                      authToken: authToken.isEmpty ? null : authToken,
                       callback: (isSuccess, error) {
                         log("callback:$isSuccess");
                         if (isSuccess) {
@@ -353,11 +390,35 @@ class _UserListPageState extends State<UserListPage> {
                   onTap: () async {
                     log("login");
 
+                    final prefs = await SharedPreferences.getInstance();
+                    String? selectedRegionString = prefs.getString('selectedRegion');
+                    String httpUrl = "";
+                    if (selectedRegionString != null) {
+                      AmityEndpointRegion _selectedRegion = AmityEndpointRegion.values.firstWhere(
+                        (e) => e.toString() == selectedRegionString,
+                        orElse: () => AmityEndpointRegion.sg,
+                      );
+                      if (_selectedRegion == AmityEndpointRegion.custom) {
+                        httpUrl = prefs.getString('customUrl') ?? "";
+                      } else if (_selectedRegion == AmityEndpointRegion.sg) {
+                        httpUrl = AmityRegionalHttpEndpoint.SG.endpoint;
+                      } else if (_selectedRegion == AmityEndpointRegion.eu) {
+                        httpUrl = AmityRegionalHttpEndpoint.EU.endpoint;
+                      } else if (_selectedRegion == AmityEndpointRegion.us) {
+                        httpUrl = AmityRegionalHttpEndpoint.US.endpoint;
+                      } else {
+                        httpUrl = AmityRegionalHttpEndpoint.SG.endpoint;
+                      }
+                    }
+                    String serverKey = prefs.getString('serverKey') ?? "";
+                    String authToken = serverKey.isEmpty ? "" : await getSecureModeAuthKey(httpUrl, _usernames[index], serverKey);
+
+
                     ///Step 3: login with Amity
                     await AmityUIKit().registerDevice(
                       context: context,
                       userId: _usernames[index],
-                      authToken: "4c0e41077975e7c477d0db50673c95731d24ebbb",
+                      authToken: authToken.isEmpty ? null : authToken,
                       callback: (isSuccess, error) {
                         log("callback:$isSuccess");
                         if (isSuccess) {
@@ -383,6 +444,24 @@ class _UserListPageState extends State<UserListPage> {
         ],
       ),
     );
+  }
+
+  Future<String> getSecureModeAuthKey(String baseUrl, String userId, String serverKey) async {
+    final uri = Uri.parse("${baseUrl}api/v4/authentication/token");
+    final response = await http.post(
+      uri,
+      headers: {
+        "x-server-key": serverKey,
+        "Content-Type": "application/json",
+      },
+      body: '{"userId": "$userId"}',
+    );
+    
+    if (response.statusCode == 200) {
+      return response.body.replaceAll("\"", "");
+    } else {
+      throw Exception("Failed to get auth key: ${response.body}");
+    }
   }
 }
 

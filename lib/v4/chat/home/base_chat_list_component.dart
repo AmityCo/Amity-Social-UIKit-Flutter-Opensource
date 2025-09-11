@@ -11,6 +11,7 @@ import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/channel_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
@@ -100,12 +101,18 @@ class BaseChatListComponent extends NewBaseComponent {
                         onTap: () {
                           if (channel.amityChannelType ==
                               AmityChannelType.COMMUNITY) {
-                            Navigator.of(context).push(
+                            Navigator.of(context)
+                                .push(
                               MaterialPageRoute(
                                   builder: (context) => AmityGroupChatPage(
                                         channelId: channel.channelId ?? "",
                                       )),
-                            );
+                            )
+                                .then((value) {
+                              context
+                                  .read<AmityToastBloc>()
+                                  .add(AmityToastDismiss());
+                            });
                           } else {
                             final channelId = channel.channelId;
                             final userId = channelMember?.userId;
@@ -113,7 +120,8 @@ class BaseChatListComponent extends NewBaseComponent {
                                 channelMember?.user?.displayName;
                             final avatarUrl = channelMember?.user?.avatarUrl;
 
-                            Navigator.of(context).push(
+                            Navigator.of(context)
+                                .push(
                               MaterialPageRoute(
                                 builder: (context) => AmityChatPage(
                                   key:
@@ -124,7 +132,12 @@ class BaseChatListComponent extends NewBaseComponent {
                                   avatarUrl: avatarUrl ?? "",
                                 ),
                               ),
-                            );
+                            )
+                                .then((value) {
+                              context
+                                  .read<AmityToastBloc>()
+                                  .add(AmityToastDismiss());
+                            });
                           }
                         },
                         child: renderChatListItem(

@@ -29,7 +29,8 @@ class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
         .getCustomRankingGlobalFeed()
         .getLiveCollection();
 
-    pinnedPostCollection = AmitySocialClient.newPostRepository().getGlobalPinnedPosts();
+    pinnedPostCollection =
+        AmitySocialClient.newPostRepository().getGlobalPinnedPosts();
 
     on<GlobalFeedListUpdated>((event, emit) async {
       updateFeed(event.posts, state.pinnedPosts, emit);
@@ -137,14 +138,12 @@ class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
 
     // Remove duplicated local post
     var list = posts
-        .where((element) =>
-            !localIds.contains(element.postId))
-            .toList(); // remove duplicates
+        .where((element) => !localIds.contains(element.postId))
+        .toList(); // remove duplicates
 
     // Remove duplicated pinned post
     list = posts
-        .where((element) =>
-            !pinnedPostIds.contains(element.postId))
+        .where((element) => !pinnedPostIds.contains(element.postId))
         .toList();
 
     // Local post would be below pinned post
@@ -156,7 +155,7 @@ class GlobalFeedBloc extends Bloc<GlobalFeedEvent, GlobalFeedState> {
     if (mappedPinnedPosts.isNotEmpty) {
       list.insertAll(0, mappedPinnedPosts);
     }
-    
+
     emit(state.copyWith(
         list: list,
         hasMoreItems: liveCollection.hasNextPage(),

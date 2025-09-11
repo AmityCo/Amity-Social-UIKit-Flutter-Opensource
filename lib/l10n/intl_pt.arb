@@ -703,7 +703,7 @@
   "@post_edit_globally_featured_description": {
     "description": "Description for globally featured post"
   },
-  "post_like_count": "{count, plural, =1{1 curtida} other{{count} curtidas}}",
+  "post_like_count": "{count, plural, =0{0 curtidas} =1{1 curtida} other{{count} curtidas}}",
   "@post_like_count": {
     "description": "Plural form for post like count",
     "placeholders": {
@@ -712,7 +712,7 @@
       }
     }
   },
-  "post_comment_count": "{count, plural, =1{1 comentário} other{{count} comentários}}",
+  "post_comment_count": "{count, plural, =0{0 comentários} =1{1 comentário} other{{count} comentários}}",
   "@post_comment_count": {
     "description": "Plural form for post comment count",
     "placeholders": {

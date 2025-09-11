@@ -22,6 +22,7 @@ import 'package:flutter_svg/svg.dart';
 
 part 'widgets/group_chat_page_helpers.dart';
 
+// Page for showing group chat messages
 class AmityGroupChatPage extends NewBasePage {
   static double toastBottomPadding = 56;
 
@@ -51,8 +52,8 @@ class AmityGroupChatPage extends NewBasePage {
         children: [
           BlocProvider(
             key: Key("$channelId"),
-            create: (context) =>
-                AmityGroupChatPageBloc(channelId, context.read<AmityToastBloc>()),
+            create: (context) => AmityGroupChatPageBloc(
+                channelId, context.read<AmityToastBloc>()),
             child: BlocBuilder<AmityGroupChatPageBloc, GroupChatPageState>(
               key: Key("$channelId"),
               builder: (context, state) {
@@ -64,7 +65,9 @@ class AmityGroupChatPage extends NewBasePage {
                 }
 
                 if (!state.isFetching && state is! GroupChatPageStateInitial) {
-                  context.read<AmityToastBloc>().add(AmityToastDismissIfLoading());
+                  context
+                      .read<AmityToastBloc>()
+                      .add(AmityToastDismissIfLoading());
                 }
 
                 final List<GlobalKey> itemKeys = List.generate(
@@ -93,7 +96,6 @@ class AmityGroupChatPage extends NewBasePage {
                           );
 
                           if (updatedChannel is AmityChannel) {
-
                             context.read<AmityGroupChatPageBloc>().add(
                                 GroupChatPageHeaderEventChanged(
                                     channel: updatedChannel));
@@ -221,10 +223,13 @@ class AmityGroupChatPage extends NewBasePage {
                                                   .getVideo()
                                                   .getFilePath;
                                           if (filePath != null) {
-                                            context.read<AmityGroupChatPageBloc>().add(
-                                                GroupChatPageEventFetchLocalVideoThumbnail(
-                                                    uniqueId: message.uniqueId!,
-                                                    videoPath: filePath));
+                                            context
+                                                .read<AmityGroupChatPageBloc>()
+                                                .add(
+                                                    GroupChatPageEventFetchLocalVideoThumbnail(
+                                                        uniqueId:
+                                                            message.uniqueId!,
+                                                        videoPath: filePath));
                                           }
                                         } catch (e) {}
                                       } else if (message.data
@@ -243,10 +248,13 @@ class AmityGroupChatPage extends NewBasePage {
                                                   .fileProperties
                                                   .fileUrl;
                                           if (filePath != null) {
-                                            context.read<AmityGroupChatPageBloc>().add(
-                                                GroupChatPageEventFetchLocalVideoThumbnail(
-                                                    uniqueId: message.uniqueId!,
-                                                    videoPath: filePath));
+                                            context
+                                                .read<AmityGroupChatPageBloc>()
+                                                .add(
+                                                    GroupChatPageEventFetchLocalVideoThumbnail(
+                                                        uniqueId:
+                                                            message.uniqueId!,
+                                                        videoPath: filePath));
                                           }
                                         } catch (e) {}
                                       }
@@ -378,7 +386,8 @@ class AmityGroupChatPage extends NewBasePage {
                                 );
                               }),
                               if (newMessage != null)
-                                _buildNewMessageNotification(context, state, newMessage),
+                                _buildNewMessageNotification(
+                                    context, state, newMessage),
                               if (state.showScrollButton &&
                                   isScrollable &&
                                   newMessage == null)
@@ -395,7 +404,6 @@ class AmityGroupChatPage extends NewBasePage {
               },
             ),
           ),
-          AmityToast(pageId: pageId, elementId: "toast"),
         ],
       ),
     );

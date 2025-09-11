@@ -601,6 +601,7 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count curtidas',
       one: '1 curtida',
+      zero: '0 curtidas',
     );
     return '$_temp0';
   }
@@ -612,6 +613,7 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count comentários',
       one: '1 comentário',
+      zero: '0 comentários',
     );
     return '$_temp0';
   }

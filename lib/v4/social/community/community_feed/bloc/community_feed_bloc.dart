@@ -16,24 +16,24 @@ class CommunityFeedBloc extends Bloc<CommunityFeedEvent, CommunityFeedState> {
 
   CommunityFeedBloc({required this.communityId, required this.scrollController})
       : super(CommunityFeedState()) {
-
     feedLiveCollection = AmitySocialClient.newPostRepository()
         .getPosts()
         .targetCommunity(communityId)
+        .feedType(AmityFeedType.PUBLISHED)
         .sortBy(AmityPostSortOption.LAST_CREATED)
+        .includeDeleted(false)
         .getLiveCollection();
 
-    announcementLiveCollection = AmitySocialClient.newPostRepository()
-        .getPinnedPosts(
-          communityId: communityId,
-          placement:"announcement",
-        );
+    announcementLiveCollection =
+        AmitySocialClient.newPostRepository().getPinnedPosts(
+      communityId: communityId,
+      placement: "announcement",
+    );
 
-    pinLiveCollection = AmitySocialClient.newPostRepository()
-        .getPinnedPosts(
-          communityId: communityId,
-          placement:"default",
-        );
+    pinLiveCollection = AmitySocialClient.newPostRepository().getPinnedPosts(
+      communityId: communityId,
+      placement: "default",
+    );
 
     on<CommunityFeedEventPostUpdated>((event, emit) async {
       emit(state.copyWith(posts: event.posts));
@@ -55,9 +55,12 @@ class CommunityFeedBloc extends Bloc<CommunityFeedEvent, CommunityFeedState> {
       emit(state.copyWith(isJoined: event.isJoined));
     });
 
-    final communityStream = AmitySocialClient.newCommunityRepository().live.getCommunity(communityId);
+    final communityStream = AmitySocialClient.newCommunityRepository()
+        .live
+        .getCommunity(communityId);
     communityStream.listen((community) {
-      addEvent(CommunityFeedEventJoinedStateUpdated(isJoined: community.isJoined ?? true));
+      addEvent(CommunityFeedEventJoinedStateUpdated(
+          isJoined: community.isJoined ?? true));
     });
 
     feedLiveCollection.loadNext();
@@ -79,14 +82,17 @@ class CommunityFeedBloc extends Bloc<CommunityFeedEvent, CommunityFeedState> {
       addEvent(CommunityFeedEventLoadingStateUpdated(isLoading: isLoading));
     });
 
-    announcementLiveCollection.getStreamController().stream.listen((announcements) {
-      addEvent(CommunityFeedEventAnnouncementUpdated(announcements: announcements));
+    announcementLiveCollection
+        .getStreamController()
+        .stream
+        .listen((announcements) {
+      addEvent(
+          CommunityFeedEventAnnouncementUpdated(announcements: announcements));
     });
 
     pinLiveCollection.getStreamController().stream.listen((pins) {
       addEvent(CommunityFeedEventPinUpdated(pins: pins));
     });
-
   }
 
   @override

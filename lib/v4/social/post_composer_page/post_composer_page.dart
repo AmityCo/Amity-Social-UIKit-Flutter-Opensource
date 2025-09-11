@@ -304,7 +304,7 @@ class AmityPostComposerPage extends NewBasePage {
         ),
       ),
     )
-    .then(
+        .then(
       (value) {
         AmityCameraResult? result = value;
 
@@ -527,9 +527,30 @@ class AmityPostComposerPage extends NewBasePage {
   }
 
   void _onPostSuccess(BuildContext context, AmityPost post) {
+    var isPostReviewEnabled = false;
+    var isModerator = false;
+
+    // Check if post review is enabled or not
+    if (post.target is CommunityTarget) {
+      final commTarget = post.target as CommunityTarget;
+      isPostReviewEnabled =
+          commTarget.targetCommunity?.isPostReviewEnabled ?? false;
+
+      // Check if user has moderator permission
+      isModerator =
+          AmityCoreClient.hasPermission(AmityPermission.EDIT_COMMUNITY)
+              .atCommunity(commTarget.targetCommunityId ?? "")
+              .check();
+    }
+
     context.read<AmityToastBloc>().add(AmityToastDismiss());
     Future.delayed(const Duration(milliseconds: 500), () {
-      context.read<GlobalFeedBloc>().add(GlobalFeedAddLocalPost(post: post));
+      final shouldShowModeratorPost = isModerator;
+      final shouldShowMemberPost = !isPostReviewEnabled && !isModerator;
+      // We do not want to show posts which requires moderator approval in feed immediately after creation.
+      if (shouldShowMemberPost || shouldShowModeratorPost) {
+        context.read<GlobalFeedBloc>().add(GlobalFeedAddLocalPost(post: post));
+      }
       Navigator.pop(context);
       onPopRequested?.call(true);
     });

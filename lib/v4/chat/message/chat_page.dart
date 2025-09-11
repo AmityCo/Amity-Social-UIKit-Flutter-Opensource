@@ -26,6 +26,7 @@ import 'package:flutter_svg/svg.dart';
 
 part 'widgets/chat_page_helpers.dart';
 
+// Page for showing one-on-one chat messages
 class AmityChatPage extends NewBasePage {
   static double toastBottomPadding = 56;
 

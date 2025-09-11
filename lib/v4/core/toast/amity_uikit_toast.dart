@@ -14,7 +14,8 @@ class AmityToast extends StatefulWidget {
   final String? componentId;
   final String elementId;
 
-  const AmityToast({super.key, this.pageId, this.componentId, required this.elementId});
+  const AmityToast(
+      {super.key, this.pageId, this.componentId, required this.elementId});
 
   @override
   State<AmityToast> createState() => _AmityToastState();
@@ -25,12 +26,15 @@ class _AmityToastState extends State<AmityToast> {
   late final ConfigProvider configProvider;
   late final AmityUIConfig uiConfig;
 
+  bool isToastVisible = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     configProvider = context.watch<ConfigProvider>();
     theme = configProvider.getTheme(widget.pageId, widget.componentId);
-    uiConfig = configProvider.getUIConfig(widget.pageId, widget.componentId, widget.elementId);
+    uiConfig = configProvider.getUIConfig(
+        widget.pageId, widget.componentId, widget.elementId);
   }
 
   @override
@@ -44,8 +48,8 @@ class _AmityToastState extends State<AmityToast> {
   Widget renderToast(BuildContext context, AmityToastState state) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return; // Check if widget is still mounted
-      
-      if (state.style == AmityToastStyle.short) {
+
+      if (state.style == AmityToastStyle.short && !isToastVisible) {
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
@@ -66,7 +70,14 @@ class _AmityToastState extends State<AmityToast> {
               }
             }),
           ));
+
+        isToastVisible = true;
       } else if (state.style == AmityToastStyle.loading) {
+        if (isToastVisible) {
+          // If a toast is already visible, do not show another one
+          return;
+        }
+
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
@@ -78,8 +89,11 @@ class _AmityToastState extends State<AmityToast> {
             backgroundColor: const Color(0x00000000),
             duration: const Duration(days: 1),
           ));
+
+        isToastVisible = true;
       } else {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        isToastVisible = false;
       }
     });
     return Container();

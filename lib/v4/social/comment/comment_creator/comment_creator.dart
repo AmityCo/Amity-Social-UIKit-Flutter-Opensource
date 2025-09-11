@@ -5,9 +5,9 @@ import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
+import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/bloc/comment_creator_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator_action.dart';
-import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -74,11 +74,15 @@ class _AmityCommentCreatorInternalState
   late ScrollController scrollController;
   final focusNode = FocusNode();
 
+  String? avatarUrl;
+
   @override
   void initState() {
     super.initState();
     controller = MentionTextEditingController();
     scrollController = ScrollController();
+
+    fetchUserInfo();
   }
 
   @override
@@ -118,6 +122,7 @@ class _AmityCommentCreatorInternalState
       AmityCommentReferenceType referenceType,
       String? communityId) {
     AmityUser user = AmityCoreClient.getCurrentUser();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       child: Column(
@@ -133,13 +138,14 @@ class _AmityCommentCreatorInternalState
                   width: 32,
                   height: 32,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: AmityUserImage(
-                      user: user,
-                      theme: widget.theme,
-                      size: 32,
-                    ),
-                  ),
+                      borderRadius: BorderRadius.circular(16),
+                      child: AmityUserAvatar(
+                          avatarUrl: avatarUrl ?? "",
+                          displayName: user.displayName ?? "",
+                          isDeletedUser: user.isDeleted ?? false,
+                          characterTextStyle:
+                              AmityTextStyle.titleBold(Colors.white),
+                          avatarSize: const Size(32, 32))),
                 ),
               ),
               Expanded(
@@ -301,5 +307,16 @@ class _AmityCommentCreatorInternalState
         ],
       ),
     );
+  }
+
+  void fetchUserInfo() {
+    final userId = AmityCoreClient.getCurrentUser().userId ?? "";
+    if (userId.isNotEmpty) {
+      AmityCoreClient.newUserRepository().getUser(userId).then((user) {
+        setState(() {
+          avatarUrl = user.avatarUrl;
+        });
+      });
+    }
   }
 }

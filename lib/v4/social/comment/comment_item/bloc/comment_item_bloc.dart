@@ -92,7 +92,7 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
         event.comment.report().flag().then((value) async {
           event.toastBloc.add(AmityToastShort(
               message:
-                  "${(event.comment.parentId == null) ? context.l10n.post_comment : context.l10n.comment_reply} $context.l10n.general_reported",
+                  "${(event.comment.parentId == null) ? context.l10n.post_comment : context.l10n.comment_reply} ${context.l10n.general_reported}",
               icon: AmityToastIcon.success));
           var updatedComment = await AmitySocialClient.newCommentRepository()
               .getComment(commentId: event.comment.commentId!);
@@ -109,7 +109,7 @@ class CommentItemBloc extends Bloc<CommentItemEvent, CommentItemState> {
         event.comment.report().unflag().then((value) async {
           event.toastBloc.add(AmityToastShort(
               message:
-                  "${(event.comment.parentId == null) ? context.l10n.post_comment : context.l10n.comment_reply} $context.l10n.general_reported",
+                  "${(event.comment.parentId == null) ? context.l10n.post_comment : context.l10n.comment_reply} ${context.l10n.general_unreported}",
               icon: AmityToastIcon.success));
           var updatedComment = await AmitySocialClient.newCommentRepository()
               .getComment(commentId: event.comment.commentId!);

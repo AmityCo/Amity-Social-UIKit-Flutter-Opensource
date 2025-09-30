@@ -738,6 +738,10 @@
   "@general_reported": {
     "description": "Label for reported content"
   },
+  "general_unreported": "unreported",
+  "@general_unreported": {
+    "description": "Label for unreported content"
+  },
   "general_see_more": "...See more",
   "@general_see_more": {
     "description": "Label for see more button"
@@ -919,9 +923,21 @@
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
   },
+  "error_message_too_long_title": "Unable to send message",
+  "@error_message_too_long_title": {
+    "description": "Title for error dialog when message exceeds character limit"
+  },
+  "error_message_too_long_description": "Your message is too long. Please shorten your message and try again.",
+  "@error_message_too_long_description": {
+    "description": "Description for error dialog when message exceeds character limit"
+  },
   "user_profile_unknown_name": "Unknown",
   "@user_profile_unknown_name": {
     "description": "Fallback display name for users with no display name"
+  },
+  "user_profile_deleted_name": "Deleted user",
+  "@user_profile_deleted_name": {
+    "description": "Display name for deleted users"
   },
   "community_all_members": "All members",
   "@community_all_members": {

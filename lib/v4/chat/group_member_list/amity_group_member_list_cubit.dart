@@ -22,10 +22,16 @@ class AmityGroupMemberListCubit extends Cubit<AmityGroupMemberListState> {
             .membership(channel.channelId ?? "")
             .searchMembers(_searchQuery)
             .role("channel-moderator")
+                        .membershipFilter([
+            AmityChannelMembership.MEMBER,
+            AmityChannelMembership.MUTED
+          ])
+
             .getLiveCollection()
         : AmityChatClient.newChannelRepository()
             .membership(channel.channelId ?? "")
             .searchMembers(_searchQuery)
+            .membershipFilter([AmityChannelMembership.MEMBER, AmityChannelMembership.MUTED])
             .getLiveCollection();
 
     _loadingSubscription?.cancel();
@@ -44,15 +50,21 @@ class AmityGroupMemberListCubit extends Cubit<AmityGroupMemberListState> {
           members.map((member) => member.user).whereType<AmityUser>().toList();
 
       final memberRolesMap = <String, List<String>>{};
+      final mutedUsersMap = <String, bool>{};
 
-      // Populate member roles map with each member's roles
+      // Populate member roles map with each member's roles and muted status
       for (var member in members) {
-        if (member.userId != null && member.roles != null) {
-          memberRolesMap[member.userId!] = member.roles!.roles ?? [];
+        if (member.userId != null) {
+          // Add roles
+          if (member.roles != null) {
+            memberRolesMap[member.userId!] = member.roles!.roles ?? [];
+          }
+          
+          // Check if member is muted using the isMuted property directly
+          mutedUsersMap[member.userId!] = member.isMuted ?? false;
         }
       }
 
-      // Sort users to place current user first using getMyMembership
       try {
         final myMembership = await AmityChatClient.newChannelRepository()
             .membership(channel.channelId ?? "")
@@ -103,6 +115,7 @@ class AmityGroupMemberListCubit extends Cubit<AmityGroupMemberListState> {
         members: users,
         hasMoreMembers: memberLiveCollection.hasNextPage(),
         memberRoles: memberRolesMap,
+        mutedUsers: mutedUsersMap,
         isLoading: false,
       ));
     });
@@ -289,6 +302,67 @@ class AmityGroupMemberListCubit extends Cubit<AmityGroupMemberListState> {
       final action = user.isFlaggedByMe ? 'unreport' : 'report';
       toastBloc?.add(AmityToastShort(
         message: 'Failed to $action user. Please try again.',
+        icon: AmityToastIcon.warning,
+      ));
+    }
+  }
+
+  Future<void> toggleMuteUser(String userId) async {
+    final isMuted = state.mutedUsers[userId] ?? false;
+    
+    if (isMuted) {
+      await unmuteUser(userId);
+    } else {
+      await muteUser(userId);
+    }
+  }
+  
+  // Public method for muting a user
+  Future<void> muteUser(String userId) async {
+    try {
+      // Mute user using the channel repository
+      await AmityChatClient.newChannelRepository()
+          .moderation(channel.channelId ?? "")
+          .muteMembers([userId], millis: -1);
+      
+      // Update local state
+      final updatedMutedUsers = Map<String, bool>.from(state.mutedUsers);
+      updatedMutedUsers[userId] = true;
+      emit(state.copyWith(mutedUsers: updatedMutedUsers));
+      
+      toastBloc?.add(const AmityToastShort(
+        message: 'User muted.',
+        icon: AmityToastIcon.success,
+      ));
+    } catch (e) {
+      toastBloc?.add(const AmityToastShort(
+        message: 'Failed to mute user. Please try again.',
+        icon: AmityToastIcon.warning,
+      ));
+    }
+  }
+  
+  // Public method for unmuting a user
+  Future<void> unmuteUser(String userId) async {
+    try {
+      // Unmute user using the channel repository
+      await AmityChatClient.newChannelRepository()
+          .moderation(channel.channelId ?? "")
+          .unmuteMembers([userId]);
+      
+      // Update local state
+      final updatedMutedUsers = Map<String, bool>.from(state.mutedUsers);
+      updatedMutedUsers[userId] = false;
+      emit(state.copyWith(mutedUsers: updatedMutedUsers));
+      
+      toastBloc?.add(const AmityToastShort(
+        message: 'User unmuted.',
+        icon: AmityToastIcon.success,
+      ));
+  
+    } catch (e) {
+      toastBloc?.add(const AmityToastShort(
+        message: 'Failed to unmute user. Please try again.',
         icon: AmityToastIcon.warning,
       ));
     }

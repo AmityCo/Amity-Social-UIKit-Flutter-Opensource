@@ -164,6 +164,7 @@ class BaseChatListComponent extends NewBaseComponent {
 
   Widget renderChatListItem(BuildContext context, ChatListType chatListType,
       AmityChannel channel, AmityChannelMember? channelMember) {
+    // Enable archive functionality for both conversation and community channels
     if (chatListType == ChatListType.CONVERSATION) {
       return renderDismissibleListItem(
           chatListType,
@@ -241,6 +242,9 @@ class BaseChatListComponent extends NewBaseComponent {
 class ChatListItem extends BaseElement {
   final AmityChannel channel;
   final AmityChannelMember? channelMember; // Other member
+  final String searchQuery;
+  final bool isArchived;
+  final AmityMessage? searchMessage; // Optional message to override channel preview
 
   ChatListItem({
     Key? key,
@@ -248,6 +252,9 @@ class ChatListItem extends BaseElement {
     String? componentId,
     required this.channel,
     required this.channelMember,
+    this.searchQuery = "",
+    this.isArchived = false,
+    this.searchMessage,
   }) : super(
           key: key,
           pageId: pageId,
@@ -261,65 +268,134 @@ class ChatListItem extends BaseElement {
 
     String? previewText;
     Widget? previewIcon;
-    if (channel.messagePreview?.isDeleted == true) {
-      previewText = context.l10n.chat_message_deleted;
-      previewIcon = SvgPicture.asset(
-        'assets/Icons/amity_ic_preview_deleted_message.svg',
-        package: 'amity_uikit_beta_service',
-        width: 18,
-        height: 18,
-        color: theme.baseColorShade2,
-      );
-    } else {
-      final previewMessage = channel.messagePreview?.data;
-
-      if (previewMessage is MessageTextData) {
-        previewText = previewMessage.text;
-      } else if (previewMessage is MessageImageData) {
-        previewText = context.l10n.chat_message_photo;
+    
+    // Use searchMessage if provided, otherwise fall back to channel preview
+    if (searchMessage != null) {
+      // Handle search message display
+      if (searchMessage!.isDeleted == true) {
+        previewText = context.l10n.chat_message_deleted;
         previewIcon = SvgPicture.asset(
-          'assets/Icons/amity_ic_preview_image_message.svg',
+          'assets/Icons/amity_ic_preview_deleted_message.svg',
           package: 'amity_uikit_beta_service',
           width: 18,
-          height: 20,
+          height: 18,
           color: theme.baseColorShade2,
         );
-      } else if (previewMessage is MessageVideoData) {
-        previewText = context.l10n.chat_message_video;
-        previewIcon = SvgPicture.asset(
-          'assets/Icons/amity_ic_preview_video_message.svg',
-          package: 'amity_uikit_beta_service',
-          width: 18,
-          height: 20,
-          color: theme.baseColorShade2,
-        );
-      } else if (previewMessage is MessageFileData ||
-          previewMessage is MessageAudioData ||
-          previewMessage is MessageCustomData) {
-        // To be implement
-        previewText = context.l10n.chat_message_no_preview;
       } else {
-        previewText = context.l10n.chat_no_message_yet;
+        final messageData = searchMessage!.data;
+        if (messageData is MessageTextData) {
+          previewText = messageData.text;
+        } else if (messageData is MessageImageData) {
+          previewText = context.l10n.chat_message_photo;
+          previewIcon = SvgPicture.asset(
+            'assets/Icons/amity_ic_preview_image_message.svg',
+            package: 'amity_uikit_beta_service',
+            width: 18,
+            height: 20,
+            color: theme.baseColorShade2,
+          );
+        } else if (messageData is MessageVideoData) {
+          previewText = "Sent a video";
+          previewIcon = SvgPicture.asset(
+            'assets/Icons/amity_ic_preview_video_message.svg',
+            package: 'amity_uikit_beta_service',
+            width: 18,
+            height: 20,
+            color: theme.baseColorShade2,
+          );
+        } else if (messageData is MessageFileData ||
+            messageData is MessageAudioData) {
+          previewText = "No preview supported for this message type";
+        } else if (messageData is MessageCustomData) {
+          previewText = messageData.rawData.toString();
+        } else {
+          previewText = "No message content";
+        }
+      }
+    } else {
+      // Handle channel preview message display (original logic)
+      if (channel.messagePreview?.isDeleted == true) {
+        previewText = "This message was deleted";
+        previewIcon = SvgPicture.asset(
+          'assets/Icons/amity_ic_preview_deleted_message.svg',
+          package: 'amity_uikit_beta_service',
+          width: 18,
+          height: 18,
+          color: theme.baseColorShade2,
+        );
+      } else {
+        final previewMessage = channel.messagePreview?.data;
+        if (previewMessage is MessageTextData) {
+          previewText = previewMessage.text;
+        } else if (previewMessage is MessageImageData) {
+          previewText = "Sent a photo";
+          previewIcon = SvgPicture.asset(
+            'assets/Icons/amity_ic_preview_image_message.svg',
+            package: 'amity_uikit_beta_service',
+            width: 18,
+            height: 20,
+            color: theme.baseColorShade2,
+          );
+        } else if (previewMessage is MessageVideoData) {
+          previewText = context.l10n.chat_message_video;
+          previewIcon = SvgPicture.asset(
+            'assets/Icons/amity_ic_preview_video_message.svg',
+            package: 'amity_uikit_beta_service',
+            width: 18,
+            height: 20,
+            color: theme.baseColorShade2,
+          );
+        } else if (previewMessage is MessageFileData ||
+            previewMessage is MessageAudioData) {
+          // To be implement
+          previewText = context.l10n.chat_message_no_preview;
+        } else if (previewMessage is MessageCustomData) {
+          previewText = previewMessage.rawData.toString();
+        } else {
+          previewText = context.l10n.chat_no_message_yet;
+        }
       }
     }
     if (channel.amityChannelType == AmityChannelType.COMMUNITY) {
-      displayNameWidget = Row(
-        children: [
-          Flexible(
-            child: Text(
-              channel.displayName ?? "",
-              style: AmityTextStyle.titleBold(theme.baseColor),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+      String displayName = channel.displayName ?? "";
+      
+      // Only highlight channel name if NOT in search message mode
+      if (searchQuery.isNotEmpty && searchMessage == null && _hasExactWordMatch(displayName, searchQuery)) {
+        displayNameWidget = Row(
+          children: [
+            Flexible(
+              child: RichText(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                text: _buildHighlightedNameTextSpan(displayName, searchQuery),
+              ),
             ),
-          ),
-          const SizedBox(width: 2),
-          Text(
-            "(${(channel.memberCount ?? 0).formattedCompactString()})",
-            style: AmityTextStyle.caption(theme.baseColorShade2),
-          ),
-        ],
-      );
+            const SizedBox(width: 2),
+            Text(
+              "(${(channel.memberCount ?? 0).formattedCompactString()})",
+              style: AmityTextStyle.caption(theme.baseColorShade2),
+            ),
+          ],
+        );
+      } else {
+        displayNameWidget = Row(
+          children: [
+            Flexible(
+              child: Text(
+                displayName,
+                style: AmityTextStyle.titleBold(theme.baseColor),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 2),
+            Text(
+              "(${(channel.memberCount ?? 0).formattedCompactString()})",
+              style: AmityTextStyle.caption(theme.baseColorShade2),
+            ),
+          ],
+        );
+      }
     } else {
       var displayName = channelMember?.user?.displayName;
 
@@ -329,12 +405,21 @@ class ChatListItem extends BaseElement {
         displayName = context.l10n.user_profile_unknown_name;
       }
 
-      displayNameWidget = Text(
-        displayName,
-        style: AmityTextStyle.titleBold(theme.baseColor),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      );
+      // Only highlight channel name if NOT in search message mode
+      if (searchQuery.isNotEmpty && searchMessage == null && _hasExactWordMatch(displayName, searchQuery)) {
+        displayNameWidget = RichText(
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          text: _buildHighlightedNameTextSpan(displayName, searchQuery),
+        );
+      } else {
+        displayNameWidget = Text(
+          displayName,
+          style: AmityTextStyle.titleBold(theme.baseColor),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+      }
     }
 
     return Container(
@@ -357,7 +442,11 @@ class ChatListItem extends BaseElement {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                displayNameWidget,
+                Row(
+                  children: [
+                    Expanded(child: displayNameWidget),
+                  ],
+                ),
                 Row(
                   children: [
                     if (previewIcon != null) ...[
@@ -365,12 +454,7 @@ class ChatListItem extends BaseElement {
                       const SizedBox(width: 4),
                     ],
                     Expanded(
-                      child: Text(
-                        previewText ?? "",
-                        style: AmityTextStyle.body(theme.baseColorShade2),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      child: _buildPreviewText(previewText),
                     ),
                   ],
                 ),
@@ -379,11 +463,51 @@ class ChatListItem extends BaseElement {
           ),
           const SizedBox(width: 12),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(channel.lastActivity?.toChatTimestamp(context) ?? "",
                   style: AmityTextStyle.caption(theme.baseColorShade2)),
               const SizedBox(height: 10),
-              unreadCountWidget(channel.unreadCount ?? 0)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isArchived) ...[
+                    Container(
+                      padding: const EdgeInsets.only(left: 4, right: 6, top: 3.5, bottom: 3.5),
+                      decoration: BoxDecoration(
+                        color: theme.baseColorShade4,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/Icons/amity_ic_search_chat_archive_badge.svg',
+                            package: 'amity_uikit_beta_service',
+                            width: 12,
+                            height: 12,
+                            colorFilter: ColorFilter.mode(
+                              theme.baseColorShade1,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          const SizedBox(width: 1),
+                          Text(
+                            'Archived',
+                            style: AmityTextStyle.captionSmall(theme.baseColorShade1),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                  if (channel.isMentioned == true) ...[
+                    mentionIndicatorWidget(),
+                    const SizedBox(width: 4),
+                  ],
+                  unreadCountWidget(channel.unreadCount ?? 0),
+                ],
+              ),
             ],
           ),
         ],
@@ -391,13 +515,198 @@ class ChatListItem extends BaseElement {
     );
   }
 
+  Widget _buildPreviewText(String? previewText) {
+    if (previewText == null || previewText.isEmpty) {
+      return Text(
+        "",
+        style: AmityTextStyle.body(theme.baseColorShade2),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+
+    // If we have a search query and this is from a search message, highlight it
+    if (searchQuery.isNotEmpty && searchMessage != null && _hasExactWordMatch(previewText, searchQuery)) {
+      return RichText(
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        text: _buildHighlightedTextSpan(previewText, searchQuery),
+      );
+    } else {
+      return Text(
+        previewText,
+        style: AmityTextStyle.body(theme.baseColorShade2),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+  }
+
+  /// Helper method to find exact word match positions (must start with query)
+  List<int> _findExactWordMatches(String text, String query) {
+    final lowercaseText = text.toLowerCase();
+    final lowercaseQuery = query.toLowerCase();
+    List<int> matches = [];
+    
+    for (int i = 0; i <= lowercaseText.length - lowercaseQuery.length; i++) {
+      // Check if we found the query at position i
+      if (lowercaseText.substring(i, i + lowercaseQuery.length) == lowercaseQuery) {
+        // Check if it's at the start of text or preceded by a space
+        if (i == 0 || text[i - 1] == ' ') {
+          matches.add(i);
+        }
+      }
+    }
+    
+    return matches;
+  }
+
+  /// Helper method to check if text contains exact word matches
+  bool _hasExactWordMatch(String text, String query) {
+    return _findExactWordMatches(text, query).isNotEmpty;
+  }
+
+  /// Builds a TextSpan with exact word matches highlighted
+  /// Only highlights matches that start with the query (at beginning or after space)
+  /// Optimized for 2-line display by limiting search scope
+  TextSpan _buildHighlightedTextSpan(String text, String query) {
+    // Performance optimization: Estimate max characters that can fit in 2 lines
+    // Assuming roughly 40 characters per line on average mobile screen
+    const int maxCharsForTwoLines = 80;
+    
+    // Truncate text if it's too long to prevent heavy processing
+    String searchableText = text.length > maxCharsForTwoLines 
+        ? text.substring(0, maxCharsForTwoLines) 
+        : text;
+    
+    // Find all exact word matches
+    final matches = _findExactWordMatches(searchableText, query);
+    
+    if (matches.isEmpty) {
+      return TextSpan(
+        text: searchableText,
+        style: AmityTextStyle.body(theme.baseColorShade2),
+      );
+    }
+    
+    List<TextSpan> spans = [];
+    int currentIndex = 0;
+    
+    // Build spans with highlighted matches
+    for (int matchIndex in matches) {
+      // Add text before the match
+      if (matchIndex > currentIndex) {
+        spans.add(TextSpan(
+          text: searchableText.substring(currentIndex, matchIndex),
+          style: AmityTextStyle.body(theme.baseColorShade2),
+        ));
+      }
+      
+      // Add the highlighted match
+      spans.add(TextSpan(
+        text: searchableText.substring(matchIndex, matchIndex + query.length),
+        style: AmityTextStyle.bodyBold(theme.baseColor),
+      ));
+      
+      currentIndex = matchIndex + query.length;
+    }
+    
+    // Add remaining text after the last match
+    if (currentIndex < searchableText.length) {
+      spans.add(TextSpan(
+        text: searchableText.substring(currentIndex),
+        style: AmityTextStyle.body(theme.baseColorShade2),
+      ));
+    }
+    
+    // If we truncated the original text, add ellipsis indication
+    if (text.length > maxCharsForTwoLines) {
+      spans.add(TextSpan(
+        text: "...",
+        style: AmityTextStyle.body(theme.baseColorShade2),
+      ));
+    }
+    
+    return TextSpan(children: spans);
+  }
+
+  /// Builds a TextSpan for channel names with exact word matches highlighted
+  /// Only highlights matches that start with the query (at beginning or after space)
+  TextSpan _buildHighlightedNameTextSpan(String text, String query) {
+    // Find all exact word matches
+    final matches = _findExactWordMatches(text, query);
+    
+    if (matches.isEmpty) {
+      return TextSpan(
+        text: text,
+        style: AmityTextStyle.titleBold(theme.baseColor),
+      );
+    }
+    
+    List<TextSpan> spans = [];
+    int currentIndex = 0;
+    
+    // Build spans with highlighted matches
+    for (int matchIndex in matches) {
+      // Add text before the match
+      if (matchIndex > currentIndex) {
+        spans.add(TextSpan(
+          text: text.substring(currentIndex, matchIndex),
+          style: AmityTextStyle.titleBold(theme.baseColor),
+        ));
+      }
+      
+      // Add the highlighted match
+      spans.add(TextSpan(
+        text: text.substring(matchIndex, matchIndex + query.length),
+        style: AmityTextStyle.titleBold(theme.primaryColor),
+      ));
+      
+      currentIndex = matchIndex + query.length;
+    }
+    
+    // Add remaining text after the last match
+    if (currentIndex < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(currentIndex),
+        style: AmityTextStyle.titleBold(theme.baseColor),
+      ));
+    }
+    
+    return TextSpan(children: spans);
+  }
+
+  Widget mentionIndicatorWidget() {
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        color: theme.primaryColor.blend(ColorBlendingOption.shade3),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: SvgPicture.asset(
+          'assets/Icons/amity_ic_chat_room_mention.svg',
+          package: 'amity_uikit_beta_service',
+          width: 14,
+          height: 14,
+          color: theme.primaryColor,
+        ),
+      ),
+    );
+  }
+
   Widget unreadCountWidget(int unreadCount) {
+    if (unreadCount == 0 && channel.hasMention != true) {
+      return const SizedBox.shrink();
+    }
+
     if (unreadCount == 0) {
       return const SizedBox.shrink();
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
       decoration: BoxDecoration(
         color: theme.alertColor,
         borderRadius: BorderRadius.circular(12),

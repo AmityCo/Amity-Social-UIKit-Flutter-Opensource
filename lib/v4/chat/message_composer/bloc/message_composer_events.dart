@@ -19,8 +19,15 @@ class MessageComposerTextChange extends MessageComposerEvent {
 class MessageComposerCreateTextMessage extends MessageComposerEvent {
   final String text;
   final String? parentId;
+  final List<AmityUserMentionMetadata> mentionMetadataList;
+  final List<String> mentionUserIds;
 
-  const MessageComposerCreateTextMessage({required this.text, this.parentId});
+  const MessageComposerCreateTextMessage({
+    required this.text, 
+    this.parentId, 
+    this.mentionMetadataList = const [], 
+    this.mentionUserIds = const []
+  });
 
   @override
   List<Object> get props => [text];
@@ -29,11 +36,18 @@ class MessageComposerCreateTextMessage extends MessageComposerEvent {
 class MessageComposerUpdateTextMessage extends MessageComposerEvent {
   final String text;
   final String messageId;
+  final List<AmityUserMentionMetadata> mentionMetadataList;
+  final List<String> mentionUserIds;
 
-  const MessageComposerUpdateTextMessage({required this.text, required this.messageId});
+  const MessageComposerUpdateTextMessage({
+    required this.text, 
+    required this.messageId, 
+    this.mentionMetadataList = const [], 
+    this.mentionUserIds = const []
+  });
 
   @override
-  List<Object> get props => [text];
+  List<Object> get props => [text, messageId];
 }
 
 class MessageComposerMediaExpanded extends MessageComposerEvent {}

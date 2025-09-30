@@ -25,12 +25,15 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
   late final StreamSubscription<List<ConnectivityResult>> subscription;
   late ScrollController _scrollController;
   bool _isScrollListenerAdded = false;
+  bool _isJumpScrollInProgress = false; // Flag to track jump scroll state
+  Timer? _jumpToMessageTimeoutTimer;
 
   final AmityToastBloc toastBloc;
   BuildContext _context;
 
   ChatPageBloc(String? channelId, String? userId, String? userDisplayName,
-      String? avatarUrl, this.toastBloc, this._context)
+      String? avatarUrl, this.toastBloc, this._context,
+      {String? jumpToMessageId})
       : super(ChatPageStateInitial(
             channelId: channelId ?? "",
             userDisplayName: userDisplayName,
@@ -40,22 +43,22 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     _setupScrollListener();
 
     on<ChatPageEventRefresh>((event, emit) async {
-      emit(ChatPageStateChanged(
-          channelId: state.channelId,
+      emit(state.copyWith(
           messages: const [],
           isFetching: true,
+          isLoadingMore: false,
           hasNextPage: true,
-          scrollController: state.scrollController));
+          hasPrevious: false));
       try {
         liveCollection?.reset();
         liveCollection?.loadNext();
       } catch (e) {
-        emit(ChatPageStateChanged(
-            channelId: state.channelId,
+        emit(state.copyWith(
             messages: const [],
             isFetching: false,
+            isLoadingMore: false,
             hasNextPage: false,
-            scrollController: state.scrollController));
+            hasPrevious: false));
       }
     });
 
@@ -182,7 +185,9 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
       emit(state.copyWith(
         messages: groupedMessages,
         isFetching: event.isFetching,
+        isLoadingMore: false, // Reset load more state when new messages arrive
         hasNextPage: liveCollection?.hasNextPage(),
+        hasPrevious: liveCollection?.hasPreviousPage(),
         newMessage: newMessage,
       ));
     });
@@ -190,13 +195,42 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     on<ChatPageEventLoadMore>((event, emit) async {
       try {
         if (liveCollection?.hasNextPage() == true) {
+          emit(state.copyWith(useReverseUI: true, isLoadingMore: true));
+          if (_scrollController.hasClients) {
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
+          }
           await liveCollection?.loadNext();
+        }
+      } catch (e) {}
+    });
+
+    on<ChatPageEventLoadPrevious>((event, emit) async {
+      try {
+        if (liveCollection?.hasPreviousPage() == true) {
+          emit(state.copyWith(useReverseUI: false, isLoadingMore: true));
+          if (_scrollController.hasClients) {
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
+          }
+          await liveCollection?.loadPrevious();
+
+          add(ChatPageShowScrollButtonEvent(showScrollButton: false));
         }
       } catch (e) {}
     });
 
     on<ChatPageEventLoadingStateUpdated>((event, emit) async {
       emit(state.copyWith(isFetching: event.isFetching));
+
+      if (!event.isFetching && state is! ChatPageStateInitial && state.aroundMessageId != null && !_isJumpScrollInProgress) {
+        _isJumpScrollInProgress = true;
+        
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (!_isJumpScrollInProgress || state.aroundMessageId == null) return;
+          _startProgressiveScrollToTop(state.aroundMessageId!);
+        });
+      }
     });
 
     on<ChatPageIsMuteEventChanged>((event, emit) async {
@@ -471,8 +505,59 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
       }
     });
 
+    on<ChatPageEventJumpToMessage>((event, emit) async {
+      // Set the aroundMessageId in state and reinitialize live collection
+      addEvent(ChatPageSetAroundMessage(
+          aroundMessageId: event.aroundMessageId));
+
+      // Reinitialize the live collection with the aroundMessageId
+      initLiveCollection(state.channelId,
+          aroundMessageId: event.aroundMessageId);
+
+      // Refresh to load messages around the target message
+      addEvent(ChatPageEventRefresh());
+    });
+
+    on<ChatPageSetAroundMessage>((event, emit) async {
+      // Reset jump scroll flag when setting new aroundMessageId
+      if (event.aroundMessageId != null) {
+        _isJumpScrollInProgress = false;
+        
+        // Start timeout timer for jump-to-message (10 seconds)
+        _jumpToMessageTimeoutTimer?.cancel();
+        _jumpToMessageTimeoutTimer = Timer(const Duration(seconds: 10), () {
+          // If message still not found after timeout, clear aroundMessageId
+          if (state.aroundMessageId != null) {
+            add(const ChatPageSetAroundMessage(aroundMessageId: null));
+          }
+        });
+      } else {
+        // Clear timeout timer when aroundMessageId is cleared
+        _jumpToMessageTimeoutTimer?.cancel();
+        _jumpToMessageTimeoutTimer = null;
+      }
+      
+      emit(state.copyWith(aroundMessageId: event.aroundMessageId));
+    });
+
+    on<ChatPageTriggerBounceEvent>((event, emit) async {
+      // emit(state.copyWith(bounceTargetIndex: event.targetIndex));
+      
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      //   if (state.bounceTargetIndex == event.targetIndex) {
+      //     add(const ChatPageClearBounceEvent());
+      //   }
+      // });
+    });
+
+    on<ChatPageClearBounceEvent>((event, emit) async {
+      emit(state.copyWith(bounceTargetIndex: null));
+    });
+
     if (channelId != null && channelId.isNotEmpty) {
-      initLiveCollection(channelId);
+      addEvent(ChatPageSetAroundMessage(aroundMessageId: jumpToMessageId));
+      
+      initLiveCollection(channelId, aroundMessageId: jumpToMessageId);
       addEvent(ChatPageEventChannelIdChanged(channelId));
       addEvent(ChatPageEventRefresh());
       addEvent(const ChatPageEventFetchMuteState());
@@ -484,22 +569,45 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
   void _setupScrollListener() {
     if (!_isScrollListenerAdded) {
       _scrollController.addListener(() {
-        if (_scrollController.position.pixels >=
-            (_scrollController.position.maxScrollExtent)) {
-          add(const ChatPageEventLoadMore());
+        if (!_scrollController.hasClients) return;
+
+        if (state.aroundMessageId != null) {
+          return;
+        }
+
+        final position = _scrollController.position;
+        
+        if (state.useReverseUI) {
+          if (position.pixels <= -50) {
+            add(const ChatPageEventLoadPrevious());
+            return;
+          }
+          if (position.pixels >= (position.maxScrollExtent - 100)) {
+            add(const ChatPageEventLoadMore());
+            return;
+          }
+        } else {
+          if (position.pixels <= 50) {
+            add(const ChatPageEventLoadMore());
+            return;
+          }
+          if (position.pixels >= (position.maxScrollExtent + 50)) {
+            add(const ChatPageEventLoadPrevious());
+            return;
+          }
         }
 
         if (_scrollController.hasClients && state.messages.isNotEmpty) {
-          // For reverse: true lists, position 0 is the latest message at the bottom
-          // Check if we've scrolled past seeing the latest message
-          final isScrolledUp = _scrollController.position.pixels > 50;
+          if (state.useReverseUI) {
+            final isScrolledUp = _scrollController.position.pixels > 50;
 
-          if (isScrolledUp == false && state.newMessage != null) {
-            add(ChatPageNewMessageUpdated(newMessage: null));
-          }
+            if (isScrolledUp == false && state.newMessage != null) {
+              add(const ChatPageNewMessageUpdated(newMessage: null));
+            }
 
-          if (isScrolledUp != state.showScrollButton) {
-            add(ChatPageShowScrollButtonEvent(showScrollButton: isScrolledUp));
+            if (isScrolledUp != state.showScrollButton) {
+              add(ChatPageShowScrollButtonEvent(showScrollButton: isScrolledUp));
+            }
           }
         }
       });
@@ -511,24 +619,32 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
   Future<void> close() {
     _scrollController.dispose();
     subscription.cancel();
+    _jumpToMessageTimeoutTimer?.cancel();
     liveCollection?.getStreamController().close();
     liveCollection?.dispose();
     return super.close();
   }
 
-  void initLiveCollection(String channelId) async {
+  void initLiveCollection(String channelId, {String? aroundMessageId}) async {
     if (liveCollection != null) {
       liveCollection?.getStreamController().close();
       await liveCollection?.dispose();
     }
-    liveCollection = AmityChatClient.newMessageRepository()
+    
+    MessageGetQueryBuilder query = AmityChatClient.newMessageRepository()
         .getMessages(channelId)
         .stackFromEnd(true)
         .includingTags([])
         .excludingTags([])
         .includeDeleted(true)
-        .filterByParent(false)
-        .getLiveCollection();
+        .filterByParent(false);
+    
+    // Use aroundMessageId if provided to load messages around a specific message
+    if (aroundMessageId != null) {
+      query = query.aroundMessageId(aroundMessageId);
+    }
+    
+    liveCollection = query.getLiveCollection();
 
     final list = await AmityChatClient.newChannelRepository()
         .membership(channelId)
@@ -559,6 +675,44 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
         addEvent(const ChatPageNetworkConnectivityChanged(isConnected: true));
       }
     });
+  }
+
+  /// Start progressive scroll animation to find and highlight target message
+  /// 
+  /// This method smoothly scrolls through the chat to locate a specific message
+  /// identified by [targetMessageId]. Once found, the message will be highlighted
+  /// with a bounce animation.
+  void _startProgressiveScrollToTop(String targetMessageId) {
+    // Only start scrolling if data is loaded and page is initialized
+    if (!(!state.isFetching && state is! ChatPageStateInitial)) {
+      _isJumpScrollInProgress = false;
+      return;
+    }
+    
+    if (!_scrollController.hasClients) {
+      _isJumpScrollInProgress = false;
+      add(const ChatPageSetAroundMessage(aroundMessageId: null));
+      return;
+    }
+    
+    final position = _scrollController.position;
+    final maxScrollExtent = position.maxScrollExtent;
+    
+    if (maxScrollExtent > 0) {
+      _isJumpScrollInProgress = true;
+      
+      // Use linear curve for smoother and more predictable scrolling
+      _scrollController.animateTo(
+        maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      ).then((_) {
+        _isJumpScrollInProgress = false;
+      });
+    } else {
+      _isJumpScrollInProgress = false;
+      add(const ChatPageSetAroundMessage(aroundMessageId: null));
+    }
   }
 }
 

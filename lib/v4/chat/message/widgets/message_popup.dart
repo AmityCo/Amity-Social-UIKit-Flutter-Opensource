@@ -285,6 +285,21 @@ extension MessagePopup on MessageBubbleView {
     bool isUser,
   ) async {
     if (offset != null) {
+      bool isCurrentUserMuted = false;
+      
+      if (isGroupChat) {
+        try {
+          final groupChatBloc = context.read<AmityGroupChatPageBloc>();
+          final groupChatState = groupChatBloc.state;
+          final currentUserId = AmityCoreClient.getUserId();
+          isCurrentUserMuted = groupChatState.mutedUsers[currentUserId] ?? false;
+        } catch (e) {
+          isCurrentUserMuted = false;
+        }
+      } else {
+        isCurrentUserMuted = channelMember?.isMuted ?? false;
+      }
+      
       // Adjust the vertical position based on screen position
       final yPos = offset.dy;
       final isInLowerPortion = yPos > screenThreshold;
@@ -293,32 +308,37 @@ extension MessagePopup on MessageBubbleView {
       const menuItemHeight = 48.0;
       const menuPadding = 8.0;
 
-      // Menu item count calculation:
-      // 1. Reply (always present for synced messages)
-      // 2. Edit (only for own text messages)
-      // 3. Copy (only for text messages)
-      // 4. Save (only for image/video messages)
-      // 5. Delete (only for own messages)
       int itemCount = 0;
 
-      if (message.syncState == AmityMessageSyncState.SYNCED) {
-        itemCount += 1; // Reply option always present for synced messages
-
-        if (isUser && message.type == AmityMessageDataType.TEXT) {
-          itemCount += 1; // Edit option for own text messages
+      if (isCurrentUserMuted) {
+        // For muted users: only copy and delete (for own messages) options
+        if (message.data is MessageTextData || message.data is MessageCustomData) {
+          itemCount += 1; // Copy option for text messages
         }
-
-        if (message.data is MessageTextData) {
-          itemCount += 1; // Copy option for any text messages
+        if (isUser) {
+          itemCount += 1; // Delete option for own messages
         }
+      } else {
+        // For non-muted users: full menu options
+        if (message.syncState == AmityMessageSyncState.SYNCED) {
+          itemCount += 1; // Reply option always present for synced messages
 
-        if (message.data is MessageImageData ||
-            message.data is MessageVideoData) {
-          itemCount += 1; // Save option for media messages
+          if (isUser && message.type == AmityMessageDataType.TEXT) {
+            itemCount += 1; // Edit option for own text messages
+          }
+
+          if (message.data is MessageTextData || message.data is MessageCustomData) {
+            itemCount += 1; // Copy option for any text messages
+          }
+
+          if (message.data is MessageImageData ||
+              message.data is MessageVideoData) {
+            itemCount += 1; // Save option for media messages
+          }
+
+          itemCount +=
+              1; // Delete option for own messages or report option for others
         }
-
-        itemCount +=
-            1; // Delete option for own messages or report option for others
       }
 
       final popupHeight = (menuItemHeight * itemCount) + menuPadding;
@@ -355,187 +375,253 @@ extension MessagePopup on MessageBubbleView {
         shadowColor: Colors.black.withOpacity(0.4),
         menuPadding: const EdgeInsets.symmetric(vertical: 4),
         position: position,
-        items: [
-          if (message.syncState == AmityMessageSyncState.SYNCED) ...[
-            if (isUser && message.type == AmityMessageDataType.TEXT)
-              PopupMenuItem(
-                value: 'edit',
-                child: Container(
-                  width: 100,
-                  height: 44,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/Icons/amity_ic_edit_button.svg',
-                        package: 'amity_uikit_beta_service',
-                        width: 20,
-                        height: 18,
-                        color: theme.baseColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        "Edit",
-                        style: TextStyle(
-                            color: theme.baseColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ],
+        items: isCurrentUserMuted
+          ? [
+              // If current user is muted, only show copy option and delete for own messages
+              if (message.data is MessageTextData ||
+                  message.data is MessageCustomData)
+                PopupMenuItem(
+                  value: 'copy',
+                  child: Container(
+                    width: 100,
+                    height: 44,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/Icons/amity_ic_message_copy.svg',
+                          package: 'amity_uikit_beta_service',
+                          width: 20,
+                          height: 18,
+                          color: theme.baseColor,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "Copy",
+                          style: TextStyle(
+                              color: theme.baseColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            PopupMenuItem(
-              value: 'reply',
-              child: Container(
-                width: 100,
-                height: 44,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/Icons/amity_ic_reply_button.svg',
-                      package: 'amity_uikit_beta_service',
-                      width: 20,
-                      height: 18,
-                      color: theme.baseColor,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      "Reply",
-                      style: TextStyle(
-                          color: theme.baseColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            if ((message.data is MessageImageData ||
-                message.data is MessageVideoData))
-              PopupMenuItem(
-                value: 'save',
-                child: Container(
-                  width: 100,
-                  height: 44,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/Icons/amity_ic_save_image.svg',
-                        package: 'amity_uikit_beta_service',
-                        width: 20,
-                        height: 18,
-                        color: theme.baseColor,
-                      ),
-                      const SizedBox(width: 13),
-                      Text(
-                        "Save",
-                        style: TextStyle(
-                            color: theme.baseColor,
+              if (isUser)
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Container(
+                    width: 100,
+                    height: 44,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/Icons/amity_ic_deleted_message.svg',
+                          package: 'amity_uikit_beta_service',
+                          width: 20,
+                          height: 18,
+                          color: theme.alertColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Delete",
+                          style: TextStyle(
+                            color: theme.alertColor,
                             fontSize: 15,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ],
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-          ],
-          if (message.data is MessageTextData)
-            PopupMenuItem(
-              value: 'copy',
-              child: Container(
-                width: 100,
-                height: 44,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/Icons/amity_ic_message_copy.svg',
-                      package: 'amity_uikit_beta_service',
-                      width: 20,
-                      height: 18,
-                      color: theme.baseColor,
+            ]
+          : [
+              // Normal menu options for non-muted users
+              if (message.syncState == AmityMessageSyncState.SYNCED) ...[
+                if (isUser && message.type == AmityMessageDataType.TEXT)
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Container(
+                      width: 100,
+                      height: 44,
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/Icons/amity_ic_edit_button.svg',
+                            package: 'amity_uikit_beta_service',
+                            width: 20,
+                            height: 18,
+                            color: theme.baseColor,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Edit",
+                            style: TextStyle(
+                                color: theme.baseColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      "Copy",
-                      style: TextStyle(
+                  ),
+                PopupMenuItem(
+                  value: 'reply',
+                  child: Container(
+                    width: 100,
+                    height: 44,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/Icons/amity_ic_reply_button.svg',
+                          package: 'amity_uikit_beta_service',
+                          width: 20,
+                          height: 18,
                           color: theme.baseColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Reply",
+                          style: TextStyle(
+                              color: theme.baseColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          if (!isUser)
-            PopupMenuItem(
-              value: message.isFlaggedByMe == true ? 'unreport' : 'report',
-              child: Container(
-                // width: 100,
-                height: 44,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      message.isFlaggedByMe == true
-                          ? 'assets/Icons/amity_ic_unreport_user_button.svg'
-                          : 'assets/Icons/amity_ic_report_user_button.svg',
-                      package: 'amity_uikit_beta_service',
-                      width: 20,
-                      height: 18,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      message.isFlaggedByMe == true ? "Unreport" : "Report",
-                      style: TextStyle(
-                        color: theme.baseColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
+                if ((message.data is MessageImageData ||
+                    message.data is MessageVideoData))
+                  PopupMenuItem(
+                    value: 'save',
+                    child: Container(
+                      width: 100,
+                      height: 44,
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/Icons/amity_ic_save_image.svg',
+                            package: 'amity_uikit_beta_service',
+                            width: 20,
+                            height: 18,
+                            color: theme.baseColor,
+                          ),
+                          const SizedBox(width: 13),
+                          Text(
+                            "Save",
+                            style: TextStyle(
+                                color: theme.baseColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          if (isUser)
-            PopupMenuItem(
-              value: 'delete',
-              child: Container(
-                width: 100,
-                height: 44,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/Icons/amity_ic_deleted_message.svg',
-                      package: 'amity_uikit_beta_service',
-                      width: 20,
-                      height: 18,
-                      color: theme.alertColor,
+                  ),
+              ],
+              if (message.data is MessageTextData ||
+                  message.data is MessageCustomData)
+                PopupMenuItem(
+                  value: 'copy',
+                  child: Container(
+                    width: 100,
+                    height: 44,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/Icons/amity_ic_message_copy.svg',
+                          package: 'amity_uikit_beta_service',
+                          width: 20,
+                          height: 18,
+                          color: theme.baseColor,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "Copy",
+                          style: TextStyle(
+                              color: theme.baseColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Text(
-                      "Delete",
-                      style: TextStyle(
-                        color: theme.alertColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-        ],
+              if (!isUser)
+                PopupMenuItem(
+                  value: message.isFlaggedByMe == true ? 'unreport' : 'report',
+                  child: Container(
+                    // width: 100,
+                    height: 44,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          message.isFlaggedByMe == true
+                              ? 'assets/Icons/amity_ic_unreport_user_button.svg'
+                              : 'assets/Icons/amity_ic_report_user_button.svg',
+                          package: 'amity_uikit_beta_service',
+                          width: 20,
+                          height: 18,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          message.isFlaggedByMe == true ? "Unreport" : "Report",
+                          style: TextStyle(
+                            color: theme.baseColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              if (isUser)
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Container(
+                    width: 100,
+                    height: 44,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/Icons/amity_ic_deleted_message.svg',
+                          package: 'amity_uikit_beta_service',
+                          width: 20,
+                          height: 18,
+                          color: theme.alertColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Delete",
+                          style: TextStyle(
+                            color: theme.alertColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
       );
 
       switch (result) {
@@ -547,6 +633,13 @@ extension MessagePopup on MessageBubbleView {
                 icon: AmityToastIcon.success,
                 bottomPadding: AmityChatPage.toastBottomPadding));
             Clipboard.setData(ClipboardData(text: text));
+          } else if (message.data is MessageCustomData) {
+            final customData = (message.data as MessageCustomData).rawData;
+            context.read<AmityToastBloc>().add(AmityToastShort(
+                message: "Copied.",
+                icon: AmityToastIcon.success,
+                bottomPadding: AmityChatPage.toastBottomPadding));
+            Clipboard.setData(ClipboardData(text: customData.toString()));
           }
           break;
         case 'delete':

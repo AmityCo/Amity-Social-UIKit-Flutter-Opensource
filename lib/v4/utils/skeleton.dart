@@ -21,7 +21,7 @@ class SkeletonText extends StatelessWidget {
       width: width,
       height: height,
       decoration: ShapeDecoration(
-        color: Colors.black,
+        color: this.color,
         shape: RoundedRectangleBorder(
           borderRadius: borderRadius,
         ),

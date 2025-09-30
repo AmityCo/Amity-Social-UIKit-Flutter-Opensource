@@ -568,6 +568,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get general_reported => 'reported';
 
   @override
+  String get general_unreported => 'unreported';
+
+  @override
   String get general_see_more => '...See more';
 
   @override
@@ -722,7 +725,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_create_poll => 'Failed to create poll. Please try again.';
 
   @override
+  String get error_message_too_long_title => 'Unable to send message';
+
+  @override
+  String get error_message_too_long_description => 'Your message is too long. Please shorten your message and try again.';
+
+  @override
   String get user_profile_unknown_name => 'Unknown';
+
+  @override
+  String get user_profile_deleted_name => 'Deleted user';
 
   @override
   String get community_all_members => 'All members';

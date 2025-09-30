@@ -112,7 +112,16 @@ class AmityPostComposerPage extends NewBasePage {
             }
 
             if (state is PostComposerTextChangeState) {
-              textController.text = state.text;
+              // Only set text if it's different to avoid cursor jumping
+              if (textController.text != state.text) {
+                // Save cursor position before setting text
+                final selection = textController.selection;
+                textController.text = state.text;
+                // Restore cursor position if still valid
+                if (selection.baseOffset <= state.text.length && selection.baseOffset >= 0) {
+                  textController.selection = selection;
+                }
+              }
               if (currentPostText != state.text) {
                 isTextChanged = true;
               } else {

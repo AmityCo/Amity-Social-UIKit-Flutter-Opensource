@@ -75,6 +75,7 @@ class AmityCommunityNotificationSettingPage extends NewBasePage {
 
   Widget _getToggleSettingWidget(
       BuildContext context, CommunityNotificationSettingPageState state) {
+
     return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

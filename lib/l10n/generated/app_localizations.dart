@@ -1098,6 +1098,12 @@ abstract class AppLocalizations {
   /// **'reported'**
   String get general_reported;
 
+  /// Label for unreported content
+  ///
+  /// In en, this message translates to:
+  /// **'unreported'**
+  String get general_unreported;
+
   /// Label for see more button
   ///
   /// In en, this message translates to:
@@ -1290,11 +1296,29 @@ abstract class AppLocalizations {
   /// **'Failed to create poll. Please try again.'**
   String get error_create_poll;
 
+  /// Title for error dialog when message exceeds character limit
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to send message'**
+  String get error_message_too_long_title;
+
+  /// Description for error dialog when message exceeds character limit
+  ///
+  /// In en, this message translates to:
+  /// **'Your message is too long. Please shorten your message and try again.'**
+  String get error_message_too_long_description;
+
   /// Fallback display name for users with no display name
   ///
   /// In en, this message translates to:
   /// **'Unknown'**
   String get user_profile_unknown_name;
+
+  /// Display name for deleted users
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted user'**
+  String get user_profile_deleted_name;
 
   /// Tab label for all members in community membership page
   ///

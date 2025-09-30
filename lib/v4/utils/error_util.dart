@@ -5,6 +5,7 @@ enum AmityErrorCode {
   BAN_WORD_FOUND,
   TARGET_NOT_FOUND,
   NO_USER_ACCESS_PERMISSION,
+  LINK_NOT_IN_WHITELIST,
 }
 
 extension AmityExceptionExtension on AmityException {
@@ -16,6 +17,8 @@ extension AmityExceptionExtension on AmityException {
         return 400400;
       case AmityErrorCode.NO_USER_ACCESS_PERMISSION:
         return 400301;
+      case AmityErrorCode.LINK_NOT_IN_WHITELIST:
+        return 400309;
     }
   }
 

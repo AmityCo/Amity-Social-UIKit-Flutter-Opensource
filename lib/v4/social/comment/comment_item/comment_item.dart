@@ -763,6 +763,8 @@ class CommentItem extends BaseElement {
     final deleteAction = BottomSheetMenuOption(
         title: deleteActionTitle,
         icon: "assets/Icons/amity_ic_delete.svg",
+        textStyle: AmityTextStyle.bodyBold(theme.alertColor),
+        colorFilter: ColorFilter.mode(theme.alertColor, BlendMode.srcIn),
         onTap: () {
           Navigator.pop(context);
 

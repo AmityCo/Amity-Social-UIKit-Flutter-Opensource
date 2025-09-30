@@ -9,11 +9,13 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
   final bool isCurrentUserModerator;
   final bool isSelectedUserModerator;
   final bool isBannedUser;
+  final bool isMuted;
   final Function()? onRemoveTap;
   final Function()? onModeratorToggleTap;
   final Function()? onBanUserTap;
   final Function()? onUnbanUserTap;
   final Function()? onReportUserTap;
+  final Function()? onMuteToggleTap;
 
   AmityGroupMemberActionComponent({
     Key? key,
@@ -21,11 +23,13 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
     required this.isCurrentUserModerator,
     required this.isSelectedUserModerator,
     this.isBannedUser = false,
+    this.isMuted = false,
     this.onRemoveTap,
     this.onModeratorToggleTap,
     this.onBanUserTap,
     this.onUnbanUserTap,
     this.onReportUserTap,
+    this.onMuteToggleTap,
   }) : super(key: key, componentId: 'group_member_action');
 
   @override
@@ -108,6 +112,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
             )
           else ...[
             if (isCurrentUserModerator) ...[
+              // Promote/Demote moderator option
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
@@ -131,8 +136,8 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                           package: 'amity_uikit_beta_service',
                           width: 24,
                           height: 24,
-                          colorFilter:
-                              ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                              theme.baseColor, BlendMode.srcIn),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -140,6 +145,46 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                         isSelectedUserModerator
                             ? 'Demote from moderator'
                             : 'Promote to moderator',
+                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Mute/Unmute option - only available to moderators
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  if (onMuteToggleTap != null) {
+                    onMuteToggleTap!();
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(top: 2, bottom: 2),
+                        child: SvgPicture.asset(
+                          isMuted
+                              ? 'assets/Icons/amity_ic_group_chat_unmute_member_button.svg'
+                              : 'assets/Icons/amity_ic_group_chat_mute_member_button.svg',
+                          package: 'amity_uikit_beta_service',
+                          width: 24,
+                          height: 24,
+                          colorFilter: ColorFilter.mode(
+                              theme.baseColor, BlendMode.srcIn),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        isMuted ? 'Unmute user' : 'Mute user',
                         style: AmityTextStyle.bodyBold(theme.baseColor),
                       ),
                     ],
@@ -170,8 +215,8 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                       height: 24,
                       child: SvgPicture.asset(
                         user.isFlaggedByMe
-                          ? 'assets/Icons/amity_ic_unreport_user_button.svg'
-                          : 'assets/Icons/amity_ic_report_user_button.svg',
+                            ? 'assets/Icons/amity_ic_unreport_user_button.svg'
+                            : 'assets/Icons/amity_ic_report_user_button.svg',
                         package: 'amity_uikit_beta_service',
                         width: 24,
                         height: 24,
@@ -213,8 +258,8 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                           package: 'amity_uikit_beta_service',
                           width: 24,
                           height: 24,
-                          colorFilter:
-                              ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                              theme.baseColor, BlendMode.srcIn),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -251,8 +296,8 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                           package: 'amity_uikit_beta_service',
                           width: 24,
                           height: 24,
-                          colorFilter:
-                              ColorFilter.mode(theme.alertColor, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                              theme.alertColor, BlendMode.srcIn),
                         ),
                       ),
                       const SizedBox(width: 12),

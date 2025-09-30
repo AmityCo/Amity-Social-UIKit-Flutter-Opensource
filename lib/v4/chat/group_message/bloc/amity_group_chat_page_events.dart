@@ -33,6 +33,10 @@ class GroupChatPageEventLoadMore extends GroupChatPageEvent {
   const GroupChatPageEventLoadMore();
 }
 
+class GroupChatPageEventLoadPrevious extends GroupChatPageEvent {
+  const GroupChatPageEventLoadPrevious();
+}
+
 class GroupChatPageEventFetchMuteState extends GroupChatPageEvent {
   const GroupChatPageEventFetchMuteState();
 }
@@ -185,4 +189,72 @@ class GroupChatPageMemberRolesUpdated extends GroupChatPageEvent {
 
   @override
   List<Object> get props => [memberRoles];
+}
+
+class GroupChatPageMutedUsersUpdated extends GroupChatPageEvent {
+  final Map<String, bool> mutedUsers;
+
+  const GroupChatPageMutedUsersUpdated({required this.mutedUsers});
+
+  @override
+  List<Object> get props => [mutedUsers];
+}
+
+class GroupChatPageEventJumpToMessage extends GroupChatPageEvent {
+  final String aroundMessageId;
+
+  const GroupChatPageEventJumpToMessage({required this.aroundMessageId});
+
+  @override
+  List<Object> get props => [aroundMessageId];
+}
+
+class GroupChatPageSetAroundMessage extends GroupChatPageEvent {
+  final String? aroundMessageId;
+  
+  const GroupChatPageSetAroundMessage({this.aroundMessageId});
+
+  @override
+  List<Object> get props => [aroundMessageId ?? ''];
+}
+
+class GroupChatPageTriggerBounceEvent extends GroupChatPageEvent {
+  final int targetIndex;
+  
+  const GroupChatPageTriggerBounceEvent({required this.targetIndex});
+
+  @override
+  List<Object> get props => [targetIndex];
+}
+
+class GroupChatPageClearBounceEvent extends GroupChatPageEvent {
+  const GroupChatPageClearBounceEvent();
+}
+
+class GroupChatPageSetLoadingToastDismissed extends GroupChatPageEvent {
+  final bool isDismissed;
+  
+  const GroupChatPageSetLoadingToastDismissed({required this.isDismissed});
+
+  @override
+  List<Object> get props => [isDismissed];
+}
+
+class GroupChatPageSetShouldBounceMessage extends GroupChatPageEvent {
+  final bool shouldBounce;
+  final int? messageIndex;
+  
+  const GroupChatPageSetShouldBounceMessage({required this.shouldBounce, this.messageIndex});
+
+  @override
+  List<Object> get props => [shouldBounce, messageIndex ?? -1];
+}
+
+class GroupChatPageSetShouldUseReverse extends GroupChatPageEvent {
+  final bool? shouldUseReverse;
+  
+  const GroupChatPageSetShouldUseReverse({required this.shouldUseReverse});
+
+  @override
+  List<Object> get props => [shouldUseReverse ?? false];
 }

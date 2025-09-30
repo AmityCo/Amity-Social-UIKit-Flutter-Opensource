@@ -8,6 +8,7 @@ class AmityGroupMemberListState extends Equatable {
   final List<String> currentUserRoles;
   // final String? error;
   final String activeTab; // 'all' or 'moderators'
+  final Map<String, bool> mutedUsers; // User ID -> mute status
 
   const AmityGroupMemberListState({
     this.members = const [],
@@ -17,6 +18,7 @@ class AmityGroupMemberListState extends Equatable {
     this.currentUserRoles = const [],
     // this.error,
     this.activeTab = 'all',
+    this.mutedUsers = const {},
   });
 
   /// Computed property to check if current user is a moderator
@@ -32,6 +34,7 @@ class AmityGroupMemberListState extends Equatable {
     List<String>? currentUserRoles,
     // String? error,
     String? activeTab,
+    Map<String, bool>? mutedUsers,
   }) {
     return AmityGroupMemberListState(
       members: members ?? this.members,
@@ -41,6 +44,7 @@ class AmityGroupMemberListState extends Equatable {
       currentUserRoles: currentUserRoles ?? this.currentUserRoles,
       // error: error ?? this.error,
       activeTab: activeTab ?? this.activeTab,
+      mutedUsers: mutedUsers ?? this.mutedUsers,
     );
   }
 
@@ -53,5 +57,6 @@ class AmityGroupMemberListState extends Equatable {
     currentUserRoles,
     // error,
     activeTab,
+    mutedUsers,
   ];
 }

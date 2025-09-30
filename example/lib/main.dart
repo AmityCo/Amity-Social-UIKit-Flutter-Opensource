@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
@@ -782,6 +784,14 @@ class ChatPage extends StatelessWidget {
                 ));
               },
             ),
+            ListTile(
+              title: const Text('Custom Message'),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CustomMessagePage(),
+                ));
+              },
+            ),
           ],
         ),
       ),
@@ -835,6 +845,355 @@ class CustomUserRelationshipPageBehavior extends AmityUserRelationshipPageBehavi
   @override
   void goToUserProfilePage(BuildContext context, String userId) {
     // Override the default behavior to navigate to a custom user profile page
+  }
+}
+
+class CustomMessagePage extends StatelessWidget {
+  const CustomMessagePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Custom Message'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListTile(
+              title: const Text('Create'),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CreateMessagePage(),
+                ));
+              },
+            ),
+            ListTile(
+              title: const Text('Edit'),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const EditMessagePage(),
+                ));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CreateMessagePage extends StatefulWidget {
+  const CreateMessagePage({super.key});
+
+  @override
+  _CreateMessagePageState createState() => _CreateMessagePageState();
+}
+
+class _CreateMessagePageState extends State<CreateMessagePage> {
+  final TextEditingController _channelIdController = TextEditingController();
+  final TextEditingController _parentIdController = TextEditingController();
+  final TextEditingController _customDataController = TextEditingController();
+
+  @override
+  void dispose() {
+    _channelIdController.dispose();
+    _parentIdController.dispose();
+    _customDataController.dispose();
+    super.dispose();
+  }
+
+  Map<String, dynamic>? _parseCustomData() {
+    if (_customDataController.text.isEmpty) return null; // Return null instead of empty map
+    
+    try {
+      // Parse JSON string to Map
+      final decoded = json.decode(_customDataController.text);
+      if (decoded is Map<String, dynamic>) {
+        // Check if the map is empty
+        if (decoded.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Custom Data cannot be empty. Please provide valid JSON data.')),
+          );
+          return null;
+        }
+        return decoded;
+      } else {
+        throw FormatException('Data must be a JSON object');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invalid JSON format: $e')),
+      );
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Message'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _channelIdController,
+              decoration: const InputDecoration(
+                labelText: 'Channel ID',
+                border: OutlineInputBorder(),
+                hintText: 'Enter channel ID',
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _parentIdController,
+              decoration: const InputDecoration(
+                labelText: 'Parent ID (Optional)',
+                border: OutlineInputBorder(),
+                hintText: 'Enter parent message ID for replies',
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _customDataController,
+              decoration: const InputDecoration(
+                labelText: 'Custom Data (JSON)',
+                border: OutlineInputBorder(),
+                hintText: '{"key": "value", "number": 123}',
+              ),
+              maxLines: 5,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () async {
+                
+                final customData = _parseCustomData();
+                if (customData != null && _channelIdController.text.isNotEmpty) {
+                  try {
+                    // Create custom message using Amity SDK
+                    // Check if parentId is provided
+                    final parentId = _parentIdController.text.trim().isEmpty ? null : _parentIdController.text.trim();
+                    
+                    final messageCreator = AmityChatClient.newMessageRepository()
+                        .createCustomMessage(_channelIdController.text, customData);
+                    
+                    // If parentId is provided, set it as reply to parent
+                    if (parentId != null) {
+                      messageCreator.parentId(parentId);
+                    }
+                    
+                    final result = await messageCreator.send();
+                    
+                    // Show success dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Message Created Successfully'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Channel ID: ${_channelIdController.text}'),
+                            if (parentId != null) Text('Parent ID: $parentId'),
+                            Text('Message ID: ${result.messageId}'),
+                            Text('Custom Data: $customData'),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    
+                    // Clear form
+                    _parentIdController.clear();
+                    _customDataController.clear();
+                    
+                  } catch (e) {
+                    // Show error dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Error Creating Message'),
+                        content: Text('Error: $e'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please fill in Channel ID and provide valid Custom Data (non-empty JSON)')),
+                  );
+                }
+              },
+              child: const Text('Create Message'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EditMessagePage extends StatefulWidget {
+  const EditMessagePage({super.key});
+
+  @override
+  _EditMessagePageState createState() => _EditMessagePageState();
+}
+
+class _EditMessagePageState extends State<EditMessagePage> {
+  final TextEditingController _messageIdController = TextEditingController();
+  final TextEditingController _editDataController = TextEditingController();
+
+  @override
+  void dispose() {
+    _messageIdController.dispose();
+    _editDataController.dispose();
+    super.dispose();
+  }
+
+  Future<AmityMessage> editCustomMessage(String messageId, Map<String, dynamic> customData) async {
+    // Use the Amity SDK to edit custom message using the customData() method
+    return await AmityChatClient.newMessageRepository()
+        .editCustomMessage(messageId, customData).update();
+  }
+
+  Map<String, dynamic>? _parseEditData() {
+    if (_editDataController.text.isEmpty) return null; // Return null instead of empty map
+    
+    try {
+      // Parse JSON string to Map
+      final decoded = json.decode(_editDataController.text);
+      if (decoded is Map<String, dynamic>) {
+        // Check if the map is empty
+        if (decoded.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Edit Data cannot be empty. Please provide valid JSON data.')),
+          );
+          return null;
+        }
+        return decoded;
+      } else {
+        throw FormatException('Data must be a JSON object');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invalid JSON format: $e')),
+      );
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit Message'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            
+            TextFormField(
+              controller: _messageIdController,
+              decoration: const InputDecoration(
+                labelText: 'Message ID',
+                border: OutlineInputBorder(),
+                hintText: 'Enter message ID to edit',
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _editDataController,
+              decoration: const InputDecoration(
+                labelText: 'Edit Data (JSON)',
+                border: OutlineInputBorder(),
+                hintText: '{"text": "new message", "customField": "value"}',
+              ),
+              maxLines: 8,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () async {
+                final editData = _parseEditData();
+                if (editData != null && 
+                    _messageIdController.text.isNotEmpty) {
+                  try {
+                    // Use the actual editCustomMessage method
+                    final result = await editCustomMessage(
+                      _messageIdController.text, 
+                      editData
+                    );
+                    
+                    // Show success dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Message Updated Successfully'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Message ID: ${_messageIdController.text}'),
+                            Text('Updated Message ID: ${result.messageId}'),
+                            Text('Updated Data: $editData'),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    
+                    // Clear form
+                    _messageIdController.clear();
+                    _editDataController.clear();
+                    
+                  } catch (e) {
+                    // Show error dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Error Updating Message'),
+                        content: Text('Error: $e'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),  
+                        ],
+                      ),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please fill in Channel ID, Message ID and provide valid Edit Data (non-empty JSON)')),
+                  );
+                }
+              },
+              child: const Text('Update Message'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

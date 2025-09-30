@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/chat/group_message/bloc/amity_group_chat_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/components/message_report_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/message_avatar.dart';
@@ -17,6 +18,8 @@ import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/widgets/message_link_preview_widget.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/reaction_list.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
@@ -25,6 +28,7 @@ import 'package:amity_uikit_beta_service/v4/utils/image_info_manager.dart';
 import 'package:amity_uikit_beta_service/v4/utils/media_permission_handler.dart';
 import 'package:amity_uikit_beta_service/v4/utils/message_color.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
+import 'package:amity_uikit_beta_service/utils/processed_text_cache.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +57,7 @@ class MessageBubbleView extends NewBaseComponent {
   final Uint8List? thumbnail;
   final bool isModerator;
   late MessageColor messageColor;
-  final int bounceOffset = 150;
+  final int bounceOffset = 50;
   Image? messageImage;
   BounceAnimator? bounceAnimator;
   double bounce;
@@ -124,7 +128,7 @@ class MessageBubbleView extends NewBaseComponent {
             alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
             child: Container(
               constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.8,
+                maxWidth: MediaQuery.of(context).size.width * 0.8, // 80% for the whole container including avatar
               ),
               margin: EdgeInsets.only(
                 left: isUser ? 50 : 16,
@@ -145,11 +149,16 @@ class MessageBubbleView extends NewBaseComponent {
                         _buildParentMessage(message, parentMessage, context),
                       if (!isUser && (isGroupChat && message.parentId == null))
                         Container(
-                          padding: EdgeInsets.only(left: 40, bottom: 4),
+                          margin: EdgeInsets.only(left: isModerator ? 44 : 40, bottom: 4), // 44px for moderator (36px avatar + 8px spacing), 40px for regular (32px avatar + 8px spacing)
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6, // Same as bubble width
+                          ),
                           child: Text(
                             message.user?.displayName ?? "",
                             style: AmityTextStyle.captionBold(
                                 theme.baseColorShade1),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       _buildMessageContent(
@@ -214,10 +223,133 @@ class MessageBubbleView extends NewBaseComponent {
         return _buildImageMessageWidget(context, isUser, state, bounce);
       } else if (message.data is MessageVideoData) {
         return _buildVideoMessageWidget(context, isUser, thumbnail, state);
+      } else if (message.data is MessageCustomData) {
+        return _buildCustomMessageWidget(context, isUser, state);
       } else {
         return Container();
       }
     }
+  }
+
+  Widget _buildCustomMessageWidget(BuildContext context, bool isUser, MessageBubbleState state) {
+    final customData = message.data as MessageCustomData;
+    // Convert the custom data to a string representation
+    final dataString = customData.rawData;
+    
+    // Use yellow color for custom messages
+    Color initialColor = Colors.yellow;
+
+    return Transform.translate(
+      offset: Offset(
+          ((bounce * bounceOffset) - bounceOffset) * (isUser ? -1 : 1),
+          0), // Bounce effect
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (isUser &&
+              message.createdAt != null &&
+              message.syncState == AmityMessageSyncState.SYNCED) ...[
+            _buildDateWidget(message.createdAt!),
+            const SizedBox(width: 8),
+          ],
+          if (!isUser) ...[
+            _buildAvatarWidget(context),
+            const SizedBox(width: 8),
+          ],
+          if (isUser &&
+              message.syncState != AmityMessageSyncState.SYNCED &&
+              message.syncState != AmityMessageSyncState.FAILED) ...[
+            _buildSideTextWidget("Sending..."),
+            const SizedBox(width: 8),
+          ],
+          if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
+            Container(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: GestureDetector(
+                onTap: () {
+                  _showActionSheet(context);
+                },
+                child: SvgPicture.asset(
+                  'assets/Icons/amity_ic_error_message.svg',
+                  package: 'amity_uikit_beta_service',
+                  width: 16,
+                  height: 16,
+                  color: theme.baseColorShade2,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+          Flexible(
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return GestureDetector(
+                  onLongPress: () async {
+                    if (message.syncState == AmityMessageSyncState.FAILED) {
+                      return;
+                    }
+                    HapticFeedback.heavyImpact();
+                    setState(() {
+                      initialColor = Colors.yellow.shade600; // Darker yellow when pressed
+                    });
+                    final RenderBox? messageBox =
+                        context.findRenderObject() as RenderBox?;
+                    final Offset? messagePosition =
+                        messageBox?.localToGlobal(Offset.zero);
+                    double height = messageBox?.size.height ?? 0;
+                    double width = messageBox?.size.width ?? 0;
+                    if (message.reactionCount != null &&
+                        message.reactionCount! > 0) {
+                      height += 26;
+                    } else {
+                      height += 4;
+                    }
+                    final offset = Offset(
+                        isUser
+                            ? messagePosition!.dx + width
+                            : messagePosition!.dx,
+                        messagePosition.dy + height);
+
+                    final reactions = configProvider.getAllMessageReactions();
+                    final reactionActionOffset = Offset(
+                        isUser
+                            ? messagePosition.dx + width - 208
+                            : messagePosition.dx,
+                        messagePosition.dy - 52);
+                    await _showReactionAndMenu(context, offset,
+                        reactionActionOffset, message, state, reactions);
+
+                    setState(() {
+                      initialColor = Colors.yellow; // Back to yellow when released
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: initialColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      dataString.toString(),
+                      style: TextStyle(
+                        color: Colors.black, // Use black text for better contrast on yellow background
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          if (!isUser && message.createdAt != null) ...[
+            const SizedBox(width: 8),
+            _buildDateWidget(message.createdAt!),
+          ],
+        ],
+      ),
+    );
   }
 
   void _showActionSheet(BuildContext context) {

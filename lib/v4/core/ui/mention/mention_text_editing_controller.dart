@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/material.dart';
-import 'package:diacritic/diacritic.dart';
 
 /// Example base mention object
 class MentionObject {
@@ -368,7 +367,6 @@ class MentionTextEditingController extends TextEditingController {
       // Use the current selection offset as end if greater than start.
       final int end = selection.baseOffset > start ? selection.baseOffset : start;
       // Debug log to help verify indices.
-      debugPrint("Dismissing mention: removing text from index $start to $end");
       text = text.replaceRange(start, end, '');
       _previousText = text;
     }
@@ -380,9 +378,6 @@ class MentionTextEditingController extends TextEditingController {
     _cachedMentions.sort((a, b) => a.start - b.start);
   }
 
-  // ----------------------------------------------------------------
-  // Called whenever text changes
-  // ----------------------------------------------------------------
   Future<void> _onTextChanged() async {
     if (isInsertingMention) return;
     if (_previousText == text) return;
@@ -501,22 +496,40 @@ class MentionTextEditingController extends TextEditingController {
   // ----------------------------------------------------------------
   List<AmityUserMentionMetadata> getAmityMentionMetadata() {
     final mentionList = getMentions();
-    return mentionList.map((m) {
-      final userId = m["userId"] as String;
-      final startIndex = m["startIndex"] as int;
-      final endIndex = m["endIndex"] as int;
-      final length = (endIndex - startIndex) - 1;
-      return AmityUserMentionMetadata(
-        userId: userId,
-        index: startIndex,
-        length: length,
-      );
-    }).toList();
+    
+    if (mentionList.isEmpty) {
+      return [];
+    }
+    
+    try {
+      return mentionList.map((m) {
+        final userId = m["userId"] as String;
+        final startIndex = m["startIndex"] as int;
+        final endIndex = m["endIndex"] as int;
+        
+        // Calculate length properly to maintain consistency
+        final length = endIndex - startIndex;
+        
+        return AmityUserMentionMetadata(
+          userId: userId,
+          index: startIndex,
+          length: length,
+        );
+      }).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   List<String> getMentionUserIds() {
     final mentionObjs = getAmityMentionMetadata();
     final userIds = mentionObjs.map((m) => m.userId).toSet().toList();
+    return userIds;
+  }
+
+  List<String> getAllMentionUserIds() {
+    final mentionObjs = getAmityMentionMetadata();
+    final userIds = mentionObjs.map((m) => m.userId).toList();
     return userIds;
   }
 
@@ -557,8 +570,13 @@ class MentionTextEditingController extends TextEditingController {
   }
 
   List<Map<String, dynamic>> getMentions() {
-    final result = _buildPlainTextAndMentions();
-    return result["mentions"] as List<Map<String, dynamic>>;
+    try {
+      final result = _buildPlainTextAndMentions();
+      final mentions = result["mentions"] as List<Map<String, dynamic>>;
+      return mentions;
+    } catch (e) {
+      return [];
+    }
   }
 
   String getPlainText() {
@@ -569,23 +587,40 @@ class MentionTextEditingController extends TextEditingController {
   void populate(String plainText, List<AmityUserMentionMetadata> mentionList) {
     _cachedMentions.clear();
     mentionList.sort((a, b) => a.index.compareTo(b.index));
+    
+    if (mentionSyntaxes.isEmpty) {
+      text = plainText;
+      return;
+    }
+    
     final defaultSyntax = mentionSyntaxes.first;
     for (final m in mentionList) {
-      if (m.index >= plainText.length) continue;
-      int end = m.index + m.length + 1;
-      if (end > plainText.length) {
-        end = plainText.length;
+      try {
+        if (m.index >= plainText.length) {
+          continue;
+        }
+        
+        // Calculate the correct end position based on the mention length
+        int end = m.index + m.length;
+        if (end > plainText.length) {
+          end = plainText.length;
+        }
+        
+        final displayText = plainText.substring(m.index, end);
+        
+        _cachedMentions.add(_TextMention(
+          id: m.userId,
+          display: displayText,
+          start: m.index,
+          end: end,
+          syntax: defaultSyntax,
+        ));
+      } catch (e) {
       }
-      final displayText = plainText.substring(m.index, end);
-      _cachedMentions.add(_TextMention(
-        id: m.userId,
-        display: displayText,
-        start: m.index,
-        end: end,
-        syntax: defaultSyntax,
-      ));
     }
+    
     _previousText = plainText;
     text = plainText;
+    notifyListeners();
   }
 }

@@ -1,5 +1,8 @@
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:linkify/linkify.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FullTextScreen extends StatelessWidget {
   final String fullText;
@@ -38,12 +41,28 @@ class FullTextScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(16.0),
-              child: Text(
-                fullText,
+              child: SelectableLinkify(
+                text: fullText,
                 style: TextStyle(
                     color: theme.baseColor,
                     fontSize: 17,
                     fontWeight: FontWeight.w400),
+                linkStyle: TextStyle(
+                    color: theme.primaryColor,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w400,
+                    decoration: TextDecoration.underline,
+                    decorationColor: theme.primaryColor),
+                onOpen: (link) async {
+                  final Uri url = Uri.parse(link.url);
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url);
+                  }
+                },
+                options: LinkifyOptions(
+                  humanize: false,
+                  defaultToHttps: true,
+                ),
               ),
             ),
           ),

@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/v4/chat/createGroup/ui/amity_select_gro
 import 'package:amity_uikit_beta_service/v4/chat/home/amity_all_chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/amity_conversation_chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/amity_group_chat_list_component.dart';
+import 'package:amity_uikit_beta_service/v4/chat/search/amity_search_channel_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/Network/network_connectivity_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
@@ -139,20 +140,24 @@ class _ChatTabs extends NewBaseComponent {
       child: IntrinsicWidth(
         child: ElevatedButton(
           onPressed: () => tabController.animateTo(index),
-          style: ElevatedButton.styleFrom(
-            foregroundColor: isSelected ? Colors.white : theme.baseColorShade1,
-            backgroundColor:
-                isSelected ? theme.primaryColor : Colors.transparent,
-            shape: RoundedRectangleBorder(
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(
+                isSelected ? Colors.white : theme.baseColorShade1),
+            backgroundColor: WidgetStateProperty.all(
+                isSelected ? theme.primaryColor : Colors.transparent),
+            // overlayColor: WidgetStateProperty.all(Colors.transparent),
+            splashFactory: NoSplash.splashFactory,
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
-            ),
-            side: BorderSide(
+            )),
+            side: WidgetStateProperty.all(BorderSide(
               color: isSelected ? theme.primaryColor : theme.baseColorShade4,
               width: 1.0,
-            ),
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            minimumSize: Size.zero,
+            )),
+            elevation: WidgetStateProperty.all(0),
+            padding: WidgetStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+            minimumSize: WidgetStateProperty.all(Size.zero),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           child: Text(
@@ -228,6 +233,38 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
   Widget buildComponent(BuildContext context) {
     return Row(
       children: [
+        // Search button
+        Container(
+          width: 32,
+          height: 32,
+          margin: const EdgeInsets.only(right: 10.0),
+          decoration: BoxDecoration(
+            color: theme.secondaryColor.blend(ColorBlendingOption.shade4),
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            padding: const EdgeInsets.all(4),
+            icon: SvgPicture.asset(
+              "assets/Icons/amity_ic_search_chat_button.svg",
+              package: 'amity_uikit_beta_service',
+              colorFilter: ColorFilter.mode(
+                theme.secondaryColor,
+                BlendMode.srcIn,
+              ),
+              width: 24,
+              height: 24,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (context) => AmitySearchChannelhPage(),
+                ),
+              );
+            },
+          ),
+        ),
+        // Create chat button
         Container(
           width: 32,
           height: 32,

@@ -568,6 +568,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get general_reported => 'reportado';
 
   @override
+  String get general_unreported => 'no reportado';
+
+  @override
   String get general_see_more => '...Ver más';
 
   @override
@@ -722,7 +725,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_create_poll => 'Error al crear la encuesta. Por favor, inténtalo de nuevo.';
 
   @override
+  String get error_message_too_long_title => 'No se puede enviar el mensaje';
+
+  @override
+  String get error_message_too_long_description => 'Tu mensaje es demasiado largo. Por favor, acorta tu mensaje e inténtalo de nuevo.';
+
+  @override
   String get user_profile_unknown_name => 'Desconocido';
+
+  @override
+  String get user_profile_deleted_name => 'Usuario eliminado';
 
   @override
   String get community_all_members => 'Todos los miembros';
@@ -1730,6 +1742,9 @@ class AppLocalizationsEsCl extends AppLocalizationsEs {
   String get general_reported => 'reportado';
 
   @override
+  String get general_unreported => 'no reportado';
+
+  @override
   String get general_see_more => '...Ver más';
 
   @override
@@ -2470,6 +2485,9 @@ class AppLocalizationsEsCo extends AppLocalizationsEs {
 
   @override
   String get general_reported => 'reportado';
+
+  @override
+  String get general_unreported => 'no reportado';
 
   @override
   String get general_see_more => '...Ver más';
@@ -3214,6 +3232,9 @@ class AppLocalizationsEsMx extends AppLocalizationsEs {
   String get general_reported => 'reportado';
 
   @override
+  String get general_unreported => 'no reportado';
+
+  @override
   String get general_see_more => '...Ver más';
 
   @override
@@ -3954,6 +3975,9 @@ class AppLocalizationsEsPe extends AppLocalizationsEs {
 
   @override
   String get general_reported => 'reportado';
+
+  @override
+  String get general_unreported => 'no reportado';
 
   @override
   String get general_see_more => '...Ver más';

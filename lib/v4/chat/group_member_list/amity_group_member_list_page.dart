@@ -48,14 +48,15 @@ class AmityGroupMemberListPage extends NewBasePage {
             length: 2,
             child: Builder(
               builder: (context) {
-                final TabController tabController = DefaultTabController.of(context);
-                
+                final TabController tabController =
+                    DefaultTabController.of(context);
+
                 // Listen to tab changes
                 tabController.addListener(() {
-
                   if (!tabController.indexIsChanging) {
                     final cubit = context.read<AmityGroupMemberListCubit>();
-                    final newTab = tabController.index == 0 ? 'all' : 'moderators';
+                    final newTab =
+                        tabController.index == 0 ? 'all' : 'moderators';
                     cubit.changeTab(newTab);
                     // Clear search when switching tabs
                     textController.clear();
@@ -125,8 +126,10 @@ class AmityGroupMemberListPage extends NewBasePage {
                       Expanded(
                         child: TabBarView(
                           children: [
-                            _buildTabContent(context, state, memberScrollController),
-                            _buildTabContent(context, state, moderatorScrollController),
+                            _buildTabContent(
+                                context, state, memberScrollController),
+                            _buildTabContent(
+                                context, state, moderatorScrollController),
                           ],
                         ),
                       ),
@@ -141,7 +144,8 @@ class AmityGroupMemberListPage extends NewBasePage {
     );
   }
 
-  Widget _buildTabContent(BuildContext context, AmityGroupMemberListState state, ScrollController scrollController) {
+  Widget _buildTabContent(BuildContext context, AmityGroupMemberListState state,
+      ScrollController scrollController) {
     return Column(
       children: [
         AmityTopSearchBarComponent(
@@ -151,9 +155,7 @@ class AmityGroupMemberListPage extends NewBasePage {
           showCancelButton: false,
           onTextChanged: (value) {
             _debouncer.run(() {
-              context
-                  .read<AmityGroupMemberListCubit>()
-                  .searchMembers(value);
+              context.read<AmityGroupMemberListCubit>().searchMembers(value);
             });
           },
         ),
@@ -164,7 +166,8 @@ class AmityGroupMemberListPage extends NewBasePage {
     );
   }
 
-  Widget _buildMembersList(BuildContext context, AmityGroupMemberListState state, ScrollController scrollController) {
+  Widget _buildMembersList(BuildContext context,
+      AmityGroupMemberListState state, ScrollController scrollController) {
     // Since the cubit already filters data based on activeTab, we just use state.members directly
     final filteredMembers = state.members;
 
@@ -205,8 +208,8 @@ class AmityGroupMemberListPage extends NewBasePage {
     );
   }
 
-  Widget _buildMembersListView(
-      BuildContext context, AmityGroupMemberListState state, ScrollController scrollController) {
+  Widget _buildMembersListView(BuildContext context,
+      AmityGroupMemberListState state, ScrollController scrollController) {
     final currentUserId = AmityCoreClient.getUserId();
 
     return groupUserList(
@@ -215,6 +218,7 @@ class AmityGroupMemberListPage extends NewBasePage {
       users: state.members,
       theme: theme,
       memberRoles: state.memberRoles,
+      mutedUsers: state.mutedUsers,
       loadMore: () {
         context.read<AmityGroupMemberListCubit>().loadMoreMembers();
       },
@@ -266,6 +270,7 @@ class AmityGroupMemberListPage extends NewBasePage {
             user: user,
             isCurrentUserModerator: state.isCurrentUserModerator,
             isSelectedUserModerator: isUserModerator,
+            isMuted: state.mutedUsers[user.userId!] ?? false,
             onRemoveTap: () {
               _confirmRemoveMember(context, user);
             },
@@ -281,6 +286,9 @@ class AmityGroupMemberListPage extends NewBasePage {
             },
             onReportUserTap: () {
               _reportUser(context, user);
+            },
+            onMuteToggleTap: () {
+              _toggleMuteUser(context, user);
             },
           ),
         );
@@ -349,5 +357,51 @@ class AmityGroupMemberListPage extends NewBasePage {
   void _reportUser(BuildContext context, AmityUser user) {
     final cubit = context.read<AmityGroupMemberListCubit>();
     cubit.reportUser(user);
+  }
+
+  void _toggleMuteUser(BuildContext context, AmityUser user) {
+    if (user.userId == null) return;
+
+    // Check if user is currently muted
+    final cubit = context.read<AmityGroupMemberListCubit>();
+    final isMuted = cubit.state.mutedUsers[user.userId!] ?? false;
+
+    // Show appropriate confirmation dialog
+    if (isMuted) {
+      _confirmUnmuteUser(context, user);
+    } else {
+      _confirmMuteUser(context, user);
+    }
+  }
+
+  void _confirmMuteUser(BuildContext context, AmityUser user) {
+    final cubit = context.read<AmityGroupMemberListCubit>();
+    ConfirmationV4Dialog().show(
+      context: context,
+      title: 'Confirm mute',
+      detailText:
+          "Are you sure you want to mute this user? They will no longer be able to send or react to messages.",
+      leftButtonText: 'Cancel',
+      rightButtonText: 'Mute',
+      leftButtonColor: theme.alertColor,
+      onConfirm: () {
+        cubit.toggleMuteUser(user.userId!);
+      },
+    );
+  }
+
+  void _confirmUnmuteUser(BuildContext context, AmityUser user) {
+    final cubit = context.read<AmityGroupMemberListCubit>();
+    ConfirmationV4Dialog().show(
+      context: context,
+      title: 'Confirm unmute',
+      detailText:
+          "Are you sure you want to unmute this user? They can now send or react to messages.",
+      leftButtonText: 'Cancel',
+      rightButtonText: 'Unmute',
+      onConfirm: () {
+        cubit.toggleMuteUser(user.userId!);
+      },
+    );
   }
 }

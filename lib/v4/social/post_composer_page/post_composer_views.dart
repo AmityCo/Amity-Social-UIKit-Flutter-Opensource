@@ -89,7 +89,6 @@ extension PostComposerView on AmityPostComposerPage {
         fontWeight: FontWeight.normal,
         color: theme.baseColor,
       ),
-      onChanged: (value) {},
     );
   }
 

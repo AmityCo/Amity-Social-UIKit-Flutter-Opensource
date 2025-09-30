@@ -176,6 +176,7 @@ Widget groupUserList({
   required void Function(AmityUser)? onActionTap,
   required bool hideActionForCurrentUser,
   required bool isCurrentUserModerator,
+  Map<String, bool>? mutedUsers,  
   bool isLoadingMoreMember = false,
 }) {
   return NotificationListener<ScrollNotification>(
@@ -214,10 +215,12 @@ Widget groupUserList({
           theme: theme,
           isCurrentUser: isCurrentUser,
           memberRoles: memberRoles,
+          mutedUsers: mutedUsers,
           onTap: onTap,
           onActionTap: (hideActionForCurrentUser && isCurrentUser)
               ? null
               : onActionTap,
+          isCurrentUserModerator: isCurrentUserModerator,
         );
       },
     ),
@@ -231,8 +234,10 @@ Widget _groupUserRow({
   required AmityThemeColor theme,
   required bool isCurrentUser,
   required Map<String, List<String>>? memberRoles,
+  Map<String, bool>? mutedUsers,
   required void Function(AmityUser) onTap,
   required void Function(AmityUser)? onActionTap,
+  required bool isCurrentUserModerator,
 }) {
   return GestureDetector(
     onTap: () => onTap(user),
@@ -247,7 +252,7 @@ Widget _groupUserRow({
           const SizedBox(width: 0),
           _avatarImage(user, theme, memberRoles: memberRoles),
           const SizedBox(width: 8),
-          _groupDisplayNameWithBrandIcon(user, theme, isCurrentUser),
+          _groupDisplayNameWithBrandIcon(user, theme, isCurrentUser, mutedUsers, isCurrentUserModerator),
           if (onActionTap != null)
             IconButton(
               icon: SvgPicture.asset(
@@ -269,7 +274,7 @@ Widget _groupUserRow({
 
 // Custom display name that handles "(You)" and text truncation
 Widget _groupDisplayNameWithBrandIcon(
-    AmityUser user, AmityThemeColor theme, bool isCurrentUser) {
+    AmityUser user, AmityThemeColor theme, bool isCurrentUser, Map<String, bool>? mutedUsers, bool isCurrentUserModerator) {
   return Expanded(
     child: Row(
       children: [
@@ -284,6 +289,9 @@ Widget _groupDisplayNameWithBrandIcon(
               double availableWidth = constraints.maxWidth;
               if (user.isBrand ?? false) {
                 availableWidth -= 22; // Brand icon width + padding
+              }
+              if (mutedUsers?[user.userId] == true && isCurrentUserModerator) {
+                availableWidth -= 20; // Muted icon width + padding
               }
 
               // Create TextPainter to measure text
@@ -370,6 +378,7 @@ Widget _groupDisplayNameWithBrandIcon(
           ),
         ),
         if (user.isBrand ?? false) _brandBadge(),
+        if (mutedUsers?[user.userId] == true && isCurrentUserModerator) _mutedIcon(),
       ],
     ),
   );
@@ -428,6 +437,20 @@ Widget _brandBadge() {
     padding: const EdgeInsets.only(left: 4),
     child: SvgPicture.asset(
       'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
+    ),
+  );
+}
+
+// Muted icon for muted users
+Widget _mutedIcon() {
+  return Container(
+    padding: const EdgeInsets.only(left: 2),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_group_chat_muted_member.svg',
       package: 'amity_uikit_beta_service',
       fit: BoxFit.fill,
       width: 18,

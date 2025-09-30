@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
 import '../../../utils/amity_dialog.dart';
 import 'mention_text_editing_controller.dart';
+
+// Enum to represent loading status internally
+enum AmityLoadingStatus { idle, loading, success, error }
 
 /// Content type for determining error message.
 enum MentionContentType { general, post, comment }
@@ -120,12 +122,19 @@ class MentionTextField extends StatefulWidget {
     this.suggestionMaxRow = 3,
     // Optional communityId parameter.
     this.communityId,
+    // Optional channelId parameter for chat mentions
+    this.channelId,
     // Maximum mentions allowed.
     this.maxMentions = 30,
     // Error message configuration.
     this.mentionContentType = MentionContentType.general,
     // Suggestion display mode.
     this.suggestionDisplayMode = SuggestionDisplayMode.bottom,
+    // Additional input field callbacks
+    this.onTap,
+    this.onTapOutside,
+    this.cursorColor,
+    this.enableMention = true,
   }) : super(key: key);
 
   final AmityThemeColor theme;
@@ -147,9 +156,15 @@ class MentionTextField extends StatefulWidget {
   final double suggestionOverlayBottomPaddingWhenKeyboardOpen;
   final int suggestionMaxRow; // Maximum number of rows (default 3).
   final String? communityId;
+  final String? channelId; // Channel ID for chat mentions
   final int maxMentions;
   final MentionContentType mentionContentType;
   final SuggestionDisplayMode suggestionDisplayMode;
+  final VoidCallback? onTap; // Called when text field is tapped
+  final TapRegionCallback?
+      onTapOutside; // Called when user taps outside the text field
+  final Color? cursorColor; // Color of the text cursor
+  final bool enableMention; // Enable/disable mention functionality
 
   @override
   State<MentionTextField> createState() => _MentionTextFieldState();
@@ -163,7 +178,10 @@ class _MentionTextFieldState extends State<MentionTextField>
   OverlayEntry? _overlayEntry;
   PagingController<AmityUser>? _amityUsersController;
   CommunityMemberLiveCollection? _communityMemberLiveCollection;
+  ChannelMemberSearchLiveCollection?
+      _channelMemberLiveCollection; // Can be either ChannelMemberLiveCollection or ChannelMemberSearchLiveCollection
   StreamSubscription? _communityMemberStreamSubscription;
+  StreamSubscription? _channelMemberStreamSubscription;
   // Subscription for community details.
   StreamSubscription<AmityCommunity>? _communitySubscription;
   List<AmityCommunityMember> _communityMembers = [];
@@ -179,6 +197,26 @@ class _MentionTextFieldState extends State<MentionTextField>
 
   static const double _rowHeight = 56.0;
 
+  bool _shouldDisableMentions() {
+    // Check if mention functionality is disabled via parameter
+    return !widget.enableMention;
+  }
+
+  bool _shouldShowMentionAll() {
+    try {
+      return AmityCoreClient.mentionConfigurations?.isMentionAllEnabled ?? true;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  String _getUserDisplayName(AmityUser user, BuildContext context) {
+    if (user.isDeleted ?? false) {
+      return AppLocalizations.of(context)?.user_profile_deleted_name ?? 'Deleted user';
+    }
+    return user.displayName ?? (AppLocalizations.of(context)?.user_profile_unknown_name ?? 'Unknown');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -191,7 +229,8 @@ class _MentionTextFieldState extends State<MentionTextField>
     }
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        if (_mentionController.isMentioning()) {
+        // Only show mention suggestions if mentions are not disabled
+        if (!_shouldDisableMentions() && _mentionController.isMentioning()) {
           final substring = _mentionController.getSearchText();
           _onSuggestionChanged(_mentionController.getSearchSyntax(), substring);
         }
@@ -218,12 +257,15 @@ class _MentionTextFieldState extends State<MentionTextField>
     _mentionController.updateConfig(
       mentionBgColor: Colors.transparent,
       mentionTextColor: widget.theme.highlightColor,
-      mentionTextStyle: const TextStyle(),
+      mentionTextStyle: AmityTextStyle.bodyBold(widget.theme.highlightColor),
       runTextStyle: widget.style ?? const TextStyle(color: Colors.black),
     );
     _mentionController.addListener(() {
       widget.onChanged?.call(_mentionController.text);
-      _updateOverlay();
+      // Only update overlay if mentions are not disabled
+      if (!_shouldDisableMentions()) {
+        _updateOverlay();
+      }
     });
     _listScrollController.addListener(() {
       final maxScroll = _listScrollController.position.maxScrollExtent;
@@ -238,9 +280,17 @@ class _MentionTextFieldState extends State<MentionTextField>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
+    // Instead of removing and recreating, just mark the overlay for rebuild
     if (_overlayEntry != null) {
-      _removeOverlay();
-      _updateOverlay();
+      // This will make the overlay rebuild in place without removing it
+      _overlayEntry!.markNeedsBuild();
+
+      // Add a small delay to prevent rapid consecutive rebuilds
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted && _overlayEntry != null) {
+          _overlayEntry!.markNeedsBuild();
+        }
+      });
     }
   }
 
@@ -253,7 +303,9 @@ class _MentionTextFieldState extends State<MentionTextField>
     _listScrollController.dispose();
     _amityUsersController?.dispose();
     _communityMemberStreamSubscription?.cancel();
+    _channelMemberStreamSubscription?.cancel();
     _communityMemberLiveCollection?.dispose();
+    _channelMemberLiveCollection?.dispose();
     _communitySubscription?.cancel();
     if (widget.controller == null) {
       _mentionController.dispose();
@@ -264,15 +316,30 @@ class _MentionTextFieldState extends State<MentionTextField>
     super.dispose();
   }
 
+  // This method has been removed as we're now using LiveCollection exclusively
+
   void _onSuggestionChanged(MentionSyntax? syntax, String? substring) {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      log("substring: $substring");
       if (substring == null) {
+        if (widget.channelId != null) {
+          _startNewSearch("");
+          return;
+        }
         _clearUsersAndOverlay();
         _removeOverlay();
         return;
       }
+
+      // Check if mentions should be disabled
+      if (_shouldDisableMentions()) {
+        _clearUsersAndOverlay();
+        _removeOverlay();
+        return;
+      }
+
+      // Handle both empty string (just @ case) and non-empty search queries
+      // Empty string should fetch all users like the initial @ case
       _startNewSearch(substring);
     });
   }
@@ -284,42 +351,106 @@ class _MentionTextFieldState extends State<MentionTextField>
       _isFetching = false;
       _hasMore = true;
     });
+    // Clean up user search
     _amityUsersController?.dispose();
     _amityUsersController = null;
+
+    // Clean up channel member search
+    _channelMemberStreamSubscription?.cancel();
+    _channelMemberLiveCollection?.dispose();
+    _channelMemberLiveCollection = null;
+
+    // Clean up community member search
     _communityMemberStreamSubscription?.cancel();
     _communityMemberLiveCollection?.dispose();
     _communityMemberLiveCollection = null;
   }
 
   void _startNewSearch(String query) {
+    // Clean up previous search resources
     _amityUsersController?.dispose();
     _amityUsersController = null;
     _communityMemberStreamSubscription?.cancel();
     _communityMemberLiveCollection?.dispose();
     _communityMemberLiveCollection = null;
+    _channelMemberStreamSubscription?.cancel();
+    _channelMemberLiveCollection?.dispose();
+    _channelMemberLiveCollection = null;
     setState(() {
       _isFetching = true;
       _hasMore = true;
     });
-    log("mention communityId: ${widget.communityId ?? 'null'}");
+
+    // Determine which search mode to use
+    final bool useChannelSearch = widget.channelId != null;
     final bool useCommunitySearch =
         widget.communityId != null && !_communityIsPublic;
-    if (useCommunitySearch) {
-      final searchQuery = query;
-      log("Initializing Community Live Collection with query: '$searchQuery'");
+
+    // === CHANNEL MODE ===
+    if (useChannelSearch) {
+
+      // Clean up previous resources
+      _channelMemberStreamSubscription?.cancel();
+      _channelMemberLiveCollection?.dispose();
+
+      try {
+        // Search members by display name
+        _channelMemberLiveCollection = AmityChatClient.newChannelRepository()
+            .membership(widget.channelId!)
+            .searchMembers(query)
+            .membershipFilter([
+          AmityChannelMembership.MEMBER,
+          AmityChannelMembership.MUTED
+        ]).getLiveCollection();
+
+        // Listen for channel member results
+        _channelMemberStreamSubscription = _channelMemberLiveCollection!
+            .getStreamController()
+            .stream
+            .listen((members) {
+          // Extract users from channel members
+          final newUsers = members
+              .map((member) => member.user)
+              .where((user) => user != null)
+              .cast<AmityUser>()
+              .toList();
+
+          setState(() {
+            _amityUsers = newUsers;
+            _isFetching = false; // LiveCollection handles loading internally
+            _hasMore = _channelMemberLiveCollection!.hasNextPage();
+          });
+          _updateOverlay();
+        }, onError: (error) {
+          setState(() {
+            _isFetching = false;
+          });
+        });
+
+        // Start loading channel members
+        _channelMemberLiveCollection!.loadNext();
+      } catch (e) {
+        setState(() {
+          _isFetching = false;
+        });
+      }
+    }
+    // === COMMUNITY MODE ===
+    else if (useCommunitySearch) {
+
       _communityMemberLiveCollection =
           AmitySocialClient.newCommunityRepository()
               .membership(widget.communityId!)
-              .searchMembers(searchQuery)
+              .searchMembers(query)
               .filter(AmityCommunityMembershipFilter.MEMBER)
               .includeDeleted(false)
               .getLiveCollection();
+
       _communityMemberStreamSubscription = _communityMemberLiveCollection!
           .getStreamController()
           .stream
           .listen((members) {
         if (members.isEmpty && _communityMembers.isNotEmpty) {
-          log("New community search returned 0, keeping previous results.");
         } else {
           setState(() {
             _communityMembers = members;
@@ -329,53 +460,72 @@ class _MentionTextFieldState extends State<MentionTextField>
         }
         _updateOverlay();
       });
+
       _communityMemberLiveCollection!.loadNext();
-    } else {
-      late PagingController<AmityUser> controller;
-      if (query.length < 3) {
-        controller = PagingController<AmityUser>(
-          pageFuture: (token) => AmityCoreClient.newUserRepository()
-              .getUsers()
-              .sortBy(AmityUserSortOption.DISPLAY)
-              .getPagingData(token: token, limit: 20),
-          pageSize: 20,
-        );
-      } else {
-        controller = PagingController<AmityUser>(
-          pageFuture: (token) => AmityCoreClient.newUserRepository()
-              .searchUserByDisplayName(query)
-              .sortBy(AmityUserSortOption.DISPLAY)
-              .getPagingData(token: token, limit: 20),
-          pageSize: 20,
-        );
-      }
-      controller.addListener(() {
-        if (controller.error == null && mounted) {
-          if (controller.loadedItems.isEmpty && _amityUsers.isNotEmpty) {
-            log("New user search returned 0, keeping previous results.");
+    }
+    // === DEFAULT USER MODE ===
+    else {
+
+      _amityUsersController = PagingController<AmityUser>(
+        pageFuture: (token) {
+          if (query.length < 3) {
+            // For short queries, just get users sorted by display name
+            return AmityCoreClient.newUserRepository()
+                .getUsers()
+                .sortBy(AmityUserSortOption.DISPLAY)
+                .getPagingData(token: token, limit: 20);
           } else {
+            // For longer queries, search by display name
+            return AmityCoreClient.newUserRepository()
+                .searchUserByDisplayName(query)
+                .sortBy(AmityUserSortOption.DISPLAY)
+                .getPagingData(token: token, limit: 20);
+          }
+        },
+        pageSize: 20,
+      );
+
+      // Listen for user results
+      _amityUsersController!.addListener(() {
+        if (_amityUsersController!.error == null && mounted) {
+          if (_amityUsersController!.loadedItems.isEmpty &&
+              _amityUsers.isNotEmpty) {
+          } else {
+            final newUsers = _amityUsersController!.loadedItems;
+
             setState(() {
-              _amityUsers = controller.loadedItems;
-              _isFetching = controller.isFetching;
-              _hasMore = controller.hasMoreItems;
+              _amityUsers = newUsers;
+
+              _isFetching = _amityUsersController!.isFetching;
+              _hasMore = _amityUsersController!.hasMoreItems;
             });
           }
           _updateOverlay();
         }
       });
-      _amityUsersController = controller;
-      _amityUsersController?.fetchNextPage();
+
+      // Start loading users
+      _amityUsersController!.fetchNextPage();
     }
   }
 
   void _loadMore() {
-    if (widget.communityId != null && !_communityIsPublic) {
+    // Channel members search (for chat)
+    if (widget.channelId != null) {
+      if (!_isFetching && _hasMore && _channelMemberLiveCollection != null) {
+        _channelMemberLiveCollection!.loadNext();
+      }
+    }
+    // Community members search
+    else if (widget.communityId != null && !_communityIsPublic) {
       if (!_isFetching && _hasMore && _communityMemberLiveCollection != null) {
         _communityMemberLiveCollection!.loadNext();
       }
-    } else {
+    }
+    // Regular user search
+    else {
       if (!_isFetching && _hasMore && _amityUsersController != null) {
-        _amityUsersController?.fetchNextPage();
+        _amityUsersController!.fetchNextPage();
       }
     }
   }
@@ -387,6 +537,7 @@ class _MentionTextFieldState extends State<MentionTextField>
       return "";
     final index = selection.baseOffset - 1;
     if (index < 0) return "";
+
     final lastNewline = text.lastIndexOf('\n', selection.baseOffset - 1);
     return lastNewline == -1
         ? text.substring(0, selection.baseOffset)
@@ -400,19 +551,74 @@ class _MentionTextFieldState extends State<MentionTextField>
     }
   }
 
-  // Remove and re-create the overlay entry so that updated state is reflected.
+  // Update the overlay without unnecessary recreation
   void _updateOverlay() {
-    final currentLine = _getCurrentLine();
-    if (!_mentionController.isMentioning() ||
-        currentLine.trim().isEmpty ||
-        currentLine.contains('\n')) {
+    // Check if mentions are disabled first
+    if (_shouldDisableMentions()) {
       _removeOverlay();
       _cancelNoMatchTimer();
       return;
     }
-    final int itemCount = (widget.communityId != null && !_communityIsPublic)
-        ? _communityMembers.length
-        : _amityUsers.length;
+
+    final currentLine = _getCurrentLine();
+    if (!_mentionController.isMentioning() || currentLine.contains('\n')) {
+      _removeOverlay();
+      _cancelNoMatchTimer();
+      return;
+    }
+
+    // Allow empty line if we're mentioning (just @ symbol case)
+    // This enables showing all users when only @ is present
+    if (currentLine.trim().isEmpty && !_mentionController.isMentioning()) {
+      _removeOverlay();
+      _cancelNoMatchTimer();
+      return;
+    }
+
+    // Determine which search mode to use
+    final bool useCommunityMode =
+        widget.communityId != null && !_communityIsPublic;
+    final bool useChannelMode = widget.channelId != null;
+
+    // Get base item count (actual search results)
+    final int baseItemCount =
+        useCommunityMode ? _communityMembers.length : _amityUsers.length;
+
+    // For channel mode, handle @All display logic
+    if (useChannelMode) {
+      _cancelNoMatchTimer();
+
+      final String searchText = _mentionController.getSearchText();
+      final bool isEmptySearch = searchText.trim().isEmpty;
+
+      // For empty search (just @): show @All + all users
+      // For non-empty search: show only matching users (no @All)
+      if (isEmptySearch || baseItemCount > 0) {
+        if (_overlayEntry == null) {
+          _overlayEntry = _createOverlayEntry();
+          Overlay.of(context).insert(_overlayEntry!);
+        } else {
+          _overlayEntry!.remove();
+          _overlayEntry = _createOverlayEntry();
+          Overlay.of(context).insert(_overlayEntry!);
+        }
+        return;
+      } else {
+        // Has search text but no results - hide overlay after delay
+        if (_overlayEntry != null && _noMatchCloseTimer == null) {
+          _noMatchCloseTimer = Timer(const Duration(seconds: 3), () {
+            _removeOverlay();
+            _noMatchCloseTimer = null;
+          });
+        }
+        return;
+      }
+    }
+
+    // For non-channel modes, use baseItemCount as itemCount
+    final int itemCount = baseItemCount;
+
+    // For other modes, only show if we have results
     if (itemCount == 0) {
       if (_overlayEntry != null && _noMatchCloseTimer == null) {
         _noMatchCloseTimer = Timer(const Duration(seconds: 3), () {
@@ -424,9 +630,15 @@ class _MentionTextFieldState extends State<MentionTextField>
     } else {
       _cancelNoMatchTimer();
     }
-    _removeOverlay();
-    _overlayEntry = _createOverlayEntry();
-    Overlay.of(context)!.insert(_overlayEntry!);
+
+    // Only create a new overlay if one doesn't exist
+    if (_overlayEntry == null) {
+      _overlayEntry = _createOverlayEntry();
+      Overlay.of(context).insert(_overlayEntry!);
+    } else {
+      // Otherwise just update the existing one
+      _overlayEntry!.markNeedsBuild();
+    }
   }
 
   void _removeOverlay() {
@@ -459,19 +671,44 @@ class _MentionTextFieldState extends State<MentionTextField>
   }
 
   OverlayEntry _createOverlayEntry() {
-    final int itemCount = (widget.communityId != null && !_communityIsPublic)
-        ? _communityMembers.length
-        : _amityUsers.length;
+
+    // Determine which mode we're in
+    final bool useCommunityMode =
+        widget.communityId != null && !_communityIsPublic;
+    final bool useChannelMode = widget.channelId != null;
+
+    // Get base item count (actual search results)
+    final int baseItemCount =
+        useCommunityMode ? _communityMembers.length : _amityUsers.length;
+
+    // For channel mode, handle @All display logic
+    final int itemCount;
+    if (useChannelMode) {
+      final String searchText = _mentionController.getSearchText();
+      final bool isEmptySearch = searchText.trim().isEmpty;
+      
+      if (isEmptySearch && _shouldShowMentionAll()) {
+        // Just @ symbol - show @All + all users
+        itemCount = baseItemCount + 1;
+      } else {
+        // Has search text - show only search results (no @All)
+        itemCount = baseItemCount;
+      }
+    } else {
+      itemCount = baseItemCount; // No @All for non-channel modes
+    }
+
     if (itemCount == 0) {
       return OverlayEntry(builder: (context) => const SizedBox.shrink());
     }
-    // Compute maximum allowed height from suggestionMaxRow.
+
+    // Compute maximum allowed height from suggestionMaxRow
     final double maxAllowedHeight = widget.suggestionMaxRow * _rowHeight;
     final double dynamicHeight = itemCount * _rowHeight;
     final double containerHeight =
         dynamicHeight < maxAllowedHeight ? dynamicHeight : maxAllowedHeight;
 
-    // Build the suggestion list overlay using the subwidget.
+    // Build the suggestion list overlay using the subwidget
     Widget suggestionList = SuggestionListOverlay(
       itemCount: itemCount,
       rowHeight: _rowHeight,
@@ -480,11 +717,41 @@ class _MentionTextFieldState extends State<MentionTextField>
       backgroundColor: widget.theme.backgroundColor,
       borderRadius: BorderRadius.circular(12.0),
       itemBuilder: (context, index) {
-        if (widget.communityId != null && !_communityIsPublic) {
-          if (index >= _communityMembers.length) return const SizedBox.shrink();
+        final bool useChannelMode = widget.channelId != null;
+
+        if (useChannelMode) {
+          final String searchText = _mentionController.getSearchText();
+          final bool isEmptySearch = searchText.trim().isEmpty;
+          
+          // For channel mode with empty search, show @All first, then users
+          if (isEmptySearch && _shouldShowMentionAll()) {
+            if (index == 0) {
+              return _buildAllMentionRow();
+            }
+            // Adjust index for users (subtract 1 because @All took first position)
+            final adjustedIndex = index - 1;
+            if (adjustedIndex >= _amityUsers.length) return const SizedBox.shrink();
+            return _buildUserRow(_amityUsers[adjustedIndex]);
+          }
+          
+          // For channel mode with search text, show only search results (no @All)
+          if (!isEmptySearch) {
+            if (index >= _amityUsers.length) return const SizedBox.shrink();
+            return _buildUserRow(_amityUsers[index]);
+          }
+          
+          return const SizedBox.shrink();
+        }
+
+        if (useCommunityMode) {
+          // Community mode - show community members
+          if (index >= _communityMembers.length)
+            return const SizedBox.shrink();
           return _buildMemberRow(_communityMembers[index]);
         } else {
-          if (index >= _amityUsers.length) return const SizedBox.shrink();
+          // Default mode - show users
+          if (index >= _amityUsers.length)
+            return const SizedBox.shrink();
           return _buildUserRow(_amityUsers[index]);
         }
       },
@@ -504,39 +771,51 @@ class _MentionTextFieldState extends State<MentionTextField>
                   0)
               ? position.dy - containerHeight - 2
               : position.dy + size.height;
-      log("Computed topPosition: $topPosition");
       return OverlayEntry(
-        builder: (context) => GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {
-            _mentionController.dismissCurrentMention();
-            _removeOverlay();
-          },
-          child: Stack(
-            children: [
-              Positioned(
-                left: horizontalMargin,
-                top: topPosition,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: availableWidth,
-                    maxHeight: containerHeight,
+        builder: (context) => Material(
+          color: Colors.transparent, // Transparent material to capture taps
+          child: GestureDetector(
+            behavior:
+                HitTestBehavior.opaque, // Changed to opaque to capture all taps
+            onTap: () {
+              _mentionController.dismissCurrentMention();
+              _removeOverlay();
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width, // Full screen width
+              height: MediaQuery.of(context).size.height, // Full screen height
+              color: Colors.transparent, // Transparent container
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: horizontalMargin,
+                    top: topPosition,
+                    child: GestureDetector(
+                      // This prevents taps on the suggestion list from dismissing
+                      onTap: () {/* Do nothing, preventing tap propagation */},
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: availableWidth,
+                          maxHeight: containerHeight,
+                        ),
+                        child: Material(
+                          elevation: 4,
+                          color: Colors.transparent,
+                          shadowColor: Colors.black54,
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: suggestionList,
+                        ),
+                      ),
+                    ),
                   ),
-                  child: Material(
-                    elevation: 4,
-                    color: Colors.transparent,
-                    shadowColor: Colors.black54,
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: suggestionList,
+                  Positioned(
+                    right: 2,
+                    top: topPosition - 6,
+                    child: _buildDismissButton(),
                   ),
-                ),
+                ],
               ),
-              Positioned(
-                right: 2,
-                top: topPosition - 6,
-                child: _buildDismissButton(),
-              ),
-            ],
+            ),
           ),
         ),
       );
@@ -548,51 +827,121 @@ class _MentionTextFieldState extends State<MentionTextField>
           : widget.suggestionOverlayBottomPaddingWhenKeyboardClosed;
       final bottomOffset = basePadding + keyboardHeight;
       return OverlayEntry(
-        builder: (context) => GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {
-            _mentionController.dismissCurrentMention();
-            _removeOverlay();
-          },
-          child: Stack(
-            children: [
-              Positioned(
-                left: 8.0,
-                right: 8.0,
-                bottom: bottomOffset,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Material(
-                      elevation: 2,
-                      shadowColor: Colors.black54,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Container(
-                        height: containerHeight,
-                        decoration: BoxDecoration(
-                          color: widget.theme.backgroundColor,
-                          borderRadius: BorderRadius.circular(12.0),
-                          border:
-                              Border.all(color: Colors.grey.withOpacity(0.2)),
-                        ),
-                        child: suggestionList,
+        builder: (context) => Material(
+          color: Colors.transparent, // Transparent material to capture taps
+          child: GestureDetector(
+            behavior:
+                HitTestBehavior.opaque, // Changed to opaque to capture all taps
+            onTap: () {
+
+              _mentionController.dismissCurrentMention();
+              _removeOverlay();
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width, // Full screen width
+              height: MediaQuery.of(context).size.height, // Full screen height
+              color: Colors.transparent, // Transparent container
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 8.0,
+                    right: 8.0,
+                    bottom: bottomOffset,
+                    child: GestureDetector(
+                      // This prevents taps on the suggestion list from dismissing
+                      onTap: () {/* Do nothing, preventing tap propagation */},
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Material(
+                            elevation: 2,
+                            shadowColor: Colors.black54,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: Container(
+                              height: containerHeight,
+                              decoration: BoxDecoration(
+                                color: widget.theme.backgroundColor,
+                                borderRadius: BorderRadius.circular(12.0),
+                                border: Border.all(
+                                    color: Colors.grey.withOpacity(0.2)),
+                              ),
+                              child: suggestionList,
+                            ),
+                          ),
+                          Positioned(
+                            top: -6,
+                            right: -4,
+                            child: _buildDismissButton(),
+                          ),
+                        ],
                       ),
                     ),
-                    Positioned(
-                      top: -6,
-                      right: -4,
-                      child: _buildDismissButton(),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );
     }
+  }
+
+  // Widget to build the @All mention row at the top of the suggestion list when in channel mode
+  Widget _buildAllMentionRow() {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _onSelectAllMention(),
+      child: Container(
+        width: double.infinity,
+        height: _rowHeight,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          // Highlight the @All option with a subtle background color
+          color: widget.theme.primaryColor.withOpacity(0.05),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  color: widget.theme.primaryColor,
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(
+                    'assets/Icons/amity_ic_mention_all.svg',
+                    package: 'amity_uikit_beta_service',
+                    width: 16,
+                    height: 16,
+                    colorFilter:
+                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              "All",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: AmityTextStyle.captionBold(widget.theme.baseColor),
+            ),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              child: Text(
+                "Notify everyone",
+                style: AmityTextStyle.caption(widget.theme.baseColorShade3),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildUserRow(AmityUser user) {
@@ -602,34 +951,34 @@ class _MentionTextFieldState extends State<MentionTextField>
       child: Container(
         width: double.infinity,
         height: _rowHeight,
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 9.0),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(3),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(32),
                 child: SizedBox(
-                  width: 40,
-                  height: 40,
+                  width: 32,
+                  height: 32,
                   child: AmityUserImage(
                     user: user,
                     theme: widget.theme,
-                    size: 40,
+                    size: 32,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             Expanded(
               child: Row(
                 children: [
                   Flexible(
                     child: Text(
-                      user.displayName ?? '',
+                      _getUserDisplayName(user, context),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: AmityTextStyle.bodyBold(widget.theme.baseColor),
+                      style: AmityTextStyle.captionBold(widget.theme.baseColor),
                     ),
                   ),
                   if (user.isBrand ?? false) brandBadge(),
@@ -660,37 +1009,53 @@ class _MentionTextFieldState extends State<MentionTextField>
       child: Container(
         width: double.infinity,
         height: _rowHeight,
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 9.0),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(3),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(32),
                 child: SizedBox(
-                  width: 40,
-                  height: 40,
+                  width: 32,
+                  height: 32,
                   child: AmityUserImage(
                     user: user,
                     theme: widget.theme,
-                    size: 40,
+                    size: 32,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
-                user.displayName ?? '',
+                _getUserDisplayName(user, context),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: AmityTextStyle.bodyBold(widget.theme.baseColor),
+                style: AmityTextStyle.captionBold(widget.theme.baseColor),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _onSelectAllMention() {
+    // Insert @All mention
+    _mentionController.insertMention(
+      UserMention(
+        id: "all", // Special ID for @all mentions
+        displayName: "All",
+        avatarUrl: "", // No avatar for @all mentions
+      ),
+    );
+
+    // Close the overlay
+    _removeOverlay();
+
+    // Optional: Print a log message (or show a toast in a real app)
   }
 
   void _removeLastMention() {
@@ -708,11 +1073,12 @@ class _MentionTextFieldState extends State<MentionTextField>
     _mentionController.insertMention(
       UserMention(
         id: user.userId ?? '',
-        displayName: user.displayName ?? 'Unknown',
+        displayName: _getUserDisplayName(user, context),
         avatarUrl: user.avatarUrl ?? '',
       ),
     );
-    final currentMentionsCount = _mentionController.getMentionUserIds().length;
+    final currentMentionsCount =
+        _mentionController.getAllMentionUserIds().length;
     if (currentMentionsCount > widget.maxMentions) {
       const errorTitle = "Too many users mentioned";
       String errorMessage;
@@ -756,6 +1122,9 @@ class _MentionTextFieldState extends State<MentionTextField>
       minLines: widget.minLines,
       enabled: widget.enabled,
       textAlignVertical: widget.textAlignVertical,
+      cursorColor: widget.cursorColor,
+      onTap: widget.onTap,
+      onTapOutside: widget.onTapOutside,
       decoration: widget.decoration ??
           InputDecoration(
             isDense: widget.isDense ?? true,

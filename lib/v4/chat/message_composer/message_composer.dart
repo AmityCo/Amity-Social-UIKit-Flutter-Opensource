@@ -12,6 +12,8 @@ import 'package:amity_uikit_beta_service/v4/core/single_video_player/pager/video
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_text_editing_controller.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
 import 'package:file_picker/file_picker.dart';
@@ -24,6 +26,7 @@ class AmityMessageComposer extends NewBaseComponent {
   final String subChannelId;
   final String? avatarUrl;
   final MessageComposerAction action;
+  final bool enableMention;
   AmityThemeColor? localTheme;
   FileType? selectedMediaType;
   ReplyingMesage? replyingMessage;
@@ -31,7 +34,7 @@ class AmityMessageComposer extends NewBaseComponent {
 
   final GlobalKey composerKey = GlobalKey();
 
-  TextEditingController controller = TextEditingController();
+  MentionTextEditingController controller = MentionTextEditingController();
   ScrollController scrollController = ScrollController();
   final focusNode = FocusNode();
   ImagePicker imagePicker = ImagePicker();
@@ -47,6 +50,7 @@ class AmityMessageComposer extends NewBaseComponent {
     this.editingMessage,
     required this.action,
     this.localTheme,
+    this.enableMention = true,
   }) : super(componentId: "message_composer");
 
   @override
@@ -57,7 +61,48 @@ class AmityMessageComposer extends NewBaseComponent {
     }
     if (editingMessage != null) {
       final currentText = (editingMessage?.data as MessageTextData).text ?? "";
-      controller.text = currentText;
+      // Check for mentions in the editing message
+      try {
+        if (editingMessage!.metadata != null &&
+            editingMessage!.metadata!.containsKey('mentioned')) {
+          // Get mention metadata from message metadata
+          final mentionsData =
+              editingMessage!.metadata!['mentioned'] as List<dynamic>;
+          
+          List<AmityUserMentionMetadata> mentionMetadataList = [];
+          for (var mention in mentionsData) {
+            if (mention is Map<String, dynamic>) {
+              try {
+                // Extract mention data properly
+                final userId = mention['userId'] as String;
+                final index = mention['index'] as int;
+                final length = mention['length'] as int;
+                                
+                mentionMetadataList.add(AmityUserMentionMetadata(
+                  userId: userId,
+                  index: index,
+                  length: length,
+                ));
+              } catch (e) {
+              }
+            }
+          }
+
+          if (mentionMetadataList.isNotEmpty) {
+            // Populate the controller with text and mentions
+            controller.populate(currentText, mentionMetadataList);
+          } else {
+            // No valid mentions found
+            controller.text = currentText;
+          }
+        } else {
+          // No mentions, just set the text
+          controller.text = currentText;
+        }
+      } catch (e) {
+        // Fallback in case of any errors
+        controller.text = currentText;
+      }
       // focusNode.requestFocus();
     } else {
       if (MessageComposerCache().savedText != "") {
@@ -119,10 +164,10 @@ class AmityMessageComposer extends NewBaseComponent {
       children: [
         Container(
           key: composerKey,
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: theme.backgroundColor,
             border: Border(
-              top: BorderSide(width: 1, color: Color(0xFFEBECEE)),
+              top: BorderSide(width: 1, color: theme.baseColorShade4),
             ),
           ),
           child: Padding(
@@ -186,24 +231,45 @@ class AmityMessageComposer extends NewBaseComponent {
                               onTap: () {
                                 focusNode.requestFocus();
                               },
-                              child: TextField(
+                              child: MentionTextField(
+                                theme: theme,
                                 controller: controller,
                                 scrollController: scrollController,
                                 focusNode: focusNode,
-                                onTapOutside: (e) =>
-                                    FocusScope.of(context).unfocus(),
-                                onTap: () => context
-                                    .read<MessageComposerBloc>()
-                                    .add(MessageComposerMediaCollapsed()),
+                                channelId: subChannelId,
+                                enableMention: enableMention,
+                                suggestionOverlayBottomPaddingWhenKeyboardOpen:
+                                    80.0,
+                                suggestionOverlayBottomPaddingWhenKeyboardClosed:
+                                    80.0,
+                                onTap: () {
+                                  context
+                                      .read<MessageComposerBloc>()
+                                      .add(MessageComposerMediaCollapsed());
+                                },
+                                onTapOutside: (event) {
+                                  if (!controller.isMentioning()) {
+                                    FocusScope.of(context).unfocus();
+                                  }
+                                },
+                                cursorColor: theme.primaryColor,
                                 onChanged: (value) {
                                   context.read<MessageComposerBloc>().add(
                                       MessageComposerTextChange(text: value));
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
+                                  context
+                                      .read<MessageComposerBloc>()
+                                      .add(MessageComposerMediaCollapsed());
                                 },
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
                                 minLines: 1,
                                 textAlignVertical: TextAlignVertical.bottom,
-                                cursorColor: theme.primaryColor,
+                                suggestionMaxRow: 2,
+                                suggestionDisplayMode:
+                                    SuggestionDisplayMode.bottom,
+                                mentionContentType: MentionContentType.general,
                                 style: TextStyle(
                                   color: theme.baseColor,
                                   fontSize: 15,
@@ -241,11 +307,16 @@ class AmityMessageComposer extends NewBaseComponent {
                             onTap: () {
                               if (!isSendable) {
                                 if (editingMessage != null) {
-                                  context.read<MessageComposerBloc>().add(
-                                      MessageComposerUpdateTextMessage(
-                                          text: controller.text,
-                                          messageId:
-                                              editingMessage!.messageId!));
+                                  context
+                                      .read<MessageComposerBloc>()
+                                      .add(MessageComposerUpdateTextMessage(
+                                        text: controller.text,
+                                        messageId: editingMessage!.messageId!,
+                                        mentionUserIds:
+                                            controller.getMentionUserIds(),
+                                        mentionMetadataList: controller
+                                            .getAmityMentionMetadata(),
+                                      ));
                                   action.onMessageCreated();
                                 } else {
                                   context
@@ -254,6 +325,10 @@ class AmityMessageComposer extends NewBaseComponent {
                                         text: controller.text,
                                         parentId:
                                             replyingMessage?.message.messageId,
+                                        mentionUserIds:
+                                            controller.getMentionUserIds(),
+                                        mentionMetadataList: controller
+                                            .getAmityMentionMetadata(),
                                       ));
                                   action.onMessageCreated();
                                 }
@@ -458,6 +533,23 @@ class AmityMessageComposer extends NewBaseComponent {
                         children: [
                           TextSpan(
                             text: (message.data as MessageTextData).text,
+                            style:
+                                AmityTextStyle.caption(theme.baseColorShade1),
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  if (message.data is MessageCustomData)
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: (message.data as MessageCustomData)
+                                    .rawData
+                                    ?.toString() ??
+                                "",
                             style:
                                 AmityTextStyle.caption(theme.baseColorShade1),
                           ),

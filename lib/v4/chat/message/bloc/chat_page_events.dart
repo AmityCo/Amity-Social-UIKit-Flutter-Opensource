@@ -37,6 +37,10 @@ class ChatPageEventLoadMore extends ChatPageEvent {
   const ChatPageEventLoadMore();
 }
 
+class ChatPageEventLoadPrevious extends ChatPageEvent {
+  const ChatPageEventLoadPrevious();
+}
+
 class ChatPageEventFetchMuteState extends ChatPageEvent {
   const ChatPageEventFetchMuteState();
 }
@@ -199,6 +203,37 @@ class ChatPageEventBlockUser extends ChatPageEvent {
 
   @override
   List<Object> get props => [isUserBlocked];
+}
+
+class ChatPageEventJumpToMessage extends ChatPageEvent {
+  final String aroundMessageId;
+
+  const ChatPageEventJumpToMessage({required this.aroundMessageId});
+
+  @override
+  List<Object> get props => [aroundMessageId];
+}
+
+class ChatPageSetAroundMessage extends ChatPageEvent {
+  final String? aroundMessageId;
+  
+  const ChatPageSetAroundMessage({this.aroundMessageId});
+
+  @override
+  List<Object> get props => [aroundMessageId ?? ''];
+}
+
+class ChatPageTriggerBounceEvent extends ChatPageEvent {
+  final int targetIndex;
+  
+  const ChatPageTriggerBounceEvent({required this.targetIndex});
+
+  @override
+  List<Object> get props => [targetIndex];
+}
+
+class ChatPageClearBounceEvent extends ChatPageEvent {
+  const ChatPageClearBounceEvent();
 }
 
 

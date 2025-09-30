@@ -1,9 +1,45 @@
 part of '../message_bubble_view.dart';
 
 extension TextMessageWidget on MessageBubbleView {
+  // Extract URLs from text using linkify
+  List<String> _extractUrls(String text) {
+    // Use default linkify options for better URL detection
+    final options = LinkifyOptions(
+      humanize: false,
+      defaultToHttps: true,
+    );
+    
+    final elements = linkify(
+      text, 
+      options: options,
+      linkifiers: [
+        UrlLinkifier(),
+      ],
+    );
+    
+    final urlElements = elements.whereType<UrlElement>();
+    final urls = urlElements.map((element) => element.url).toList();
+    
+    // Cache the processed text for PreviewLinkWidget to use
+    final processedTextCache = ProcessedTextCache();
+    if (urls.isNotEmpty && !processedTextCache.contains(text)) {
+      final entities = urlElements.map((element) => {
+        'type': 'url',
+        'text': element.url,
+        'end': element.text.indexOf(element.url) + element.url.length,
+      }).toList();
+      
+      processedTextCache.put(text, entities);
+    }
+    
+    return urls;
+  }
+
   Widget _buildTextMessageWidget(
       BuildContext context, bool isUser, MessageBubbleState state) {
+    
     final text = (message.data as MessageTextData).text ?? "";
+    
     return Transform.translate(
       offset: Offset(
           ((bounce * bounceOffset) - bounceOffset) * (isUser ? -1 : 1),
@@ -46,7 +82,7 @@ extension TextMessageWidget on MessageBubbleView {
             ),
             const SizedBox(width: 8),
           ],
-          Container(color: Colors.red),
+          // Removing the red container that might block the content
           _buildTextWidget(context, text, isUser, state),
           if (!isUser && message.createdAt != null) ...[
             const SizedBox(width: 8),
@@ -62,6 +98,9 @@ extension TextMessageWidget on MessageBubbleView {
     Color initialColor = isUser
         ? messageColor.rightBubbleDefault
         : messageColor.leftBubbleDefault;
+    
+    // Extract URLs from the text using linkify
+    final urls = _extractUrls(text);
 
     return StatefulBuilder(
       builder: (context, setState) {
@@ -79,7 +118,7 @@ extension TextMessageWidget on MessageBubbleView {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                maxLines: 10,
+                maxLines: urls.isNotEmpty ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
                 ellipsis: '...',
                 textDirection: TextDirection.ltr,
               )..layout(maxWidth: constraints.maxWidth);
@@ -131,6 +170,9 @@ extension TextMessageWidget on MessageBubbleView {
                   });
                 },
                 child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.6, // 60% width just for the bubble itself
+                  ),
                   decoration: BoxDecoration(
                     color: initialColor,
                     borderRadius: BorderRadius.circular(20),
@@ -142,31 +184,53 @@ extension TextMessageWidget on MessageBubbleView {
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 16),
                         child: Column(
-                          crossAxisAlignment:
-                              message.userId == AmityCoreClient.getUserId()
-                                  ? CrossAxisAlignment.end
-                                  : CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start, // Always align text to the left
                           children: [
-                            RichText(
-                              maxLines: 10,
-                              overflow: TextOverflow.ellipsis,
-                              text: TextSpan(
-                                children: [
-                                  ..._buildTextSpans(text, isUser),
-                                ],
+                            // Check if there are mentions in the message
+                            (message.metadata != null &&
+                                    message.metadata!['mentioned'] != null)
+                                ? _buildMentionText(text, isUser, context, hasLinks: urls.isNotEmpty)
+                                : RichText(
+                                    maxLines: urls.isNotEmpty ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left, // Ensure text is always left-aligned
+                                    text: TextSpan(
+                                      children: [
+                                        ..._buildTextSpans(text, isUser),
+                                      ],
+                                    ),
+                                  ),
+                            if (urls.isNotEmpty && message.syncState != AmityMessageSyncState.FAILED) ...[
+                              const SizedBox(height: 12),
+                              MessageLinkPreviewWidget(
+                                key: ValueKey('preview_${message.messageId}_${message.editedAt?.millisecondsSinceEpoch}'),
+                                text: text,
+                                theme: theme,
+                                messageColor: messageColor,
+                                isUserMessage: isUser,
+                                onTap: () async {
+                                  if (await canLaunchUrl(Uri.parse(urls.first))) {
+                                    await launchUrl(Uri.parse(urls.first));
+                                  }
+                                },
                               ),
-                            ),
+                            ],
                             if (message.editedAt != null) ...[
                               const SizedBox(
                                 height: 12,
                               ),
-                              Text(
-                                "Edited",
-                                style: AmityTextStyle.caption(message.userId ==
-                                        AmityCoreClient.getUserId()
-                                    ? theme.primaryColor
-                                        .blend(ColorBlendingOption.shade2)
-                                    : theme.baseColorShade1),
+                              Align(
+                                alignment: isUser 
+                                    ? Alignment.centerRight 
+                                    : Alignment.centerLeft,
+                                child: Text(
+                                  "Edited",
+                                  style: AmityTextStyle.caption(message.userId ==
+                                          AmityCoreClient.getUserId()
+                                      ? theme.primaryColor
+                                          .blend(ColorBlendingOption.shade2)
+                                      : theme.baseColorShade1),
+                                ),
                               ),
                             ]
                           ],
@@ -246,24 +310,19 @@ extension TextMessageWidget on MessageBubbleView {
       if (element is LinkableElement) {
         return TextSpan(
           text: element.text,
-          style: TextStyle(
-            color: isUser ? messageColor.rightBubbleText : theme.highlightColor,
-            decoration: TextDecoration.underline,
-            fontSize: 15.0,
-            fontWeight: FontWeight.w400,
-          ),
+          style: AmityTextStyle.body(
+            isUser ? messageColor.rightBubbleText : theme.highlightColor,
+          ).copyWith(decoration: TextDecoration.underline),
           recognizer: TapGestureRecognizer()
             ..onTap = () => _onOpenLink(element),
         );
       } else {
         return TextSpan(
           text: element.text,
-          style: TextStyle(
-            color: isUser
+          style: AmityTextStyle.body(
+            isUser
                 ? messageColor.rightBubbleText
                 : messageColor.leftBubbleText,
-            fontSize: 15.0,
-            fontWeight: FontWeight.w400,
           ),
         );
       }
@@ -275,6 +334,90 @@ extension TextMessageWidget on MessageBubbleView {
       await launchUrl(Uri.parse(link.url));
     } else {
       throw 'Could not launch $link';
+    }
+  }
+
+  Widget _buildMentionText(String text, bool isUser, BuildContext context, {bool hasLinks = false}) {
+    try {
+      
+      if (message.metadata == null || !message.metadata!.containsKey('mentioned')) {
+        return RichText(
+          maxLines: hasLinks ? 5 : 10,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.left,
+          text: TextSpan(
+            children: _buildTextSpans(text, isUser),
+          ),
+        );
+      }
+      
+      // Extract all mentions (both users and channels) directly from metadata
+      final List<dynamic> mentionedList = message.metadata!['mentioned'] as List<dynamic>;
+      List<AmityUserMentionMetadata> allMentions = [];
+      
+      for (var mention in mentionedList) {
+        if (mention is Map<String, dynamic>) {
+          try {
+            // Extract index and length which are common for all mention types
+            final int index = mention['index'] as int;
+            final int length = mention['length'] as int;
+            final String userId = mention['userId'] as String? ?? ''; // Use empty string if userId is null
+                        
+            // Create mention metadata for both user and channel mentions
+            allMentions.add(AmityUserMentionMetadata(
+              userId: userId,
+              index: index,
+              length: length,
+            ));
+          } catch (e) {
+            debugPrint('Error parsing mention: $e');
+          }
+        }
+      }
+      
+      if (allMentions.isEmpty) {
+        return RichText(
+          maxLines: hasLinks ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.left, // Ensure text is always left-aligned
+          text: TextSpan(
+            children: _buildTextSpans(text, isUser),
+          ),
+        );
+      }
+      
+      // Define text styles
+      final normalStyle = TextStyle(
+        color: isUser ? messageColor.rightBubbleText : messageColor.leftBubbleText,
+        fontSize: 15.0,
+        fontWeight: FontWeight.w400,
+      );
+
+      final mentionStyle = AmityTextStyle.bodyBold(
+        isUser ? messageColor.rightBubbleText : theme.primaryColor,
+      );
+
+      // Use the ExpandableText widget to handle mentions
+      // Add a key based on message ID and edit timestamp to ensure proper rebuilding
+      return ExpandableText(
+        key: ValueKey('mention_${message.messageId}_${message.editedAt?.millisecondsSinceEpoch}'),
+        text: text,
+        mentionedUsers: allMentions,
+        maxLines: hasLinks ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+        style: normalStyle,
+        linkStyle: mentionStyle,
+      );
+    } catch (e) {
+      debugPrint('Error building mention text: $e');
+      // Fallback to regular text display if there's an error
+      return RichText(
+        maxLines: hasLinks ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.left, // Ensure text is always left-aligned
+        text: TextSpan(
+          children: _buildTextSpans(text, isUser),
+        ),
+      );
     }
   }
 }

@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 part 'widgets/chat_page_helpers.dart';
 
@@ -34,20 +35,26 @@ class AmityChatPage extends NewBasePage {
   final String? userId;
   final String? userDisplayName;
   final String? avatarUrl;
-  late BounceAnimator bounceAnimator;
-  late Function bounceLatestMessage;
+  final String? jumpToMessageId;
+  late final BounceAnimator bounceAnimator;
+  late final Function bounceLatestMessage;
 
   AmityChatPage(
       {super.key,
       this.channelId,
       this.userId,
       this.userDisplayName,
-      this.avatarUrl})
+      this.avatarUrl,
+      this.jumpToMessageId})
       : super(pageId: 'chat_page');
 
   @override
   Widget buildPage(BuildContext context) {
     MessageComposerCache().updateText("");
+
+    // Configure VisibilityDetector for faster updates during scrolling
+    VisibilityDetectorController.instance.updateInterval =
+        const Duration(milliseconds: 50);
 
     return SimpleTickerProvider(
       onInit: (vsync) {
@@ -66,10 +73,18 @@ class AmityChatPage extends NewBasePage {
                 userDisplayName,
                 avatarUrl,
                 context.read<AmityToastBloc>(),
-                context),
-            child: BlocBuilder<ChatPageBloc, ChatPageState>(
-              key: Key("${channelId ?? ""}_${userId ?? ""}"),
-              builder: (context, state) {
+                context,
+                jumpToMessageId: jumpToMessageId),
+            child: BlocListener<ChatPageBloc, ChatPageState>(
+              listener: (context, state) {
+                // Listen for bounceTargetIndex changes and trigger bounce animation
+                if (state.bounceTargetIndex != null) {
+                  bounceAnimator.animateItem(state.bounceTargetIndex!);
+                }
+              },
+              child: BlocBuilder<ChatPageBloc, ChatPageState>(
+                key: Key("${channelId ?? ""}_${userId ?? ""}"),
+                builder: (context, state) {
                 if (state is ChatPageStateInitial) {
                   context.read<AmityToastBloc>().add(AmityToastLoading(
                       message: context.l10n.chat_loading,
@@ -78,7 +93,10 @@ class AmityChatPage extends NewBasePage {
                 }
 
                 if (!state.isFetching && state is! ChatPageStateInitial) {
-                  context.read<AmityToastBloc>().add(AmityToastDismiss());
+                  context
+                      .read<AmityToastBloc>()
+                      .add(AmityToastDismissIfLoading());
+                  _handleToastDismissal(context, state);
                 }
 
                 final isLoadingUserAvatar =
@@ -191,8 +209,8 @@ class AmityChatPage extends NewBasePage {
                     child: Column(
                       children: [
                         Visibility(
-                          visible:
-                              state.isFetching && state.messages.isNotEmpty,
+                          visible: state.isLoadingMore &&
+                              state.messages.isNotEmpty && state.useReverseUI,
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             width: 24.0,
@@ -203,20 +221,10 @@ class AmityChatPage extends NewBasePage {
                         Expanded(
                           child: Stack(
                             children: [
-                              Visibility(
-                                visible: state.isFetching &&
-                                    state.messages.isNotEmpty,
-                                child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  width: 24.0,
-                                  height: 24.0,
-                                  child: const CupertinoActivityIndicator(),
-                                ),
-                              ),
                               LayoutBuilder(builder: (context, constraints) {
-                                final firstItem =
-                                    state.messages.firstOrNull?.message;
+                                final firstItem = state.messages.isNotEmpty
+                                    ? state.messages.first.message
+                                    : null;
                                 if (firstItem != null) {
                                   context.read<ChatPageBloc>().add(
                                       ChatPageEventMarkReadMessage(
@@ -225,7 +233,8 @@ class AmityChatPage extends NewBasePage {
                                 return ListView.builder(
                                   padding: const EdgeInsets.only(bottom: 8),
                                   controller: state.scrollController,
-                                  reverse: state.scrollController.hasClients &&
+                                  reverse: state.useReverseUI &&
+                                      state.scrollController.hasClients &&
                                       state.scrollController.position
                                               .maxScrollExtent >
                                           0,
@@ -233,7 +242,8 @@ class AmityChatPage extends NewBasePage {
                                   itemCount: state.messages.length,
                                   itemBuilder: (context, index) {
                                     ChatItem item;
-                                    if (state.scrollController.hasClients &&
+                                    if (state.useReverseUI &&
+                                        state.scrollController.hasClients &&
                                         state.scrollController.position
                                                 .maxScrollExtent >
                                             0) {
@@ -301,11 +311,16 @@ class AmityChatPage extends NewBasePage {
                                                                       .animation
                                                                       .value))
                                                           : 1.0;
-                                                  return MessageBubbleView(
-                                                    key: message.uniqueId !=
-                                                            null
-                                                        ? Key(message.uniqueId!)
-                                                        : itemKeys[index],
+                                                  return VisibilityDetector(
+                                                    key: Key('chat_message_${message.uniqueId ?? index}'),
+                                                    onVisibilityChanged: (VisibilityInfo info) {
+                                                      _handleMessageVisibility(context, message, index, info, state);
+                                                    },
+                                                    child: MessageBubbleView(
+                                                      key: message.uniqueId !=
+                                                              null
+                                                          ? Key(message.uniqueId!)
+                                                          : itemKeys[index],
                                                     pageId: pageId,
                                                     message: message,
                                                     channelMember:
@@ -358,6 +373,7 @@ class AmityChatPage extends NewBasePage {
                                                     thumbnail: state
                                                             .localThumbnails[
                                                         item.message!.uniqueId],
+                                                  ),
                                                   );
                                                 });
                                           });
@@ -458,6 +474,7 @@ class AmityChatPage extends NewBasePage {
                                 );
                               },
                             ),
+                            enableMention: false,
                           ),
                       ],
                     ),
@@ -466,9 +483,69 @@ class AmityChatPage extends NewBasePage {
               },
             ),
           ),
+        ),
           AmityToast(pageId: pageId, elementId: "toast"),
         ],
       ),
     );
+  }
+
+  /// Handle message visibility for jump-to-message functionality
+  void _handleMessageVisibility(BuildContext context, AmityMessage message, 
+      int index, VisibilityInfo info, ChatPageState state) {
+    // Only process visibility for target message during jump-to-message and after loading is complete
+    if (state.aroundMessageId != null && 
+        message.messageId == state.aroundMessageId &&
+        !state.isFetching &&
+        state is! ChatPageStateInitial) {
+      final visiblePercentage = info.visibleFraction * 100;
+
+      // Use post-frame callback for fast detection during scrolling
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (visiblePercentage >= 90) {
+          // Stop any ongoing scroll animation by setting current offset with zero duration
+          if (state.scrollController.hasClients) {
+            state.scrollController.animateTo(
+              state.scrollController.offset,
+              duration: Duration.zero,
+              curve: Curves.linear,
+            );
+          }
+          
+          final bloc = context.read<ChatPageBloc>();
+          
+          // Trigger bounce animation
+          bloc.add(ChatPageTriggerBounceEvent(targetIndex: index));
+          
+          // Clear aroundMessageId to restore normal functionality
+          bloc.add(const ChatPageSetAroundMessage(aroundMessageId: null));
+          
+        }
+      });
+    }
+  }
+
+  /// Handle toast dismissal for loading messages
+  void _handleToastDismissal(BuildContext context, ChatPageState state) {
+    // Adapted from group chat logic - simplified for regular chat's state structure
+    // Since regular chat doesn't have isLoadingToastDismissed property,
+    // we check if we're in a jump-to-message scenario
+    if (state.aroundMessageId != null) {
+      if (state.bounceTargetIndex != null) {
+        // Calculate target index considering reverse UI like group chat
+        final shouldUseReverse = state.useReverseUI && state.messages.isNotEmpty &&
+            state.scrollController.hasClients &&
+            state.scrollController.position.maxScrollExtent > 0;
+        final targetIndex = shouldUseReverse 
+            ? state.bounceTargetIndex! 
+            : (state.messages.length - 1 - state.bounceTargetIndex!);
+                    
+        // If we have a pending bounce, trigger it immediately
+        final bloc = context.read<ChatPageBloc>();
+        bloc.add(ChatPageTriggerBounceEvent(targetIndex: targetIndex));
+        bloc.add(const ChatPageSetAroundMessage(aroundMessageId: null));
+        bloc.add(const ChatPageClearBounceEvent());
+      }
+    }
   }
 }

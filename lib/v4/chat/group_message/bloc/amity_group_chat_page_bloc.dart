@@ -17,17 +17,21 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 part 'amity_group_chat_page_events.dart';
 part 'amity_group_chat_page_state.dart';
 
-class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState> {
+class AmityGroupChatPageBloc
+    extends Bloc<GroupChatPageEvent, GroupChatPageState> {
   var messagesCount = 0;
   MessageLiveCollection? liveCollection;
 
-  late final StreamSubscription<List<ConnectivityResult>> subscription;
+  StreamSubscription<List<ConnectivityResult>>? subscription;
   late ScrollController _scrollController;
   bool _isScrollListenerAdded = false;
+  bool _isJumpScrollInProgress = false;
+  Timer? _jumpToMessageTimeoutTimer;
 
   final AmityToastBloc toastBloc;
 
-  AmityGroupChatPageBloc(String? channelId, this.toastBloc)
+  AmityGroupChatPageBloc(String? channelId, this.toastBloc,
+      {String? jumpToMessageId})
       : super(GroupChatPageStateInitial(
             channelId: channelId ?? "", scrollController: ScrollController())) {
     _scrollController = state.scrollController;
@@ -41,22 +45,22 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
     });
 
     on<GroupChatPageEventRefresh>((event, emit) async {
-      emit(GroupChatPageStateChanged(
-          channelId: state.channelId,
+      emit(state.copyWith(
           messages: const [],
           isFetching: true,
+          isLoadingMore: false,
           hasNextPage: true,
-          scrollController: state.scrollController));
+          hasPrevious: false));
       try {
         liveCollection?.reset();
         liveCollection?.loadNext();
       } catch (e) {
-        emit(GroupChatPageStateChanged(
-            channelId: state.channelId,
+        emit(state.copyWith(
             messages: const [],
             isFetching: false,
+            isLoadingMore: false,
             hasNextPage: false,
-            scrollController: state.scrollController));
+            hasPrevious: false));
       }
     });
 
@@ -66,8 +70,9 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
         channelDisplayName: event.channel.displayName,
         channel: event.channel,
         hasNextPage: liveCollection?.hasNextPage(),
+        hasPrevious: liveCollection?.hasPreviousPage(),
       ));
-      
+
       // When channel changes, check moderator status and load member roles
       addEvent(GroupChatPageEventCheckModeratorStatus(channel: event.channel));
       addEvent(const GroupChatPageLoadMemberRoles());
@@ -135,8 +140,11 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
 
       List<ChatItem> groupedMessages = [];
       DateTime? lastCreatedDate;
-      for (var message in event.messages) {
+
+      for (var i = 0; i < event.messages.length; i++) {
+        var message = event.messages[i];
         ParentMessageCache().updateMessageIfExists(message.messageId!, message);
+
         if (message.createdAt != null) {
           if (lastCreatedDate == null) {
             lastCreatedDate = message.createdAt!.toLocal();
@@ -171,21 +179,53 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
       emit(state.copyWith(
         messages: groupedMessages,
         isFetching: event.isFetching,
+        isLoadingMore: false,
         hasNextPage: liveCollection?.hasNextPage(),
+        hasPrevious: liveCollection?.hasPreviousPage(),
         newMessage: newMessage,
       ));
+      
     });
 
     on<GroupChatPageEventLoadMore>((event, emit) async {
       try {
         if (liveCollection?.hasNextPage() == true) {
+          emit(state.copyWith(useReverseUI: true, isLoadingMore: true));
+          if (_scrollController.hasClients) {
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
+          }
           await liveCollection?.loadNext();
+        }
+      } catch (e) {}
+    });
+
+    on<GroupChatPageEventLoadPrevious>((event, emit) async {
+      try {
+        if (liveCollection?.hasPreviousPage() == true) {
+          emit(state.copyWith(useReverseUI: false, isLoadingMore: true));
+          if (_scrollController.hasClients) {
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
+          }
+          await liveCollection?.loadPrevious();
+
+          add(GroupChatPageShowScrollButtonEvent(showScrollButton: false));
         }
       } catch (e) {}
     });
 
     on<GroupChatPageEventLoadingStateUpdated>((event, emit) async {
       emit(state.copyWith(isFetching: event.isFetching));
+
+      if (!event.isFetching && state is! GroupChatPageStateInitial && state.aroundMessageId != null && !_isJumpScrollInProgress && state.shouldBounceMessage == false) {
+        _isJumpScrollInProgress = true;
+        
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (!_isJumpScrollInProgress && state.aroundMessageId == null) return;
+          _startProgressiveScrollToTop(state.aroundMessageId!);
+        });
+      }
     });
 
     on<GroupChatPageIsMuteEventChanged>((event, emit) async {
@@ -337,53 +377,135 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
 
     on<GroupChatPageLoadMemberRoles>((event, emit) async {
       try {
-        final memberRoles = await _loadMemberRoles();
+        final result = await _loadMemberRolesAndMutedStatus();
+        final memberRoles = result['memberRoles'] as Map<String, List<String>>;
+        final mutedUsers = result['mutedUsers'] as Map<String, bool>;
+
         addEvent(GroupChatPageMemberRolesUpdated(memberRoles: memberRoles));
+        addEvent(GroupChatPageMutedUsersUpdated(mutedUsers: mutedUsers));
       } catch (e) {
-        // If there's an error, keep empty member roles
+        // If there's an error, keep empty member roles and muted users
         addEvent(const GroupChatPageMemberRolesUpdated(memberRoles: {}));
+        addEvent(const GroupChatPageMutedUsersUpdated(mutedUsers: {}));
       }
     });
 
     on<GroupChatPageMemberRolesUpdated>((event, emit) {
       emit(state.copyWith(memberRoles: event.memberRoles));
     });
-    
+
+    on<GroupChatPageMutedUsersUpdated>((event, emit) {
+      emit(state.copyWith(mutedUsers: event.mutedUsers));
+    });
+
     on<GroupChatPageEventMarkReadMessage>((event, emit) async {
       event.message.markRead();
     });
 
+    on<GroupChatPageEventJumpToMessage>((event, emit) async {
+      // TO DO
+    });
+
+    on<GroupChatPageSetAroundMessage>((event, emit) async {
+      if (event.aroundMessageId != null) {
+        _isJumpScrollInProgress = false;
+        
+        _jumpToMessageTimeoutTimer?.cancel();
+        _jumpToMessageTimeoutTimer = Timer(const Duration(seconds: 10), () {
+          if (state.aroundMessageId != null) {
+            add(const GroupChatPageSetAroundMessage(aroundMessageId: null));
+          }
+        });
+      } else {
+        _jumpToMessageTimeoutTimer?.cancel();
+        _jumpToMessageTimeoutTimer = null;
+      }
+      
+      emit(state.copyWith(aroundMessageId: event.aroundMessageId));
+    });
+
+    on<GroupChatPageTriggerBounceEvent>((event, emit) async {
+      // emit(state.copyWith(bounceTargetIndex: event.targetIndex));
+      
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      //   if (!isClosed) {
+      //     add(const GroupChatPageClearBounceEvent());
+      //   }
+      // });
+    });
+
+    on<GroupChatPageClearBounceEvent>((event, emit) async {
+      emit(state.copyWith(bounceTargetIndex: null));
+    });
+
+    on<GroupChatPageSetLoadingToastDismissed>((event, emit) async {
+      emit(state.copyWith(isLoadingToastDismissed: event.isDismissed));
+    });
+
+    on<GroupChatPageSetShouldBounceMessage>((event, emit) async {
+      emit(state.copyWith(
+        shouldBounceMessage: event.shouldBounce,
+        bounceMessageIndex: event.messageIndex,
+      ));
+    });
+
+    on<GroupChatPageSetShouldUseReverse>((event, emit) async {
+      emit(state.copyWith(shouldUseReverse: event.shouldUseReverse));
+    });
+
     if (channelId.isNotEmpty) {
-      initLiveCollection(channelId);
+      addEvent(GroupChatPageSetAroundMessage(aroundMessageId: jumpToMessageId));
+
+      initLiveCollection(channelId, aroundMessageId: jumpToMessageId);
       addEvent(GroupChatPageEventChannelIdChanged(channelId));
       addEvent(GroupChatPageEventRefresh());
       addEvent(const GroupChatPageEventFetchMuteState());
     }
-    //  else if (userId != null && userId.isNotEmpty) {
-    //   addEvent(GroupChatPageEventCreateNewChannel(userId: userId));
-    // }
   }
 
   void _setupScrollListener() {
     if (!_isScrollListenerAdded) {
       _scrollController.addListener(() {
-        if (_scrollController.position.pixels >=
-            (_scrollController.position.maxScrollExtent)) {
-          add(const GroupChatPageEventLoadMore());
+        if (!_scrollController.hasClients) return;
+
+        if (state.aroundMessageId != null) {
+          return;
+        }
+
+        final position = _scrollController.position;
+        
+        if (state.useReverseUI) {
+          if (position.pixels <= -50) {
+            add(const GroupChatPageEventLoadPrevious());
+            return;
+          }
+          if (position.pixels >= (position.maxScrollExtent - 100)) {
+            add(const GroupChatPageEventLoadMore());
+            return;
+          }
+        } else {
+          if (position.pixels <= 50) {
+            add(const GroupChatPageEventLoadMore());
+            return;
+          }
+          if (position.pixels >= (position.maxScrollExtent + 50)) {
+            add(const GroupChatPageEventLoadPrevious());
+            return;
+          }
         }
 
         if (_scrollController.hasClients && state.messages.isNotEmpty) {
-          // For reverse: true lists, position 0 is the latest message at the bottom
-          // Check if we've scrolled past seeing the latest message
-          final isScrolledUp = _scrollController.position.pixels > 50;
+          if (state.useReverseUI) {
+            final isScrolledUp = _scrollController.position.pixels > 50;
 
-          if (isScrolledUp == false && state.newMessage != null) {
-            add(GroupChatPageNewMessageUpdated(newMessage: null));
-          }
+            if (isScrolledUp == false && state.newMessage != null) {
+              add(GroupChatPageNewMessageUpdated(newMessage: null));
+            }
 
-          if (isScrolledUp != state.showScrollButton) {
-            add(GroupChatPageShowScrollButtonEvent(
-                showScrollButton: isScrolledUp));
+            if (isScrolledUp != state.showScrollButton) {
+              add(GroupChatPageShowScrollButtonEvent(
+                  showScrollButton: isScrolledUp));
+            }
           }
         }
       });
@@ -394,34 +516,31 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
   @override
   Future<void> close() {
     _scrollController.dispose();
-    subscription.cancel();
+    subscription?.cancel();
+    _jumpToMessageTimeoutTimer?.cancel();
     liveCollection?.getStreamController().close();
     liveCollection?.dispose();
     return super.close();
   }
 
-  void initLiveCollection(String channelId) async {
-    if (liveCollection != null) {
-      liveCollection?.getStreamController().close();
-      await liveCollection?.dispose();
-    }
-    liveCollection = AmityChatClient.newMessageRepository()
+  void initLiveCollection(String channelId, {String? aroundMessageId}) async {
+    liveCollection?.getStreamController().close();
+    liveCollection?.dispose();
+    liveCollection = null;
+
+    MessageGetQueryBuilder query = AmityChatClient.newMessageRepository()
         .getMessages(channelId)
         .stackFromEnd(true)
         .includingTags([])
         .excludingTags([])
         .includeDeleted(true)
-        .filterByParent(false)
-        .getLiveCollection();
+        .filterByParent(false);
 
-    // final list = await AmityChatClient.newChannelRepository()
-    //     .membership(channelId)
-    //     .getMembersFromCache();
-    // final otherMember = list
-    //     .firstWhere((element) => element.userId != AmityCoreClient.getUserId());
-    // if (otherMember.user != null) {
-    //   addEvent(GroupChatPageHeaderEventChanged(channelMember: otherMember));
-    // }
+    if (aroundMessageId != null) {
+      query = query.aroundMessageId(aroundMessageId);
+    }
+
+    liveCollection = query.getLiveCollection();
 
     liveCollection?.getStreamController().stream.listen((event) {
       addEvent(GroupChatPageEventChanged(
@@ -433,6 +552,8 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
     });
 
     // Observe Network Connectivity status here
+    // Cancel existing subscription before creating a new one
+    subscription?.cancel();
     subscription =
         Connectivity().onConnectivityChanged.listen((connectivityEvent) {
       if (connectivityEvent.contains(ConnectivityResult.none)) {
@@ -445,46 +566,36 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
     });
   }
 
-  // Helper method to load member roles
-  Future<Map<String, List<String>>> _loadMemberRoles() async {
+  // Helper method to load member roles and muted status
+  Future<Map<String, dynamic>> _loadMemberRolesAndMutedStatus() async {
     try {
       if (state.channel?.channelId == null) return {};
-      
-      final memberLiveCollection = AmityChatClient.newChannelRepository()
+
+      final members = await AmityChatClient.newChannelRepository()
           .membership(state.channel!.channelId!)
-          .searchMembers('')
-          .getLiveCollection();
+          .getMembersFromCache();
 
-      final completer = Completer<Map<String, List<String>>>();
       final memberRolesMap = <String, List<String>>{};
-
-      // Subscribe to the stream to get member data
-      final subscription = memberLiveCollection.getStreamController().stream.listen((members) {
-        // Populate member roles map with each member's roles
-        for (var member in members) {
-          if (member.userId != null && member.roles != null) {
+      final mutedUsersMap = <String, bool>{};
+      
+      // Populate member roles map with each member's roles and muted status
+      for (var member in members) {
+        if (member.userId != null) {
+          // Add roles
+          if (member.roles != null) {
             memberRolesMap[member.userId!] = member.roles!.roles ?? [];
           }
+          // Check if member is muted using the isMuted property directly
+          mutedUsersMap[member.userId!] = member.isMuted ?? false;
         }
-        // Only complete if not already completed
-        if (!completer.isCompleted) {
-          completer.complete(memberRolesMap);
-        }
-      });
+      }
 
-      // Load the first batch
-      await memberLiveCollection.loadNext();
-      
-      // Wait for the result or timeout after 5 seconds
-      final result = await completer.future.timeout(
-        const Duration(seconds: 5),
-        onTimeout: () => <String, List<String>>{},
-      );
-      
-      subscription.cancel();
-      return result;
+      return {'memberRoles': memberRolesMap, 'mutedUsers': mutedUsersMap};
     } catch (e) {
-      return {};
+      return {
+        'memberRoles': <String, List<String>>{},
+        'mutedUsers': <String, bool>{}
+      };
     }
   }
 
@@ -493,10 +604,45 @@ class AmityGroupChatPageBloc extends Bloc<GroupChatPageEvent, GroupChatPageState
     try {
       final roles = await channel.getCurentUserRoles();
       return roles.contains('moderator') ||
-             roles.contains('community-moderator') ||
-             roles.contains('channel-moderator');
+          roles.contains('community-moderator') ||
+          roles.contains('channel-moderator');
     } catch (e) {
-      return false; // Default to false if there's an error
+      return false;
     }
+  }
+
+  void _startProgressiveScrollToTop(String targetMessageId) {
+    // Only start scrolling if data is loaded and page is initialized (same condition as toast dismiss)
+    if (!(!state.isFetching && state is! GroupChatPageStateInitial)) {
+      _isJumpScrollInProgress = false;
+      return;
+    }
+    
+    if (!_scrollController.hasClients) {
+      _isJumpScrollInProgress = false;
+      addEvent(const GroupChatPageSetAroundMessage(aroundMessageId: null));
+      return;
+    }
+    
+    final position = _scrollController.position;
+    final maxScrollExtent = position.maxScrollExtent;
+    
+    // Just scroll to the top with constant speed linear animation
+    _scrollController.animateTo(
+      maxScrollExtent,
+      duration: const Duration(milliseconds: 300), // Fast 500ms scroll
+      curve: Curves.linear, // Constant speed linear animation
+    ).then((_) {
+      // Clean up scroll state - bounce will be triggered when message becomes visible
+      _isJumpScrollInProgress = false;
+    });
+  }
+
+
+
+  @override
+  void onTransition(
+      Transition<GroupChatPageEvent, GroupChatPageState> transition) {
+    super.onTransition(transition);
   }
 }

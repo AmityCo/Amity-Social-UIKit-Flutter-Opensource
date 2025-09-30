@@ -109,8 +109,8 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // New message notification widget
-  Widget _buildNewMessageNotification(BuildContext context,
-      ChatPageState state, AmityMessage newMessage) {
+  Widget _buildNewMessageNotification(
+      BuildContext context, ChatPageState state, AmityMessage newMessage) {
     return Positioned(
       right: 16,
       left: 16,
@@ -164,7 +164,8 @@ extension ChatPageHelpers on AmityChatPage {
   }
 
   // Helper method for notification content
-  Widget _buildNewMessageContent(BuildContext context, ChatPageState state, AmityMessage message) {
+  Widget _buildNewMessageContent(
+      BuildContext context, ChatPageState state, AmityMessage message) {
     return Stack(
       children: [
         ClipRRect(
@@ -174,8 +175,10 @@ extension ChatPageHelpers on AmityChatPage {
             child: InkWell(
               onTap: () => _scrollToBottom(state,
                   shouldAnimated: true,
-                  millisecBeforeAnimated:
-                      (message.data is MessageTextData) ? 50 : 300),
+                  millisecBeforeAnimated: (message.data is MessageTextData ||
+                          message.data is MessageCustomData)
+                      ? 50
+                      : 300),
               child: Padding(
                 padding: const EdgeInsets.only(left: 6, top: 6, bottom: 6),
                 child: Row(
@@ -203,16 +206,28 @@ extension ChatPageHelpers on AmityChatPage {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   )
-                                : Text(
-                                    message.data is MessageImageData
-                                        ? context.l10n.chat_message_photo
-                                        : context.l10n.chat_message_video,
-                                    style: AmityTextStyle.body(theme
-                                        .secondaryColor
-                                        .blend(ColorBlendingOption.shade2)),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                : message.data is MessageCustomData
+                                    ? Text(
+                                        (message.data as MessageCustomData)
+                                                .rawData
+                                                ?.toString() ??
+                                            "",
+                                        style: AmityTextStyle.body(theme
+                                            .secondaryColor
+                                            .blend(ColorBlendingOption.shade2)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    : Text(
+                                        message.data is MessageImageData
+                                            ? context.l10n.chat_message_photo
+                                            : context.l10n.chat_message_video,
+                                        style: AmityTextStyle.body(theme
+                                            .secondaryColor
+                                            .blend(ColorBlendingOption.shade2)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                           )
                         ],
                       ),
@@ -252,7 +267,10 @@ extension ChatPageHelpers on AmityChatPage {
                   onTap: () => _scrollToBottom(state,
                       shouldAnimated: true,
                       millisecBeforeAnimated:
-                          (message.data is MessageTextData) ? 50 : 300)),
+                          (message.data is MessageTextData ||
+                                  message.data is MessageCustomData)
+                              ? 50
+                              : 300)),
             ),
           ),
         ),

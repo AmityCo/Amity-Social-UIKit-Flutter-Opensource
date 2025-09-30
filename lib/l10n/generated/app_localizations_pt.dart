@@ -568,6 +568,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get general_reported => 'denunciado';
 
   @override
+  String get general_unreported => 'não denunciado';
+
+  @override
   String get general_see_more => '...Ver mais';
 
   @override
@@ -724,7 +727,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get error_create_poll => 'Falha ao criar a enquete. Por favor, tente novamente.';
 
   @override
+  String get error_message_too_long_title => 'Unable to send message';
+
+  @override
+  String get error_message_too_long_description => 'Your message is too long. Please shorten your message and try again.';
+
+  @override
   String get user_profile_unknown_name => 'Unknown';
+
+  @override
+  String get user_profile_deleted_name => 'Deleted user';
 
   @override
   String get community_all_members => 'All members';
@@ -1706,6 +1718,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get general_reported => 'denunciado';
+
+  @override
+  String get general_unreported => 'não denunciado';
 
   @override
   String get general_see_more => '...Ver mais';

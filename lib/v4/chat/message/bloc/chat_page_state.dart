@@ -10,7 +10,9 @@ class ChatPageState extends Equatable {
   final bool isMute;
   final List<ChatItem> messages;
   final bool isFetching;
+  final bool isLoadingMore;
   final bool hasNextPage;
+  final bool hasPrevious;
   final Map<String, Uint8List?> localThumbnails;
   final bool isOnMuteChange;
   final bool isOnFlagChange;
@@ -22,6 +24,9 @@ class ChatPageState extends Equatable {
   final AmityMessage? newMessage;
   final ScrollController scrollController;
   final bool isUserBlocked;
+  final String? aroundMessageId; // For jump to message functionality
+  final int? bounceTargetIndex; // For bounce animation targeting
+  final bool useReverseUI; // Controls scroll direction and message ordering
 
   const ChatPageState({
     required this.channelId,
@@ -31,7 +36,9 @@ class ChatPageState extends Equatable {
     this.isMute = false,
     this.isConnected = true,
     this.isFetching = false,
+    this.isLoadingMore = false,
     this.hasNextPage = true,
+    this.hasPrevious = false,
     this.localThumbnails = const {},
     this.isOnMuteChange = false,
     this.isOnFlagChange = false,
@@ -43,6 +50,9 @@ class ChatPageState extends Equatable {
     this.newMessage,
     required this.scrollController,
     this.isUserBlocked = false,
+    this.aroundMessageId,
+    this.bounceTargetIndex,
+    this.useReverseUI = true,
   });
 
   @override
@@ -54,7 +64,9 @@ class ChatPageState extends Equatable {
         isConnected,
         userDisplayName,
         isFetching,
+        isLoadingMore,
         hasNextPage,
+        hasPrevious,
         localThumbnails,
         isOnMuteChange,
         isOnFlagChange,
@@ -65,6 +77,9 @@ class ChatPageState extends Equatable {
         showScrollButton,
         newMessage,
         isUserBlocked,
+        aroundMessageId,
+        bounceTargetIndex,
+        useReverseUI,
       ];
 
   ChatPageState copyWith({
@@ -75,7 +90,9 @@ class ChatPageState extends Equatable {
     bool isConnected = true,
     List<ChatItem>? messages,
     bool? isFetching,
+    bool? isLoadingMore,
     bool? hasNextPage,
+    bool? hasPrevious,
     Map<String, Uint8List?>? localThumbnails,
     bool? isOnMuteChange,
     bool? isOnFlagChange,
@@ -87,6 +104,9 @@ class ChatPageState extends Equatable {
     ScrollController? scrollController,
     AmityUser? user,
     bool? isUserBlocked,
+    Object? aroundMessageId = _undefined,
+    Object? bounceTargetIndex = _undefined,
+    bool? useReverseUI,
   }) {
     return ChatPageState(
       channelId: channelId ?? this.channelId,
@@ -96,7 +116,9 @@ class ChatPageState extends Equatable {
       isConnected: isConnected,
       userDisplayName: userDisplayName ?? this.userDisplayName,
       isFetching: isFetching ?? this.isFetching,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasNextPage: hasNextPage ?? this.hasNextPage,
+      hasPrevious: hasPrevious ?? this.hasPrevious,
       isOnFlagChange: isOnFlagChange ?? this.isOnFlagChange,
       localThumbnails: localThumbnails ?? this.localThumbnails,
       isOnMuteChange: isOnMuteChange ?? this.isOnMuteChange,
@@ -114,6 +136,13 @@ class ChatPageState extends Equatable {
       scrollController: scrollController ?? this.scrollController,
       user: user ?? this.user,
       isUserBlocked: isUserBlocked ?? this.isUserBlocked,
+      aroundMessageId: aroundMessageId == _undefined
+          ? this.aroundMessageId
+          : aroundMessageId as String?,
+      bounceTargetIndex: bounceTargetIndex == _undefined
+          ? this.bounceTargetIndex
+          : bounceTargetIndex as int?,
+      useReverseUI: useReverseUI ?? this.useReverseUI,
     );
   }
 }
@@ -130,7 +159,9 @@ class ChatPageStateInitial extends ChatPageState {
           avatarUrl: avatarUrl,
           messages: const [],
           isFetching: false,
+          isLoadingMore: false,
           hasNextPage: true,
+          hasPrevious: false,
           isOnMuteChange: false,
           scrollController: scrollController,
           user: null,
@@ -149,7 +180,9 @@ class ChatPageStateChanged extends ChatPageState {
           channelId: channelId,
           messages: messages,
           isFetching: isFetching,
+          isLoadingMore: false,
           hasNextPage: hasNextPage,
+          hasPrevious: false,
           scrollController: scrollController,
           user: null,
           isUserBlocked: false,

@@ -517,14 +517,14 @@ Future<List<Map<String, dynamic>>> processTextInBackground(
   if (data.mentionedUsers != null) {
     for (var mention in data.mentionedUsers!) {
       if (mention.index < data.text.length) {
-        int rawEndIndex = mention.index + mention.length + 1;
+        int rawEndIndex = mention.index + mention.length;
         int safeEndIndex = min(rawEndIndex, data.text.length);
 
         if (safeEndIndex > mention.index) {
           entities.add({
             'type': 'mention',
             'index': mention.index,
-            'length': mention.length + 1,
+            'length': mention.length,
             'userId': mention.userId,
             'end': safeEndIndex,
           });

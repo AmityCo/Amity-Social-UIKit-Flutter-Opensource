@@ -232,6 +232,43 @@ extension ParentMessageWidget on MessageBubbleView {
                               text: TextSpan(children: textSpans),
                             ),
                           );
+                        } else if (parentMessage.data is MessageCustomData) {
+                          final parentCustomMessage =
+                              (parentMessage.data as MessageCustomData).rawData?.toString() ?? "";
+                          final elements = linkify(parentCustomMessage);
+
+                          final textSpans = elements.map<TextSpan>((element) {
+                            if (element is LinkableElement) {
+                              return TextSpan(
+                                text: element.text,
+                                style: TextStyle(
+                                  color: theme.highlightColor,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              );
+                            } else {
+                              return TextSpan(
+                                text: element.text,
+                                style: AmityTextStyle.body(theme.baseColor),
+                              );
+                            }
+                          }).toList();
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: messageColor.leftBubbleDefault,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: RichText(
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              text: TextSpan(children: textSpans),
+                            ),
+                          );
                         } else if (parentMessage.data is MessageImageData) {
                           final image =
                               (parentMessage.data as MessageImageData).image;

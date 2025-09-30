@@ -267,7 +267,7 @@ class AmityPostHeader extends StatelessWidget {
 
     onDelete() {
       AmitySocialClient.newPostRepository()
-          .deletePost(postId: post.postId!)
+          .deletePost(postId: post.postId!, hardDelete: true)
           .then((value) {
         context
             .read<PostItemBloc>()
@@ -326,7 +326,7 @@ class AmityPostHeader extends StatelessWidget {
       final pollId = (post.children!.first.data as PollData).pollId;
 
       final closePollOption = BottomSheetMenuOption(
-          title: context.l10n.post_delete,
+          title: context.l10n.poll_close,
           icon: "assets/Icons/amity_ic_create_poll_button.svg",
           onTap: () {
             Navigator.pop(context);

@@ -1,9 +1,12 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/error_util.dart';
 import 'package:amity_uikit_beta_service/v4/utils/media_util.dart';
 import 'package:equatable/equatable.dart';
@@ -61,17 +64,55 @@ class MessageComposerBloc
         if (replyTo != null) {
           ParentMessageCache().addMessage(replyTo.messageId!, replyTo);
         }
-        await AmityChatClient.newMessageRepository()
+        // Create metadata for mentions if they exist
+        Map<String, dynamic> metadata = {};
+        if (event.mentionMetadataList.isNotEmpty) {
+          metadata = AmityMentionMetadataCreator(event.mentionMetadataList).create();
+        }
+
+        final messageBuilder = AmityChatClient.newMessageRepository()
             .createMessage(subChannelId)
             .parentId(replyTo?.messageId)
-            .text(event.text.trim())
-            .send();
+            .text(event.text.trim());
+        
+        if (event.mentionMetadataList.isNotEmpty) {
+          messageBuilder.metadata(metadata);
+          
+          // Check if "@All" mention is present (exact match)
+          bool hasAllMention = event.mentionUserIds.contains("all");
+          
+          if (hasAllMention) {
+            // Use mentionChannel for @All mentions
+            messageBuilder.mentionChannel();
+          }
+          
+          // Always handle regular user mentions (excluding "all")
+          final regularUserIds = event.mentionUserIds.where((id) => id != "all").toList();
+          if (regularUserIds.isNotEmpty) {
+            messageBuilder.mentionUsers(regularUserIds);
+          }
+        }
+        await messageBuilder.send();
       } catch (error) {
-        if (error != null && error is AmityException) {
+        if (error is AmityException) {
           if (error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
             toastBloc.add(const AmityToastShort(
                 message:
                     "Your message contains inappropriate word. Please review and delete it."));
+          } else if (error.code == error.getErrorCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
+            toastBloc.add(const AmityToastShort(
+                message:
+                    "Your message wasn't sent as it contains a link that's not allowed."));
+          } else if (error.code == 400000) {
+            // Message too long error
+            final context = NavigationService.navigatorKey.currentContext;
+            if (context != null && context.mounted) {
+              AmityV4Dialog().showAlertErrorDialog(
+                title: context.l10n.error_message_too_long_title,
+                message: context.l10n.error_message_too_long_description,
+                closeText: context.l10n.general_done,
+              );
+            }
           }
         }
       }
@@ -81,16 +122,97 @@ class MessageComposerBloc
       MessageComposerCache().updateText("");
       emit(state.copyWith(text: "", replyTo: null));
       try {
-        await AmityChatClient.newMessageRepository()
-            .updateMessage(subChannelId, event.messageId)
-            .text(event.text.trim())
-            .update();
+        // Get the message first to preserve existing metadata
+        AmityMessage? originalMessage;
+        try {
+          originalMessage = await AmityChatClient.newMessageRepository()
+              .getMessage(event.messageId);
+        } catch (e) {
+        }
+              
+        // Create metadata for mentions if they exist
+        Map<String, dynamic> metadata = {};
+        
+        // Only update the 'mentioned' part of metadata, preserve everything else
+        if (originalMessage?.metadata != null) {
+          // Copy all existing metadata
+          metadata = Map<String, dynamic>.from(originalMessage!.metadata!);
+          
+          // Check for any channel mentions in the original metadata
+          if (metadata.containsKey('mentioned')) {
+            final List<dynamic> originalMentions = metadata['mentioned'] as List<dynamic>;
+            List<Map<String, dynamic>> channelMentions = [];
+            
+            // Extract channel mentions to preserve them
+            for (var mention in originalMentions) {
+              if (mention is Map<String, dynamic> && 
+                  mention.containsKey('type') && 
+                  mention['type'] == 'channel') {
+                channelMentions.add(Map<String, dynamic>.from(mention));
+              }
+            }
+            
+            // Store channel mentions for later
+            if (channelMentions.isNotEmpty) {
+              metadata['_channelMentions'] = channelMentions;
+            }
+          }
+        }
+        
+        // Update the 'mentioned' part with new user mentions
+        List<dynamic> allMentions = [];
+        
+        // Add user mentions if they exist
+        if (event.mentionMetadataList.isNotEmpty) {
+          final mentionData = AmityMentionMetadataCreator(event.mentionMetadataList).create();
+          allMentions.addAll(mentionData['mentioned'] as List<dynamic>);
+          
+        }
+        
+        // Add back any channel mentions that were in the original message
+        if (metadata.containsKey('_channelMentions')) {
+          final List<dynamic> channelMentions = metadata['_channelMentions'] as List<dynamic>;
+          allMentions.addAll(channelMentions);
+          metadata.remove('_channelMentions'); // Remove temporary storage
+          
+        }
+        
+        // Update final metadata
+        if (allMentions.isNotEmpty) {
+          metadata['mentioned'] = allMentions;
+        } else {
+          // If no mentions in updated text, remove the mention metadata
+          metadata.remove('mentioned');
+        }
+        
+        final messageBuilder = AmityChatClient.newMessageRepository()
+            .editTextMessage(event.messageId)
+            .text(event.text.trim());
+            
+        // Always update metadata to either include mentions or remove them
+        messageBuilder.metadata(metadata);
+        
+        await messageBuilder.update();
       } catch (error) {
-        if (error != null && error is AmityException) {
+        if (error is AmityException) {
           if (error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
             toastBloc.add(const AmityToastShort(
                 message:
                     "Your message contains inappropriate word. Please review and delete it."));
+          } else if (error.code == error.getErrorCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
+            toastBloc.add(const AmityToastShort(
+                message:
+                    "Your message wasn't sent as it contains a link that's not allowed."));
+          } else if (error.code == 400000) {
+            // Message too long error
+            final context = NavigationService.navigatorKey.currentContext;
+            if (context != null && context.mounted) {
+              AmityV4Dialog().showAlertErrorDialog(
+                title: context.l10n.error_message_too_long_title,
+                message: context.l10n.error_message_too_long_description,
+                closeText: context.l10n.general_done,
+              );
+            }
           }
         }
       }
@@ -127,9 +249,21 @@ class MessageComposerBloc
                   .image(uri)
                   .send();
             } catch (error) {
-              toastBloc.add(AmityUIKitToastLong(
-                  message: "Failed to send image: ${error.toString()}",
-                  bottomPadding: AmityChatPage.toastBottomPadding));
+              if (error is AmityException) {
+                if (error.code == error.getErrorCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
+                  toastBloc.add(const AmityToastShort(
+                      message:
+                          "Your message wasn't sent as it contains a link that's not allowed."));
+                } else {
+                  toastBloc.add(AmityUIKitToastLong(
+                      message: "Failed to send image: ${error.toString()}",
+                      bottomPadding: AmityChatPage.toastBottomPadding));
+                }
+              } else {
+                toastBloc.add(AmityUIKitToastLong(
+                    message: "Failed to send image: ${error.toString()}",
+                    bottomPadding: AmityChatPage.toastBottomPadding));
+              }
             }
           } else {
             final isVideo = await isVideoFileMime(event.selectedMedia);
@@ -148,9 +282,21 @@ class MessageComposerBloc
                     .video(uri)
                     .send();
               } catch (error) {
-                toastBloc.add(AmityToastShort(
-                    message: "Failed to send video: ${error.toString()}",
-                    bottomPadding: AmityChatPage.toastBottomPadding));
+                if (error is AmityException) {
+                  if (error.code == error.getErrorCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
+                    toastBloc.add(const AmityToastShort(
+                        message:
+                            "Your message wasn't sent as it contains a link that's not allowed."));
+                  } else {
+                    toastBloc.add(AmityToastShort(
+                        message: "Failed to send video: ${error.toString()}",
+                        bottomPadding: AmityChatPage.toastBottomPadding));
+                  }
+                } else {
+                  toastBloc.add(AmityToastShort(
+                      message: "Failed to send video: ${error.toString()}",
+                      bottomPadding: AmityChatPage.toastBottomPadding));
+                }
               }
             }
           }

@@ -279,6 +279,10 @@
   "@user_profile_unknown_name": {
     "description": "Fallback display name for users with no display name"
   },
+  "user_profile_deleted_name": "Usuario eliminado",
+  "@user_profile_deleted_name": {
+    "description": "Display name for deleted users"
+  },
   "community_all_members": "Todos los miembros",
   "@community_all_members": {
     "description": "Tab label for all members in community membership page"
@@ -539,6 +543,14 @@
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
   },
+  "error_message_too_long_title": "No se puede enviar el mensaje",
+  "@error_message_too_long_title": {
+    "description": "Title for error dialog when message exceeds character limit"
+  },
+  "error_message_too_long_description": "Tu mensaje es demasiado largo. Por favor, acorta tu mensaje e inténtalo de nuevo.",
+  "@error_message_too_long_description": {
+    "description": "Description for error dialog when message exceeds character limit"
+  },
   "error_create_post": "Error al crear la publicación. Por favor, inténtalo de nuevo.",
   "@error_create_post": {
     "description": "Error message when creating a post fails"
@@ -678,6 +690,10 @@
   "general_reported": "reportado",
   "@general_reported": {
     "description": "Label for reported content"
+  },
+  "general_unreported": "no reportado",
+  "@general_unreported": {
+    "description": "Label for unreported content"
   },
   "general_save": "Guardar",
   "@general_save": {

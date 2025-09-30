@@ -667,6 +667,10 @@
   "@general_reported": {
     "description": "Label for reported content"
   },
+  "general_unreported": "não denunciado",
+  "@general_unreported": {
+    "description": "Label for unreported content"
+  },
   "general_see_more": "...Ver mais",
   "@general_see_more": {
     "description": "Label for see more button"

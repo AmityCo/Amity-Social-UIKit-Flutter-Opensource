@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:flutter/material.dart' show Colors;
 
 class MessageColor {
   final AmityThemeColor theme;
@@ -14,6 +15,8 @@ class MessageColor {
   late Color rightBubblePressed;
   late Color rightBubbleText;
   late Color rightBubbleSubtleText;
+  late Color leftBubblePreviewLinkColor;
+  late Color rightBubblePreviewLinkColor;
   late Color bubbleDivider;
 
   MessageColor({
@@ -28,6 +31,8 @@ class MessageColor {
     rightBubblePressed = getColor('right_bubble_pressed_color', theme.primaryColor.darken(15));
     rightBubbleText = getColor('right_bubble_text_color', theme.baseInverseColor);
     rightBubbleSubtleText = getColor('right_bubble_subtle_text_color', theme.primaryColor.blend(ColorBlendingOption.shade2));
+    leftBubblePreviewLinkColor = getColor('left_bubble_preview_link_color', Colors.white);
+    rightBubblePreviewLinkColor = getColor('right_bubble_preview_link_color', Colors.white);
     bubbleDivider = getColor('bubble_divider_color', _colorFromHex("#C1C1C1"));
   }
   

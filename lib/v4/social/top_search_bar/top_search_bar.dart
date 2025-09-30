@@ -1,12 +1,13 @@
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AmityTopSearchBarComponent extends NewBaseComponent {
   final void Function(String)? onTextChanged;
-  TextEditingController textcontroller;
-  String hintText;
+  final TextEditingController textcontroller;
+  final String hintText;
   final bool showCancelButton;
 
   AmityTopSearchBarComponent({
@@ -21,11 +22,15 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     const borderRadius = 8.0;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: Row(
-        children: [
-          Expanded(
+    
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: textcontroller,
+      builder: (context, value, child) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Row(
+            children: [
+              Expanded(
             child: TextField(
               controller: textcontroller,
               style: TextStyle(
@@ -117,16 +122,14 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     context.l10n.general_cancel,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 15,
-                      color: theme.primaryColor,
-                    ),
+                    style: AmityTextStyle.body(theme.primaryColor),
                   ),
                 ),
               )
         ],
       ),
+    );
+      },
     );
   }
 }

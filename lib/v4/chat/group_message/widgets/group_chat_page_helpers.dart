@@ -42,7 +42,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
               onTap: () => _scrollToBottom(state,
                   shouldAnimated: true,
                   millisecBeforeAnimated:
-                      (message.data is MessageTextData) ? 50 : 300),
+                      (message.data is MessageTextData || message.data is MessageCustomData) ? 50 : 300),
               child: Padding(
                 padding: const EdgeInsets.only(left: 6, top: 6, bottom: 6),
                 child: Row(
@@ -69,15 +69,25 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   )
-                                : Text(
-                                    message.data is MessageImageData
-                                        ? "Send a photo"
-                                        : "Send a video",
-                                    style: AmityTextStyle.body(theme
-                                        .secondaryColor
-                                        .blend(ColorBlendingOption.shade2)),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                : message.data is MessageCustomData
+                                    ? Text(
+                                        (message.data as MessageCustomData).rawData?.toString() ??
+                                            "",
+                                        style: AmityTextStyle.body(theme
+                                            .secondaryColor
+                                            .blend(ColorBlendingOption.shade2)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    : Text(
+                                        message.data is MessageImageData
+                                            ? "Send a photo"
+                                            : "Send a video",
+                                        style: AmityTextStyle.body(theme
+                                            .secondaryColor
+                                            .blend(ColorBlendingOption.shade2)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                   ),
                           )
                         ],
@@ -118,7 +128,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                   onTap: () => _scrollToBottom(state,
                       shouldAnimated: true,
                       millisecBeforeAnimated:
-                          (message.data is MessageTextData) ? 50 : 300)),
+                          (message.data is MessageTextData || message.data is MessageCustomData) ? 50 : 300)),
             ),
           ),
         ),
@@ -309,7 +319,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
       {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
     state.scrollController
         .animateTo(
-      0.0,
+      state.useReverseUI ? 0.0 : state.scrollController.position.maxScrollExtent,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
     )

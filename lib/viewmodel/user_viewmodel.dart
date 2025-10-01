@@ -99,6 +99,7 @@ class UserVM extends ChangeNotifier {
     _amityUsersController = PagingController(
       pageFuture: (token) => AmityCoreClient.newUserRepository()
           .searchUserByDisplayName(keyworkd)
+          .matchType(AmityUserSearchMatchType.PARTIAL)
           .sortBy(AmityUserSortOption.DISPLAY)
           .getPagingData(token: token, limit: 20),
       pageSize: 20,

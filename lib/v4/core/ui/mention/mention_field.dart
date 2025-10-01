@@ -340,6 +340,7 @@ class _MentionTextFieldState extends State<MentionTextField>
         controller = PagingController<AmityUser>(
           pageFuture: (token) => AmityCoreClient.newUserRepository()
               .searchUserByDisplayName(query)
+              .matchType(AmityUserSearchMatchType.PARTIAL)
               .sortBy(AmityUserSortOption.DISPLAY)
               .getPagingData(token: token, limit: 20),
           pageSize: 20,

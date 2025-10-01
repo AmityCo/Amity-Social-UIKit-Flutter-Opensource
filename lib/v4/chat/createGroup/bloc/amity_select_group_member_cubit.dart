@@ -44,6 +44,8 @@ class AmitySelectGroupMemberCubit extends Cubit<AmitySelectGroupMemberState> {
 
     userLiveCollection = AmityCoreClient.newUserRepository()
         .searchUserByDisplayName(searchText)
+        .matchType(AmityUserSearchMatchType.PARTIAL)
+        .sortBy(AmityUserSortOption.DISPLAY)
         .getLiveCollection();
 
     _loadingSubscription = userLiveCollection.observeLoadingState().listen((event) {

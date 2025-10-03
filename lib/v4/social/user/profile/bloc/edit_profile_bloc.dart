@@ -49,14 +49,27 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       },
     );
 
+    on<EditProfileDisplayNameChangedEvent>(
+      (event, emit) async {
+        final isDisplayNameChanged = event.value != state.user?.displayName;
+        final isAboutChanged = state.about != state.user?.description;
+        final isImageSelected = state.selectedImage != null;
+
+        emit(state.copyWith(
+            displayName: event.value,
+            isProfileInfoUpdated: isDisplayNameChanged || isAboutChanged || isImageSelected));
+      },
+    );
+
     on<EditProfileAboutChangedEvent>(
       (event, emit) async {
         final isAboutChanged = event.value != state.user?.description;
+        final isDisplayNameChanged = state.displayName != state.user?.displayName;
         final isImageSelected = state.selectedImage != null;
 
         emit(state.copyWith(
             about: event.value,
-            isProfileInfoUpdated: isAboutChanged || isImageSelected));
+            isProfileInfoUpdated: isAboutChanged || isDisplayNameChanged || isImageSelected));
       },
     );
 
@@ -69,8 +82,10 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       isUpdatingProfile = true;
 
       final editedAbout = state.about;
+      final editedDisplayName = state.displayName;
       UserUpdateQueryBuilder updateBuilder = AmityCoreClient.newUserRepository()
           .updateUser(userId)
+          .displayName(editedDisplayName ?? "")
           .description(editedAbout ?? "");
 
       updateOperation() {

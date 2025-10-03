@@ -20,6 +20,8 @@ class CommunityAddMemberPageBloc
     on<CommunityAddMemberPageSearchUserEvent>((event, emit) {
       _userLiveCollection = AmityCoreClient.newUserRepository()
           .searchUserByDisplayName(event.keyword)
+          .matchType(AmityUserSearchMatchType.PARTIAL)
+          .sortBy(AmityUserSortOption.DISPLAY)
           .getLiveCollection();
 
       _userStreamSubscription?.cancel();

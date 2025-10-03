@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 extension MessageComposerWithCamera on AmityMessageComposer {
   void onCameraTap(BuildContext context) {
+    
     Navigator.push(
       context,
       BottomToTopAnimatedRoute(

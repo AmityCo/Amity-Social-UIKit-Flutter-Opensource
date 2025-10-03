@@ -1,12 +1,11 @@
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-void amityStoryModalBottomSheetOverFlowMenu({required BuildContext context, required String storyId, required Function onDeleted , required AmityStory story , required Function (String) deleteClicked}) {
+void amityStoryModalBottomSheetOverFlowMenu({required BuildContext context, required String storyId, required Function onDeleted , required AmityStory story , required Function (String) deleteClicked, AmityThemeColor? theme}) {
   showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -14,7 +13,8 @@ void amityStoryModalBottomSheetOverFlowMenu({required BuildContext context, requ
         return AmityStoryModelBottomSheet(
           storyId: storyId,
           onDeleted: onDeleted,
-          deleteClicked: deleteClicked, 
+          deleteClicked: deleteClicked,
+          theme: theme,
           // parentContext: context,
         );
       }).then((value) {
@@ -25,9 +25,10 @@ class AmityStoryModelBottomSheet extends StatelessWidget {
   final String storyId;
   final Function onDeleted;
   final Function (String) deleteClicked;
+  final AmityThemeColor? theme;
   // final BuildContext parentContext ;
   // final Function (String) deleteStory;
-  const AmityStoryModelBottomSheet({super.key, required this.storyId, required this.onDeleted  , required this.deleteClicked});
+  const AmityStoryModelBottomSheet({super.key, required this.storyId, required this.onDeleted  , required this.deleteClicked, this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +66,8 @@ class AmityStoryModelBottomSheet extends StatelessWidget {
                 child: AmityBottomSheetActionItem(
                   icon: "assets/Icons/ic_bin_red.svg",
                   text: 'Delete story',
+                  iconColor: theme?.alertColor,
+                  textColor: theme?.alertColor,
                   onTap: () {
                     deleteClicked(storyId);
                   },
@@ -82,7 +85,9 @@ class AmityBottomSheetActionItem extends StatelessWidget {
   final String icon;
   final String text;
   final Function onTap;
-  const AmityBottomSheetActionItem({super.key, required this.icon, required this.text, required this.onTap});
+  final Color? iconColor;
+  final Color? textColor;
+  const AmityBottomSheetActionItem({super.key, required this.icon, required this.text, required this.onTap, this.iconColor, this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -101,15 +106,16 @@ class AmityBottomSheetActionItem extends StatelessWidget {
               icon,
               package: 'amity_uikit_beta_service',
               height: 20,
-              color: Colors.black,
+              colorFilter: ColorFilter.mode(iconColor ?? Colors.black, BlendMode.srcIn),
             ),
             const SizedBox(width: 16),
             Text(
               text,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontFamily: "SF Pro Text",
                 fontWeight: FontWeight.w600,
+                color: textColor ?? Colors.black,
               ),
             ),
           ],

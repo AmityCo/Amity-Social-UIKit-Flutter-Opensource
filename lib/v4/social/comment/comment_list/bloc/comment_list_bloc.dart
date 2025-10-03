@@ -111,7 +111,7 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
           .parentId(parentId)
           .sortBy(AmityCommentSortOption.LAST_CREATED)
           .dataTypes(null)
-          .includeDeleted(false)
+          .includeDeleted(true)
           .getLiveCollection();
     }
     if (referenceType == AmityCommentReferenceType.STORY) {
@@ -121,7 +121,7 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
           .parentId(parentId)
           .sortBy(AmityCommentSortOption.LAST_CREATED)
           .dataTypes(null)
-          .includeDeleted(false)
+          .includeDeleted(true)
           .getLiveCollection();
     } else {
       return AmitySocialClient.newCommentRepository()
@@ -130,7 +130,7 @@ class CommentListBloc extends Bloc<CommentListEvent, CommentListState> {
           .parentId(parentId)
           .sortBy(AmityCommentSortOption.LAST_CREATED)
           .dataTypes(null)
-          .includeDeleted(false)
+          .includeDeleted(true)
           .getLiveCollection();
     }
   }

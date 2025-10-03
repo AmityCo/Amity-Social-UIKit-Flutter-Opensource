@@ -592,6 +592,21 @@ class AppLocalizationsPt extends AppLocalizations {
   String get general_options => 'Opções';
 
   @override
+  String get general_go_back => 'Go back';
+
+  @override
+  String get post_unavailable_title => 'Something went wrong';
+
+  @override
+  String get post_unavailable_description => 'The content you\'re looking for is unavailable.';
+
+  @override
+  String get comment_deleted_message => 'This comment has been deleted';
+
+  @override
+  String get comment_reply_deleted_message => 'This reply has been deleted';
+
+  @override
   String get post_edit_globally_featured => 'Editar publicação destacada globalmente?';
 
   @override
@@ -1208,6 +1223,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get chat_no_message_yet => 'No message yet';
+
+  @override
+  String get permission_camera_title => 'Permitir acesso à sua câmera';
+
+  @override
+  String get permission_camera_detail => 'Isso permite que o aplicativo tire fotos e grave vídeos da câmera do seu dispositivo.';
+
+  @override
+  String get permission_microphone_title => 'Permitir acesso ao seu microfone';
+
+  @override
+  String get permission_microphone_detail => 'Isso permite que o aplicativo grave áudio para vídeos do microfone do seu dispositivo.';
+
+  @override
+  String get permission_open_settings => 'Abrir configurações';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

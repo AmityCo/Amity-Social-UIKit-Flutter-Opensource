@@ -912,5 +912,25 @@
   "error_create_poll": "Falha ao criar a enquete. Por favor, tente novamente.",
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
+  },
+  "permission_camera_title": "Permitir acesso à sua câmera",
+  "@permission_camera_title": {
+    "description": "Título para o diálogo de permissões de câmera"
+  },
+  "permission_camera_detail": "Isso permite que o aplicativo tire fotos e grave vídeos da câmera do seu dispositivo.",
+  "@permission_camera_detail": {
+    "description": "Texto detalhado para o diálogo de permissões de câmera"
+  },
+  "permission_microphone_title": "Permitir acesso ao seu microfone",
+  "@permission_microphone_title": {
+    "description": "Título para o diálogo de permissões de microfone"
+  },
+  "permission_microphone_detail": "Isso permite que o aplicativo grave áudio para vídeos do microfone do seu dispositivo.",
+  "@permission_microphone_detail": {
+    "description": "Texto detalhado para o diálogo de permissões de microfone"
+  },
+  "permission_open_settings": "Abrir configurações",
+  "@permission_open_settings": {
+    "description": "Texto do botão para abrir as configurações do aplicativo"
   }
 }

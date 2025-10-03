@@ -25,6 +25,15 @@ class EditProfileImagePickerEvent extends EditProfileEvent {
   List<Object> get props => [];
 }
 
+class EditProfileDisplayNameChangedEvent extends EditProfileEvent {
+  final String value;
+
+  const EditProfileDisplayNameChangedEvent({required this.value});
+
+  @override
+  List<Object> get props => [value];
+}
+
 class EditProfileAboutChangedEvent extends EditProfileEvent {
   final String value;
 

@@ -73,6 +73,11 @@ class CommentItem extends BaseElement {
 
   Widget buildCommentItem(BuildContext context, AmityComment comment,
       bool isReacting, bool isExpanded, bool isEditing) {
+    // Check if comment is deleted
+    if (comment.isDeleted ?? false) {
+      return buildDeletedComment(context, comment);
+    }
+
     var isModerator = false;
     var communityId = null;
     if (comment.target is CommunityCommentTarget) {
@@ -339,6 +344,113 @@ class CommentItem extends BaseElement {
         ],
       ),
     );
+  }
+
+  Widget buildDeletedComment(BuildContext context, AmityComment comment) {
+    final isReplyComment = comment.parentId != null;
+    final localize = context.l10n;
+    
+    if (isReplyComment) {
+      // Deleted reply comment
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.only(left: 0, right: 0, top: 8, bottom: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(
+                  color: theme.baseColorShade4,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              padding: const EdgeInsets.only(left: 8, right: 12, top: 5, bottom: 5),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    'assets/Icons/amity_ic_remove.svg',
+                    package: 'amity_uikit_beta_service',
+                    width: 16,
+                    height: 16,
+                    colorFilter: ColorFilter.mode(
+                      theme.baseColorShade2,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    localize.comment_reply_deleted_message,
+                    style: TextStyle(
+                      color: theme.baseColorShade2,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Deleted parent comment
+      return Transform.translate(
+        offset: const Offset(-12, 0), // Counteract the SliverPadding left: 12
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width, // Full screen width
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: theme.baseColorShade4,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/Icons/amity_ic_remove.svg',
+                      package: 'amity_uikit_beta_service',
+                      width: 16,
+                      height: 16,
+                      colorFilter: ColorFilter.mode(
+                        theme.baseColorShade2,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      localize.comment_deleted_message,
+                      style: TextStyle(
+                        color: theme.baseColorShade2,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: theme.baseColorShade4,
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Widget getCommentTextContent(

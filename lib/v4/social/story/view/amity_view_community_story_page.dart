@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_tray.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/amity_story_body_row.dart';
@@ -24,6 +25,7 @@ class AmityViewCommunityStoryPage extends StatefulWidget {
   final Function? firstSegmentReached;
   final Function? lastSegmentReached;
   final Function(AmityCommunity)? navigateToCommunityProfilePage;
+  final AmityThemeColor? theme;
   static VideoPlayerController? videoPlayerController;
   AmityViewCommunityStoryPage({
     super.key,
@@ -36,6 +38,7 @@ class AmityViewCommunityStoryPage extends StatefulWidget {
     this.lastSegmentReached,
     this.navigateToCommunityProfilePage,
     required String communityId,
+    this.theme,
   });
 
   @override
@@ -159,7 +162,7 @@ class _AmityViewCommunityStoryPageState extends State<AmityViewCommunityStoryPag
                                                     );
                                                   },
                                                   onHold: (isHold) {
-                                                    BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: isHold));
+                                                  BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: isHold));
                                                     if (stories[index].dataType == AmityStoryDataType.VIDEO) {
                                                       if (isHold) {
                                                         BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
@@ -251,6 +254,7 @@ class _AmityViewCommunityStoryPageState extends State<AmityViewCommunityStoryPag
                                 shouldPauseTimer: state.shouldPause ?? false,
                                 shouldRestartTimer: true,
                                 isSingleTarget: true,
+                                theme: widget.theme,
                                 onStoryDelete: () {
                                   AmityCustomSnackBar.show(
                                     context,

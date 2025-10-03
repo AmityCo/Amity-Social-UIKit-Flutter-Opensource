@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../core/toast/amity_uikit_toast.dart';
@@ -211,24 +213,10 @@ class AmityPollPostComposerPage extends NewBasePage {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: theme.baseColor,
-            ),
-          ),
+          Text(title, style: AmityTextStyle.titleBold(theme.baseColor)),
           if (description != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-                color: theme.baseColorShade1,
-              ),
-            ),
+            Text(description,
+                style: AmityTextStyle.caption(theme.baseColorShade1)),
           ],
         ],
       ),
@@ -272,11 +260,7 @@ class AmityPollPostComposerPage extends NewBasePage {
                     decoration: InputDecoration(
                       hintText: context.l10n.poll_option_hint(index + 1),
                       // Dynamic hint text
-                      hintStyle: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: theme.baseColorShade3,
-                      ),
+                      hintStyle: AmityTextStyle.body(theme.baseColorShade2),
                       filled: true,
                       fillColor: theme.baseColorShade4,
                       border: OutlineInputBorder(
@@ -306,11 +290,7 @@ class AmityPollPostComposerPage extends NewBasePage {
                         horizontal: 12.0,
                       ),
                     ),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal,
-                      color: theme.baseColor,
-                    ),
+                    style: AmityTextStyle.body(theme.baseColor),
                   ),
                 ),
                 Padding(
@@ -329,12 +309,18 @@ class AmityPollPostComposerPage extends NewBasePage {
                             bloc.add(
                                 UpdateOptionsEvent(options: updatedOptions));
                           },
-                    child: Icon(
-                      Icons.delete_outline_outlined,
-                      color: state.isPosting
-                          ? theme.secondaryColor
-                          : theme.baseColor,
-                      size: 20, // Adjust size as needed
+                    child: SvgPicture.asset(
+                      'assets/Icons/amity_ic_poll_composer_delete_button.svg',
+                                          package: 'amity_uikit_beta_service',
+
+                      colorFilter: ColorFilter.mode(
+                        state.isPosting
+                            ? theme.secondaryColor
+                            : theme.baseColor,
+                        BlendMode.srcIn,
+                      ),
+                      width: 20,
+                      height: 20,
                     ),
                   ),
                 ),
@@ -398,16 +384,8 @@ class AmityPollPostComposerPage extends NewBasePage {
                                   ? theme.secondaryColor
                                   : theme.baseColor),
                           const SizedBox(width: 8),
-                          Text(
-                            context.l10n.poll_add_option,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                              color: state.isPosting
-                                  ? theme.secondaryColor
-                                  : theme.baseColor,
-                            ),
-                          ),
+                          Text(context.l10n.poll_add_option,
+                              style: AmityTextStyle.bodyBold(theme.secondaryColor)),
                         ],
                       ),
                     ),
@@ -513,7 +491,8 @@ class AmityPollPostComposerPage extends NewBasePage {
 
   Widget _buildPollDurationSection(
       PollComposerState state, PollComposerBloc bloc, BuildContext context) {
-    final DateFormat formatter = DateFormat("dd MMM 'at' hh:mm a", Localizations.localeOf(context).toLanguageTag());
+    final DateFormat formatter = DateFormat(
+        "dd MMM 'at' hh:mm a", Localizations.localeOf(context).toLanguageTag());
     final bool isCustomSelected = state.selectedPollDurationIndex == -1;
 
     return Column(
@@ -767,7 +746,9 @@ class AmityPollPostComposerPage extends NewBasePage {
             ),
             child: Text(
               state.customDate != null
-                  ? DateFormat("dd MMM yyyy", Localizations.localeOf(context).toLanguageTag()).format(state.customDate!)
+                  ? DateFormat("dd MMM yyyy",
+                          Localizations.localeOf(context).toLanguageTag())
+                      .format(state.customDate!)
                   : context.l10n.poll_select_date,
               style: TextStyle(
                 fontSize: 14,

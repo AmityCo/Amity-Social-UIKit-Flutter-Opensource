@@ -478,6 +478,7 @@ class _MentionTextFieldState extends State<MentionTextField>
             // For longer queries, search by display name
             return AmityCoreClient.newUserRepository()
                 .searchUserByDisplayName(query)
+                .matchType(AmityUserSearchMatchType.PARTIAL)                
                 .sortBy(AmityUserSortOption.DISPLAY)
                 .getPagingData(token: token, limit: 20);
           }

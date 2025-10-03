@@ -770,6 +770,26 @@
   "@general_options": {
     "description": "Label for options button"
   },
+  "general_go_back": "Go back",
+  "@general_go_back": {
+    "description": "Label for go back button"
+  },
+  "post_unavailable_title": "Something went wrong",
+  "@post_unavailable_title": {
+    "description": "Title for post unavailable error page"
+  },
+  "post_unavailable_description": "The content you're looking for is unavailable.",
+  "@post_unavailable_description": {
+    "description": "Description for post unavailable error page"
+  },
+  "comment_deleted_message": "This comment has been deleted",
+  "@comment_deleted_message": {
+    "description": "Message shown for deleted comments"
+  },
+  "comment_reply_deleted_message": "This reply has been deleted",
+  "@comment_reply_deleted_message": {
+    "description": "Message shown for deleted reply comments"
+  },
   "post_edit_globally_featured": "Edit globally featured post?",
   "@post_edit_globally_featured": {
     "description": "Title for globally featured post"
@@ -1579,5 +1599,25 @@
   "chat_no_message_yet": "No message yet",
   "@chat_no_message_yet": {
     "description": "Preview text when there are no messages in the chat"
+  },
+  "permission_camera_title": "Allow access to your camera",
+  "@permission_camera_title": {
+    "description": "Title for camera permission dialog"
+  },
+  "permission_camera_detail": "This allows the app to take photos and record videos from your device camera.",
+  "@permission_camera_detail": {
+    "description": "Detail text for camera permission dialog"
+  },
+  "permission_microphone_title": "Allow access to your microphone",
+  "@permission_microphone_title": {
+    "description": "Title for microphone permission dialog"
+  },
+  "permission_microphone_detail": "This allows the app to record audio for videos from your device microphone.",
+  "@permission_microphone_detail": {
+    "description": "Detail text for microphone permission dialog"
+  },
+  "permission_open_settings": "Open settings",
+  "@permission_open_settings": {
+    "description": "Button text to open app settings"
   }
 }

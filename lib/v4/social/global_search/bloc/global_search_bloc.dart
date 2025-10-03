@@ -26,6 +26,7 @@ class GlobalSearchBloc extends Bloc<GlobalSearchEvent, GlobalSearchState> {
       _amityUsersController = PagingController(
         pageFuture: (token) => AmityCoreClient.newUserRepository()
             .searchUserByDisplayName(searchText)
+            .matchType(AmityUserSearchMatchType.PARTIAL)
             .sortBy(AmityUserSortOption.DISPLAY)
             .getPagingData(token: token, limit: 20),
         pageSize: 20,

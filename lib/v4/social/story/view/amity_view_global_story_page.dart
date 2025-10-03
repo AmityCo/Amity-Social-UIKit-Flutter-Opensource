@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_community_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
@@ -9,11 +10,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AmityViewGlobalStoryPage extends StatefulWidget {
   final AmityStoryTarget selectedTarget;
   final List<AmityStoryTarget> targets;
+  final AmityThemeColor? theme;
 
   AmityViewGlobalStoryPage({
     super.key,
     required this.selectedTarget,
     required this.targets,
+    this.theme,
   });
 
   @override
@@ -54,6 +57,7 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
               targetId: widget.targets[index].targetId,
               targetType: AmityStoryTargetType.COMMUNITY,
               isSingleTarget: false,
+              theme: widget.theme,
               // createStory: widget.createStory,
               firstSegmentReached: () {
                 AmityStorySingleSegmentTimerElement.currentValue = -1;

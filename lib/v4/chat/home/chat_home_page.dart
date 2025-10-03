@@ -1,3 +1,4 @@
+import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/archive/archived_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/create/channel_create_conversation_page.dart';

@@ -1146,6 +1146,36 @@ abstract class AppLocalizations {
   /// **'Options'**
   String get general_options;
 
+  /// Label for go back button
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get general_go_back;
+
+  /// Title for post unavailable error page
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get post_unavailable_title;
+
+  /// Description for post unavailable error page
+  ///
+  /// In en, this message translates to:
+  /// **'The content you\'re looking for is unavailable.'**
+  String get post_unavailable_description;
+
+  /// Message shown for deleted comments
+  ///
+  /// In en, this message translates to:
+  /// **'This comment has been deleted'**
+  String get comment_deleted_message;
+
+  /// Message shown for deleted reply comments
+  ///
+  /// In en, this message translates to:
+  /// **'This reply has been deleted'**
+  String get comment_reply_deleted_message;
+
   /// Title for globally featured post
   ///
   /// In en, this message translates to:
@@ -2213,6 +2243,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No message yet'**
   String get chat_no_message_yet;
+
+  /// Title for camera permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access to your camera'**
+  String get permission_camera_title;
+
+  /// Detail text for camera permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'This allows the app to take photos and record videos from your device camera.'**
+  String get permission_camera_detail;
+
+  /// Title for microphone permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access to your microphone'**
+  String get permission_microphone_title;
+
+  /// Detail text for microphone permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'This allows the app to record audio for videos from your device microphone.'**
+  String get permission_microphone_detail;
+
+  /// Button text to open app settings
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get permission_open_settings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

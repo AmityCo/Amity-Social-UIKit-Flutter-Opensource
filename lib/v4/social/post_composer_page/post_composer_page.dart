@@ -42,6 +42,7 @@ class AmityPostComposerPage extends NewBasePage {
   bool isTextChanged = false;
   bool isFileCountChanged = false;
   bool isMediaReady = false;
+  bool isPosting = false;
   String appName = '';
 
   AmityPostComposerPage({Key? key, required this.options, this.onPopRequested})
@@ -118,7 +119,8 @@ class AmityPostComposerPage extends NewBasePage {
                 final selection = textController.selection;
                 textController.text = state.text;
                 // Restore cursor position if still valid
-                if (selection.baseOffset <= state.text.length && selection.baseOffset >= 0) {
+                if (selection.baseOffset <= state.text.length &&
+                    selection.baseOffset >= 0) {
                   textController.selection = selection;
                 }
               }
@@ -235,11 +237,23 @@ class AmityPostComposerPage extends NewBasePage {
   }
 
   void updatePostButtonStatus() {
+    // Check if any file has an error - if so, disable button
+    bool hasAnyError = selectedFiles.values.any((file) => file.isError == true);
+    if (hasAnyError) {
+      isPostButtonEnabled = false;
+      return;
+    }
+    
     // For create mode, enable button if there's text or files
     if (options.mode == AmityPostComposerMode.create) {
-      if (textController.text.isNotEmpty) {
+      if (textController.text.isNotEmpty && selectedFiles.isEmpty) {
+        // Text only, no files
         isPostButtonEnabled = true;
+      } else if (textController.text.isNotEmpty && selectedFiles.isNotEmpty) {
+        // Text + files: check if all files are uploaded
+        isPostButtonEnabled = isMediaReady;
       } else if (selectedFiles.isNotEmpty) {
+        // Files only: check if all files are uploaded
         isPostButtonEnabled = isMediaReady; // Only enable if media is ready
       } else {
         isPostButtonEnabled = false; // Nothing to post
@@ -263,6 +277,7 @@ class AmityPostComposerPage extends NewBasePage {
 
       // If files changed, check if they're all uploaded
       if (isFileCountChanged && selectedFiles.isNotEmpty) {
+        // Also need to check if there's text or if edit mode allows file-only posts
         isPostButtonEnabled = isMediaReady;
         return;
       }
@@ -274,21 +289,34 @@ class AmityPostComposerPage extends NewBasePage {
       }
 
       // If only text changed (no files or no file changes), enable button
-      if (isTextChanged) {
+      if (isTextChanged && selectedFiles.isEmpty) {
         isPostButtonEnabled = true;
         return;
       }
+      
+      // If text changed and files exist, ensure all files are ready
+      if (isTextChanged && selectedFiles.isNotEmpty) {
+        isPostButtonEnabled = isMediaReady;
+        return;
+      }
 
-      // print('No changes detected');
       // Default case - nothing valid to update
       isPostButtonEnabled = false;
     }
   }
 
   void checkAllFilesAreUploaded(BuildContext context) {
+    // Check if any file has an error
+    bool hasAnyError = selectedFiles.values.any((file) => file.isError == true);
+    
+    // Check if all files are uploaded
     bool isAllImageUploaded =
         selectedFiles.values.every((image) => image.isUploaded == true);
-    if (isAllImageUploaded) {
+    
+    if (hasAnyError) {
+      // If any file failed, media is not ready
+      isMediaReady = false;
+    } else if (isAllImageUploaded) {
       isMediaReady = true;
       context.read<AmityToastBloc>().add(AmityToastDismiss());
     } else {
@@ -371,6 +399,11 @@ class AmityPostComposerPage extends NewBasePage {
   }
 
   void handleClose(BuildContext context) {
+    // Prevent closing while post is being created
+    if (isPosting) {
+      return;
+    }
+    
     ConfirmationV4Dialog().show(
       context: context,
       title: context.l10n.post_discard,
@@ -385,6 +418,14 @@ class AmityPostComposerPage extends NewBasePage {
   }
 
   void handleAction(BuildContext context) {
+    // Prevent multiple submissions
+    if (isPosting) {
+      return;
+    }
+
+    // Disable the button immediately
+    isPosting = true;
+
     if (options.mode == AmityPostComposerMode.edit) {
       _editPost(context);
     } else {
@@ -412,6 +453,8 @@ class AmityPostComposerPage extends NewBasePage {
           .then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
+        // Re-enable button on error to allow retry
+        isPosting = false;
         _showToast(
             context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
@@ -471,6 +514,8 @@ class AmityPostComposerPage extends NewBasePage {
       postEditBuilder?.text(textController.text).build().update().then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
+        // Re-enable button on error to allow retry
+        isPosting = false;
         _showToast(
             context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
@@ -530,6 +575,8 @@ class AmityPostComposerPage extends NewBasePage {
         .then((post) {
       _onPostSuccess(context, post);
     }).onError((error, stackTrace) {
+      // Re-enable button on error to allow retry
+      isPosting = false;
       _showToast(
           context, context.l10n.error_create_post, AmityToastIcon.warning);
     });

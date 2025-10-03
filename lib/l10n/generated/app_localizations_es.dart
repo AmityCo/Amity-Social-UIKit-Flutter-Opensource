@@ -592,6 +592,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get general_options => 'Opciones';
 
   @override
+  String get general_go_back => 'Go back';
+
+  @override
+  String get post_unavailable_title => 'Something went wrong';
+
+  @override
+  String get post_unavailable_description => 'The content you\'re looking for is unavailable.';
+
+  @override
+  String get comment_deleted_message => 'This comment has been deleted';
+
+  @override
+  String get comment_reply_deleted_message => 'This reply has been deleted';
+
+  @override
   String get post_edit_globally_featured => '¿Editar publicación destacada globalmente?';
 
   @override
@@ -1206,6 +1221,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chat_no_message_yet => 'Aún no hay mensajes';
+
+  @override
+  String get permission_camera_title => 'Permitir acceso a tu cámara';
+
+  @override
+  String get permission_camera_detail => 'Esto permite a la aplicación tomar fotos y grabar videos desde la cámara de tu dispositivo.';
+
+  @override
+  String get permission_microphone_title => 'Permitir acceso a tu micrófono';
+
+  @override
+  String get permission_microphone_detail => 'Esto permite a la aplicación grabar audio para videos desde el micrófono de tu dispositivo.';
+
+  @override
+  String get permission_open_settings => 'Abrir configuración';
 }
 
 /// The translations for Spanish Castilian, as used in Chile (`es_CL`).

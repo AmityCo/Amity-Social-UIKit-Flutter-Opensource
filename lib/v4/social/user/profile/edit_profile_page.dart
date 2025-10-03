@@ -157,8 +157,12 @@ class AmityEditUserProfilePage extends NewBasePage {
                                 initialText: state.user?.displayName ?? "",
                                 maxLength: 100,
                                 expandable: false,
-                                isDisabled: true,
-                                onChanged: (text) => {},
+                                isDisabled: false,
+                                onChanged: (text) => {
+                                  context.read<EditProfileBloc>().addEvent(
+                                      EditProfileDisplayNameChangedEvent(
+                                          value: text)),
+                                },
                               ),
                               const SizedBox(
                                 height: 24,

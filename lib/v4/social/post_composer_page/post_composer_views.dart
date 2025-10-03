@@ -48,14 +48,19 @@ extension PostComposerView on AmityPostComposerPage {
   }
 
   Widget buildActionButton(BuildContext context) {
+    // Disable button if posting is in progress or if conditions aren't met
+    final isButtonEnabled = isPostButtonEnabled && !isPosting;
+
     return TextButton(
-      onPressed: isPostButtonEnabled ? () => handleAction(context) : null,
+      onPressed: isButtonEnabled ? () => handleAction(context) : null,
       child: Text(
-        options.mode == AmityPostComposerMode.edit ? context.l10n.general_save : context.l10n.general_post,
+        options.mode == AmityPostComposerMode.edit
+            ? context.l10n.general_save
+            : context.l10n.general_post,
         style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w400,
-          color: isPostButtonEnabled
+          color: isButtonEnabled
               ? theme.primaryColor
               : theme.primaryColor.blend(ColorBlendingOption.shade2),
         ),
@@ -109,7 +114,8 @@ extension PostComposerView on AmityPostComposerPage {
           child: Row(
             spacing: 8,
             children: [
-              Expanded(child: _mediaView(context, files.entries.toList()[0], 0)),
+              Expanded(
+                  child: _mediaView(context, files.entries.toList()[0], 0)),
               Expanded(child: _mediaView(context, files.entries.toList()[1], 1))
             ],
           ),
@@ -138,10 +144,6 @@ extension PostComposerView on AmityPostComposerPage {
     var progress = file.value.progress;
     var isError = file.value.isError;
     var isUploaded = file.value.isUploaded;
-
-    if (isError) {
-      isPostButtonEnabled = false;
-    }
 
     Widget mediaContent() {
       if (file.value.type == FileType.video) {

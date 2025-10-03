@@ -33,3 +33,12 @@ class PostDetailReplyComment extends PostDetailEvent {
   @override
   List<Object> get props => [];
 }
+
+class PostDetailError extends PostDetailEvent {
+  final String message;
+
+  const PostDetailError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

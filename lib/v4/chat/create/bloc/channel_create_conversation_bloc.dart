@@ -23,6 +23,8 @@ class ChannelCreateConversationBloc extends Bloc<ChannelCreateConversationEvent,
 
       userLiveCollection = AmityCoreClient.newUserRepository()
           .searchUserByDisplayName(searchText)
+          .matchType(AmityUserSearchMatchType.PARTIAL)
+          .sortBy(AmityUserSortOption.DISPLAY)
           .getLiveCollection();
 
       userLiveCollection?.observeLoadingState().listen((event) {

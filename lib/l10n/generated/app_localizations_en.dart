@@ -592,6 +592,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get general_options => 'Options';
 
   @override
+  String get general_go_back => 'Go back';
+
+  @override
+  String get post_unavailable_title => 'Something went wrong';
+
+  @override
+  String get post_unavailable_description => 'The content you\'re looking for is unavailable.';
+
+  @override
+  String get comment_deleted_message => 'This comment has been deleted';
+
+  @override
+  String get comment_reply_deleted_message => 'This reply has been deleted';
+
+  @override
   String get post_edit_globally_featured => 'Edit globally featured post?';
 
   @override
@@ -1206,4 +1221,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chat_no_message_yet => 'No message yet';
+
+  @override
+  String get permission_camera_title => 'Allow access to your camera';
+
+  @override
+  String get permission_camera_detail => 'This allows the app to take photos and record videos from your device camera.';
+
+  @override
+  String get permission_microphone_title => 'Allow access to your microphone';
+
+  @override
+  String get permission_microphone_detail => 'This allows the app to record audio for videos from your device microphone.';
+
+  @override
+  String get permission_open_settings => 'Open settings';
 }

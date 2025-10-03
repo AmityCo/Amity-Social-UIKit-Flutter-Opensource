@@ -178,7 +178,7 @@ SPEC CHECKSUMS:
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   open_file_ios: 5ff7526df64e4394b4fe207636b67a95e83078bb
-  package_info_plus: 566e1b7a2f3900e4b0020914ad3fc051dcc95596
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   photo_manager: d2fbcc0f2d82458700ee6256a15018210a81d413
@@ -190,7 +190,7 @@ SPEC CHECKSUMS:
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
   video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
-  wakelock_plus: 8c239121a007daa1d6759c6acdc507860273dd2f
+  wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 

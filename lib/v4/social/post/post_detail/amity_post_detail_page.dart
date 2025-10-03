@@ -14,6 +14,7 @@ import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AmityPostDetailPage extends NewBasePage {
   final String postId;
@@ -48,13 +49,13 @@ class AmityPostDetailPage extends NewBasePage {
   Widget buildPostDetail(BuildContext context, PostDetailState state) {
     if (state is PostDetailStateInitial) {
       context.read<PostDetailBloc>().add(
-          PostDetailLoad(postId: (state as PostDetailStateInitial).postId));
+          PostDetailLoad(postId: state.postId));
       return Container(
           padding: const EdgeInsets.only(top: 74),
           decoration: BoxDecoration(color: theme.backgroundColor),
           child: showShimmerContent(context));
     } else if (state is PostDetailStateError) {
-      return Text(state.message);
+      return buildErrorPage(context);
     } else if (state is PostDetailStateLoaded) {
       return renderPage(
           context: context,
@@ -226,6 +227,79 @@ class AmityPostDetailPage extends NewBasePage {
                 const SkeletonText(width: 297),
                 const SizedBox(height: 12.0),
                 const SkeletonText(width: 180),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildErrorPage(BuildContext context) {
+    return Scaffold(
+      backgroundColor: theme.backgroundColor,
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/Icons/amity_ic_post_unavailable.svg',
+                  package: 'amity_uikit_beta_service',
+                  width: 61,
+                  height: 42,
+                  colorFilter: ColorFilter.mode(
+                    theme.baseColorShade4,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  context.l10n.post_unavailable_title,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: theme.baseColorShade3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  context.l10n.post_unavailable_description,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: theme.baseColorShade3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 24,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    context.l10n.general_go_back,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

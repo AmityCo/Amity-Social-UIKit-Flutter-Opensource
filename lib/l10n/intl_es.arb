@@ -1475,5 +1475,25 @@
   "community_post_permission_description_label": "Puedes controlar quién puede crear publicaciones en tu comunidad.",
   "@community_post_permission_description_label": {
     "description": "Etiqueta para la descripción de la página de permisos de publicación"
+  },
+  "permission_camera_title": "Permitir acceso a tu cámara",
+  "@permission_camera_title": {
+    "description": "Título para el diálogo de permisos de cámara"
+  },
+  "permission_camera_detail": "Esto permite a la aplicación tomar fotos y grabar videos desde la cámara de tu dispositivo.",
+  "@permission_camera_detail": {
+    "description": "Texto detallado para el diálogo de permisos de cámara"
+  },
+  "permission_microphone_title": "Permitir acceso a tu micrófono",
+  "@permission_microphone_title": {
+    "description": "Título para el diálogo de permisos de micrófono"
+  },
+  "permission_microphone_detail": "Esto permite a la aplicación grabar audio para videos desde el micrófono de tu dispositivo.",
+  "@permission_microphone_detail": {
+    "description": "Texto detallado para el diálogo de permisos de micrófono"
+  },
+  "permission_open_settings": "Abrir configuración",
+  "@permission_open_settings": {
+    "description": "Texto del botón para abrir la configuración de la aplicación"
   }
 }

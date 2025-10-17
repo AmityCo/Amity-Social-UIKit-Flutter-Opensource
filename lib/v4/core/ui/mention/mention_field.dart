@@ -280,7 +280,8 @@ class _MentionTextFieldState extends State<MentionTextField>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    // Instead of removing and recreating, just mark the overlay for rebuild
+    // For layout changes (keyboard), just reposition - no need to recreate
+    // This is safe because we're not changing data, only layout
     if (_overlayEntry != null) {
       // This will make the overlay rebuild in place without removing it
       _overlayEntry!.markNeedsBuild();
@@ -465,7 +466,6 @@ class _MentionTextFieldState extends State<MentionTextField>
     }
     // === DEFAULT USER MODE ===
     else {
-
       _amityUsersController = PagingController<AmityUser>(
         pageFuture: (token) {
           if (query.length < 3) {
@@ -632,14 +632,22 @@ class _MentionTextFieldState extends State<MentionTextField>
       _cancelNoMatchTimer();
     }
 
-    // Only create a new overlay if one doesn't exist
-    if (_overlayEntry == null) {
-      _overlayEntry = _createOverlayEntry();
-      Overlay.of(context).insert(_overlayEntry!);
-    } else {
-      // Otherwise just update the existing one
-      _overlayEntry!.markNeedsBuild();
+    // ALWAYS recreate the overlay when data changes to ensure it has the latest data.
+    // 
+    // Why not use markNeedsBuild()?
+    // - markNeedsBuild() works for LAYOUT changes (keyboard, positioning)
+    // - But for DATA changes, the builder function captures old variables (closure)
+    // - Example: If _amityUsers was [] when overlay created, markNeedsBuild() still shows []
+    // 
+    // Performance note:
+    // - Recreating overlay causes brief flicker, but necessary for data updates
+    // - This only happens when search results change, not on every keystroke (debounced)
+    // - The flicker is acceptable tradeoff for showing correct results
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
     }
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
   void _removeOverlay() {
@@ -672,7 +680,6 @@ class _MentionTextFieldState extends State<MentionTextField>
   }
 
   OverlayEntry _createOverlayEntry() {
-
     // Determine which mode we're in
     final bool useCommunityMode =
         widget.communityId != null && !_communityIsPublic;

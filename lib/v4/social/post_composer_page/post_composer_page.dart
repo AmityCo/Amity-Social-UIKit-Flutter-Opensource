@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
@@ -24,6 +23,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/ui/mention/mention_text_editing_controller.dart';
 
+// ignore: must_be_immutable
 class AmityPostComposerPage extends NewBasePage {
   final AmityPostComposerOptions options;
   final MentionTextEditingController textController =
@@ -158,12 +158,14 @@ class AmityPostComposerPage extends NewBasePage {
               updatePostButtonStatus();
             }
 
-            double maxBottomSheetSize = 0.3;
-            double minBottomSheetSize = 0.125;
+            double maxBottomSheetSize = 0.32;
+            double minBottomSheetSize = 0.2;
             if (selectedMediaType != null) {
-              // 0.8 per item
-              maxBottomSheetSize = 0.22;
+              maxBottomSheetSize = 0.28;
             }
+
+            final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+            final isKeyboardVisible = keyboardHeight > 0;
 
             return Scaffold(
               backgroundColor: theme.backgroundColor,
@@ -199,6 +201,7 @@ class AmityPostComposerPage extends NewBasePage {
                     maxSize: maxBottomSheetSize,
                     minSize: minBottomSheetSize,
                     theme: theme,
+                    isKeyboardVisible: isKeyboardVisible,
                     collapsedContent: AmityMediaAttachmentComponent(
                       onCameraTap: () async {
                         onCameraTap(context);
@@ -434,6 +437,12 @@ class AmityPostComposerPage extends NewBasePage {
   }
 
   void _editPost(BuildContext context) {
+    // Get mention metadata
+    final mentionMetadataList = textController.getAmityMentionMetadata();
+    final mentionUserIds = textController.getMentionUserIds();
+    final mentionMetadataJson =
+        AmityMentionMetadataCreator(mentionMetadataList).create();
+
     if (selectedMediaType == FileType.image) {
       List<AmityImage> images = existingImages.toList();
       var imageList = selectedFiles.entries;
@@ -448,6 +457,8 @@ class AmityPostComposerPage extends NewBasePage {
           ?.edit()
           .image(images)
           .text(textController.text)
+          .mentionUsers(mentionUserIds)
+          .metadata(mentionMetadataJson)
           .build()
           .update()
           .then((post) {
@@ -511,7 +522,13 @@ class AmityPostComposerPage extends NewBasePage {
         postEditBuilder?.video([]);
       }
 
-      postEditBuilder?.text(textController.text).build().update().then((post) {
+      postEditBuilder
+          ?.text(textController.text)
+          .mentionUsers(mentionUserIds)
+          .metadata(mentionMetadataJson)
+          .build()
+          .update()
+          .then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
         // Re-enable button on error to allow retry

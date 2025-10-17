@@ -11,10 +11,11 @@ abstract class StoryVideoPlayerEvent extends Equatable {
 class InitializeStoryVideoPlayerEvent extends StoryVideoPlayerEvent {
   final File? file; 
   final String? url;
-  const InitializeStoryVideoPlayerEvent({required this.file , required this.url});
+  final bool looping;
+  const InitializeStoryVideoPlayerEvent({required this.file , required this.url, required this.looping});
 
   @override
-  List<Object> get props => [file??"" , url??""];
+  List<Object> get props => [file??"" , url??"", looping];
 }
 
 

@@ -35,6 +35,15 @@ class AmityGlobalFeedComponent extends NewBaseComponent {
       color: theme.backgroundColor,
       child: BlocBuilder<GlobalFeedBloc, GlobalFeedState>(
           builder: (context, state) {
+        // Check if content is not scrollable and load more if possible
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (scrollController.hasClients && 
+              !state.isFetching &&
+              scrollController.position.maxScrollExtent <= 0) {
+            context.read<GlobalFeedBloc>().liveCollection.loadNext();
+          }
+        });
+
         if (state.isFetching && state.list.isEmpty) {
           viewedPost = [];
           return FeedSkeleton(theme, configProvider);

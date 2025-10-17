@@ -186,7 +186,7 @@ class AmityCommunitySetupPage extends NewBasePage {
               )
             : DecorationImage(
                 image: NetworkImage(
-                    state.avatar?.getUrl(AmityImageSize.FULL) ?? ''),
+                    state.avatar?.getUrl(AmityImageSize.MEDIUM) ?? ''),
                 fit: BoxFit.cover,
               ),
         color: Colors.black.withOpacity(0.5),

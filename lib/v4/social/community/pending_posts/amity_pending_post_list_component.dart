@@ -13,6 +13,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class AmityPendingPostListComponent extends NewBaseComponent {
   final AmityCommunity community;
   final Function(List<AmityPost>)? onPendingPostsLoaded;
+  final ScrollController _scrollController = ScrollController();
 
   AmityPendingPostListComponent({
     Key? key,
@@ -32,6 +33,16 @@ class AmityPendingPostListComponent extends NewBaseComponent {
             previous.posts.length != current.posts.length,
         listener: (context, state) {},
         builder: (context, state) {
+          // Check if content is not scrollable and load more if possible
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_scrollController.hasClients && 
+                !state.isLoading &&
+                !state.loadingMore &&
+                _scrollController.position.maxScrollExtent <= 0) {
+              context.read<PendingPostsCubit>().postLiveCollection.loadNext();
+            }
+          });
+
           if (!state.isLoading &&
               !state.hasError &&
               onPendingPostsLoaded != null) {
@@ -101,6 +112,7 @@ class AmityPendingPostListComponent extends NewBaseComponent {
         await cubit.getPendingCommunityFeedPosts();
       },
       child: ListView.separated(
+        controller: _scrollController,
         key: ValueKey('pending_posts_list_${community.communityId}'),
         itemCount: state.posts.length,
         separatorBuilder: (context, index) =>

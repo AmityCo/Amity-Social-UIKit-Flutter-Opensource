@@ -12,8 +12,9 @@ part 'view_story_state.dart';
 class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
   late StoryLiveCollection storyLiveCollection;
     AmityStorySortingOrder _sortOption = AmityStorySortingOrder.FIRST_CREATED;
-    late StreamSubscription<List<AmityStory>> _subscription;
-    late StreamSubscription<AmityStoryTarget> _subscriptionTarget;
+    StreamSubscription<List<AmityStory>>? _subscription;
+    StreamSubscription<AmityStoryTarget>? _subscriptionTarget;
+    Timer? _emptyStateTimer;
 
   ViewStoryBloc()
       : super(
@@ -28,10 +29,6 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
             hasManageStoryPermission: false,
           ),
         ) {
-    
-    on<ViewStoryEvent>(
-      (event, emit) {},
-    );
 
     on<ShoudPauseEvent>(
       (event, emit) {
@@ -235,52 +232,85 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
     );
 
     on<FetchActiveStories>((event, emit) {
+      // Cancel any existing timer
+      _emptyStateTimer?.cancel();
+      
       storyLiveCollection = StoryLiveCollection(request: () => AmitySocialClient.newStoryRepository().getActiveStories(targetId: event.communityId, targetType: AmityStoryTargetType.COMMUNITY, orderBy: _sortOption).build());
-      _subscription =  storyLiveCollection.getStreamController().stream.asBroadcastStream().listen((stoies) {
-        add(ActiveStoriesFetched(stories: stoies));
-      });
+      
+      bool hasReceivedData = false;
+      bool isFirstEmission = true;
+      
+      _subscription = storyLiveCollection.getStreamController().stream
+        .asBroadcastStream()
+        .listen((stories) {
+          // Cancel the timer if we receive any emission
+          _emptyStateTimer?.cancel();
+          
+          if (isFirstEmission) {
+            isFirstEmission = false;
+            
+            if (stories.isEmpty) {
+              // First emission is empty - could be loading state OR truly empty
+              // Set a timeout to check if we get a second emission
+              _emptyStateTimer = Timer(const Duration(milliseconds: 1500), () {
+                if (!hasReceivedData) {
+                  // No second emission received - this is truly empty
+                  add(ActiveStoriesFetched(stories: []));
+                }
+              });
+              return; // Don't process this first empty emission yet
+            } else {
+              // First emission has data - process it immediately
+              hasReceivedData = true;
+              add(ActiveStoriesFetched(stories: stories));
+            }
+          } else {
+            // Second or later emission - process regardless of content
+            hasReceivedData = true;
+            add(ActiveStoriesFetched(stories: stories));
+          }
+        });
+      
       storyLiveCollection.getData();
     });
 
     on<ActiveStoriesFetched>(
       (event, emit) {
-        if (event.stories.isNotEmpty) {
-          AmityCommunity? commnunity = state.storyTarget != null ? (state.storyTarget as AmityStoryTargetCommunity).community ?? null : null;
-          emit(
-            ActiveStoriesFetchedState(
-              storyTarget: state.storyTarget,
-              shouldPause: state.shouldPause,
-              community: state.storyTarget != null ? (state.storyTarget as AmityStoryTargetCommunity).community : null,
-              stories: event.stories,
-              hasManageStoryPermission: state.hasManageStoryPermission,
-              currentStory: state.currentStory,
-              jumpToUnSeen: state.jumpToUnSeen,
-              isCommunityJoined: commnunity != null ? commnunity.isJoined : state.isCommunityJoined,
+        AmityCommunity? commnunity = state.storyTarget != null ? (state.storyTarget as AmityStoryTargetCommunity).community ?? null : null;
+        emit(
+          ActiveStoriesFetchedState(
+            storyTarget: state.storyTarget,
+            shouldPause: state.shouldPause,
+            community: state.storyTarget != null ? (state.storyTarget as AmityStoryTargetCommunity).community : null,
+            stories: event.stories,
+            hasManageStoryPermission: state.hasManageStoryPermission,
+            currentStory: state.currentStory,
+            jumpToUnSeen: state.jumpToUnSeen,
+            isCommunityJoined: commnunity != null ? commnunity.isJoined : state.isCommunityJoined,
+          ),
+        );
+
+        if (event.stories.isEmpty) {
+          return;
+        }
+
+        final firstUnseenIndex = state.stories?.indexWhere((element) => element.isSeen() == false);
+        if (firstUnseenIndex != null && firstUnseenIndex != -1) {
+          add(
+            JumpToUnSeen(
+              jumpToPosition: firstUnseenIndex,
             ),
           );
-
-          if (event.stories.isNotEmpty) {
-            var firstUnseenIndex = state.stories?.indexWhere((element) => element.isSeen() == false);
-            if (firstUnseenIndex != null) {
-              if (firstUnseenIndex != -1) {
-                print("Jumping to unseen story at index: $firstUnseenIndex");
-                add(
-                  JumpToUnSeen(
-                    jumpToPosition: firstUnseenIndex,
-                  ),
-                );
-              }
-            }
-          }
         }
       },
     );
   }
 
   @override
-  Future<void> close() {
-    _subscription.cancel();
-    _subscriptionTarget.cancel();
+  Future<void> close() async {
+    _emptyStateTimer?.cancel();
+    await _subscription?.cancel();
+    await _subscriptionTarget?.cancel();
     return super.close();
   }
 }

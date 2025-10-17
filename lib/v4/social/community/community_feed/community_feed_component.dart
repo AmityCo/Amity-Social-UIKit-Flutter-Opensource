@@ -38,6 +38,15 @@ class CommunityFeedComponent extends NewBaseComponent {
           communityId: communityId, scrollController: scrollController),
       child: BlocBuilder<CommunityFeedBloc, CommunityFeedState>(
         builder: (context, state) {
+          // Check if content is not scrollable and load more if possible
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (scrollController.hasClients && 
+                !state.isLoading &&
+                scrollController.position.maxScrollExtent <= 0) {
+              context.read<CommunityFeedBloc>().feedLiveCollection.loadNext();
+            }
+          });
+
           if (state.posts.isEmpty && state.isLoading) {
             return SliverToBoxAdapter(
                 child: Column(

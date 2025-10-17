@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_community_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
@@ -7,12 +8,32 @@ import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_sto
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AmityViewGlobalStoryPage extends StatefulWidget {
+class AmityViewGlobalStoryPage extends NewBasePage {
+  final AmityStoryTarget selectedTarget;
+  final List<AmityStoryTarget> targets;
+
+  AmityViewGlobalStoryPage({
+    super.key,
+    required this.selectedTarget,
+    required this.targets,
+  }) : super(pageId: 'view_global_story_page');
+
+  @override
+  Widget buildPage(BuildContext context) {
+    return AmityViewGlobalStoryPageBuilder(
+      selectedTarget: selectedTarget,
+      targets: targets,
+      theme: theme,
+    );
+  }
+}
+
+class AmityViewGlobalStoryPageBuilder extends StatefulWidget {
   final AmityStoryTarget selectedTarget;
   final List<AmityStoryTarget> targets;
   final AmityThemeColor? theme;
 
-  AmityViewGlobalStoryPage({
+  const AmityViewGlobalStoryPageBuilder({
     super.key,
     required this.selectedTarget,
     required this.targets,
@@ -20,26 +41,53 @@ class AmityViewGlobalStoryPage extends StatefulWidget {
   });
 
   @override
-  State<AmityViewGlobalStoryPage> createState() => _AmityViewGlobalStoryPageState();
+  State<AmityViewGlobalStoryPageBuilder> createState() => _AmityViewGlobalStoryPageBuilderState();
 }
 
-class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
+class _AmityViewGlobalStoryPageBuilderState extends State<AmityViewGlobalStoryPageBuilder> {
   int currentPage = 0;
-  final PageController _pageController = PageController();
+  final PageController _pageController = PageController(
+    keepPage: false, // Don't keep page state to reduce memory
+  );
+  final Map<int, ViewStoryBloc> _storyBlocs = {};
 
   @override
   void initState() {
-    _pageController.addListener(() {
-      setState(() {
-        currentPage = _pageController.page?.toInt() ?? 0;
-        AmityStorySingleSegmentTimerElement.currentValue = -1;
-      });
-    });
+    super.initState();
+    _pageController.addListener(_onPageChanged);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       currentPage = widget.targets.indexOf(widget.selectedTarget);
-      _pageController.jumpToPage(currentPage);
+      if (mounted) {
+        _pageController.jumpToPage(currentPage);
+      }
     });
-    super.initState();
+  }
+
+  void _onPageChanged() {
+    if (!mounted) return;
+    setState(() {
+      currentPage = _pageController.page?.toInt() ?? 0;
+      StoryTimerStateManager.currentValue = -1;
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.removeListener(_onPageChanged);
+    _pageController.dispose();
+    // Dispose all created blocs
+    for (var bloc in _storyBlocs.values) {
+      bloc.close();
+    }
+    _storyBlocs.clear();
+    super.dispose();
+  }
+
+  ViewStoryBloc _getBlocForIndex(int index) {
+    if (!_storyBlocs.containsKey(index)) {
+      _storyBlocs[index] = ViewStoryBloc();
+    }
+    return _storyBlocs[index]!;
   }
 
   @override
@@ -49,28 +97,32 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
       body: PageView.builder(
         controller: _pageController,
         itemCount: widget.targets.length,
+        physics: const PageScrollPhysics(), // Smooth physics for better feel
+        pageSnapping: true, // Ensure pages snap properly
+        allowImplicitScrolling: false, // Disable preemptive loading
         itemBuilder: (BuildContext context, int index) {
-          return BlocProvider(
-            create: (context) => ViewStoryBloc(),
-            child: AmityViewCommunityStoryPage(
+          // Use RepaintBoundary to isolate repaints
+          return RepaintBoundary(
+            child: BlocProvider.value(
+              value: _getBlocForIndex(index),
+              child: AmityViewCommunityStoryPage(
               communityId: '',
               targetId: widget.targets[index].targetId,
               targetType: AmityStoryTargetType.COMMUNITY,
               isSingleTarget: false,
-              theme: widget.theme,
               // createStory: widget.createStory,
               firstSegmentReached: () {
-                AmityStorySingleSegmentTimerElement.currentValue = -1;
+                StoryTimerStateManager.currentValue = -1;
                 BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
                 moveTarget(
                   shouldMoveToNext: false,
                   totalTargets: widget.targets.length,
                   firstTargetReached: () {
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-                    AmityStorySingleSegmentTimerElement.currentValue = -1;
+                    StoryTimerStateManager.currentValue = -1;
                   },
                   lastTargetReached: () {
-                    AmityStorySingleSegmentTimerElement.currentValue = -1;
+                    StoryTimerStateManager.currentValue = -1;
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
                   },
                 );
@@ -80,16 +132,17 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
                   shouldMoveToNext: true,
                   totalTargets: widget.targets.length,
                   firstTargetReached: () {
-                    AmityStorySingleSegmentTimerElement.currentValue = -1;
+                    StoryTimerStateManager.currentValue = -1;
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
                   },
                   lastTargetReached: () {
                     Navigator.of(context).pop();
                     BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-                    AmityStorySingleSegmentTimerElement.currentValue = -1;
+                    StoryTimerStateManager.currentValue = -1;
                   },
                 );
               },
+            ),
             ),
           );
         },
@@ -110,7 +163,7 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
         lastTargetReached();
       } else {
         currentPage = currentPage + 1;
-        AmityStorySingleSegmentTimerElement.currentValue = -1;
+        StoryTimerStateManager.currentValue = -1;
         _pageController.animateToPage(
           currentPage,
           duration: const Duration(milliseconds: 300),
@@ -122,7 +175,7 @@ class _AmityViewGlobalStoryPageState extends State<AmityViewGlobalStoryPage> {
         //  first target
         firstTargetReached();
       } else {
-        AmityStorySingleSegmentTimerElement.currentValue = -1;
+        StoryTimerStateManager.currentValue = -1;
         //  move to previous segment
         currentPage = currentPage - 1;
         _pageController.animateToPage(

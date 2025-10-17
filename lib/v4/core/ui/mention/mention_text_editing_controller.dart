@@ -466,6 +466,7 @@ class MentionTextEditingController extends TextEditingController {
       if (d.operation != DIFF_DELETE) {
         rangeEnd -= 1;
       }
+      
       for (int x = _cachedMentions.length - 1; x >= 0; x--) {
         final mention = _cachedMentions[x];
         if (mention.start >= currentTextIndex && d.operation == DIFF_INSERT) {
@@ -483,6 +484,7 @@ class MentionTextEditingController extends TextEditingController {
           mention.end -= d.text.length;
         }
       }
+      
       if (d.operation == DIFF_EQUAL || d.operation == DIFF_INSERT) {
         currentTextIndex += d.text.length;
       } else if (d.operation == DIFF_DELETE) {
@@ -502,7 +504,7 @@ class MentionTextEditingController extends TextEditingController {
     }
     
     try {
-      return mentionList.map((m) {
+      final result = mentionList.map((m) {
         final userId = m["userId"] as String;
         final startIndex = m["startIndex"] as int;
         final endIndex = m["endIndex"] as int;
@@ -516,6 +518,8 @@ class MentionTextEditingController extends TextEditingController {
           length: length,
         );
       }).toList();
+      
+      return result;
     } catch (e) {
       return [];
     }
@@ -551,6 +555,7 @@ class MentionTextEditingController extends TextEditingController {
       plainBuffer.write(mentionText);
       currentOffset += mentionText.length;
       final mentionEndInPlain = currentOffset;
+      
       mentionsList.add({
         "userId": mention.id,
         "startIndex": mentionStartInPlain,
@@ -563,10 +568,13 @@ class MentionTextEditingController extends TextEditingController {
       plainBuffer.write(remaining);
       currentOffset += remaining.length;
     }
-    return {
+    
+    final result = {
       "plainText": plainBuffer.toString(),
       "mentions": mentionsList,
     };
+    
+    return result;
   }
 
   List<Map<String, dynamic>> getMentions() {
@@ -606,11 +614,19 @@ class MentionTextEditingController extends TextEditingController {
           end = plainText.length;
         }
         
-        final displayText = plainText.substring(m.index, end);
+        // Extract the full text including the @ symbol
+        final fullText = plainText.substring(m.index, end);
+        
+        // The display text should only be the name part (without @)
+        // So if fullText is "@John", display should be "John"
+        String displayText = fullText;
+        if (fullText.startsWith(defaultSyntax.startingCharacter)) {
+          displayText = fullText.substring(defaultSyntax.startingCharacter.length);
+        }
         
         _cachedMentions.add(_TextMention(
           id: m.userId,
-          display: displayText,
+          display: displayText,  // Just the name without @
           start: m.index,
           end: end,
           syntax: defaultSyntax,

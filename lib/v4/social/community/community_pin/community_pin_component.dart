@@ -35,6 +35,15 @@ class CommunityPinComponent extends NewBaseComponent {
           communityId: communityId, scrollController: scrollController),
       child: BlocBuilder<CommunityPinBloc, CommunityPinState>(
         builder: (context, state) {
+          // Check if content is not scrollable and load more if possible
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (scrollController.hasClients && 
+                !state.isFetching &&
+                scrollController.position.maxScrollExtent <= 0) {
+              context.read<CommunityPinBloc>().pinLiveCollection.loadNext();
+            }
+          });
+
           if (state.isFetching && state.pins.isEmpty) {
             return SliverToBoxAdapter(child: Container());
           } else if (state.pins.isEmpty) {

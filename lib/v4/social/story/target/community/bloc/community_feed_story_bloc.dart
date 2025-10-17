@@ -7,19 +7,30 @@ import 'package:meta/meta.dart';
 part 'community_feed_story_event.dart';
 part 'community_feed_story_state.dart';
 
-class CommunityFeedStoryBloc extends Bloc<CommunityFeedStoryEvent, CommunityFeedStoryState> {
+class CommunityFeedStoryBloc
+    extends Bloc<CommunityFeedStoryEvent, CommunityFeedStoryState> {
   late StoryLiveCollection storyLiveCollection;
-  final AmityStorySortingOrder _sortOption = AmityStorySortingOrder.LAST_CREATED;
+  final AmityStorySortingOrder _sortOption =
+      AmityStorySortingOrder.LAST_CREATED;
   late StreamSubscription<List<AmityStory>> _subscriptionStories;
   late StreamSubscription<AmityStoryTarget> _subscriptionTarget;
   CommunityFeedStoryBloc() : super(CommunityFeedStoryState()) {
     on<CheckMangeStoryPermissionEvent>((event, emit) {
-      var canManageStories = AmityCoreClient.hasPermission(AmityPermission.MANAGE_COMMUNITY_STORY).atCommunity(event.communityId).check();
+      var canManageStories =
+          AmityCoreClient.hasPermission(AmityPermission.MANAGE_COMMUNITY_STORY)
+              .atCommunity(event.communityId)
+              .check();
       emit(state.copywith(haveStoryPermission: canManageStories));
     });
 
     on<ObserveStoryTargetEvent>((event, emit) async {
-      _subscriptionTarget = AmitySocialClient.newStoryRepository().live.getStoryTaregt(targetType: AmityStoryTargetType.COMMUNITY, targetId: event.communityId).asBroadcastStream().listen((eventStoryTrget) {
+      _subscriptionTarget = AmitySocialClient.newStoryRepository()
+          .live
+          .getStoryTaregt(
+              targetType: AmityStoryTargetType.COMMUNITY,
+              targetId: event.communityId)
+          .asBroadcastStream()
+          .listen((eventStoryTrget) {
         if (!isClosed) {
           add(NewStoryTargetEvent(storyTarget: eventStoryTrget));
         }
@@ -31,7 +42,10 @@ class CommunityFeedStoryBloc extends Bloc<CommunityFeedStoryEvent, CommunityFeed
     });
 
     on<SubscribeToCommunityEvent>((event, emit) {
-      event.community.subscription(AmityCommunityEvents.STORIES_AND_COMMENTS).subscribeTopic().then((value) {
+      event.community
+          .subscription(AmityCommunityEvents.STORIES_AND_COMMENTS)
+          .subscribeTopic()
+          .then((value) {
         add(OnEventSubscribedEvent());
       }).onError((error, stackTrace) {
         emit(state.copywith(isEventSubscribed: false));
@@ -53,15 +67,28 @@ class CommunityFeedStoryBloc extends Bloc<CommunityFeedStoryEvent, CommunityFeed
           add(SubscribeToCommunityEvent(community: storyTarget.community!));
           emit(state.copywith(isEventSubscribed: true, isLoading: false));
         }
-        emit(state.copywith(storyTarget: event.storyTarget, community: storyTarget.community, isLoading: false));
+        emit(state.copywith(
+            storyTarget: event.storyTarget,
+            community: storyTarget.community,
+            isLoading: false));
       } else {
         emit(state.copywith(storyTarget: event.storyTarget, isLoading: false));
       }
     });
 
     on<FetchStories>((event, emit) async {
-      storyLiveCollection = StoryLiveCollection(request: () => AmitySocialClient.newStoryRepository().getActiveStories(targetId: event.communityId, targetType: AmityStoryTargetType.COMMUNITY, orderBy: _sortOption).build());
-      _subscriptionStories = storyLiveCollection.getStreamController().stream.asBroadcastStream().listen((event) {
+      storyLiveCollection = StoryLiveCollection(
+          request: () => AmitySocialClient.newStoryRepository()
+              .getActiveStories(
+                  targetId: event.communityId,
+                  targetType: AmityStoryTargetType.COMMUNITY,
+                  orderBy: _sortOption)
+              .build());
+      _subscriptionStories = storyLiveCollection
+          .getStreamController()
+          .stream
+          .asBroadcastStream()
+          .listen((event) {
         if (!isClosed) {
           add(StoriesFetchedEvent(stories: event));
         }

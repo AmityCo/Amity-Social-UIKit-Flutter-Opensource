@@ -21,27 +21,29 @@ class AmityStorySegmentTimerElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 2,
-      width: double.infinity,
-      child: Row(
-        children: List.generate(totalSegments, (index) {
-          var uniqueKey = UniqueKey();
-          return Expanded(
-            child: AmityStorySingleSegmentTimerElement(
-              key: uniqueKey,
-              shouldStart: index == currentSegment,
-              shouldRestart: index == currentSegment && shouldRestart,
-              shouldPauseTimer: shouldPauseTimer,
-              isCurrentSegement: index == currentSegment,
-              isAlreadyFinished: index < currentSegment,
-              duration: duration,
-              onTimerFinished: () {
-                moveToNextSegment();
-              },
-            ),
-          );
-        }, growable: true),
+    return RepaintBoundary(
+      child: SizedBox(
+        height: 2,
+        width: double.infinity,
+        child: Row(
+          children: List.generate(totalSegments, (index) {
+            var uniqueKey = UniqueKey();
+            return Expanded(
+              child: AmityStorySingleSegmentTimerElement(
+                key: uniqueKey,
+                shouldStart: index == currentSegment,
+                shouldRestart: index == currentSegment && shouldRestart,
+                shouldPauseTimer: shouldPauseTimer,
+                isCurrentSegement: index == currentSegment,
+                isAlreadyFinished: index < currentSegment,
+                duration: duration,
+                onTimerFinished: () {
+                  moveToNextSegment();
+                },
+              ),
+            );
+          }, growable: true),
+        ),
       ),
     );
   }

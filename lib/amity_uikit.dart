@@ -11,7 +11,6 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/create_story_page_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlink_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
@@ -229,7 +228,6 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<SocialHomeBloc>(create: (context) => SocialHomeBloc()),
         BlocProvider<CreateStoryPageBloc>(
             create: (context) => CreateStoryPageBloc()),
-        BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
         BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
         BlocProvider<StoryVideoPlayerBloc>(

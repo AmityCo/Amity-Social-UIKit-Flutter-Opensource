@@ -42,6 +42,15 @@ class UserFeedComponent extends NewBaseComponent {
           UserFeedBloc(userId: userId, scrollController: scrollController),
       child: BlocBuilder<UserFeedBloc, UserFeedState>(
         builder: (context, state) {
+          // Check if content is not scrollable and load more if possible
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (scrollController.hasClients && 
+                !state.isLoading &&
+                scrollController.position.maxScrollExtent <= 0) {
+              context.read<UserFeedBloc>().feedLiveCollection.loadNext();
+            }
+          });
+
           if (state.posts.isEmpty && state.isLoading) {
             return SliverToBoxAdapter(
                 child: Column(

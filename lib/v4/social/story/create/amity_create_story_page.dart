@@ -2,9 +2,11 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/create_story_page_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/create/camera_preview.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/create/camera_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/draft/story_draft_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,17 +44,23 @@ class AmityCreateStoryPage extends NewBasePage {
                         color: Colors.black,
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
-                      child: CameraPreviewWidget(
+                      child: AmityCameraPage(
                         isVideoMode: state is VideoSelectedState,
                         onImageCaptured: (image, isFromGallery) {
                           AmityStoryMediaType mediaType = AmityStoryMediaTypeImage(file: image);
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => StoryDraftPage(
-                                mediaType: mediaType,
-                                targetId: targetId,
-                                targetType: targetType,
-                                isFromGallery: isFromGallery,
+                              builder: (context) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(create: (context) => StoryDraftBloc()),
+                                  BlocProvider(create: (context) => StoryVideoPlayerBloc()),
+                                ],
+                                child: StoryDraftPage(
+                                  mediaType: mediaType,
+                                  targetId: targetId,
+                                  targetType: targetType,
+                                  isFromGallery: isFromGallery,
+                                ),
                               ),
                             ),
                           );
@@ -61,11 +69,17 @@ class AmityCreateStoryPage extends NewBasePage {
                           AmityStoryMediaType mediaType = AmityStoryMediaTypeVideo(file: video);
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => StoryDraftPage(
-                                mediaType: mediaType,
-                                targetId: targetId,
-                                targetType: targetType,
-                                isFromGallery: false,
+                              builder: (context) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(create: (context) => StoryDraftBloc()),
+                                  BlocProvider(create: (context) => StoryVideoPlayerBloc()),
+                                ],
+                                child: StoryDraftPage(
+                                  mediaType: mediaType,
+                                  targetId: targetId,
+                                  targetType: targetType,
+                                  isFromGallery: false,
+                                ),
                               ),
                             ),
                           );

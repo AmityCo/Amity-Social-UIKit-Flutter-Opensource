@@ -1,6 +1,6 @@
 name: amity_uikit_beta_service
 description: Amity UIkit opensource developed by SLE team to enable social feature in Flutter.
-version: 4.19.1
+version: 4.19.2
 homepage: https://github.com/ThanakornThanom/ThanakornThanom--flutter_amity_uikit_beta_service
 
 environment:
@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0  # Use the version compatible with your Flutter version
+  intl: ^0.20.2  # Use the version compatible with your Flutter version
   plugin_platform_interface: ^2.0.2
   animation_wrappers: ^3.0.0
   font_awesome_flutter: ^10.1.0
@@ -23,8 +23,8 @@ dependencies:
   flutter_phoenix: ^1.0.0
   flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
-  amity_sdk: ^7.7.0
-      # path: ../Amity-Social-Cloud-SDK-Flutter-Internal
+  amity_sdk: ^7.7.1
+      #path: ../Amity-Social-Cloud-SDK-Flutter-Internal
   image_gallery_saver_plus: ^4.0.1
   dio: ^5.0.0
   provider: ^6.0.3
@@ -35,7 +35,7 @@ dependencies:
   image_picker: ^1.1.2
   image_picker_android: ^0.8.12+22
   image_picker_platform_interface: ^2.10.1
-  get_time_ago: ^1.1.5
+  get_time_ago: ^2.3.2
   shimmer: ^3.0.0
   sign_in_with_apple: ^6.1.2
   any_link_preview: ^3.0.3
@@ -43,7 +43,7 @@ dependencies:
   linkify: ^5.0.0
   flutter_link_previewer: ^3.1.0
   url_launcher: ^6.1.6
-  flutter_sticky_header: ^0.7.0
+  flutter_sticky_header: ^0.8.0
   path_provider: ^2.0.2
   video_thumbnail: ^0.5.6
   mime: ^1.0.4

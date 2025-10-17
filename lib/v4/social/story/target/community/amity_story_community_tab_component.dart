@@ -50,6 +50,8 @@ class AmityStoryCommunityTabBuilder extends StatefulWidget {
 
 class _AmityStoryCommunityTabBuilderState
     extends State<AmityStoryCommunityTabBuilder> {
+  bool _hasRefreshedOnEmpty = false;
+
   @override
   void initState() {
     context
@@ -64,6 +66,24 @@ class _AmityStoryCommunityTabBuilderState
     super.initState();
   }
 
+  void _refreshGlobalStoryTargets() {
+    // Create a temporary subscription to trigger datasource update
+    final tempCollection = GlobalStoryTargetLiveCollection(
+      queryOption: AmityGlobalStoryTargetsQueryOption.SMART,
+    );
+    
+    // Subscribe briefly to trigger the datasource
+    final tempSubscription = tempCollection.getStreamController().stream.listen((_) {});
+    
+    // Trigger initial load - this will cause datasource to push to all subscribers
+    tempCollection.getFirstPageRequest();
+    
+    // Clean up after a short delay to ensure datasource has pushed updates
+    Future.delayed(const Duration(milliseconds: 800), () {
+      tempSubscription.cancel();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<CreateStoryBloc, CreateStoryState>(
@@ -76,6 +96,25 @@ class _AmityStoryCommunityTabBuilderState
       },
       child: BlocBuilder<CommunityFeedStoryBloc, CommunityFeedStoryState>(
         builder: (context, state) {
+          // Trigger global refresh when stories are empty
+          // This ensures the feed reflects the current state after story deletion/expiration
+          if (!_hasRefreshedOnEmpty && 
+              !state.isLoading && 
+              (state.stories == null || state.stories!.isEmpty)) {
+            _hasRefreshedOnEmpty = true;
+            // Use post-frame callback to avoid setState during build
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _refreshGlobalStoryTargets();
+            });
+          }
+          
+          // Reset refresh flag when stories become available again
+          if (_hasRefreshedOnEmpty && 
+              state.stories != null && 
+              state.stories!.isNotEmpty) {
+            _hasRefreshedOnEmpty = false;
+          }
+
           if (state.isLoading) {
             return Container(
               color: widget.theme.backgroundColor,
@@ -126,7 +165,7 @@ class _AmityStoryCommunityTabBuilderState
               color: widget.theme.backgroundColor,
               child: AmityStoryTargetElement(
                 avatarUrl: state.community!.avatarImage
-                        ?.getUrl(AmityImageSize.LARGE) ??
+                        ?.getUrl(AmityImageSize.SMALL) ??
                     "",
                 isCommunityTarget: true,
                 communityDisplayName: state.community!.displayName ?? "",

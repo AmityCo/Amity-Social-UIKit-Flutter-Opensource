@@ -13,7 +13,7 @@ class SingleImagePostViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = (post.data as ImageData).getUrl(AmityImageSize.FULL);
+    final imageUrl = (post.data as ImageData).getUrl(AmityImageSize.LARGE);
 
     return Scaffold(
         backgroundColor: Colors.black,

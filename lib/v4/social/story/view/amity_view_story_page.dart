@@ -32,12 +32,11 @@ class AmityViewStoryPage extends NewBasePage {
           targetId: amityViewStoryPageType.communityId,
           targetType: AmityStoryTargetType.COMMUNITY,
           isSingleTarget: true,
-          theme: theme,
           // createStory: widget.createStory,
           lastSegmentReached: () {
             Navigator.of(context).pop();
             BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-            AmityStorySingleSegmentTimerElement.currentValue = -1;
+            StoryTimerStateManager.currentValue = -1;
           },
         ),
       );
@@ -46,7 +45,6 @@ class AmityViewStoryPage extends NewBasePage {
       return AmityViewGlobalStoryPage(
         selectedTarget: selectedTarget!,
         targets: targets!,
-        theme: theme,
         // createStory: widget.createStory,
       );
     }

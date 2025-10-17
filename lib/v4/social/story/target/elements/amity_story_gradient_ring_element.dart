@@ -1,4 +1,3 @@
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 
 class AmityStoryGradientRingElement extends StatefulWidget {
@@ -24,17 +23,36 @@ class _AmityStoryGradientRingElementState
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
-    )..repeat();
-    if(!widget.isIndeterminate){
-      _controller.stop();
-    }
+    );
+    _updateAnimation();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant AmityStoryGradientRingElement oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isIndeterminate != widget.isIndeterminate) {
+      _updateAnimation();
+    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _updateAnimation() {
+    if (widget.isIndeterminate) {
+      if (!_controller.isAnimating) {
+        _controller.repeat();
+      }
+    } else {
+      if (_controller.isAnimating) {
+        _controller.stop();
+      }
+      _controller.value = 0;
+    }
   }
 
   @override

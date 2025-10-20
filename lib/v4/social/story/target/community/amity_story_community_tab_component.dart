@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/target/community/bloc/c
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_target_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_story_page.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:flutter/material.dart';
@@ -43,16 +44,44 @@ class AmityStoryCommunityTabBuilder extends StatefulWidget {
   });
 
   @override
-  State<AmityStoryCommunityTabBuilder> createState() => _AmityStoryCommunityTabBuilderState();
+  State<AmityStoryCommunityTabBuilder> createState() =>
+      _AmityStoryCommunityTabBuilderState();
 }
 
-class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBuilder> {
+class _AmityStoryCommunityTabBuilderState
+    extends State<AmityStoryCommunityTabBuilder> {
+  bool _hasRefreshedOnEmpty = false;
+
   @override
   void initState() {
-    context.read<CommunityFeedStoryBloc>().add(ObserveStoryTargetEvent(communityId: widget.communityId));
-    context.read<CommunityFeedStoryBloc>().add(CheckMangeStoryPermissionEvent(communityId: widget.communityId));
-    context.read<CommunityFeedStoryBloc>().add(FetchStories(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(ObserveStoryTargetEvent(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(CheckMangeStoryPermissionEvent(communityId: widget.communityId));
+    context
+        .read<CommunityFeedStoryBloc>()
+        .add(FetchStories(communityId: widget.communityId));
     super.initState();
+  }
+
+  void _refreshGlobalStoryTargets() {
+    // Create a temporary subscription to trigger datasource update
+    final tempCollection = GlobalStoryTargetLiveCollection(
+      queryOption: AmityGlobalStoryTargetsQueryOption.SMART,
+    );
+    
+    // Subscribe briefly to trigger the datasource
+    final tempSubscription = tempCollection.getStreamController().stream.listen((_) {});
+    
+    // Trigger initial load - this will cause datasource to push to all subscribers
+    tempCollection.getFirstPageRequest();
+    
+    // Clean up after a short delay to ensure datasource has pushed updates
+    Future.delayed(const Duration(milliseconds: 800), () {
+      tempSubscription.cancel();
+    });
   }
 
   @override
@@ -60,11 +89,32 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
     return BlocListener<CreateStoryBloc, CreateStoryState>(
       listener: (context, state) {
         if (state is CreateStorySuccess) {
-          context.read<AmityToastBloc>().add(const AmityToastShort(message: "Successfully shared story", icon: AmityToastIcon.success));
+          context.read<AmityToastBloc>().add(const AmityToastShort(
+              message: "Successfully shared story",
+              icon: AmityToastIcon.success));
         }
       },
       child: BlocBuilder<CommunityFeedStoryBloc, CommunityFeedStoryState>(
         builder: (context, state) {
+          // Trigger global refresh when stories are empty
+          // This ensures the feed reflects the current state after story deletion/expiration
+          if (!_hasRefreshedOnEmpty && 
+              !state.isLoading && 
+              (state.stories == null || state.stories!.isEmpty)) {
+            _hasRefreshedOnEmpty = true;
+            // Use post-frame callback to avoid setState during build
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _refreshGlobalStoryTargets();
+            });
+          }
+          
+          // Reset refresh flag when stories become available again
+          if (_hasRefreshedOnEmpty && 
+              state.stories != null && 
+              state.stories!.isNotEmpty) {
+            _hasRefreshedOnEmpty = false;
+          }
+
           if (state.isLoading) {
             return Container(
               color: widget.theme.backgroundColor,
@@ -77,14 +127,21 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                      decoration: BoxDecoration(
+                          color: widget.theme.baseColor,
+                          borderRadius: BorderRadius.circular(100)),
                     ),
                   ),
                   const SizedBox(height: 5),
                   Shimmer.fromColors(
                     baseColor: const Color.fromARGB(255, 243, 242, 242),
                     highlightColor: const Color.fromARGB(255, 225, 225, 225),
-                    child: Container(width: 80, height: 10, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                    child: Container(
+                        width: 80,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            color: widget.theme.baseColor,
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 ],
               ),
@@ -92,17 +149,24 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
           }
 
           if (state.community != null) {
-            if (!state.haveStoryPermission && (state.stories == null || state.stories!.isEmpty)) {
+            if (!state.haveStoryPermission &&
+                (state.stories == null || state.stories!.isEmpty)) {
               return const SizedBox(
                 width: 0,
                 height: 0,
               );
             }
 
+            final featureConfig =
+                context.read<ConfigProvider>().getFeatureConfig();
+            final isStoryCreationEnabled = featureConfig.story.createEnabled;
+
             return Container(
               color: widget.theme.backgroundColor,
               child: AmityStoryTargetElement(
-                avatarUrl: state.community!.avatarImage?.getUrl(AmityImageSize.LARGE) ?? "",
+                avatarUrl: state.community!.avatarImage
+                        ?.getUrl(AmityImageSize.SMALL) ??
+                    "",
                 isCommunityTarget: true,
                 communityDisplayName: state.community!.displayName ?? "",
                 ringUiState: state.storyTarget!.toRingUiState(),
@@ -112,7 +176,10 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                 targetId: state.community!.communityId!,
                 target: state.storyTarget!,
                 onClick: (targetId, storyTarget) {
-                  if (state.haveStoryPermission && (state.stories == null || state.stories?.isEmpty == true)) {
+                  if (state.haveStoryPermission &&
+                      isStoryCreationEnabled &&
+                      (state.stories == null ||
+                          state.stories?.isEmpty == true)) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (BuildContext context) {
@@ -129,7 +196,8 @@ class _AmityStoryCommunityTabBuilderState extends State<AmityStoryCommunityTabBu
                       MaterialPageRoute(
                         builder: (BuildContext context) {
                           return AmityViewStoryPage(
-                            type: AmityViewStoryCommunityFeed(communityId: widget.communityId),
+                            type: AmityViewStoryCommunityFeed(
+                                communityId: widget.communityId),
                           );
                         },
                       ),

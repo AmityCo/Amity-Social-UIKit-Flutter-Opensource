@@ -1,0 +1,1623 @@
+{
+  "@@locale": "en",
+  "community_title": "Community",
+  "@community_title": {
+    "description": "Title for the homepage"
+  },
+  "tab_newsfeed": "Newsfeed",
+  "@tab_newsfeed": {
+    "description": "Label for the newsfeed tab in the main navigation"
+  },
+  "tab_explore": "Explore",
+  "@tab_explore": {
+    "description": "Label for the explore tab in the main navigation"
+  },
+  "tab_my_communities": "My Communities",
+  "@tab_my_communities": {
+    "description": "Label for the my communities tab in the main navigation"
+  },
+
+  "global_search_hint": "Search community and user",
+  "@global_search_hint": {
+    "description": "Hint text for the search communities and users field on the homepage"
+  },
+  "search_my_community_hint": "Search my community",
+  "@search_my_community_hint": {
+    "description": "Hint text for searching my communities"
+  },
+  "search_no_results": "No results found",
+  "@search_no_results": {
+    "description": "Message displayed when no search results are found"
+  },
+  "title_communities":"Communities",
+  "@title_communities": {
+    "description": "Title for the communities section"
+  },
+  "title_users":"Users",
+  "@title_users": {
+    "description": "Title for the users section"
+  },
+  "general_cancel": "Cancel",
+  "@general_cancel": {
+    "description": "Label for the cancel button"
+  },
+  "general_ok": "OK",
+  "@general_ok": {
+    "description": "Label for the OK button"
+  },
+  "general_confirm": "Confirm",
+  "@general_confirm": {
+    "description": "Label for the confirm button"
+  },
+  "general_featured": "Featured",
+  "@general_featured": {
+    "description": "Label for the featured posts"
+  },
+  "profile_followers": "Followers",
+  "@profile_followers": {
+    "description": "Label for followers count"
+  },
+  "profile_following": "Following",
+  "@profile_following": {
+    "description": "Label for following count"
+  },
+  "profile_posts": "Posts",
+  "@profile_posts": {
+    "description": "Label for user posts"
+  },
+  
+  "post_create": "Create Post",
+  "@post_create": {
+    "description": "Label for create post button"
+  },
+  "post_edit": "Edit Post",
+  "@post_edit": {
+    "description": "Label for edit post button"
+  },
+  "post_create_hint": "What's going on...",
+  "@post_create_hint": {
+    "description": "Hint text for post creation input field"
+  },
+  "post_delete": "Delete Post",
+  "@post_delete": {
+    "description": "Label for delete post button"
+  },
+  "post_delete_description": "This post will be permanently deleted.",
+  "@post_delete_description": {
+    "description": "Confirmation message for deleting a post"
+  },
+  "post_delete_confirmation": "Delete Post?",
+  "@post_delete_confirmation": {
+    "description": "Confirmation title for deleting a post"
+  },
+  "post_delete_confirmation_description": "Do you want to Delete your post?",
+  "@post_delete_confirmation_description": {
+    "description": "Confirmation description for deleting a post"
+  },
+  "post_report": "Report post",
+  "@post_report": {
+    "description": "Label for report post button"
+  },
+  "post_unreport": "Unreport post",
+  "@post_unreport": {
+    "description": "Label for unreport post button"
+  },
+  "post_like": "Like",
+  "@post_like": {
+    "description": "Label for like action"
+  },
+  "post_comment": "Comment",
+  "@post_comment": {
+    "description": "Label for comment action"
+  },
+  "post_share": "Share",
+  "@post_share": {
+    "description": "Label for share action"
+  },
+  "post_discard": "Discard this post?",
+  "@post_discard": {
+    "description": "Label for discard button"
+  },
+  "post_discard_description": "The post will be permanently deleted. It cannot be undone.",
+  "@post_discard_description": {
+    "description": "Description for discard button"
+  },
+  "post_write_comment": "Write a comment...",
+  "@post_write_comment": {
+    "description": "Placeholder for comment input"
+  },
+  "poll_duration": "Poll duration",
+  "@poll_duration": {
+    "description": "Label for poll duration"
+  },
+  "poll_duration_hint": "You can always close the poll before the set duration.",
+  "@poll_duration_hint": {
+    "description": "Hint text for poll duration select field"
+  },
+  "poll_custom_edn_date": "Custom end date",
+  "@poll_custom_edn_date": {
+    "description": "Label for custom end date"
+  },
+  "poll_close": "Close poll",
+  "@poll_close": {
+    "description": "Label for close poll button"
+  },
+  "poll_close_description": "This poll is closed. You can no longer vote.",
+  "@poll_close_description": {
+    "description": "Description for closed poll"
+  },
+  "poll_vote": "Vote",
+  "@poll_vote": {
+    "description": "Label for vote button"
+  },
+  "poll_results": "See results",
+  "@poll_results": {
+    "description": "Label for poll results"
+  },
+  "poll_back_to_vote": "Back to vote",
+  "@poll_back_to_vote": {
+    "description": "Label for back to vote button"
+  },
+  "poll_vote_count": "{count, plural, =1{1 vote} other{{count} votes}}",
+  "@poll_vote_count": {
+    "description": "Plural form for poll vote count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_total_votes": "{count, plural, =0{No votes} =1{Voted by 1 participant} other{Voted by {count}{plusSign} participants}}",
+  "@poll_total_votes": {
+    "description": "Plural form for poll total votes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plusSign": {
+        "type": "String"
+      }
+    }
+  },
+  "poll_see_more_options": "{count, plural, =1{See 1 more option} other{See {count} more options}}",
+  "@poll_see_more_options": {
+    "description": "Plural form for poll see more options",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_see_full_results": "See Full Results",
+  "@poll_see_full_results": {
+    "description": "Label for see full results button"
+  },
+  "poll_voted": "Voted by you",
+  "@poll_voted": {
+    "description": "Label for voted poll"
+  },
+  "poll_and_you": " and you",
+  "@poll_and_you": {
+    "description": "Suffix for voted poll and you"
+  },
+  "poll_remaining_time": "left",
+  "@poll_remaining_time": {
+    "description": "Label for remaining time in poll"
+  },
+  "poll_vote_error": "Failed to vote poll. Please try again.",
+  "@poll_vote_error": {
+    "description": "Error message when voting fails"
+  },
+  "poll_ended": "Ended",
+  "@poll_ended": {
+    "description": "Label for ended poll"
+  },
+  "poll_single_choice": "Select one option",
+  "@poll_single_choice": {
+    "description": "Label for single choice poll"
+  },
+  "poll_multiple_choice": "Select one or more options",
+  "@poll_multiple_choice": {
+    "description": "Label for multiple choice poll"
+  },
+  "poll_options_description": "Poll must contain at least {minOptions} options.",
+  "@poll_options_description": {
+    "description": "Description for poll options",
+    "placeholders": {
+      "minOptions": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_question": "Poll question",
+  "@poll_question": {
+    "description": "Label for poll question"
+  },
+  "poll_question_hint": "What's your poll question?",
+  "@poll_question_hint": {
+    "description": "Hint text for poll question input"
+  },
+  "comment_create_hint": "Say something nice...",
+  "@comment_create_hint": {
+    "description": "Hint text for comment input"
+  },
+  "comment_reply": "Reply",
+  "@comment_reply": {
+    "description": "Label for reply button"
+  },
+  "comment_reply_to": "Replying to ",
+  "@comment_reply_to": {
+    "description": "Label for reply to comment"
+  },
+  "comment_view_reply_count": "{count, plural, =1{View 1 reply} other{View {count} reply}}",
+  "@comment_view_reply_count": {
+    "description": "Plural form for post comment count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "comment_report": "Report comment",
+  "@comment_report": {
+    "description": "Label for report comment button"
+  },
+  "comment_unreport": "Unreport comment",
+  "@comment_unreport": {
+    "description": "Label for unreport comment button"
+  },
+  "comment_reply_report": "Report reply",
+  "@comment_reply_report": {
+    "description": "Label for report reply button"
+  },
+  "comment_reply_unreport": "Unreport reply",
+  "@comment_reply_unreport": {
+    "description": "Label for unreport reply button"
+  },
+  "comment_edit": "Edit comment",
+  "@comment_edit": {
+    "description": "Label for edit comment button"
+  },
+  "comment_reply_edit": "Edit reply",
+  "@comment_reply_edit": {
+    "description": "Label for edit reply button"
+  },
+  "comment_delete": "Delete comment",
+  "@comment_delete": {
+    "description": "Label for delete comment button"
+  },
+  "comment_reply_delete": "Delete reply",
+  "@comment_reply_delete": {
+    "description": "Label for delete reply button"
+  },
+  "comment_delete_description": "This {content} will be permanently deleted.",
+  "@comment_delete_description": {
+    "description": "Confirmation message for deleting a comment",
+    "placeholders": {
+      "content": {
+        "type": "String"
+      }
+    }
+  },
+
+  "comment_create_error_ban_word": "Your comment contains inappropriate word. Please review and delete it.",
+  "@comment_create_error_ban_word": {
+    "description": "Toast message for comment creation with banned word"
+  },
+
+  "comment_create_error_story_deleted": "This story is no longer available",
+  "@comment_create_error_story_deleted": {
+    "description": "Toast message for comment creation"
+  },
+
+  "community_create_success_message": "Successfully created community.",
+  "@community_create_success_message": {
+    "description": "Toast message for community creation success"
+  },
+
+  "community_create_error_message": "Failed to create community. Please try again.",
+  "@community_create_error_message": {
+    "description": "Toast message for community creation failure"
+  },
+
+  "community_update_success_message": "Successfully updated community.",
+  "@community_update_success_message": {
+    "description": "Toast message for community update success"
+  },
+
+  "community_update_error_message": "Failed to save your community profile. Please try again.",
+  "@community_update_error_message": {
+    "description": "Toast message for community update failure"
+  },
+
+  "community_leave_success_message": "Successfully left the community.",
+  "@community_leave_success_message": {
+    "description": "Toast message for community leave success"
+  },
+
+  "community_leave_error_message": "Failed to leave the community.",
+  "@community_leave_error_message": {
+    "description": "Toast message for community leave error"
+  },
+
+  "community_close_success_message": "Successfully closed the community.",
+  "@community_close_success_message": {
+    "description": "Toast message for community close success"
+  },
+
+  "community_close_error_message": "Failed to close the community.",
+  "@community_close_error_message": {
+    "description": "Toast message for community close error"
+  },
+
+
+
+
+
+  "community_close": "Close community?",
+  "@community_close": {
+    "description": "Label for close button"
+  },
+  "community_close_description": "All members will be removed from the community. All posts, messages, reactions, and media shared in community will be deleted. This cannot be undone.",
+  "@community_close_description": {
+    "description": "Confirmation message for closing a community"
+  },
+  "community_join": "Join",
+  "@community_join": {
+    "description": "Label for join community button"
+  },
+  "community_joined": "Joined",
+  "@community_joined": {
+    "description": "Label for joined community status"
+  },
+  "community_recommended_for_you": "Recommended for you",
+  "@community_recommended_for_you": {
+    "description": "Section title for recommended communities"
+  },
+  "community_trending_now": "Trending now",
+  "@community_trending_now": {
+    "description": "Section title for trending communities"
+  },
+  "community_placeholder_members": "1.2K members",
+  "@community_placeholder_members": {
+    "description": "Placeholder text for community members count in recommended communities"
+  },
+  "community_leave": "Leave community",
+  "@community_leave": {
+    "description": "Label for leave community button"
+  },
+  "community_leave_description": "Leave the community. You will no longer be able to post and interact in this community.",
+  "@community_leave_description": {
+    "description": "Confirmation message for leaving a community"
+  },
+  "community_create": "Create Community",
+  "@community_create": {
+    "description": "Label for create community button"
+  },
+  "community_name": "Community name",
+  "@community_name": {
+    "description": "Label for community name"
+  },
+  "community_name_hint": "Name your community",
+  "@community_name_hint": {
+    "description": "Hint text for community name input"
+  },
+  "community_description_hint": "Enter description",
+  "@community_description_hint": {
+    "description": "Hint text for community description input"
+  },
+  "community_edit": "Edit Community",
+  "@community_edit": {
+    "description": "Label for edit community button"
+  },
+  "community_members": "Members",
+  "@community_members": {
+    "description": "Label for community members"
+  },
+  "community_private": "Private",
+  "@community_private": {
+    "description": "Label for private community type"
+  },
+  "community_public": "Public",
+  "@community_public": {
+    "description": "Label for public community type"
+  },
+  "community_public_description": "Anyone can join, view and search the posts in this community.",
+  "@community_public_description": {
+    "description": "Description for public community type"
+  },
+  "community_private_description": "Only members invited by the moderators can join, view, and search the posts in this community.",
+  "@community_private_description": {
+    "description": "Description for private community type"
+  },
+  "community_about": "About",
+  "@community_about": {
+    "description": "Label for community about section"
+  },
+  "categories_title": "Categories",
+  "@categories_title": {
+    "description": "Title for categories section"
+  },
+  "category_hint": "Select category",
+  "@category_hint": {
+    "description": "Hint text for category select field"
+  },
+  "category_select_title": "Select Category",
+  "@category_select_title": {
+    "description": "Title for category selection page"
+  },
+  "category_add": "Add Category",
+  "@category_add": {
+    "description": "Label for add category button"
+  },
+  "community_pending_posts": "Pending Posts",
+  "@community_pending_posts": {
+    "description": "Label for pending posts section"
+  },
+  "commnuity_pending_post_reviewing": "Your posts are pending for review",
+  "@commnuity_pending_post_reviewing": {
+    "description": "Label for reviewing pending post"
+  },
+
+  "commnuity_pending_post_count": "{count, plural, =1{{count} post need approval} other{{count} posts need approval}}",
+  "@commnuity_pending_post_count": {
+    "description": "Plural form for pending post count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "community_pending_request_title": "{count, plural, =1{Pending request} other{Pending requests}}",
+  "@community_pending_request_title": {
+    "description": "Title for pending request/requests",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "community_pending_request_message": "{displayCount} {count, plural, =1{post requires} other{posts require}} approval",
+  "@community_pending_request_message": {
+    "description": "Message for pending request showing count and plural forms",
+    "placeholders": {
+      "displayCount": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "community_basic_info": "Basic Info",
+  "@community_basic_info": {
+    "description": "Label for basic info section"
+  },
+  "community_discard_confirmation": "Leave without finishing?",
+  "@community_discard_confirmation": {
+    "description": "Label for discard changes confirmation"
+  },
+  "community_discard_description": "Your progress won’t be saved and your community won’t be created.",
+  "@community_discard_description": {
+    "description": "Description for discard changes confirmation"
+  },
+  
+  "message_send": "Send",
+  "@message_send": {
+    "description": "Label for send message button"
+  },
+  "message_typing": "is typing...",
+  "@message_typing": {
+    "description": "Label for typing indicator"
+  },
+  "message_placeholder": "Type a message...",
+  "@message_placeholder": {
+    "description": "Placeholder for message input"
+  },
+  
+  "settings_title": "Settings",
+  "@settings_title": {
+    "description": "Title for settings screen"
+  },
+  "settings_notifications": "Notifications",
+  "@settings_notifications": {
+    "description": "Label for notifications settings"
+  },
+  "settings_new_posts": "New posts",
+  "@settings_new_posts": {
+    "description": "Label for new posts settings"
+  },
+  "settings_new_posts_description": "Receive notifications when someone create new posts in this community.",
+  "@settings_new_posts_description": {
+    "description": "Description for new posts settings"
+  },
+  "settings_react_posts": "React posts",
+  "@settings_react_posts": {
+    "description": "Label for react to posts settings"
+  },
+  "settings_react_posts_description": "Receive notifications when someone make a reaction to your posts in this community.",
+  "@settings_react_posts_description": {
+    "description": "Description for react to posts settings"
+  },
+  "settings_react_comments": "React comments",
+  "@settings_react_comments": {
+    "description": "Label for react to comments settings"
+  },
+  "settings_react_comments_description": "Receive notifications when someone like your comment in this community.",
+  "@settings_react_comments_description": {
+    "description": "Description for react to comments settings"
+  },
+  "settings_new_comments": "New comments",
+  "@settings_new_comments": {
+    "description": "Label for new comments settings"
+  },
+  "settings_new_comments_description": "Receive notifications when someone comments on your post in this community.",
+  "@settings_new_comments_description": {
+    "description": "Description for new comments settings"
+  },
+  "settings_new_replies": "Replies",
+  "@settings_new_replies": {
+    "description": "Label for new replies settings"
+  },
+  "settings_new_replies_description": "Receive notifications when someone comment to your comments in this community.",
+  "@settings_new_replies_description": {
+    "description": "Description for new replies settings"
+  },
+  "settings_allow_stories_comments": "Allow comments on community stories",
+  "@settings_allow_stories_comments": {
+    "description": "Label for allow comments on stories settings"
+  },
+  "settings_allow_stories_comments_description": "Turn on to receive comments on stories in this community.",
+  "@settings_allow_stories_comments_description": {
+    "description": "Description for allow comments on stories settings"
+  },
+  "settings_new_stories": "New stories",
+  "@settings_new_stories": {
+    "description": "Label for new stories settings"
+  },
+  "settings_new_stories_description": "Receive notifications when someone creates a new story in this community.",
+  "@settings_new_stories_description": {
+    "description": "Description for new stories settings"
+  },
+  "settings_story_reactions": "Story reactions",
+  "@settings_story_reactions": {
+    "description": "Label for story reactions settings"
+  },
+  "settings_story_reactions_description": "Receive notifications when someone reacts to your story in this community.",
+  "@settings_story_reactions_description": {
+    "description": "Description for story reactions settings"
+  },
+  "settings_story_comments": "Story comments",
+  "@settings_story_comments": {
+    "description": "Label for story comments settings"
+  },
+  "settings_story_comments_description": "Receive notifications when someone comments on your story in this community.",
+  "@settings_story_comments_description": {
+    "description": "Description for story comments settings"
+  },
+  "settings_everyone": "Everyone",
+  "@settings_everyone": {
+    "description": "Label for everyone settings"
+  },
+  "settings_only_moderators": "Only moderators",
+  "@settings_only_moderators": {
+    "description": "Label for only moderators settings"
+  },
+  "settings_only_admins": "Only admins can post",
+  "@settings_only_admins": {
+    "description": "Label for only admins can post setting"
+  },
+  "settings_privacy": "Privacy",
+  "@settings_privacy": {
+    "description": "Label for privacy settings"
+  },
+  "settings_permissions": "Community permissions",
+  "@settings_permissions": {
+    "description": "Label for permissions settings"
+  },
+  "settings_language": "Language",
+  "@settings_language": {
+    "description": "Label for language settings"
+  },
+  "settings_leave_confirmation": "Leave without finishing?",
+  "@settings_leave_confirmation": {
+    "description": "Label for confirmation settings"
+  },
+  "settings_leave_description": "Your changes that you made may not be saved.",
+  "@settings_leave_description": {
+    "description": "Description for confirmation settings"
+  },
+  "settings_privacy_confirmation": "Change community privacy settings?",
+  "@settings_privacy_confirmation": {
+    "description": "Label for privacy confirmation settings"
+  },
+  "settings_privacy_description": "This community has globally featured posts. Changing the community from public to private will remove these posts from being featured globally.",
+  "@settings_privacy_description": {
+    "description": "Description for privacy confirmation settings"
+  },
+  "general_add": "Add",
+  "@general_add": {
+    "description": "Label for add button"
+  },
+  "general_loading": "Loading...",
+  "@general_loading": {
+    "description": "Label for loading states"
+  },
+  "general_leave": "Leave",
+  "@general_leave": {
+    "description": "Label for leave button"
+  },
+  "general_error": "Oops, something went wrong",
+  "@general_error": {
+    "description": "Generic error message"
+  },
+  "general_edited": "Edited",
+  "@general_edited": {
+    "description": "Label for edited content"
+  },
+  "general_edited_suffix": " (edited)",
+  "@general_edited_suffix": {
+    "description": "Suffix for edited post"
+  },
+  "general_keep_editing": "Keep editing",
+  "@general_keep_editing": {
+    "description": "Label for keep editing button"
+  },
+  "general_discard": "Discard",
+  "@general_discard": {
+    "description": "Label for discard button"
+  },
+  "general_moderator": "Moderator",
+  "@general_moderator": {
+    "description": "Label for moderator role"
+  },
+  "general_save": "Save",
+  "@general_save": {
+    "description": "Label for save button"
+  },
+  "general_delete": "Delete",
+  "@general_delete": {
+    "description": "Label for delete button"
+  },
+  "general_edit": "Edit",
+  "@general_edit": {
+    "description": "Label for edit button"
+  },
+  "general_close": "Close",
+  "@general_close": {
+    "description": "Label for close button"
+  },
+  "general_done": "Done",
+  "@general_done": {
+    "description": "Label for done button"
+  },
+  "general_post": "Post",
+  "@general_post": {
+    "description": "Label for post button"
+  },
+  "general_comments": "Comments",
+  "@general_comments": {
+    "description": "Label for comments button"
+  },
+  "general_story": "Story",
+  "@general_story": {
+    "description": "Label for story button"
+  },
+  "general_stories": "Stories",
+  "@general_stories": {
+    "description": "Label for stories button"
+  },
+  "general_poll": "Poll",
+  "@general_poll": {
+    "description": "Label for poll button"
+  },
+  "general_optional": "Optional",
+  "@general_optional": {
+    "description": "Label for optional fields"
+  },
+  "general_on": "On",
+  "@general_on": {
+    "description": "Label for on state"
+  },
+  "general_off": "Off",
+  "@general_off": {
+    "description": "Label for off state"
+  },
+  "settings_allow_notification": "Allow Notification",
+  "@settings_allow_notification": {
+    "description": "Label for allow notification toggle"
+  },
+  "settings_allow_notification_description": "Turn on to receive push notifications from this community.",
+  "@settings_allow_notification_description": {
+    "description": "Description for allow notification setting"
+  },
+  "general_reported": "reported",
+  "@general_reported": {
+    "description": "Label for reported content"
+  },
+  "general_unreported": "unreported",
+  "@general_unreported": {
+    "description": "Label for unreported content"
+  },
+  "general_see_more": "...See more",
+  "@general_see_more": {
+    "description": "Label for see more button"
+  },
+  "general_camera": "Camera",
+  "@general_camera": {
+    "description": "Label for camera button"
+  },
+  "general_photo": "Photo",
+  "@general_photo": {
+    "description": "Label for photo button"
+  },
+  "general_video": "Video",
+  "@general_video": {
+    "description": "Label for video button"
+  },
+  "general_posting": "Posting",
+  "@general_posting": {
+    "description": "Label for posting states"
+  },
+  "general_my_timeline": "My Timeline",
+  "@general_my_timeline": {
+    "description": "Label for my timeline button"
+  },
+  "general_options": "Options",
+  "@general_options": {
+    "description": "Label for options button"
+  },
+  "general_go_back": "Go back",
+  "@general_go_back": {
+    "description": "Label for go back button"
+  },
+  "post_unavailable_title": "Something went wrong",
+  "@post_unavailable_title": {
+    "description": "Title for post unavailable error page"
+  },
+  "post_unavailable_description": "The content you're looking for is unavailable.",
+  "@post_unavailable_description": {
+    "description": "Description for post unavailable error page"
+  },
+  "comment_deleted_message": "This comment has been deleted",
+  "@comment_deleted_message": {
+    "description": "Message shown for deleted comments"
+  },
+  "comment_reply_deleted_message": "This reply has been deleted",
+  "@comment_reply_deleted_message": {
+    "description": "Message shown for deleted reply comments"
+  },
+  "post_edit_globally_featured": "Edit globally featured post?",
+  "@post_edit_globally_featured": {
+    "description": "Title for globally featured post"
+  },
+  "post_edit_globally_featured_description": "The post you're editing has been featured globally. If you edit your post, it would need to be re-approved, and will no longer be globally featured.",
+  "@post_edit_globally_featured_description": {
+    "description": "Description for globally featured post"
+  },
+
+  "post_like_count": "{count, plural, =1{1 like} other{{count} likes}}",
+  "@post_like_count": {
+    "description": "Plural form for post like count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "post_comment_count": "{count, plural, =1{1 comment} other{{count} comments}}",
+  "@post_comment_count": {
+    "description": "Plural form for post comment count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "post_reported": "Post reported.",
+  "@post_reported": {
+    "description": "Label for reported post"
+  },
+  "post_unreported": "Post unreported.",
+  "@post_unreported": {
+    "description": "Label for unreported post"
+  },
+  "profile_followers_count": "{count, plural, =0{No followers} =1{1 follower} other{{count} followers}}",
+  "@profile_followers_count": {
+    "description": "Plural form for profile followers count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "community_members_count": "{count, plural, =0{No members} =1{1 member} other{{count} members}}",
+  "@community_members_count": {
+    "description": "Plural form for community members count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profile_posts_count": "{count, plural, =1{post} other{posts}}",
+  "@profile_posts_count": {
+    "description": "Plural form for user posts count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profile_members_count": "{count, plural, =1{member} other{members}}",
+  "@profile_members_count": {
+    "description": "Plural form for member count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "user_block": "Block user",
+  "@user_block": {
+    "description": "Label for block user button"
+  },
+  "user_unblock": "Unblock user",
+  "@user_unblock": {
+    "description": "Label for unblock user button"
+  },
+  "error_delete_post": "Failed to delete post. Please try again.",
+  "@error_delete_post": {
+    "description": "Error message when deleting a post fails"
+  },
+  "error_leave_community": "Unable to leave community",
+  "@error_leave_community": {
+    "description": "Error message title when leaving a community fails"
+  },
+  "error_leave_community_description": "You’re the only moderator in this group. To leave community, nominate other members to moderator role",
+  "@error_leave_community_description": {
+    "description": "Error message description when leaving a community fails"
+  },
+  "error_close_community": "Unable to close community",
+  "@error_close_community": {
+    "description": "Error message title when closing a community fails"
+  },
+  "error_close_community_description": "Something went wrong. Please try again later.",
+  "@error_close_community_description": {
+    "description": "Error message description when closing a community fails"
+  },
+  "error_max_upload_reached": "Maximum upload limit reached",
+  "@error_max_upload_reached": {
+    "description": "Error message when maximum upload limit is reached"
+  },
+  "error_max_upload_image_reached_description": "You’ve reached the upload limit of {maxUploads} images. Any additional images will not be saved.",
+  "@error_max_upload_image_reached_description": {
+    "description": "Error message description when maximum upload images limit is reached",
+    "placeholders": {
+      "maxUploads": {
+        "type": "int"
+      }
+    }
+  },
+  "error_max_upload_videos_reached_description": "You’ve reached the upload limit of {maxUploads} videos. Any additional videos will not be saved.",
+  "@error_max_upload_videos_reached_description": {
+    "description": "Error message description when maximum upload videos limit is reached",
+    "placeholders": {
+      "maxUploads": {
+        "type": "int"
+      }
+    }
+  },
+  "error_edit_post": "Failed to edit post. Please try again.",
+  "@error_edit_post": {
+    "description": "Error message when editing a post fails"
+  },
+  "error_create_post": "Failed to create post. Please try again.",
+  "@error_create_post": {
+    "description": "Error message when creating a post fails"
+  },
+  "error_max_poll_characters": "Poll question cannot exceed {maxQuestionLength} characters.",
+  "@error_max_poll_characters": {
+    "description": "Error message when poll question exceeds maximum characters",
+    "placeholders": {
+      "maxQuestionLength": {
+        "type": "int"
+      }
+    }
+  },
+  "error_max_poll_option_characters": "Poll option cannot exceed {maxQuestionLength} characters.",
+  "@error_max_poll_option_characters": {
+    "description": "Error message when poll option exceeds maximum characters",
+    "placeholders": {
+      "maxQuestionLength": {
+        "type": "int"
+      }
+    }
+  },
+  "error_create_poll": "Failed to create poll. Please try again.",
+  "@error_create_poll": {
+    "description": "Error message when creating a poll fails"
+  },
+  "error_message_too_long_title": "Unable to send message",
+  "@error_message_too_long_title": {
+    "description": "Title for error dialog when message exceeds character limit"
+  },
+  "error_message_too_long_description": "Your message is too long. Please shorten your message and try again.",
+  "@error_message_too_long_description": {
+    "description": "Description for error dialog when message exceeds character limit"
+  },
+  "user_profile_unknown_name": "Unknown",
+  "@user_profile_unknown_name": {
+    "description": "Fallback display name for users with no display name"
+  },
+  "user_profile_deleted_name": "Deleted user",
+  "@user_profile_deleted_name": {
+    "description": "Display name for deleted users"
+  },
+  "community_all_members": "All members",
+  "@community_all_members": {
+    "description": "Tab label for all members in community membership page"
+  },
+  "community_moderators": "Moderators",
+  "@community_moderators": {
+    "description": "Tab label for moderators in community membership page"
+  },
+  "community_search_member_hint": "Search member",
+  "@community_search_member_hint": {
+    "description": "Hint text for member search field"
+  },
+  "community_promote_moderator": "Promote to moderator",
+  "@community_promote_moderator": {
+    "description": "Action to promote a member to moderator role"
+  },
+  "community_demote_member": "Demote to member",
+  "@community_demote_member": {
+    "description": "Action to demote a moderator to member role"
+  },
+  "community_remove_member": "Remove from community",
+  "@community_remove_member": {
+    "description": "Action to remove a member from the community"
+  },
+  "user_report": "Report user",
+  "@user_report": {
+    "description": "Action to report a user"
+  },
+  "user_unreport": "Unreport user",
+  "@user_unreport": {
+    "description": "Action to unreport a user"
+  },
+  "feed_no_videos": "No videos yet",
+  "@feed_no_videos": {
+    "description": "Empty state message when there are no videos in the feed"
+  },
+  "feed_no_photos": "No photos yet",
+  "@feed_no_photos": {
+    "description": "Empty state message when there are no photos in the feed"
+  },
+  "feed_no_pinned_posts": "No pinned post yet",
+  "@feed_no_pinned_posts": {
+    "description": "Empty state message when there are no pinned posts in the community"
+  },
+  "feed_no_posts": "No posts yet",
+  "@feed_no_posts": {
+    "description": "Empty state message when there are no posts in the community feed"
+  },
+  "member_add": "Add member",
+  "@member_add": {
+    "description": "Button text and title for adding members"
+  },
+  "search_user_hint": "Search user",
+  "@search_user_hint": {
+    "description": "Hint text for searching users"
+  },
+  "profile_edit": "Edit profile",
+  "@profile_edit": {
+    "description": "Button text for editing user profile"
+  },
+  "profile_update_success": "Successfully updated your profile!",
+  "@profile_update_success": {
+    "description": "Success message when profile is updated"
+  },
+  "profile_update_failed": "Failed to save your profile. Please try again.",
+  "@profile_update_failed": {
+    "description": "Error message when profile update fails"
+  },
+  "community_post_permission": "Post permission",
+  "@community_post_permission": {
+    "description": "Community post permissions setting option"
+  },
+  "community_story_comments": "Story comments",
+  "@user_block": {
+    "description": "Community story comments setting option"
+  },
+  "community_setting_close_label": "Close community",
+  "@community_setting_close_label": {
+    "description": "Label for close community setting"
+  },
+  "community_setting_close_description": "Closing this community will remove the community  page and all its content and comments.",
+  "@community_setting_close_description": {
+    "description": "Description for close community setting"
+  },
+  "community_post_permission_title_label": "Who can post on this community",
+  "@community_post_permission_title_label": {
+    "description": "label for post permissions page title"
+  },
+  "community_post_permission_description_label": "You can control who can create posts in your community.",
+  "@community_post_permission_description_label": {
+    "description": "label for post permissions page description"
+  },
+  "post_item_bottom_nonmember_label": "Join community to interact with all posts",
+  "@post_item_bottom_nonmember_label": {
+    "description": "label for post item bottom text for non members"
+  },
+  "notification_turn_on_success": "Notification turned on",
+  "@notification_turn_on_success": {
+    "description": "success toast message for turning on notification"
+  },
+  "notification_turn_on_error": "Failed to turn on notification. Please try again.",
+  "@notification_turn_on_error": {
+    "description": "error toast message for turning on notification"
+  },
+  "notification_turn_off_success": "Notification turned off",
+  "@notification_turn_off_success": {
+    "description": "success toast message for turning off notification"
+  },
+  "notification_turn_off_error": "Failed to turn off notification. Please try again.",
+  "@notification_turn_off_error": {
+    "description": "error toast message for turning off notification"
+  },
+  "user_report_success": "User reported.",
+  "@user_report_success": {
+    "description": "success toast message for reporting user"
+  },
+  "user_report_error": "Failed to report user. Please try again.",
+  "@user_report_error": {
+    "description": "error toast message for reporting user"
+  },
+  "user_unreport_success": "User unreported.",
+  "@user_unreport_success": {
+    "description": "success toast message for unreporting user"
+  },
+  "user_unreport_error": "Failed to unreport user. Please try again.",
+  "@user_unreport_error": {
+    "description": "error toast message for unreporting user"
+  },
+  "user_block_success": "User blocked.",
+  "@user_block_success": {
+    "description": "success toast message for blocking user"
+  },
+  "user_block_error": "Failed to block user. Please try again.",
+  "@user_block_error": {
+    "description": "error toast message for blocking user"
+  },
+  "user_unblock_success": "User unblocked.",
+  "@user_unblock_success": {
+    "description": "success toast message for unblocking user"
+  },
+  "user_unblock_error": "Failed to unblock user. Please try again.",
+  "@user_unblock_error": {
+    "description": "error toast message for unblocking user"
+  },
+  "search_no_members_found": "No members found",
+  "@search_no_members_found": {
+    "description": "Message displayed when no members are found in search"
+  },
+  "moderator_promotion_title": "Moderator promotion",
+  "@moderator_promotion_title": {
+    "description": "Title for moderator promotion confirmation dialog"
+  },
+  "moderator_promotion_description": "Are you sure you want to promote this member to Moderator? They will gain access to all moderator features.",
+  "@moderator_promotion_description": {
+    "description": "Description for moderator promotion confirmation dialog"
+  },
+  "moderator_promote_button": "Promote",
+  "@moderator_promote_button": {
+    "description": "Button text for promoting to moderator"
+  },
+  "moderator_demotion_title": "Moderator demotion",
+  "@moderator_demotion_title": {
+    "description": "Title for moderator demotion confirmation dialog"
+  },
+  "moderator_demotion_description": "Are you sure you want to demote this Moderator? They will lose access to all moderator features.",
+  "@moderator_demotion_description": {
+    "description": "Description for moderator demotion confirmation dialog"
+  },
+  "moderator_demote_button": "Demote",
+  "@moderator_demote_button": {
+    "description": "Button text for demoting moderator"
+  },
+  "member_removal_confirm_title": "Confirm removal",
+  "@member_removal_confirm_title": {
+    "description": "Title for member removal confirmation dialog"
+  },
+  "member_removal_confirm_description": "Are you sure you want to remove this member from the group? They will be aware of their removal.",
+  "@member_removal_confirm_description": {
+    "description": "Description for member removal confirmation dialog"
+  },
+  "member_remove_button": "Remove",
+  "@member_remove_button": {
+    "description": "Button text for removing member"
+  },
+  "user_ban_confirm_title": "Confirm ban",
+  "@user_ban_confirm_title": {
+    "description": "Title for user ban confirmation dialog"
+  },
+  "user_ban_confirm_description": "Are you sure you want to ban this user? They will be removed from the group and won't be able to find it or rejoin unless they are unbanned.",
+  "@user_ban_confirm_description": {
+    "description": "Description for user ban confirmation dialog"
+  },
+  "user_ban_button": "Ban",
+  "@user_ban_button": {
+    "description": "Button text for banning user"
+  },
+  "member_add_success": "Successfully added member to this community.",
+  "@member_add_success": {
+    "description": "Success message when adding member to community"
+  },
+  "member_add_error": "Failed to add member. Please try again.",
+  "@member_add_error": {
+    "description": "Error message when adding member fails"
+  },
+  "moderator_promote_success": "Successfully promoted to moderator.",
+  "@moderator_promote_success": {
+    "description": "Success message when promoting member to moderator"
+  },
+  "moderator_promote_error": "Failed to promote member. Please try again.",
+  "@moderator_promote_error": {
+    "description": "Error message when promoting member fails"
+  },
+  "moderator_demote_success": "Successfully demoted to member.",
+  "@moderator_demote_success": {
+    "description": "Success message when demoting moderator to member"
+  },
+  "moderator_demote_error": "Failed to demote member. Please try again.",
+  "@moderator_demote_error": {
+    "description": "Error message when demoting moderator fails"
+  },
+  "member_remove_success": "Member removed from this community.",
+  "@member_remove_success": {
+    "description": "Success message when removing member from community"
+  },
+  "member_remove_error": "Failed to remove member. Please try again.",
+  "@member_remove_error": {
+    "description": "Error message when removing member fails"
+  },
+  "user_follow_success": "User followed.",
+  "@user_follow_success": {
+    "description": "Success message when following user"
+  },
+  "user_follow_error": "Oops, something went wrong.",
+  "@user_follow_error": {
+    "description": "Error message when following user fails"
+  },
+  "user_unfollow_success": "User unfollowed.",
+  "@user_unfollow_success": {
+    "description": "Success message when unfollowing user"
+  },
+  "user_unfollow_error": "Oops, something went wrong.",
+  "@user_unfollow_error": {
+    "description": "Error message when unfollowing user fails"
+  },
+  "post_target_selection_title": "Post to",
+  "@post_target_selection_title": {
+    "description": "Title for post target selection page"
+  },
+  "user_feed_blocked_title": "You've blocked this user",
+  "@user_feed_blocked_title": {
+    "description": "Title for blocked user feed empty state"
+  },
+  "user_feed_blocked_description": "Unblock to see their posts.",
+  "@user_feed_blocked_description": {
+    "description": "Description for blocked user feed empty state"
+  },
+  "user_feed_private_title": "This account is private",
+  "@user_feed_private_title": {
+    "description": "Title for private user feed empty state"
+  },
+  "user_feed_private_description": "Follow this user to see their posts.",
+  "@user_feed_private_description": {
+    "description": "Description for private user feed empty state"
+  },
+  "timestamp_just_now": "Just now",
+  "@timestamp_just_now": {
+    "description": "Timestamp text for content posted just now in social feeds"
+  },
+  "timestamp_now": "now",
+  "@timestamp_now": {
+    "description": "Timestamp text for content posted just now in chat"
+  },
+  "chat_notification_turn_on": "Turn on notifications",
+  "@chat_notification_turn_on": {
+    "description": "Text for turning on chat notifications"
+  },
+  "chat_notification_turn_off": "Turn off notifications",
+  "@chat_notification_turn_off": {
+    "description": "Text for turning off chat notifications"
+  },
+  "chat_block_user_title": "Block user?",
+  "@chat_block_user_title": {
+    "description": "Title for blocking user confirmation dialog in chat"
+  },
+  "chat_block_user_description": "{displayName} won't be able to send you the message. They won't be notified that you've blocked them.",
+  "@chat_block_user_description": {
+    "description": "Description for blocking user confirmation dialog in chat",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_unblock_user_title": "Unblock user?",
+  "@chat_unblock_user_title": {
+    "description": "Title for unblocking user confirmation dialog in chat"
+  },
+  "chat_unblock_user_description": "{displayName} will now be able to send you the message. They won't be notified that you've unblocked them.",
+  "@chat_unblock_user_description": {
+    "description": "Description for unblocking user confirmation dialog in chat",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_message_photo": "Send a photo",
+  "@chat_message_photo": {
+    "description": "Text shown for photo messages in chat notifications"
+  },
+  "chat_message_video": "Send a video",
+  "@chat_message_video": {
+    "description": "Text shown for video messages in chat notifications"
+  },
+  "user_follow_request_new": "New follow requests",
+  "@user_follow_request_new": {
+    "description": "Text for new follow requests notification"
+  },
+  "user_follow_request_approval": "{count} requests need your approval",
+  "@user_follow_request_approval": {
+    "description": "Text showing number of requests needing approval",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "user_unfollow": "Unfollow",
+  "@user_unfollow": {
+    "description": "Button text for unfollowing a user"
+  },
+  "user_follow_unable_title": "Unable to follow this user",
+  "@user_follow_unable_title": {
+    "description": "Title for dialog when unable to follow user"
+  },
+  "user_follow_unable_description": "Oops! something went wrong. Please try again later.",
+  "@user_follow_unable_description": {
+    "description": "Description for dialog when unable to follow user"
+  },
+  "user_follow": "Follow",
+  "@user_follow": {
+    "description": "Button text for following a user"
+  },
+  "user_follow_cancel": "Cancel Request",
+  "@user_follow_cancel": {
+    "description": "Button text for canceling follow request"
+  },
+  "user_following": "Following",
+  "@user_following": {
+    "description": "Button text showing user is being followed"
+  },
+  "user_block_confirm_title": "Block user?",
+  "@user_block_confirm_title": {
+    "description": "Title for blocking user confirmation dialog"
+  },
+  "user_block_confirm_description": "{displayName} won't be able to see posts and comments that you've created. They won't be notified that you've blocked them.",
+  "@user_block_confirm_description": {
+    "description": "Description for blocking user confirmation dialog",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "user_block_confirm_button": "Block",
+  "@user_block_confirm_button": {
+    "description": "Button text for confirming block action"
+  },
+  "user_unblock_confirm_title": "Unblock user?",
+  "@user_unblock_confirm_title": {
+    "description": "Title for unblocking user confirmation dialog"
+  },
+  "user_unblock_confirm_description": "{displayName} will now be able to see posts and comments that you've created. They won't be notified that you've unblocked them.",
+  "@user_unblock_confirm_description": {
+    "description": "Description for unblocking user confirmation dialog",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "user_unblock_confirm_button": "Unblock",
+  "@user_unblock_confirm_button": {
+    "description": "Button text for confirming unblock action"
+  },
+  "user_unfollow_confirm_title": "Unfollow this user?",
+  "@user_unfollow_confirm_title": {
+    "description": "Title for unfollowing user confirmation dialog"
+  },
+  "user_unfollow_confirm_description": "If you change your mind, you'll have to request to follow them again.",
+  "@user_unfollow_confirm_description": {
+    "description": "Description for unfollowing user confirmation dialog"
+  },
+  "user_unfollow_confirm_button": "Unfollow",
+  "@user_unfollow_confirm_button": {
+    "description": "Button text for confirming unfollow action"
+  },
+  "category_default_title": "Category",
+  "@category_default_title": {
+    "description": "Default title for category page when category name is not available"
+  },
+  "community_empty_state": "No community yet",
+  "@community_empty_state": {
+    "description": "Empty state message when there are no communities in the category"
+  },
+  "community_pending_requests_title": "Pending Requests",
+  "@community_pending_requests_title": {
+    "description": "Title for the pending requests page"
+  },
+  "community_pending_requests_empty_title": "No pending requests available",
+  "@community_pending_requests_empty_title": {
+    "description": "Title for empty state when no pending requests are available"
+  },
+  "community_pending_requests_empty_description": "Enable post review or join approval in community settings to manage requests.",
+  "@community_pending_requests_empty_description": {
+    "description": "Description for empty state when no pending requests are available"
+  },
+  "community_join_requests_coming_soon": "Join requests feature coming soon",
+  "@community_join_requests_coming_soon": {
+    "description": "Placeholder text for join requests feature that is not yet implemented"
+  },
+  "community_pending_posts_warning": "Decline pending post will permanently delete the selected post from community.",
+  "@community_pending_posts_warning": {
+    "description": "Warning message for moderators about declining pending posts"
+  },
+  "community_pending_posts_empty": "No pending posts",
+  "@community_pending_posts_empty": {
+    "description": "Empty state message when there are no pending posts"
+  },
+  "community_pending_post_accept": "Accept",
+  "@community_pending_post_accept": {
+    "description": "Button text for accepting a pending post"
+  },
+  "community_pending_post_decline": "Decline",
+  "@community_pending_post_decline": {
+    "description": "Button text for declining a pending post"
+  },
+  "community_pending_post_delete_success": "Post deleted.",
+  "@community_pending_post_delete_success": {
+    "description": "Success message when pending post is deleted"
+  },
+  "community_pending_post_delete_error": "Failed to delete post. Please try again.",
+  "@community_pending_post_delete_error": {
+    "description": "Error message when deleting pending post fails"
+  },
+  "community_pending_post_approve_success": "Post accepted.",
+  "@community_pending_post_approve_success": {
+    "description": "Success message when pending post is approved"
+  },
+  "community_pending_post_approve_error": "Failed to accept post. This post has been reviewed by another moderator.",
+  "@community_pending_post_approve_error": {
+    "description": "Error message when approving pending post fails"
+  },
+  "community_pending_post_decline_success": "Post declined.",
+  "@community_pending_post_decline_success": {
+    "description": "Success message when pending post is declined"
+  },
+  "community_pending_post_decline_error": "Failed to decline post. This post has been reviewed by another moderator.",
+  "@community_pending_post_decline_error": {
+    "description": "Error message when declining pending post fails"
+  },
+  "poll_option_hint": "Option {optionNumber}",
+  "@poll_option_hint": {
+    "description": "Hint text for poll option input field",
+    "placeholders": {
+      "optionNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_add_option": "Add option",
+  "@poll_add_option": {
+    "description": "Button text for adding a new poll option"
+  },
+  "poll_multiple_selection_title": "Multiple selection",
+  "@poll_multiple_selection_title": {
+    "description": "Title for multiple selection toggle"
+  },
+  "poll_multiple_selection_description": "Let participants vote more than one option.",
+  "@poll_multiple_selection_description": {
+    "description": "Description for multiple selection toggle"
+  },
+  "poll_ends_on": "Ends on {endDate}",
+  "@poll_ends_on": {
+    "description": "Text showing when poll ends with formatted date",
+    "placeholders": {
+      "endDate": {
+        "type": "String"
+      }
+    }
+  },
+  "poll_ends_on_label": "Ends on",
+  "@poll_ends_on_label": {
+    "description": "Label for poll end date"
+  },
+  "poll_select_date": "Select Date",
+  "@poll_select_date": {
+    "description": "Placeholder text for date picker"
+  },
+  "poll_select_time": "Select Time",
+  "@poll_select_time": {
+    "description": "Placeholder text for time picker"
+  },
+  "poll_duration_days": "{days, plural, =1{1 day} other{{days} days}}",
+  "@poll_duration_days": {
+    "description": "Poll duration options with proper pluralization",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_time_hour": "Hour",
+  "@poll_time_hour": {
+    "description": "Label for hour in time picker"
+  },
+  "poll_time_minute": "Minute",
+  "@poll_time_minute": {
+    "description": "Label for minute in time picker"
+  },
+  "profile_edit_display_name": "Display Name",
+  "@profile_edit_display_name": {
+    "description": "Label for display name field in edit profile"
+  },
+  "profile_edit_about": "About",
+  "@profile_edit_about": {
+    "description": "Label for about field in edit profile"
+  },
+  "profile_edit_unsupported_image_title": "Unsupported image type",
+  "@profile_edit_unsupported_image_title": {
+    "description": "Title for unsupported image type dialog"
+  },
+  "profile_edit_unsupported_image_description": "Please upload a PNG or JPG image.",
+  "@profile_edit_unsupported_image_description": {
+    "description": "Description for unsupported image type dialog"
+  },
+  "profile_edit_inappropriate_image_title": "Inappropriate image",
+  "@profile_edit_inappropriate_image_title": {
+    "description": "Title for inappropriate image dialog"
+  },
+  "profile_edit_inappropriate_image_description": "Please choose a different image to upload.",
+  "@profile_edit_inappropriate_image_description": {
+    "description": "Description for inappropriate image dialog"
+  },
+  "profile_edit_unsaved_changes_title": "Unsaved changes",
+  "@profile_edit_unsaved_changes_title": {
+    "description": "Title for unsaved changes confirmation dialog"
+  },
+  "profile_edit_unsaved_changes_description": "Are you sure you want to discard the changes? They will be lost when you leave this page.",
+  "@profile_edit_unsaved_changes_description": {
+    "description": "Description for unsaved changes confirmation dialog"
+  },
+  "chat_title": "Chat",
+  "@chat_title": {
+    "description": "Title for chat home page"
+  },
+  "chat_tab_all": "All",
+  "@chat_tab_all": {
+    "description": "Tab label for all chats"
+  },
+  "chat_tab_direct": "Direct",
+  "@chat_tab_direct": {
+    "description": "Tab label for direct chats"
+  },
+  "chat_tab_groups": "Groups",
+  "@chat_tab_groups": {
+    "description": "Tab label for group chats"
+  },
+  "chat_waiting_for_network": "Waiting for network...",
+  "@chat_waiting_for_network": {
+    "description": "Message shown when waiting for network connection"
+  },
+  "chat_direct_chat": "Direct chat",
+  "@chat_direct_chat": {
+    "description": "Menu option for creating direct chat"
+  },
+  "chat_group_chat": "Group chat",
+  "@chat_group_chat": {
+    "description": "Menu option for creating group chat"
+  },
+  "chat_archived": "Archived",
+  "@chat_archived": {
+    "description": "Menu option for archived chats"
+  },
+  "message_editing_message": "Editing message",
+  "@message_editing_message": {
+    "description": "Text shown when editing a message"
+  },
+  "message_replying_yourself": "yourself",
+  "@message_replying_yourself": {
+    "description": "Text shown when replying to your own message"
+  },
+  "message_replied_message": "Replied message",
+  "@message_replied_message": {
+    "description": "Title for replied message display"
+  },
+  "message_replying_to": "Replying to {displayName}",
+  "@message_replying_to": {
+    "description": "Text shown when replying to a message",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "message_media": "Media",
+  "@message_media": {
+    "description": "Label for media button in message composer"
+  },
+  "chat_loading": "Loading chat...",
+  "@chat_loading": {
+    "description": "Loading message shown when chat is initializing"
+  },
+  "chat_blocked_message": "You can't send messages to this person.",
+  "@chat_blocked_message": {
+    "description": "Message shown when user is blocked and cannot send messages"
+  },
+  "chat_notifications_disabled": "You have disabled notifications for chat",
+  "@chat_notifications_disabled": {
+    "description": "Message shown when chat notifications are disabled"
+  },
+  "chat_archive": "Archive",
+  "@chat_archive": {
+    "description": "Action text for archiving a chat"
+  },
+  "chat_unarchive": "Unarchive",
+  "@chat_unarchive": {
+    "description": "Action text for unarchiving a chat"
+  },
+  "chat_message_deleted": "This message was deleted",
+  "@chat_message_deleted": {
+    "description": "Preview text for deleted messages"
+  },
+  "chat_message_no_preview": "No preview supported for this message type",
+  "@chat_message_no_preview": {
+    "description": "Preview text for unsupported message types"
+  },
+  "chat_no_message_yet": "No message yet",
+  "@chat_no_message_yet": {
+    "description": "Preview text when there are no messages in the chat"
+  },
+  "permission_camera_title": "Allow access to your camera",
+  "@permission_camera_title": {
+    "description": "Title for camera permission dialog"
+  },
+  "permission_camera_detail": "This allows the app to take photos and record videos from your device camera.",
+  "@permission_camera_detail": {
+    "description": "Detail text for camera permission dialog"
+  },
+  "permission_microphone_title": "Allow access to your microphone",
+  "@permission_microphone_title": {
+    "description": "Title for microphone permission dialog"
+  },
+  "permission_microphone_detail": "This allows the app to record audio for videos from your device microphone.",
+  "@permission_microphone_detail": {
+    "description": "Detail text for microphone permission dialog"
+  },
+  "permission_open_settings": "Open settings",
+  "@permission_open_settings": {
+    "description": "Button text to open app settings"
+  }
+}

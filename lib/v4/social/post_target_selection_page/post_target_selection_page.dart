@@ -1,17 +1,20 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_target_selection_page/bloc/post_target_selection_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/utils/Shimmer.dart';
-import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
+import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
-class PostTargetSelectionPage extends NewBasePage {
-  PostTargetSelectionPage({super.key, required super.pageId});
+class AmityPostTargetSelectionPage extends NewBasePage {
+  AmityPostTargetSelectionPage({Key? key})
+      : super(key: key, pageId: 'select_post_target_page');
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -40,9 +43,9 @@ class PostTargetSelectionPage extends NewBasePage {
               backgroundColor: theme.backgroundColor,
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
-                title: const Text(
-                  'Post to',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
+                title: Text(
+                  context.l10n.post_target_selection_title,
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(
@@ -95,7 +98,7 @@ class PostTargetSelectionPage extends NewBasePage {
                                 (context, animation, secondaryAnimation) =>
                                     PopScope(
                               canPop: true,
-                              child: PostComposerPage(
+                              child: AmityPostComposerPage(
                                 options: createOptions,
                                 onPopRequested: (shouldPopCaller) {
                                   if (shouldPopCaller) {
@@ -112,14 +115,14 @@ class PostTargetSelectionPage extends NewBasePage {
                         height: 40,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(40),
-                          child: AmityNetworkImage(
-                              imageUrl:
-                                  AmityCoreClient.getCurrentUser().avatarUrl,
-                              placeHolderPath:
-                                  "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
+                          child: AmityUserImage(
+                            user: AmityCoreClient.getCurrentUser(),
+                            theme: theme,
+                            size: 40,
+                          ),
                         ),
                       ),
-                      title: Text('My timeline',
+                      title: Text(context.l10n.general_my_timeline,
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 15,
@@ -141,7 +144,7 @@ class PostTargetSelectionPage extends NewBasePage {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        'My Communities',
+                        context.l10n.tab_my_communities,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
@@ -162,7 +165,7 @@ class PostTargetSelectionPage extends NewBasePage {
 
   Widget communityRow(BuildContext context, PostTargetSelectionState state) {
     if (state is PostTargetSelectionLoading) {
-      return skeletonList();
+      return skeletonList(context);
     } else if (state is PostTargetSelectionLoaded) {
       final communities = state.list;
 
@@ -223,7 +226,7 @@ class PostTargetSelectionPage extends NewBasePage {
             reverseTransitionDuration: Duration.zero,
             pageBuilder: (context, animation, secondaryAnimation) => PopScope(
               canPop: true,
-              child: PostComposerPage(
+              child: AmityPostComposerPage(
                 options: createOptions,
                 onPopRequested: (shouldPopCaller) {
                   if (shouldPopCaller) {
@@ -287,7 +290,7 @@ class PostTargetSelectionPage extends NewBasePage {
     );
   }
 
-  Widget skeletonList() {
+  Widget skeletonList(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: theme.backgroundColor),
       child: Column(children: [

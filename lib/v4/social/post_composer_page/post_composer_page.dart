@@ -1,12 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:io';
-import 'dart:math';
-
 import 'package:amity_sdk/amity_sdk.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
@@ -14,62 +9,76 @@ import 'package:amity_uikit_beta_service/v4/social/post_composer_page/bloc/post_
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/detailed_media_attachment_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/media_attachment_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_camera_screen.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_file_picker.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_views.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/utils/CustomBottomSheet/custom_buttom_sheet.dart';
-import 'package:amity_uikit_beta_service/v4/utils/SingleVideoPlayer/single_video_player.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-class PostComposerPage extends NewBasePage {
+import '../../core/ui/mention/mention_text_editing_controller.dart';
+
+// ignore: must_be_immutable
+class AmityPostComposerPage extends NewBasePage {
   final AmityPostComposerOptions options;
-  final TextEditingController _controller = TextEditingController(text: '');
+  final MentionTextEditingController textController =
+      MentionTextEditingController();
   final void Function(bool shouldPopCaller)? onPopRequested;
   ImagePicker imagePicker = ImagePicker();
   late String currentPostText = '';
   late int currentUrlsCount = 0;
   Map<String, AmityFileInfoWithUploadStatus> selectedFiles = {};
+  Set<String>? existingFileKeys;
   FileType? selectedMediaType;
-  Map<String, AmityImage> existingImages = {};
-  Map<String, VideoData> existingVideos = {};
-  List<AmityVideo>? currentVideos;
+  List<AmityImage> existingImages = [];
+  List<VideoData> existingVideos = [];
+  List<AmityVideo> existingVideoObjects = [];
   bool isPostButtonEnabled = false;
   bool isTextChanged = false;
   bool isFileCountChanged = false;
   bool isMediaReady = false;
+  bool isPosting = false;
   String appName = '';
 
-  PostComposerPage({Key? key, required this.options, this.onPopRequested})
-      : super(key: key, pageId: '');
+  AmityPostComposerPage({Key? key, required this.options, this.onPopRequested})
+      : super(key: key, pageId: 'post_composer_page');
 
   @override
   Widget buildPage(BuildContext context) {
     _getAppName();
+    String? communityId =
+        (options.targetType == AmityPostTargetType.COMMUNITY &&
+                options.targetId != null)
+            ? options.targetId
+            : null;
+
     if (options.mode == AmityPostComposerMode.edit) {
       AmityPost post = options.post!;
       currentPostText = (post.data as TextData).text ?? '';
+
+      existingImages.clear();
+      existingVideos.clear();
 
       if (post.children?.isNotEmpty ?? false) {
         for (var child in post.children!) {
           var postData = child.data;
           if (postData is VideoData) {
             var data = postData;
-            var url =
-                data.thumbnail?.getUrl(AmityImageSize.MEDIUM) ?? data.postId;
+            existingVideos.add(data);
 
-            existingVideos[url] = (data);
+            data.getVideo(AmityVideoQuality.LOW).then((video) {
+              existingVideoObjects.add(video);
+            });
 
             selectedMediaType = FileType.video;
           } else if (postData is ImageData) {
             var data = postData;
-            var url = data.image?.getUrl(AmityImageSize.MEDIUM);
-            existingImages[url!] = (data.image!);
+            existingImages.add(data.image!);
             selectedMediaType = FileType.image;
           }
         }
@@ -89,13 +98,14 @@ class PostComposerPage extends NewBasePage {
           builder: (context, state) {
             if (existingImages.isNotEmpty || existingVideos.isNotEmpty) {
               if (selectedMediaType == FileType.image) {
-                List<String> uploadedUrlsKeys = existingImages.keys.toList();
+                List<String> uploadedUrlsKeys = existingImages.map((e) {
+                  return e.getUrl(AmityImageSize.MEDIUM);
+                }).toList();
                 context.read<PostComposerBloc>().add(
                       PostComposerGetImageUrlsEvent(urls: uploadedUrlsKeys),
                     );
               } else if (selectedMediaType == FileType.video) {
-                List<VideoData> uploadedUrlsKeys =
-                    existingVideos.values.toList();
+                List<VideoData> uploadedUrlsKeys = existingVideos.toList();
                 context.read<PostComposerBloc>().add(
                       PostComposerGetVideoUrlsEvent(videos: uploadedUrlsKeys),
                     );
@@ -103,7 +113,17 @@ class PostComposerPage extends NewBasePage {
             }
 
             if (state is PostComposerTextChangeState) {
-              _controller.text = state.text;
+              // Only set text if it's different to avoid cursor jumping
+              if (textController.text != state.text) {
+                // Save cursor position before setting text
+                final selection = textController.selection;
+                textController.text = state.text;
+                // Restore cursor position if still valid
+                if (selection.baseOffset <= state.text.length &&
+                    selection.baseOffset >= 0) {
+                  textController.selection = selection;
+                }
+              }
               if (currentPostText != state.text) {
                 isTextChanged = true;
               } else {
@@ -114,59 +134,42 @@ class PostComposerPage extends NewBasePage {
 
             if (state is PostComposerSelectedFiles) {
               selectedFiles = state.selectedFiles;
+              existingFileKeys ??= selectedFiles.keys.toSet();
+              final newFileKeys = selectedFiles.keys.toSet();
 
-              if (options.mode == AmityPostComposerMode.create) {
-                if (state.selectedFiles.isEmpty) {
-                  isPostButtonEnabled = false;
-                  selectedMediaType = null;
-                } else {
-                  bool isAllImageUploaded = selectedFiles.values
-                      .every((image) => image.isUploaded == true);
-
-                  if (selectedFiles.entries.first.value.type ==
-                      FileType.video) {
-                    selectedMediaType = FileType.video;
-                  } else if (selectedFiles.entries.first.value.type ==
-                      FileType.image) {
-                    selectedMediaType = FileType.image;
-                  }
-                  if (isAllImageUploaded) {
-                    isMediaReady = true;
-                    context.read<AmityToastBloc>().add(AmityToastDismiss());
-                  } else {
-                    isMediaReady = false;
-                  }
-                  updatePostButtonStatus();
-                }
+              if (state.selectedFiles.isEmpty) {
+                selectedMediaType = null;
+                isFileCountChanged = !setEquals(existingFileKeys, newFileKeys);
               } else {
-                if (selectedMediaType == FileType.image) {
-                  if (currentUrlsCount != selectedFiles.length) {
-                    isFileCountChanged = true;
-                  } else {
-                    isFileCountChanged = false;
-                  }
-                } else if (selectedMediaType == FileType.video) {
-                  if (currentUrlsCount != selectedFiles.length) {
-                    isFileCountChanged = true;
-                  } else {
-                    isFileCountChanged = false;
-                  }
+                if (selectedFiles.entries.first.value.type == FileType.video) {
+                  selectedMediaType = FileType.video;
+                } else if (selectedFiles.entries.first.value.type ==
+                    FileType.image) {
+                  selectedMediaType = FileType.image;
                 }
-                updatePostButtonStatus();
-
-                currentVideos = state.currentVideos;
+                if (currentUrlsCount != selectedFiles.length) {
+                  isFileCountChanged = true;
+                } else {
+                  isFileCountChanged =
+                      !setEquals(existingFileKeys, newFileKeys);
+                }
+                checkAllFilesAreUploaded(context);
               }
+              updatePostButtonStatus();
             }
 
-            double maxBottomSheetSize = 0.3;
+            double maxBottomSheetSize = 0.32;
+            double minBottomSheetSize = 0.2;
             if (selectedMediaType != null) {
-              // 0.8 per item
-              maxBottomSheetSize = 0.22;
+              maxBottomSheetSize = 0.28;
             }
+
+            final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+            final isKeyboardVisible = keyboardHeight > 0;
 
             return Scaffold(
               backgroundColor: theme.backgroundColor,
-              appBar: _buildAppBar(context),
+              appBar: buildAppBar(context),
               body: Stack(
                 children: [
                   Column(
@@ -177,14 +180,15 @@ class PostComposerPage extends NewBasePage {
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                const SizedBox(height: 20),
-                                _buildTextField(),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 10),
+                                buildTextField(context, communityId,
+                                    minBottomSheetSize, maxBottomSheetSize),
+                                const SizedBox(height: 10),
                                 Container(
                                   color: Colors.transparent,
-                                  child: _mediaListView(context, selectedFiles),
+                                  child: mediaListView(context, selectedFiles),
                                 ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 200),
                               ],
                             ),
                           ),
@@ -192,39 +196,40 @@ class PostComposerPage extends NewBasePage {
                       ),
                     ],
                   ),
-                  if (options.mode == AmityPostComposerMode.create)
-                    CustomBottomSheet(
-                      maxSize: maxBottomSheetSize,
-                      minSize: 0.125,
-                      theme: theme,
-                      collapsedContent: AmityMediaAttachmentComponent(
-                        onCameraTap: () async {
+                  // if (options.mode == AmityPostComposerMode.create)
+                  CustomBottomSheet(
+                    maxSize: maxBottomSheetSize,
+                    minSize: minBottomSheetSize,
+                    theme: theme,
+                    isKeyboardVisible: isKeyboardVisible,
+                    collapsedContent: AmityMediaAttachmentComponent(
+                      onCameraTap: () async {
+                        onCameraTap(context);
+                      },
+                      onImageTap: () async {
+                        pickMultipleFiles(context, FileType.image,
+                            maxFiles: 10);
+                      },
+                      onVideoTap: () async {
+                        pickMultipleFiles(context, FileType.video,
+                            maxFiles: 10);
+                      },
+                      mediaType: selectedMediaType,
+                    ),
+                    expandedContent: AmityDetailedMediaAttachmentComponent(
+                        onCameraTap: () {
                           onCameraTap(context);
                         },
-                        onImageTap: () async {
+                        onImageTap: () {
                           pickMultipleFiles(context, FileType.image,
                               maxFiles: 10);
                         },
-                        onVideoTap: () async {
+                        onVideoTap: () {
                           pickMultipleFiles(context, FileType.video,
                               maxFiles: 10);
                         },
-                        mediaType: selectedMediaType,
-                      ),
-                      expandedContent: AmityDetailedMediaAttachmentComponent(
-                          onCameraTap: () {
-                            onCameraTap(context);
-                          },
-                          onImageTap: () {
-                            pickMultipleFiles(context, FileType.image,
-                                maxFiles: 10);
-                          },
-                          onVideoTap: () {
-                            pickMultipleFiles(context, FileType.video,
-                                maxFiles: 10);
-                          },
-                          mediaType: selectedMediaType),
-                    ),
+                        mediaType: selectedMediaType),
+                  ),
                 ],
               ),
             );
@@ -235,10 +240,90 @@ class PostComposerPage extends NewBasePage {
   }
 
   void updatePostButtonStatus() {
-    if (isTextChanged || isFileCountChanged || isMediaReady) {
-      isPostButtonEnabled = true;
-    } else {
+    // Check if any file has an error - if so, disable button
+    bool hasAnyError = selectedFiles.values.any((file) => file.isError == true);
+    if (hasAnyError) {
       isPostButtonEnabled = false;
+      return;
+    }
+    
+    // For create mode, enable button if there's text or files
+    if (options.mode == AmityPostComposerMode.create) {
+      if (textController.text.isNotEmpty && selectedFiles.isEmpty) {
+        // Text only, no files
+        isPostButtonEnabled = true;
+      } else if (textController.text.isNotEmpty && selectedFiles.isNotEmpty) {
+        // Text + files: check if all files are uploaded
+        isPostButtonEnabled = isMediaReady;
+      } else if (selectedFiles.isNotEmpty) {
+        // Files only: check if all files are uploaded
+        isPostButtonEnabled = isMediaReady; // Only enable if media is ready
+      } else {
+        isPostButtonEnabled = false; // Nothing to post
+      }
+      return;
+    }
+
+    // For edit mode, check if anything changed
+    if (options.mode == AmityPostComposerMode.edit) {
+      // Check if text and files are empty
+      if (textController.text.isEmpty && selectedFiles.isEmpty) {
+        isPostButtonEnabled = false;
+        return;
+      }
+
+      // If nothing changed, disable button
+      if (!isTextChanged && !isFileCountChanged) {
+        isPostButtonEnabled = false;
+        return;
+      }
+
+      // If files changed, check if they're all uploaded
+      if (isFileCountChanged && selectedFiles.isNotEmpty) {
+        // Also need to check if there's text or if edit mode allows file-only posts
+        isPostButtonEnabled = isMediaReady;
+        return;
+      }
+
+      // If file count changed and files are empty, enable button
+      if (isFileCountChanged && selectedFiles.isEmpty) {
+        isPostButtonEnabled = true;
+        return;
+      }
+
+      // If only text changed (no files or no file changes), enable button
+      if (isTextChanged && selectedFiles.isEmpty) {
+        isPostButtonEnabled = true;
+        return;
+      }
+      
+      // If text changed and files exist, ensure all files are ready
+      if (isTextChanged && selectedFiles.isNotEmpty) {
+        isPostButtonEnabled = isMediaReady;
+        return;
+      }
+
+      // Default case - nothing valid to update
+      isPostButtonEnabled = false;
+    }
+  }
+
+  void checkAllFilesAreUploaded(BuildContext context) {
+    // Check if any file has an error
+    bool hasAnyError = selectedFiles.values.any((file) => file.isError == true);
+    
+    // Check if all files are uploaded
+    bool isAllImageUploaded =
+        selectedFiles.values.every((image) => image.isUploaded == true);
+    
+    if (hasAnyError) {
+      // If any file failed, media is not ready
+      isMediaReady = false;
+    } else if (isAllImageUploaded) {
+      isMediaReady = true;
+      context.read<AmityToastBloc>().add(AmityToastDismiss());
+    } else {
+      isMediaReady = false;
     }
   }
 
@@ -248,14 +333,18 @@ class PostComposerPage extends NewBasePage {
   }
 
   void onCameraTap(BuildContext context) {
-    Navigator.push(
-      context,
+    final localize = context.l10n;
+
+    // Use a different context for navigation to avoid conflicts
+    Navigator.of(context)
+        .push(
       MaterialPageRoute(
-        builder: (context) => AmityPostCameraScreen(
+        builder: (dialogContext) => AmityPostCameraScreen(
           selectedType: selectedMediaType,
         ),
       ),
-    ).then(
+    )
+        .then(
       (value) {
         AmityCameraResult? result = value;
 
@@ -263,10 +352,10 @@ class PostComposerPage extends NewBasePage {
           if (result.type == FileType.video) {
             if (selectedFiles.length == 10) {
               AmityV4Dialog().showAlertErrorDialog(
-                title: "Maximum upload limit reached",
+                title: localize.error_max_upload_reached,
                 message:
-                    "You’ve reached the upload limit of 10 vidoes. Any additional videos will not be saved.",
-                closeText: "Close",
+                    localize.error_max_upload_videos_reached_description(10),
+                closeText: localize.general_close,
               );
             } else {
               context.read<PostComposerBloc>().add(
@@ -276,11 +365,10 @@ class PostComposerPage extends NewBasePage {
           } else {
             if (selectedFiles.length == 10) {
               AmityV4Dialog().showAlertErrorDialog(
-                title: "Maximum upload limit reached",
-                message:
-                    "You’ve reached the upload limit of 10 images. Any additional images will not be saved.",
-                closeText: "Close",
-              );
+                  title: localize.error_max_upload_reached,
+                  message:
+                      localize.error_max_upload_image_reached_description(10),
+                  closeText: localize.general_close);
             } else {
               context.read<PostComposerBloc>().add(
                     PostComposerSelectImagesEvent(selectedImage: result.file),
@@ -292,415 +380,39 @@ class PostComposerPage extends NewBasePage {
     );
   }
 
-  void pickMultipleFiles(BuildContext context, FileType type,
-      {int maxFiles = 10}) async {
-    try {
-      String typeText;
-      List<XFile> files = [];
-
-      if (type == FileType.video) {
-        typeText = 'videos';
-
-        pickVideos() async {
-          FilePickerResult? result = await FilePicker.platform.pickFiles(
-            type: type,
-            allowMultiple: true,
-            allowCompression: true,
-            withData: false,
-            withReadStream: true,
-            lockParentWindow: true,
-            onFileLoading: (status) => {
-              if (status == FilePickerStatus.done)
-                {context.read<AmityToastBloc>().add(AmityToastDismiss())}
-              else
-                {
-                  context.read<AmityToastBloc>().add(const AmityToastLoading(
-                      message: "Processing...", icon: AmityToastIcon.loading))
-                }
-            },
-          );
-
-          if (result != null) {
-            files = result.files
-                .where((file) => file.path != null)
-                .map((file) => XFile(file.path!))
-                .toList();
-          }
-        }
-
-        showPermissionDialog() async {
-          ConfirmationV4Dialog().show(
-            context: context,
-            title: 'Allow access to your vidoes',
-            detailText: 'This allows $appName to access vidoes on your device.',
-            leftButtonColor: null,
-            leftButtonText: 'OK',
-            rightButtonText: 'Open settings',
-            onConfirm: () {
-              openAppSettings();
-            },
-          );
-        }
-
-        try {
-          if (Platform.isAndroid) {
-            var androidInfo = await DeviceInfoPlugin().androidInfo;
-            var sdkInt = androidInfo.version.sdkInt;
-
-            if (sdkInt > 32) {
-              await pickVideos();
-            } else {
-              if (await Permission.storage.request().isGranted) {
-                await pickVideos();
-              } else {
-                await showPermissionDialog();
-              }
-            }
-          } else {
-            await pickVideos();
-          }
-        } catch (e) {
-          await showPermissionDialog();
-        }
-      } else {
-        typeText = 'images';
-        bool isPickerClosed = false;
-
-        Future.delayed(const Duration(milliseconds: 1000), () {
-          if (!isPickerClosed) {
-            context.read<AmityToastBloc>().add(const AmityToastLoading(
-                message: "Processing...", icon: AmityToastIcon.loading));
-          }
-        });
-        try {
-          files = await imagePicker.pickMultiImage(limit: 10);
-          isPickerClosed = true;
-          context.read<AmityToastBloc>().add(AmityToastDismiss());
-        } catch (e) {
-          isPickerClosed = true;
-
-          PermissionAlertV4Dialog().show(
-            context: context,
-            title: 'Allow access to your photos',
-            detailText:
-                'This allows $appName to share photos from this device and save photos to it.',
-            bottomButtonText: 'OK',
-            topButtonText: 'Open settings',
-            onTopButtonAction: () {
-              openAppSettings();
-            },
-          );
-          context.read<AmityToastBloc>().add(AmityToastDismiss());
-        }
-      }
-
-      if (files.isNotEmpty) {
-        if (selectedFiles.length + files.length > 10) {
-          AmityV4Dialog().showAlertErrorDialog(
-            title: "Maximum upload limit reached",
-            message:
-                "You’ve reached the upload limit of 10 $typeText. Any additional $typeText will not be saved.",
-            closeText: "Close",
-          );
-        } else {
-          if (type == FileType.image) {
-            for (var image in files) {
-              context.read<PostComposerBloc>().add(
-                    PostComposerSelectImagesEvent(selectedImage: image),
-                  );
-            }
-          } else {
-            for (var video in files) {
-              context.read<PostComposerBloc>().add(
-                    PostComposerSelectVideosEvent(selectedVideos: video),
-                  );
-            }
-          }
-        }
-      } else {
-        context.read<AmityToastBloc>().add(AmityToastDismiss());
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-    return null;
-  }
-
-  Widget _mediaView(BuildContext context,
-      MapEntry<String, AmityFileInfoWithUploadStatus> file) {
-    var progress = file.value.progress;
-    var isError = file.value.isError;
-    var isUploaded = file.value.isUploaded;
-
-    if (isError) {
-      isPostButtonEnabled = false;
-    }
-
-    Widget mediaContent() {
-      if (file.value.type == FileType.video) {
-        if (file.value.videoThumbnail != null) {
-          // New video
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SingleVideoPlayer(
-                    initialIndex: 0,
-                    filePath: file.key,
-                    fileUrl: null,
-                  ),
-                ),
-              );
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.memory(
-                file.value.videoThumbnail!,
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        } else if (file.value.uploadedUrl != null) {
-          // Existing video
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SingleVideoPlayer(
-                    initialIndex: 0,
-                    filePath: null,
-                    fileUrl: file.key,
-                  ),
-                ),
-              );
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(file.value.uploadedUrl!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-      } else if (selectedMediaType == FileType.image) {
-        if (file.value.uploadedUrl != null) {
-          // Existing image
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(file.value.uploadedUrl!),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          );
-        } else {
-          // New image
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.file(
-              File(file.key),
-              fit: BoxFit.cover,
-            ),
-          );
-        }
-      }
-      return const SizedBox.shrink();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          mediaContent(),
-          if (progress < 100 && !isUploaded && !isError)
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Center(
-                child: CircularProgressIndicator(
-                  value: progress / 100.0,
-                  strokeWidth: 3,
-                  backgroundColor: Colors.white,
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-                ),
-              ),
-            ),
-          if (progress == 100 && file.value.type == FileType.video)
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                width: 28,
-                height: 28,
-                decoration: const ShapeDecoration(
-                  color: Color(0x40000000),
-                  shape: OvalBorder(),
-                ),
-                child: const Icon(
-                  Icons.play_arrow,
-                  size: 24.0,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  context.read<PostComposerBloc>().add(
-                        PostComposerDeleteFileEvent(filePath: file.key),
-                      );
-                  if (selectedMediaType == FileType.image) {
-                    existingImages.remove(file.value.uploadedUrl);
-                  } else if (selectedMediaType == FileType.video) {
-                    existingVideos.remove(file.value.uploadedUrl);
-                  }
-                },
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-                  child: Container(
-                    color: theme.baseColor.withOpacity(0.5),
-                    child: SvgPicture.asset(
-                      'assets/Icons/amity_ic_close_button.svg',
-                      package: 'amity_uikit_beta_service',
-                      width: 24,
-                      height: 24,
-                      colorFilter:
-                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          if (isError)
-            Center(
-              child: SvgPicture.asset(
-                'assets/Icons/amity_ic_upload_error.svg',
-                package: 'amity_uikit_beta_service',
-                width: 28,
-                height: 28,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _mediaListView(
-      BuildContext context, Map<String, AmityFileInfoWithUploadStatus> files) {
-    switch (files.length) {
-      case 0:
-        return Container();
-      case 1:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: _mediaView(context, files.entries.first),
-        );
-
-      case 2:
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Row(children: [
-            Expanded(child: _mediaView(context, files.entries.toList()[0])),
-            Expanded(child: _mediaView(context, files.entries.toList()[1]))
-          ]),
-        );
-
-      default:
-        return GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: files.entries.map((entry) {
-            return _mediaView(context, entry);
-          }).toList(),
-        );
-    }
-  }
-
   void _initializeController(BuildContext context) {
     if (options.mode == AmityPostComposerMode.edit &&
         options.post?.data is TextData) {
-      _controller.text = (options.post!.data as TextData).text ?? '';
+      final text = (options.post!.data as TextData).text ?? '';
+      var mentionList = List<AmityUserMentionMetadata>.empty();
+
+      if (options.post!.metadata != null) {
+        final mentionedGetter =
+            AmityMentionMetadataGetter(metadata: options.post!.metadata!);
+        mentionList = mentionedGetter.getMentionedUsers();
+      }
+
+      textController.populate(text, mentionList);
     }
-    _controller.addListener(() {
+    textController.addListener(() {
       context
           .read<PostComposerBloc>()
-          .add(PostComposerTextChangeEvent(text: _controller.text));
+          .add(PostComposerTextChangeEvent(text: textController.text));
     });
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: theme.backgroundColor,
-      title: Text(
-        _getPageTitle(),
-        style: TextStyle(
-            fontWeight: FontWeight.w600, fontSize: 17, color: theme.baseColor),
-      ),
-      leading: IconButton(
-        icon: SvgPicture.asset(
-          'assets/Icons/amity_ic_close_button.svg',
-          package: 'amity_uikit_beta_service',
-          width: 24,
-          height: 24,
-          colorFilter: ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
-        ),
-        onPressed: () => _handleClose(context),
-      ),
-      centerTitle: true,
-      actions: [_buildActionButton(context)],
-    );
-  }
-
-  String _getPageTitle() {
-    if (options.mode == AmityPostComposerMode.edit) {
-      return "Edit Post";
-    } else if (options.targetType == AmityPostTargetType.USER) {
-      return "My Timeline";
-    } else {
-      return options.community?.displayName ?? '';
+  void handleClose(BuildContext context) {
+    // Prevent closing while post is being created
+    if (isPosting) {
+      return;
     }
-  }
-
-  Widget _buildActionButton(BuildContext context) {
-    return TextButton(
-      onPressed: isPostButtonEnabled ? () => _handleAction(context) : null,
-      child: Text(
-        options.mode == AmityPostComposerMode.edit ? "Save" : "Post",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w400,
-          color: isPostButtonEnabled
-              ? theme.primaryColor
-              : theme.primaryColor.blend(ColorBlendingOption.shade2),
-        ),
-      ),
-    );
-  }
-
-  void _handleClose(BuildContext context) {
+    
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Discard this post?',
-      detailText: 'The post will be permanently deleted. It cannot be undone.',
-      leftButtonText: 'Keep editing',
-      rightButtonText: 'Discard',
+      title: context.l10n.post_discard,
+      detailText: context.l10n.post_discard_description,
+      leftButtonText: context.l10n.general_keep_editing,
+      rightButtonText: context.l10n.general_discard,
       onConfirm: () {
         Navigator.pop(context);
         onPopRequested?.call(true);
@@ -708,7 +420,15 @@ class PostComposerPage extends NewBasePage {
     );
   }
 
-  void _handleAction(BuildContext context) {
+  void handleAction(BuildContext context) {
+    // Prevent multiple submissions
+    if (isPosting) {
+      return;
+    }
+
+    // Disable the button immediately
+    isPosting = true;
+
     if (options.mode == AmityPostComposerMode.edit) {
       _editPost(context);
     } else {
@@ -717,34 +437,104 @@ class PostComposerPage extends NewBasePage {
   }
 
   void _editPost(BuildContext context) {
+    // Get mention metadata
+    final mentionMetadataList = textController.getAmityMentionMetadata();
+    final mentionUserIds = textController.getMentionUserIds();
+    final mentionMetadataJson =
+        AmityMentionMetadataCreator(mentionMetadataList).create();
+
     if (selectedMediaType == FileType.image) {
-      List<AmityImage> images = existingImages.values.toList();
+      List<AmityImage> images = existingImages.toList();
+      var imageList = selectedFiles.entries;
+      for (var image in imageList) {
+        if (image.value.fileInfo != null &&
+            image.value.fileInfo!.getFileProperties != null) {
+          images.add(AmityImage(image.value.fileInfo!.getFileProperties!));
+        }
+      }
+
       options.post
           ?.edit()
           .image(images)
-          .text(_controller.text)
+          .text(textController.text)
+          .mentionUsers(mentionUserIds)
+          .metadata(mentionMetadataJson)
           .build()
           .update()
           .then((post) {
-        context.read<GlobalFeedBloc>().add(GlobalFeedReloadThePost(post: post));
         Navigator.pop(context);
       }).onError((error, stackTrace) {
-        _showToast(context, "Failed to edit post. Please try again.",
-            AmityToastIcon.warning);
+        // Re-enable button on error to allow retry
+        isPosting = false;
+        _showToast(
+            context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
     } else {
       final postEditBuilder = options.post?.edit();
+      List<AmityVideo> videosToUpload = [];
 
-      if (currentVideos != null) {
-        postEditBuilder?.video(currentVideos!);
+      // First, add all existing videos that haven't been deleted
+      for (var video in existingVideoObjects) {
+        if (video.getFileProperties != null) {
+          String videoUrl = video.getFileProperties!.fileUrl ?? "";
+          // Check if this video should still be included
+          // (it's still in the selectedFiles list)
+          bool shouldInclude = false;
+          for (var entry in selectedFiles.entries) {
+            if (entry.key == videoUrl) {
+              shouldInclude = true;
+              break;
+            }
+          }
+
+          if (shouldInclude || selectedFiles.isEmpty) {
+            videosToUpload.add(video);
+          }
+        }
       }
 
-      postEditBuilder?.text(_controller.text).build().update().then((post) {
-        context.read<GlobalFeedBloc>().add(GlobalFeedReloadThePost(post: post));
+      // Then add any newly uploaded videos
+      for (var entry in selectedFiles.entries) {
+        // Skip videos that are already in existingVideoObjects
+        bool isExisting = false;
+        for (var video in existingVideoObjects) {
+          String url = video.getFileProperties?.fileUrl ?? "";
+          if (url == entry.key) {
+            isExisting = true;
+            break;
+          }
+        }
+
+        // If it's a new video, add it
+        if (!isExisting &&
+            entry.value.fileInfo != null &&
+            entry.value.fileInfo!.getFileProperties != null) {
+          AmityVideo video =
+              AmityVideo(entry.value.fileInfo!.getFileProperties!);
+          videosToUpload.add(video);
+        }
+      }
+
+      if (videosToUpload.isNotEmpty) {
+        postEditBuilder?.video(videosToUpload);
+      } else {
+        // If all videos were removed, send an empty list
+        postEditBuilder?.video([]);
+      }
+
+      postEditBuilder
+          ?.text(textController.text)
+          .mentionUsers(mentionUserIds)
+          .metadata(mentionMetadataJson)
+          .build()
+          .update()
+          .then((post) {
         Navigator.pop(context);
       }).onError((error, stackTrace) {
-        _showToast(context, "Failed to edit post. Please try again.",
-            AmityToastIcon.warning);
+        // Re-enable button on error to allow retry
+        isPosting = false;
+        _showToast(
+            context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
     }
   }
@@ -752,8 +542,8 @@ class PostComposerPage extends NewBasePage {
   void _createPost(BuildContext context) {
     final targetId = options.targetId;
 
-    context.read<AmityToastBloc>().add(const AmityToastLoading(
-        message: "Posting", icon: AmityToastIcon.loading));
+    context.read<AmityToastBloc>().add(AmityToastLoading(
+        message: context.l10n.general_posting, icon: AmityToastIcon.loading));
 
     var targetBuilder = AmitySocialClient.newPostRepository().createPost();
 
@@ -777,7 +567,7 @@ class PostComposerPage extends NewBasePage {
           videos.add(video);
         }
         postCreatorBuilder =
-            dataTypeSelector.video(videos).text(_controller.text);
+            dataTypeSelector.video(videos).text(textController.text);
       } else {
         List<AmityImage> images = [];
         var imageList = selectedFiles.entries;
@@ -785,24 +575,55 @@ class PostComposerPage extends NewBasePage {
           images.add(AmityImage(image.value.fileInfo!.getFileProperties!));
         }
         postCreatorBuilder =
-            dataTypeSelector.image(images).text(_controller.text);
+            dataTypeSelector.image(images).text(textController.text);
       }
     } else {
-      postCreatorBuilder = dataTypeSelector.text(_controller.text);
+      postCreatorBuilder = dataTypeSelector.text(textController.text);
     }
+    final mentionMetadataList = textController.getAmityMentionMetadata();
+    final mentionUserIds = textController.getMentionUserIds();
+    final mentionMetadataJson =
+        AmityMentionMetadataCreator(mentionMetadataList).create();
 
-    postCreatorBuilder.post().then((post) {
+    postCreatorBuilder
+        .mentionUsers(mentionUserIds)
+        .metadata(mentionMetadataJson)
+        .post()
+        .then((post) {
       _onPostSuccess(context, post);
     }).onError((error, stackTrace) {
-      _showToast(context, "Failed to create post. Please try again.",
-          AmityToastIcon.warning);
+      // Re-enable button on error to allow retry
+      isPosting = false;
+      _showToast(
+          context, context.l10n.error_create_post, AmityToastIcon.warning);
     });
   }
 
   void _onPostSuccess(BuildContext context, AmityPost post) {
+    var isPostReviewEnabled = false;
+    var isModerator = false;
+
+    // Check if post review is enabled or not
+    if (post.target is CommunityTarget) {
+      final commTarget = post.target as CommunityTarget;
+      isPostReviewEnabled =
+          commTarget.targetCommunity?.isPostReviewEnabled ?? false;
+
+      // Check if user has moderator permission
+      isModerator =
+          AmityCoreClient.hasPermission(AmityPermission.EDIT_COMMUNITY)
+              .atCommunity(commTarget.targetCommunityId ?? "")
+              .check();
+    }
+
     context.read<AmityToastBloc>().add(AmityToastDismiss());
     Future.delayed(const Duration(milliseconds: 500), () {
-      context.read<GlobalFeedBloc>().add(GlobalFeedAddLocalPost(post: post));
+      final shouldShowModeratorPost = isModerator;
+      final shouldShowMemberPost = !isPostReviewEnabled && !isModerator;
+      // We do not want to show posts which requires moderator approval in feed immediately after creation.
+      if (shouldShowMemberPost || shouldShowModeratorPost) {
+        context.read<GlobalFeedBloc>().add(GlobalFeedAddLocalPost(post: post));
+      }
       Navigator.pop(context);
       onPopRequested?.call(true);
     });
@@ -812,20 +633,5 @@ class PostComposerPage extends NewBasePage {
     context
         .read<AmityToastBloc>()
         .add(AmityToastShort(message: message, icon: icon));
-  }
-
-  Widget _buildTextField() {
-    return TextFormField(
-      controller: _controller,
-      maxLines: null,
-      textCapitalization: TextCapitalization.sentences,
-      decoration: InputDecoration(
-        hintText: "What’s going on...",
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        hintStyle: TextStyle(color: theme.baseColorShade3),
-      ),
-    );
   }
 }

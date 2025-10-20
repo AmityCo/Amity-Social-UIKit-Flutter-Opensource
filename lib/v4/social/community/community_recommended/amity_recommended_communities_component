@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+
+class AmityRecommendedCommunitiesComponent extends StatelessWidget {
+  final Function(CommunityListState) onStateChanged;
+
+  const AmityRecommendedCommunitiesComponent({
+    Key? key,
+    required this.onStateChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: Text(
+            context.l10n.community_recommended_for_you,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        SizedBox(
+          height: 263,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemBuilder: (context, index) => _buildCommunityCard(context),
+            itemCount: 4,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCommunityCard(BuildContext context) {
+    return Container(
+      width: 268,
+      margin: const EdgeInsets.only(right: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Community Image
+          Container(
+            height: 125,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+            ),
+          ),
+          // Community Info
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              border: Border.all(color: Theme.of(context).dividerColor),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.lock, size: 16),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        context.l10n.community_name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8), // Spacer for better alignment
+                Row(
+                  children: [
+                    Text(
+                      context.l10n.community_placeholder_members,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                    const Spacer(), // Push Join Button to the right
+                    _buildJoinButton(context),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildJoinButton(BuildContext context) {
+    return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Icon(Icons.add, color: Colors.white, size: 16),
+          SizedBox(width: 4),
+          Text(
+            context.l10n.community_join,
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,7 +1,7 @@
 name: amity_uikit_beta_service
 description: Amity UIkit opensource developed by SLE team to enable social feature in Flutter.
-version: 3.0.6
-homepage: https://github.com/AmityCo/Amity-Social-UIKit-Flutter-Opensource
+version: 4.19.2
+homepage: https://github.com/ThanakornThanom/ThanakornThanom--flutter_amity_uikit_beta_service
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
@@ -10,6 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2  # Use the version compatible with your Flutter version
   plugin_platform_interface: ^2.0.2
   animation_wrappers: ^3.0.0
   font_awesome_flutter: ^10.1.0
@@ -20,32 +23,34 @@ dependencies:
   flutter_phoenix: ^1.0.0
   flutter_launcher_icons: ^0.13.1
   modal_bottom_sheet: ^3.0.0
-  amity_sdk: ^0.52.1
+  amity_sdk: ^7.7.1
+      #path: ../Amity-Social-Cloud-SDK-Flutter-Internal
+  image_gallery_saver_plus: ^4.0.1
+  dio: ^5.0.0
   provider: ^6.0.3
   carousel_slider: ^5.0.0
   chewie: ^1.3.4
   video_player: ^2.4.5
   # extended_image: ^6.2.1
-  intl: ^0.18.1
-  image_picker: ^1.0.4
-  socket_io_client: ^1.0.0
-  get_time_ago: ^1.1.5
+  image_picker: ^1.1.2
+  image_picker_android: ^0.8.12+22
+  image_picker_platform_interface: ^2.10.1
+  get_time_ago: ^2.3.2
   shimmer: ^3.0.0
-  dio:
   sign_in_with_apple: ^6.1.2
-  any_link_preview: ^3.0.1
+  any_link_preview: ^3.0.3
   linkwell: ^2.0.6
   linkify: ^5.0.0
   flutter_link_previewer: ^3.1.0
   url_launcher: ^6.1.6
-  flutter_sticky_header: ^0.6.5
+  flutter_sticky_header: ^0.8.0
   path_provider: ^2.0.2
-  video_thumbnail: ^0.5.3
+  video_thumbnail: ^0.5.6
   mime: ^1.0.4
-  file_picker: ^6.0.0
-  open_file: ^3.5.1
+  file_picker: ^9.0.2
+  open_file: ^3.5.10
   flutter_svg: ^2.0.9
-  permission_handler: ^11.0.1
+  permission_handler: ^11.3.1
   intrinsic_dimension: ^0.3.1
   flutter_linkify: ^6.0.0
   camera: ^0.11.0+1
@@ -54,21 +59,28 @@ dependencies:
   cached_network_image: ^3.3.1
   validators: ^3.0.0
   visibility_detector: ^0.4.0+2
-  package_info_plus : ^4.0.0
+  package_info_plus : ^8.0.0
   device_info_plus: ^10.1.2
   palette_generator: ^0.3.3+4
-  ffi: ^2.1.3
+  connectivity_plus: ^6.1.0
+  photo_manager: ^3.6.3
+  diff_match_patch: ^0.4.1
+  flutter_markdown: ^0.6.14
+  markdown: ^7.0.0
+  diacritic: ^0.1.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_gen: ^5.0.0  # Optional but useful for code generation
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
   # This section identifies this Flutter project as a plugin project.
   # The 'pluginClass' specifies the class (in Java, Kotlin, Swift, Objective-C, etc.)
   # which should be registered in the plugin registry. This is required for
@@ -105,8 +117,7 @@ flutter:
     - assets/images/noVideo.png
     - assets/config/config.json
     - assets/
-
-
+    - assets/lang/
 
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

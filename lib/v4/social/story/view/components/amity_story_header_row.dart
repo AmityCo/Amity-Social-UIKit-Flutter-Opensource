@@ -1,5 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_story_modal_bottom_sheet.dart';
@@ -25,6 +26,7 @@ class AmityStoryHeaderRow extends StatelessWidget {
   final Function navigateToCreatePage;
   final Function onStoryDelete;
   final Function(AmityCommunity) navigateToCommunityProfilePage;
+  final AmityThemeColor? theme;
 
   const AmityStoryHeaderRow({
     super.key,
@@ -40,10 +42,12 @@ class AmityStoryHeaderRow extends StatelessWidget {
     required this.onCloseClicked,
     required this.navigateToCreatePage,
     required this.navigateToCommunityProfilePage,
+    this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
+    
     return BlocBuilder<ViewStoryBloc, ViewStoryState>(
       builder: (context, state) {
         return Container(
@@ -58,7 +62,7 @@ class AmityStoryHeaderRow extends StatelessWidget {
                   shouldRestart: shouldRestartTimer,
                   totalSegments: totalSegments,
                   currentSegment: currentSegment,
-                  duration: story!.dataType == AmityStoryDataType.VIDEO ? (AmityStorySingleSegmentTimerElement.totalValue + 1) : 7,
+                  duration: story!.dataType == AmityStoryDataType.VIDEO ? (StoryTimerStateManager.totalValue + 1) : 7,
                   moveToNextSegment: () {
                     moveToNextSegment();
                   },
@@ -116,71 +120,79 @@ class AmityStoryHeaderRow extends StatelessWidget {
                     width: 10,
                   ),
                   (state.community != null)
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  state.community!.displayName ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "SF Pro Text",
+                      ? Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      state.community!.displayName ?? "",
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "SF Pro Text",
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                                (state.community?.isOfficial != null && state.community?.isOfficial == true)?
-                                const SizedBox(
-                                  width: 5,
-                                ):const SizedBox(),
-                                (state.community?.isOfficial != null && state.community?.isOfficial == true)
-                                    ? SvgPicture.asset(
+                                  if (state.community?.isOfficial == true)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: SvgPicture.asset(
                                         "assets/Icons/ic_verified_white.svg",
                                         height: 16,
                                         width: 16,
                                         package: 'amity_uikit_beta_service',
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  story!.createdAt!.toSocialTimestamp(),
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
-                                    fontFamily: "SF Pro Text",
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    story!.createdAt!.toSocialTimestamp(context),
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                      fontFamily: "SF Pro Text",
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  height: 3,
-                                  width: 3,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 5,
+                                  Container(
+                                    height: 3,
+                                    width: 3,
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 5,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
                                   ),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
+                                  Expanded(
+                                    child: Text(
+                                      "By ${story?.creator?.displayName}",
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "SF Pro Text",
+                                        color: Colors.white,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "By ${story?.creator?.displayName}",
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: "SF Pro Text",
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
+                                ],
+                              )
+                            ],
+                          ),
                         )
                       : SizedBox(
                           width: 200,
@@ -222,63 +234,62 @@ class AmityStoryHeaderRow extends StatelessWidget {
                             ],
                           ),
                         ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        (story?.creatorId == AmityCoreClient.getUserId() || state.hasManageStoryPermission)
-                            ? IconButton(
-                                onPressed: () {
-                                  BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
-                                  if (story!.dataType == AmityStoryDataType.VIDEO) {
-                                    BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
-                                  }
-                                  amityStoryModalBottomSheetOverFlowMenu(
-                                    context: context,
-                                    storyId: story!.storyId!,
-                                    onDeleted: onStoryDelete,
-                                    story: story!,
-                                    deleteClicked: (String storyId) {
-                                      ConfirmationDialog().show(
-                                        context: context,
-                                        title: 'Delete this story?',
-                                        detailText: 'This story will be permanently deleted.\n You’ll no longer to see and find this story',
-                                        leftButtonText: 'Cancel',
-                                        rightButtonText: 'Delete',
-                                        onConfirm: () {
-                                          BlocProvider.of<ViewStoryBloc>(context).add(DeleteStoryEvent(storyId: storyId));
-                                          BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
-                                          if (story!.dataType == AmityStoryDataType.VIDEO) {
-                                            BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
-                                          }
-                                          onStoryDelete();
-                                        },
-                                      );
-                                    },
-                                  );
-                                },
-                                icon: SvgPicture.asset(
-                                  "assets/Icons/ic_dots_horizontal.svg",
-                                  package: 'amity_uikit_beta_service',
-                                  width: 16,
-                                ),
-                              )
-                            : Container(),
-                        const SizedBox(
-                          width: 5,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      (story?.creatorId == AmityCoreClient.getUserId() || state.hasManageStoryPermission)
+                          ? IconButton(
+                              onPressed: () {
+                                BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
+                                if (story!.dataType == AmityStoryDataType.VIDEO) {
+                                  BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
+                                }
+                                amityStoryModalBottomSheetOverFlowMenu(
+                                  context: context,
+                                  storyId: story!.storyId!,
+                                  onDeleted: onStoryDelete,
+                                  story: story!,
+                                  theme: theme,
+                                  deleteClicked: (String storyId) {
+                                    ConfirmationDialog().show(
+                                      context: context,
+                                      title: 'Delete this story?',
+                                      detailText: 'This story will be permanently deleted.\n You’ll no longer to see and find this story',
+                                      leftButtonText: 'Cancel',
+                                      rightButtonText: 'Delete',
+                                      onConfirm: () {
+                                        BlocProvider.of<ViewStoryBloc>(context).add(DeleteStoryEvent(storyId: storyId));
+                                        BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));
+                                        if (story!.dataType == AmityStoryDataType.VIDEO) {
+                                          BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
+                                        }
+                                        onStoryDelete();
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                              icon: SvgPicture.asset(
+                                "assets/Icons/ic_dots_horizontal.svg",
+                                package: 'amity_uikit_beta_service',
+                                width: 16,
+                              ),
+                            )
+                          : Container(),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: SvgPicture.asset(
+                          "assets/Icons/ic_close_white.svg",
+                          package: 'amity_uikit_beta_service',
+                          width: 12,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: SvgPicture.asset(
-                            "assets/Icons/ic_close_white.svg",
-                            package: 'amity_uikit_beta_service',
-                            width: 12,
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   )
                 ],
               )

@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community_search_result/community_search_result.dart';
 import 'package:amity_uikit_beta_service/v4/social/global_search/bloc/global_search_bloc.dart';
@@ -67,8 +68,9 @@ class AmitySocialGlobalSearchPage extends NewBasePage {
                     Column(
                       children: [
                         AmityTopSearchBarComponent(
+                          pageId: pageId,
                           textcontroller: textcontroller,
-                          hintText: 'Search community and user',
+                          hintText: context.l10n.global_search_hint,
                           onTextChanged: (value) {
                             _debouncer.run(() {
                               context
@@ -111,9 +113,9 @@ class AmitySocialGlobalSearchPage extends NewBasePage {
                                 color: theme.baseColorShade3,
                                 fontFamily: 'SF Pro Text',
                               ),
-                              tabs: const [
-                                Tab(text: "Communities"),
-                                Tab(text: "Users"),
+                              tabs: [
+                                Tab(text: context.l10n.title_communities),
+                                Tab(text: context.l10n.title_users),
                               ],
                             ),
                           ),
@@ -122,8 +124,10 @@ class AmitySocialGlobalSearchPage extends NewBasePage {
                             child: TabBarView(
                               children: [
                                 AmityCommunitySearchResultComponent(
+                                    pageId: pageId,
                                     viewModel: communitySearchViewModel),
                                 AmityUserSearchResultComponent(
+                                    pageId: pageId,
                                     viewModel: userSearchViewModel)
                               ],
                             ),

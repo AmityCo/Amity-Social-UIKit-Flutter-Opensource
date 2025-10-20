@@ -1,0 +1,237 @@
+import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/Skeleton/user_skeleton_list.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/bottom_sheet_menu.dart';
+import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/user_moderation_confirmation_handler.dart';
+import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+
+// Internal Component
+class UserFollowListComponent extends NewBaseComponent {
+  final String userId;
+  final AmityUserRelationshipPageTab selectedTab;
+
+  UserFollowListComponent(
+      {required this.userId, required this.selectedTab, super.key})
+      : super(componentId: 'user_relationship_list');
+
+  final scrollController = ScrollController();
+
+  @override
+  Widget buildComponent(BuildContext context) {
+    return BlocProvider(
+      create: (context) => UserRelationshipBloc(userId, selectedTab),
+      child: BlocBuilder<UserRelationshipBloc, UserRelationshipState>(
+          builder: (context, state) {
+        scrollController.addListener(() {
+          if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent) {
+            context
+                .read<UserRelationshipBloc>()
+                .addEvent(UserRelationshipLoadNextPage());
+          }
+        });
+
+        if (state.isLoading && state.followUsers.isEmpty) {
+          return UserSkeletonLoadingView(
+            itemCount: 8,
+          );
+        } else if (!state.isLoading && state.followUsers.isEmpty) {
+          return Container(
+            alignment: Alignment.center,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    "assets/Icons/amity_ic_user_profile_empty_state.svg",
+                    package: "amity_uikit_beta_service",
+                    width: 60,
+                    height: 60,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Nothing here to see yet",
+                    style: AmityTextStyle.titleBold(theme.baseColorShade3),
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            margin: const EdgeInsets.only(top: 8),
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: state.followUsers.length,
+              itemBuilder: (context, index) {
+                final relationship = state.followUsers[index];
+                final user =
+                    selectedTab == AmityUserRelationshipPageTab.following
+                        ? state.followUsers[index].targetUser
+                        : state.followUsers[index].sourceUser;
+
+                return ListTile(
+                  contentPadding: const EdgeInsets.only(left: 16, right: 8),
+                  leading: AmityUserAvatar(
+                      avatarUrl: user?.avatarUrl,
+                      displayName: user?.displayName ?? "",
+                      isDeletedUser: user?.isDeleted ?? false),
+                  title: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          user?.displayName ?? "",
+                          style: AmityTextStyle.bodyBold(theme.baseColor),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (user?.isBrand ?? false) brandBadge()
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.more_horiz),
+                    color: theme.baseColor,
+                    onPressed: () {
+                      showAvailableActions(context, user,
+                          relationship.status ?? AmityFollowStatus.NONE);
+                    },
+                  ),
+                  horizontalTitleGap: 12,
+                  onTap: () {
+                    // Go to that user profile
+                    final userId = user?.userId;
+                    if (userId != null && userId.isNotEmpty) {
+                      AmityUIKit4Manager.behavior.userRelationshipPageBehavior
+                          .goToUserProfilePage(context, userId);
+                    }
+                  },
+                );
+              },
+            ),
+          );
+        }
+      }),
+    );
+  }
+
+  // Pass user object here
+  void showAvailableActions(
+      BuildContext context, AmityUser? user, AmityFollowStatus followStatus) {
+    final AmityToastBloc toastBloc = context.read<AmityToastBloc>();
+    final UserRelationshipBloc relationshipBloc =
+        context.read<UserRelationshipBloc>();
+
+    final userId = user?.userId ?? "";
+
+    final reportAction = BottomSheetMenuOption(
+        title: context.l10n.user_report,
+        icon: "assets/Icons/amity_ic_report_user.svg",
+        onTap: () {
+          Navigator.of(context).pop();
+
+          relationshipBloc.addEvent(UserModerationEvent(
+              action: UserModerationAction.report,
+              userId: userId,
+              toastBloc: context.read<AmityToastBloc>(),
+              successMessage: context.l10n.user_report_success,
+              errorMessage: context.l10n.user_report_error));
+        });
+
+    final unreportAction = BottomSheetMenuOption(
+        title: context.l10n.user_unreport,
+        icon: "assets/Icons/amity_ic_unreport_user.svg",
+        onTap: () {
+          Navigator.of(context).pop();
+
+          relationshipBloc.addEvent(UserModerationEvent(
+              action: UserModerationAction.unreport,
+              userId: userId,
+              toastBloc: toastBloc,
+              successMessage: context.l10n.user_unreport_success,
+              errorMessage: context.l10n.user_unreport_error));
+        });
+
+    final blockUser = BottomSheetMenuOption(
+        title: context.l10n.user_block,
+        icon: "assets/Icons/amity_ic_block_user.svg",
+        onTap: () {
+          Navigator.of(context).pop();
+
+          final confirmationHandler =
+              UserModerationConfirmationHandler(context: context, theme: theme);
+          confirmationHandler.askConfirmationToBlockUser(
+              displayName: user?.displayName ?? "",
+              onConfirm: () {
+                relationshipBloc.addEvent(UserModerationEvent(
+                    action: UserModerationAction.block,
+                    userId: userId,
+                    toastBloc: toastBloc,
+                    successMessage: context.l10n.user_block_success,
+                    errorMessage: context.l10n.user_block_error));
+              });
+        });
+
+    final unblockUser = BottomSheetMenuOption(
+        title: context.l10n.user_unblock,
+        icon: "assets/Icons/amity_ic_block_user.svg",
+        onTap: () {
+          Navigator.of(context).pop();
+
+          final confirmationHandler =
+              UserModerationConfirmationHandler(context: context, theme: theme);
+          confirmationHandler.askConfirmationToUnblockUser(
+              displayName: user?.displayName ?? "",
+              onConfirm: () {
+                relationshipBloc.addEvent(UserModerationEvent(
+                    action: UserModerationAction.unblock,
+                    userId: userId,
+                    toastBloc: toastBloc,
+                    successMessage: context.l10n.user_unblock_success,
+                    errorMessage: context.l10n.user_unblock_error));
+              });
+        });
+
+    final isReported = user?.isFlaggedByMe ?? false;
+
+    List<BottomSheetMenuOption> options = [];
+    if (isReported) {
+      options.add(unreportAction);
+    } else {
+      options.add(reportAction);
+    }
+
+    if (followStatus == AmityFollowStatus.BLOCKED) {
+      options.add(unblockUser);
+    } else {
+      options.add(blockUser);
+    }
+
+    BottomSheetMenu(options: options).show(context, theme);
+  }
+}
+
+Widget brandBadge() {
+  return Container(
+    padding: const EdgeInsets.only(left: 4),
+    child: SvgPicture.asset(
+      'assets/Icons/amity_ic_brand.svg',
+      package: 'amity_uikit_beta_service',
+      fit: BoxFit.fill,
+      width: 18,
+      height: 18,
+    ),
+  );
+}

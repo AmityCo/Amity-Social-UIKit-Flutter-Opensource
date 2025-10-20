@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
@@ -7,10 +8,19 @@ part 'story_draft_event.dart';
 part 'story_draft_state.dart';
 
 class StoryDraftBloc extends Bloc<StoryDraftEvent, StoryDraftState> {
+  StreamSubscription<AmityStoryTarget>? _storyTargetSubscription;
+  
   StoryDraftBloc() : super(StoryDraftInitial()) {
     on<ObserveStoryTargetEvent>((event, emit) {
-      AmitySocialClient.newStoryRepository().live.getStoryTaregt(targetType: event.targetType, targetId: event.communityId).asBroadcastStream().listen((event) {
-        add(NewStoryTargetEvent(storyTarget: event));
+      // Cancel any existing subscription before creating a new one
+      _storyTargetSubscription?.cancel();
+      
+      _storyTargetSubscription = AmitySocialClient.newStoryRepository()
+          .live
+          .getStoryTaregt(targetType: event.targetType, targetId: event.communityId)
+          .asBroadcastStream()
+          .listen((storyTarget) {
+        add(NewStoryTargetEvent(storyTarget: storyTarget));
       });
     });
 
@@ -61,5 +71,11 @@ class StoryDraftBloc extends Bloc<StoryDraftEvent, StoryDraftState> {
         ..storyTarget = state.storyTarget
         ..imageDisplayMode = event.imageDisplayMode);
     });
+  }
+
+  @override
+  Future<void> close() async {
+    await _storyTargetSubscription?.cancel();
+    return super.close();
   }
 }

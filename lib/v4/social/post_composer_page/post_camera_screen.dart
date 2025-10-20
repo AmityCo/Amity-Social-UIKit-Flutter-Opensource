@@ -1,7 +1,10 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AmityPostCameraScreen extends StatefulWidget {
   FileType? selectedFileType;
@@ -48,14 +51,96 @@ class _AmityPostCameraScreenState extends State<AmityPostCameraScreen> {
   }
 
   Future<void> initializeCamera() async {
-    cameras = await availableCameras();
-    selectedCameraIndex = 0; // Start with the first camera
-    controller = CameraController(
-      cameras![selectedCameraIndex],
-      ResolutionPreset.high,
-    );
-    await controller?.initialize();
-    setState(() {});
+    try {
+      cameras = await availableCameras();
+      
+      if (cameras == null || cameras!.isEmpty) {
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+        return;
+      }
+      
+      selectedCameraIndex = 0; // Start with the first camera
+      controller = CameraController(
+        cameras![selectedCameraIndex],
+        ResolutionPreset.high,
+        enableAudio: true, // Enable audio for video recording
+      );
+      
+      await controller?.initialize();
+      
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      // Handle camera initialization errors (permission denied, camera unavailable, etc.)
+      
+      if (mounted) {
+        String errorMessage = e.toString();
+        
+        // Check if it's a microphone permission error
+        if (errorMessage.contains('AudioAccessDeniedWithoutPrompt') ||
+            (errorMessage.contains('microphone') && 
+             (errorMessage.contains('previously denied') || errorMessage.contains('without prompt')))) {
+          // User needs to go to settings to enable microphone permission
+          _showMicrophonePermissionDeniedDialog();
+        } 
+        // Check if it's a camera permission error
+        else if (errorMessage.contains('CameraAccessDeniedWithoutPrompt') || 
+            errorMessage.contains('User has previously denied')) {
+          // User needs to go to settings to enable camera permission
+          _showCameraPermissionDeniedDialog();
+        } 
+        // User just denied permission
+        else if (errorMessage.contains('CameraAccessDenied') || 
+                   errorMessage.contains('User denied the camera access') ||
+                   errorMessage.contains('AudioAccessDenied')) {
+          // User just denied, close silently
+          Navigator.of(context).pop();
+        } 
+        // Other errors
+        else {
+          Navigator.of(context).pop();
+        }
+      }
+    }
+  }
+
+  void _showCameraPermissionDeniedDialog() {
+    PermissionAlertV4Dialog().show(
+      context: context,
+      title: context.l10n.permission_camera_title,
+      detailText: context.l10n.permission_camera_detail,
+      bottomButtonText: context.l10n.general_cancel,
+      topButtonText: context.l10n.permission_open_settings,
+      onTopButtonAction: () {
+        openAppSettings();
+      },
+    ).then((_) {
+      // Close the camera screen after dialog is dismissed
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
+
+  void _showMicrophonePermissionDeniedDialog() {
+    PermissionAlertV4Dialog().show(
+      context: context,
+      title: context.l10n.permission_microphone_title,
+      detailText: context.l10n.permission_microphone_detail,
+      bottomButtonText: context.l10n.general_cancel,
+      topButtonText: context.l10n.permission_open_settings,
+      onTopButtonAction: () {
+        openAppSettings();
+      },
+    ).then((_) {
+      // Close the camera screen after dialog is dismissed
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   Future<void> switchCamera() async {
@@ -66,6 +151,7 @@ class _AmityPostCameraScreenState extends State<AmityPostCameraScreen> {
       controller = CameraController(
         cameras![selectedCameraIndex],
         ResolutionPreset.high,
+        enableAudio: true, // Enable audio for video recording
       );
       await controller?.initialize();
       setState(() {});

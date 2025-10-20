@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator_action.dart';
@@ -7,21 +10,25 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/comment_
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/bloc/post_detail_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/utils/Shimmer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AmityPostDetailPage extends NewBasePage {
   final String postId;
   final AmityPost? post;
+  final AmityPostCategory category;
+  final bool hideMenu;
   final AmityPostAction? action;
 
   AmityPostDetailPage({
     Key? key,
     required this.postId,
     this.post,
+    this.category = AmityPostCategory.general,
+    this.hideMenu = false,
     this.action,
   }) : super(key: key, pageId: 'post_detail_page');
 
@@ -42,71 +49,90 @@ class AmityPostDetailPage extends NewBasePage {
   Widget buildPostDetail(BuildContext context, PostDetailState state) {
     if (state is PostDetailStateInitial) {
       context.read<PostDetailBloc>().add(
-          PostDetailLoad(postId: (state as PostDetailStateInitial).postId));
+          PostDetailLoad(postId: state.postId));
       return Container(
           padding: const EdgeInsets.only(top: 74),
           decoration: BoxDecoration(color: theme.backgroundColor),
-          child: showShimmerContent());
+          child: showShimmerContent(context));
     } else if (state is PostDetailStateError) {
-      return Text(state.message);
+      return buildErrorPage(context);
     } else if (state is PostDetailStateLoaded) {
       return renderPage(
-          context: context, post: state.post, replyTo: state.replyTo);
+          context: context,
+          post: state.post,
+          replyTo: state.replyTo,
+          category: category,
+          hideMenu: hideMenu);
     } else {
       return Container();
     }
   }
 
-  Widget renderPage(
-      {required BuildContext context,
-      required AmityPost post,
-      AmityComment? replyTo}) {
+  Widget renderPage({
+    required BuildContext context,
+    required AmityPost post,
+    AmityComment? replyTo,
+    required AmityPostCategory category,
+    required bool hideMenu,
+  }) {
     ScrollController scrollController = ScrollController();
-    return BlocProvider(
-      create: (context) => PostItemBloc(),
-      child: Column(
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: theme.backgroundColor,
-                  title: const Text('Post'),
-                  titleTextStyle: TextStyle(
-                    color: theme.baseColor,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  pinned: true,
-                  centerTitle: true,
+    var isJoinedCommunity = true;
+    String? communityId;
+    if (post.target is CommunityTarget) {
+      final target = post.target as CommunityTarget;
+      final community = target.targetCommunity;
+      isJoinedCommunity = community?.isJoined ?? true;
+      communityId = target.targetCommunityId;
+      log("communityId: $communityId");
+    }
+    return Column(
+      children: [
+        Expanded(
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              SliverAppBar(
+                backgroundColor: theme.backgroundColor,
+                title: Text(context.l10n.general_post),
+                titleTextStyle: TextStyle(
+                  color: theme.baseColor,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                 ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    child: renderPost(
-                      context: context,
-                      post: post,
-                      scrollController: scrollController,
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.only(left: 12, right: 16, top: 7),
-                  sliver: AmityCommentListComponent(
-                    referenceId: postId,
-                    referenceType: AmityCommentReferenceType.POST,
-                    parentScrollController: scrollController,
-                    commentAction:
-                        CommentAction(onReply: (AmityComment? comment) {
-                      context
-                          .read<PostDetailBloc>()
-                          .add(PostDetailReplyComment(replyTo: comment));
-                    }),
+                pinned: true,
+                centerTitle: true,
+                iconTheme: IconThemeData(color: theme.baseColor),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  child: renderPost(
+                    context: context,
+                    post: post,
+                    category: category,
+                    hideMenu: hideMenu,
+                    scrollController: scrollController,
                   ),
                 ),
-              ],
-            ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.only(left: 12, right: 16, top: 7),
+                sliver: AmityCommentListComponent(
+                  referenceId: postId,
+                  referenceType: AmityCommentReferenceType.POST,
+                  shouldAllowInteraction: isJoinedCommunity,
+                  parentScrollController: scrollController,
+                  commentAction:
+                      CommentAction(onReply: (AmityComment? comment) {
+                    context
+                        .read<PostDetailBloc>()
+                        .add(PostDetailReplyComment(replyTo: comment));
+                  }),
+                ),
+              ),
+            ],
           ),
+        ),
+        if (!hideMenu) ...[
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(
@@ -115,6 +141,7 @@ class AmityPostDetailPage extends NewBasePage {
                 AmityCommentCreator(
                   referenceId: postId,
                   referenceType: AmityCommentReferenceType.POST,
+                  communityId: communityId,
                   replyTo: replyTo,
                   action: CommentCreatorAction(onDissmiss: () {
                     context
@@ -126,13 +153,15 @@ class AmityPostDetailPage extends NewBasePage {
             ),
           ),
         ],
-      ),
+      ],
     );
   }
 
   Widget renderPost({
     required BuildContext context,
     required AmityPost post,
+    required AmityPostCategory category,
+    required bool hideMenu,
     required ScrollController scrollController,
   }) {
     return Column(
@@ -140,6 +169,8 @@ class AmityPostDetailPage extends NewBasePage {
         AmityPostContentComponent(
           style: AmityPostContentComponentStyle.detail,
           post: post,
+          category: category,
+          hideMenu: hideMenu,
           action: action,
         ),
         getSectionDivider(),
@@ -155,7 +186,7 @@ class AmityPostDetailPage extends NewBasePage {
     );
   }
 
-  Widget showShimmerContent() {
+  Widget showShimmerContent(BuildContext context) {
     return Shimmer(
       linearGradient: configProvider.getShimmerGradient(),
       child: ShimmerLoading(
@@ -196,6 +227,79 @@ class AmityPostDetailPage extends NewBasePage {
                 const SkeletonText(width: 297),
                 const SizedBox(height: 12.0),
                 const SkeletonText(width: 180),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildErrorPage(BuildContext context) {
+    return Scaffold(
+      backgroundColor: theme.backgroundColor,
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/Icons/amity_ic_post_unavailable.svg',
+                  package: 'amity_uikit_beta_service',
+                  width: 61,
+                  height: 42,
+                  colorFilter: ColorFilter.mode(
+                    theme.baseColorShade4,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  context.l10n.post_unavailable_title,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: theme.baseColorShade3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  context.l10n.post_unavailable_description,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: theme.baseColorShade3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 24,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    context.l10n.general_go_back,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

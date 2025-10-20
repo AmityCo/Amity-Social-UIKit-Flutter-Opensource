@@ -10,8 +10,8 @@ import 'package:amity_uikit_beta_service/v4/social/social_home_page/social_home_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SocialHomePage extends NewBasePage {
-  SocialHomePage({super.key, required super.pageId});
+class AmitySocialHomePage extends NewBasePage {
+  AmitySocialHomePage({super.key}) : super(pageId: 'social_home_page');
 
   @override
   Widget buildPage(BuildContext context) {
@@ -36,10 +36,9 @@ class SocialHomePage extends NewBasePage {
                 preferredSize: const Size.fromHeight(kToolbarHeight),
                 child: AmitySocialHomeTopNavigationComponent(
                   pageId: pageId,
-                  componentId: "top_navigation",
                   selectedTab: currentTab,
                   searchButtonAction: () {
-                    if (currentTab == AmitySocialHomePageTab.newsFeed) {
+                    if (currentTab == AmitySocialHomePageTab.newsFeed || currentTab == AmitySocialHomePageTab.explore) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => AmitySocialGlobalSearchPage(),
@@ -63,7 +62,7 @@ class SocialHomePage extends NewBasePage {
                     pageId: 'social_home_page',
                   ),
                   const Expanded(child: TabContent()),
-                  AmityToast(elementId: "toast"),
+                  AmityToast(pageId: pageId, elementId: "toast"),
                 ],
               ),
             );

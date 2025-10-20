@@ -20,18 +20,37 @@ class AmityToastBloc extends Bloc<AmityToastEvent, AmityToastState> {
           style: AmityToastStyle.short,
           icon: event.icon,
           key: UniqueKey(),
+          bottomPadding: event.bottomPadding ?? 0.0,
         ),
       ),
     );
 
     on<AmityToastDismiss>(
-      (event, emit) => emit(
-        const AmityToastState(
-          message: "",
-          style: AmityToastStyle.hidden,
-          key: null,
-        ),
-      ),
+      (event, emit) {
+        emit(
+          const AmityToastState(
+            message: "",
+            style: AmityToastStyle.hidden,
+            key: null,
+            bottomPadding: 0.0,
+          ),
+        );
+      },
+    );
+
+    on<AmityToastDismissIfLoading>(
+      (event, emit) {
+        if (state.style == AmityToastStyle.loading) {
+          emit(
+            const AmityToastState(
+              message: "",
+              style: AmityToastStyle.hidden,
+              key: null,
+              bottomPadding: 0.0,
+            ),
+          );
+        }
+      },
     );
 
     on<AmityToastLoading>((event, emit) {
@@ -41,6 +60,7 @@ class AmityToastBloc extends Bloc<AmityToastEvent, AmityToastState> {
           style: AmityToastStyle.loading,
           icon: event.icon,
           key: UniqueKey(),
+          bottomPadding: event.bottomPadding ?? 0.0,
         ),
       );
     });

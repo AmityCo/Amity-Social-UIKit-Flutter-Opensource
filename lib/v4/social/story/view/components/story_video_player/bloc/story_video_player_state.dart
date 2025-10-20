@@ -7,7 +7,7 @@ abstract class StoryVideoPlayerState extends Equatable {
   const StoryVideoPlayerState( { required this.duration , required this.videoController , required this.chewieController });
   
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [runtimeType, videoController, chewieController, duration];
 }
 
 class StoryVideoPlayerInitial extends StoryVideoPlayerState {
@@ -16,9 +16,6 @@ class StoryVideoPlayerInitial extends StoryVideoPlayerState {
 
 class StoryVideoPlayerInitialized extends StoryVideoPlayerState {
   const StoryVideoPlayerInitialized({required super.videoController, required super.chewieController, required super.duration});
-
-  @override
-  List<Object> get props => [videoController!, chewieController!];
 }
 
 class StoryVideoPlayerPlaying extends StoryVideoPlayerState {
@@ -27,9 +24,6 @@ class StoryVideoPlayerPlaying extends StoryVideoPlayerState {
 
 class StoryVideoPlayerDisposed extends StoryVideoPlayerState {
   const StoryVideoPlayerDisposed( {required super.videoController, required super.chewieController, required super.duration});
-
-  @override
-  List<Object> get props => [videoController??"", chewieController??""];
 }
 
 class StoryVideoPlayerPaused extends StoryVideoPlayerState {

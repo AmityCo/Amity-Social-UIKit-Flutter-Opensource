@@ -9,3 +9,13 @@ abstract class ReactionListEvent extends Equatable {
 class ReactionListEventInit extends ReactionListEvent {}
 
 class ReactionListEventLoadMore extends ReactionListEvent {}
+
+// New event for filtering by reaction name
+class ReactionListEventFilterByName extends ReactionListEvent {
+  final String? reactionName;  // null means "all" reactions
+  
+  ReactionListEventFilterByName(this.reactionName);
+  
+  @override
+  List<Object> get props => [reactionName ?? 'all'];
+}

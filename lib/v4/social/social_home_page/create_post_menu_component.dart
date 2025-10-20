@@ -1,4 +1,5 @@
 // Define the PopupMenu class
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_target_selection_page/post_target_selection_page.dart';
 import 'package:amity_uikit_beta_service/view/UIKit/social/story_target_page.dart';
@@ -6,9 +7,11 @@ import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class AmityCreatePostMenuComponent extends NewBaseComponent {
+import '../post_poll_target_selection_page/post_poll_target_selection_page.dart';
 
-  AmityCreatePostMenuComponent({Key? key, String? pageId}) : super(key: key, pageId: pageId, componentId: 'componentId');
+class AmityCreatePostMenuComponent extends NewBaseComponent {
+  AmityCreatePostMenuComponent({Key? key, String? pageId})
+      : super(key: key, pageId: pageId, componentId: 'componentId');
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -40,42 +43,38 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
             padding: const EdgeInsets.all(5),
             onSelected: (int result) {
               if (result == 1) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  fullscreenDialog: true,
-                  builder: (context) => PopScope(
-                    canPop: true,
-                    child: PostTargetSelectionPage(
-                      pageId: '',
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) => PopScope(
+                      canPop: true,
+                      child: AmityPostTargetSelectionPage(),
                     ),
                   ),
-                ),
-              );
+                );
               }
 
-
               if (result == 2) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const Scaffold(
-                body: AmityStoryTargetSelectionPage(),
-              ),
-            ),
-          );
-        }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-              PopupMenuItem<int>(
-                value: 1,
-                child: getMenu(
-                    text: "Post", iconPath: "amity_ic_create_post_button.svg"),
-              ),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Scaffold(
+                      body: AmityStoryTargetSelectionPage(),
+                    ),
+                  ),
+                );
+              }
 
-              PopupMenuItem<int>(
-                value: 2,
-                child: getMenu(text: "Story", iconPath: "ic_create_stroy_black.svg"),
-              ),
-            ],
+              if (result == 3) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      body: AmityPostPollTargetSelectionPage(),
+                    ),
+                  ),
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) => getPopupMenuItems(context),
           ),
         ),
         const SizedBox(
@@ -85,8 +84,53 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
     );
   }
 
+  List<PopupMenuItem<int>> getPopupMenuItems(BuildContext context) {
+    final menuItems = <PopupMenuItem<int>>[];
 
-  Widget getMenu({required String text, required String iconPath}) {
+    final featureConfig = configProvider.getFeatureConfig();
+
+    if (featureConfig.post.isPostCreationEnabled()) {
+      menuItems.add(
+        PopupMenuItem<int>(
+          value: 1,
+          child: getMenu(
+              context: context,
+              text: context.l10n.general_post,
+              iconPath: "amity_ic_create_post_button.svg"),
+        ),
+      );
+    }
+
+    if (featureConfig.story.createEnabled) {
+      menuItems.add(
+        PopupMenuItem<int>(
+          value: 2,
+          child: getMenu(
+              context: context,
+              text: context.l10n.general_story,
+              iconPath: "ic_create_stroy_black.svg"),
+        ),
+      );
+    }
+
+    if (featureConfig.post.poll.createEnabled) {
+      menuItems.add(
+        PopupMenuItem<int>(
+          value: 3,
+          child: getMenu(
+              context: context,
+              text: context.l10n.general_poll,
+              iconPath: "amity_ic_create_poll_button.svg"),
+        ),
+      );
+    }
+    return menuItems;
+  }
+
+  Widget getMenu(
+      {required BuildContext context,
+      required String text,
+      required String iconPath}) {
     return SizedBox(
       width: 200,
       child: Row(
@@ -97,8 +141,7 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
           SvgPicture.asset(
             "assets/Icons/$iconPath",
             package: 'amity_uikit_beta_service',
-            colorFilter:
-                ColorFilter.mode(theme.secondaryColor, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
           ),
           const SizedBox(
             width: 8,

@@ -8,81 +8,52 @@ import '../components/alert_dialog.dart';
 class AmityVM extends ChangeNotifier {
   AmityUser? currentamityUser;
 
+  /// Creates a login builder with the shared session handler
+  dynamic _createLoginBuilder(String userID) {
+    return AmityCoreClient.login(userID, sessionHandler: (AccessTokenRenewal renewal) {
+      renewal.renew();
+    });
+  }
+
+  /// Handles the login response and error cases
+  Future<void> _handleLoginResponse(Future<AmityUser> loginFuture) async {
+    await loginFuture.then((value) async {
+      log("success");
+      currentamityUser = value;
+      notifyListeners();
+    }).catchError((error, stackTrace) async {
+      log("error");
+      log(error.toString());
+      //        await AmityDialog()
+      //            .showAlertErrorDialog(title: "Error!", message: error.toString());
+    });
+  }
+
   Future<void> login(
       {required String userID, String? displayName, String? authToken}) async {
     log("login with $userID");
-    if (authToken == null) {
-      log("authToken == null");
-      if (displayName != null) {
-        await AmityCoreClient.login(userID)
-            .displayName(displayName)
-            .submit()
-            .then((value) async {
-          log("success");
-
-          currentamityUser = value;
-          notifyListeners();
-        }).catchError((error, stackTrace) async {
-          log("error");
-
-          log(error.toString());
-          //        await AmityDialog()
-          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
-        });
-      } else {
-        await AmityCoreClient.login(userID).submit().then((value) async {
-          log("success");
-
-          currentamityUser = value;
-          notifyListeners();
-        }).catchError((error, stackTrace) async {
-          log("error");
-
-          log(error.toString());
-          //        await AmityDialog()
-          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
-        });
-      }
-    } else {
+    
+    // Create the base login builder
+    var loginBuilder = _createLoginBuilder(userID);
+    
+    // Add authToken if provided
+    if (authToken != null) {
       log("authToken is provided");
-      if (displayName != null) {
-        log("displayName is provided");
-        await AmityCoreClient.login(userID)
-            .authToken(authToken)
-            .displayName(displayName)
-            .submit()
-            .then((value) async {
-          log("success");
-          print("current amity user :$value");
-          currentamityUser = value;
-          notifyListeners();
-        }).catchError((error, stackTrace) async {
-          log("error");
-
-          log(error.toString());
-          //        await AmityDialog()
-          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
-        });
-      } else {
-        log("displayName is not provided");
-        await AmityCoreClient.login(userID)
-            .authToken(authToken)
-            .submit()
-            .then((value) async {
-          log("success");
-          print("current amity user :$value");
-
-          currentamityUser = value;
-          notifyListeners();
-        }).catchError((error, stackTrace) async {
-          print("error");
-
-          log(error.toString());
-          //        await AmityDialog()
-          //            .showAlertErrorDialog(title: "Error!", message: error.toString());
-        });
-      }
+      loginBuilder = loginBuilder.authToken(authToken);
+    } else {
+      log("authToken == null");
     }
+    
+    // Add displayName if provided
+    if (displayName != null) {
+      log("displayName is provided");
+      loginBuilder = loginBuilder.displayName(displayName);
+    } else if (authToken != null) {
+      log("displayName is not provided");
+    }
+    
+    // Submit and handle the response
+    await _handleLoginResponse(loginBuilder.submit());
   }
 
   Future<void> refreshCurrentUserData() async {

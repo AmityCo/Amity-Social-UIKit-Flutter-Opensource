@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/v4/social/global_search/view_model/glob
 import 'package:amity_uikit_beta_service/v4/social/my_community_search/bloc/my_community_search_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,7 +47,7 @@ class AmityMyCommunitiesSearchPage extends NewBasePage {
                     children: [
                       AmityTopSearchBarComponent(
                         textcontroller: textcontroller,
-                        hintText: 'Search my community',
+                        hintText: context.l10n.search_my_community_hint,
                         onTextChanged: (value) {
                           _debouncer.run(() {
                             context

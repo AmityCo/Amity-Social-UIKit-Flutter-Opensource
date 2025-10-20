@@ -3,12 +3,14 @@
 import 'dart:developer';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/uikit_behavior.dart';
+import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/create_story_page_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlink_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
@@ -28,6 +30,7 @@ import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'viewmodel/amity_viewmodel.dart';
@@ -40,6 +43,9 @@ import 'viewmodel/feed_viewmodel.dart';
 import 'viewmodel/post_viewmodel.dart';
 import 'viewmodel/user_feed_viewmodel.dart';
 import 'viewmodel/user_viewmodel.dart';
+
+export 'package:amity_sdk/src/domain/model/session/session_state.dart';
+export 'package:amity_sdk/src/core/enum/http_end_point.dart';
 
 enum AmityEndpointRegion {
   sg,
@@ -57,22 +63,23 @@ class AmityUIKit {
     String? customEndpoint,
     String? customSocketEndpoint,
     String? customMqttEndpoint,
+    String? customUploadEndpoint,
   }) async {
     Stopwatch stopwatch = Stopwatch()..start();
     AmityRegionalHttpEndpoint? amityEndpoint;
     AmityRegionalMqttEndpoint? amityMqttEndpoint;
-    AmityRegionalSocketEndpoint? amitySocketEndpoint;
+    AmityUploadEndpoint? amityUploadEndpoint;    
 
     switch (region) {
       case AmityEndpointRegion.custom:
         if (customEndpoint != null &&
             customMqttEndpoint != null &&
-            customSocketEndpoint != null) {
+            customSocketEndpoint != null && customUploadEndpoint != null) {
           amityEndpoint = AmityRegionalHttpEndpoint.custom(customEndpoint);
           amityMqttEndpoint =
               AmityRegionalMqttEndpoint.custom(customMqttEndpoint);
-          amitySocketEndpoint =
-              AmityRegionalSocketEndpoint.custom(customSocketEndpoint);
+          amityUploadEndpoint =
+              AmityUploadEndpoint.custom(customUploadEndpoint);
         } else {
           log("please provide custom Endpoint");
         }
@@ -82,7 +89,7 @@ class AmityUIKit {
         {
           amityEndpoint = AmityRegionalHttpEndpoint.SG;
           amityMqttEndpoint = AmityRegionalMqttEndpoint.SG;
-          amitySocketEndpoint = AmityRegionalSocketEndpoint.SG;
+          amityUploadEndpoint = AmityUploadEndpoint.SG;
         }
 
         break;
@@ -90,7 +97,7 @@ class AmityUIKit {
         {
           amityEndpoint = AmityRegionalHttpEndpoint.EU;
           amityMqttEndpoint = AmityRegionalMqttEndpoint.EU;
-          amitySocketEndpoint = AmityRegionalSocketEndpoint.EU;
+          amityUploadEndpoint = AmityUploadEndpoint.EU;
         }
 
         break;
@@ -98,7 +105,7 @@ class AmityUIKit {
         {
           amityEndpoint = AmityRegionalHttpEndpoint.US;
           amityMqttEndpoint = AmityRegionalMqttEndpoint.US;
-          amitySocketEndpoint = AmityRegionalSocketEndpoint.US;
+          amityUploadEndpoint = AmityUploadEndpoint.US;
         }
     }
 
@@ -106,11 +113,12 @@ class AmityUIKit {
 
     await AmityCoreClient.setup(
         option: AmityCoreClientOption(
-            apiKey: apikey,
-            showLogs: false,
-            httpEndpoint: amityEndpoint!,
-            mqttEndpoint: amityMqttEndpoint!,
-            socketEndpoint: amitySocketEndpoint!),
+          apiKey: apikey,
+          showLogs: true,
+          httpEndpoint: amityEndpoint!,
+          mqttEndpoint: amityMqttEndpoint!,
+          uploadEndpoint: amityUploadEndpoint!,
+        ),
         sycInitialization: true);
     stopwatch.stop();
     log('setupAmityClient execution time: ${stopwatch.elapsedMilliseconds} ms');
@@ -180,17 +188,18 @@ class AmityUIKit {
     config(provider);
   }
 
+  Stream<SessionState> observeSessionState() {
+    return AmityCoreClient.observeSessionState();
+  }
+
   AmityUser getCurrentUser() {
     return AmityCoreClient.getCurrentUser();
   }
 
   void unRegisterDevice() {
     AmityCoreClient.unregisterDeviceNotification();
+    ParentMessageCache().clear();
     AmityCoreClient.logout();
-  }
-
-  Stream<SessionState> observeSessionState() {
-    return AmityCoreClient.observeSessionState();
   }
 
   Future<void> joinInitialCommunity(List<String> communityIds) async {
@@ -219,7 +228,6 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<SocialHomeBloc>(create: (context) => SocialHomeBloc()),
         BlocProvider<CreateStoryPageBloc>(
             create: (context) => CreateStoryPageBloc()),
-        BlocProvider<StoryDraftBloc>(create: (context) => StoryDraftBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
         BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
         BlocProvider<StoryVideoPlayerBloc>(
@@ -273,14 +281,59 @@ class AmityUIKitProvider extends StatelessWidget {
           ],
         ),
       ],
-      child: Builder(
-        builder: (context) => MaterialApp(
-          theme: ThemeData(),
-          debugShowCheckedModeBanner: false,
-          navigatorKey: NavigationService.navigatorKey,
-          home: child,
-        ),
-      ),
+      child: Builder(builder: (context) {
+        return Consumer<ConfigProvider>(builder: (context, configProvider, _) {
+          configProvider.loadConfig();
+          return MaterialApp(
+            theme: ThemeData(),
+            debugShowCheckedModeBanner: false,
+            navigatorKey: NavigationService.navigatorKey,
+            home: Builder(builder: (context2) {
+              return child;
+            }),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('pt'), // Base Portuguese locale
+              Locale('pt', 'BR'),  // Portuguese (Brazil)
+              Locale('es'),        // Base Spanish locale
+              Locale('es', 'CL'),  // Spanish (Chile)
+              Locale('es', 'CO'),  // Spanish (Colombia)
+              Locale('es', 'MX'),  // Spanish (Mexico)
+              Locale('es', 'PE'),  // Spanish (Peru)
+            ],
+            // Ensure the app uses the device locale by default
+            localeResolutionCallback: (deviceLocale, supportedLocales) {
+              if (deviceLocale != null) {
+                for (var locale in supportedLocales) {
+                  print ("deviceLocale: ${deviceLocale.languageCode}");
+                  print ("supportedLocales: $supportedLocales}");
+                  // Check for exact matches first
+                  if (locale.languageCode == deviceLocale.languageCode &&
+                      locale.countryCode == deviceLocale.countryCode) {
+                    return locale;
+                  }
+                  // Then check for language code matches
+                  if (locale.languageCode == deviceLocale.languageCode) {
+                    return locale;
+                  }
+                }
+              }
+              // Default to English if no match found
+              return const Locale('en');
+            },
+          );
+        });
+      }),
     );
   }
+}
+
+class AmityUIKit4Manager {
+  static UIKitBehavior behavior = UIKitBehavior();
 }

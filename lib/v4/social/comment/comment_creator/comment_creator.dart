@@ -1,21 +1,26 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
+import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/bloc/comment_creator_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_creator/comment_creator_action.dart';
-import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../../core/ui/mention/mention_text_editing_controller.dart';
 
 class AmityCommentCreator extends BaseElement {
   final String referenceId;
   final AmityCommentReferenceType referenceType;
   final AmityComment? replyTo;
   final CommentCreatorAction action;
+  final String? communityId;
   AmityThemeColor? localTheme;
-
   AmityCommentCreator({
     Key? key,
     required this.referenceId,
@@ -23,15 +28,17 @@ class AmityCommentCreator extends BaseElement {
     required this.action,
     this.localTheme,
     required this.referenceType,
+    this.communityId,
     elementId = "comment_creator",
   }) : super(key: key, elementId: elementId);
-  
+
   @override
   Widget buildElement(BuildContext context) {
-     return AmityCommentCreatorInternal(
+    return AmityCommentCreatorInternal(
       referenceId: referenceId,
       referenceType: referenceType,
       replyTo: replyTo,
+      communityId: communityId,
       action: action,
       theme: localTheme ?? theme,
     );
@@ -44,12 +51,14 @@ class AmityCommentCreatorInternal extends StatefulWidget {
   final AmityComment? replyTo;
   final CommentCreatorAction action;
   final AmityThemeColor theme;
+  final String? communityId;
 
   const AmityCommentCreatorInternal({
     Key? key,
     required this.referenceId,
     required this.referenceType,
     this.replyTo,
+    this.communityId,
     required this.action,
     required this.theme,
   }) : super(key: key);
@@ -61,14 +70,19 @@ class AmityCommentCreatorInternal extends StatefulWidget {
 
 class _AmityCommentCreatorInternalState
     extends State<AmityCommentCreatorInternal> {
-  late TextEditingController controller;
+  late MentionTextEditingController controller;
   late ScrollController scrollController;
+  final focusNode = FocusNode();
+
+  String? avatarUrl;
 
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController();
+    controller = MentionTextEditingController();
     scrollController = ScrollController();
+
+    fetchUserInfo();
   }
 
   @override
@@ -91,7 +105,8 @@ class _AmityCommentCreatorInternalState
               if (state.replyTo != null) renderReplyPanel(state.replyTo!),
               SafeArea(
                 top: false,
-                child: renderComposer(context, state, widget.referenceId, widget.referenceType),
+                child: renderComposer(context, state, widget.referenceId,
+                    widget.referenceType, widget.communityId),
               ),
             ],
           );
@@ -100,8 +115,14 @@ class _AmityCommentCreatorInternalState
     );
   }
 
-  Widget renderComposer(BuildContext context, CommentCreatorState state, String referenceId, AmityCommentReferenceType referenceType) {
-    String? avatarUrl = AmityCoreClient.getCurrentUser().avatarUrl;
+  Widget renderComposer(
+      BuildContext context,
+      CommentCreatorState state,
+      String referenceId,
+      AmityCommentReferenceType referenceType,
+      String? communityId) {
+    AmityUser user = AmityCoreClient.getCurrentUser();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       child: Column(
@@ -117,17 +138,19 @@ class _AmityCommentCreatorInternalState
                   width: 32,
                   height: 32,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: AmityNetworkImage(
-                        imageUrl: avatarUrl,
-                        placeHolderPath:
-                            "assets/Icons/amity_ic_user_avatar_placeholder.svg"),
-                  ),
+                      borderRadius: BorderRadius.circular(16),
+                      child: AmityUserAvatar(
+                          avatarUrl: avatarUrl ?? "",
+                          displayName: user.displayName ?? "",
+                          isDeletedUser: user.isDeleted ?? false,
+                          characterTextStyle:
+                              AmityTextStyle.titleBold(Colors.white),
+                          avatarSize: const Size(32, 32))),
                 ),
               ),
               Expanded(
                 child: Container(
-                  constraints: const BoxConstraints(maxHeight: 200),
+                  constraints: const BoxConstraints(maxHeight: 135),
                   height: state.currentHeight,
                   alignment: Alignment.centerLeft,
                   padding:
@@ -145,7 +168,13 @@ class _AmityCommentCreatorInternalState
                     removeBottom: true,
                     child: Scrollbar(
                       controller: scrollController,
-                      child: TextField(
+                      child: MentionTextField(
+                        theme: widget.theme,
+                        style: AmityTextStyle.body(widget.theme.baseColor),
+                        suggestionMaxRow: 2,
+                        suggestionDisplayMode: SuggestionDisplayMode.bottom,
+                        mentionContentType: MentionContentType.comment,
+                        communityId: communityId,
                         controller: controller,
                         scrollController: scrollController,
                         onChanged: (value) {
@@ -161,7 +190,7 @@ class _AmityCommentCreatorInternalState
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 0, vertical: 0),
-                          hintText: 'Say something nice...',
+                          hintText: context.l10n.comment_create_hint,
                           border: InputBorder.none,
                           hintStyle: TextStyle(
                             color: widget.theme.baseColorShade2,
@@ -169,6 +198,14 @@ class _AmityCommentCreatorInternalState
                             fontWeight: FontWeight.w400,
                           ),
                         ),
+                        suggestionOverlayBottomPaddingWhenKeyboardClosed:
+                            state.currentHeight +
+                                16.0 +
+                                (state.replyTo != null ? 40.0 : 0.0),
+                        suggestionOverlayBottomPaddingWhenKeyboardOpen:
+                            state.currentHeight +
+                                16.0 +
+                                (state.replyTo != null ? 40.0 : 0.0),
                       ),
                     ),
                   ),
@@ -180,7 +217,11 @@ class _AmityCommentCreatorInternalState
                         referenceId: referenceId,
                         referenceType: referenceType,
                         text: controller.text,
+                        mentionMetadataList:
+                            controller.getAmityMentionMetadata(),
+                        mentionUserIds: controller.getMentionUserIds(),
                         toastBloc: context.read<AmityToastBloc>(),
+                        context: context,
                       ));
                   controller.clear();
                 },
@@ -196,14 +237,8 @@ class _AmityCommentCreatorInternalState
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Post',
-                        style: TextStyle(
-                          color: (state.text.isEmpty)
-                              ? const Color(0xFFA0BDF8)
-                              : widget.theme.primaryColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        context.l10n.general_post,
+                        style: AmityTextStyle.body(widget.theme.primaryColor),
                       ),
                     ],
                   ),
@@ -234,7 +269,7 @@ class _AmityCommentCreatorInternalState
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Replying to ',
+                      text: context.l10n.comment_reply_to,
                       style: TextStyle(
                         color: widget.theme.baseColorShade1,
                         fontSize: 15,
@@ -272,5 +307,16 @@ class _AmityCommentCreatorInternalState
         ],
       ),
     );
+  }
+
+  void fetchUserInfo() {
+    final userId = AmityCoreClient.getCurrentUser().userId ?? "";
+    if (userId.isNotEmpty) {
+      AmityCoreClient.newUserRepository().getUser(userId).then((user) {
+        setState(() {
+          avatarUrl = user.avatarUrl;
+        });
+      });
+    }
   }
 }

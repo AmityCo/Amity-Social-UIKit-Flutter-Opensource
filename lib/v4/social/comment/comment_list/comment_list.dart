@@ -6,17 +6,19 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/comment_
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/comment_item.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/bloc/comment_list_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/comment_skeleton.dart';
-import 'package:amity_uikit_beta_service/v4/utils/shimmer.dart';
+import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommentList extends NewBaseComponent with ChangeNotifier {
   final ScrollController scrollController;
   final CommentAction commentAction;
+  final bool shouldAllowInteraction;
 
   CommentList({
     Key? key,
     String? pageId,
+    required this.shouldAllowInteraction,
     required this.scrollController,
     required this.commentAction,
   }) : super(key: key, pageId: pageId, componentId: "comment_list_component");
@@ -71,12 +73,14 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
                     key: ValueKey(
                         "${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}"),
                     create: (context) => CommentItemBloc(
+                      context: context,
                       comment: comment,
                       isExpanded: isExpanded,
                     ),
                     child: SizedBox(
                       width: double.infinity,
                       child: CommentItem(
+                        shouldAllowInteraction: shouldAllowInteraction,
                         parentScrollController: scrollController,
                         commentAction: commentAction,
                       ),

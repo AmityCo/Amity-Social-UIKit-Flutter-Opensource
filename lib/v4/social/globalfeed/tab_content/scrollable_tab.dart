@@ -1,4 +1,5 @@
-import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_event.dart';
@@ -18,15 +19,16 @@ class ScrollableTabs extends NewBaseComponent {
         final selectedIndex = state is TabState ? state.selectedIndex : 0;
 
         return Container(
+          alignment: AlignmentDirectional.centerStart,
           color: theme.backgroundColor,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildTabButton(context, 'Newsfeed', 0, selectedIndex),
-                _buildTabButton(context, 'Explore', 1, selectedIndex),
-                _buildTabButton(context, 'My Communities', 2, selectedIndex),
+                _buildTabButton(context, context.l10n.community_title, 0, selectedIndex),
+                _buildTabButton(context, context.l10n.tab_explore, 1, selectedIndex),
+                _buildTabButton(context, context.l10n.tab_my_communities, 2, selectedIndex),
               ],
             ),
           ),

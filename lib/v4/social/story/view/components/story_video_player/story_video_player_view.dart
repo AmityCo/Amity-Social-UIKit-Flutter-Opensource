@@ -94,9 +94,7 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
             height: double.infinity,
             width: double.infinity,
             color: const Color.fromRGBO(0, 0, 0, 1),
-            child: Center(
-              child: _buildPlayerChild(state),
-            ),
+            child: _buildPlayerChild(state),
           ),
         );
       },
@@ -123,10 +121,16 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
       );
     }
 
-    return AspectRatio(
-      aspectRatio: state.videoController!.value.aspectRatio,
-      child: Chewie(
-        controller: state.chewieController!,
+    // Always fill width, crop vertically for portrait videos
+    return FittedBox(
+      fit: BoxFit.cover,
+      alignment: Alignment.center,
+      child: SizedBox(
+        width: state.videoController!.value.size.width,
+        height: state.videoController!.value.size.height,
+        child: Chewie(
+          controller: state.chewieController!,
+        ),
       ),
     );
   }

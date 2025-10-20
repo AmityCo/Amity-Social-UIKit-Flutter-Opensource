@@ -12,10 +12,11 @@ class InitializeStoryVideoPlayerEvent extends StoryVideoPlayerEvent {
   final File? file; 
   final String? url;
   final bool looping;
-  const InitializeStoryVideoPlayerEvent({required this.file , required this.url, required this.looping});
+  final StoryVideoMetadata? metadata;
+  const InitializeStoryVideoPlayerEvent({required this.file , required this.url, required this.looping, this.metadata});
 
   @override
-  List<Object> get props => [file??"" , url??"", looping];
+  List<Object> get props => [file ?? "", url ?? "", looping, metadata ?? 0];
 }
 
 

@@ -65,8 +65,11 @@ class AmityCreateStoryPage extends NewBasePage {
                             ),
                           );
                         },
-                        onVideoCaptured: (video) {
-                          AmityStoryMediaType mediaType = AmityStoryMediaTypeVideo(file: video);
+                        onVideoCaptured: (video, metadata) {
+                          AmityStoryMediaType mediaType = AmityStoryMediaTypeVideo(
+                            file: video,
+                            metadata: metadata,
+                          );
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => MultiBlocProvider(

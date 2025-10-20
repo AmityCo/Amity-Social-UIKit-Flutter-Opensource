@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
@@ -102,8 +101,7 @@ class _StoryDraftPageBuilderState extends State<StoryDraftPageBuilder> {
               height: double.infinity,
               child: Column(
                 children: [
-                  Flexible(
-                    flex: 5,
+                  Expanded(
                     child: SizedBox(
                       width: double.infinity,
                       height: double.infinity,
@@ -290,20 +288,18 @@ class _StoryDraftPageBuilderState extends State<StoryDraftPageBuilder> {
                       ),
                     ),
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ShareButton(
-                            storyTarget: state.storyTarget,
-                            pageId: 'create_story_page',
-                            onClick: () {
+                  Container(
+                    height: 80,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ShareButton(
+                          storyTarget: state.storyTarget,
+                          pageId: 'create_story_page',
+                          onClick: () {
                               HapticFeedback.heavyImpact();
                               BlocProvider.of<StoryVideoPlayerBloc>(context)
                                   .add(const DisposeStoryVideoPlayerEvent());
@@ -321,7 +317,6 @@ class _StoryDraftPageBuilderState extends State<StoryDraftPageBuilder> {
                           )
                         ],
                       ),
-                    ),
                   ),
                 ],
               ),
@@ -341,7 +336,7 @@ class _StoryDraftPageBuilderState extends State<StoryDraftPageBuilder> {
     try {
       if (widget.mediaType is AmityStoryMediaTypeVideo) {
         return StoryDraftVideoView(
-          videoFile: (widget.mediaType as AmityStoryMediaTypeVideo).file,
+          mediaType: widget.mediaType as AmityStoryMediaTypeVideo,
         );
       }
     } catch (ex) {
@@ -682,9 +677,9 @@ class _AmityStoryImageViewWidgetState extends State<AmityStoryImageViewWidget> {
 }
 
 class StoryDraftVideoView extends StatefulWidget {
-  final File videoFile;
+  final AmityStoryMediaTypeVideo mediaType;
 
-  const StoryDraftVideoView({super.key, required this.videoFile});
+  const StoryDraftVideoView({super.key, required this.mediaType});
 
   @override
   State<StoryDraftVideoView> createState() => _StoryDraftVideoViewState();
@@ -704,9 +699,10 @@ class _StoryDraftVideoViewState extends State<StoryDraftVideoView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _videoBloc.add(InitializeStoryVideoPlayerEvent(
-        file: widget.videoFile,
+        file: widget.mediaType.file,
         url: null,
         looping: true,
+        metadata: widget.mediaType.metadata,
       ));
     });
   }
@@ -715,7 +711,7 @@ class _StoryDraftVideoViewState extends State<StoryDraftVideoView> {
   void didUpdateWidget(covariant StoryDraftVideoView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.videoFile.path != widget.videoFile.path) {
+    if (oldWidget.mediaType.file.path != widget.mediaType.file.path) {
       setState(() {
         _thumbnailBytes = null;
       });
@@ -723,9 +719,10 @@ class _StoryDraftVideoViewState extends State<StoryDraftVideoView> {
       
       // Reinitialize for new video
       _videoBloc.add(InitializeStoryVideoPlayerEvent(
-        file: widget.videoFile,
+        file: widget.mediaType.file,
         url: null,
         looping: true,
+        metadata: widget.mediaType.metadata,
       ));
     }
   }
@@ -733,7 +730,7 @@ class _StoryDraftVideoViewState extends State<StoryDraftVideoView> {
   Future<void> _generateThumbnail() async {
     try {
       final thumb = await VideoThumbnail.thumbnailData(
-        video: widget.videoFile.path,
+  video: widget.mediaType.file.path,
         imageFormat: ImageFormat.JPEG,
         maxWidth: 640,
         quality: 60,
@@ -760,10 +757,10 @@ class _StoryDraftVideoViewState extends State<StoryDraftVideoView> {
   Widget build(BuildContext context) {
     return BlocBuilder<StoryVideoPlayerBloc, StoryVideoPlayerState>(
       builder: (context, videoState) {
-        // Derive UI state from bloc state - single source of truth
-        final isVideoReady = videoState is StoryVideoPlayerInitialized;
-        final hasController = videoState.videoController != null && 
-                             videoState.chewieController != null;
+        final videoController = videoState.videoController;
+        final chewieController = videoState.chewieController;
+        final hasController = videoController != null && chewieController != null;
+        final isVideoReady = hasController && videoController.value.isInitialized;
 
         return SizedBox(
           height: double.infinity,
@@ -785,12 +782,16 @@ class _StoryDraftVideoViewState extends State<StoryDraftVideoView> {
                   ),
                 
                 // Video player - only render when ready
+                // Always fill width, crop vertically if portrait
                 if (hasController && isVideoReady)
-                  Center(
-                    child: AspectRatio(
-                      aspectRatio: videoState.videoController!.value.aspectRatio,
+                  FittedBox(
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: videoController.value.size.width,
+                      height: videoController.value.size.height,
                       child: Chewie(
-                        controller: videoState.chewieController!,
+                        controller: chewieController,
                       ),
                     ),
                   ),

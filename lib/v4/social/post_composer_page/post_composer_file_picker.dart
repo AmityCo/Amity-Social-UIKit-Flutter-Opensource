@@ -11,8 +11,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path/path.dart' as path;
 
 extension PostComposerFilePicker on AmityPostComposerPage {
+  /// Converts HEIC/HEIF XFile images to JPG format
+  /// Returns the original XFile if it's not HEIC/HEIF or if conversion fails
+  Future<XFile> _convertHeicXFileToJpgIfNeeded(XFile xFile) async {
+    try {
+      final fileExtension = path.extension(xFile.path).toLowerCase();
+      print('Lets check file extension: $fileExtension');
+
+      // Convert all images
+        // Generate output path with .jpg extension
+        final directory = path.dirname(xFile.path);
+        final fileName = path.basenameWithoutExtension(xFile.path);
+        final outputPath = path.join(directory, '$fileName.jpg');
+        
+        // Convert HEIC/HEIF to JPG using flutter_image_compress
+        final result = await FlutterImageCompress.compressAndGetFile(
+          xFile.path,
+          outputPath,
+          format: CompressFormat.jpeg,
+          quality: 95,
+        );
+        
+        if (result != null) {
+          print('Image got converted to JPG');
+          return XFile(result.path);
+        }
+      
+    } catch (e) {
+      // If conversion fails, return original file
+      print('Failed to convert HEIC/HEIF to JPG: $e');
+    }
+    
+    return xFile;
+  }
+
   void pickMultipleFiles(BuildContext context, FileType type,
       {int maxFiles = 10}) async {
     try {
@@ -197,8 +233,10 @@ extension PostComposerFilePicker on AmityPostComposerPage {
         } else {
           if (type == FileType.image) {
             for (var image in files) {
+              // Convert HEIC/HEIF to JPG if needed before uploading
+              XFile convertedImage = await _convertHeicXFileToJpgIfNeeded(image);
               context.read<PostComposerBloc>().add(
-                    PostComposerSelectImagesEvent(selectedImage: image),
+                    PostComposerSelectImagesEvent(selectedImage: convertedImage),
                   );
             }
           } else {

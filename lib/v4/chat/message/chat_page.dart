@@ -28,6 +28,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 part 'widgets/chat_page_helpers.dart';
 
 // Page for showing one-on-one chat messages
+// ignore: must_be_immutable
 class AmityChatPage extends NewBasePage {
   static double toastBottomPadding = 56;
 
@@ -36,8 +37,8 @@ class AmityChatPage extends NewBasePage {
   final String? userDisplayName;
   final String? avatarUrl;
   final String? jumpToMessageId;
-  late final BounceAnimator bounceAnimator;
-  late final Function bounceLatestMessage;
+  BounceAnimator? bounceAnimator;
+  Function? bounceLatestMessage;
 
   AmityChatPage(
       {super.key,
@@ -60,7 +61,7 @@ class AmityChatPage extends NewBasePage {
       onInit: (vsync) {
         bounceAnimator = BounceAnimator(vsync);
         bounceLatestMessage = () {
-          bounceAnimator.animateItem(0);
+          bounceAnimator?.animateItem(0);
         };
       },
       child: Stack(
@@ -78,8 +79,8 @@ class AmityChatPage extends NewBasePage {
             child: BlocListener<ChatPageBloc, ChatPageState>(
               listener: (context, state) {
                 // Listen for bounceTargetIndex changes and trigger bounce animation
-                if (state.bounceTargetIndex != null) {
-                  bounceAnimator.animateItem(state.bounceTargetIndex!);
+                if (state.bounceTargetIndex != null && bounceAnimator != null) {
+                  bounceAnimator!.animateItem(state.bounceTargetIndex!);
                 }
               },
               child: BlocBuilder<ChatPageBloc, ChatPageState>(
@@ -295,19 +296,59 @@ class AmityChatPage extends NewBasePage {
                                           }
                                         } catch (e) {}
                                       }
+                                      if (bounceAnimator == null) {
+                                        return MessageBubbleView(
+                                          key: message.uniqueId != null
+                                              ? Key(message.uniqueId!)
+                                              : itemKeys[index],
+                                          pageId: pageId,
+                                          message: message,
+                                          channelMember: state.channelMember,
+                                          isModerator: false,
+                                          bounceAnimator: null,
+                                          bounce: 1.0,
+                                          onSeeMoreTap: (text, {isReplied = false}) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => FullTextScreen(
+                                                  fullText: text,
+                                                  displayName: (!isReplied)
+                                                      ? state.userDisplayName ?? ""
+                                                      : "Replied message",
+                                                  theme: theme,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          onResend: (message) {
+                                            context.read<ChatPageBloc>().add(
+                                                ChatPageEventResendMessage(message: message));
+                                          },
+                                          onReplyMessage: (replyingMessage) {
+                                            context.read<ChatPageBloc>().add(
+                                                ChatPageReplyEvent(message: replyingMessage));
+                                          },
+                                          onEditMessage: (message) {
+                                            context.read<ChatPageBloc>().add(
+                                                ChatPageEditEvent(message: message));
+                                          },
+                                          thumbnail: state.localThumbnails[item.message!.uniqueId],
+                                        );
+                                      }
                                       return ValueListenableBuilder<int?>(
                                           valueListenable:
-                                              bounceAnimator.animatedIndex,
+                                              bounceAnimator!.animatedIndex,
                                           builder: (context, animatedIndex, _) {
                                             return AnimatedBuilder(
                                                 animation:
-                                                    bounceAnimator.animation,
+                                                    bounceAnimator!.animation,
                                                 builder: (context, _) {
                                                   final bounce =
                                                       (animatedIndex == index)
                                                           ? (1.0 +
                                                               (0.1 *
-                                                                  bounceAnimator
+                                                                  bounceAnimator!
                                                                       .animation
                                                                       .value))
                                                           : 1.0;

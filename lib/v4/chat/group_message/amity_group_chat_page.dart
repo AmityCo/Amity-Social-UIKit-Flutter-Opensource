@@ -24,13 +24,14 @@ import 'package:visibility_detector/visibility_detector.dart';
 part 'widgets/group_chat_page_helpers.dart';
 
 // Page for showing group chat messages
+// ignore: must_be_immutable
 class AmityGroupChatPage extends NewBasePage {
   static double toastBottomPadding = 56;
 
   final String channelId;
   final String? jumpToMessageId;
-  late BounceAnimator bounceAnimator;
-  late Function bounceLatestMessage;
+  BounceAnimator? bounceAnimator;
+  Function? bounceLatestMessage;
   final bool isJustCreated;
 
   AmityGroupChatPage({
@@ -51,7 +52,7 @@ class AmityGroupChatPage extends NewBasePage {
       onInit: (vsync) {
         bounceAnimator = BounceAnimator(vsync);
         bounceLatestMessage = () {
-          bounceAnimator.animateItem(0);
+          bounceAnimator?.animateItem(0);
         };
       },
       child: Stack(
@@ -64,8 +65,8 @@ class AmityGroupChatPage extends NewBasePage {
             child: BlocListener<AmityGroupChatPageBloc, GroupChatPageState>(
               listener: (context, state) {
                 // Listen for bounceTargetIndex changes and trigger bounce animation
-                if (state.bounceTargetIndex != null) {
-                  bounceAnimator.animateItem(state.bounceTargetIndex!);
+                if (state.bounceTargetIndex != null && bounceAnimator != null) {
+                  bounceAnimator!.animateItem(state.bounceTargetIndex!);
                 }
               },
               child: BlocBuilder<AmityGroupChatPageBloc, GroupChatPageState>(
@@ -278,7 +279,7 @@ class AmityGroupChatPage extends NewBasePage {
                                           } catch (e) {}
                                         }
                                         return _buildMessageWithAnimation(
-                                            message, index, state, itemKeys);
+                                            context, message, index, state, itemKeys);
                                       } else {
                                         return Container(
                                           padding: const EdgeInsets.symmetric(
@@ -491,16 +492,76 @@ class AmityGroupChatPage extends NewBasePage {
     }
   }
 
-  Widget _buildMessageWithAnimation(AmityMessage message, int index,
+  Widget _buildMessageWithAnimation(BuildContext context, AmityMessage message, int index,
       GroupChatPageState state, List<GlobalKey> itemKeys) {
+    if (bounceAnimator == null) {
+      final isModerator = message.user?.userId != null &&
+          state.memberRoles[message.user!.userId]
+                  ?.any((role) => role.contains('channel-moderator')) ==
+              true;
+      return VisibilityDetector(
+        key: Key('group_message_${message.uniqueId ?? index}'),
+        onVisibilityChanged: (VisibilityInfo info) {
+          if (state.aroundMessageId != null &&
+              message.messageId == state.aroundMessageId) {
+            final visiblePercentage = info.visibleFraction * 100;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _handleMessageVisibility(
+                  context, state, message, index, visiblePercentage);
+            });
+          }
+        },
+        child: MessageBubbleView(
+          key: message.uniqueId != null
+              ? Key(message.uniqueId!)
+              : itemKeys[index],
+          pageId: pageId,
+          isGroupChat: true,
+          message: message,
+          isModerator: isModerator,
+          bounceAnimator: null,
+          bounce: 1.0,
+          onSeeMoreTap: (text, {isReplied = false}) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullTextScreen(
+                  fullText: text,
+                  displayName: (!isReplied)
+                      ? message.user?.displayName ?? ""
+                      : "Replied message",
+                  theme: theme,
+                ),
+              ),
+            );
+          },
+          onResend: (message) {
+            context
+                .read<AmityGroupChatPageBloc>()
+                .add(GroupChatPageEventResendMessage(message: message));
+          },
+          onReplyMessage: (replyingMessage) {
+            context
+                .read<AmityGroupChatPageBloc>()
+                .add(GroupChatPageReplyEvent(message: replyingMessage));
+          },
+          onEditMessage: (message) {
+            context
+                .read<AmityGroupChatPageBloc>()
+                .add(GroupChatPageEditEvent(message: message));
+          },
+          thumbnail: state.localThumbnails[message.uniqueId],
+        ),
+      );
+    }
     return ValueListenableBuilder<int?>(
-      valueListenable: bounceAnimator.animatedIndex,
+      valueListenable: bounceAnimator!.animatedIndex,
       builder: (context, animatedIndex, _) {
         return AnimatedBuilder(
-          animation: bounceAnimator.animation,
+          animation: bounceAnimator!.animation,
           builder: (context, _) {
             final bounce = (animatedIndex == index)
-                ? (1.0 + (0.1 * bounceAnimator.animation.value))
+                ? (1.0 + (0.1 * bounceAnimator!.animation.value))
                 : 1.0;
             final isModerator = message.user?.userId != null &&
                 state.memberRoles[message.user!.userId]

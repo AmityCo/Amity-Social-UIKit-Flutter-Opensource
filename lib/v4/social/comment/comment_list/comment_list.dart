@@ -71,7 +71,7 @@ class CommentList extends NewBaseComponent with ChangeNotifier {
                       state.expandedId.contains(comment.commentId);
                   return BlocProvider(
                     key: ValueKey(
-                        "${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}"),
+                        "${comment.commentId}_${isExpanded}_${comment.childrenNumber}_${comment.isFlaggedByMe}_${comment.isDeleted}"),
                     create: (context) => CommentItemBloc(
                       context: context,
                       comment: comment,

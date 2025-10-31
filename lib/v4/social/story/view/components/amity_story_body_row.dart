@@ -28,7 +28,19 @@ class AmityStoryBodyRow extends StatefulWidget {
   final Function(HyperLink)? onHyperlinkClick;
   final String storyId; // Story ID for global palette cache lookup
 
-  AmityStoryBodyRow({super.key, required this.dataType, required this.data, required this.state, required this.items, required this.isVisible, required this.onTap, required this.onHold, required this.onSwipeUp, required this.onSwipeDown, this.onHyperlinkClick, required this.storyId});
+  AmityStoryBodyRow(
+      {super.key,
+      required this.dataType,
+      required this.data,
+      required this.state,
+      required this.items,
+      required this.isVisible,
+      required this.onTap,
+      required this.onHold,
+      required this.onSwipeUp,
+      required this.onSwipeDown,
+      this.onHyperlinkClick,
+      required this.storyId});
 
   @override
   State<AmityStoryBodyRow> createState() => _AmityStoryBodyRowState();
@@ -104,7 +116,9 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: AmityStoryBodyHyperlinkView(hyperlinkItem: widget.items.first as HyperLink, onHyperlinkClick: widget.onHyperlinkClick!),
+                      child: AmityStoryBodyHyperlinkView(
+                          hyperlinkItem: widget.items.first as HyperLink,
+                          onHyperlinkClick: widget.onHyperlinkClick!),
                     ),
                   )
                 : Container(),
@@ -117,7 +131,8 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
                         setState(() {
                           isVolumeOn = !isVolumeOn;
                         });
-                        BlocProvider.of<StoryVideoPlayerBloc>(context).add(const VolumeChangedEvent());
+                        BlocProvider.of<StoryVideoPlayerBloc>(context)
+                            .add(const VolumeChangedEvent());
                       },
                       child: Container(
                         height: 32,
@@ -128,7 +143,9 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
                         ),
                         child: Center(
                           child: SvgPicture.asset(
-                            isVolumeOn ? "assets/Icons/ic_volume_white.svg" : "assets/Icons/ic_volume_off_white.svg",
+                            isVolumeOn
+                                ? "assets/Icons/ic_volume_white.svg"
+                                : "assets/Icons/ic_volume_off_white.svg",
                             package: 'amity_uikit_beta_service',
                             height: 24,
                           ),
@@ -147,16 +164,19 @@ class _AmityStoryBodyRowState extends State<AmityStoryBodyRow> {
     switch (dataType) {
       case AmityStoryDataType.IMAGE:
         return AmityStoryBodyImageView(
-          data: widget.data as ImageStoryData, 
+          data: widget.data as ImageStoryData,
           syncState: widget.state,
-          storyId: widget.storyId, // Pass story ID for global palette cache lookup
+          storyId:
+              widget.storyId, // Pass story ID for global palette cache lookup
         );
 
       case AmityStoryDataType.VIDEO:
         if (!widget.isVisible) {
-          BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
+          BlocProvider.of<StoryVideoPlayerBloc>(context)
+              .add(const PauseStoryVideoEvent());
         }
-        return AmityStoryBodyVideoView(data: widget.data as VideoStoryData, syncState: widget.state);
+        return AmityStoryBodyVideoView(
+            data: widget.data as VideoStoryData, syncState: widget.state);
 
       default:
         return Container();
@@ -179,7 +199,8 @@ class AmityStoryBodyImageView extends StatefulWidget {
   });
 
   @override
-  State<AmityStoryBodyImageView> createState() => _AmityStoryBodyImageViewState();
+  State<AmityStoryBodyImageView> createState() =>
+      _AmityStoryBodyImageViewState();
 }
 
 class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
@@ -193,23 +214,25 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
   @override
   void initState() {
     super.initState();
-    
+
     // Use global palette cache with story ID (persists across communities!)
     final globalCache = StoryPaletteCache();
     final cachedPalette = globalCache.get(widget.storyId);
-    
+
     if (cachedPalette != null) {
       _paletteGenerator = cachedPalette;
-      final newDominantColor = _paletteGenerator?.dominantColor?.color.withOpacity(0.7);
-      final newVibrantColor = _paletteGenerator?.darkMutedColor?.color.withOpacity(0.7);
+      final newDominantColor =
+          _paletteGenerator?.dominantColor?.color.withOpacity(0.7);
+      final newVibrantColor =
+          _paletteGenerator?.darkMutedColor?.color.withOpacity(0.7);
       if (newDominantColor != null) _dominantColor = newDominantColor;
       if (newVibrantColor != null) _vibrantColor = newVibrantColor;
       _isPaletteReady = true; // Palette is ready from global cache!
     }
-    
+
     // Request palette generation via shared preloader if needed
     _ensurePalette();
-    
+
     // Preload image if requested (for next/previous pages)
     if (widget.shouldPreload) {
       _preloadImage();
@@ -240,10 +263,11 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
   // Preload image into cache
   void _preloadImage() async {
     try {
-      final imageProvider = widget.data.image.hasLocalPreview != null && widget.data.image.hasLocalPreview!
+      final imageProvider = widget.data.image.hasLocalPreview != null &&
+              widget.data.image.hasLocalPreview!
           ? FileImage(File(widget.data.image.getFilePath!)) as ImageProvider
           : NetworkImage(widget.data.image.getUrl(AmityImageSize.MEDIUM));
-      
+
       // Preload with memory constraints
       await precacheImage(
         ResizeImage(
@@ -281,7 +305,8 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
     _isCalculatingPalette = true;
 
     StoryPalettePreloader()
-        .ensurePaletteForImageData(storyId: widget.storyId, imageData: widget.data)
+        .ensurePaletteForImageData(
+            storyId: widget.storyId, imageData: widget.data)
         .then((palette) {
       if (!mounted) return;
 
@@ -326,7 +351,8 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
         // Background gradient (always visible)
         Positioned.fill(
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300), // Slower transition reduces frame drops
+            duration: const Duration(
+                milliseconds: 300), // Slower transition reduces frame drops
             curve: Curves.easeOut, // Smooth easing
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -345,13 +371,18 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
           width: double.infinity,
           height: double.infinity,
           color: Colors.transparent,
-          child: widget.data.image.hasLocalPreview != null && widget.data.image.hasLocalPreview!
+          child: widget.data.image.hasLocalPreview != null &&
+                  widget.data.image.hasLocalPreview!
               ? Image.file(
                   File(widget.data.image.getFilePath!),
-                  fit: widget.data.imageDisplayMode == AmityStoryImageDisplayMode.FILL ? BoxFit.cover : BoxFit.contain,
+                  fit: widget.data.imageDisplayMode ==
+                          AmityStoryImageDisplayMode.FILL
+                      ? BoxFit.cover
+                      : BoxFit.contain,
                   cacheWidth: 1080, // Constrain memory cache to 1080p width
                   cacheHeight: 1920, // Constrain memory cache to 1080p height
-                  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  frameBuilder:
+                      (context, child, frame, wasSynchronouslyLoaded) {
                     // Mark image as ready when loaded
                     if (frame != null && !_isImageReady) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -362,12 +393,12 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
                         }
                       });
                     }
-                    
+
                     if (wasSynchronouslyLoaded) {
                       // Synchronously loaded (from cache) - apply blur fade
                       return _buildBlurFadeTransition(child);
                     }
-                    
+
                     // Async load - fade in with blur
                     return AnimatedOpacity(
                       opacity: frame == null ? 0.0 : 1.0,
@@ -378,8 +409,10 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
                   },
                 )
               : CachedNetworkImage(
-                  fadeInDuration: const Duration(milliseconds: 200), // Fast fade-in
-                  fadeOutDuration: const Duration(milliseconds: 100), // Fast fade-out
+                  fadeInDuration:
+                      const Duration(milliseconds: 200), // Fast fade-in
+                  fadeOutDuration:
+                      const Duration(milliseconds: 100), // Fast fade-out
                   placeholder: (context, url) => Container(
                     // Minimal placeholder - just background gradient (already visible)
                     color: Colors.transparent,
@@ -400,13 +433,16 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
                         }
                       });
                     }
-                    
+
                     return _buildBlurFadeTransition(
                       Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: imageProvider,
-                            fit: widget.data.imageDisplayMode == AmityStoryImageDisplayMode.FILL ? BoxFit.cover : BoxFit.contain,
+                            fit: widget.data.imageDisplayMode ==
+                                    AmityStoryImageDisplayMode.FILL
+                                ? BoxFit.cover
+                                : BoxFit.contain,
                           ),
                         ),
                       ),
@@ -422,7 +458,8 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
   Widget _buildBlurFadeTransition(Widget child) {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(
-        begin: _isPaletteReady ? 0.0 : 8.0, // Start blurred if palette not ready
+        begin:
+            _isPaletteReady ? 0.0 : 8.0, // Start blurred if palette not ready
         end: 0.0, // Always end at clear
       ),
       duration: const Duration(milliseconds: 300), // Smooth blur fade
@@ -432,7 +469,7 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
           // No blur needed - return child directly for performance
           return child!;
         }
-        
+
         return ImageFiltered(
           imageFilter: ImageFilter.blur(
             sigmaX: blurValue,
@@ -450,8 +487,9 @@ class _AmityStoryBodyImageViewState extends State<AmityStoryBodyImageView> {
 class AmityStoryBodyVideoView extends StatelessWidget {
   final VideoStoryData data;
   final AmityStorySyncState syncState;
-  
-  const AmityStoryBodyVideoView({super.key, required this.data, required this.syncState});
+
+  const AmityStoryBodyVideoView(
+      {super.key, required this.data, required this.syncState});
 
   @override
   Widget build(BuildContext context) {
@@ -463,7 +501,10 @@ class AmityStoryBodyVideoView extends StatelessWidget {
       height: double.infinity,
       child: AmityStoryVideoPlayer(
         showVolumeControl: true,
-        video: (data.video.hasLocalPreview != null && data.video.hasLocalPreview!) ? File(data.video.getFilePath!) : null,
+        video:
+            (data.video.hasLocalPreview != null && data.video.hasLocalPreview!)
+                ? File(data.video.getFilePath!)
+                : null,
         onInitializing: () {
           StoryTimerStateManager.currentValue = -1;
           viewStoryBloc.add(ShoudPauseEvent(shouldPause: true));
@@ -475,7 +516,9 @@ class AmityStoryBodyVideoView extends StatelessWidget {
             storyVideoBloc.add(const PauseStoryVideoEvent());
           }
         },
-        url: (data.video.hasLocalPreview != null && data.video.hasLocalPreview!) ? null : data.video.fileUrl!,
+        url: (data.video.hasLocalPreview != null && data.video.hasLocalPreview!)
+            ? null
+            : data.video.fileUrl!,
         onInitialize: () {
           StoryTimerStateManager.totalValue = storyVideoBloc.state.duration;
           viewStoryBloc.add(ShoudPauseEvent(shouldPause: false));
@@ -490,7 +533,8 @@ class AmityStoryBodyVideoView extends StatelessWidget {
 class AmityStoryBodyHyperlinkView extends StatelessWidget {
   final HyperLink hyperlinkItem;
   final Function(HyperLink) onHyperlinkClick;
-  const AmityStoryBodyHyperlinkView({super.key, required this.hyperlinkItem, required this.onHyperlinkClick});
+  const AmityStoryBodyHyperlinkView(
+      {super.key, required this.hyperlinkItem, required this.onHyperlinkClick});
 
   @override
   Widget build(BuildContext context) {

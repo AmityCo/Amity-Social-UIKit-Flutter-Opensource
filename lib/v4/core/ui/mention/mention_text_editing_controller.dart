@@ -359,17 +359,10 @@ class MentionTextEditingController extends TextEditingController {
 
   /// Dismisses the current mention trigger.
   ///
-  /// This method removes the text that was typed for the current mention (from the '@'
-  /// trigger up to the current cursor position) and then cancels the mention state.
+  /// This method cancels the mention state without removing the typed text.
+  /// The user's typed text (e.g., '@abc') will remain in the text field.
   void dismissCurrentMention() {
-    if (isMentioning()) {
-      final int start = _mentionStartingIndex!;
-      // Use the current selection offset as end if greater than start.
-      final int end = selection.baseOffset > start ? selection.baseOffset : start;
-      // Debug log to help verify indices.
-      text = text.replaceRange(start, end, '');
-      _previousText = text;
-    }
+    // Simply cancel the mention state without deleting the typed text
     cancelMentioning();
   }
 

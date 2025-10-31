@@ -65,8 +65,11 @@ class AmityCreateStoryPage extends NewBasePage {
                             ),
                           );
                         },
-                        onVideoCaptured: (video) {
-                          AmityStoryMediaType mediaType = AmityStoryMediaTypeVideo(file: video);
+                        onVideoCaptured: (video, metadata, isFromGallery) {
+                          AmityStoryMediaType mediaType = AmityStoryMediaTypeVideo(
+                            file: video,
+                            metadata: metadata,
+                          );
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => MultiBlocProvider(
@@ -78,7 +81,7 @@ class AmityCreateStoryPage extends NewBasePage {
                                   mediaType: mediaType,
                                   targetId: targetId,
                                   targetType: targetType,
-                                  isFromGallery: false,
+                                  isFromGallery: isFromGallery,
                                 ),
                               ),
                             ),

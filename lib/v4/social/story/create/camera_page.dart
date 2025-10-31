@@ -2,13 +2,14 @@ import 'dart:io';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/camera_permission_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/camera_preview_builder.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AmityCameraPage extends NewBasePage {
   final bool isVideoMode;
-  final Function(File) onVideoCaptured;
-  final Function(File, bool) onImageCaptured;
+  final void Function(File, StoryVideoMetadata, bool isFromGallery) onVideoCaptured;
+  final void Function(File, bool isFromGallery) onImageCaptured;
   final Function() onCloseClicked;
 
   AmityCameraPage({

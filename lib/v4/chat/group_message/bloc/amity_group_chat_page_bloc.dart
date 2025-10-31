@@ -291,11 +291,6 @@ class AmityGroupChatPageBloc
               .text(text)
               .parentId(message.parentId)
               .send();
-          await messageRepo
-              .createMessage(subChannelId)
-              .text(text)
-              .parentId(message.parentId)
-              .send();
         } else if (message.data is MessageImageData) {
           final localPath =
               (message.data as MessageImageData).image?.getFilePath;
@@ -304,11 +299,6 @@ class AmityGroupChatPageBloc
           }
           final uri = Uri.file(localPath);
           await message.delete();
-          await messageRepo
-              .createMessage(subChannelId)
-              .image(uri)
-              .parentId(message.parentId)
-              .send();
           await messageRepo
               .createMessage(subChannelId)
               .image(uri)

@@ -42,7 +42,12 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
     super.initState();
     widget.onInitializing();
     _videoBloc = context.read<StoryVideoPlayerBloc>();
-    _videoBloc.add(InitializeStoryVideoPlayerEvent(file: widget.video, url: widget.url, looping: widget.loopVideo));
+    _videoBloc.add(InitializeStoryVideoPlayerEvent(
+      file: widget.video, 
+      url: widget.url, 
+      looping: widget.loopVideo,
+      isFromGallery: false, // Treat community videos as captured portrait content
+    ));
   }
 
   @override
@@ -54,7 +59,12 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
 
     if (didChangeVideo || didChangeUrl) {
       widget.onInitializing();
-      _videoBloc.add(InitializeStoryVideoPlayerEvent(file: widget.video, url: widget.url, looping: widget.loopVideo));
+      _videoBloc.add(InitializeStoryVideoPlayerEvent(
+        file: widget.video, 
+        url: widget.url, 
+        looping: widget.loopVideo,
+        isFromGallery: false, // Treat community videos as captured portrait content
+      ));
     }
   }
 
@@ -94,9 +104,7 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
             height: double.infinity,
             width: double.infinity,
             color: const Color.fromRGBO(0, 0, 0, 1),
-            child: Center(
-              child: _buildPlayerChild(state),
-            ),
+            child: _buildPlayerChild(state),
           ),
         );
       },
@@ -123,10 +131,31 @@ class _AmityStoryVideoPlayerState extends State<AmityStoryVideoPlayer> {
       );
     }
 
-    return AspectRatio(
-      aspectRatio: state.videoController!.value.aspectRatio,
-      child: Chewie(
-        controller: state.chewieController!,
+    final videoValue = state.videoController!.value;
+    var displayWidth = videoValue.size.width;
+    var displayHeight = videoValue.size.height;
+
+    // When rotation metadata is present (e.g. imported landscape clips), swap the
+    // dimensions so orientation detection reflects the rendered output.
+    if (state.rotationDegrees == 90 || state.rotationDegrees == 270) {
+      final temp = displayWidth;
+      displayWidth = displayHeight;
+      displayHeight = temp;
+    }
+
+    // Treat slightly square videos as portrait to preserve the existing full bleed behaviour.
+    final isLandscape = displayWidth > displayHeight * 1.05;
+    final fit = isLandscape ? BoxFit.contain : BoxFit.cover;
+
+    return FittedBox(
+      fit: fit,
+      alignment: Alignment.center,
+      child: SizedBox(
+        width: videoValue.size.width,
+        height: videoValue.size.height,
+        child: Chewie(
+          controller: state.chewieController!,
+        ),
       ),
     );
   }

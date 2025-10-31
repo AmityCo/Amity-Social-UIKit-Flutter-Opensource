@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/camera_permission_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/camera_permission_event.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/camera_permission_state.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media_type.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -20,16 +21,16 @@ import 'package:video_player/video_player.dart';
 /// Manages camera controller lifecycle and UI rendering based on Bloc state
 class CameraPreviewBuilder extends StatefulWidget {
   final bool isVideoMode;
-  final Function(File) onVideoCaptured;
-  final Function(File, bool) onImageCaptured;
+  final void Function(File, StoryVideoMetadata, bool isFromGallery) onVideoCaptured;
+  final void Function(File, bool isFromGallery) onImageCaptured;
   final Function() onCloseClicked;
   final AmityThemeColor? themeColor;
 
   const CameraPreviewBuilder({
     super.key,
     required this.isVideoMode,
-    required this.onVideoCaptured,
-    required this.onImageCaptured,
+  required this.onVideoCaptured,
+  required this.onImageCaptured,
     required this.onCloseClicked,
     this.themeColor,
   });
@@ -203,6 +204,10 @@ class _CameraPreviewBuilderState extends State<CameraPreviewBuilder>
 
     try {
       await cameraController.initialize();
+      
+      // Lock orientation to portrait to ensure consistent video recording
+      await cameraController.lockCaptureOrientation(DeviceOrientation.portraitUp);
+      
       await cameraController.setFlashMode(FlashMode.off);
       _minAvailableZoom = await cameraController.getMinZoomLevel();
       _maxAvailableZoom = await cameraController.getMaxZoomLevel();
@@ -704,7 +709,8 @@ class _CameraPreviewBuilderState extends State<CameraPreviewBuilder>
       final video = await controller!.stopVideoRecording();
       _stopTimer();
       if (mounted) {
-        widget.onVideoCaptured(File(video.path));
+        final metadata = StoryVideoMetadata(isBackCamera: state.isBackCamera);
+  widget.onVideoCaptured(File(video.path), metadata, false);
       }
     } catch (e) {
       // Handle error silently
@@ -717,10 +723,26 @@ class _CameraPreviewBuilderState extends State<CameraPreviewBuilder>
     _galleryInProgress = true;
     try {
       final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-      
-      if (image != null && mounted) {
-        widget.onImageCaptured(File(image.path), true);
+
+      if (widget.isVideoMode) {
+        final XFile? video = await picker.pickVideo(
+          source: ImageSource.gallery,
+          maxDuration: Duration(seconds: videoTimeInSeconds),
+        );
+
+        if (video != null && mounted) {
+          widget.onVideoCaptured(
+            File(video.path),
+            const StoryVideoMetadata(isBackCamera: true),
+            true,
+          );
+        }
+      } else {
+        final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+        if (image != null && mounted) {
+          widget.onImageCaptured(File(image.path), true);
+        }
       }
     } finally {
       _galleryInProgress = false;

@@ -329,10 +329,10 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
           // Delay the bounce animation to allow the media content to load
           // before the animation starts
           Future.delayed(Duration(milliseconds: millisecBeforeAnimated), () {
-            bounceLatestMessage();
+            bounceLatestMessage?.call();
           });
         } else {
-          bounceLatestMessage();
+          bounceLatestMessage?.call();
         }
       }
     });

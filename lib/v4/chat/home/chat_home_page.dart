@@ -259,7 +259,7 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   fullscreenDialog: true,
-                  builder: (context) => AmitySearchChannelhPage(),
+                  builder: (context) => AmitySearchChannelPage(),
                 ),
               );
             },

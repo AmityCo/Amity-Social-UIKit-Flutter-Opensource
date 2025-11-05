@@ -11,8 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_skeleton.dart';
 
-class AmitySearchChannelhPage extends NewBasePage {
-  AmitySearchChannelhPage({Key? key}) : super(key: key, pageId: 'search_channel_page');
+class AmitySearchChannelPage extends NewBasePage {
+  AmitySearchChannelPage({Key? key}) : super(key: key, pageId: 'search_channel_page');
 
   final scrollController = ScrollController();
   final textController = TextEditingController();

@@ -3,6 +3,7 @@ import 'package:amity_uikit_beta_service/v4/core/Network/network_connectivity_bl
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -36,7 +37,7 @@ class ArchivedChatPageNavigationBar extends NewBaseComponent {
           return AppBar(
             automaticallyImplyLeading: false,
             titleSpacing: 4,
-            title: Text("Archived chats", style: AmityTextStyle.headline(theme.baseColor)),
+            title: Text(context.l10n.chat_archived_title, style: AmityTextStyle.headline(theme.baseColor)),
             centerTitle: true,
             leadingWidth: 65,
             leading: Padding(

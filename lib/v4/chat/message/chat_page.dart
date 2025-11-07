@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dar
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_action.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
@@ -15,7 +17,6 @@ import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.da
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/simple_ticker_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
-import 'package:amity_uikit_beta_service/v4/utils/amity_image_viewer.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:flutter/cupertino.dart';
@@ -122,16 +123,9 @@ class AmityChatPage extends NewBasePage {
                           GestureDetector(
                             onTap: () {
                               final avatarUrl = state.avatarUrl;
-                              if (avatarUrl != null && avatarUrl.isNotEmpty) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AmityImageViewer(
-                                      imageUrl: "$avatarUrl?size=large",
-                                    ),
-                                  ),
-                                );
-                              }
+                              final userId = state.channelMember?.userId;
+                              AmityUIKit4Manager.behavior.chatPageBehavior
+                                  .onAvatarTap(context, avatarUrl, userId);
                             },
                             child: AmityUserAvatar.withChannelMember(
                                 channelMember: state.channelMember),

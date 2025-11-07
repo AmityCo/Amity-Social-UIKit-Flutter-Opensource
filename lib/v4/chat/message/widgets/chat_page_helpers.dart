@@ -4,6 +4,15 @@ extension ChatPageHelpers on AmityChatPage {
   void _showChatUserActionBottomSheet(
       BuildContext context, ChatPageState state) {
     final chatPageBloc = context.read<ChatPageBloc>();
+    final configRepo = ConfigRepository();
+
+    final showMute = configRepo.isChatUserActionEnabled('mute');
+    final showReport = configRepo.isChatUserActionEnabled('report');
+    final showBlock = configRepo.isChatUserActionEnabled('block');
+
+    if (!showMute && !showReport && !showBlock) {
+      return;
+    }
 
     showModalBottomSheet(
       context: context,

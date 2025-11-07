@@ -90,7 +90,7 @@ extension VideoMessageWidget on MessageBubbleView {
                   if (message.syncState ==
                       AmityMessageSyncState.FAILED) ...[
                     const SizedBox(height: 4),
-                    _buildFailToSendText(),
+                    _buildFailToSendText(context),
                   ],
                 ],
               ),

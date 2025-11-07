@@ -15,6 +15,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/simple_ticker_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/user_avatar.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,7 +75,7 @@ class AmityGroupChatPage extends NewBasePage {
                 builder: (context, state) {
                   if (state is GroupChatPageStateInitial && !isJustCreated) {
                     context.read<AmityToastBloc>().add(AmityToastLoading(
-                        message: "Loading chat...",
+                        message: context.l10n.chat_loading,
                         icon: AmityToastIcon.loading,
                         bottomPadding: toastBottomPadding));
                   }
@@ -153,7 +154,7 @@ class AmityGroupChatPage extends NewBasePage {
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          "Waiting for network...",
+                                          context.l10n.chat_waiting_for_network,
                                           style: TextStyle(
                                             fontSize: 13,
                                             color: theme.baseColorShade1,

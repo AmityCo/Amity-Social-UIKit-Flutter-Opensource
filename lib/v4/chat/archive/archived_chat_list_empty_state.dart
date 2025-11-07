@@ -1,5 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,7 +24,7 @@ class ArchivedChatListEmptyState extends StatelessWidget {
             height: 45,
           ),
           const SizedBox(height: 16),
-          Text("No archive chat",
+          Text(context.l10n.chat_archived_empty_title,
               style: AmityTextStyle.titleBold(theme.baseColorShade3)),
         ],
       ),

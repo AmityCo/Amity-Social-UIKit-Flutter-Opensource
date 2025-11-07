@@ -1,10 +1,10 @@
 part of '../message_bubble_view.dart';
 
 extension GenericWidget on MessageBubbleView {
-  Widget _buildFailToSendText() {
-    return const Text(
-      'Failed to send message.',
-      style: TextStyle(
+  Widget _buildFailToSendText(BuildContext context) {
+    return Text(
+      context.l10n.message_failed_to_send,
+      style: const TextStyle(
         color: Color(0xFFFA4D30),
         fontSize: 10,
         fontWeight: FontWeight.w400,
@@ -48,7 +48,7 @@ extension GenericWidget on MessageBubbleView {
                 width: 4,
               ),
               Text(
-                'This message was deleted',
+                context.l10n.message_deleted,
                 style: TextStyle(
                   color: isUser
                       ? messageColor.rightBubbleDefault
@@ -82,19 +82,15 @@ extension GenericWidget on MessageBubbleView {
   }
 
   Widget _buildAvatarWidget(BuildContext context) {
-    final avatarUrl = message.user!.avatarUrl;
+    final avatarUrl = message.user?.avatarUrl;
+    final userId = message.user?.userId;
     return GestureDetector(
       onTap: () {
-        if (avatarUrl != null && avatarUrl.isNotEmpty) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AmityImageViewer(
-                imageUrl: "$avatarUrl?size=large",
-              ),
-            ),
-          );
-        }
+        AmityUIKit4Manager.behavior.messageBubbleBehavior.onAvatarTap(
+          context,
+          avatarUrl,
+          userId,
+        );
       },
       child: SizedBox(        
         child: AmityMessageAvatar(

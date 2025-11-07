@@ -448,6 +448,15 @@
     "description": "Label for typing indicator"
   },
   "message_placeholder": "Digite uma mensagem...",
+  "message_deleted": "Esta mensagem foi excluída",
+  "message_failed_to_send": "Falha ao enviar a mensagem.",
+  "message_reply_you_to_yourself": "Você respondeu a si mesmo",
+  "message_reply_to_you": "Respondeu a você",
+  "message_reply_you": "Você respondeu",
+  "message_reply_to_themself": "Respondeu a si mesmo",
+  "message_reply_you_to_deleted": "Você respondeu a uma mensagem excluída",
+  "message_reply_to_deleted": "Respondeu a uma mensagem excluída",
+  "message_unknown_user": "Desconhecido",
   "@message_placeholder": {
     "description": "Placeholder for message input"
   },
@@ -541,11 +550,11 @@
   },
   "settings_everyone": "Todos",
   "@settings_everyone": {
-    "description": "Label for everyone settings"
+    "description": "Translation for settings_everyone"
   },
   "settings_only_moderators": "Apenas moderadores",
   "@settings_only_moderators": {
-    "description": "Label for only moderators settings"
+    "description": "Translation for settings_only_moderators"
   },
   "settings_privacy": "Privacidade",
   "@settings_privacy": {
@@ -613,7 +622,7 @@
   },
   "general_save": "Salvar",
   "@general_save": {
-    "description": "Label for save button"
+    "description": "Translation for general_save"
   },
   "general_delete": "Excluir",
   "@general_delete": {
@@ -655,13 +664,13 @@
   "@general_optional": {
     "description": "Label for optional fields"
   },
-  "general_on": "Ligado",
+  "general_on": "Ativado",
   "@general_on": {
-    "description": "Label for on state"
+    "description": "Translation for general_on"
   },
-  "general_off": "Desligado",
+  "general_off": "Desativado",
   "@general_off": {
-    "description": "Label for off state"
+    "description": "Translation for general_off"
   },
   "general_reported": "denunciado",
   "@general_reported": {
@@ -677,11 +686,11 @@
   },
   "general_camera": "Câmera",
   "@general_camera": {
-    "description": "Label for camera button"
+    "description": "Label for camera option in media picker"
   },
   "general_photo": "Foto",
   "@general_photo": {
-    "description": "Label for photo button"
+    "description": "Label for photo/gallery option in media picker"
   },
   "general_video": "Vídeo",
   "@general_video": {
@@ -932,5 +941,1193 @@
   "permission_open_settings": "Abrir configurações",
   "@permission_open_settings": {
     "description": "Texto do botão para abrir as configurações do aplicativo"
+  },
+  "category_add": "Adicionar Categoria",
+  "@category_add": {
+    "description": "Label for add category button"
+  },
+  "category_default_title": "Categoria",
+  "@category_default_title": {
+    "description": "Default title for category page when category name is not available"
+  },
+  "category_select_title": "Selecionar Categoria",
+  "@category_select_title": {
+    "description": "Title for category selection page"
+  },
+  "chat_archive": "Arquivar",
+  "@chat_archive": {
+    "description": "Action text for archiving a chat"
+  },
+  "chat_archived": "Arquivado",
+  "@chat_archived": {
+    "description": "Menu option for archived chats"
+  },
+  "chat_block_user_description": "{displayName} não poderá enviar mensagens para você. Eles não serão notificados de que você os bloqueou.",
+  "@chat_block_user_description": {
+    "description": "Description for blocking user confirmation dialog in chat",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_block_user_title": "Bloquear usuário?",
+  "@chat_block_user_title": {
+    "description": "Title for blocking user confirmation dialog in chat"
+  },
+  "chat_blocked_message": "Você não pode enviar mensagens para esta pessoa.",
+  "@chat_blocked_message": {
+    "description": "Message shown when user is blocked and cannot send messages"
+  },
+  "chat_direct_chat": "Chat direto",
+  "@chat_direct_chat": {
+    "description": "Menu option for creating direct chat"
+  },
+  "chat_group_chat": "Chat em grupo",
+  "@chat_group_chat": {
+    "description": "Menu option for creating group chat"
+  },
+  "chat_loading": "Carregando chat...",
+  "@chat_loading": {
+    "description": "Loading message shown when chat is initializing"
+  },
+  "chat_message_deleted": "Esta mensagem foi excluída",
+  "@chat_message_deleted": {
+    "description": "Preview text for deleted messages"
+  },
+  "chat_message_no_preview": "Sem visualização disponível para este tipo de mensagem",
+  "@chat_message_no_preview": {
+    "description": "Preview text for unsupported message types"
+  },
+  "chat_message_photo": "Enviar uma foto",
+  "@chat_message_photo": {
+    "description": "Text shown for photo messages in chat notifications"
+  },
+  "chat_message_video": "Enviar um vídeo",
+  "@chat_message_video": {
+    "description": "Text shown for video messages in chat notifications"
+  },
+  "chat_no_message_yet": "Ainda sem mensagens",
+  "@chat_no_message_yet": {
+    "description": "Preview text when there are no messages in the chat"
+  },
+  "general_search_hint": "Pesquisar",
+  "@general_search_hint": {
+    "description": "Hint text for search input fields"
+  },
+  "chat_archived_empty_title": "Sem chats arquivados",
+  "@chat_archived_empty_title": {
+    "description": "Empty state title for archived chats list"
+  },
+  "chat_archived_title": "Chats arquivados",
+  "@chat_archived_title": {
+    "description": "Title for archived chats page"
+  },
+  "toast_chat_archived": "Chat arquivado.",
+  "@toast_chat_archived": {
+    "description": "Translation for toast_chat_archived"
+  },
+  "toast_chat_unarchived": "Chat desarquivado.",
+  "@toast_chat_unarchived": {
+    "description": "Translation for toast_chat_unarchived"
+  },
+  "toast_chat_archive_error": "Falha ao arquivar o chat. Por favor, tente novamente",
+  "@toast_chat_archive_error": {
+    "description": "Translation for toast_chat_archive_error"
+  },
+  "toast_chat_unarchive_error": "Falha ao desarquivar o chat. Por favor, tente novamente",
+  "@toast_chat_unarchive_error": {
+    "description": "Translation for toast_chat_unarchive_error"
+  },
+  "chat_archive_limit_title": "Muitos chats arquivados",
+  "@chat_archive_limit_title": {
+    "description": "Translation for chat_archive_limit_title"
+  },
+  "chat_archive_limit_message": "Você pode arquivar no máximo 100 listas de chat.",
+  "@chat_archive_limit_message": {
+    "description": "Translation for chat_archive_limit_message"
+  },
+  "chat_empty_title": "Ainda sem conversas",
+  "@chat_empty_title": {
+    "description": "Empty state title for chat list"
+  },
+  "chat_empty_description": "Vamos criar um chat para começar.",
+  "@chat_empty_description": {
+    "description": "Empty state description for chat list"
+  },
+  "chat_create_new": "Criar novo chat",
+  "@chat_create_new": {
+    "description": "Button text to create a new chat"
+  },
+  "chat_group_profile_title": "Perfil do grupo",
+  "@chat_group_profile_title": {
+    "description": "Title for group profile page"
+  },
+  "chat_group_profile_error": "Erro ao carregar perfil",
+  "@chat_group_profile_error": {
+    "description": "Error message when group profile fails to load"
+  },
+  "chat_group_name_hint": "Digite o nome do grupo",
+  "@chat_group_name_hint": {
+    "description": "Hint text for group name input field"
+  },
+  "chat_group_name_placeholder": "Nomeie seu grupo",
+  "@chat_group_name_placeholder": {
+    "description": "Placeholder text for group name input"
+  },
+  "chat_member_permissions_title": "Permissões de membros",
+  "@chat_member_permissions_title": {
+    "description": "Title for member permissions page"
+  },
+  "chat_member_label": "Membro",
+  "@chat_member_label": {
+    "description": "Label for member section"
+  },
+  "chat_select_member_error": "Por favor, selecione pelo menos um usuário",
+  "@chat_select_member_error": {
+    "description": "Error message when no user is selected"
+  },
+  "message_report_details_hint": "Compartilhe mais detalhes sobre este problema",
+  "@message_report_details_hint": {
+    "chat_search_tab_chats": "Chats",
+    "@chat_search_tab_chats": {
+      "description": "Tab title for chats in search page"
+    },
+    "chat_search_tab_messages": "Mensagens",
+    "@chat_search_tab_messages": {
+      "description": "Tab title for messages in search page"
+    },
+    "search_minimum_chars": "Comece sua pesquisa digitando\npelo menos 3 letras",
+    "@search_minimum_chars": {
+      "description": "Hint text shown when search query is too short"
+    },
+    "description": "Hint text for message report details input"
+  },
+  "chat_notification_turn_off": "Desativar notificações",
+  "@chat_notification_turn_off": {
+    "description": "Text for turning off chat notifications"
+  },
+  "chat_notification_turn_on": "Ativar notificações",
+  "@chat_notification_turn_on": {
+    "description": "Text for turning on chat notifications"
+  },
+  "chat_notifications_disabled": "Você desativou as notificações para chat",
+  "@chat_notifications_disabled": {
+    "description": "Message shown when chat notifications are disabled"
+  },
+  "chat_tab_all": "Todos",
+  "@chat_tab_all": {
+    "description": "Tab label for all chats"
+  },
+  "chat_tab_direct": "Direto",
+  "@chat_tab_direct": {
+    "description": "Tab label for direct chats"
+  },
+  "chat_tab_groups": "Grupos",
+  "@chat_tab_groups": {
+    "description": "Tab label for group chats"
+  },
+  "chat_title": "Chat",
+  "@chat_title": {
+    "description": "Title for chat home page"
+  },
+  "chat_unarchive": "Desarquivar",
+  "@chat_unarchive": {
+    "description": "Action text for unarchiving a chat"
+  },
+  "chat_unblock_user_description": "{displayName} agora poderá enviar mensagens para você. Eles não serão notificados de que você os desbloqueou.",
+  "@chat_unblock_user_description": {
+    "description": "Description for unblocking user confirmation dialog in chat",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_unblock_user_title": "Desbloquear usuário?",
+  "@chat_unblock_user_title": {
+    "description": "Title for unblocking user confirmation dialog in chat"
+  },
+  "chat_waiting_for_network": "Aguardando conexão de rede...",
+  "@chat_waiting_for_network": {
+    "description": "Message shown when waiting for network connection"
+  },
+  "comment_deleted_message": "Este comentário foi excluído",
+  "@comment_deleted_message": {
+    "description": "Message shown for deleted comments"
+  },
+  "comment_reply_deleted_message": "Esta resposta foi excluída",
+  "@comment_reply_deleted_message": {
+    "description": "Message shown for deleted reply comments"
+  },
+  "community_all_members": "Todos os membros",
+  "@community_all_members": {
+    "description": "Tab label for all members in community membership page"
+  },
+  "community_demote_member": "Rebaixar para membro",
+  "@community_demote_member": {
+    "description": "Action to demote a moderator to member role"
+  },
+  "community_empty_state": "Ainda sem comunidade",
+  "@community_empty_state": {
+    "description": "Empty state message when there are no communities in the category"
+  },
+  "community_join_requests_coming_soon": "Funcionalidade de solicitações de entrada em breve",
+  "@community_join_requests_coming_soon": {
+    "description": "Placeholder text for join requests feature that is not yet implemented"
+  },
+  "community_moderators": "Moderadores",
+  "@community_moderators": {
+    "description": "Tab label for moderators in community membership page"
+  },
+  "community_pending_post_accept": "Aceitar",
+  "@community_pending_post_accept": {
+    "description": "Button text for accepting a pending post"
+  },
+  "community_pending_post_approve_error": "Falha ao aceitar publicação. Esta publicação foi revisada por outro moderador.",
+  "@community_pending_post_approve_error": {
+    "description": "Error message when approving pending post fails"
+  },
+  "community_pending_post_approve_success": "Publicação aceita.",
+  "@community_pending_post_approve_success": {
+    "description": "Success message when pending post is approved"
+  },
+  "community_pending_post_decline": "Recusar",
+  "@community_pending_post_decline": {
+    "description": "Button text for declining a pending post"
+  },
+  "community_pending_post_decline_error": "Falha ao recusar publicação. Esta publicação foi revisada por outro moderador.",
+  "@community_pending_post_decline_error": {
+    "description": "Error message when declining pending post fails"
+  },
+  "community_pending_post_decline_success": "Publicação recusada.",
+  "@community_pending_post_decline_success": {
+    "description": "Success message when pending post is declined"
+  },
+  "community_pending_post_delete_error": "Falha ao excluir publicação. Por favor, tente novamente.",
+  "@community_pending_post_delete_error": {
+    "description": "Error message when deleting pending post fails"
+  },
+  "community_pending_post_delete_success": "Publicação excluída.",
+  "@community_pending_post_delete_success": {
+    "description": "Success message when pending post is deleted"
+  },
+  "community_pending_posts_empty": "Sem publicações pendentes",
+  "@community_pending_posts_empty": {
+    "description": "Empty state message when there are no pending posts"
+  },
+  "community_pending_posts_warning": "Recusar publicação pendente excluirá permanentemente a publicação selecionada da comunidade.",
+  "@community_pending_posts_warning": {
+    "description": "Warning message for moderators about declining pending posts"
+  },
+  "community_pending_requests_empty_description": "Ative a revisão de publicações ou aprovação de entrada nas configurações da comunidade para gerenciar solicitações.",
+  "@community_pending_requests_empty_description": {
+    "description": "Description for empty state when no pending requests are available"
+  },
+  "community_pending_requests_empty_title": "Sem solicitações pendentes disponíveis",
+  "@community_pending_requests_empty_title": {
+    "description": "Title for empty state when no pending requests are available"
+  },
+  "community_pending_requests_title": "Solicitações Pendentes",
+  "@community_pending_requests_title": {
+    "description": "Title for the pending requests page"
+  },
+  "community_placeholder_members": "1.2K membros",
+  "@community_placeholder_members": {
+    "description": "Placeholder text for community members count in recommended communities"
+  },
+  "community_post_permission": "Permissão de publicação",
+  "@community_post_permission": {
+    "description": "Community post permissions setting option"
+  },
+  "community_post_permission_description_label": "Você pode controlar quem pode criar publicações em sua comunidade.",
+  "@community_post_permission_description_label": {
+    "description": "label for post permissions page description"
+  },
+  "community_post_permission_title_label": "Quem pode publicar nesta comunidade",
+  "@community_post_permission_title_label": {
+    "description": "label for post permissions page title"
+  },
+  "community_promote_moderator": "Promover a moderador",
+  "@community_promote_moderator": {
+    "description": "Action to promote a member to moderator role"
+  },
+  "community_recommended_for_you": "Recomendado para você",
+  "@community_recommended_for_you": {
+    "description": "Section title for recommended communities"
+  },
+  "community_remove_member": "Remover da comunidade",
+  "@community_remove_member": {
+    "description": "Action to remove a member from the community"
+  },
+  "community_search_member_hint": "Buscar membro",
+  "@community_search_member_hint": {
+    "description": "Hint text for member search field"
+  },
+  "community_setting_close_description": "Fechar esta comunidade removerá a página da comunidade e todo o seu conteúdo e comentários.",
+  "@community_setting_close_description": {
+    "description": "Description for close community setting"
+  },
+  "community_setting_close_label": "Fechar comunidade",
+  "@community_setting_close_label": {
+    "description": "Label for close community setting"
+  },
+  "community_story_comments": "Comentários em histórias",
+  "@community_story_comments": {
+    "description": "Community story comments setting option"
+  },
+  "community_trending_now": "Em alta agora",
+  "@community_trending_now": {
+    "description": "Section title for trending communities"
+  },
+  "feed_no_photos": "Ainda sem fotos",
+  "@feed_no_photos": {
+    "description": "Empty state message when there are no photos in the feed"
+  },
+  "feed_no_pinned_posts": "Ainda sem publicação fixada",
+  "@feed_no_pinned_posts": {
+    "description": "Empty state message when there are no pinned posts in the community"
+  },
+  "feed_no_posts": "Ainda sem publicações",
+  "@feed_no_posts": {
+    "description": "Empty state message when there are no posts in the community feed"
+  },
+  "feed_no_videos": "Ainda sem vídeos",
+  "@feed_no_videos": {
+    "description": "Empty state message when there are no videos in the feed"
+  },
+  "general_go_back": "Voltar",
+  "@general_go_back": {
+    "description": "Label for go back button"
+  },
+  "member_add": "Adicionar membro",
+  "@member_add": {
+    "description": "Button text and title for adding members"
+  },
+  "member_add_error": "Falha ao adicionar membro. Por favor, tente novamente.",
+  "@member_add_error": {
+    "description": "Error message when adding member fails"
+  },
+  "member_add_success": "Membro adicionado com sucesso a esta comunidade.",
+  "@member_add_success": {
+    "description": "Success message when adding member to community"
+  },
+  "member_remove_button": "Remover",
+  "@member_remove_button": {
+    "description": "Button text for removing member"
+  },
+  "member_remove_error": "Falha ao remover membro. Por favor, tente novamente.",
+  "@member_remove_error": {
+    "description": "Error message when removing member fails"
+  },
+  "member_remove_success": "Membro removido desta comunidade.",
+  "@member_remove_success": {
+    "description": "Success message when removing member from community"
+  },
+  "member_removal_confirm_description": "Tem certeza de que deseja remover este membro do grupo? Eles serão informados de sua remoção.",
+  "@member_removal_confirm_description": {
+    "description": "Description for member removal confirmation dialog"
+  },
+  "member_removal_confirm_title": "Confirmar remoção",
+  "@member_removal_confirm_title": {
+    "description": "Title for member removal confirmation dialog"
+  },
+  "message_editing_message": "Editando mensagem",
+  "@message_editing_message": {
+    "description": "Text shown when editing a message"
+  },
+  "message_media": "Mídia",
+  "@message_media": {
+    "description": "Label for media button in message composer"
+  },
+  "message_replied_message": "Mensagem respondida",
+  "@message_replied_message": {
+    "description": "Title for replied message display"
+  },
+  "message_replying_to": "Respondendo a {displayName}",
+  "@message_replying_to": {
+    "description": "Text shown when replying to a message",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "message_replying_yourself": "você mesmo",
+  "@message_replying_yourself": {
+    "description": "Text shown when replying to your own message"
+  },
+  "moderator_demote_button": "Rebaixar",
+  "@moderator_demote_button": {
+    "description": "Button text for demoting moderator"
+  },
+  "moderator_demote_error": "Falha ao rebaixar membro. Por favor, tente novamente.",
+  "@moderator_demote_error": {
+    "description": "Error message when demoting moderator fails"
+  },
+  "moderator_demote_success": "Rebaixado para membro com sucesso.",
+  "@moderator_demote_success": {
+    "description": "Success message when demoting moderator to member"
+  },
+  "moderator_demotion_description": "Tem certeza de que deseja rebaixar este Moderador? Eles perderão acesso a todos os recursos de moderador.",
+  "@moderator_demotion_description": {
+    "description": "Description for moderator demotion confirmation dialog"
+  },
+  "moderator_demotion_title": "Rebaixamento de moderador",
+  "@moderator_demotion_title": {
+    "description": "Title for moderator demotion confirmation dialog"
+  },
+  "moderator_promote_button": "Promover",
+  "@moderator_promote_button": {
+    "description": "Button text for promoting to moderator"
+  },
+  "moderator_promote_error": "Falha ao promover membro. Por favor, tente novamente.",
+  "@moderator_promote_error": {
+    "description": "Error message when promoting member fails"
+  },
+  "moderator_promote_success": "Promovido a moderador com sucesso.",
+  "@moderator_promote_success": {
+    "description": "Success message when promoting member to moderator"
+  },
+  "moderator_promotion_description": "Tem certeza de que deseja promover este membro a Moderador? Eles terão acesso a todos os recursos de moderador.",
+  "@moderator_promotion_description": {
+    "description": "Description for moderator promotion confirmation dialog"
+  },
+  "moderator_promotion_title": "Promoção de moderador",
+  "@moderator_promotion_title": {
+    "description": "Title for moderator promotion confirmation dialog"
+  },
+  "notification_turn_off_error": "Falha ao desativar notificação. Por favor, tente novamente.",
+  "@notification_turn_off_error": {
+    "description": "error toast message for turning off notification"
+  },
+  "notification_turn_off_success": "Notificação desativada",
+  "@notification_turn_off_success": {
+    "description": "success toast message for turning off notification"
+  },
+  "notification_turn_on_error": "Falha ao ativar notificação. Por favor, tente novamente.",
+  "@notification_turn_on_error": {
+    "description": "error toast message for turning on notification"
+  },
+  "notification_turn_on_success": "Notificação ativada",
+  "@notification_turn_on_success": {
+    "description": "success toast message for turning on notification"
+  },
+  "poll_add_option": "Adicionar opção",
+  "@poll_add_option": {
+    "description": "Button text for adding a new poll option"
+  },
+  "poll_duration_days": "{days, plural, =1{1 dia} other{{days} dias}}",
+  "@poll_duration_days": {
+    "description": "Poll duration options with proper pluralization",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_ends_on": "Termina em {endDate}",
+  "@poll_ends_on": {
+    "description": "Text showing when poll ends with formatted date",
+    "placeholders": {
+      "endDate": {
+        "type": "String"
+      }
+    }
+  },
+  "poll_ends_on_label": "Termina em",
+  "@poll_ends_on_label": {
+    "description": "Label for poll end date"
+  },
+  "poll_multiple_selection_description": "Permitir que os participantes votem em mais de uma opção.",
+  "@poll_multiple_selection_description": {
+    "description": "Description for multiple selection toggle"
+  },
+  "poll_multiple_selection_title": "Seleção múltipla",
+  "@poll_multiple_selection_title": {
+    "description": "Title for multiple selection toggle"
+  },
+  "poll_option_hint": "Opção {optionNumber}",
+  "@poll_option_hint": {
+    "description": "Hint text for poll option input field",
+    "placeholders": {
+      "optionNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "poll_select_date": "Selecionar Data",
+  "@poll_select_date": {
+    "description": "Placeholder text for date picker"
+  },
+  "poll_select_time": "Selecionar Hora",
+  "@poll_select_time": {
+    "description": "Placeholder text for time picker"
+  },
+  "poll_time_hour": "Hora",
+  "@poll_time_hour": {
+    "description": "Label for hour in time picker"
+  },
+  "poll_time_minute": "Minuto",
+  "@poll_time_minute": {
+    "description": "Label for minute in time picker"
+  },
+  "post_item_bottom_nonmember_label": "Entre na comunidade para interagir com todas as publicações",
+  "@post_item_bottom_nonmember_label": {
+    "description": "label for post item bottom text for non members"
+  },
+  "post_target_selection_title": "Publicar em",
+  "@post_target_selection_title": {
+    "description": "Title for post target selection page"
+  },
+  "post_unavailable_description": "O conteúdo que você está procurando não está disponível.",
+  "@post_unavailable_description": {
+    "description": "Description for post unavailable error page"
+  },
+  "post_unavailable_title": "Algo deu errado",
+  "@post_unavailable_title": {
+    "description": "Title for post unavailable error page"
+  },
+  "profile_edit_about": "Sobre",
+  "@profile_edit_about": {
+    "description": "Label for about field in edit profile"
+  },
+  "profile_edit_display_name": "Nome de exibição",
+  "@profile_edit_display_name": {
+    "description": "Label for display name field in edit profile"
+  },
+  "profile_edit_inappropriate_image_description": "Por favor, escolha uma imagem diferente para enviar.",
+  "@profile_edit_inappropriate_image_description": {
+    "description": "Description for inappropriate image dialog"
+  },
+  "profile_edit_inappropriate_image_title": "Imagem inapropriada",
+  "@profile_edit_inappropriate_image_title": {
+    "description": "Title for inappropriate image dialog"
+  },
+  "profile_edit_unsaved_changes_description": "Tem certeza de que deseja descartar as alterações? Elas serão perdidas quando você sair desta página.",
+  "@profile_edit_unsaved_changes_description": {
+    "description": "Description for unsaved changes confirmation dialog"
+  },
+  "profile_edit_unsaved_changes_title": "Alterações não salvas",
+  "@profile_edit_unsaved_changes_title": {
+    "description": "Title for unsaved changes confirmation dialog"
+  },
+  "profile_edit_unsupported_image_description": "Por favor, envie uma imagem PNG ou JPG.",
+  "@profile_edit_unsupported_image_description": {
+    "description": "Description for unsupported image type dialog"
+  },
+  "profile_edit_unsupported_image_title": "Tipo de imagem não suportado",
+  "@profile_edit_unsupported_image_title": {
+    "description": "Title for unsupported image type dialog"
+  },
+  "profile_update_failed": "Falha ao salvar seu perfil. Por favor, tente novamente.",
+  "@profile_update_failed": {
+    "description": "Error message when profile update fails"
+  },
+  "profile_update_success": "Perfil atualizado com sucesso!",
+  "@profile_update_success": {
+    "description": "Success message when profile is updated"
+  },
+  "search_no_members_found": "Nenhum membro encontrado",
+  "@search_no_members_found": {
+    "description": "Message displayed when no members are found in search"
+  },
+  "search_user_hint": "Buscar usuário",
+  "@search_user_hint": {
+    "description": "Hint text for searching users"
+  },
+  "settings_allow_notification": "Permitir Notificação",
+  "@settings_allow_notification": {
+    "description": "Label for allow notification toggle"
+  },
+  "settings_allow_notification_description": "Ative para receber notificações push desta comunidade.",
+  "@settings_allow_notification_description": {
+    "description": "Description for allow notification setting"
+  },
+  "settings_only_admins": "Apenas administradores podem publicar",
+  "@settings_only_admins": {
+    "description": "Label for only admins can post setting"
+  },
+  "timestamp_just_now": "Agora mesmo",
+  "@timestamp_just_now": {
+    "description": "Timestamp text for content posted just now in social feeds"
+  },
+  "timestamp_now": "agora",
+  "@timestamp_now": {
+    "description": "Timestamp text for content posted just now in chat"
+  },
+  "user_ban_button": "Banir",
+  "@user_ban_button": {
+    "description": "Button text for banning user"
+  },
+  "user_ban_confirm_description": "Tem certeza de que deseja banir este usuário? Eles serão removidos do grupo e não poderão encontrá-lo ou entrar novamente a menos que sejam desbanidos.",
+  "@user_ban_confirm_description": {
+    "description": "Description for user ban confirmation dialog"
+  },
+  "user_ban_confirm_title": "Confirmar banimento",
+  "@user_ban_confirm_title": {
+    "description": "Title for user ban confirmation dialog"
+  },
+  "user_block_confirm_button": "Bloquear",
+  "@user_block_confirm_button": {
+    "description": "Button text for confirming block action"
+  },
+  "user_block_confirm_description": "{displayName} não poderá ver publicações e comentários que você criou. Eles não serão notificados de que você os bloqueou.",
+  "@user_block_confirm_description": {
+    "description": "Description for blocking user confirmation dialog",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "user_block_confirm_title": "Bloquear usuário?",
+  "@user_block_confirm_title": {
+    "description": "Title for blocking user confirmation dialog"
+  },
+  "user_block_error": "Falha ao bloquear usuário. Por favor, tente novamente.",
+  "@user_block_error": {
+    "description": "error toast message for blocking user"
+  },
+  "user_block_success": "Usuário bloqueado.",
+  "@user_block_success": {
+    "description": "success toast message for blocking user"
+  },
+  "user_feed_blocked_description": "Desbloquear para ver suas publicações.",
+  "@user_feed_blocked_description": {
+    "description": "Description for blocked user feed empty state"
+  },
+  "user_feed_blocked_title": "Você bloqueou este usuário",
+  "@user_feed_blocked_title": {
+    "description": "Title for blocked user feed empty state"
+  },
+  "user_feed_private_description": "Siga este usuário para ver suas publicações.",
+  "@user_feed_private_description": {
+    "description": "Description for private user feed empty state"
+  },
+  "user_feed_private_title": "Esta conta é privada",
+  "@user_feed_private_title": {
+    "description": "Title for private user feed empty state"
+  },
+  "user_follow_cancel": "Cancelar Solicitação",
+  "@user_follow_cancel": {
+    "description": "Button text for canceling follow request"
+  },
+  "user_follow_error": "Ops, algo deu errado.",
+  "@user_follow_error": {
+    "description": "Error message when following user fails"
+  },
+  "user_follow_request_approval": "{count} solicitações precisam de sua aprovação",
+  "@user_follow_request_approval": {
+    "description": "Text showing number of requests needing approval",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "user_follow_request_new": "Novas solicitações de seguir",
+  "@user_follow_request_new": {
+    "description": "Text for new follow requests notification"
+  },
+  "user_follow_success": "Usuário seguido.",
+  "@user_follow_success": {
+    "description": "Success message when following user"
+  },
+  "user_follow_unable_description": "Ops! algo deu errado. Por favor, tente novamente mais tarde.",
+  "@user_follow_unable_description": {
+    "description": "Description for dialog when unable to follow user"
+  },
+  "user_follow_unable_title": "Não foi possível seguir este usuário",
+  "@user_follow_unable_title": {
+    "description": "Title for dialog when unable to follow user"
+  },
+  "user_following": "Seguindo",
+  "@user_following": {
+    "description": "Button text showing user is being followed"
+  },
+  "user_profile_deleted_name": "Usuário excluído",
+  "@user_profile_deleted_name": {
+    "description": "Display name for deleted users"
+  },
+  "user_profile_unknown_name": "Desconhecido",
+  "@user_profile_unknown_name": {
+    "description": "Fallback display name for users with no display name"
+  },
+  "user_report": "Denunciar usuário",
+  "@user_report": {
+    "description": "Action to report a user"
+  },
+  "user_report_error": "Falha ao denunciar usuário. Por favor, tente novamente.",
+  "@user_report_error": {
+    "description": "error toast message for reporting user"
+  },
+  "user_report_success": "Usuário denunciado.",
+  "@user_report_success": {
+    "description": "success toast message for reporting user"
+  },
+  "user_unblock_confirm_button": "Desbloquear",
+  "@user_unblock_confirm_button": {
+    "description": "Button text for confirming unblock action"
+  },
+  "user_unblock_confirm_description": "{displayName} agora poderá ver publicações e comentários que você criou. Eles não serão notificados de que você os desbloqueou.",
+  "@user_unblock_confirm_description": {
+    "description": "Description for unblocking user confirmation dialog",
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "user_unblock_confirm_title": "Desbloquear usuário?",
+  "@user_unblock_confirm_title": {
+    "description": "Title for unblocking user confirmation dialog"
+  },
+  "user_unblock_error": "Falha ao desbloquear usuário. Por favor, tente novamente.",
+  "@user_unblock_error": {
+    "description": "error toast message for unblocking user"
+  },
+  "user_unblock_success": "Usuário desbloqueado.",
+  "@user_unblock_success": {
+    "description": "success toast message for unblocking user"
+  },
+  "user_unfollow_confirm_button": "Deixar de seguir",
+  "@user_unfollow_confirm_button": {
+    "description": "Button text for confirming unfollow action"
+  },
+  "user_unfollow_confirm_description": "Se você mudar de ideia, terá que solicitar para segui-los novamente.",
+  "@user_unfollow_confirm_description": {
+    "description": "Description for unfollowing user confirmation dialog"
+  },
+  "user_unfollow_confirm_title": "Deixar de seguir este usuário?",
+  "@user_unfollow_confirm_title": {
+    "description": "Title for unfollowing user confirmation dialog"
+  },
+  "user_unfollow_error": "Ops, algo deu errado.",
+  "@user_unfollow_error": {
+    "description": "Error message when unfollowing user fails"
+  },
+  "user_unfollow_success": "Deixou de seguir usuário.",
+  "@user_unfollow_success": {
+    "description": "Success message when unfollowing user"
+  },
+  "user_unreport": "Remover denúncia de usuário",
+  "@user_unreport": {
+    "description": "Action to unreport a user"
+  },
+  "user_unreport_error": "Falha ao remover denúncia de usuário. Por favor, tente novamente.",
+  "@user_unreport_error": {
+    "description": "error toast message for unreporting user"
+  },
+  "user_unreport_success": "Denúncia de usuário removida.",
+  "@user_unreport_success": {
+    "description": "success toast message for unreporting user"
+  },
+  "comment_create_error_ban_word": "Seu comentário contém uma palavra inadequada. Por favor, revise e exclua.",
+  "@comment_create_error_ban_word": {
+    "description": "Mensagem de aviso para criação de comentários com palavra proibida"
+  },
+  "comment_create_error_story_deleted": "Esta história não está mais disponível",
+  "@comment_create_error_story_deleted": {
+    "description": "Mensagem de aviso para criação de comentários"
+  },
+  "community_close_error_message": "Falha ao fechar a comunidade.",
+  "@community_close_error_message": {
+    "description": "Mensagem de erro para fechar comunidade"
+  },
+  "community_close_success_message": "Comunidade fechada com sucesso.",
+  "@community_close_success_message": {
+    "description": "Mensagem de sucesso para fechar comunidade"
+  },
+  "community_create_error_message": "Falha ao criar comunidade. Por favor, tente novamente.",
+  "@community_create_error_message": {
+    "description": "Mensagem de erro para criação de comunidade"
+  },
+  "community_create_success_message": "Comunidade criada com sucesso.",
+  "@community_create_success_message": {
+    "description": "Mensagem de sucesso para criação de comunidade"
+  },
+  "community_leave_error_message": "Falha ao sair da comunidade.",
+  "@community_leave_error_message": {
+    "description": "Mensagem de erro para sair da comunidade"
+  },
+  "community_leave_success_message": "Você saiu da comunidade com sucesso.",
+  "@community_leave_success_message": {
+    "description": "Mensagem de sucesso para sair da comunidade"
+  },
+  "community_update_error_message": "Falha ao salvar o perfil da comunidade. Por favor, tente novamente.",
+  "@community_update_error_message": {
+    "description": "Mensagem de erro para atualização de comunidade"
+  },
+  "community_update_success_message": "Comunidade atualizada com sucesso.",
+  "@community_update_success_message": {
+    "description": "Mensagem de sucesso para atualização de comunidade"
+  },
+  "error_message_too_long_description": "Sua mensagem é muito longa. Por favor, encurte sua mensagem e tente novamente.",
+  "@error_message_too_long_description": {
+    "description": "Descrição para diálogo de erro quando mensagem excede limite de caracteres"
+  },
+  "error_message_too_long_title": "Não é possível enviar a mensagem",
+  "@error_message_too_long_title": {
+    "description": "Título para diálogo de erro quando mensagem excede limite de caracteres"
+  },
+  "general_copy": "Copiar",
+  "@general_copy": {
+    "description": "Etiqueta para ação de copiar em menus"
+  },
+  "message_report": "Denunciar",
+  "@message_report": {
+    "description": "Etiqueta para o botão de denunciar mensagem"
+  },
+  "message_unreport": "Remover Denúncia",
+  "toast_message_copied": "Copiado.",
+  "toast_message_reported": "Mensagem denunciada.",
+  "toast_message_unreported": "Denúncia de mensagem retirada.",
+  "toast_message_report_error": "Falha ao denunciar a mensagem. Por favor, tente novamente.",
+  "toast_message_unreport_error": "Falha ao retirar a denúncia da mensagem. Por favor, tente novamente.",
+  "toast_message_delete_error": "Falha ao excluir a mensagem.",
+  "toast_permission_denied": "Permissão negada.",
+  "toast_photo_saved": "Foto salva.",
+  "toast_photo_save_error": "Falha ao salvar a imagem.",
+  "toast_video_saved": "Vídeo salvo.",
+  "toast_video_save_error": "Falha ao salvar o vídeo.",
+  "message_delete_title": "Excluir esta mensagem?",
+  "message_delete_description": "Esta mensagem também será removida dos dispositivos dos seus amigos.",
+  "@message_unreport": {
+    "description": "Etiqueta para o botão de remover denúncia da mensagem"
+  },
+  "chat_search_tab_chats": "Chats",
+  "@chat_search_tab_chats": {
+    "description": "Tab title for chats in search page"
+  },
+  "chat_search_tab_messages": "Mensagens",
+  "@chat_search_tab_messages": {
+    "description": "Tab title for messages in search page"
+  },
+  "search_minimum_chars": "Comece sua pesquisa digitando\npelo menos 3 letras",
+  "@search_minimum_chars": {
+    "description": "Hint text shown when search query is too short"
+  },
+  "chat_create_success": "Grupo de chat criado.",
+  "@chat_create_success": {
+    "description": "Toast message when group chat is created successfully"
+  },
+  "chat_create_error": "Falha ao criar grupo",
+  "@chat_create_error": {
+    "description": "Error message when group creation fails"
+  },
+  "chat_create_error_retry": "Falha ao criar grupo de chat. Por favor, tente novamente.",
+  "@chat_create_error_retry": {
+    "description": "Toast error message prompting user to retry group creation"
+  },
+  "chat_create_title": "Novo Grupo",
+  "@chat_create_title": {
+    "description": "AppBar title for create group page"
+  },
+  "chat_create_button": "Criar",
+  "@chat_create_button": {
+    "description": "Button text to create a new group"
+  },
+  "chat_group_name_label": "Nome do grupo",
+  "@chat_group_name_label": {
+    "description": "Label for group name input field"
+  },
+  "chat_group_name_optional": "(Opcional)",
+  "@chat_group_name_optional": {
+    "description": "Text indicating group name is optional"
+  },
+  "chat_group_name_required": "(Obrigatório)",
+  "@chat_group_name_required": {
+    "description": "Text indicating group name is required"
+  },
+  "chat_privacy_public": "Público",
+  "@chat_privacy_public": {
+    "description": "Label for public privacy option"
+  },
+  "chat_privacy_public_desc": "Qualquer pessoa pode encontrar o grupo através da pesquisa e participar da conversa.",
+  "@chat_privacy_public_desc": {
+    "description": "Description for public group privacy setting"
+  },
+  "chat_privacy_private": "Privado",
+  "@chat_privacy_private": {
+    "description": "Label for private privacy option"
+  },
+  "chat_privacy_private_desc": "O grupo está oculto nas pesquisas e só é acessível por convite dos moderadores.",
+  "@chat_privacy_private_desc": {
+    "description": "Description for private group privacy setting"
+  },
+  "chat_privacy_warning": "Certifique-se de escolher a configuração de privacidade correta para o seu grupo, pois ela não pode ser alterada posteriormente.",
+  "@chat_privacy_warning": {
+    "description": "Warning message about privacy setting being permanent"
+  },
+  "chat_select_member_title": "Novo grupo",
+  "@chat_select_member_title": {
+    "description": "AppBar title for select member page when creating group"
+  },
+  "general_next": "Próximo",
+  "@general_next": {
+    "description": "Button text to proceed to next step"
+  },
+  "settings_group_settings": "Configurações do grupo",
+  "@settings_group_settings": {
+    "description": "Translation for settings_group_settings"
+  },
+  "settings_group_settings_section": "Configurações do grupo",
+  "@settings_group_settings_section": {
+    "description": "Translation for settings_group_settings_section"
+  },
+  "settings_group_profile": "Perfil do grupo",
+  "@settings_group_profile": {
+    "description": "Translation for settings_group_profile"
+  },
+  "settings_group_notifications": "Notificações do grupo",
+  "@settings_group_notifications": {
+    "description": "Translation for settings_group_notifications"
+  },
+  "settings_member_permissions": "Permissões de membros",
+  "@settings_member_permissions": {
+    "description": "Translation for settings_member_permissions"
+  },
+  "settings_all_members": "Todos os membros",
+  "@settings_all_members": {
+    "description": "Translation for settings_all_members"
+  },
+  "settings_banned_users": "Usuários banidos",
+  "@settings_banned_users": {
+    "description": "Translation for settings_banned_users"
+  },
+  "banned_users_empty_state": "Nada para ver aqui ainda",
+  "@banned_users_empty_state": {
+    "description": "Translation for banned_users_empty_state"
+  },
+  "user_unban_confirm_title": "Confirmar desbloqueio",
+  "@user_unban_confirm_title": {
+    "description": "Translation for user_unban_confirm_title"
+  },
+  "user_unban_confirm_description": "Tem certeza de que deseja desbloquear este usuário? Eles poderão voltar a participar do grupo.",
+  "@user_unban_confirm_description": {
+    "description": "Translation for user_unban_confirm_description"
+  },
+  "user_unban_button": "Desbloquear",
+  "toast_user_unbanned": "Usuário desbanido.",
+  "toast_user_unban_error": "Falha ao desbanir o usuário. Por favor, tente novamente.",
+  "@user_unban_button": {
+    "description": "Translation for user_unban_button"
+  },
+  "settings_your_preferences": "Suas preferências",
+  "@settings_your_preferences": {
+    "description": "Translation for settings_your_preferences"
+  },
+  "general_notifications_lowercase": "notificações",
+  "@general_notifications_lowercase": {
+    "description": "Translation for general_notifications_lowercase"
+  },
+  "chat_leave_group": "Sair do grupo",
+  "@chat_leave_group": {
+    "description": "Translation for chat_leave_group"
+  },
+  "chat_leave_group_title": "Sair do grupo",
+  "@chat_leave_group_title": {
+    "description": "Translation for chat_leave_group_title"
+  },
+  "chat_leave_group_confirm": "Se você sair deste grupo, não verá mais novas atividades nem poderá participar neste grupo.",
+  "@chat_leave_group_confirm": {
+    "description": "Translation for chat_leave_group_confirm"
+  },
+  "chat_leave_group_last_mod_title": "Você é o último moderador",
+  "@chat_leave_group_last_mod_title": {
+    "description": "Translation for chat_leave_group_last_mod_title"
+  },
+  "chat_leave_group_last_mod_message": "Você deve promover outro membro a moderador antes de sair.",
+  "@chat_leave_group_last_mod_message": {
+    "description": "Translation for chat_leave_group_last_mod_message"
+  },
+  "chat_promote_member": "Promover membro",
+  "@chat_promote_member": {
+    "description": "Translation for chat_promote_member"
+  },
+  "notification_default_mode": "Modo padrão",
+  "@notification_default_mode": {
+    "description": "Translation for notification_default_mode"
+  },
+  "notification_default_mode_desc": "Por padrão, os membros desta comunidade receberão notificações, mas podem escolher desativá-las.",
+  "@notification_default_mode_desc": {
+    "description": "Translation for notification_default_mode_desc"
+  },
+  "notification_silent_mode": "Modo silencioso",
+  "@notification_silent_mode": {
+    "description": "Translation for notification_silent_mode"
+  },
+  "notification_silent_mode_desc": "Sem notificações para todos neste canal. Os membros não podem ativar notificações no canal.",
+  "@notification_silent_mode_desc": {
+    "description": "Translation for notification_silent_mode_desc"
+  },
+  "notification_subscribe_mode": "Modo assinatura",
+  "@notification_subscribe_mode": {
+    "description": "Translation for notification_subscribe_mode"
+  },
+  "notification_subscribe_mode_desc": "Todos os membros têm a opção de receber notificações, mas precisam ativá-las. Por padrão, as notificações estão desativadas para cada membro.",
+  "@notification_subscribe_mode_desc": {
+    "description": "Translation for notification_subscribe_mode_desc"
+  },
+  "notification_preference_title": "Preferência de notificações",
+  "@notification_preference_title": {
+    "description": "Translation for notification_preference_title"
+  },
+  "notification_allow_notifications": "Permitir notificações",
+  "@notification_allow_notifications": {
+    "description": "Translation for notification_allow_notifications"
+  },
+  "notification_allow_notifications_desc": "Ative para receber notificações push deste grupo.",
+  "@notification_allow_notifications_desc": {
+    "description": "Translation for notification_allow_notifications_desc"
+  },
+  "notification_disabled_by_moderator": "As notificações do grupo foram desativadas pelo moderador.",
+  "@notification_disabled_by_moderator": {
+    "description": "Translation for notification_disabled_by_moderator"
+  },
+  "notification_enabled_toast": "Notificações ativadas",
+  "@notification_enabled_toast": {
+    "description": "Translation for notification_enabled_toast"
+  },
+  "notification_disabled_toast": "Notificações desativadas",
+  "@notification_disabled_toast": {
+    "description": "Translation for notification_disabled_toast"
+  },
+  "settings_messaging": "Mensagens",
+  "@settings_messaging": {
+    "description": "Translation for settings_messaging"
+  },
+  "settings_everyone_desc": "Todos podem enviar uma mensagem no grupo.",
+  "@settings_everyone_desc": {
+    "description": "Translation for settings_everyone_desc"
+  },
+  "settings_only_moderators_desc": "Membros que não são moderadores podem ler mensagens, mas não podem enviar nenhuma mensagem.",
+  "@settings_only_moderators_desc": {
+    "description": "Translation for settings_only_moderators_desc"
+  },
+  "toast_group_chat_left": "Você saiu do grupo.",
+  "@toast_group_chat_left": {
+    "description": "Translation for toast_group_chat_left"
+  },
+  "toast_group_chat_left_error": "Falha ao sair do grupo. Por favor, tente novamente.",
+  "@toast_group_chat_left_error": {
+    "description": "Translation for toast_group_chat_left_error"
+  },
+  "toast_group_profile_updated": "Perfil do grupo atualizado.",
+  "@toast_group_profile_updated": {
+    "description": "Translation for toast_group_profile_updated"
+  },
+  "toast_group_profile_error": "Falha ao atualizar o perfil do grupo. Por favor, tente novamente.",
+  "@toast_group_profile_error": {
+    "description": "Translation for toast_group_profile_error"
+  },
+  "toast_group_notification_updated": "Notificações do grupo atualizadas.",
+  "@toast_group_notification_updated": {
+    "description": "Translation for toast_group_notification_updated"
+  },
+  "toast_group_notification_error": "Falha ao atualizar as notificações do grupo. Por favor, tente novamente.",
+  "@toast_group_notification_error": {
+    "description": "Translation for toast_group_notification_error"
+  },
+  "toast_member_permissions_updated": "Permissões de membros atualizadas.",
+  "@toast_member_permissions_updated": {
+    "description": "Translation for toast_member_permissions_updated"
+  },
+  "toast_member_permissions_error": "Falha ao atualizar as permissões de membros. Por favor, tente novamente.",
+  "@toast_member_permissions_error": {
+    "description": "Translation for toast_member_permissions_error"
+  },
+  "toast_member_list_updated": "Lista de membros atualizada.",
+  "@toast_member_list_updated": {
+    "description": "Translation for toast_member_list_updated"
+  },
+  "toast_member_list_error": "Falha ao atualizar a lista de membros. Por favor, tente novamente.",
+  "@toast_member_list_error": {
+    "description": "Translation for toast_member_list_error"
+  },
+  "toast_banned_users_updated": "Usuários banidos atualizados.",
+  "@toast_banned_users_updated": {
+    "description": "Translation for toast_banned_users_updated"
+  },
+  "toast_banned_users_error": "Falha ao atualizar usuários banidos. Por favor, tente novamente.",
+  "@toast_banned_users_error": {
+    "description": "Translation for toast_banned_users_error"
+  },
+  "toast_members_added": "Membros adicionados",
+  "@toast_members_added": {
+    "description": "Translation for toast_members_added"
+  },
+  "toast_member_added": "Membro adicionado.",
+  "@toast_member_added": {
+    "description": "Translation for toast_member_added"
+  },
+  "toast_members_add_error": "Falha ao adicionar membros. Por favor, tente novamente.",
+  "@toast_members_add_error": {
+    "description": "Translation for toast_members_add_error"
+  },
+  "toast_member_add_error": "Falha ao adicionar membro. Por favor, tente novamente.",
+  "@toast_member_add_error": {
+    "description": "Translation for toast_member_add_error"
+  },
+  "toast_member_removed": "Membro removido.",
+  "@toast_member_removed": {
+    "description": "Translation for toast_member_removed"
+  },
+  "toast_member_remove_error": "Falha ao remover membro. Por favor, tente novamente.",
+  "@toast_member_remove_error": {
+    "description": "Translation for toast_member_remove_error"
+  },
+  "toast_member_promoted": "Membro promovido.",
+  "@toast_member_promoted": {
+    "description": "Translation for toast_member_promoted"
+  },
+  "toast_member_promote_error": "Falha ao promover membro. Por favor, tente novamente.",
+  "@toast_member_promote_error": {
+    "description": "Translation for toast_member_promote_error"
+  },
+  "toast_member_demoted": "Membro rebaixado.",
+  "@toast_member_demoted": {
+    "description": "Translation for toast_member_demoted"
+  },
+  "toast_member_demote_error": "Falha ao rebaixar membro. Por favor, tente novamente.",
+  "@toast_member_demote_error": {
+    "description": "Translation for toast_member_demote_error"
+  },
+  "toast_user_banned": "Usuário banido.",
+  "@toast_user_banned": {
+    "description": "Translation for toast_user_banned"
+  },
+  "toast_user_ban_error": "Falha ao banir usuário. Por favor, tente novamente.",
+  "@toast_user_ban_error": {
+    "description": "Translation for toast_user_ban_error"
+  },
+  "toast_user_reported": "Usuário reportado.",
+  "@toast_user_reported": {
+    "description": "Translation for toast_user_reported"
+  },
+  "toast_user_unreported": "Reporte de usuário removido.",
+  "@toast_user_unreported": {
+    "description": "Translation for toast_user_unreported"
+  },
+  "toast_user_report_error": "Falha ao reportar/desreportar usuário. Por favor, tente novamente.",
+  "@toast_user_report_error": {
+    "description": "Error toast when failing to report or unreport a user"
+  },
+  "toast_user_muted": "Usuário silenciado.",
+  "@toast_user_muted": {
+    "description": "Translation for toast_user_muted"
+  },
+  "toast_user_mute_error": "Falha ao silenciar usuário. Por favor, tente novamente.",
+  "@toast_user_mute_error": {
+    "description": "Translation for toast_user_mute_error"
+  },
+  "toast_user_unmuted": "Usuário dessilenciado.",
+  "@toast_user_unmuted": {
+    "description": "Translation for toast_user_unmuted"
+  },
+  "toast_user_unmute_error": "Falha ao dessilenciar usuário. Por favor, tente novamente.",
+  "@toast_user_unmute_error": {
+    "description": "Translation for toast_user_unmute_error"
   }
 }

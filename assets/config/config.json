@@ -51,6 +51,20 @@
             "image": "assets/Icons/amity_ic_sad_reaction.svg"
         }
     ],
+    "conversation_chat_user_actions": [
+        {
+            "name": "mute",
+            "enabled": true
+        },
+        {
+            "name": "report",
+            "enabled": true
+        },
+        {
+            "name": "block",
+            "enabled": true
+        }
+    ],
     "customizations": {
         "select_target_page/*/*": {
             "title": "Share to"

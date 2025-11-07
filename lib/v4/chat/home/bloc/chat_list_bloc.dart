@@ -99,21 +99,21 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       try {
         await AmityChatClient.newChannelRepository()
             .archiveChannel(event.channelId);
-        toastBloc.add(const AmityToastShort(
-            message: 'Chat archived.', icon: AmityToastIcon.success));
+        toastBloc.add(AmityToastShort(
+            message: event.successMessage, icon: AmityToastIcon.success));
       } catch (error) {
         String errorMessage = error.toString();
         if (errorMessage.contains('Archive limit exceeded')) {
           emit(state.copyWith(
-            error: const AmityErrorInfo(
-              title: 'Too many chats archived',
-              message: 'You can archive a maximum of 100 chat lists.',
+            error: AmityErrorInfo(
+              title: event.limitErrorTitle,
+              message: event.limitErrorMessage,
             ),
             showArchiveErrorDialog: true,
           ));
         } else {
-          toastBloc.add(const AmityToastShort(
-              message: 'Failed to archive chat. Please try again', 
+          toastBloc.add(AmityToastShort(
+              message: event.errorMessage, 
               icon: AmityToastIcon.warning));
         }
       }
@@ -123,11 +123,11 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       try {
         await AmityChatClient.newChannelRepository()
             .unarchiveChannel(event.channelId);
-        toastBloc.add(const AmityToastShort(
-            message: 'Chat unarchived.', icon: AmityToastIcon.success));
+        toastBloc.add(AmityToastShort(
+            message: event.successMessage, icon: AmityToastIcon.success));
       } catch (error) {
-        toastBloc.add(const AmityToastShort(
-            message: 'Failed to unarchive chat. Please try again', 
+        toastBloc.add(AmityToastShort(
+            message: event.errorMessage, 
             icon: AmityToastIcon.warning));
       }
     });

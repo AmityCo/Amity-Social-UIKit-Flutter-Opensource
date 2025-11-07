@@ -11,6 +11,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/notification_preference/notification_preference_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +42,7 @@ class AmityGroupSettingPage extends NewBasePage {
             appBar: AppBar(
               backgroundColor: theme.backgroundColor,
               title: Text(
-                state.channel.displayName ?? 'Group Settings',
+                state.channel.displayName ?? context.l10n.settings_group_settings,
                 style: AmityTextStyle.titleBold(theme.baseColor),
               ),
               leading: IconButton(
@@ -72,14 +73,14 @@ class AmityGroupSettingPage extends NewBasePage {
                       ),
                       const SizedBox(height: 40),
                       Text(
-                        'Group settings',
+                        context.l10n.settings_group_settings_section,
                         style: AmityTextStyle.titleBold(theme.baseColor),
                       ),
                       const SizedBox(height: 4),
                       // Only show group profile editing for moderators
                       if (state.isModerator)
                         GroupSettingsTile(
-                          title: 'Group profile',
+                          title: context.l10n.settings_group_profile,
                           iconAsset:
                               'assets/Icons/amity_ic_edit_group_profile_button.svg',
                           theme: theme,
@@ -97,9 +98,8 @@ class AmityGroupSettingPage extends NewBasePage {
                             handleNavigationResult(
                               context,
                               result,
-                              successMessage: "Group profile updated.",
-                              errorMessage:
-                                  "Failed to update group profile. Please try again.",
+                              successMessage: context.l10n.toast_group_profile_updated,
+                              errorMessage: context.l10n.toast_group_profile_error,
                               shouldPopOnSuccess: true,
                               shouldPopOnError: true,
                             );
@@ -107,16 +107,11 @@ class AmityGroupSettingPage extends NewBasePage {
                         ),
                       if (state.isModerator)
                         GroupSettingsTile(
-                          title: 'Group notifications',
+                          title: context.l10n.settings_group_notifications,
                           iconAsset:
                               'assets/Icons/amity_ic_edit_group_notification_button.svg',
                           theme: theme,
-                          trailingText: state.channel.notificationMode
-                                  .toString()[0]
-                                  .toUpperCase() +
-                              state.channel.notificationMode
-                                  .toString()
-                                  .substring(1),
+                          trailingText: _getLocalizedNotificationMode(context, state.channel.notificationMode),
                           onTap: () async {
                             final result =
                                 await Navigator.push<Map<String, dynamic>>(
@@ -130,16 +125,15 @@ class AmityGroupSettingPage extends NewBasePage {
                             handleNavigationResult(
                               context,
                               result,
-                              successMessage: 'Group notification updated.',
-                              errorMessage:
-                                  'Failed to update group notification. Please try again.',
+                              successMessage: context.l10n.toast_group_notification_updated,
+                              errorMessage: context.l10n.toast_group_notification_error,
                             );
                           },
                         ),
                       // Only show member permissions for moderators
                       if (state.isModerator)
                         GroupSettingsTile(
-                          title: 'Member permissions',
+                          title: context.l10n.settings_member_permissions,
                           iconAsset:
                               'assets/Icons/amity_ic_edit_group_member_permission_button.svg',
                           theme: theme,
@@ -157,15 +151,14 @@ class AmityGroupSettingPage extends NewBasePage {
                             handleNavigationResult(
                               context,
                               result,
-                              successMessage: 'Member permissions updated.',
-                              errorMessage:
-                                  'Failed to update member permissions. Please try again.',
+                              successMessage: context.l10n.toast_member_permissions_updated,
+                              errorMessage: context.l10n.toast_member_permissions_error,
                             );
                           },
                         ),
 
                       GroupSettingsTile(
-                        title: 'All members',
+                        title: context.l10n.settings_all_members,
                         iconAsset:
                             'assets/Icons/amity_ic_group_member_list_button.svg',
                         theme: theme,
@@ -185,9 +178,8 @@ class AmityGroupSettingPage extends NewBasePage {
                             handleNavigationResult(
                               context,
                               result,
-                              successMessage: 'Member list updated.',
-                              errorMessage:
-                                  'Failed to update member list. Please try again.',
+                              successMessage: context.l10n.toast_member_list_updated,
+                              errorMessage: context.l10n.toast_member_list_error,
                             );
                           } else {
                             // Fetch updated channel data when returning from member list (fallback)
@@ -200,7 +192,7 @@ class AmityGroupSettingPage extends NewBasePage {
                       // Only show banned users for moderators
                       if (state.isModerator)
                         GroupSettingsTile(
-                          title: 'Banned users',
+                          title: context.l10n.settings_banned_users,
                           iconAsset:
                               'assets/Icons/amity_ic_ban_group_member_button.svg',
                           theme: theme,
@@ -219,9 +211,8 @@ class AmityGroupSettingPage extends NewBasePage {
                               handleNavigationResult(
                                 context,
                                 result,
-                                successMessage: 'Banned users updated.',
-                                errorMessage:
-                                    'Failed to update banned users. Please try again.',
+                                successMessage: context.l10n.toast_banned_users_updated,
+                                errorMessage: context.l10n.toast_banned_users_error,
                               );
                             }
                           },
@@ -231,16 +222,16 @@ class AmityGroupSettingPage extends NewBasePage {
                       Container(height: 1, color: theme.baseColorShade4),
                       const SizedBox(height: 24),
                       Text(
-                        'Your preferences',
+                        context.l10n.settings_your_preferences,
                         style: AmityTextStyle.titleBold(theme.baseColor),
                       ),
                       GroupSettingsTile(
-                        title: 'notifications',
+                        title: context.l10n.general_notifications_lowercase,
                         iconAsset:
                             'assets/Icons/amity_ic_edit_group_notification_button.svg',
                         theme: theme,
                         trailingText:
-                            state.isNotificationsEnabled ? 'On' : 'Off',
+                            state.isNotificationsEnabled ? context.l10n.general_on : context.l10n.general_off,
                         onTap: () async {
                           // Wait for navigation to complete and then refresh notification settings
 
@@ -262,7 +253,7 @@ class AmityGroupSettingPage extends NewBasePage {
                       const SizedBox(height: 16),
                       GestureDetector(
                         child: Text(
-                          "Leave group",
+                          context.l10n.chat_leave_group,
                           style: AmityTextStyle.bodyBold(theme.alertColor),
                         ),
                         onTap: () async {
@@ -276,11 +267,10 @@ class AmityGroupSettingPage extends NewBasePage {
                               bool? shouldOpenMemberList;
                               await PermissionAlertV4Dialog().show(
                                 context: context,
-                                title: "You're the last moderator",
-                                detailText:
-                                    'You must promote another member to moderator before leaving.',
-                                bottomButtonText: 'Cancel',
-                                topButtonText: 'Promote member',
+                                title: context.l10n.chat_leave_group_last_mod_title,
+                                detailText: context.l10n.chat_leave_group_last_mod_message,
+                                bottomButtonText: context.l10n.general_cancel,
+                                topButtonText: context.l10n.chat_promote_member,
                                 onTopButtonAction: () {
                                   shouldOpenMemberList = true;
                                 },
@@ -303,9 +293,8 @@ class AmityGroupSettingPage extends NewBasePage {
                                   handleNavigationResult(
                                     context,
                                     result,
-                                    successMessage: 'Member list updated.',
-                                    errorMessage:
-                                        'Failed to update member list. Please try again.',
+                                    successMessage: context.l10n.toast_member_list_updated,
+                                    errorMessage: context.l10n.toast_member_list_error,
                                   );
                                 }
                               }
@@ -317,11 +306,10 @@ class AmityGroupSettingPage extends NewBasePage {
                           bool? shouldLeave;
                           await ConfirmationV4Dialog().show(
                             context: context,
-                            title: 'Leave Group',
-                            detailText:
-                                'If you leave this group, you will no longer see new activities or participate in this group.',
-                            leftButtonText: 'Cancel',
-                            rightButtonText: 'Leave',
+                            title: context.l10n.chat_leave_group_title,
+                            detailText: context.l10n.chat_leave_group_confirm,
+                            leftButtonText: context.l10n.general_cancel,
+                            rightButtonText: context.l10n.general_leave,
                             onConfirm: () {
                               shouldLeave = true;
                             },
@@ -336,7 +324,7 @@ class AmityGroupSettingPage extends NewBasePage {
                               // Show success toast message after leaving
                               context.read<AmityToastBloc>().add(
                                     AmityToastShort(
-                                      message: 'Group chat left.',
+                                      message: context.l10n.toast_group_chat_left,
                                       icon: AmityToastIcon.success,
                                       bottomPadding: 56,
                                     ),
@@ -347,8 +335,7 @@ class AmityGroupSettingPage extends NewBasePage {
                             } catch (e) {
                               context.read<AmityToastBloc>().add(
                                     AmityToastShort(
-                                      message:
-                                          'Failed to leave group chat. Please try again.',
+                                      message: context.l10n.toast_group_chat_left_error,
                                       icon: AmityToastIcon.warning,
                                       bottomPadding: 56,
                                     ),
@@ -419,6 +406,19 @@ class AmityGroupSettingPage extends NewBasePage {
         default:
           break;
       }
+    }
+  }
+
+  String _getLocalizedNotificationMode(BuildContext context, NotificationMode? mode) {
+    switch (mode) {
+      case NotificationMode.defaultMode:
+        return context.l10n.notification_default_mode;
+      case NotificationMode.silent:
+        return context.l10n.notification_silent_mode;
+      case NotificationMode.subscribe:
+        return context.l10n.notification_subscribe_mode;
+      default:
+        return context.l10n.notification_default_mode;
     }
   }
 }

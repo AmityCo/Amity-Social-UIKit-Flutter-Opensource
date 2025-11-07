@@ -13,6 +13,8 @@ class AmityMessageReportReasonCubit extends Cubit<AmityMessageReportReasonState>
   final Function()? onCancel;
   final Function()? onBack;
   final AmityToastBloc toastBloc;
+  final String successMessage;
+  final String errorMessage;
   final TextEditingController textController = TextEditingController();
   final FocusNode focusNode = FocusNode();
 
@@ -21,6 +23,8 @@ class AmityMessageReportReasonCubit extends Cubit<AmityMessageReportReasonState>
     required this.onCancel,
     required this.onBack,
     required this.toastBloc,
+    required this.successMessage,
+    required this.errorMessage,
   }) : super(const AmityMessageReportReasonState()) {
     // Add listener to text controller to update button state
     textController.addListener(_onTextChanged);
@@ -58,7 +62,7 @@ class AmityMessageReportReasonCubit extends Cubit<AmityMessageReportReasonState>
             reason: AmityContentFlagReason.others(customReason));
 
         toastBloc.add(AmityToastShort(
-            message: "Message reported.",
+            message: successMessage,
             icon: AmityToastIcon.success,
             bottomPadding: AmityChatPage.toastBottomPadding));
 
@@ -67,11 +71,11 @@ class AmityMessageReportReasonCubit extends Cubit<AmityMessageReportReasonState>
         // Close the dialog after successful submission
         onCancel?.call();
       } else {
-        _showErrorToast("Failed to report message. Please try again.");
+        _showErrorToast(errorMessage);
         emit(state.copyWith(isSubmitting: false));
       }
     } catch (e) {
-      _showErrorToast("Failed to report message. Please try again.");
+      _showErrorToast(errorMessage);
       emit(state.copyWith(isSubmitting: false));
     }
   }

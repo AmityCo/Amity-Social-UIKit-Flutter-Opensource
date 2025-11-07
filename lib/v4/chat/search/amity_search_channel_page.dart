@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
 import 'package:amity_uikit_beta_service/v4/chat/search/widgets/search_channel_results.dart';
 import 'package:flutter/material.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_skeleton.dart';
@@ -54,7 +55,7 @@ class AmitySearchChannelPage extends NewBasePage {
                   AmityTopSearchBarComponent(
                     pageId: pageId,
                     textcontroller: textController,
-                    hintText: 'Search',
+                    hintText: context.l10n.general_search_hint,
                     onTextChanged: (value) {
                       final trimmedValue = value.trim();
                       _debouncer.run(() {
@@ -82,9 +83,9 @@ class AmitySearchChannelPage extends NewBasePage {
                                 index == 0 ? SearchTab.chat : SearchTab.message,
                               );
                         },
-                        tabs: const [
-                          Tab(text: 'Chats'),
-                          Tab(text: 'Messages'),
+                        tabs: [
+                          Tab(text: context.l10n.chat_search_tab_chats),
+                          Tab(text: context.l10n.chat_search_tab_messages),
                         ],
                       );
                     }
@@ -113,7 +114,7 @@ class AmitySearchChannelPage extends NewBasePage {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  'Start your search by typing\nat least 3 letters',
+                                  context.l10n.search_minimum_chars,
                                   style: AmityTextStyle.title(theme.baseColorShade3),
                                   textAlign: TextAlign.center,
                                 ),
@@ -140,7 +141,7 @@ class AmitySearchChannelPage extends NewBasePage {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  'No results found',
+                                  context.l10n.search_no_results,
                                   style: AmityTextStyle.titleBold(theme.baseColorShade3),
                                 ),
                               ],

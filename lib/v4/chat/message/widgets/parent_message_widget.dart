@@ -10,41 +10,32 @@ extension ParentMessageWidget on MessageBubbleView {
   }
 
   // Helper method to get appropriate reply text based on group chat context
-  String _getReplyText(AmityMessage message, AmityMessage parentMessage) {
+  String _getReplyText(AmityMessage message, AmityMessage parentMessage, BuildContext context) {
     final currentUserId = AmityCoreClient.getUserId();
     final isCurrentUser = message.userId == currentUserId;
     final isParentCurrentUser = parentMessage.userId == currentUserId;
 
-    Text(
-        parentMessage.userId == AmityCoreClient.getUserId()
-            ? message.userId == AmityCoreClient.getUserId()
-                ? "You replied to yourself"
-                : "Replied to you"
-            : message.userId == AmityCoreClient.getUserId()
-                ? "You replied"
-                : "Replied to themself",
-        style: AmityTextStyle.caption(theme.baseColorShade1));
     if (!isGroupChat) {
       // For private chats, use the original logic
       if (isParentCurrentUser) {
-        return isCurrentUser ? "You replied to yourself" : "Replied to you";
+        return isCurrentUser ? context.l10n.message_reply_you_to_yourself : context.l10n.message_reply_to_you;
       } else {
-        return isCurrentUser ? "You replied" : "Replied to themself";
+        return isCurrentUser ? context.l10n.message_reply_you : context.l10n.message_reply_to_themself;
       }
     } else {
       // For group chats, include display names (truncated)
       final parentUserDisplayName =
-          _truncateDisplayName(parentMessage.user?.displayName ?? "Unknown");
-      final currentUserDisplayName = message.user?.displayName ?? "Unknown";
+          _truncateDisplayName(parentMessage.user?.displayName ?? context.l10n.message_unknown_user);
+      final currentUserDisplayName = message.user?.displayName ?? context.l10n.message_unknown_user;
 
       if (isParentCurrentUser) {
-        return isCurrentUser ? "You replied to yourself" : "${_truncateDisplayName(currentUserDisplayName)} replied to you";
+        return isCurrentUser ? context.l10n.message_reply_you_to_yourself : "${_truncateDisplayName(currentUserDisplayName)} ${context.l10n.message_reply_to_you.toLowerCase()}";
       } else {
         if (isCurrentUser) {
-          return "You replied to $parentUserDisplayName";
+          return "${context.l10n.message_reply_you} to $parentUserDisplayName";
         } else {
           if (parentMessage.userId == message.userId) {
-            return "${_truncateDisplayName(currentUserDisplayName)} replied to themself";
+            return "${_truncateDisplayName(currentUserDisplayName)} ${context.l10n.message_reply_to_themself.toLowerCase()}";
           } else {
             return "${_truncateDisplayName(currentUserDisplayName)} replied to $parentUserDisplayName";
           }
@@ -106,11 +97,11 @@ extension ParentMessageWidget on MessageBubbleView {
                 if (parentMessage.isDeleted ?? false)
                   Text(
                       message.userId == AmityCoreClient.getUserId()
-                          ? "You replied to deleted message"
-                          : "Replied to deleted message",
+                          ? context.l10n.message_reply_you_to_deleted
+                          : context.l10n.message_reply_to_deleted,
                       style: AmityTextStyle.caption(theme.baseColorShade1))
                 else
-                  Text(_getReplyText(message, parentMessage),
+                  Text(_getReplyText(message, parentMessage, context),
                       style: AmityTextStyle.caption(theme.baseColorShade1)),
               ],
             ),
@@ -186,7 +177,7 @@ extension ParentMessageWidget on MessageBubbleView {
                                 width: 4,
                               ),
                               Text(
-                                'This message was deleted',
+                                context.l10n.message_deleted,
                                 style: AmityTextStyle.caption(
                                     theme.baseColorShade2),
                               ),

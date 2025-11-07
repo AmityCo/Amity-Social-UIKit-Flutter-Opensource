@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -39,7 +40,7 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                 appBar: AppBar(
                   backgroundColor: theme.backgroundColor,
                   title: Text(
-                    'Notification Preference',
+                    context.l10n.notification_preference_title,
                     style: AmityTextStyle.titleBold(theme.baseColor),
                   ),
                   leading: IconButton(
@@ -57,8 +58,8 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                                   .read<AmityToastBloc>()
                                   .add(AmityToastShort(
                                     message: state.enabled
-                                        ? "Notifications enabled"
-                                        : "Notifications disabled",
+                                        ? context.l10n.notification_enabled_toast
+                                        : context.l10n.notification_disabled_toast,
                                     icon: AmityToastIcon.success,
                                   ));
 
@@ -66,7 +67,7 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                             }
                           : null,
                       child: Text(
-                        'Save',
+                        context.l10n.general_save,
                         style: AmityTextStyle.body(
                           state.hasChanges
                               ? theme.primaryColor
@@ -88,16 +89,16 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                           color: theme.backgroundShade1Color,
                         ),
                         child: Text(
-                            'Group notifications have been disabled by moderator.',
+                            context.l10n.notification_disabled_by_moderator,
                             style:
                                 AmityTextStyle.caption(theme.baseColorShade3)),
                       ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: _buildNotificationOption(
-                        title: 'Allow notifications',
-                        description:
-                            'Turn on to receive push notifications from this group.',
+                        context: context,
+                        title: context.l10n.notification_allow_notifications,
+                        description: context.l10n.notification_allow_notifications_desc,
                         value: state.enabled,
                         onChanged: channel.notificationMode ==
                                     NotificationMode.silent
@@ -119,6 +120,7 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
   }
 
   Widget _buildNotificationOption({
+    required BuildContext context,
     required String title,
     required String description,
     required bool value,

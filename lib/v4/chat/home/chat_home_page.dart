@@ -238,7 +238,6 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
         Container(
           width: 32,
           height: 32,
-          margin: const EdgeInsets.only(right: 10.0),
           decoration: BoxDecoration(
             color: theme.secondaryColor.blend(ColorBlendingOption.shade4),
             shape: BoxShape.circle,
@@ -265,6 +264,7 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
             },
           ),
         ),
+        const SizedBox(width: 10),
         // Create chat button
         Container(
           width: 32,
@@ -324,9 +324,7 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
             ],
           ),
         ),
-        const SizedBox(
-          width: 16,
-        ),
+        const SizedBox(width: 10),
       ],
     );
   }
@@ -405,9 +403,7 @@ class AmityChatMenuComponent extends NewBaseComponent {
             ],
           ),
         ),
-        const SizedBox(
-          width: 16,
-        ),
+        const SizedBox(width: 10),
       ],
     );
   }

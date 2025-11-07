@@ -8,6 +8,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/media_permission_handler.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_camera_screen.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +34,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
           Scaffold(
             appBar: AppBar(
               backgroundColor: theme.backgroundColor,
-              title: const Text('Group profile'),
+              title: Text(context.l10n.chat_group_profile_title),
               actions: [
                 BlocBuilder<AmityEditGroupProfileCubit, AmityEditGroupProfileState>(
                   builder: (context, state) {
@@ -46,7 +47,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                             }
                           : null,
                       child: Text(
-                        'Save',
+                        context.l10n.general_save,
                         style: TextStyle(
                           color: hasChanged
                               ? theme.primaryColor
@@ -190,12 +191,12 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'Group name ',
+                                          text: context.l10n.chat_group_name_label,
                                           style: AmityTextStyle.titleBold(
                                               theme.baseColor),
                                         ),
                                         TextSpan(
-                                          text: '(Required)',
+                                          text: ' ${context.l10n.chat_group_name_required}',
                                           style: AmityTextStyle.caption(
                                               theme.baseColorShade3),
                                         ),
@@ -226,7 +227,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                     .read<AmityEditGroupProfileCubit>()
                                     .nameController,
                                 decoration: InputDecoration(
-                                  hintText: 'Enter group name',
+                                  hintText: context.l10n.chat_group_name_hint,
                                   hintStyle: TextStyle(
                                     color: Colors.grey.shade400,
                                     fontSize: 18,
@@ -265,7 +266,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                     ),
                   );
                 } else {
-                  return const Center(child: Text('Error loading profile'));
+                  return Center(child: Text(context.l10n.chat_group_profile_error));
                 }
               },
             ),
@@ -296,8 +297,8 @@ class AmityEditGroupProfilePage extends NewBasePage {
                 .then((updatedChannel) {
               // Show success toast
               if (context.mounted) {
-                context.read<AmityToastBloc>().add(const AmityToastShort(
-                    message: "Group profile updated.",
+                context.read<AmityToastBloc>().add(AmityToastShort(
+                    message: context.l10n.toast_group_profile_updated,
                     icon: AmityToastIcon.success));
                 Navigator.pop(
                     context, {'status': 'success', 'channel': updatedChannel});
@@ -305,8 +306,8 @@ class AmityEditGroupProfilePage extends NewBasePage {
             }).catchError((error) {
               // Show error toast
               if (context.mounted) {
-                context.read<AmityToastBloc>().add(const AmityToastShort(
-                    message: "Failed to update group profile. Please try again.",
+                context.read<AmityToastBloc>().add(AmityToastShort(
+                    message: context.l10n.toast_group_profile_error,
                     icon: AmityToastIcon.warning));
                 Navigator.pop(context, {'status': 'error'});
               }
@@ -354,8 +355,8 @@ class AmityEditGroupProfilePage extends NewBasePage {
           .then((updatedChannel) {
         // Show success toast
         if (context.mounted) {
-          context.read<AmityToastBloc>().add(const AmityToastShort(
-              message: "Group profile updated successfully.",
+          context.read<AmityToastBloc>().add(AmityToastShort(
+              message: context.l10n.toast_group_profile_updated,
               icon: AmityToastIcon.success));
           Navigator.pop(
               context, {'status': 'success', 'channel': updatedChannel});
@@ -363,8 +364,8 @@ class AmityEditGroupProfilePage extends NewBasePage {
       }).catchError((error) {
         // Show error toast
         if (context.mounted) {
-          context.read<AmityToastBloc>().add(const AmityToastShort(
-              message: "Failed to update group profile. Please try again.",
+          context.read<AmityToastBloc>().add(AmityToastShort(
+              message: context.l10n.toast_group_profile_error,
               icon: AmityToastIcon.warning));
           Navigator.pop(context, {'status': 'error'});
         }

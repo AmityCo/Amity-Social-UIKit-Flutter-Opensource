@@ -597,7 +597,7 @@
   },
   "general_camera": "Cámara",
   "@general_camera": {
-    "description": "Label for camera button"
+    "description": "Label for camera option in media picker"
   },
   "general_close": "Cerrar",
   "@general_close": {
@@ -657,11 +657,11 @@
   },
   "general_off": "Desactivado",
   "@general_off": {
-    "description": "Label for off state"
+    "description": "Translation for general_off"
   },
   "general_on": "Activado",
   "@general_on": {
-    "description": "Label for on state"
+    "description": "Translation for general_on"
   },
   "general_optional": "Opcional",
   "@general_optional": {
@@ -671,9 +671,29 @@
   "@general_options": {
     "description": "Label for options button"
   },
+  "general_go_back": "Volver",
+  "@general_go_back": {
+    "description": "Label for go back button"
+  },
+  "post_unavailable_title": "Algo salió mal",
+  "@post_unavailable_title": {
+    "description": "Title for post unavailable error page"
+  },
+  "post_unavailable_description": "El contenido que estás buscando no está disponible.",
+  "@post_unavailable_description": {
+    "description": "Description for post unavailable error page"
+  },
+  "comment_deleted_message": "Este comentario ha sido eliminado",
+  "@comment_deleted_message": {
+    "description": "Message shown for deleted comments"
+  },
+  "comment_reply_deleted_message": "Esta respuesta ha sido eliminada",
+  "@comment_reply_deleted_message": {
+    "description": "Message shown for deleted reply comments"
+  },
   "general_photo": "Foto",
   "@general_photo": {
-    "description": "Label for photo button"
+    "description": "Label for photo/gallery option in media picker"
   },
   "general_poll": "Encuesta",
   "@general_poll": {
@@ -697,7 +717,7 @@
   },
   "general_save": "Guardar",
   "@general_save": {
-    "description": "Label for save button"
+    "description": "Translation for general_save"
   },
   "general_see_more": "...Ver más",
   "@general_see_more": {
@@ -716,6 +736,15 @@
     "description": "Label for video button"
   },
   "message_placeholder": "Escribe un mensaje...",
+  "message_deleted": "Este mensaje fue eliminado",
+  "message_failed_to_send": "No se pudo enviar el mensaje.",
+  "message_reply_you_to_yourself": "Respondiste a ti mismo",
+  "message_reply_to_you": "Respondió a ti",
+  "message_reply_you": "Respondiste",
+  "message_reply_to_themself": "Respondió a sí mismo",
+  "message_reply_you_to_deleted": "Respondiste a un mensaje eliminado",
+  "message_reply_to_deleted": "Respondió a un mensaje eliminado",
+  "message_unknown_user": "Desconocido",
   "@message_placeholder": {
     "description": "Placeholder for message input"
   },
@@ -773,7 +802,7 @@
   },
   "settings_everyone": "Todos",
   "@settings_everyone": {
-    "description": "Label for everyone settings"
+    "description": "Translation for settings_everyone"
   },
   "settings_language": "Idioma",
   "@settings_language": {
@@ -821,7 +850,7 @@
   },
   "settings_only_moderators": "Solo moderadores",
   "@settings_only_moderators": {
-    "description": "Label for only moderators settings"
+    "description": "Translation for settings_only_moderators"
   },
   "settings_permissions": "Permisos de la comunidad",
   "@settings_permissions": {
@@ -1428,6 +1457,98 @@
   "@chat_no_message_yet": {
     "description": "Preview text when there are no messages in the chat"
   },
+  "general_search_hint": "Buscar",
+  "@general_search_hint": {
+    "description": "Hint text for search input fields"
+  },
+  "chat_archived_empty_title": "No hay chats archivados",
+  "@chat_archived_empty_title": {
+    "description": "Empty state title for archived chats list"
+  },
+  "chat_archived_title": "Chats archivados",
+  "@chat_archived_title": {
+    "description": "Title for archived chats page"
+  },
+  "toast_chat_archived": "Chat archivado.",
+  "@toast_chat_archived": {
+    "description": "Translation for toast_chat_archived"
+  },
+  "toast_chat_unarchived": "Chat desarchivado.",
+  "@toast_chat_unarchived": {
+    "description": "Translation for toast_chat_unarchived"
+  },
+  "toast_chat_archive_error": "No se pudo archivar el chat. Por favor, inténtelo de nuevo",
+  "@toast_chat_archive_error": {
+    "description": "Translation for toast_chat_archive_error"
+  },
+  "toast_chat_unarchive_error": "No se pudo desarchivar el chat. Por favor, inténtelo de nuevo",
+  "@toast_chat_unarchive_error": {
+    "description": "Translation for toast_chat_unarchive_error"
+  },
+  "chat_archive_limit_title": "Demasiados chats archivados",
+  "@chat_archive_limit_title": {
+    "description": "Translation for chat_archive_limit_title"
+  },
+  "chat_archive_limit_message": "Puede archivar un máximo de 100 listas de chat.",
+  "@chat_archive_limit_message": {
+    "description": "Translation for chat_archive_limit_message"
+  },
+  "chat_empty_title": "Aún no hay conversaciones",
+  "@chat_empty_title": {
+    "description": "Empty state title for chat list"
+  },
+  "chat_empty_description": "Creemos un chat para empezar.",
+  "@chat_empty_description": {
+    "description": "Empty state description for chat list"
+  },
+  "chat_create_new": "Crear nuevo chat",
+  "@chat_create_new": {
+    "description": "Button text to create a new chat"
+  },
+  "chat_group_profile_title": "Perfil del grupo",
+  "@chat_group_profile_title": {
+    "description": "Title for group profile page"
+  },
+  "chat_group_profile_error": "Error al cargar el perfil",
+  "@chat_group_profile_error": {
+    "description": "Error message when group profile fails to load"
+  },
+  "chat_group_name_hint": "Ingresa el nombre del grupo",
+  "@chat_group_name_hint": {
+    "description": "Hint text for group name input field"
+  },
+  "chat_group_name_placeholder": "Nombra tu grupo",
+  "@chat_group_name_placeholder": {
+    "description": "Placeholder text for group name input"
+  },
+  "chat_member_permissions_title": "Permisos de miembros",
+  "@chat_member_permissions_title": {
+    "description": "Title for member permissions page"
+  },
+  "chat_member_label": "Miembro",
+  "@chat_member_label": {
+    "description": "Label for member section"
+  },
+  "chat_select_member_error": "Por favor selecciona al menos un usuario",
+  "@chat_select_member_error": {
+    "description": "Error message when no user is selected"
+  },
+  "message_report_details_hint": "Comparte más detalles sobre este problema",
+  "@message_report_details_hint": {
+    "chat_search_tab_chats": "Chats",
+    "@chat_search_tab_chats": {
+      "description": "Tab title for chats in search page"
+    },
+    "chat_search_tab_messages": "Mensajes",
+    "@chat_search_tab_messages": {
+      "description": "Tab title for messages in search page"
+    },
+    "search_minimum_chars": "Comienza tu búsqueda escribiendo\nal menos 3 letras",
+    "@search_minimum_chars": {
+      "description": "Hint text shown when search query is too short"
+    },
+    "description": "Hint text for message report details input"
+  },
   "comment_create_error_ban_word": "Tu comentario contiene una palabra inapropiada. Por favor, revísalo y elimínalo.",
   "@comment_create_error_ban_word": {
     "description": "Mensaje de aviso para la creación de comentarios con palabra prohibida"
@@ -1495,5 +1616,364 @@
   "permission_open_settings": "Abrir configuración",
   "@permission_open_settings": {
     "description": "Texto del botón para abrir la configuración de la aplicación"
+  },
+  "general_copy": "Copiar",
+  "@general_copy": {
+    "description": "Etiqueta para la acción de copiar en menús"
+  },
+  "message_report": "Reportar",
+  "@message_report": {
+    "description": "Etiqueta para el botón de reportar mensaje"
+  },
+  "message_unreport": "Quitar Reporte",
+  "toast_message_copied": "Copiado.",
+  "toast_message_reported": "Mensaje reportado.",
+  "toast_message_unreported": "Reporte de mensaje retirado.",
+  "toast_message_report_error": "No se pudo reportar el mensaje. Por favor, inténtalo de nuevo.",
+  "toast_message_unreport_error": "No se pudo retirar el reporte del mensaje. Por favor, inténtalo de nuevo.",
+  "toast_message_delete_error": "No se pudo eliminar el mensaje.",
+  "toast_permission_denied": "Permiso denegado.",
+  "toast_photo_saved": "Foto guardada.",
+  "toast_photo_save_error": "No se pudo guardar la imagen.",
+  "toast_video_saved": "Video guardado.",
+  "toast_video_save_error": "No se pudo guardar el video.",
+  "message_delete_title": "¿Eliminar este mensaje?",
+  "message_delete_description": "Este mensaje también se eliminará de los dispositivos de tus amigos.",
+  "@message_unreport": {
+    "description": "Etiqueta para el botón de quitar reporte del mensaje"
+  },
+  "chat_search_tab_chats": "Chats",
+  "@chat_search_tab_chats": {
+    "description": "Tab title for chats in search page"
+  },
+  "chat_search_tab_messages": "Mensajes",
+  "@chat_search_tab_messages": {
+    "description": "Tab title for messages in search page"
+  },
+  "search_minimum_chars": "Comienza tu búsqueda escribiendo\nal menos 3 letras",
+  "@search_minimum_chars": {
+    "description": "Hint text shown when search query is too short"
+  },
+  "chat_create_success": "Grupo de chat creado.",
+  "@chat_create_success": {
+    "description": "Toast message when group chat is created successfully"
+  },
+  "chat_create_error": "No se pudo crear el grupo",
+  "@chat_create_error": {
+    "description": "Error message when group creation fails"
+  },
+  "chat_create_error_retry": "No se pudo crear el grupo de chat. Inténtelo de nuevo.",
+  "@chat_create_error_retry": {
+    "description": "Toast error message prompting user to retry group creation"
+  },
+  "chat_create_title": "Nuevo Grupo",
+  "@chat_create_title": {
+    "description": "AppBar title for create group page"
+  },
+  "chat_create_button": "Crear",
+  "@chat_create_button": {
+    "description": "Button text to create a new group"
+  },
+  "chat_group_name_label": "Nombre del grupo",
+  "@chat_group_name_label": {
+    "description": "Label for group name input field"
+  },
+  "chat_group_name_optional": "(Opcional)",
+  "@chat_group_name_optional": {
+    "description": "Text indicating group name is optional"
+  },
+  "chat_group_name_required": "(Requerido)",
+  "@chat_group_name_required": {
+    "description": "Text indicating group name is required"
+  },
+  "chat_privacy_public": "Público",
+  "@chat_privacy_public": {
+    "description": "Label for public privacy option"
+  },
+  "chat_privacy_public_desc": "Cualquiera puede encontrar el grupo a través de la búsqueda y unirse a la conversación.",
+  "@chat_privacy_public_desc": {
+    "description": "Description for public group privacy setting"
+  },
+  "chat_privacy_private": "Privado",
+  "@chat_privacy_private": {
+    "description": "Label for private privacy option"
+  },
+  "chat_privacy_private_desc": "El grupo está oculto en las búsquedas y solo es accesible por invitación de los moderadores.",
+  "@chat_privacy_private_desc": {
+    "description": "Description for private group privacy setting"
+  },
+  "chat_privacy_warning": "Asegúrese de elegir la configuración de privacidad correcta para su grupo, ya que no se puede cambiar más tarde.",
+  "@chat_privacy_warning": {
+    "description": "Warning message about privacy setting being permanent"
+  },
+  "chat_select_member_title": "Nuevo grupo",
+  "@chat_select_member_title": {
+    "description": "AppBar title for select member page when creating group"
+  },
+  "general_next": "Siguiente",
+  "@general_next": {
+    "description": "Button text to proceed to next step"
+  },
+  "settings_group_settings": "Configuración del grupo",
+  "@settings_group_settings": {
+    "description": "Translation for settings_group_settings"
+  },
+  "settings_group_settings_section": "Configuración del grupo",
+  "@settings_group_settings_section": {
+    "description": "Translation for settings_group_settings_section"
+  },
+  "settings_group_profile": "Perfil del grupo",
+  "@settings_group_profile": {
+    "description": "Translation for settings_group_profile"
+  },
+  "settings_group_notifications": "Notificaciones del grupo",
+  "@settings_group_notifications": {
+    "description": "Translation for settings_group_notifications"
+  },
+  "settings_member_permissions": "Permisos de miembros",
+  "@settings_member_permissions": {
+    "description": "Translation for settings_member_permissions"
+  },
+  "settings_all_members": "Todos los miembros",
+  "@settings_all_members": {
+    "description": "Translation for settings_all_members"
+  },
+  "settings_banned_users": "Usuarios bloqueados",
+  "@settings_banned_users": {
+    "description": "Translation for settings_banned_users"
+  },
+  "banned_users_empty_state": "Nada que ver aquí todavía",
+  "@banned_users_empty_state": {
+    "description": "Translation for banned_users_empty_state"
+  },
+  "user_unban_confirm_title": "Confirmar desbloqueo",
+  "@user_unban_confirm_title": {
+    "description": "Translation for user_unban_confirm_title"
+  },
+  "user_unban_confirm_description": "¿Está seguro de que desea desbloquear a este usuario? Podrán volver a unirse al grupo.",
+  "@user_unban_confirm_description": {
+    "description": "Translation for user_unban_confirm_description"
+  },
+  "user_unban_button": "Desbloquear",
+  "toast_user_unbanned": "Usuario desbaneado.",
+  "toast_user_unban_error": "No se pudo desbanear al usuario. Por favor, inténtalo de nuevo.",
+  "@user_unban_button": {
+    "description": "Translation for user_unban_button"
+  },
+  "settings_your_preferences": "Tus preferencias",
+  "@settings_your_preferences": {
+    "description": "Translation for settings_your_preferences"
+  },
+  "general_notifications_lowercase": "notificaciones",
+  "@general_notifications_lowercase": {
+    "description": "Translation for general_notifications_lowercase"
+  },
+  "chat_leave_group": "Salir del grupo",
+  "@chat_leave_group": {
+    "description": "Translation for chat_leave_group"
+  },
+  "chat_leave_group_title": "Salir del grupo",
+  "@chat_leave_group_title": {
+    "description": "Translation for chat_leave_group_title"
+  },
+  "chat_leave_group_confirm": "Si sales de este grupo, ya no verás nuevas actividades ni podrás participar en este grupo.",
+  "@chat_leave_group_confirm": {
+    "description": "Translation for chat_leave_group_confirm"
+  },
+  "chat_leave_group_last_mod_title": "Eres el último moderador",
+  "@chat_leave_group_last_mod_title": {
+    "description": "Translation for chat_leave_group_last_mod_title"
+  },
+  "chat_leave_group_last_mod_message": "Debes promover a otro miembro a moderador antes de salir.",
+  "@chat_leave_group_last_mod_message": {
+    "description": "Translation for chat_leave_group_last_mod_message"
+  },
+  "chat_promote_member": "Promover miembro",
+  "@chat_promote_member": {
+    "description": "Translation for chat_promote_member"
+  },
+  "notification_default_mode": "Modo predeterminado",
+  "@notification_default_mode": {
+    "description": "Translation for notification_default_mode"
+  },
+  "notification_default_mode_desc": "Por defecto, los miembros de esta comunidad recibirán notificaciones, pero pueden elegir desactivarlas.",
+  "@notification_default_mode_desc": {
+    "description": "Translation for notification_default_mode_desc"
+  },
+  "notification_silent_mode": "Modo silencioso",
+  "@notification_silent_mode": {
+    "description": "Translation for notification_silent_mode"
+  },
+  "notification_silent_mode_desc": "Sin notificaciones para todos en este canal. Los miembros no pueden activar notificaciones en el canal.",
+  "@notification_silent_mode_desc": {
+    "description": "Translation for notification_silent_mode_desc"
+  },
+  "notification_subscribe_mode": "Modo suscripción",
+  "@notification_subscribe_mode": {
+    "description": "Translation for notification_subscribe_mode"
+  },
+  "notification_subscribe_mode_desc": "Todos los miembros tienen la opción de recibir notificaciones, pero deben activarlas. Por defecto, las notificaciones están desactivadas para cada miembro.",
+  "@notification_subscribe_mode_desc": {
+    "description": "Translation for notification_subscribe_mode_desc"
+  },
+  "notification_preference_title": "Preferencia de notificaciones",
+  "@notification_preference_title": {
+    "description": "Translation for notification_preference_title"
+  },
+  "notification_allow_notifications": "Permitir notificaciones",
+  "@notification_allow_notifications": {
+    "description": "Translation for notification_allow_notifications"
+  },
+  "notification_allow_notifications_desc": "Actívelo para recibir notificaciones push de este grupo.",
+  "@notification_allow_notifications_desc": {
+    "description": "Translation for notification_allow_notifications_desc"
+  },
+  "notification_disabled_by_moderator": "Las notificaciones del grupo han sido desactivadas por el moderador.",
+  "@notification_disabled_by_moderator": {
+    "description": "Translation for notification_disabled_by_moderator"
+  },
+  "notification_enabled_toast": "Notificaciones activadas",
+  "@notification_enabled_toast": {
+    "description": "Translation for notification_enabled_toast"
+  },
+  "notification_disabled_toast": "Notificaciones desactivadas",
+  "@notification_disabled_toast": {
+    "description": "Translation for notification_disabled_toast"
+  },
+  "settings_messaging": "Mensajería",
+  "@settings_messaging": {
+    "description": "Translation for settings_messaging"
+  },
+  "settings_everyone_desc": "Todos pueden enviar un mensaje en el grupo.",
+  "@settings_everyone_desc": {
+    "description": "Translation for settings_everyone_desc"
+  },
+  "settings_only_moderators_desc": "Los miembros que no son moderadores pueden leer mensajes pero no pueden enviar ningún mensaje.",
+  "@settings_only_moderators_desc": {
+    "description": "Translation for settings_only_moderators_desc"
+  },
+  "toast_group_chat_left": "Saliste del grupo.",
+  "@toast_group_chat_left": {
+    "description": "Translation for toast_group_chat_left"
+  },
+  "toast_group_chat_left_error": "Error al salir del grupo. Por favor, inténtalo de nuevo.",
+  "@toast_group_chat_left_error": {
+    "description": "Translation for toast_group_chat_left_error"
+  },
+  "toast_group_profile_updated": "Perfil del grupo actualizado.",
+  "@toast_group_profile_updated": {
+    "description": "Translation for toast_group_profile_updated"
+  },
+  "toast_group_profile_error": "Error al actualizar el perfil del grupo. Por favor, inténtalo de nuevo.",
+  "@toast_group_profile_error": {
+    "description": "Translation for toast_group_profile_error"
+  },
+  "toast_group_notification_updated": "Notificaciones del grupo actualizadas.",
+  "@toast_group_notification_updated": {
+    "description": "Translation for toast_group_notification_updated"
+  },
+  "toast_group_notification_error": "Error al actualizar las notificaciones del grupo. Por favor, inténtalo de nuevo.",
+  "@toast_group_notification_error": {
+    "description": "Translation for toast_group_notification_error"
+  },
+  "toast_member_permissions_updated": "Permisos de miembros actualizados.",
+  "@toast_member_permissions_updated": {
+    "description": "Translation for toast_member_permissions_updated"
+  },
+  "toast_member_permissions_error": "Error al actualizar los permisos de miembros. Por favor, inténtalo de nuevo.",
+  "@toast_member_permissions_error": {
+    "description": "Translation for toast_member_permissions_error"
+  },
+  "toast_member_list_updated": "Lista de miembros actualizada.",
+  "@toast_member_list_updated": {
+    "description": "Translation for toast_member_list_updated"
+  },
+  "toast_member_list_error": "Error al actualizar la lista de miembros. Por favor, inténtalo de nuevo.",
+  "@toast_member_list_error": {
+    "description": "Translation for toast_member_list_error"
+  },
+  "toast_banned_users_updated": "Usuarios bloqueados actualizados.",
+  "@toast_banned_users_updated": {
+    "description": "Translation for toast_banned_users_updated"
+  },
+  "toast_banned_users_error": "Error al actualizar usuarios bloqueados. Por favor, inténtalo de nuevo.",
+  "@toast_banned_users_error": {
+    "description": "Translation for toast_banned_users_error"
+  },
+  "toast_members_added": "Miembros agregados",
+  "@toast_members_added": {
+    "description": "Translation for toast_members_added"
+  },
+  "toast_member_added": "Miembro agregado.",
+  "@toast_member_added": {
+    "description": "Translation for toast_member_added"
+  },
+  "toast_members_add_error": "Error al agregar miembros. Por favor, inténtalo de nuevo.",
+  "@toast_members_add_error": {
+    "description": "Translation for toast_members_add_error"
+  },
+  "toast_member_add_error": "Error al agregar miembro. Por favor, inténtalo de nuevo.",
+  "@toast_member_add_error": {
+    "description": "Translation for toast_member_add_error"
+  },
+  "toast_member_removed": "Miembro eliminado.",
+  "@toast_member_removed": {
+    "description": "Translation for toast_member_removed"
+  },
+  "toast_member_remove_error": "Error al eliminar miembro. Por favor, inténtalo de nuevo.",
+  "@toast_member_remove_error": {
+    "description": "Translation for toast_member_remove_error"
+  },
+  "toast_member_promoted": "Miembro promovido.",
+  "@toast_member_promoted": {
+    "description": "Translation for toast_member_promoted"
+  },
+  "toast_member_promote_error": "Error al promover miembro. Por favor, inténtalo de nuevo.",
+  "@toast_member_promote_error": {
+    "description": "Translation for toast_member_promote_error"
+  },
+  "toast_member_demoted": "Miembro degradado.",
+  "@toast_member_demoted": {
+    "description": "Translation for toast_member_demoted"
+  },
+  "toast_member_demote_error": "Error al degradar miembro. Por favor, inténtalo de nuevo.",
+  "@toast_member_demote_error": {
+    "description": "Translation for toast_member_demote_error"
+  },
+  "toast_user_banned": "Usuario bloqueado.",
+  "@toast_user_banned": {
+    "description": "Translation for toast_user_banned"
+  },
+  "toast_user_ban_error": "Error al bloquear usuario. Por favor, inténtalo de nuevo.",
+  "@toast_user_ban_error": {
+    "description": "Translation for toast_user_ban_error"
+  },
+  "toast_user_reported": "Usuario reportado.",
+  "@toast_user_reported": {
+    "description": "Translation for toast_user_reported"
+  },
+  "toast_user_unreported": "Reporte de usuario eliminado.",
+  "@toast_user_unreported": {
+    "description": "Translation for toast_user_unreported"
+  },
+  "toast_user_report_error": "No se pudo reportar/desreportar al usuario. Por favor, inténtelo de nuevo.",
+  "@toast_user_report_error": {
+    "description": "Error toast when failing to report or unreport a user"
+  },
+  "toast_user_muted": "Usuario silenciado.",
+  "@toast_user_muted": {
+    "description": "Translation for toast_user_muted"
+  },
+  "toast_user_mute_error": "Error al silenciar usuario. Por favor, inténtalo de nuevo.",
+  "@toast_user_mute_error": {
+    "description": "Translation for toast_user_mute_error"
+  },
+  "toast_user_unmuted": "Usuario desil enciado.",
+  "@toast_user_unmuted": {
+    "description": "Translation for toast_user_unmuted"
+  },
+  "toast_user_unmute_error": "Error al desilenciar usuario. Por favor, inténtalo de nuevo.",
+  "@toast_user_unmute_error": {
+    "description": "Translation for toast_user_unmute_error"
   }
 }

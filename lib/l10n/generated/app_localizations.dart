@@ -771,6 +771,60 @@ abstract class AppLocalizations {
   /// **'Type a message...'**
   String get message_placeholder;
 
+  /// Text shown for deleted messages
+  ///
+  /// In en, this message translates to:
+  /// **'This message was deleted'**
+  String get message_deleted;
+
+  /// Error message when message fails to send
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message.'**
+  String get message_failed_to_send;
+
+  /// Reply text when user replies to their own message
+  ///
+  /// In en, this message translates to:
+  /// **'You replied to yourself'**
+  String get message_reply_you_to_yourself;
+
+  /// Reply text when someone replies to your message
+  ///
+  /// In en, this message translates to:
+  /// **'Replied to you'**
+  String get message_reply_to_you;
+
+  /// Reply text when you reply to someone else
+  ///
+  /// In en, this message translates to:
+  /// **'You replied'**
+  String get message_reply_you;
+
+  /// Reply text when someone replies to their own message
+  ///
+  /// In en, this message translates to:
+  /// **'Replied to themself'**
+  String get message_reply_to_themself;
+
+  /// Reply text when you replied to a now-deleted message
+  ///
+  /// In en, this message translates to:
+  /// **'You replied to deleted message'**
+  String get message_reply_you_to_deleted;
+
+  /// Reply text when someone replied to a deleted message
+  ///
+  /// In en, this message translates to:
+  /// **'Replied to deleted message'**
+  String get message_reply_to_deleted;
+
+  /// Fallback text for unknown user display name
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get message_unknown_user;
+
   /// Title for settings screen
   ///
   /// In en, this message translates to:
@@ -891,13 +945,13 @@ abstract class AppLocalizations {
   /// **'Receive notifications when someone comments on your story in this community.'**
   String get settings_story_comments_description;
 
-  /// Label for everyone settings
+  /// Label for everyone permission option
   ///
   /// In en, this message translates to:
   /// **'Everyone'**
   String get settings_everyone;
 
-  /// Label for only moderators settings
+  /// Label for moderators-only permission option
   ///
   /// In en, this message translates to:
   /// **'Only moderators'**
@@ -1005,7 +1059,7 @@ abstract class AppLocalizations {
   /// **'Moderator'**
   String get general_moderator;
 
-  /// Label for save button
+  /// Button text to save changes
   ///
   /// In en, this message translates to:
   /// **'Save'**
@@ -1071,13 +1125,13 @@ abstract class AppLocalizations {
   /// **'Optional'**
   String get general_optional;
 
-  /// Label for on state
+  /// Label indicating a setting is enabled
   ///
   /// In en, this message translates to:
   /// **'On'**
   String get general_on;
 
-  /// Label for off state
+  /// Label indicating a setting is disabled
   ///
   /// In en, this message translates to:
   /// **'Off'**
@@ -1113,13 +1167,13 @@ abstract class AppLocalizations {
   /// **'...See more'**
   String get general_see_more;
 
-  /// Label for camera button
+  /// Label for camera option in media picker
   ///
   /// In en, this message translates to:
   /// **'Camera'**
   String get general_camera;
 
-  /// Label for photo button
+  /// Label for photo/gallery option in media picker
   ///
   /// In en, this message translates to:
   /// **'Photo'**
@@ -2247,6 +2301,144 @@ abstract class AppLocalizations {
   /// **'No message yet'**
   String get chat_no_message_yet;
 
+  /// Hint text for search input fields
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get general_search_hint;
+
+  /// Empty state title for archived chats list
+  ///
+  /// In en, this message translates to:
+  /// **'No archived chats'**
+  String get chat_archived_empty_title;
+
+  /// Title for archived chats page
+  ///
+  /// In en, this message translates to:
+  /// **'Archived chats'**
+  String get chat_archived_title;
+
+  /// Toast message when chat is archived successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Chat archived.'**
+  String get toast_chat_archived;
+
+  /// Toast message when chat is unarchived successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Chat unarchived.'**
+  String get toast_chat_unarchived;
+
+  /// Toast message when chat archive fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to archive chat. Please try again'**
+  String get toast_chat_archive_error;
+
+  /// Toast message when chat unarchive fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unarchive chat. Please try again'**
+  String get toast_chat_unarchive_error;
+
+  /// Dialog title when archive limit is reached
+  ///
+  /// In en, this message translates to:
+  /// **'Too many chats archived'**
+  String get chat_archive_limit_title;
+
+  /// Dialog message when archive limit is reached
+  ///
+  /// In en, this message translates to:
+  /// **'You can archive a maximum of 100 chat lists.'**
+  String get chat_archive_limit_message;
+
+  /// Empty state title for chat list
+  ///
+  /// In en, this message translates to:
+  /// **'No conversation yet'**
+  String get chat_empty_title;
+
+  /// Empty state description for chat list
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s create chat to get started.'**
+  String get chat_empty_description;
+
+  /// Button text to create a new chat
+  ///
+  /// In en, this message translates to:
+  /// **'Create new chat'**
+  String get chat_create_new;
+
+  /// Title for group profile page
+  ///
+  /// In en, this message translates to:
+  /// **'Group profile'**
+  String get chat_group_profile_title;
+
+  /// Error message when group profile fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading profile'**
+  String get chat_group_profile_error;
+
+  /// Hint text for group name input field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter group name'**
+  String get chat_group_name_hint;
+
+  /// Placeholder text for group name input
+  ///
+  /// In en, this message translates to:
+  /// **'Name your group'**
+  String get chat_group_name_placeholder;
+
+  /// Title for member permissions page
+  ///
+  /// In en, this message translates to:
+  /// **'Member permissions'**
+  String get chat_member_permissions_title;
+
+  /// Label for member section
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get chat_member_label;
+
+  /// Error message when no user is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one user'**
+  String get chat_select_member_error;
+
+  /// Hint text for message report details input
+  ///
+  /// In en, this message translates to:
+  /// **'Share more details about this issue'**
+  String get message_report_details_hint;
+
+  /// Tab title for chats in search page
+  ///
+  /// In en, this message translates to:
+  /// **'Chats'**
+  String get chat_search_tab_chats;
+
+  /// Tab title for messages in search page
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get chat_search_tab_messages;
+
+  /// Hint text shown when search query is too short
+  ///
+  /// In en, this message translates to:
+  /// **'Start your search by typing\nat least 3 letters'**
+  String get search_minimum_chars;
+
   /// Title for camera permission dialog
   ///
   /// In en, this message translates to:
@@ -2276,6 +2468,594 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open settings'**
   String get permission_open_settings;
+
+  /// Label for copy action in menus
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get general_copy;
+
+  /// Label for report message button
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get message_report;
+
+  /// Label for unreport message button
+  ///
+  /// In en, this message translates to:
+  /// **'Unreport'**
+  String get message_unreport;
+
+  /// Toast message when message text is copied
+  ///
+  /// In en, this message translates to:
+  /// **'Copied.'**
+  String get toast_message_copied;
+
+  /// Toast message when message is successfully reported
+  ///
+  /// In en, this message translates to:
+  /// **'Message reported.'**
+  String get toast_message_reported;
+
+  /// Toast message when message is successfully unreported
+  ///
+  /// In en, this message translates to:
+  /// **'Message unreported.'**
+  String get toast_message_unreported;
+
+  /// Toast message when reporting message fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to report message. Please try again.'**
+  String get toast_message_report_error;
+
+  /// Toast message when unreporting message fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unreport message. Please try again.'**
+  String get toast_message_unreport_error;
+
+  /// Toast message when deleting message fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete message.'**
+  String get toast_message_delete_error;
+
+  /// Toast message when permission is denied
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied.'**
+  String get toast_permission_denied;
+
+  /// Toast message when photo is successfully saved
+  ///
+  /// In en, this message translates to:
+  /// **'Saved photo.'**
+  String get toast_photo_saved;
+
+  /// Toast message when saving image fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save image.'**
+  String get toast_photo_save_error;
+
+  /// Toast message when video is successfully saved
+  ///
+  /// In en, this message translates to:
+  /// **'Saved video.'**
+  String get toast_video_saved;
+
+  /// Toast message when saving video fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save video.'**
+  String get toast_video_save_error;
+
+  /// Title for delete message confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this message?'**
+  String get message_delete_title;
+
+  /// Description for delete message confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'This message will also be removed from your friend\'s devices.'**
+  String get message_delete_description;
+
+  /// Toast message when group chat is created successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Group chat created.'**
+  String get chat_create_success;
+
+  /// Error message when group creation fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create group'**
+  String get chat_create_error;
+
+  /// Toast error message prompting user to retry group creation
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create group chat. Please try again.'**
+  String get chat_create_error_retry;
+
+  /// AppBar title for create group page
+  ///
+  /// In en, this message translates to:
+  /// **'New Group'**
+  String get chat_create_title;
+
+  /// Button text to create a new group
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get chat_create_button;
+
+  /// Label for group name input field
+  ///
+  /// In en, this message translates to:
+  /// **'Group name'**
+  String get chat_group_name_label;
+
+  /// Text indicating group name is optional
+  ///
+  /// In en, this message translates to:
+  /// **'(Optional)'**
+  String get chat_group_name_optional;
+
+  /// Text indicating group name is required
+  ///
+  /// In en, this message translates to:
+  /// **'(Required)'**
+  String get chat_group_name_required;
+
+  /// Label for public privacy option
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get chat_privacy_public;
+
+  /// Description for public group privacy setting
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone can find the group through search and join the conversation.'**
+  String get chat_privacy_public_desc;
+
+  /// Label for private privacy option
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get chat_privacy_private;
+
+  /// Description for private group privacy setting
+  ///
+  /// In en, this message translates to:
+  /// **'Group is hidden from search and only accessible by invitation from moderators.'**
+  String get chat_privacy_private_desc;
+
+  /// Warning message about privacy setting being permanent
+  ///
+  /// In en, this message translates to:
+  /// **'Ensure the correct privacy setting is chosen for your group, as it can\'t be changed later.'**
+  String get chat_privacy_warning;
+
+  /// AppBar title for select member page when creating group
+  ///
+  /// In en, this message translates to:
+  /// **'New group'**
+  String get chat_select_member_title;
+
+  /// Button text to proceed to next step
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get general_next;
+
+  /// AppBar title fallback for group settings page
+  ///
+  /// In en, this message translates to:
+  /// **'Group Settings'**
+  String get settings_group_settings;
+
+  /// Section title for group settings
+  ///
+  /// In en, this message translates to:
+  /// **'Group settings'**
+  String get settings_group_settings_section;
+
+  /// Menu item for group profile settings
+  ///
+  /// In en, this message translates to:
+  /// **'Group profile'**
+  String get settings_group_profile;
+
+  /// Menu item for group notification settings
+  ///
+  /// In en, this message translates to:
+  /// **'Group notifications'**
+  String get settings_group_notifications;
+
+  /// Menu item for member permission settings
+  ///
+  /// In en, this message translates to:
+  /// **'Member permissions'**
+  String get settings_member_permissions;
+
+  /// Menu item for viewing all members
+  ///
+  /// In en, this message translates to:
+  /// **'All members'**
+  String get settings_all_members;
+
+  /// Menu item for viewing banned users
+  ///
+  /// In en, this message translates to:
+  /// **'Banned users'**
+  String get settings_banned_users;
+
+  /// Empty state message when no users are banned
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here to see yet'**
+  String get banned_users_empty_state;
+
+  /// Title for unban user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm unban'**
+  String get user_unban_confirm_title;
+
+  /// Description for unban user confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unban this user? They will be able to rejoin the group again.'**
+  String get user_unban_confirm_description;
+
+  /// Button text for unban action
+  ///
+  /// In en, this message translates to:
+  /// **'Unban'**
+  String get user_unban_button;
+
+  /// Toast message shown when a user is successfully unbanned
+  ///
+  /// In en, this message translates to:
+  /// **'User unbanned.'**
+  String get toast_user_unbanned;
+
+  /// Toast message shown when unbanning a user fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unban user. Please try again.'**
+  String get toast_user_unban_error;
+
+  /// Section title for user's personal preferences
+  ///
+  /// In en, this message translates to:
+  /// **'Your preferences'**
+  String get settings_your_preferences;
+
+  /// Lowercase notifications label
+  ///
+  /// In en, this message translates to:
+  /// **'notifications'**
+  String get general_notifications_lowercase;
+
+  /// Button text to leave a group
+  ///
+  /// In en, this message translates to:
+  /// **'Leave group'**
+  String get chat_leave_group;
+
+  /// Dialog title for leaving a group
+  ///
+  /// In en, this message translates to:
+  /// **'Leave Group'**
+  String get chat_leave_group_title;
+
+  /// Confirmation message for leaving a group
+  ///
+  /// In en, this message translates to:
+  /// **'If you leave this group, you will no longer see new activities or participate in this group.'**
+  String get chat_leave_group_confirm;
+
+  /// Dialog title when user is the last moderator
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re the last moderator'**
+  String get chat_leave_group_last_mod_title;
+
+  /// Message explaining moderator promotion requirement
+  ///
+  /// In en, this message translates to:
+  /// **'You must promote another member to moderator before leaving.'**
+  String get chat_leave_group_last_mod_message;
+
+  /// Button text to promote a member to moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Promote member'**
+  String get chat_promote_member;
+
+  /// Label for default notification mode
+  ///
+  /// In en, this message translates to:
+  /// **'Default mode'**
+  String get notification_default_mode;
+
+  /// Description for default notification mode
+  ///
+  /// In en, this message translates to:
+  /// **'By default, members in this community will receive notifications, but they can choose to turn them off.'**
+  String get notification_default_mode_desc;
+
+  /// Label for silent notification mode
+  ///
+  /// In en, this message translates to:
+  /// **'Silent mode'**
+  String get notification_silent_mode;
+
+  /// Description for silent notification mode
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications for everyone in this channel. Members can\'t turn on notifications in the channel.'**
+  String get notification_silent_mode_desc;
+
+  /// Label for subscribe notification mode
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe mode'**
+  String get notification_subscribe_mode;
+
+  /// Description for subscribe notification mode
+  ///
+  /// In en, this message translates to:
+  /// **'All members have the option to receive notifications, but they need to enable them. By default, notifications are turned off for each member.'**
+  String get notification_subscribe_mode_desc;
+
+  /// Title for notification preference page
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Preference'**
+  String get notification_preference_title;
+
+  /// Label for allow notifications toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications'**
+  String get notification_allow_notifications;
+
+  /// Description for allow notifications toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on to receive push notifications from this group.'**
+  String get notification_allow_notifications_desc;
+
+  /// Message shown when notifications are disabled by moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Group notifications have been disabled by moderator.'**
+  String get notification_disabled_by_moderator;
+
+  /// Toast message when notifications are enabled
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications enabled'**
+  String get notification_enabled_toast;
+
+  /// Toast message when notifications are disabled
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications disabled'**
+  String get notification_disabled_toast;
+
+  /// Section title for messaging permissions
+  ///
+  /// In en, this message translates to:
+  /// **'Messaging'**
+  String get settings_messaging;
+
+  /// Description for everyone messaging permission
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone can send a message in the group.'**
+  String get settings_everyone_desc;
+
+  /// Description for moderators-only messaging permission
+  ///
+  /// In en, this message translates to:
+  /// **'Members who are not moderators can read messages but cannot send any messages.'**
+  String get settings_only_moderators_desc;
+
+  /// Success toast when leaving a group
+  ///
+  /// In en, this message translates to:
+  /// **'Group chat left.'**
+  String get toast_group_chat_left;
+
+  /// Error toast when failing to leave a group
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to leave group chat. Please try again.'**
+  String get toast_group_chat_left_error;
+
+  /// Success toast when group profile is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Group profile updated.'**
+  String get toast_group_profile_updated;
+
+  /// Error toast when failing to update group profile
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update group profile. Please try again.'**
+  String get toast_group_profile_error;
+
+  /// Success toast when group notifications are updated
+  ///
+  /// In en, this message translates to:
+  /// **'Group notification updated.'**
+  String get toast_group_notification_updated;
+
+  /// Error toast when failing to update group notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update group notification. Please try again.'**
+  String get toast_group_notification_error;
+
+  /// Success toast when member permissions are updated
+  ///
+  /// In en, this message translates to:
+  /// **'Member permissions updated.'**
+  String get toast_member_permissions_updated;
+
+  /// Error toast when failing to update member permissions
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update member permissions. Please try again.'**
+  String get toast_member_permissions_error;
+
+  /// Success toast when member list is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Member list updated.'**
+  String get toast_member_list_updated;
+
+  /// Error toast when failing to update member list
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update member list. Please try again.'**
+  String get toast_member_list_error;
+
+  /// Success toast when banned users list is updated
+  ///
+  /// In en, this message translates to:
+  /// **'Banned users updated.'**
+  String get toast_banned_users_updated;
+
+  /// Error toast when failing to update banned users
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update banned users. Please try again.'**
+  String get toast_banned_users_error;
+
+  /// Success toast when multiple members are added
+  ///
+  /// In en, this message translates to:
+  /// **'Members added'**
+  String get toast_members_added;
+
+  /// Success toast when a single member is added
+  ///
+  /// In en, this message translates to:
+  /// **'Member added.'**
+  String get toast_member_added;
+
+  /// Error toast when failing to add multiple members
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add members. Please try again.'**
+  String get toast_members_add_error;
+
+  /// Error toast when failing to add a single member
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add member. Please try again.'**
+  String get toast_member_add_error;
+
+  /// Success toast when a member is removed
+  ///
+  /// In en, this message translates to:
+  /// **'Member removed.'**
+  String get toast_member_removed;
+
+  /// Error toast when failing to remove a member
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove member. Please try again.'**
+  String get toast_member_remove_error;
+
+  /// Success toast when a member is promoted to moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Member promoted.'**
+  String get toast_member_promoted;
+
+  /// Error toast when failing to promote a member
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to promote member. Please try again.'**
+  String get toast_member_promote_error;
+
+  /// Success toast when a moderator is demoted
+  ///
+  /// In en, this message translates to:
+  /// **'Member demoted.'**
+  String get toast_member_demoted;
+
+  /// Error toast when failing to demote a member
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to demote member. Please try again.'**
+  String get toast_member_demote_error;
+
+  /// Success toast when a user is banned
+  ///
+  /// In en, this message translates to:
+  /// **'User banned.'**
+  String get toast_user_banned;
+
+  /// Error toast when failing to ban a user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to ban user. Please try again.'**
+  String get toast_user_ban_error;
+
+  /// Success toast when a user is reported
+  ///
+  /// In en, this message translates to:
+  /// **'User reported.'**
+  String get toast_user_reported;
+
+  /// Success toast when a user report is removed
+  ///
+  /// In en, this message translates to:
+  /// **'User unreported.'**
+  String get toast_user_unreported;
+
+  /// Error toast when failing to report or unreport a user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to report/unreport user. Please try again.'**
+  String get toast_user_report_error;
+
+  /// Success toast when a user is muted
+  ///
+  /// In en, this message translates to:
+  /// **'User muted.'**
+  String get toast_user_muted;
+
+  /// Error toast when failing to mute a user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to mute user. Please try again.'**
+  String get toast_user_mute_error;
+
+  /// Success toast when a user is unmuted
+  ///
+  /// In en, this message translates to:
+  /// **'User unmuted.'**
+  String get toast_user_unmuted;
+
+  /// Error toast when failing to unmute a user
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unmute user. Please try again.'**
+  String get toast_user_unmute_error;
 }
 
 class _AppLocalizationsDelegate

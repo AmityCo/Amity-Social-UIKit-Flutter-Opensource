@@ -11,6 +11,7 @@ import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
 import 'package:flutter/material.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:equatable/equatable.dart';
@@ -53,7 +54,7 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
                 title: Text(
-                  'Banned users',
+                  context.l10n.settings_banned_users,
                   style: AmityTextStyle.titleBold(theme.baseColor),
                 ),
                 leading: IconButton(
@@ -74,7 +75,7 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
                   AmityTopSearchBarComponent(
                     pageId: pageId,
                     textcontroller: textController,
-                    hintText: 'Search',
+                    hintText: context.l10n.general_search_hint,
                     onTextChanged: (value) {
                       _debouncer.run(() {
                         context
@@ -102,13 +103,13 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
     if (state.isLoading && state.bannedUsers.isEmpty) {
       return userSkeletonList(theme, configProvider, itemCount: 10);
     } else if (!state.isLoading && state.bannedUsers.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(context);
     } else {
       return _buildBannedUsersListView(context, state);
     }
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -123,7 +124,7 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
           ),
           const SizedBox(height: 8),
           Text(
-            'Nothing here to see yet',
+            context.l10n.banned_users_empty_state,
             style: AmityTextStyle.titleBold(theme.baseColorShade3),
             textAlign: TextAlign.center,
           ),
@@ -204,14 +205,17 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
 
     ConfirmationV4Dialog().show(
       context: context,
-      title: 'Confirm unban',
-      detailText:
-          "Are you sure you want to unban this user? They will be able to rejoin the group again.",
-      leftButtonText: 'Cancel',
+      title: context.l10n.user_unban_confirm_title,
+      detailText: context.l10n.user_unban_confirm_description,
+      leftButtonText: context.l10n.general_cancel,
       leftButtonColor: theme.primaryColor,
-      rightButtonText: 'Unban',
+      rightButtonText: context.l10n.user_unban_button,
       onConfirm: () {
-        cubit.unbanUser(user.userId!);
+        cubit.unbanUser(
+          user.userId!,
+          successMessage: context.l10n.toast_user_unbanned,
+          errorMessage: context.l10n.toast_user_unban_error,
+        );
       },
     );
 

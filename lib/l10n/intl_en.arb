@@ -517,6 +517,42 @@
   "@message_placeholder": {
     "description": "Placeholder for message input"
   },
+  "message_deleted": "This message was deleted",
+  "@message_deleted": {
+    "description": "Text shown for deleted messages"
+  },
+  "message_failed_to_send": "Failed to send message.",
+  "@message_failed_to_send": {
+    "description": "Error message when message fails to send"
+  },
+  "message_reply_you_to_yourself": "You replied to yourself",
+  "@message_reply_you_to_yourself": {
+    "description": "Reply text when user replies to their own message"
+  },
+  "message_reply_to_you": "Replied to you",
+  "@message_reply_to_you": {
+    "description": "Reply text when someone replies to your message"
+  },
+  "message_reply_you": "You replied",
+  "@message_reply_you": {
+    "description": "Reply text when you reply to someone else"
+  },
+  "message_reply_to_themself": "Replied to themself",
+  "@message_reply_to_themself": {
+    "description": "Reply text when someone replies to their own message"
+  },
+  "message_reply_you_to_deleted": "You replied to deleted message",
+  "@message_reply_you_to_deleted": {
+    "description": "Reply text when you replied to a now-deleted message"
+  },
+  "message_reply_to_deleted": "Replied to deleted message",
+  "@message_reply_to_deleted": {
+    "description": "Reply text when someone replied to a deleted message"
+  },
+  "message_unknown_user": "Unknown",
+  "@message_unknown_user": {
+    "description": "Fallback text for unknown user display name"
+  },
   
   "settings_title": "Settings",
   "@settings_title": {
@@ -1600,6 +1636,98 @@
   "@chat_no_message_yet": {
     "description": "Preview text when there are no messages in the chat"
   },
+  "general_search_hint": "Search",
+  "@general_search_hint": {
+    "description": "Hint text for search input fields"
+  },
+  "chat_archived_empty_title": "No archived chats",
+  "@chat_archived_empty_title": {
+    "description": "Empty state title for archived chats list"
+  },
+  "chat_archived_title": "Archived chats",
+  "@chat_archived_title": {
+    "description": "Title for archived chats page"
+  },
+  "toast_chat_archived": "Chat archived.",
+  "@toast_chat_archived": {
+    "description": "Toast message when chat is archived successfully"
+  },
+  "toast_chat_unarchived": "Chat unarchived.",
+  "@toast_chat_unarchived": {
+    "description": "Toast message when chat is unarchived successfully"
+  },
+  "toast_chat_archive_error": "Failed to archive chat. Please try again",
+  "@toast_chat_archive_error": {
+    "description": "Toast message when chat archive fails"
+  },
+  "toast_chat_unarchive_error": "Failed to unarchive chat. Please try again",
+  "@toast_chat_unarchive_error": {
+    "description": "Toast message when chat unarchive fails"
+  },
+  "chat_archive_limit_title": "Too many chats archived",
+  "@chat_archive_limit_title": {
+    "description": "Dialog title when archive limit is reached"
+  },
+  "chat_archive_limit_message": "You can archive a maximum of 100 chat lists.",
+  "@chat_archive_limit_message": {
+    "description": "Dialog message when archive limit is reached"
+  },
+  "chat_empty_title": "No conversation yet",
+  "@chat_empty_title": {
+    "description": "Empty state title for chat list"
+  },
+  "chat_empty_description": "Let's create chat to get started.",
+  "@chat_empty_description": {
+    "description": "Empty state description for chat list"
+  },
+  "chat_create_new": "Create new chat",
+  "@chat_create_new": {
+    "description": "Button text to create a new chat"
+  },
+  "chat_group_profile_title": "Group profile",
+  "@chat_group_profile_title": {
+    "description": "Title for group profile page"
+  },
+  "chat_group_profile_error": "Error loading profile",
+  "@chat_group_profile_error": {
+    "description": "Error message when group profile fails to load"
+  },
+  "chat_group_name_hint": "Enter group name",
+  "@chat_group_name_hint": {
+    "description": "Hint text for group name input field"
+  },
+  "chat_group_name_placeholder": "Name your group",
+  "@chat_group_name_placeholder": {
+    "description": "Placeholder text for group name input"
+  },
+  "chat_member_permissions_title": "Member permissions",
+  "@chat_member_permissions_title": {
+    "description": "Title for member permissions page"
+  },
+  "chat_member_label": "Member",
+  "@chat_member_label": {
+    "description": "Label for member section"
+  },
+  "chat_select_member_error": "Please select at least one user",
+  "@chat_select_member_error": {
+    "description": "Error message when no user is selected"
+  },
+  "message_report_details_hint": "Share more details about this issue",
+  "@message_report_details_hint": {
+    "description": "Hint text for message report details input"
+  },
+  "chat_search_tab_chats": "Chats",
+  "@chat_search_tab_chats": {
+    "description": "Tab title for chats in search page"
+  },
+  "chat_search_tab_messages": "Messages",
+  "@chat_search_tab_messages": {
+    "description": "Tab title for messages in search page"
+  },
+  "search_minimum_chars": "Start your search by typing\nat least 3 letters",
+  "@search_minimum_chars": {
+    "description": "Hint text shown when search query is too short"
+  },
   "permission_camera_title": "Allow access to your camera",
   "@permission_camera_title": {
     "description": "Title for camera permission dialog"
@@ -1619,5 +1747,429 @@
   "permission_open_settings": "Open settings",
   "@permission_open_settings": {
     "description": "Button text to open app settings"
+  },
+  "general_copy": "Copy",
+  "@general_copy": {
+    "description": "Label for copy action in menus"
+  },
+  "message_report": "Report",
+  "@message_report": {
+    "description": "Label for report message button"
+  },
+  "message_unreport": "Unreport",
+  "@message_unreport": {
+    "description": "Label for unreport message button"
+  },
+  "toast_message_copied": "Copied.",
+  "@toast_message_copied": {
+    "description": "Toast message when message text is copied"
+  },
+  "toast_message_reported": "Message reported.",
+  "@toast_message_reported": {
+    "description": "Toast message when message is successfully reported"
+  },
+  "toast_message_unreported": "Message unreported.",
+  "@toast_message_unreported": {
+    "description": "Toast message when message is successfully unreported"
+  },
+  "toast_message_report_error": "Failed to report message. Please try again.",
+  "@toast_message_report_error": {
+    "description": "Toast message when reporting message fails"
+  },
+  "toast_message_unreport_error": "Failed to unreport message. Please try again.",
+  "@toast_message_unreport_error": {
+    "description": "Toast message when unreporting message fails"
+  },
+  "toast_message_delete_error": "Failed to delete message.",
+  "@toast_message_delete_error": {
+    "description": "Toast message when deleting message fails"
+  },
+  "toast_permission_denied": "Permission denied.",
+  "@toast_permission_denied": {
+    "description": "Toast message when permission is denied"
+  },
+  "toast_photo_saved": "Saved photo.",
+  "@toast_photo_saved": {
+    "description": "Toast message when photo is successfully saved"
+  },
+  "toast_photo_save_error": "Failed to save image.",
+  "@toast_photo_save_error": {
+    "description": "Toast message when saving image fails"
+  },
+  "toast_video_saved": "Saved video.",
+  "@toast_video_saved": {
+    "description": "Toast message when video is successfully saved"
+  },
+  "toast_video_save_error": "Failed to save video.",
+  "@toast_video_save_error": {
+    "description": "Toast message when saving video fails"
+  },
+  "message_delete_title": "Delete this message?",
+  "@message_delete_title": {
+    "description": "Title for delete message confirmation dialog"
+  },
+  "message_delete_description": "This message will also be removed from your friend's devices.",
+  "@message_delete_description": {
+    "description": "Description for delete message confirmation dialog"
+  },
+  "chat_create_success": "Group chat created.",
+  "@chat_create_success": {
+    "description": "Toast message when group chat is created successfully"
+  },
+  "chat_create_error": "Failed to create group",
+  "@chat_create_error": {
+    "description": "Error message when group creation fails"
+  },
+  "chat_create_error_retry": "Failed to create group chat. Please try again.",
+  "@chat_create_error_retry": {
+    "description": "Toast error message prompting user to retry group creation"
+  },
+  "chat_create_title": "New Group",
+  "@chat_create_title": {
+    "description": "AppBar title for create group page"
+  },
+  "chat_create_button": "Create",
+  "@chat_create_button": {
+    "description": "Button text to create a new group"
+  },
+  "chat_group_name_label": "Group name",
+  "@chat_group_name_label": {
+    "description": "Label for group name input field"
+  },
+  "chat_group_name_optional": "(Optional)",
+  "@chat_group_name_optional": {
+    "description": "Text indicating group name is optional"
+  },
+  "chat_group_name_required": "(Required)",
+  "@chat_group_name_required": {
+    "description": "Text indicating group name is required"
+  },
+  "chat_privacy_public": "Public",
+  "@chat_privacy_public": {
+    "description": "Label for public privacy option"
+  },
+  "chat_privacy_public_desc": "Anyone can find the group through search and join the conversation.",
+  "@chat_privacy_public_desc": {
+    "description": "Description for public group privacy setting"
+  },
+  "chat_privacy_private": "Private",
+  "@chat_privacy_private": {
+    "description": "Label for private privacy option"
+  },
+  "chat_privacy_private_desc": "Group is hidden from search and only accessible by invitation from moderators.",
+  "@chat_privacy_private_desc": {
+    "description": "Description for private group privacy setting"
+  },
+  "chat_privacy_warning": "Ensure the correct privacy setting is chosen for your group, as it can't be changed later.",
+  "@chat_privacy_warning": {
+    "description": "Warning message about privacy setting being permanent"
+  },
+  "general_camera": "Camera",
+  "@general_camera": {
+    "description": "Label for camera option in media picker"
+  },
+  "general_photo": "Photo",
+  "@general_photo": {
+    "description": "Label for photo/gallery option in media picker"
+  },
+  "chat_select_member_title": "New group",
+  "@chat_select_member_title": {
+    "description": "AppBar title for select member page when creating group"
+  },
+  "general_next": "Next",
+  "@general_next": {
+    "description": "Button text to proceed to next step"
+  },
+  "settings_group_settings": "Group Settings",
+  "@settings_group_settings": {
+    "description": "AppBar title fallback for group settings page"
+  },
+  "settings_group_settings_section": "Group settings",
+  "@settings_group_settings_section": {
+    "description": "Section title for group settings"
+  },
+  "settings_group_profile": "Group profile",
+  "@settings_group_profile": {
+    "description": "Menu item for group profile settings"
+  },
+  "settings_group_notifications": "Group notifications",
+  "@settings_group_notifications": {
+    "description": "Menu item for group notification settings"
+  },
+  "settings_member_permissions": "Member permissions",
+  "@settings_member_permissions": {
+    "description": "Menu item for member permission settings"
+  },
+  "settings_all_members": "All members",
+  "@settings_all_members": {
+    "description": "Menu item for viewing all members"
+  },
+  "settings_banned_users": "Banned users",
+  "@settings_banned_users": {
+    "description": "Menu item for viewing banned users"
+  },
+  "banned_users_empty_state": "Nothing here to see yet",
+  "@banned_users_empty_state": {
+    "description": "Empty state message when no users are banned"
+  },
+  "user_unban_confirm_title": "Confirm unban",
+  "@user_unban_confirm_title": {
+    "description": "Title for unban user confirmation dialog"
+  },
+  "user_unban_confirm_description": "Are you sure you want to unban this user? They will be able to rejoin the group again.",
+  "@user_unban_confirm_description": {
+    "description": "Description for unban user confirmation dialog"
+  },
+  "user_unban_button": "Unban",
+  "@user_unban_button": {
+    "description": "Button text for unban action"
+  },
+  "toast_user_unbanned": "User unbanned.",
+  "@toast_user_unbanned": {
+    "description": "Toast message shown when a user is successfully unbanned"
+  },
+  "toast_user_unban_error": "Failed to unban user. Please try again.",
+  "@toast_user_unban_error": {
+    "description": "Toast message shown when unbanning a user fails"
+  },
+  "settings_your_preferences": "Your preferences",
+  "@settings_your_preferences": {
+    "description": "Section title for user's personal preferences"
+  },
+  "general_notifications_lowercase": "notifications",
+  "@general_notifications_lowercase": {
+    "description": "Lowercase notifications label"
+  },
+  "general_on": "On",
+  "@general_on": {
+    "description": "Label indicating a setting is enabled"
+  },
+  "general_off": "Off",
+  "@general_off": {
+    "description": "Label indicating a setting is disabled"
+  },
+  "general_save": "Save",
+  "@general_save": {
+    "description": "Button text to save changes"
+  },
+  "chat_leave_group": "Leave group",
+  "@chat_leave_group": {
+    "description": "Button text to leave a group"
+  },
+  "chat_leave_group_title": "Leave Group",
+  "@chat_leave_group_title": {
+    "description": "Dialog title for leaving a group"
+  },
+  "chat_leave_group_confirm": "If you leave this group, you will no longer see new activities or participate in this group.",
+  "@chat_leave_group_confirm": {
+    "description": "Confirmation message for leaving a group"
+  },
+  "chat_leave_group_last_mod_title": "You're the last moderator",
+  "@chat_leave_group_last_mod_title": {
+    "description": "Dialog title when user is the last moderator"
+  },
+  "chat_leave_group_last_mod_message": "You must promote another member to moderator before leaving.",
+  "@chat_leave_group_last_mod_message": {
+    "description": "Message explaining moderator promotion requirement"
+  },
+  "chat_promote_member": "Promote member",
+  "@chat_promote_member": {
+    "description": "Button text to promote a member to moderator"
+  },
+  "notification_default_mode": "Default mode",
+  "@notification_default_mode": {
+    "description": "Label for default notification mode"
+  },
+  "notification_default_mode_desc": "By default, members in this community will receive notifications, but they can choose to turn them off.",
+  "@notification_default_mode_desc": {
+    "description": "Description for default notification mode"
+  },
+  "notification_silent_mode": "Silent mode",
+  "@notification_silent_mode": {
+    "description": "Label for silent notification mode"
+  },
+  "notification_silent_mode_desc": "No notifications for everyone in this channel. Members can't turn on notifications in the channel.",
+  "@notification_silent_mode_desc": {
+    "description": "Description for silent notification mode"
+  },
+  "notification_subscribe_mode": "Subscribe mode",
+  "@notification_subscribe_mode": {
+    "description": "Label for subscribe notification mode"
+  },
+  "notification_subscribe_mode_desc": "All members have the option to receive notifications, but they need to enable them. By default, notifications are turned off for each member.",
+  "@notification_subscribe_mode_desc": {
+    "description": "Description for subscribe notification mode"
+  },
+  "notification_preference_title": "Notification Preference",
+  "@notification_preference_title": {
+    "description": "Title for notification preference page"
+  },
+  "notification_allow_notifications": "Allow notifications",
+  "@notification_allow_notifications": {
+    "description": "Label for allow notifications toggle"
+  },
+  "notification_allow_notifications_desc": "Turn on to receive push notifications from this group.",
+  "@notification_allow_notifications_desc": {
+    "description": "Description for allow notifications toggle"
+  },
+  "notification_disabled_by_moderator": "Group notifications have been disabled by moderator.",
+  "@notification_disabled_by_moderator": {
+    "description": "Message shown when notifications are disabled by moderator"
+  },
+  "notification_enabled_toast": "Notifications enabled",
+  "@notification_enabled_toast": {
+    "description": "Toast message when notifications are enabled"
+  },
+  "notification_disabled_toast": "Notifications disabled",
+  "@notification_disabled_toast": {
+    "description": "Toast message when notifications are disabled"
+  },
+  "settings_messaging": "Messaging",
+  "@settings_messaging": {
+    "description": "Section title for messaging permissions"
+  },
+  "settings_everyone": "Everyone",
+  "@settings_everyone": {
+    "description": "Label for everyone permission option"
+  },
+  "settings_everyone_desc": "Everyone can send a message in the group.",
+  "@settings_everyone_desc": {
+    "description": "Description for everyone messaging permission"
+  },
+  "settings_only_moderators": "Only moderators",
+  "@settings_only_moderators": {
+    "description": "Label for moderators-only permission option"
+  },
+  "settings_only_moderators_desc": "Members who are not moderators can read messages but cannot send any messages.",
+  "@settings_only_moderators_desc": {
+    "description": "Description for moderators-only messaging permission"
+  },
+  "toast_group_chat_left": "Group chat left.",
+  "@toast_group_chat_left": {
+    "description": "Success toast when leaving a group"
+  },
+  "toast_group_chat_left_error": "Failed to leave group chat. Please try again.",
+  "@toast_group_chat_left_error": {
+    "description": "Error toast when failing to leave a group"
+  },
+  "toast_group_profile_updated": "Group profile updated.",
+  "@toast_group_profile_updated": {
+    "description": "Success toast when group profile is updated"
+  },
+  "toast_group_profile_error": "Failed to update group profile. Please try again.",
+  "@toast_group_profile_error": {
+    "description": "Error toast when failing to update group profile"
+  },
+  "toast_group_notification_updated": "Group notification updated.",
+  "@toast_group_notification_updated": {
+    "description": "Success toast when group notifications are updated"
+  },
+  "toast_group_notification_error": "Failed to update group notification. Please try again.",
+  "@toast_group_notification_error": {
+    "description": "Error toast when failing to update group notifications"
+  },
+  "toast_member_permissions_updated": "Member permissions updated.",
+  "@toast_member_permissions_updated": {
+    "description": "Success toast when member permissions are updated"
+  },
+  "toast_member_permissions_error": "Failed to update member permissions. Please try again.",
+  "@toast_member_permissions_error": {
+    "description": "Error toast when failing to update member permissions"
+  },
+  "toast_member_list_updated": "Member list updated.",
+  "@toast_member_list_updated": {
+    "description": "Success toast when member list is updated"
+  },
+  "toast_member_list_error": "Failed to update member list. Please try again.",
+  "@toast_member_list_error": {
+    "description": "Error toast when failing to update member list"
+  },
+  "toast_banned_users_updated": "Banned users updated.",
+  "@toast_banned_users_updated": {
+    "description": "Success toast when banned users list is updated"
+  },
+  "toast_banned_users_error": "Failed to update banned users. Please try again.",
+  "@toast_banned_users_error": {
+    "description": "Error toast when failing to update banned users"
+  },
+  "toast_members_added": "Members added",
+  "@toast_members_added": {
+    "description": "Success toast when multiple members are added"
+  },
+  "toast_member_added": "Member added.",
+  "@toast_member_added": {
+    "description": "Success toast when a single member is added"
+  },
+  "toast_members_add_error": "Failed to add members. Please try again.",
+  "@toast_members_add_error": {
+    "description": "Error toast when failing to add multiple members"
+  },
+  "toast_member_add_error": "Failed to add member. Please try again.",
+  "@toast_member_add_error": {
+    "description": "Error toast when failing to add a single member"
+  },
+  "toast_member_removed": "Member removed.",
+  "@toast_member_removed": {
+    "description": "Success toast when a member is removed"
+  },
+  "toast_member_remove_error": "Failed to remove member. Please try again.",
+  "@toast_member_remove_error": {
+    "description": "Error toast when failing to remove a member"
+  },
+  "toast_member_promoted": "Member promoted.",
+  "@toast_member_promoted": {
+    "description": "Success toast when a member is promoted to moderator"
+  },
+  "toast_member_promote_error": "Failed to promote member. Please try again.",
+  "@toast_member_promote_error": {
+    "description": "Error toast when failing to promote a member"
+  },
+  "toast_member_demoted": "Member demoted.",
+  "@toast_member_demoted": {
+    "description": "Success toast when a moderator is demoted"
+  },
+  "toast_member_demote_error": "Failed to demote member. Please try again.",
+  "@toast_member_demote_error": {
+    "description": "Error toast when failing to demote a member"
+  },
+  "toast_user_banned": "User banned.",
+  "@toast_user_banned": {
+    "description": "Success toast when a user is banned"
+  },
+  "toast_user_ban_error": "Failed to ban user. Please try again.",
+  "@toast_user_ban_error": {
+    "description": "Error toast when failing to ban a user"
+  },
+  "toast_user_reported": "User reported.",
+  "@toast_user_reported": {
+    "description": "Success toast when a user is reported"
+  },
+  "toast_user_unreported": "User unreported.",
+  "@toast_user_unreported": {
+    "description": "Success toast when a user report is removed"
+  },
+  "toast_user_report_error": "Failed to report/unreport user. Please try again.",
+  "@toast_user_report_error": {
+    "description": "Error toast when failing to report or unreport a user"
+  },
+  "toast_user_muted": "User muted.",
+  "@toast_user_muted": {
+    "description": "Success toast when a user is muted"
+  },
+  "toast_user_mute_error": "Failed to mute user. Please try again.",
+  "@toast_user_mute_error": {
+    "description": "Error toast when failing to mute a user"
+  },
+  "toast_user_unmuted": "User unmuted.",
+  "@toast_user_unmuted": {
+    "description": "Success toast when a user is unmuted"
+  },
+  "toast_user_unmute_error": "Failed to unmute user. Please try again.",
+  "@toast_user_unmute_error": {
+    "description": "Error toast when failing to unmute a user"
+  },
+  "chat_loading": "Loading chat...",
+  "@chat_loading": {
+    "description": "Loading message shown when chat is being initialized"
   }
 }

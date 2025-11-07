@@ -47,20 +47,36 @@ class ChatListPushNotificationEvent extends ChatListEvent {
 
 class ChatListEventChannelArchive extends ChatListEvent {
   final String channelId;
+  final String successMessage;
+  final String errorMessage;
+  final String limitErrorTitle;
+  final String limitErrorMessage;
   
-  const ChatListEventChannelArchive({required this.channelId});
+  const ChatListEventChannelArchive({
+    required this.channelId,
+    required this.successMessage,
+    required this.errorMessage,
+    required this.limitErrorTitle,
+    required this.limitErrorMessage,
+  });
   
   @override
-  List<Object> get props => [channelId];
+  List<Object> get props => [channelId, successMessage, errorMessage, limitErrorTitle, limitErrorMessage];
 }
 
 class ChatListEventChannelUnarchive extends ChatListEvent {
   final String channelId;
+  final String successMessage;
+  final String errorMessage;
   
-  const ChatListEventChannelUnarchive({required this.channelId});
+  const ChatListEventChannelUnarchive({
+    required this.channelId,
+    required this.successMessage,
+    required this.errorMessage,
+  });
   
   @override
-  List<Object> get props => [channelId];
+  List<Object> get props => [channelId, successMessage, errorMessage];
 }
 
 class ChatListEventResetDialogState extends ChatListEvent {}

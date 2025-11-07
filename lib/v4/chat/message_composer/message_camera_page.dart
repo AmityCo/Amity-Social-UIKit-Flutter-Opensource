@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -262,8 +263,8 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text(
-                  'Cancel',
+                child: Text(
+                  context.l10n.general_cancel,
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -371,7 +372,7 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen> {
                 });
               },
               child: Text(
-                'VIDEO',
+                context.l10n.general_video.toUpperCase(),
                 style: TextStyle(
                   color: isVideoMode ? Colors.yellow : Colors.white,
                   fontSize: 15,
@@ -388,7 +389,7 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen> {
               });
             },
             child: Text(
-              'PHOTO',
+              context.l10n.general_photo.toUpperCase(),
               style: TextStyle(
                 color: !isVideoMode ? Colors.yellow : Colors.white,
                 fontSize: 15,
@@ -500,7 +501,7 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Send',
+                                context.l10n.message_send,
                                 style: TextStyle(
                                   color: Color(0xFF292B32),
                                   fontSize: 15,

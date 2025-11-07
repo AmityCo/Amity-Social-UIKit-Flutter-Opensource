@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_camera_screen.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,8 +63,8 @@ class AmityCreateGroupChatPage extends NewBasePage {
           if (state.status == CreateGroupStatus.success) {
             // Navigate to the group chat page with the created channel
             if (state.createdChannel?.channelId != null) {
-              context.read<AmityToastBloc>().add(const AmityToastShort(
-                  message: "Group chat created.",
+              context.read<AmityToastBloc>().add(AmityToastShort(
+                  message: context.l10n.chat_create_success,
                   icon: AmityToastIcon.success));
               Navigator.pushReplacement(
                 context,
@@ -80,12 +81,12 @@ class AmityCreateGroupChatPage extends NewBasePage {
           } else if (state.status == CreateGroupStatus.uploadImageFailed) {
             AmityV4Dialog().showAlertErrorDialog(
               title: state.errorTitle ?? "Error",
-              message: state.error ?? 'Failed to create group',
+              message: state.error ?? context.l10n.chat_create_error,
               closeText: 'OK',
             );
           } else if (state.status == CreateGroupStatus.failure) {
-            context.read<AmityToastBloc>().add(const AmityToastShort(
-                message: "Failed to create group chat. Please try again.",
+            context.read<AmityToastBloc>().add(AmityToastShort(
+                message: context.l10n.chat_create_error_retry,
                 icon: AmityToastIcon.warning));
           }
         },
@@ -94,7 +95,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
             appBar: AppBar(
               backgroundColor: theme.backgroundColor,
               title: Text(
-                'New Group',
+                context.l10n.chat_create_title,
                 style: AmityTextStyle.titleBold(theme.baseColor),
               ),
               automaticallyImplyLeading: false, // Remove default back button
@@ -115,7 +116,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                   onPressed: () async {
                     // Call create group function
                     final cubit = context.read<AmityCreateGroupCubit>();
-                    final isPublic = _selectedNotifier.value == 'Public';
+                    final isPublic = _selectedNotifier.value == context.l10n.chat_privacy_public;
 
                     // Get the image path from the notifier
                     final imagePath = _selectedImagePath.value;
@@ -144,7 +145,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                     );
                   },
                   child: Text(
-                    'Create',
+                    context.l10n.chat_create_button,
                     style: AmityTextStyle.body(theme.primaryColor),
                   ),
                 ),
@@ -246,12 +247,12 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'Group name ',
+                                          text: context.l10n.chat_group_name_label,
                                           style: AmityTextStyle.titleBold(
                                               theme.baseColor),
                                         ),
                                         TextSpan(
-                                          text: '(Optional)',
+                                          text: ' ${context.l10n.chat_group_name_optional}',
                                           style: AmityTextStyle.caption(
                                               theme.baseColorShade3),
                                         ),
@@ -277,7 +278,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                               TextField(
                                 controller: _groupNameController,
                                 decoration: InputDecoration(
-                                  hintText: 'Name your group',
+                                  hintText: context.l10n.chat_group_name_placeholder,
                                   hintStyle: AmityTextStyle.body(
                                       theme.baseColorShade3),
                                   contentPadding: EdgeInsets.only(bottom: 8),
@@ -311,7 +312,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                           ),
                           const SizedBox(height: 24),
 
-                          Text('Privacy',
+                          Text(context.l10n.settings_privacy,
                               style: AmityTextStyle.titleBold(theme.baseColor)),
                           const SizedBox(height: 4),
                           ValueListenableBuilder<String>(
@@ -320,17 +321,15 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                 return Column(
                                   children: [
                                     _buildOption(
-                                      title: 'Public',
-                                      description:
-                                          'Anyone can find the group through search and join the conversation.',
+                                      title: context.l10n.chat_privacy_public,
+                                      description: context.l10n.chat_privacy_public_desc,
                                       iconPath:
                                           'assets/Icons/amity_ic_create_group_public_button.svg',
                                       selected: selected,
                                     ),
                                     _buildOption(
-                                      title: 'Private',
-                                      description:
-                                          'Group is hidden from search and only accessible by invitation from moderators.',
+                                      title: context.l10n.chat_privacy_private,
+                                      description: context.l10n.chat_privacy_private_desc,
                                       iconPath:
                                           'assets/Icons/amity_ic_create_group_private_button.svg',
                                       selected: selected,
@@ -347,7 +346,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                         color: theme.backgroundShade1Color,
                       ),
                       child: Text(
-                          'Ensure the correct privacy setting is chosen for your group, as it can\'t be changed later.',
+                          context.l10n.chat_privacy_warning,
                           style: AmityTextStyle.caption(theme.baseColorShade1)),
                     ),
 
@@ -361,7 +360,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: 16.0, top: 8.0, bottom: 4.0),
-                              child: Text('Member',
+                              child: Text(context.l10n.chat_member_label,
                                   style: AmityTextStyle.titleBold(
                                       theme.baseColor)),
                             ),
@@ -542,7 +541,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                 ),
                 _buildListTile(
                   assetPath: 'assets/Icons/amity_ic_camera_button.svg',
-                  title: 'Camera',
+                  title: context.l10n.general_camera,
                   onTap: () {
                     Navigator.pop(context);
                     _goToCameraPage(context);
@@ -550,7 +549,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                 ),
                 _buildListTile(
                     assetPath: 'assets/Icons/amity_ic_image_button.svg',
-                    title: 'Photo',
+                    title: context.l10n.general_photo,
                     onTap: () {
                       Navigator.pop(context);
                       _pickImage(context);

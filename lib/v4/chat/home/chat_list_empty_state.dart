@@ -1,12 +1,20 @@
 import 'package:amity_uikit_beta_service/v4/chat/create/channel_create_conversation_page.dart';
+import 'package:amity_uikit_beta_service/v4/chat/createGroup/ui/amity_select_group_member_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ChatListEmptyState extends StatelessWidget {
   final AmityThemeColor theme;
+  final bool isGroupChatList;
 
-  const ChatListEmptyState({super.key, required this.theme});
+  const ChatListEmptyState({
+    super.key,
+    required this.theme,
+    this.isGroupChatList = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +31,12 @@ class ChatListEmptyState extends StatelessWidget {
             height: 140,
           ),
           const SizedBox(height: 16),
-          Text("No conversation yet",
-              style: TextStyle(
-                  color: theme.baseColorShade3,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600)),
-          Text("Let's create chat to get started.",
-              style: TextStyle(
-                  color: theme.baseColorShade3,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400)),
+          Text(context.l10n.chat_empty_title,
+            style: AmityTextStyle.titleBold(theme.baseColorShade3),
+          ),
+          Text(context.l10n.chat_empty_description,
+            style: AmityTextStyle.caption(theme.baseColorShade3),
+          ),
           const SizedBox(height: 16),
           newChatButton(context)
         ],
@@ -43,15 +47,19 @@ class ChatListEmptyState extends StatelessWidget {
   Widget newChatButton(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => AmityChannelCreateConversationPage()),
-        );
+        if (isGroupChatList) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => AmitySelectGroupMemberPage()),
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => AmityChannelCreateConversationPage()),
+          );
+        }
       },
       icon: const Icon(Icons.add, color: Colors.white),
-      label: const Text(
-        "Create new chat",
-        style: TextStyle(
-            color: Colors.white, fontSize: 17, fontWeight: FontWeight.w600),
+      label: Text(context.l10n.chat_create_new,
+        style: AmityTextStyle.bodyBold(Colors.white),
       ),
       style: ElevatedButton.styleFrom(
         elevation: 0,

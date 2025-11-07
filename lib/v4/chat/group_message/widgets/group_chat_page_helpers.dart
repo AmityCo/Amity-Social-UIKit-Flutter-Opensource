@@ -81,8 +81,8 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                                       )
                                     : Text(
                                         message.data is MessageImageData
-                                            ? "Send a photo"
-                                            : "Send a video",
+                                            ? context.l10n.chat_message_photo
+                                            : context.l10n.chat_message_video,
                                         style: AmityTextStyle.body(theme
                                             .secondaryColor
                                             .blend(ColorBlendingOption.shade2)),

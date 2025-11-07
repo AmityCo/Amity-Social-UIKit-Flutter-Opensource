@@ -383,11 +383,11 @@ extension MessagePopup on MessageBubbleView {
                 PopupMenuItem(
                   value: 'copy',
                   child: Container(
-                    width: 100,
                     height: 44,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_message_copy.svg',
@@ -398,7 +398,7 @@ extension MessagePopup on MessageBubbleView {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          "Copy",
+                          context.l10n.general_copy,
                           style: TextStyle(
                               color: theme.baseColor,
                               fontSize: 15,
@@ -412,11 +412,11 @@ extension MessagePopup on MessageBubbleView {
                 PopupMenuItem(
                   value: 'delete',
                   child: Container(
-                    width: 100,
                     height: 44,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_deleted_message.svg',
@@ -427,7 +427,7 @@ extension MessagePopup on MessageBubbleView {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          "Delete",
+                          context.l10n.general_delete,
                           style: TextStyle(
                             color: theme.alertColor,
                             fontSize: 15,
@@ -446,11 +446,11 @@ extension MessagePopup on MessageBubbleView {
                   PopupMenuItem(
                     value: 'edit',
                     child: Container(
-                      width: 100,
                       height: 44,
                       padding:
                           const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset(
                             'assets/Icons/amity_ic_edit_button.svg',
@@ -461,7 +461,7 @@ extension MessagePopup on MessageBubbleView {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            "Edit",
+                            context.l10n.general_edit,
                             style: TextStyle(
                                 color: theme.baseColor,
                                 fontSize: 15,
@@ -474,11 +474,11 @@ extension MessagePopup on MessageBubbleView {
                 PopupMenuItem(
                   value: 'reply',
                   child: Container(
-                    width: 100,
                     height: 44,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_reply_button.svg',
@@ -489,7 +489,7 @@ extension MessagePopup on MessageBubbleView {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          "Reply",
+                          context.l10n.comment_reply,
                           style: TextStyle(
                               color: theme.baseColor,
                               fontSize: 15,
@@ -504,11 +504,11 @@ extension MessagePopup on MessageBubbleView {
                   PopupMenuItem(
                     value: 'save',
                     child: Container(
-                      width: 100,
                       height: 44,
                       padding:
                           const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset(
                             'assets/Icons/amity_ic_save_image.svg',
@@ -519,7 +519,7 @@ extension MessagePopup on MessageBubbleView {
                           ),
                           const SizedBox(width: 13),
                           Text(
-                            "Save",
+                            context.l10n.general_save,
                             style: TextStyle(
                                 color: theme.baseColor,
                                 fontSize: 15,
@@ -535,11 +535,11 @@ extension MessagePopup on MessageBubbleView {
                 PopupMenuItem(
                   value: 'copy',
                   child: Container(
-                    width: 100,
                     height: 44,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_message_copy.svg',
@@ -550,7 +550,7 @@ extension MessagePopup on MessageBubbleView {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          "Copy",
+                          context.l10n.general_copy,
                           style: TextStyle(
                               color: theme.baseColor,
                               fontSize: 15,
@@ -580,7 +580,9 @@ extension MessagePopup on MessageBubbleView {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          message.isFlaggedByMe == true ? "Unreport" : "Report",
+                          message.isFlaggedByMe == true 
+                              ? context.l10n.message_unreport
+                              : context.l10n.message_report,
                           style: TextStyle(
                             color: theme.baseColor,
                             fontSize: 15,
@@ -595,11 +597,11 @@ extension MessagePopup on MessageBubbleView {
                 PopupMenuItem(
                   value: 'delete',
                   child: Container(
-                    width: 100,
                     height: 44,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_deleted_message.svg',
@@ -610,7 +612,7 @@ extension MessagePopup on MessageBubbleView {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          "Delete",
+                          context.l10n.general_delete,
                           style: TextStyle(
                             color: theme.alertColor,
                             fontSize: 15,
@@ -629,14 +631,14 @@ extension MessagePopup on MessageBubbleView {
           if (message.data is MessageTextData) {
             final text = (message.data as MessageTextData).text ?? "";
             context.read<AmityToastBloc>().add(AmityToastShort(
-                message: "Copied.",
+                message: context.l10n.toast_message_copied,
                 icon: AmityToastIcon.success,
                 bottomPadding: AmityChatPage.toastBottomPadding));
             Clipboard.setData(ClipboardData(text: text));
           } else if (message.data is MessageCustomData) {
             final customData = (message.data as MessageCustomData).rawData;
             context.read<AmityToastBloc>().add(AmityToastShort(
-                message: "Copied.",
+                message: context.l10n.toast_message_copied,
                 icon: AmityToastIcon.success,
                 bottomPadding: AmityChatPage.toastBottomPadding));
             Clipboard.setData(ClipboardData(text: customData.toString()));
@@ -718,19 +720,18 @@ extension MessagePopup on MessageBubbleView {
         await AmityChatClient.newMessageRepository().unflag(messageId);
 
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Message unreported.",
+            message: context.l10n.toast_message_unreported,
             icon: AmityToastIcon.success,
             bottomPadding: AmityChatPage.toastBottomPadding));
       } else {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message:
-                "Unable to unreport message - user information not available.",
+            message: context.l10n.toast_message_unreport_error,
             icon: AmityToastIcon.warning,
             bottomPadding: AmityChatPage.toastBottomPadding));
       }
     } catch (e) {
       context.read<AmityToastBloc>().add(AmityToastShort(
-          message: "Failed to unreport message. Please try again.",
+          message: context.l10n.toast_message_unreport_error,
           icon: AmityToastIcon.warning,
           bottomPadding: AmityChatPage.toastBottomPadding));
     }
@@ -740,17 +741,16 @@ extension MessagePopup on MessageBubbleView {
     showPermissionDialog() async {
       ConfirmationV4Dialog().show(
         context: context,
-        title: 'Delete this message?',
-        detailText:
-            'This message will also be removed from your friend’s devices.',
-        leftButtonText: 'Cancel',
-        rightButtonText: 'Delete',
+        title: context.l10n.message_delete_title,
+        detailText: context.l10n.message_delete_description,
+        leftButtonText: context.l10n.general_cancel,
+        rightButtonText: context.l10n.general_delete,
         onConfirm: () async {
           try {
             await message.delete();
           } catch (e) {
             context.read<AmityToastBloc>().add(AmityToastShort(
-                message: "Failed to delete message.",
+                message: context.l10n.toast_message_delete_error,
                 icon: AmityToastIcon.warning,
                 bottomPadding: AmityChatPage.toastBottomPadding));
           }
@@ -772,7 +772,7 @@ Future saveImageMessage(BuildContext context, AmityMessage message) async {
         await permissionHandler.handleMediaPermissions();
     if (mediaPermissionGranted == false) {
       context.read<AmityToastBloc>().add(AmityToastShort(
-          message: "Permission denied.",
+          message: context.l10n.toast_permission_denied,
           icon: AmityToastIcon.warning,
           bottomPadding: AmityChatPage.toastBottomPadding));
       return;
@@ -783,12 +783,12 @@ Future saveImageMessage(BuildContext context, AmityMessage message) async {
     if (await MediaPermissionHandler()
         .downloadAndSaveImage("${fileUrl ?? filePath ?? ''}/?size=large")) {
       context.read<AmityToastBloc>().add(AmityToastShort(
-          message: "Saved photo.",
+          message: context.l10n.toast_photo_saved,
           icon: AmityToastIcon.success,
           bottomPadding: AmityChatPage.toastBottomPadding));
     } else {
       context.read<AmityToastBloc>().add(AmityToastShort(
-          message: "Failed to save image.",
+          message: context.l10n.toast_photo_save_error,
           icon: AmityToastIcon.warning,
           bottomPadding: AmityChatPage.toastBottomPadding));
     }
@@ -806,12 +806,12 @@ Future saveVideoMessage(BuildContext context, AmityMessage message) async {
           await MediaPermissionHandler().downloadAndSaveVideo(videoUrl);
       if (result) {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Saved video.",
+            message: context.l10n.toast_video_saved,
             icon: AmityToastIcon.success,
             bottomPadding: AmityChatPage.toastBottomPadding));
       } else {
         context.read<AmityToastBloc>().add(AmityToastShort(
-            message: "Failed to save video.",
+            message: context.l10n.toast_video_save_error,
             icon: AmityToastIcon.warning,
             bottomPadding: AmityChatPage.toastBottomPadding));
       }

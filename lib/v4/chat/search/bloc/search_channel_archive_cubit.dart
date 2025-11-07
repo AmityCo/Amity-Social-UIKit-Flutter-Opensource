@@ -42,27 +42,33 @@ class ChatSearchArchiveCubit extends Cubit<ChatSearchArchiveState> {
   
   ChatSearchArchiveCubit({required this.toastBloc}) : super(const ChatSearchArchiveState());
   
-  Future<bool> archiveChannel(String channelId) async {
+  Future<bool> archiveChannel(
+    String channelId, {
+    required String successMessage,
+    required String errorMessage,
+    required String limitErrorTitle,
+    required String limitErrorMessage,
+  }) async {
     emit(state.copyWith(isArchiving: true));
     
     try {
       await AmityChatClient.newChannelRepository().archiveChannel(channelId);
-      toastBloc.add(const AmityToastShort(
-          message: 'Chat archived.', icon: AmityToastIcon.success));
+      toastBloc.add(AmityToastShort(
+          message: successMessage, icon: AmityToastIcon.success));
       emit(state.copyWith(isArchiving: false));
       return true;
     } catch (error) {
-      String errorMessage = error.toString();
-      if (errorMessage.contains('Archive limit exceeded')) {
+      String errorString = error.toString();
+      if (errorString.contains('Archive limit exceeded')) {
         emit(state.copyWith(
           isArchiving: false,
           showArchiveErrorDialog: true,
-          errorTitle: 'Too many chats archived',
-          errorMessage: 'You can archive a maximum of 100 chat lists.',
+          errorTitle: limitErrorTitle,
+          errorMessage: limitErrorMessage,
         ));
       } else {
-        toastBloc.add(const AmityToastShort(
-            message: 'Failed to archive chat. Please try again', 
+        toastBloc.add(AmityToastShort(
+            message: errorMessage, 
             icon: AmityToastIcon.warning));
         emit(state.copyWith(isArchiving: false));
       }
@@ -70,18 +76,22 @@ class ChatSearchArchiveCubit extends Cubit<ChatSearchArchiveState> {
     }
   }
   
-  Future<bool> unarchiveChannel(String channelId) async {
+  Future<bool> unarchiveChannel(
+    String channelId, {
+    required String successMessage,
+    required String errorMessage,
+  }) async {
     emit(state.copyWith(isArchiving: true));
     
     try {
       await AmityChatClient.newChannelRepository().unarchiveChannel(channelId);
-      toastBloc.add(const AmityToastShort(
-          message: 'Chat unarchived.', icon: AmityToastIcon.success));
+      toastBloc.add(AmityToastShort(
+          message: successMessage, icon: AmityToastIcon.success));
       emit(state.copyWith(isArchiving: false));
       return true;
     } catch (error) {
-      toastBloc.add(const AmityToastShort(
-          message: 'Failed to unarchive chat. Please try again', 
+      toastBloc.add(AmityToastShort(
+          message: errorMessage, 
           icon: AmityToastIcon.warning));
       emit(state.copyWith(isArchiving: false));
       return false;

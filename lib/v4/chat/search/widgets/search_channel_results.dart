@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/group_message/amity_group_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/base_chat_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
@@ -265,7 +266,11 @@ class SearchChannelResults extends StatelessWidget {
                       
                       context
                           .read<ChatSearchArchiveCubit>()
-                          .unarchiveChannel(channel.channelId!)
+                          .unarchiveChannel(
+                            channel.channelId!,
+                            successMessage: context.l10n.toast_chat_unarchived,
+                            errorMessage: context.l10n.toast_chat_unarchive_error,
+                          )
                           .then((success) {
                         if (success && onChannelArchiveStatusChanged != null) {
                           onChannelArchiveStatusChanged!(
@@ -289,7 +294,13 @@ class SearchChannelResults extends StatelessWidget {
                       
                       context
                           .read<ChatSearchArchiveCubit>()
-                          .archiveChannel(channel.channelId!)
+                          .archiveChannel(
+                            channel.channelId!,
+                            successMessage: context.l10n.toast_chat_archived,
+                            errorMessage: context.l10n.toast_chat_archive_error,
+                            limitErrorTitle: context.l10n.chat_archive_limit_title,
+                            limitErrorMessage: context.l10n.chat_archive_limit_message,
+                          )
                           .then((success) {
                         if (success && onChannelArchiveStatusChanged != null) {
                           onChannelArchiveStatusChanged!(

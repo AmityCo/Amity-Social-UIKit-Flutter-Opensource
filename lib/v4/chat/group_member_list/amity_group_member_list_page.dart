@@ -251,7 +251,13 @@ class AmityGroupMemberListPage extends NewBasePage {
     );
 
     if (result != null && result is List<AmityUser> && context.mounted) {
-      context.read<AmityGroupMemberListCubit>().addMembersToChannel(result);
+      context.read<AmityGroupMemberListCubit>().addMembersToChannel(
+        result,
+        successMessageSingle: context.l10n.toast_member_added,
+        successMessageMultiple: context.l10n.toast_members_added,
+        errorMessageSingle: context.l10n.toast_member_add_error,
+        errorMessageMultiple: context.l10n.toast_members_add_error,
+      );
     }
   }
 
@@ -306,7 +312,11 @@ class AmityGroupMemberListPage extends NewBasePage {
       leftButtonColor: theme.primaryColor,
       rightButtonText: context.l10n.moderator_promote_button,
       onConfirm: () {
-        cubit.addModerator(user.userId!);
+        cubit.addModerator(
+          user.userId!,
+          successMessage: context.l10n.toast_member_promoted,
+          errorMessage: context.l10n.toast_member_promote_error,
+        );
       },
     );
   }
@@ -320,7 +330,11 @@ class AmityGroupMemberListPage extends NewBasePage {
       leftButtonText: context.l10n.general_cancel,
       rightButtonText: context.l10n.moderator_demote_button,
       onConfirm: () {
-        cubit.removeModerator(user.userId!);
+        cubit.removeModerator(
+          user.userId!,
+          successMessage: context.l10n.toast_member_demoted,
+          errorMessage: context.l10n.toast_member_demote_error,
+        );
       },
     );
   }
@@ -335,7 +349,11 @@ class AmityGroupMemberListPage extends NewBasePage {
       rightButtonText: context.l10n.member_remove_button,
       leftButtonColor: theme.alertColor,
       onConfirm: () {
-        cubit.removeMember(user.userId!);
+        cubit.removeMember(
+          user.userId!,
+          successMessage: context.l10n.toast_member_removed,
+          errorMessage: context.l10n.toast_member_remove_error,
+        );
       },
     );
   }
@@ -349,14 +367,23 @@ class AmityGroupMemberListPage extends NewBasePage {
       leftButtonText: context.l10n.general_cancel,
       rightButtonText: context.l10n.user_ban_button,
       onConfirm: () {
-        cubit.banUser(user.userId!);
+        cubit.banUser(
+          user.userId!,
+          successMessage: context.l10n.toast_user_banned,
+          errorMessage: context.l10n.toast_user_ban_error,
+        );
       },
     );
   }
 
   void _reportUser(BuildContext context, AmityUser user) {
     final cubit = context.read<AmityGroupMemberListCubit>();
-    cubit.reportUser(user);
+    cubit.reportUser(
+      user,
+      unreportSuccessMessage: context.l10n.toast_user_unreported,
+      reportSuccessMessage: context.l10n.toast_user_reported,
+      errorMessage: context.l10n.toast_user_report_error,
+    );
   }
 
   void _toggleMuteUser(BuildContext context, AmityUser user) {
@@ -385,7 +412,13 @@ class AmityGroupMemberListPage extends NewBasePage {
       rightButtonText: 'Mute',
       leftButtonColor: theme.alertColor,
       onConfirm: () {
-        cubit.toggleMuteUser(user.userId!);
+        cubit.toggleMuteUser(
+          user.userId!,
+          muteSuccessMessage: context.l10n.toast_user_muted,
+          muteErrorMessage: context.l10n.toast_user_mute_error,
+          unmuteSuccessMessage: context.l10n.toast_user_unmuted,
+          unmuteErrorMessage: context.l10n.toast_user_unmute_error,
+        );
       },
     );
   }
@@ -400,7 +433,13 @@ class AmityGroupMemberListPage extends NewBasePage {
       leftButtonText: 'Cancel',
       rightButtonText: 'Unmute',
       onConfirm: () {
-        cubit.toggleMuteUser(user.userId!);
+        cubit.toggleMuteUser(
+          user.userId!,
+          muteSuccessMessage: context.l10n.toast_user_muted,
+          muteErrorMessage: context.l10n.toast_user_mute_error,
+          unmuteSuccessMessage: context.l10n.toast_user_unmuted,
+          unmuteErrorMessage: context.l10n.toast_user_unmute_error,
+        );
       },
     );
   }

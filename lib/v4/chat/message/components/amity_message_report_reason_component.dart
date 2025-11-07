@@ -3,6 +3,7 @@ import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/components/bloc/amity_message_report_reason_cubit.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,8 @@ class MessageReportReasonView extends StatelessWidget {
         onCancel: onCancel,
         onBack: onBack,
         toastBloc: context.read<AmityToastBloc>(),
+        successMessage: context.l10n.toast_message_reported,
+        errorMessage: context.l10n.toast_message_report_error,
       ),
       child: _MessageReportOthersView(theme: theme),
     );
@@ -167,7 +170,7 @@ class _MessageReportOthersView extends StatelessWidget {
                   controller: cubit.textController,
                   focusNode: cubit.focusNode,
                   decoration: InputDecoration(
-                    hintText: 'Share more details about this issue',
+                    hintText: context.l10n.message_report_details_hint,
                     hintStyle: AmityTextStyle.body(theme.baseColorShade3),
                     contentPadding: EdgeInsets.only(bottom: 8),
                     border: UnderlineInputBorder(

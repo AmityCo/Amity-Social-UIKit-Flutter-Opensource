@@ -53,6 +53,7 @@ class MediaPermissionHandler {
     if (await handleMediaPermissions()) {
       final ImagePicker picker = ImagePicker();
       try {
+        _configureAndroidPhotoPicker(false);
         final XFile? image = await picker.pickImage(
           source: ImageSource.gallery,
         );
@@ -70,6 +71,7 @@ class MediaPermissionHandler {
     if (await handleMediaPermissions()) {
       final ImagePicker picker = ImagePicker();
       try {
+        _configureAndroidPhotoPicker(false);
         final XFile? video = await picker.pickVideo(
           source: ImageSource.gallery,
         );
@@ -89,7 +91,7 @@ class MediaPermissionHandler {
         final ImagePickerPlatform imagePickerImplementation =
             ImagePickerPlatform.instance;
         if (imagePickerImplementation is ImagePickerAndroid) {
-          imagePickerImplementation.useAndroidPhotoPicker = true;
+          imagePickerImplementation.useAndroidPhotoPicker = false;
         }
         List<XFile> mediaFiles = [];
 
@@ -106,15 +108,22 @@ class MediaPermissionHandler {
     return [];
   }
 
+  void _configureAndroidPhotoPicker(bool enabled) {
+    final platform = ImagePickerPlatform.instance;
+    if (platform is ImagePickerAndroid) {
+      platform.useAndroidPhotoPicker = enabled;
+    }
+  }
+
   // Save media to gallery
   Future<bool> saveVideoToGallery(String filePath, String? fileName) async {
     if (await handleMediaPermissions()) {
       try {
-        final result = await PhotoManager.editor.saveVideo(
+        await PhotoManager.editor.saveVideo(
           File(filePath),
           title: fileName ?? 'video_${DateTime.now().millisecondsSinceEpoch}',
         );
-        return result != null;
+        return true;
       } catch (e) {
         return false;
       }
@@ -125,12 +134,12 @@ class MediaPermissionHandler {
   Future<bool> saveImageToGallery(Uint8List imageData, String? fileName) async {
     if (await handleMediaPermissions()) {
       try {
-        final result = await PhotoManager.editor.saveImage(
+        await PhotoManager.editor.saveImage(
           imageData,
           filename:
               fileName ?? 'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
         );
-        return result != null;
+        return true;
       } catch (e) {
         return false;
       }

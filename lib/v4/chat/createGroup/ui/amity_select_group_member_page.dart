@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -71,7 +72,7 @@ class AmitySelectGroupMemberPage extends NewBasePage {
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
                 title: Text(
-                  'New group',
+                  context.l10n.chat_select_member_title,
                   style: AmityTextStyle.titleBold(theme.baseColor),
                 ),
                 leading: IconButton(
@@ -97,7 +98,7 @@ class AmitySelectGroupMemberPage extends NewBasePage {
                       if (state.selectedUsers.isEmpty) {
                         // Don't navigate if no users are selected
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please select at least one user')),
+                          SnackBar(content: Text(context.l10n.chat_select_member_error)),
                         );
                         return;
                       }
@@ -123,7 +124,7 @@ class AmitySelectGroupMemberPage extends NewBasePage {
                       }
                     },
                     child: Text(
-                      'Next',
+                      context.l10n.general_next,
                       style: AmityTextStyle.body(state.selectedUsers.isEmpty
                           ? theme.primaryColor.blend(ColorBlendingOption.shade2)
                           : theme.primaryColor),
@@ -136,7 +137,7 @@ class AmitySelectGroupMemberPage extends NewBasePage {
                   AmityTopSearchBarComponent(
                     pageId: pageId,
                     textcontroller: textcontroller,
-                    hintText: 'Search',
+                    hintText: context.l10n.general_search_hint,
                     onTextChanged: (value) {
                       _debouncer.run(() {
                         context.read<AmitySelectGroupMemberCubit>().queryUser(value);
@@ -199,7 +200,7 @@ class AmitySelectGroupMemberPage extends NewBasePage {
               ),
               const SizedBox(height: 10),
               Text(
-                'No results found',
+                context.l10n.search_no_results,
                 style: TextStyle(
                   color: theme.baseColorShade3,
                   fontWeight: FontWeight.w600,

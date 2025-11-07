@@ -422,6 +422,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get message_placeholder => 'Type a message...';
 
   @override
+  String get message_deleted => 'This message was deleted';
+
+  @override
+  String get message_failed_to_send => 'Failed to send message.';
+
+  @override
+  String get message_reply_you_to_yourself => 'You replied to yourself';
+
+  @override
+  String get message_reply_to_you => 'Replied to you';
+
+  @override
+  String get message_reply_you => 'You replied';
+
+  @override
+  String get message_reply_to_themself => 'Replied to themself';
+
+  @override
+  String get message_reply_you_to_deleted => 'You replied to deleted message';
+
+  @override
+  String get message_reply_to_deleted => 'Replied to deleted message';
+
+  @override
+  String get message_unknown_user => 'Unknown';
+
+  @override
   String get settings_title => 'Settings';
 
   @override
@@ -1293,6 +1320,80 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chat_no_message_yet => 'No message yet';
 
   @override
+  String get general_search_hint => 'Search';
+
+  @override
+  String get chat_archived_empty_title => 'No archived chats';
+
+  @override
+  String get chat_archived_title => 'Archived chats';
+
+  @override
+  String get toast_chat_archived => 'Chat archived.';
+
+  @override
+  String get toast_chat_unarchived => 'Chat unarchived.';
+
+  @override
+  String get toast_chat_archive_error =>
+      'Failed to archive chat. Please try again';
+
+  @override
+  String get toast_chat_unarchive_error =>
+      'Failed to unarchive chat. Please try again';
+
+  @override
+  String get chat_archive_limit_title => 'Too many chats archived';
+
+  @override
+  String get chat_archive_limit_message =>
+      'You can archive a maximum of 100 chat lists.';
+
+  @override
+  String get chat_empty_title => 'No conversation yet';
+
+  @override
+  String get chat_empty_description => 'Let\'s create chat to get started.';
+
+  @override
+  String get chat_create_new => 'Create new chat';
+
+  @override
+  String get chat_group_profile_title => 'Group profile';
+
+  @override
+  String get chat_group_profile_error => 'Error loading profile';
+
+  @override
+  String get chat_group_name_hint => 'Enter group name';
+
+  @override
+  String get chat_group_name_placeholder => 'Name your group';
+
+  @override
+  String get chat_member_permissions_title => 'Member permissions';
+
+  @override
+  String get chat_member_label => 'Member';
+
+  @override
+  String get chat_select_member_error => 'Please select at least one user';
+
+  @override
+  String get message_report_details_hint =>
+      'Share more details about this issue';
+
+  @override
+  String get chat_search_tab_chats => 'Chats';
+
+  @override
+  String get chat_search_tab_messages => 'Messages';
+
+  @override
+  String get search_minimum_chars =>
+      'Start your search by typing\nat least 3 letters';
+
+  @override
   String get permission_camera_title => 'Allow access to your camera';
 
   @override
@@ -1308,4 +1409,329 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permission_open_settings => 'Open settings';
+
+  @override
+  String get general_copy => 'Copy';
+
+  @override
+  String get message_report => 'Report';
+
+  @override
+  String get message_unreport => 'Unreport';
+
+  @override
+  String get toast_message_copied => 'Copied.';
+
+  @override
+  String get toast_message_reported => 'Message reported.';
+
+  @override
+  String get toast_message_unreported => 'Message unreported.';
+
+  @override
+  String get toast_message_report_error =>
+      'Failed to report message. Please try again.';
+
+  @override
+  String get toast_message_unreport_error =>
+      'Failed to unreport message. Please try again.';
+
+  @override
+  String get toast_message_delete_error => 'Failed to delete message.';
+
+  @override
+  String get toast_permission_denied => 'Permission denied.';
+
+  @override
+  String get toast_photo_saved => 'Saved photo.';
+
+  @override
+  String get toast_photo_save_error => 'Failed to save image.';
+
+  @override
+  String get toast_video_saved => 'Saved video.';
+
+  @override
+  String get toast_video_save_error => 'Failed to save video.';
+
+  @override
+  String get message_delete_title => 'Delete this message?';
+
+  @override
+  String get message_delete_description =>
+      'This message will also be removed from your friend\'s devices.';
+
+  @override
+  String get chat_create_success => 'Group chat created.';
+
+  @override
+  String get chat_create_error => 'Failed to create group';
+
+  @override
+  String get chat_create_error_retry =>
+      'Failed to create group chat. Please try again.';
+
+  @override
+  String get chat_create_title => 'New Group';
+
+  @override
+  String get chat_create_button => 'Create';
+
+  @override
+  String get chat_group_name_label => 'Group name';
+
+  @override
+  String get chat_group_name_optional => '(Optional)';
+
+  @override
+  String get chat_group_name_required => '(Required)';
+
+  @override
+  String get chat_privacy_public => 'Public';
+
+  @override
+  String get chat_privacy_public_desc =>
+      'Anyone can find the group through search and join the conversation.';
+
+  @override
+  String get chat_privacy_private => 'Private';
+
+  @override
+  String get chat_privacy_private_desc =>
+      'Group is hidden from search and only accessible by invitation from moderators.';
+
+  @override
+  String get chat_privacy_warning =>
+      'Ensure the correct privacy setting is chosen for your group, as it can\'t be changed later.';
+
+  @override
+  String get chat_select_member_title => 'New group';
+
+  @override
+  String get general_next => 'Next';
+
+  @override
+  String get settings_group_settings => 'Group Settings';
+
+  @override
+  String get settings_group_settings_section => 'Group settings';
+
+  @override
+  String get settings_group_profile => 'Group profile';
+
+  @override
+  String get settings_group_notifications => 'Group notifications';
+
+  @override
+  String get settings_member_permissions => 'Member permissions';
+
+  @override
+  String get settings_all_members => 'All members';
+
+  @override
+  String get settings_banned_users => 'Banned users';
+
+  @override
+  String get banned_users_empty_state => 'Nothing here to see yet';
+
+  @override
+  String get user_unban_confirm_title => 'Confirm unban';
+
+  @override
+  String get user_unban_confirm_description =>
+      'Are you sure you want to unban this user? They will be able to rejoin the group again.';
+
+  @override
+  String get user_unban_button => 'Unban';
+
+  @override
+  String get toast_user_unbanned => 'User unbanned.';
+
+  @override
+  String get toast_user_unban_error =>
+      'Failed to unban user. Please try again.';
+
+  @override
+  String get settings_your_preferences => 'Your preferences';
+
+  @override
+  String get general_notifications_lowercase => 'notifications';
+
+  @override
+  String get chat_leave_group => 'Leave group';
+
+  @override
+  String get chat_leave_group_title => 'Leave Group';
+
+  @override
+  String get chat_leave_group_confirm =>
+      'If you leave this group, you will no longer see new activities or participate in this group.';
+
+  @override
+  String get chat_leave_group_last_mod_title => 'You\'re the last moderator';
+
+  @override
+  String get chat_leave_group_last_mod_message =>
+      'You must promote another member to moderator before leaving.';
+
+  @override
+  String get chat_promote_member => 'Promote member';
+
+  @override
+  String get notification_default_mode => 'Default mode';
+
+  @override
+  String get notification_default_mode_desc =>
+      'By default, members in this community will receive notifications, but they can choose to turn them off.';
+
+  @override
+  String get notification_silent_mode => 'Silent mode';
+
+  @override
+  String get notification_silent_mode_desc =>
+      'No notifications for everyone in this channel. Members can\'t turn on notifications in the channel.';
+
+  @override
+  String get notification_subscribe_mode => 'Subscribe mode';
+
+  @override
+  String get notification_subscribe_mode_desc =>
+      'All members have the option to receive notifications, but they need to enable them. By default, notifications are turned off for each member.';
+
+  @override
+  String get notification_preference_title => 'Notification Preference';
+
+  @override
+  String get notification_allow_notifications => 'Allow notifications';
+
+  @override
+  String get notification_allow_notifications_desc =>
+      'Turn on to receive push notifications from this group.';
+
+  @override
+  String get notification_disabled_by_moderator =>
+      'Group notifications have been disabled by moderator.';
+
+  @override
+  String get notification_enabled_toast => 'Notifications enabled';
+
+  @override
+  String get notification_disabled_toast => 'Notifications disabled';
+
+  @override
+  String get settings_messaging => 'Messaging';
+
+  @override
+  String get settings_everyone_desc =>
+      'Everyone can send a message in the group.';
+
+  @override
+  String get settings_only_moderators_desc =>
+      'Members who are not moderators can read messages but cannot send any messages.';
+
+  @override
+  String get toast_group_chat_left => 'Group chat left.';
+
+  @override
+  String get toast_group_chat_left_error =>
+      'Failed to leave group chat. Please try again.';
+
+  @override
+  String get toast_group_profile_updated => 'Group profile updated.';
+
+  @override
+  String get toast_group_profile_error =>
+      'Failed to update group profile. Please try again.';
+
+  @override
+  String get toast_group_notification_updated => 'Group notification updated.';
+
+  @override
+  String get toast_group_notification_error =>
+      'Failed to update group notification. Please try again.';
+
+  @override
+  String get toast_member_permissions_updated => 'Member permissions updated.';
+
+  @override
+  String get toast_member_permissions_error =>
+      'Failed to update member permissions. Please try again.';
+
+  @override
+  String get toast_member_list_updated => 'Member list updated.';
+
+  @override
+  String get toast_member_list_error =>
+      'Failed to update member list. Please try again.';
+
+  @override
+  String get toast_banned_users_updated => 'Banned users updated.';
+
+  @override
+  String get toast_banned_users_error =>
+      'Failed to update banned users. Please try again.';
+
+  @override
+  String get toast_members_added => 'Members added';
+
+  @override
+  String get toast_member_added => 'Member added.';
+
+  @override
+  String get toast_members_add_error =>
+      'Failed to add members. Please try again.';
+
+  @override
+  String get toast_member_add_error =>
+      'Failed to add member. Please try again.';
+
+  @override
+  String get toast_member_removed => 'Member removed.';
+
+  @override
+  String get toast_member_remove_error =>
+      'Failed to remove member. Please try again.';
+
+  @override
+  String get toast_member_promoted => 'Member promoted.';
+
+  @override
+  String get toast_member_promote_error =>
+      'Failed to promote member. Please try again.';
+
+  @override
+  String get toast_member_demoted => 'Member demoted.';
+
+  @override
+  String get toast_member_demote_error =>
+      'Failed to demote member. Please try again.';
+
+  @override
+  String get toast_user_banned => 'User banned.';
+
+  @override
+  String get toast_user_ban_error => 'Failed to ban user. Please try again.';
+
+  @override
+  String get toast_user_reported => 'User reported.';
+
+  @override
+  String get toast_user_unreported => 'User unreported.';
+
+  @override
+  String get toast_user_report_error =>
+      'Failed to report/unreport user. Please try again.';
+
+  @override
+  String get toast_user_muted => 'User muted.';
+
+  @override
+  String get toast_user_mute_error => 'Failed to mute user. Please try again.';
+
+  @override
+  String get toast_user_unmuted => 'User unmuted.';
+
+  @override
+  String get toast_user_unmute_error =>
+      'Failed to unmute user. Please try again.';
 }

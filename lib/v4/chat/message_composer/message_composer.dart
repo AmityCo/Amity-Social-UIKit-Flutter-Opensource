@@ -632,7 +632,7 @@ class AmityMessageComposer extends NewBaseComponent {
             "assets/Icons/amity_ic_image_button.svg",
             context.l10n.message_media,
             () {
-              pickMultipleFiles(context, appName, FileType.video);
+              pickMultipleFiles(context, appName, FileType.any);
             },
           ),
         ],

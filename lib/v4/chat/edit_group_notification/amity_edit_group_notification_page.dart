@@ -2,6 +2,7 @@ import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +28,7 @@ class AmityEditGroupNotificationPage extends NewBasePage {
             appBar: AppBar(
               backgroundColor: theme.backgroundColor,
               title: Text(
-                'Group notifications',
+                context.l10n.settings_group_notifications,
                 style: AmityTextStyle.titleBold(theme.baseColor),
               ),
               actions: [
@@ -51,7 +52,7 @@ class AmityEditGroupNotificationPage extends NewBasePage {
                         }
                       : null, // Make button untappable when no changes
                   child: Text(
-                    'Save',
+                    context.l10n.general_save,
                     style: AmityTextStyle.body(
                       state.hasChanges
                           ? theme.primaryColor
@@ -73,9 +74,8 @@ class AmityEditGroupNotificationPage extends NewBasePage {
                 children: [
                   _buildNotificationOption(
                     context: context,
-                    title: 'Default mode',
-                    description:
-                        'By default, members in this community will receive notifications, but they can choose to turn them off.',
+                    title: context.l10n.notification_default_mode,
+                    description: context.l10n.notification_default_mode_desc,
                     value: NotificationMode.defaultMode,
                     groupMode: state.selectedMode,
                     onChanged: cubit.setNotificationMode,
@@ -83,9 +83,8 @@ class AmityEditGroupNotificationPage extends NewBasePage {
                   const SizedBox(height: 20),
                   _buildNotificationOption(
                     context: context,
-                    title: 'Silent mode',
-                    description:
-                        'No notifications for everyone in this channel. Members can\'t turn on notifications in the channel.',
+                    title: context.l10n.notification_silent_mode,
+                    description: context.l10n.notification_silent_mode_desc,
                     value: NotificationMode.silent,
                     groupMode: state.selectedMode,
                     onChanged: cubit.setNotificationMode,
@@ -93,9 +92,8 @@ class AmityEditGroupNotificationPage extends NewBasePage {
                   const SizedBox(height: 20),
                   _buildNotificationOption(
                     context: context,
-                    title: 'Subscribe mode',
-                    description:
-                        'All members have the option to receive notifications, but they need to enable them. By default, notifications are turned off for each member.',
+                    title: context.l10n.notification_subscribe_mode,
+                    description: context.l10n.notification_subscribe_mode_desc,
                     value: NotificationMode.subscribe,
                     groupMode: state.selectedMode,
                     onChanged: cubit.setNotificationMode,

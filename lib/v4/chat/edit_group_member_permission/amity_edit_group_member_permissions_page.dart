@@ -1,5 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +33,7 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
               backgroundColor: theme.backgroundColor,
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
-                title: const Text('Member permissions'),
+                title: Text(context.l10n.chat_member_permissions_title),
                 actions: [
                   TextButton(
                     onPressed: hasChanges
@@ -65,7 +66,7 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
                           }
                         : null, // Disable the button when no changes
                     child: Text(
-                      'Save',
+                      context.l10n.general_save,
                       style: TextStyle(
                         color: hasChanges
                             ? theme.primaryColor
@@ -93,9 +94,9 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          const Text(
-            'Messaging',
-            style: TextStyle(
+          Text(
+            context.l10n.settings_messaging,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -103,8 +104,8 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
           const SizedBox(height: 16),
           _buildPermissionOption(
             context: context,
-            title: 'Everyone',
-            description: 'Everyone can send a message in the group.',
+            title: context.l10n.settings_everyone,
+            description: context.l10n.settings_everyone_desc,
             value: MessagingPermission.everyone,
             currentPermission: state.messagingPermission,
             onChanged: (permission) => context
@@ -114,9 +115,8 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
           const SizedBox(height: 8),
           _buildPermissionOption(
             context: context,
-            title: 'Only moderators',
-            description:
-                'Members who are not moderators can read messages but cannot send any messages.',
+            title: context.l10n.settings_only_moderators,
+            description: context.l10n.settings_only_moderators_desc,
             value: MessagingPermission.moderatorsOnly,
             currentPermission: state.messagingPermission,
             onChanged: (permission) => context

@@ -239,3 +239,37 @@ extension MessageReactionConfig on ConfigRepository {
             imagePath: 'assets/Icons/amity_ic_reaction_not_found.svg');
   }
 }
+
+class AmityChatUserActionType {
+  final String name;
+  final bool enabled;
+
+  AmityChatUserActionType({required this.name, required this.enabled});
+}
+
+extension ConversationChatUserActionConfig on ConfigRepository {
+  Map<String, AmityChatUserActionType> get availableChatUserActions {
+    final actionsDict =
+        _config['conversation_chat_user_actions'] as List<dynamic>? ?? [];
+
+    Map<String, AmityChatUserActionType> actionsMap = {};
+    for (var item in actionsDict) {
+      String name = item['name'] ?? '';
+      bool enabled = item['enabled'] ?? true;
+      if (name.isNotEmpty) {
+        actionsMap[name] = AmityChatUserActionType(name: name, enabled: enabled);
+      }
+    }
+    return actionsMap;
+  }
+
+  bool isChatUserActionEnabled(String actionName) {
+    final action = availableChatUserActions[actionName];
+    return action?.enabled ?? true;
+  }
+
+  bool hasAnyEnabledChatUserAction() {
+    final actions = availableChatUserActions.values;
+    return actions.isEmpty || actions.any((action) => action.enabled);
+  }
+}

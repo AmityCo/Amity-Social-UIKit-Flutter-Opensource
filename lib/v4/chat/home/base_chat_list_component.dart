@@ -25,10 +25,12 @@ class BaseChatListComponent extends NewBaseComponent {
       {super.key,
       super.pageId,
       required super.componentId,
-      required this.chatListType});
+      required this.chatListType,
+      this.channelTypes});
 
   final scrollController = ScrollController();
   final ChatListType chatListType;
+  final List<AmityChannelType>? channelTypes;
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -57,7 +59,14 @@ class BaseChatListComponent extends NewBaseComponent {
           if (chatListType == ChatListType.ARCHIVED) {
             return ArchivedChatListEmptyState(theme: theme);
           } else {
-            return ChatListEmptyState(theme: theme);
+            // Check if this is a group chat list (only COMMUNITY channels)
+            final bool isGroupChatList = channelTypes != null && 
+                channelTypes!.length == 1 && 
+                channelTypes!.contains(AmityChannelType.COMMUNITY);
+            return ChatListEmptyState(
+              theme: theme,
+              isGroupChatList: isGroupChatList,
+            );
           }
         } else {
           return Column(
@@ -173,7 +182,13 @@ class BaseChatListComponent extends NewBaseComponent {
           "assets/Icons/amity_ic_channel_archive.svg",
           context.l10n.chat_archive, (direction) {
         context.read<ChatListBloc>().addEvent(
-            ChatListEventChannelArchive(channelId: channel.channelId!));
+            ChatListEventChannelArchive(
+              channelId: channel.channelId!,
+              successMessage: context.l10n.toast_chat_archived,
+              errorMessage: context.l10n.toast_chat_archive_error,
+              limitErrorTitle: context.l10n.chat_archive_limit_title,
+              limitErrorMessage: context.l10n.chat_archive_limit_message,
+            ));
       });
     } else if (chatListType == ChatListType.ARCHIVED) {
       return renderDismissibleListItem(
@@ -183,7 +198,11 @@ class BaseChatListComponent extends NewBaseComponent {
           "assets/Icons/amity_ic_channel_unarchive.svg",
           context.l10n.chat_unarchive, (direction) {
         context.read<ChatListBloc>().addEvent(
-            ChatListEventChannelUnarchive(channelId: channel.channelId!));
+            ChatListEventChannelUnarchive(
+              channelId: channel.channelId!,
+              successMessage: context.l10n.toast_chat_unarchived,
+              errorMessage: context.l10n.toast_chat_unarchive_error,
+            ));
       });
     } else {
       return ChatListItem(channel: channel, channelMember: channelMember);

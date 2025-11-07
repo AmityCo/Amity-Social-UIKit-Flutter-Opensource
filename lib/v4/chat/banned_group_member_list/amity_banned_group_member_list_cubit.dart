@@ -71,7 +71,10 @@ class AmityBannedGroupMemberListCubit extends Cubit<AmityBannedGroupMemberListSt
     loadBannedUsers();
   }
 
-  Future<void> unbanUser(String userId) async {
+  Future<void> unbanUser(String userId, {
+    required String successMessage,
+    required String errorMessage,
+  }) async {
     try {
       await AmityChatClient.newChannelRepository()
           .moderation(channel.channelId ?? "")
@@ -84,8 +87,8 @@ class AmityBannedGroupMemberListCubit extends Cubit<AmityBannedGroupMemberListSt
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Show success toast
-      toastBloc?.add(const AmityToastShort(
-        message: 'User unbanned.',
+      toastBloc?.add(AmityToastShort(
+        message: successMessage,
         icon: AmityToastIcon.success,
       ));
 
@@ -94,8 +97,8 @@ class AmityBannedGroupMemberListCubit extends Cubit<AmityBannedGroupMemberListSt
       ));
     } catch (e) {
       // Show failure toast
-      toastBloc?.add(const AmityToastShort(
-        message: 'Failed to unban user. Please try again.',
+      toastBloc?.add(AmityToastShort(
+        message: errorMessage,
         icon: AmityToastIcon.warning,
       ));
       

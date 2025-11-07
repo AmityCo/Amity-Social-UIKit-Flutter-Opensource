@@ -11,6 +11,7 @@ class AmityGroupChatListComponent extends BaseChatListComponent {
           key: key,
           componentId: "group_chat_list",
           chatListType: ChatListType.CONVERSATION,
+          channelTypes: [AmityChannelType.COMMUNITY],
         );
 
   @override

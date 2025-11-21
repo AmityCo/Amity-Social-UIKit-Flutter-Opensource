@@ -616,7 +616,9 @@ class AmityPollPostComposerPage extends NewBasePage {
                       if (customDate != null) {
                         final TimeOfDay? customTime = await showTimePicker(
                           context: context,
-                          initialTime: TimeOfDay.now(),
+                          initialTime: TimeOfDay.fromDateTime(
+                            DateTime.now().add(const Duration(minutes: 30)),
+                          ),
                           builder: (BuildContext context, Widget? child) {
                             return Theme(
                               data: getTimePickerTheme(context, theme),
@@ -631,13 +633,19 @@ class AmityPollPostComposerPage extends NewBasePage {
                         );
 
                         if (customTime != null) {
-                          final customDateTime = DateTime(
+                          var customDateTime = DateTime(
                             customDate.year,
                             customDate.month,
                             customDate.day,
                             customTime.hour,
                             customTime.minute,
                           );
+
+                          // Validate: if selected time is in the past or too close to now, set to 30 mins in future
+                          final now = DateTime.now();
+                          if (customDateTime.isBefore(now) || customDateTime.difference(now).inMinutes < 1) {
+                            customDateTime = now.add(const Duration(minutes: 30));
+                          }
 
                           bloc.add(UpdateCustomDateEvent(
                               customDate: customDateTime));
@@ -770,7 +778,9 @@ class AmityPollPostComposerPage extends NewBasePage {
                             hour: state.customDate!.hour,
                             minute: state.customDate!.minute,
                           )
-                        : TimeOfDay.now(),
+                        : TimeOfDay.fromDateTime(
+                            DateTime.now().add(const Duration(minutes: 30)),
+                          ),
                     builder: (BuildContext context, Widget? child) {
                       return Theme(
                         data: getTimePickerTheme(context, theme),
@@ -785,13 +795,20 @@ class AmityPollPostComposerPage extends NewBasePage {
                   );
 
                   if (customTime != null) {
-                    final updatedDate = DateTime(
+                    var updatedDate = DateTime(
                       state.customDate?.year ?? DateTime.now().year,
                       state.customDate?.month ?? DateTime.now().month,
                       state.customDate?.day ?? DateTime.now().day,
                       customTime.hour,
                       customTime.minute,
                     );
+
+                    // Validate: if selected time is in the past or too close to now, set to 30 mins in future
+                    final now = DateTime.now();
+                    if (updatedDate.isBefore(now) || updatedDate.difference(now).inMinutes < 1) {
+                      updatedDate = now.add(const Duration(minutes: 30));
+                    }
+
                     bloc.add(UpdateCustomDateEvent(customDate: updatedDate));
                   }
                 },
@@ -818,6 +835,21 @@ class AmityPollPostComposerPage extends NewBasePage {
 
   void _createPollPost(
       PollComposerState state, PollComposerBloc bloc, BuildContext context) {
+    // Validate custom date at creation time
+    if (state.selectedPollDurationIndex == -1 && state.customDate != null) {
+      final now = DateTime.now();
+      if (state.customDate!.isBefore(now) || 
+          state.customDate!.difference(now).inMinutes < 1) {
+        bloc.add(UpdatePostingStateEvent(isPosting: false));
+        _showToast(
+          context,
+          context.l10n.error_poll_end_time_must_be_future,
+          AmityToastIcon.warning,
+        );
+        return;
+      }
+    }
+
     bloc.add(UpdatePostingStateEvent(isPosting: true));
 
     context.read<AmityToastBloc>().add(AmityToastLoading(

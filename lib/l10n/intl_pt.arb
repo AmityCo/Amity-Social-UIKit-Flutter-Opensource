@@ -922,6 +922,10 @@
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
   },
+  "error_poll_end_time_must_be_future": "O horário de término da enquete deve estar no futuro. Selecione uma data e hora válidas.",
+  "@error_poll_end_time_must_be_future": {
+    "description": "Error message when user selects a poll end time that is in the past or current moment"
+  },
   "permission_camera_title": "Permitir acesso à sua câmera",
   "@permission_camera_title": {
     "description": "Título para o diálogo de permissões de câmera"

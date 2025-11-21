@@ -142,8 +142,8 @@ class AmityStoryUploadFailedRow extends StatelessWidget {
                       BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
                     }
                     BlocProvider.of<ViewStoryBloc>(context).add(DeleteStoryEvent(storyId: storyId));
-                    onStoryDelete();
-                    // 
+                    // Removed onStoryDelete() call here to prevent double pop
+                    // The BLoC listener will handle navigation when stories list updates
                   },
                   onDismissRequest: () {
                     BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: false));

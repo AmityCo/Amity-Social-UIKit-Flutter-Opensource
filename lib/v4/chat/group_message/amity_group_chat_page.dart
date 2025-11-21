@@ -2,8 +2,8 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/group_message/bloc/amity_group_chat_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/group_setting/amity_group_setting_page.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/amity_message_bubble.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/chat/message/message_bubble_view.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_action.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
@@ -512,7 +512,7 @@ class AmityGroupChatPage extends NewBasePage {
             });
           }
         },
-        child: MessageBubbleView(
+        child: AmityMessageBubble(
           key: message.uniqueId != null
               ? Key(message.uniqueId!)
               : itemKeys[index],
@@ -583,7 +583,7 @@ class AmityGroupChatPage extends NewBasePage {
                   });
                 }
               },
-              child: MessageBubbleView(
+              child: AmityMessageBubble(
                 key: message.uniqueId != null
                     ? Key(message.uniqueId!)
                     : itemKeys[index],

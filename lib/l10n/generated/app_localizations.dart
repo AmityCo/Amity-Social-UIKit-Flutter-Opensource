@@ -1383,6 +1383,12 @@ abstract class AppLocalizations {
   /// **'Failed to create poll. Please try again.'**
   String get error_create_poll;
 
+  /// Error message when user selects a poll end time that is in the past or current moment
+  ///
+  /// In en, this message translates to:
+  /// **'Poll end time must be in the future. Please select a valid date and time.'**
+  String get error_poll_end_time_must_be_future;
+
   /// Title for error dialog when message exceeds character limit
   ///
   /// In en, this message translates to:
@@ -2253,7 +2259,7 @@ abstract class AppLocalizations {
   /// **'Media'**
   String get message_media;
 
-  /// Loading message shown when chat is initializing
+  /// Loading message shown when chat is being initialized
   ///
   /// In en, this message translates to:
   /// **'Loading chat...'**

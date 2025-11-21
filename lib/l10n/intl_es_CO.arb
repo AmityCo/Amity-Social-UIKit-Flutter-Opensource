@@ -870,6 +870,10 @@
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
   },
+  "error_poll_end_time_must_be_future": "La hora de finalización de la encuesta debe estar en el futuro. Por favor, selecciona una fecha y hora válidas.",
+  "@error_poll_end_time_must_be_future": {
+    "description": "Error message when user selects a poll end time that is in the past or current moment"
+  },
   "user_profile_unknown_name": "Desconocido",
   "@user_profile_unknown_name": {
     "description": "Fallback display name for users with no display name"

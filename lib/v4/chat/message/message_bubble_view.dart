@@ -49,6 +49,7 @@ part 'widgets/reaction_preview.dart';
 part 'widgets/text_message_widget.dart';
 part 'widgets/video_message_widget.dart';
 
+@Deprecated('Use AmityMessageBubble instead. This class will be removed in a future version.')
 class MessageBubbleView extends NewBaseComponent {
   final AmityMessage message;
   final AmityChannelMember? channelMember;

@@ -979,6 +979,10 @@
   "@error_create_poll": {
     "description": "Error message when creating a poll fails"
   },
+  "error_poll_end_time_must_be_future": "Poll end time must be in the future. Please select a valid date and time.",
+  "@error_poll_end_time_must_be_future": {
+    "description": "Error message when user selects a poll end time that is in the past or current moment"
+  },
   "error_message_too_long_title": "Unable to send message",
   "@error_message_too_long_title": {
     "description": "Title for error dialog when message exceeds character limit"

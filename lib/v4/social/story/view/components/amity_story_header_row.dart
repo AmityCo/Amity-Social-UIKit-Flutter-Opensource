@@ -263,7 +263,8 @@ class AmityStoryHeaderRow extends StatelessWidget {
                                         if (story!.dataType == AmityStoryDataType.VIDEO) {
                                           BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PlayStoryVideoEvent());
                                         }
-                                        onStoryDelete();
+                                        // Removed onStoryDelete() call here to prevent double pop
+                                        // The BLoC listener will handle navigation when stories list updates
                                       },
                                     );
                                   },

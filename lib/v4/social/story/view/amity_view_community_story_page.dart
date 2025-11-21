@@ -288,7 +288,7 @@ class _AmityViewCommunityStoryPageBuilderState extends State<AmityViewCommunityS
                   }
                 });
               }
-              if (state is StoryDeletedEvent) {
+              if (state is StoryDeletedState) {
                 AmityCustomSnackBar.show(
                   context,
                   'Story deleted',
@@ -445,15 +445,9 @@ class _AmityViewCommunityStoryPageBuilderState extends State<AmityViewCommunityS
                                                 commentCount: stories[index].commentCount,
                                                 reactionCount: stories[index].reactionCount,
                                                 onStoryDelete: () {
-                                                  AmityCustomSnackBar.show(context, 'Story deleted', SvgPicture.asset('assets/Icons/ic_check_circled_white.svg', package: 'amity_uikit_beta_service', height: 20, color: Colors.white), textColor: Colors.white);
+                                                  // Cleanup operations only - navigation is handled by BLoC listener
                                                   StoryTimerStateManager.currentValue = -1;
                                                   BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-
-                                                  if (state.stories == null) {
-                                                    widget.lastSegmentReached!();
-                                                  } else if (state.stories!.length == 1 || state.stories!.isEmpty) {
-                                                    widget.lastSegmentReached!();
-                                                  }
                                                 },
                                                 isReactedByMe: stories[index].myReactions.isNotEmpty,
                                                 isCreatedByMe: stories[index].creatorId == AmityCoreClient.getUserId(),
@@ -479,25 +473,9 @@ class _AmityViewCommunityStoryPageBuilderState extends State<AmityViewCommunityS
                                 isSingleTarget: true,
                                 theme: widget.theme,
                                 onStoryDelete: () {
-                                  AmityCustomSnackBar.show(
-                                    context,
-                                    'Story deleted',
-                                    SvgPicture.asset(
-                                      'assets/Icons/ic_check_circled_white.svg',
-                                      package: 'amity_uikit_beta_service',
-                                      height: 20,
-                                      color: Colors.white,
-                                    ),
-                                    textColor: Colors.white,
-                                  );
+                                  // Cleanup operations only - navigation is handled by BLoC listener
                                   StoryTimerStateManager.currentValue = -1;
                                   BlocProvider.of<StoryVideoPlayerBloc>(context).add(const DisposeStoryVideoPlayerEvent());
-
-                                  if (state.stories == null) {
-                                    widget.lastSegmentReached!();
-                                  } else if (state.stories!.length == 1 || state.stories!.isEmpty) {
-                                    widget.lastSegmentReached!();
-                                  }
                                 },
                                 moveToNextSegment: () {
                                   StoryTimerStateManager.currentValue = -1;

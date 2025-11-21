@@ -813,6 +813,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Falha ao criar a enquete. Por favor, tente novamente.';
 
   @override
+  String get error_poll_end_time_must_be_future =>
+      'O horário de término da enquete deve estar no futuro. Selecione uma data e hora válidas.';
+
+  @override
   String get error_message_too_long_title => 'Não é possível enviar a mensagem';
 
   @override
@@ -2562,6 +2566,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get error_create_poll =>
       'Falha ao criar a enquete. Por favor, tente novamente.';
+
+  @override
+  String get error_poll_end_time_must_be_future =>
+      'O horário de término da enquete deve estar no futuro. Selecione uma data e hora válidas.';
 
   @override
   String get error_message_too_long_title => 'Não é possível enviar a mensagem';

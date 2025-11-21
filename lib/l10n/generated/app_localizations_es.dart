@@ -813,6 +813,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Error al crear la encuesta. Por favor, inténtalo de nuevo.';
 
   @override
+  String get error_poll_end_time_must_be_future =>
+      'La hora de finalización de la encuesta debe estar en el futuro. Por favor, selecciona una fecha y hora válidas.';
+
+  @override
   String get error_message_too_long_title => 'No se puede enviar el mensaje';
 
   @override
@@ -2563,6 +2567,10 @@ class AppLocalizationsEsCl extends AppLocalizationsEs {
   @override
   String get error_create_poll =>
       'Error al crear la encuesta. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get error_poll_end_time_must_be_future =>
+      'La hora de finalización de la encuesta debe estar en el futuro. Por favor, selecciona una fecha y hora válidas.';
 
   @override
   String get error_message_too_long_title => 'No se puede enviar el mensaje';
@@ -4317,6 +4325,10 @@ class AppLocalizationsEsCo extends AppLocalizationsEs {
       'Error al crear la encuesta. Por favor, inténtalo de nuevo.';
 
   @override
+  String get error_poll_end_time_must_be_future =>
+      'La hora de finalización de la encuesta debe estar en el futuro. Por favor, selecciona una fecha y hora válidas.';
+
+  @override
   String get error_message_too_long_title => 'No se puede enviar el mensaje';
 
   @override
@@ -6069,6 +6081,10 @@ class AppLocalizationsEsMx extends AppLocalizationsEs {
       'Error al crear la encuesta. Por favor, inténtalo de nuevo.';
 
   @override
+  String get error_poll_end_time_must_be_future =>
+      'La hora de finalización de la encuesta debe estar en el futuro. Por favor, selecciona una fecha y hora válidas.';
+
+  @override
   String get error_message_too_long_title => 'No se puede enviar el mensaje';
 
   @override
@@ -7819,6 +7835,10 @@ class AppLocalizationsEsPe extends AppLocalizationsEs {
   @override
   String get error_create_poll =>
       'Error al crear la encuesta. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get error_poll_end_time_must_be_future =>
+      'La hora de finalización de la encuesta debe estar en el futuro. Por favor, selecciona una fecha y hora válidas.';
 
   @override
   String get error_message_too_long_title => 'No se puede enviar el mensaje';

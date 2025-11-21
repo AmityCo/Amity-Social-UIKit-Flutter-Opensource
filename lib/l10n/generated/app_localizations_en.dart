@@ -804,6 +804,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_create_poll => 'Failed to create poll. Please try again.';
 
   @override
+  String get error_poll_end_time_must_be_future =>
+      'Poll end time must be in the future. Please select a valid date and time.';
+
+  @override
   String get error_message_too_long_title => 'Unable to send message';
 
   @override

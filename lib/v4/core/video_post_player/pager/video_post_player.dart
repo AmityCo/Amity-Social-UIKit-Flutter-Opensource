@@ -8,12 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-class VideoPostPlayerPager extends StatelessWidget with ChangeNotifier {
+class VideoPostPlayerPager extends StatelessWidget {
   final List<AmityPost> posts;
   final int initialIndex;
-  bool autoPlay;
+  final bool autoPlay;
 
-  VideoPostPlayerPager({
+  const VideoPostPlayerPager({
     Key? key,
     required this.posts,
     required this.initialIndex,
@@ -24,27 +24,37 @@ class VideoPostPlayerPager extends StatelessWidget with ChangeNotifier {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          VideoPostPlayerBloc(posts: posts, initialIndex: initialIndex),
-      child:
-          VideoPostPlayerBuilder(context: context, initialIndex: initialIndex, autoPlay: autoPlay)
-              .build(),
+          VideoPostPlayerBloc(posts: posts, initialIndex: initialIndex)
+            ..add(VideoPostPlayerEventInitial()),
+      child: VideoPostPlayerBuilder(
+        initialIndex: initialIndex,
+        autoPlay: autoPlay,
+      ),
     );
   }
 }
 
-class VideoPostPlayerBuilder with ChangeNotifier {
-  final BuildContext context;
+class VideoPostPlayerBuilder extends StatelessWidget {
   final int initialIndex;
   final bool autoPlay;
 
-  VideoPostPlayerBuilder({required this.context, required this.initialIndex, required this.autoPlay});
+  const VideoPostPlayerBuilder({
+    Key? key,
+    required this.initialIndex,
+    required this.autoPlay,
+  }) : super(key: key);
 
-  Widget build() {
-    return BlocBuilder<VideoPostPlayerBloc, VideoPostPlayerState>(
-        builder: (context, state) {
-      if (state.posts.length != state.urls.length) {
-        context.read<VideoPostPlayerBloc>().add(VideoPostPlayerEventInitial());
-      }
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          context.read<VideoPostPlayerBloc>().add(VideoPostPlayerEventDispose());
+        }
+      },
+      child: BlocBuilder<VideoPostPlayerBloc, VideoPostPlayerState>(
+          builder: (context, state) {
       return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
@@ -126,7 +136,8 @@ class VideoPostPlayerBuilder with ChangeNotifier {
           },
         ),
       );
-    });
+      }),
+    );
   }
 
   Widget loadingIndicator(BuildContext context,
@@ -141,11 +152,5 @@ class VideoPostPlayerBuilder with ChangeNotifier {
         valueColor: AlwaysStoppedAnimation<Color>(appTheme.primaryColor),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    context.read<VideoPostPlayerBloc>().add(VideoPostPlayerEventDispose());
-    super.dispose();
   }
 }

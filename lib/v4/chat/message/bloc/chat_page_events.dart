@@ -181,10 +181,11 @@ class ChatPageUserFlagStateChanged extends ChatPageEvent {
 }
 
 class ChatPageEventFetchFollowInfo extends ChatPageEvent {
-  const ChatPageEventFetchFollowInfo();
+  final String? userId;
+  const ChatPageEventFetchFollowInfo({this.userId});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [userId ?? ''];
 }
 
 class ChatPageFollowInfoUpdated extends ChatPageEvent {

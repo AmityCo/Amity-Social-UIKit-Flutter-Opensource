@@ -1979,5 +1979,101 @@
   "toast_user_unmute_error": "Error al desilenciar usuario. Por favor, inténtalo de nuevo.",
   "@toast_user_unmute_error": {
     "description": "Translation for toast_user_unmute_error"
+  },
+  "user_list_add": "Agregar",
+  "@user_list_add": {
+    "description": "Label for add user button in user list"
+  },
+  "user_list_you": "Tú",
+  "@user_list_you": {
+    "description": "Label indicating current user in user list"
+  },
+  "user_list_you_suffix": " (Tú)",
+  "@user_list_you_suffix": {
+    "description": "Suffix appended to display name for current user"
+  },
+  "chat_new_conversation": "Nueva conversación",
+  "@chat_new_conversation": {
+    "description": "Title for creating a new conversation"
+  },
+  "search_minimum_characters": "Comienza tu búsqueda escribiendo\n al menos 3 letras",
+  "@search_minimum_characters": {
+    "description": "Message displayed when user needs to type more characters to search"
+  },
+  "message_sending": "Enviando...",
+  "@message_sending": {
+    "description": "Status text shown when a message is being sent"
+  },
+  "message_not_sent": "Tu mensaje no fue enviado",
+  "@message_not_sent": {
+    "description": "Error message shown when a message failed to send"
+  },
+  "message_resend": "Reenviar",
+  "@message_resend": {
+    "description": "Action to resend a failed message"
+  },
+  "general_error_title": "Error",
+  "@general_error_title": {
+    "description": "Generic error title"
+  },
+  "general_error_message": "Ocurrió un error",
+  "@general_error_message": {
+    "description": "Generic error message"
+  },
+  "chat_message_video_sent": "Envió un video",
+  "@chat_message_video_sent": {
+    "description": "Preview text for video message"
+  },
+  "chat_message_photo_sent": "Envió una foto",
+  "@chat_message_photo_sent": {
+    "description": "Preview text for photo message"
+  },
+  "chat_message_no_content": "Sin contenido de mensaje",
+  "@chat_message_no_content": {
+    "description": "Message when there is no content"
+  },
+  "chat_archived_label": "Archivado",
+  "@chat_archived_label": {
+    "description": "Label for archived chat badge"
+  },
+  "chat_add_member": "Agregar miembro",
+  "@chat_add_member": {
+    "description": "Title and button text for adding members to a group chat"
+  },
+  "chat_promote_moderator": "Promover a moderador",
+  "@chat_promote_moderator": {
+    "description": "Action to promote a group chat member to moderator"
+  },
+  "chat_demote_moderator": "Degradar de moderador",
+  "@chat_demote_moderator": {
+    "description": "Action to demote a moderator from moderator role"
+  },
+  "chat_mute_user": "Silenciar usuario",
+  "@chat_mute_user": {
+    "description": "Action to mute a user in group chat"
+  },
+  "chat_unmute_user": "Dejar de silenciar usuario",
+  "@chat_unmute_user": {
+    "description": "Action to unmute a user in group chat"
+  },
+  "chat_ban_user": "Banear usuario",
+  "@chat_ban_user": {
+    "description": "Action to ban a user from group chat"
+  },
+  "chat_unban_user": "Desbanear usuario",
+  "@chat_unban_user": {
+    "description": "Action to unban a user from group chat"
+  },
+  "chat_remove_member": "Quitar del grupo",
+  "@chat_remove_member": {
+    "description": "Action to remove a member from group chat"
+  },
+  "reaction_tap_to_remove": "Toca para eliminar reacción",
+  "@reaction_tap_to_remove": {
+    "description": "Hint text shown to user on their own reaction to indicate they can tap to remove it"
+  },
+  "image_load_error": "No se pudo cargar la imagen. Por favor, inténtalo de nuevo.",
+  "@image_load_error": {
+    "description": "Error message shown when an image fails to load"
   }
 }

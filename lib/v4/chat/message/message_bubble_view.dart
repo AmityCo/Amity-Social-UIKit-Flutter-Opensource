@@ -263,7 +263,7 @@ class MessageBubbleView extends NewBaseComponent {
           if (isUser &&
               message.syncState != AmityMessageSyncState.SYNCED &&
               message.syncState != AmityMessageSyncState.FAILED) ...[
-            _buildSideTextWidget("Sending..."),
+            _buildSideTextWidget(context.l10n.message_sending),
             const SizedBox(width: 8),
           ],
           if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
@@ -358,20 +358,20 @@ class MessageBubbleView extends NewBaseComponent {
   void _showActionSheet(BuildContext context) {
     showCupertinoModalPopup<void>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text(
-          'Your message wasn’t sent',
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      builder: (BuildContext builderContext) => CupertinoActionSheet(
+        title: Text(
+          context.l10n.message_not_sent,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             onPressed: () {
               onResend?.call(message);
-              Navigator.pop(context);
+              Navigator.pop(builderContext);
             },
-            child: const Text(
-              'Resend',
-              style: TextStyle(
+            child: Text(
+              context.l10n.message_resend,
+              style: const TextStyle(
                   color: Color(0xff007AFF),
                   fontSize: 17,
                   fontWeight: FontWeight.w400),
@@ -380,11 +380,12 @@ class MessageBubbleView extends NewBaseComponent {
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () async {
+              Navigator.pop(builderContext);
               deleteMessage(context, true);
             },
-            child: const Text(
-              'Delete',
-              style: TextStyle(
+            child: Text(
+              context.l10n.general_delete,
+              style: const TextStyle(
                   color: Color(0xffFF3B30),
                   fontSize: 17,
                   fontWeight: FontWeight.w400),
@@ -393,11 +394,11 @@ class MessageBubbleView extends NewBaseComponent {
         ],
         cancelButton: CupertinoActionSheetAction(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(builderContext);
             },
-            child: const Text(
-              "Cancel",
-              style: TextStyle(
+            child: Text(
+              context.l10n.general_cancel,
+              style: const TextStyle(
                   color: Color(0xff007AFF),
                   fontSize: 17,
                   fontWeight: FontWeight.w600),

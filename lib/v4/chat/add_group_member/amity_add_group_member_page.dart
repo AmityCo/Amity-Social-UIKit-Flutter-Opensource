@@ -41,7 +41,7 @@ class AmityAddGroupMemberPage extends NewBasePage {
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
                 title: Text(
-                  'Add Member',
+                  context.l10n.chat_add_member,
                   style: AmityTextStyle.titleBold(theme.baseColor),
                 ),
                 leading: IconButton(
@@ -120,7 +120,7 @@ class AmityAddGroupMemberPage extends NewBasePage {
                           disabledBackgroundColor: theme.primaryColor.blend(ColorBlendingOption.shade2),
                         ),
                         child: Text(
-                          'Add Member',
+                          context.l10n.chat_add_member,
                           style: AmityTextStyle.bodyBold(Colors.white),
                         ),
                       ),

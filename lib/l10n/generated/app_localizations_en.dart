@@ -1738,4 +1738,77 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get toast_user_unmute_error =>
       'Failed to unmute user. Please try again.';
+
+  @override
+  String get user_list_add => 'Add';
+
+  @override
+  String get user_list_you => 'You';
+
+  @override
+  String get user_list_you_suffix => ' (You)';
+
+  @override
+  String get chat_new_conversation => 'New conversation';
+
+  @override
+  String get search_minimum_characters =>
+      'Start your search by typing\n at least 3 letters';
+
+  @override
+  String get message_sending => 'Sending...';
+
+  @override
+  String get message_not_sent => 'Your message wasn\'t sent';
+
+  @override
+  String get message_resend => 'Resend';
+
+  @override
+  String get general_error_title => 'Error';
+
+  @override
+  String get general_error_message => 'An error occurred';
+
+  @override
+  String get chat_message_video_sent => 'Sent a video';
+
+  @override
+  String get chat_message_photo_sent => 'Sent a photo';
+
+  @override
+  String get chat_message_no_content => 'No message content';
+
+  @override
+  String get chat_archived_label => 'Archived';
+
+  @override
+  String get chat_add_member => 'Add Member';
+
+  @override
+  String get chat_promote_moderator => 'Promote to moderator';
+
+  @override
+  String get chat_demote_moderator => 'Demote from moderator';
+
+  @override
+  String get chat_mute_user => 'Mute user';
+
+  @override
+  String get chat_unmute_user => 'Unmute user';
+
+  @override
+  String get chat_ban_user => 'Ban user';
+
+  @override
+  String get chat_unban_user => 'Unban user';
+
+  @override
+  String get chat_remove_member => 'Remove from group';
+
+  @override
+  String get reaction_tap_to_remove => 'Tap to remove reaction';
+
+  @override
+  String get image_load_error => 'Couldn\'t load image. Please try again.';
 }

@@ -45,8 +45,8 @@ class BaseChatListComponent extends NewBaseComponent {
 
         if (state.showArchiveErrorDialog) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _showArchiveErrorDialog(context, state.error?.title ?? "Error",
-                state.error?.message ?? "An error occurred");
+            _showArchiveErrorDialog(context, state.error?.title ?? context.l10n.general_error_title,
+                state.error?.message ?? context.l10n.general_error_message);
             context
                 .read<ChatListBloc>()
                 .addEvent(ChatListEventResetDialogState());
@@ -314,7 +314,7 @@ class ChatListItem extends BaseElement {
             color: theme.baseColorShade2,
           );
         } else if (messageData is MessageVideoData) {
-          previewText = "Sent a video";
+          previewText = context.l10n.chat_message_video_sent;
           previewIcon = SvgPicture.asset(
             'assets/Icons/amity_ic_preview_video_message.svg',
             package: 'amity_uikit_beta_service',
@@ -324,17 +324,17 @@ class ChatListItem extends BaseElement {
           );
         } else if (messageData is MessageFileData ||
             messageData is MessageAudioData) {
-          previewText = "No preview supported for this message type";
+          previewText = context.l10n.chat_message_no_preview;
         } else if (messageData is MessageCustomData) {
           previewText = messageData.rawData.toString();
         } else {
-          previewText = "No message content";
+          previewText = context.l10n.chat_message_no_content;
         }
       }
     } else {
       // Handle channel preview message display (original logic)
       if (channel.messagePreview?.isDeleted == true) {
-        previewText = "This message was deleted";
+        previewText = context.l10n.chat_message_deleted;
         previewIcon = SvgPicture.asset(
           'assets/Icons/amity_ic_preview_deleted_message.svg',
           package: 'amity_uikit_beta_service',
@@ -347,7 +347,7 @@ class ChatListItem extends BaseElement {
         if (previewMessage is MessageTextData) {
           previewText = previewMessage.text;
         } else if (previewMessage is MessageImageData) {
-          previewText = "Sent a photo";
+          previewText = context.l10n.chat_message_photo_sent;
           previewIcon = SvgPicture.asset(
             'assets/Icons/amity_ic_preview_image_message.svg',
             package: 'amity_uikit_beta_service',
@@ -512,7 +512,7 @@ class ChatListItem extends BaseElement {
                           ),
                           const SizedBox(width: 1),
                           Text(
-                            'Archived',
+                            context.l10n.chat_archived_label,
                             style: AmityTextStyle.captionSmall(theme.baseColorShade1),
                           ),
                         ],

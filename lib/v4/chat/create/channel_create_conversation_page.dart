@@ -1,11 +1,12 @@
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/create/bloc/channel_create_conversation_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/shared/user/user_list.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
 import 'package:flutter/material.dart';
-import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -32,9 +33,9 @@ class AmityChannelCreateConversationPage extends NewBasePage {
               backgroundColor: theme.backgroundColor,
               appBar: AppBar(
                 backgroundColor: theme.backgroundColor,
-                title: const Text(
-                  'New conversation',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
+                title: Text(
+                  context.l10n.chat_new_conversation,
+                  style: AmityTextStyle.titleBold(theme.baseColor),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(
@@ -103,13 +104,9 @@ class AmityChannelCreateConversationPage extends NewBasePage {
               const SizedBox(height: 10),
               Text(
                 isInitialSearch
-                  ? 'Start your search by typing\n at least 3 letters'
-                  : 'No results found',
-                style: TextStyle(
-                color: theme.baseColorShade3,
-                fontWeight: FontWeight.w600,
-                fontSize: 17,
-                ),
+                  ? context.l10n.search_minimum_characters
+                  : context.l10n.search_no_results,
+                style: AmityTextStyle.body(theme.baseColorShade2),
                 textAlign: TextAlign.center,
               ),
               ],
@@ -134,6 +131,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
                   userId: user.userId,
                   userDisplayName: user.displayName,
                   avatarUrl: user.avatarUrl ?? "",
+                  isJustCreated: true,
                 ),
               ));
             },

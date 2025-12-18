@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
@@ -283,7 +284,7 @@ Widget _groupDisplayNameWithBrandIcon(
             builder: (context, constraints) {
               String displayName = user.displayName ?? "";
               String fullText =
-                  isCurrentUser ? "$displayName (You)" : displayName;
+                  isCurrentUser ? "$displayName${context.l10n.user_list_you_suffix}" : displayName;
 
               // Calculate available width (subtract brand icon width if needed)
               double availableWidth = constraints.maxWidth;
@@ -311,10 +312,10 @@ Widget _groupDisplayNameWithBrandIcon(
               if (textPainter.didExceedMaxLines ||
                   textPainter.width > availableWidth) {
                 if (isCurrentUser) {
-                  // Calculate how much space we need for " (You)"
+                  // Calculate how much space we need for the you suffix
                   final youTextPainter = TextPainter(
                     text: TextSpan(
-                      text: " (You)",
+                      text: context.l10n.user_list_you_suffix,
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                     textDirection: TextDirection.ltr,
@@ -351,7 +352,7 @@ Widget _groupDisplayNameWithBrandIcon(
                       testPainter.layout();
 
                       if (testPainter.width <= nameWidth) {
-                        finalText = "$truncated (You)";
+                        finalText = "$truncated${context.l10n.user_list_you_suffix}";
                         break;
                       }
                       truncateAt--;
@@ -359,7 +360,7 @@ Widget _groupDisplayNameWithBrandIcon(
 
                     // Fallback if name is too short
                     if (truncateAt <= 1) {
-                      finalText = "... (You)";
+                      finalText = "...${context.l10n.user_list_you_suffix}";
                     }
                   }
                 } else {
@@ -621,7 +622,7 @@ Widget addUserItem(
                         64, // Set a fixed width to ensure alignment consistency
                     alignment: Alignment.center, // Center the text horizontally
                     child: Text(
-                      "Add",
+                      context.l10n.user_list_add,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       textAlign: TextAlign.center,
@@ -725,7 +726,7 @@ Widget horizontalUserItem(
                       64, // Set a fixed width to ensure alignment consistency
                   alignment: Alignment.center, // Center the row horizontally
                   child: Text(
-                    isCurrentUser ? "You" : user.displayName ?? "",
+                    isCurrentUser ? context.l10n.user_list_you : user.displayName ?? "",
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.center,

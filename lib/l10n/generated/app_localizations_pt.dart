@@ -1759,6 +1759,80 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get toast_user_unmute_error =>
       'Falha ao dessilenciar usuário. Por favor, tente novamente.';
+
+  @override
+  String get user_list_add => 'Adicionar';
+
+  @override
+  String get user_list_you => 'Você';
+
+  @override
+  String get user_list_you_suffix => ' (Você)';
+
+  @override
+  String get chat_new_conversation => 'Nova conversa';
+
+  @override
+  String get search_minimum_characters =>
+      'Comece sua pesquisa digitando\n pelo menos 3 letras';
+
+  @override
+  String get message_sending => 'Enviando...';
+
+  @override
+  String get message_not_sent => 'Sua mensagem não foi enviada';
+
+  @override
+  String get message_resend => 'Reenviar';
+
+  @override
+  String get general_error_title => 'Erro';
+
+  @override
+  String get general_error_message => 'Ocorreu um erro';
+
+  @override
+  String get chat_message_video_sent => 'Enviou um vídeo';
+
+  @override
+  String get chat_message_photo_sent => 'Enviou uma foto';
+
+  @override
+  String get chat_message_no_content => 'Sem conteúdo de mensagem';
+
+  @override
+  String get chat_archived_label => 'Arquivado';
+
+  @override
+  String get chat_add_member => 'Adicionar membro';
+
+  @override
+  String get chat_promote_moderator => 'Promover a moderador';
+
+  @override
+  String get chat_demote_moderator => 'Rebaixar de moderador';
+
+  @override
+  String get chat_mute_user => 'Silenciar usuário';
+
+  @override
+  String get chat_unmute_user => 'Desativar silêncio do usuário';
+
+  @override
+  String get chat_ban_user => 'Banir usuário';
+
+  @override
+  String get chat_unban_user => 'Desbanir usuário';
+
+  @override
+  String get chat_remove_member => 'Remover do grupo';
+
+  @override
+  String get reaction_tap_to_remove => 'Toque para remover reação';
+
+  @override
+  String get image_load_error =>
+      'Não foi possível carregar a imagem. Por favor, tente novamente.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -3514,4 +3588,78 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get toast_user_unmute_error =>
       'Falha ao dessilenciar usuário. Por favor, tente novamente.';
+
+  @override
+  String get user_list_add => 'Adicionar';
+
+  @override
+  String get user_list_you => 'Você';
+
+  @override
+  String get user_list_you_suffix => ' (Você)';
+
+  @override
+  String get chat_new_conversation => 'Nova conversa';
+
+  @override
+  String get search_minimum_characters =>
+      'Comece sua pesquisa digitando\n pelo menos 3 letras';
+
+  @override
+  String get message_sending => 'Enviando...';
+
+  @override
+  String get message_not_sent => 'Sua mensagem não foi enviada';
+
+  @override
+  String get message_resend => 'Reenviar';
+
+  @override
+  String get general_error_title => 'Erro';
+
+  @override
+  String get general_error_message => 'Ocorreu um erro';
+
+  @override
+  String get chat_message_video_sent => 'Enviou um vídeo';
+
+  @override
+  String get chat_message_photo_sent => 'Enviou uma foto';
+
+  @override
+  String get chat_message_no_content => 'Sem conteúdo de mensagem';
+
+  @override
+  String get chat_archived_label => 'Arquivado';
+
+  @override
+  String get chat_add_member => 'Adicionar membro';
+
+  @override
+  String get chat_promote_moderator => 'Promover a moderador';
+
+  @override
+  String get chat_demote_moderator => 'Rebaixar de moderador';
+
+  @override
+  String get chat_mute_user => 'Silenciar usuário';
+
+  @override
+  String get chat_unmute_user => 'Desativar silêncio do usuário';
+
+  @override
+  String get chat_ban_user => 'Banir usuário';
+
+  @override
+  String get chat_unban_user => 'Desbanir usuário';
+
+  @override
+  String get chat_remove_member => 'Remover do grupo';
+
+  @override
+  String get reaction_tap_to_remove => 'Toque para remover reação';
+
+  @override
+  String get image_load_error =>
+      'Não foi possível carregar a imagem. Por favor, tente novamente.';
 }

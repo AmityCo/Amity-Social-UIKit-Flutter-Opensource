@@ -3062,6 +3062,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to unmute user. Please try again.'**
   String get toast_user_unmute_error;
+
+  /// Label for add user button in user list
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get user_list_add;
+
+  /// Label indicating current user in user list
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get user_list_you;
+
+  /// Suffix appended to display name for current user
+  ///
+  /// In en, this message translates to:
+  /// **' (You)'**
+  String get user_list_you_suffix;
+
+  /// Title for creating a new conversation
+  ///
+  /// In en, this message translates to:
+  /// **'New conversation'**
+  String get chat_new_conversation;
+
+  /// Message displayed when user needs to type more characters to search
+  ///
+  /// In en, this message translates to:
+  /// **'Start your search by typing\n at least 3 letters'**
+  String get search_minimum_characters;
+
+  /// Status text shown when a message is being sent
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get message_sending;
+
+  /// Error message shown when a message failed to send
+  ///
+  /// In en, this message translates to:
+  /// **'Your message wasn\'t sent'**
+  String get message_not_sent;
+
+  /// Action to resend a failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get message_resend;
+
+  /// Generic error title
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get general_error_title;
+
+  /// Generic error message
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get general_error_message;
+
+  /// Preview text for video message
+  ///
+  /// In en, this message translates to:
+  /// **'Sent a video'**
+  String get chat_message_video_sent;
+
+  /// Preview text for photo message
+  ///
+  /// In en, this message translates to:
+  /// **'Sent a photo'**
+  String get chat_message_photo_sent;
+
+  /// Message when there is no content
+  ///
+  /// In en, this message translates to:
+  /// **'No message content'**
+  String get chat_message_no_content;
+
+  /// Label for archived chat badge
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get chat_archived_label;
+
+  /// Title and button text for adding members to a group chat
+  ///
+  /// In en, this message translates to:
+  /// **'Add Member'**
+  String get chat_add_member;
+
+  /// Action to promote a group chat member to moderator
+  ///
+  /// In en, this message translates to:
+  /// **'Promote to moderator'**
+  String get chat_promote_moderator;
+
+  /// Action to demote a moderator from moderator role
+  ///
+  /// In en, this message translates to:
+  /// **'Demote from moderator'**
+  String get chat_demote_moderator;
+
+  /// Action to mute a user in group chat
+  ///
+  /// In en, this message translates to:
+  /// **'Mute user'**
+  String get chat_mute_user;
+
+  /// Action to unmute a user in group chat
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute user'**
+  String get chat_unmute_user;
+
+  /// Action to ban a user from group chat
+  ///
+  /// In en, this message translates to:
+  /// **'Ban user'**
+  String get chat_ban_user;
+
+  /// Action to unban a user from group chat
+  ///
+  /// In en, this message translates to:
+  /// **'Unban user'**
+  String get chat_unban_user;
+
+  /// Action to remove a member from group chat
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from group'**
+  String get chat_remove_member;
+
+  /// Hint text shown to user on their own reaction to indicate they can tap to remove it
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to remove reaction'**
+  String get reaction_tap_to_remove;
+
+  /// Error message shown when an image fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load image. Please try again.'**
+  String get image_load_error;
 }
 
 class _AppLocalizationsDelegate

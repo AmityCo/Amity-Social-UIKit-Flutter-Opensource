@@ -61,7 +61,7 @@ extension TextMessageWidget on MessageBubbleView {
           if (isUser &&
               message.syncState != AmityMessageSyncState.SYNCED &&
               message.syncState != AmityMessageSyncState.FAILED) ...[
-            _buildSideTextWidget("Sending..."),
+            _buildSideTextWidget(context.l10n.message_sending),
             const SizedBox(width: 8),
           ],
           if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
@@ -224,7 +224,7 @@ extension TextMessageWidget on MessageBubbleView {
                                     ? Alignment.centerRight 
                                     : Alignment.centerLeft,
                                 child: Text(
-                                  "Edited",
+                                  context.l10n.general_edited,
                                   style: AmityTextStyle.caption(message.userId ==
                                           AmityCoreClient.getUserId()
                                       ? theme.primaryColor
@@ -260,7 +260,7 @@ extension TextMessageWidget on MessageBubbleView {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "See more",
+                                        context.l10n.general_see_more.replaceAll('...', ''),
                                         style: TextStyle(
                                           color: isUser
                                               ? messageColor

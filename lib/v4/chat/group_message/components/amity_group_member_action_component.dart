@@ -1,6 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -103,7 +104,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Unban user',
+                      context.l10n.chat_unban_user,
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ],
@@ -143,8 +144,8 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                       const SizedBox(width: 12),
                       Text(
                         isSelectedUserModerator
-                            ? 'Demote from moderator'
-                            : 'Promote to moderator',
+                            ? context.l10n.chat_demote_moderator
+                            : context.l10n.chat_promote_moderator,
                         style: AmityTextStyle.bodyBold(theme.baseColor),
                       ),
                     ],
@@ -184,7 +185,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        isMuted ? 'Unmute user' : 'Mute user',
+                        isMuted ? context.l10n.chat_unmute_user : context.l10n.chat_mute_user,
                         style: AmityTextStyle.bodyBold(theme.baseColor),
                       ),
                     ],
@@ -224,7 +225,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      user.isFlaggedByMe ? 'Unreport user' : 'Report user',
+                      user.isFlaggedByMe ? context.l10n.user_unreport : context.l10n.user_report,
                       style: AmityTextStyle.bodyBold(theme.baseColor),
                     ),
                   ],
@@ -264,7 +265,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Ban user',
+                        context.l10n.chat_ban_user,
                         style: AmityTextStyle.bodyBold(theme.baseColor),
                       ),
                     ],
@@ -302,7 +303,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Remove from group',
+                        context.l10n.chat_remove_member,
                         style: AmityTextStyle.bodyBold(theme.alertColor),
                       ),
                     ],

@@ -1759,6 +1759,80 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get toast_user_unmute_error =>
       'Error al desilenciar usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_list_add => 'Agregar';
+
+  @override
+  String get user_list_you => 'Tú';
+
+  @override
+  String get user_list_you_suffix => ' (Tú)';
+
+  @override
+  String get chat_new_conversation => 'Nueva conversación';
+
+  @override
+  String get search_minimum_characters =>
+      'Comienza tu búsqueda escribiendo\n al menos 3 letras';
+
+  @override
+  String get message_sending => 'Enviando...';
+
+  @override
+  String get message_not_sent => 'Tu mensaje no fue enviado';
+
+  @override
+  String get message_resend => 'Reenviar';
+
+  @override
+  String get general_error_title => 'Error';
+
+  @override
+  String get general_error_message => 'Ocurrió un error';
+
+  @override
+  String get chat_message_video_sent => 'Envió un video';
+
+  @override
+  String get chat_message_photo_sent => 'Envió una foto';
+
+  @override
+  String get chat_message_no_content => 'Sin contenido de mensaje';
+
+  @override
+  String get chat_archived_label => 'Archivado';
+
+  @override
+  String get chat_add_member => 'Agregar miembro';
+
+  @override
+  String get chat_promote_moderator => 'Promover a moderador';
+
+  @override
+  String get chat_demote_moderator => 'Degradar de moderador';
+
+  @override
+  String get chat_mute_user => 'Silenciar usuario';
+
+  @override
+  String get chat_unmute_user => 'Dejar de silenciar usuario';
+
+  @override
+  String get chat_ban_user => 'Banear usuario';
+
+  @override
+  String get chat_unban_user => 'Desbanear usuario';
+
+  @override
+  String get chat_remove_member => 'Quitar del grupo';
+
+  @override
+  String get reaction_tap_to_remove => 'Toca para eliminar reacción';
+
+  @override
+  String get image_load_error =>
+      'No se pudo cargar la imagen. Por favor, inténtalo de nuevo.';
 }
 
 /// The translations for Spanish Castilian, as used in Chile (`es_CL`).
@@ -3515,6 +3589,80 @@ class AppLocalizationsEsCl extends AppLocalizationsEs {
   @override
   String get toast_user_unmute_error =>
       'Error al desilenciar usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_list_add => 'Agregar';
+
+  @override
+  String get user_list_you => 'Tú';
+
+  @override
+  String get user_list_you_suffix => ' (Tú)';
+
+  @override
+  String get chat_new_conversation => 'Nueva conversación';
+
+  @override
+  String get search_minimum_characters =>
+      'Comienza tu búsqueda escribiendo\n al menos 3 letras';
+
+  @override
+  String get message_sending => 'Enviando...';
+
+  @override
+  String get message_not_sent => 'Tu mensaje no fue enviado';
+
+  @override
+  String get message_resend => 'Reenviar';
+
+  @override
+  String get general_error_title => 'Error';
+
+  @override
+  String get general_error_message => 'Ocurrió un error';
+
+  @override
+  String get chat_message_video_sent => 'Envió un video';
+
+  @override
+  String get chat_message_photo_sent => 'Envió una foto';
+
+  @override
+  String get chat_message_no_content => 'Sin contenido de mensaje';
+
+  @override
+  String get chat_archived_label => 'Archivado';
+
+  @override
+  String get chat_add_member => 'Agregar miembro';
+
+  @override
+  String get chat_promote_moderator => 'Promover a moderador';
+
+  @override
+  String get chat_demote_moderator => 'Degradar de moderador';
+
+  @override
+  String get chat_mute_user => 'Silenciar usuario';
+
+  @override
+  String get chat_unmute_user => 'Dejar de silenciar usuario';
+
+  @override
+  String get chat_ban_user => 'Banear usuario';
+
+  @override
+  String get chat_unban_user => 'Desbanear usuario';
+
+  @override
+  String get chat_remove_member => 'Quitar del grupo';
+
+  @override
+  String get reaction_tap_to_remove => 'Toca para eliminar reacción';
+
+  @override
+  String get image_load_error =>
+      'No se pudo cargar la imagen. Por favor, inténtalo de nuevo.';
 }
 
 /// The translations for Spanish Castilian, as used in Colombia (`es_CO`).
@@ -5271,6 +5419,80 @@ class AppLocalizationsEsCo extends AppLocalizationsEs {
   @override
   String get toast_user_unmute_error =>
       'Error al desilenciar usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_list_add => 'Agregar';
+
+  @override
+  String get user_list_you => 'Tú';
+
+  @override
+  String get user_list_you_suffix => ' (Tú)';
+
+  @override
+  String get chat_new_conversation => 'Nueva conversación';
+
+  @override
+  String get search_minimum_characters =>
+      'Comienza tu búsqueda escribiendo\n al menos 3 letras';
+
+  @override
+  String get message_sending => 'Enviando...';
+
+  @override
+  String get message_not_sent => 'Tu mensaje no fue enviado';
+
+  @override
+  String get message_resend => 'Reenviar';
+
+  @override
+  String get general_error_title => 'Error';
+
+  @override
+  String get general_error_message => 'Ocurrió un error';
+
+  @override
+  String get chat_message_video_sent => 'Envió un video';
+
+  @override
+  String get chat_message_photo_sent => 'Envió una foto';
+
+  @override
+  String get chat_message_no_content => 'Sin contenido de mensaje';
+
+  @override
+  String get chat_archived_label => 'Archivado';
+
+  @override
+  String get chat_add_member => 'Agregar miembro';
+
+  @override
+  String get chat_promote_moderator => 'Promover a moderador';
+
+  @override
+  String get chat_demote_moderator => 'Degradar de moderador';
+
+  @override
+  String get chat_mute_user => 'Silenciar usuario';
+
+  @override
+  String get chat_unmute_user => 'Dejar de silenciar usuario';
+
+  @override
+  String get chat_ban_user => 'Banear usuario';
+
+  @override
+  String get chat_unban_user => 'Desbanear usuario';
+
+  @override
+  String get chat_remove_member => 'Quitar del grupo';
+
+  @override
+  String get reaction_tap_to_remove => 'Toca para eliminar reacción';
+
+  @override
+  String get image_load_error =>
+      'No se pudo cargar la imagen. Por favor, inténtalo de nuevo.';
 }
 
 /// The translations for Spanish Castilian, as used in Mexico (`es_MX`).
@@ -7027,6 +7249,80 @@ class AppLocalizationsEsMx extends AppLocalizationsEs {
   @override
   String get toast_user_unmute_error =>
       'Error al desilenciar usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_list_add => 'Agregar';
+
+  @override
+  String get user_list_you => 'Tú';
+
+  @override
+  String get user_list_you_suffix => ' (Tú)';
+
+  @override
+  String get chat_new_conversation => 'Nueva conversación';
+
+  @override
+  String get search_minimum_characters =>
+      'Comienza tu búsqueda escribiendo\n al menos 3 letras';
+
+  @override
+  String get message_sending => 'Enviando...';
+
+  @override
+  String get message_not_sent => 'Tu mensaje no fue enviado';
+
+  @override
+  String get message_resend => 'Reenviar';
+
+  @override
+  String get general_error_title => 'Error';
+
+  @override
+  String get general_error_message => 'Ocurrió un error';
+
+  @override
+  String get chat_message_video_sent => 'Envió un video';
+
+  @override
+  String get chat_message_photo_sent => 'Envió una foto';
+
+  @override
+  String get chat_message_no_content => 'Sin contenido de mensaje';
+
+  @override
+  String get chat_archived_label => 'Archivado';
+
+  @override
+  String get chat_add_member => 'Agregar miembro';
+
+  @override
+  String get chat_promote_moderator => 'Promover a moderador';
+
+  @override
+  String get chat_demote_moderator => 'Degradar de moderador';
+
+  @override
+  String get chat_mute_user => 'Silenciar usuario';
+
+  @override
+  String get chat_unmute_user => 'Dejar de silenciar usuario';
+
+  @override
+  String get chat_ban_user => 'Banear usuario';
+
+  @override
+  String get chat_unban_user => 'Desbanear usuario';
+
+  @override
+  String get chat_remove_member => 'Quitar del grupo';
+
+  @override
+  String get reaction_tap_to_remove => 'Toca para eliminar reacción';
+
+  @override
+  String get image_load_error =>
+      'No se pudo cargar la imagen. Por favor, inténtalo de nuevo.';
 }
 
 /// The translations for Spanish Castilian, as used in Peru (`es_PE`).
@@ -8783,4 +9079,78 @@ class AppLocalizationsEsPe extends AppLocalizationsEs {
   @override
   String get toast_user_unmute_error =>
       'Error al desilenciar usuario. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get user_list_add => 'Agregar';
+
+  @override
+  String get user_list_you => 'Tú';
+
+  @override
+  String get user_list_you_suffix => ' (Tú)';
+
+  @override
+  String get chat_new_conversation => 'Nueva conversación';
+
+  @override
+  String get search_minimum_characters =>
+      'Comienza tu búsqueda escribiendo\n al menos 3 letras';
+
+  @override
+  String get message_sending => 'Enviando...';
+
+  @override
+  String get message_not_sent => 'Tu mensaje no fue enviado';
+
+  @override
+  String get message_resend => 'Reenviar';
+
+  @override
+  String get general_error_title => 'Error';
+
+  @override
+  String get general_error_message => 'Ocurrió un error';
+
+  @override
+  String get chat_message_video_sent => 'Envió un video';
+
+  @override
+  String get chat_message_photo_sent => 'Envió una foto';
+
+  @override
+  String get chat_message_no_content => 'Sin contenido de mensaje';
+
+  @override
+  String get chat_archived_label => 'Archivado';
+
+  @override
+  String get chat_add_member => 'Agregar miembro';
+
+  @override
+  String get chat_promote_moderator => 'Promover a moderador';
+
+  @override
+  String get chat_demote_moderator => 'Degradar de moderador';
+
+  @override
+  String get chat_mute_user => 'Silenciar usuario';
+
+  @override
+  String get chat_unmute_user => 'Dejar de silenciar usuario';
+
+  @override
+  String get chat_ban_user => 'Banear usuario';
+
+  @override
+  String get chat_unban_user => 'Desbanear usuario';
+
+  @override
+  String get chat_remove_member => 'Quitar del grupo';
+
+  @override
+  String get reaction_tap_to_remove => 'Toca para eliminar reacción';
+
+  @override
+  String get image_load_error =>
+      'No se pudo cargar la imagen. Por favor, inténtalo de nuevo.';
 }

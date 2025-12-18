@@ -40,15 +40,17 @@ class AmityChatPage extends NewBasePage {
   final String? jumpToMessageId;
   BounceAnimator? bounceAnimator;
   Function? bounceLatestMessage;
+  final bool isJustCreated;
 
-  AmityChatPage(
-      {super.key,
-      this.channelId,
-      this.userId,
-      this.userDisplayName,
-      this.avatarUrl,
-      this.jumpToMessageId})
-      : super(pageId: 'chat_page');
+  AmityChatPage({
+    super.key,
+    this.channelId,
+    this.userId,
+    this.userDisplayName,
+    this.avatarUrl,
+    this.jumpToMessageId,
+    this.isJustCreated = false,
+  }) : super(pageId: 'chat_page');
 
   @override
   Widget buildPage(BuildContext context) {
@@ -87,7 +89,7 @@ class AmityChatPage extends NewBasePage {
               child: BlocBuilder<ChatPageBloc, ChatPageState>(
                 key: Key("${channelId ?? ""}_${userId ?? ""}"),
                 builder: (context, state) {
-                if (state is ChatPageStateInitial) {
+                if (state is ChatPageStateInitial && !isJustCreated) {
                   context.read<AmityToastBloc>().add(AmityToastLoading(
                       message: context.l10n.chat_loading,
                       icon: AmityToastIcon.loading,

@@ -1,11 +1,15 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -23,8 +27,17 @@ class MediaPermissionHandler {
           Permission.videos,
         ].request();
 
-        return statuses[Permission.photos]!.isGranted &&
+        final granted = statuses[Permission.photos]!.isGranted &&
             statuses[Permission.videos]!.isGranted;
+        
+        if (!granted) {
+          await _showPermissionDialog();
+        }
+        
+        return granted;
+      } else if (status.isPermanentlyDenied) {
+        await _showPermissionDialog();
+        return false;
       }
       return status.isGranted;
     }
@@ -33,9 +46,45 @@ class MediaPermissionHandler {
       final status = await Permission.storage.status;
       if (status.isDenied) {
         final result = await Permission.storage.request();
+        
+        if (!result.isGranted) {
+          await _showPermissionDialog();
+        }
+        
         return result.isGranted;
+      } else if (status.isPermanentlyDenied) {
+        await _showPermissionDialog();
+        return false;
       }
       return status.isGranted;
+    }
+  }
+
+  Future<void> _showPermissionDialog() async {
+    final BuildContext? context = NavigationService.navigatorKey.currentContext;
+    if (context == null) return;
+
+    final appName = await _getAppName();
+    
+    PermissionAlertV4Dialog().show(
+      context: context,
+      title: 'Allow access to your photos and videos',
+      detailText:
+          'This allows $appName to share photos and videos from this device.',
+      bottomButtonText: 'OK',
+      topButtonText: 'Open settings',
+      onTopButtonAction: () {
+        openAppSettings();
+      },
+    );
+  }
+
+  Future<String> _getAppName() async {
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      return packageInfo.appName;
+    } catch (e) {
+      return 'this app';
     }
   }
 

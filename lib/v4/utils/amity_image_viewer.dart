@@ -1,6 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -58,7 +59,7 @@ class _AmityImageViewerState extends State<AmityImageViewer> {
                       widget.imageUrl,
                       errorBuilder: (context, error, stackTrace) {
                         context.read<AmityToastBloc>().add(AmityToastShort(
-                          message: "Couldn't load image. Please try again.",
+                          message: context.l10n.image_load_error,
                           icon: AmityToastIcon.warning,
                           bottomPadding: AmityChatPage.toastBottomPadding
                         ));

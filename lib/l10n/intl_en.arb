@@ -2175,5 +2175,101 @@
   "chat_loading": "Loading chat...",
   "@chat_loading": {
     "description": "Loading message shown when chat is being initialized"
+  },
+  "user_list_add": "Add",
+  "@user_list_add": {
+    "description": "Label for add user button in user list"
+  },
+  "user_list_you": "You",
+  "@user_list_you": {
+    "description": "Label indicating current user in user list"
+  },
+  "user_list_you_suffix": " (You)",
+  "@user_list_you_suffix": {
+    "description": "Suffix appended to display name for current user"
+  },
+  "chat_new_conversation": "New conversation",
+  "@chat_new_conversation": {
+    "description": "Title for creating a new conversation"
+  },
+  "search_minimum_characters": "Start your search by typing\n at least 3 letters",
+  "@search_minimum_characters": {
+    "description": "Message displayed when user needs to type more characters to search"
+  },
+  "message_sending": "Sending...",
+  "@message_sending": {
+    "description": "Status text shown when a message is being sent"
+  },
+  "message_not_sent": "Your message wasn't sent",
+  "@message_not_sent": {
+    "description": "Error message shown when a message failed to send"
+  },
+  "message_resend": "Resend",
+  "@message_resend": {
+    "description": "Action to resend a failed message"
+  },
+  "general_error_title": "Error",
+  "@general_error_title": {
+    "description": "Generic error title"
+  },
+  "general_error_message": "An error occurred",
+  "@general_error_message": {
+    "description": "Generic error message"
+  },
+  "chat_message_video_sent": "Sent a video",
+  "@chat_message_video_sent": {
+    "description": "Preview text for video message"
+  },
+  "chat_message_photo_sent": "Sent a photo",
+  "@chat_message_photo_sent": {
+    "description": "Preview text for photo message"
+  },
+  "chat_message_no_content": "No message content",
+  "@chat_message_no_content": {
+    "description": "Message when there is no content"
+  },
+  "chat_archived_label": "Archived",
+  "@chat_archived_label": {
+    "description": "Label for archived chat badge"
+  },
+  "chat_add_member": "Add Member",
+  "@chat_add_member": {
+    "description": "Title and button text for adding members to a group chat"
+  },
+  "chat_promote_moderator": "Promote to moderator",
+  "@chat_promote_moderator": {
+    "description": "Action to promote a group chat member to moderator"
+  },
+  "chat_demote_moderator": "Demote from moderator",
+  "@chat_demote_moderator": {
+    "description": "Action to demote a moderator from moderator role"
+  },
+  "chat_mute_user": "Mute user",
+  "@chat_mute_user": {
+    "description": "Action to mute a user in group chat"
+  },
+  "chat_unmute_user": "Unmute user",
+  "@chat_unmute_user": {
+    "description": "Action to unmute a user in group chat"
+  },
+  "chat_ban_user": "Ban user",
+  "@chat_ban_user": {
+    "description": "Action to ban a user from group chat"
+  },
+  "chat_unban_user": "Unban user",
+  "@chat_unban_user": {
+    "description": "Action to unban a user from group chat"
+  },
+  "chat_remove_member": "Remove from group",
+  "@chat_remove_member": {
+    "description": "Action to remove a member from group chat"
+  },
+  "reaction_tap_to_remove": "Tap to remove reaction",
+  "@reaction_tap_to_remove": {
+    "description": "Hint text shown to user on their own reaction to indicate they can tap to remove it"
+  },
+  "image_load_error": "Couldn't load image. Please try again.",
+  "@image_load_error": {
+    "description": "Error message shown when an image fails to load"
   }
 }

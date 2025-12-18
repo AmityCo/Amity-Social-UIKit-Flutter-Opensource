@@ -432,15 +432,15 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
 
     on<ChatPageEventFetchFollowInfo>((event, emit) async {
       // Use our dedicated user property first, fallback to channelMember.user if needed
-      AmityUser? user = state.user ?? state.channelMember?.user;
-      if (user == null) {
+      String? userId = event.userId ?? state.user?.userId ?? state.channelMember?.user?.userId;
+      if (userId == null) {
         return;
       }
 
       try {
         final followInfo = await AmityCoreClient.newUserRepository()
             .relationship()
-            .getFollowInfo(user.userId!);
+            .getFollowInfo(userId);
 
         final isBlocking = followInfo.status == AmityFollowStatus.BLOCKED;
         addEvent(ChatPageFollowInfoUpdated(isUserBlocked: isBlocking));
@@ -564,6 +564,13 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     } else if (userId != null && userId.isNotEmpty) {
       addEvent(ChatPageEventCreateNewChannel(userId: userId));
     }
+    if (userId != null && userId.isNotEmpty) {
+      fetchFellowInfo(userId);
+    }
+  }
+
+  void fetchFellowInfo(String userId) {
+    addEvent(ChatPageEventFetchFollowInfo(userId: userId));
   }
 
   void _setupScrollListener() {

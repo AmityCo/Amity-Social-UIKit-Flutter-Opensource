@@ -3,6 +3,7 @@ import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/bloc/reaction_list_bloc.dart';
+import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
@@ -487,7 +488,7 @@ class AmityReactionList extends NewBaseComponent {
                   if (referenceType == AmityReactionReferenceType.MESSAGE &&
                       isCurrentUser)
                     Text(
-                      "Tap to remove reaction",
+                      context.l10n.reaction_tap_to_remove,
                       style: AmityTextStyle.caption(theme.baseColorShade1),
                     ),
                 ],

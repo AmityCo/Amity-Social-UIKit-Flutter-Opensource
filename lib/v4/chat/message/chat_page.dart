@@ -117,6 +117,16 @@ class AmityChatPage extends NewBasePage {
                   appBar: AppBar(
                     titleSpacing: -5,
                     surfaceTintColor: theme.backgroundColor,
+                    leading: IconButton(
+                      icon: SvgPicture.asset(
+                        "assets/Icons/amity_ic_back_button.svg",
+                        package: 'amity_uikit_beta_service',
+                        color: theme.secondaryColor,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                     title: Row(
                       children: [
                         if (isLoadingUserAvatar)

@@ -407,6 +407,7 @@ class AmityMessageComposer extends NewBaseComponent {
           ),
           GestureDetector(
             onTap: () {
+              controller.clear();
               action.onDissmiss();
             },
             child: SizedBox(

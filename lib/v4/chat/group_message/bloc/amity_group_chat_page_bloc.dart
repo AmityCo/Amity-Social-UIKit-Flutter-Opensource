@@ -11,8 +11,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_video_thumbnail/flutter_video_thumbnail.dart';
 import 'package:intl/intl.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 part 'amity_group_chat_page_events.dart';
 part 'amity_group_chat_page_state.dart';
@@ -254,12 +254,10 @@ class AmityGroupChatPageBloc
         localThumbnails[event.uniqueId] = null;
         emit(state.copyWith(localThumbnails: localThumbnails));
         try {
-          final Uint8List? uint8list = await VideoThumbnail.thumbnailData(
-            video: event.videoPath,
-            imageFormat: ImageFormat.PNG,
-            maxWidth: 240,
-            maxHeight: 240,
+          final Uint8List? uint8list = await FlutterVideoThumbnail.getThumbnail(
+            event.videoPath,
             quality: 75,
+            useCache: true,
           );
           if (uint8list != null && uint8list.isNotEmpty) {
             Map<String, Uint8List?> currentLocalThumbnails = {

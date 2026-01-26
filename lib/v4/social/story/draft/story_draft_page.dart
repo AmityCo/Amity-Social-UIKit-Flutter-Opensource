@@ -6,10 +6,10 @@ import 'package:amity_uikit_beta_service/v4/social/story/draft/amity_story_media
 import 'package:amity_uikit_beta_service/v4/social/story/draft/bloc/story_draft_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/amity_story_hyperlink_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/elements/amity_story_hyperlink_view.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/utils/story_palette_cache.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_custom_snack_bar.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_story_single_segment_timer_element.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/utils/story_palette_cache.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:chewie/chewie.dart';
@@ -17,9 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_video_thumbnail/flutter_video_thumbnail.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:video_player/video_player.dart';
 
 class StoryDraftPage extends NewBasePage {
@@ -738,11 +737,10 @@ class _StoryDraftVideoViewState extends State<StoryDraftVideoView> {
 
   Future<void> _generateThumbnail() async {
     try {
-      final thumb = await VideoThumbnail.thumbnailData(
-  video: widget.mediaType.file.path,
-        imageFormat: ImageFormat.JPEG,
-        maxWidth: 640,
+      final thumb = await FlutterVideoThumbnail.getThumbnail(
+        widget.mediaType.file.path,
         quality: 60,
+        useCache: true,
       );
 
       if (!mounted || thumb == null) return;

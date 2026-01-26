@@ -363,15 +363,13 @@ extension ParentMessageWidget on MessageBubbleView {
 
                           if (image == null) {
                             return FutureBuilder<Uint8List?>(
-                              future: VideoThumbnail.thumbnailData(
-                                video: (parentMessage.data as MessageVideoData)
+                              future: FlutterVideoThumbnail.getThumbnail(
+                                (parentMessage.data as MessageVideoData)
                                         .fileInfo
                                         .fileUrl ??
                                     "",
-                                imageFormat: ImageFormat.PNG,
-                                maxWidth: 120,
-                                maxHeight: 120,
                                 quality: 75,
+                                useCache: true,
                               ),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData)

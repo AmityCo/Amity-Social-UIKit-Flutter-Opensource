@@ -7,10 +7,10 @@ import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/viewmodel/media_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_video_thumbnail/flutter_video_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:provider/provider.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../components/alert_dialog.dart';
 import 'community_feed_viewmodel.dart';
@@ -84,12 +84,10 @@ class CreatePostVM extends ChangeNotifier {
       }
 
       log("Generating thumbnail...");
-      final uint8list = await VideoThumbnail.thumbnailData(
-        video: path,
-        imageFormat: ImageFormat.JPEG,
-        maxWidth: 1000,
-        maxHeight: 1000,
-        quality: 0,
+      final uint8list = await FlutterVideoThumbnail.getThumbnail(
+        path,
+        quality: 75,
+        useCache: true,
       );
 
       if (uint8list != null && uint8list.isNotEmpty) {

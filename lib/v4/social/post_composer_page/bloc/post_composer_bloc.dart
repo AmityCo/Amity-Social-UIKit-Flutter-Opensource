@@ -4,11 +4,11 @@ import 'dart:typed_data';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
+import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:flutter_video_thumbnail/flutter_video_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 part 'post_composer_events.dart';
 part 'post_composer_state.dart';
@@ -28,12 +28,10 @@ class PostComposerBloc extends Bloc<PostComposerEvent, PostComposerState> {
       StreamController<AmityUploadResult>? client;
 
       if (type == FileType.video) {
-        final Uint8List? uint8list = await VideoThumbnail.thumbnailData(
-          video: file.path,
-          imageFormat: ImageFormat.PNG,
-          maxWidth: 1000,
-          maxHeight: 1000,
+        final Uint8List? uint8list = await FlutterVideoThumbnail.getThumbnail(
+          file.path,
           quality: 75,
+          useCache: true,
         );
 
         if (uint8list != null && uint8list.isNotEmpty) {

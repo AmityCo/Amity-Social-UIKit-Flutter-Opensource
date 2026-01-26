@@ -7,9 +7,9 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_video_thumbnail/flutter_video_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 enum FileStatus { uploading, rejected, complete }
 
@@ -150,12 +150,10 @@ class CreatePostVMV2 with ChangeNotifier {
           );
         } else if (mimeType.startsWith('video')) {
           log("Generating thumbnail...");
-          final Uint8List? uint8list = await VideoThumbnail.thumbnailData(
-            video: uploadingFile.path,
-            imageFormat: ImageFormat.PNG,
-            maxWidth: 1000,
-            maxHeight: 1000,
-            quality: 75, // Adjusted quality to a non-zero value
+          final Uint8List? uint8list = await FlutterVideoThumbnail.getThumbnail(
+            uploadingFile.path,
+            quality: 75,
+            useCache: true,
           );
 
           if (uint8list != null && uint8list.isNotEmpty) {

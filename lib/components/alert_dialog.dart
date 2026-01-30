@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:amity_uikit_beta_service/components/custom_dialog.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/navigation_key.dart';
 
@@ -22,23 +24,38 @@ class AmityDialog {
       final BuildContext? context =
           NavigationService.navigatorKey.currentContext;
       if (context != null) {
+        // Get theme before showing dialog
+        final appTheme = Provider.of<ConfigProvider>(context, listen: false).getTheme(null, null);
+        final isDarkMode = appTheme.backgroundColor.computeLuminance() < 0.5;
+
         if (Platform.isIOS) {
           // Use CupertinoAlertDialog for iOS
           await showCupertinoDialog(
             barrierDismissible: isBarrierDismissible(),
             context: context,
-            builder: (BuildContext context) {
-              return CupertinoAlertDialog(
-                title: Text(title),
-                content: Text(message),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: Text(context.l10n.general_ok),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+            builder: (BuildContext dialogContext) {
+              return CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness: isDarkMode ? Brightness.dark : Brightness.light,
+                ),
+                child: CupertinoAlertDialog(
+                  title: Text(
+                    title,
+                    style: TextStyle(color: appTheme.baseColor),
                   ),
-                ],
+                  content: Text(
+                    message,
+                    style: TextStyle(color: appTheme.baseColor),
+                  ),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text(dialogContext.l10n.general_ok),
+                      onPressed: () {
+                        Navigator.of(dialogContext).pop();
+                      },
+                    ),
+                  ],
+                ),
               );
             },
           );
@@ -47,15 +64,22 @@ class AmityDialog {
           await showDialog(
             barrierDismissible: isBarrierDismissible(),
             context: context,
-            builder: (BuildContext context) {
+            builder: (BuildContext dialogContext) {
               return AlertDialog(
-                title: Text(title),
-                content: Text(message),
+                backgroundColor: appTheme.backgroundColor,
+                title: Text(
+                  title,
+                  style: TextStyle(color: appTheme.baseColor),
+                ),
+                content: Text(
+                  message,
+                  style: TextStyle(color: appTheme.baseColor),
+                ),
                 actions: <Widget>[
                   TextButton(
-                    child: Text(context.l10n.general_ok),
+                    child: Text(dialogContext.l10n.general_ok),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(dialogContext).pop();
                     },
                   ),
                 ],
@@ -76,13 +100,15 @@ class AmityLoadingDialog {
     print("show AmityLoadingDialog");
     _isDialogShowing = true;
     print("set _isDialogShowing: $_isDialogShowing");
+    final context = NavigationService.navigatorKey.currentContext!;
+    final appTheme = Provider.of<ConfigProvider>(context, listen: false).getTheme(null, null);
     return showDialog<void>(
-      context: NavigationService.navigatorKey.currentContext!,
+      context: context,
       barrierColor: Colors.transparent,
       barrierDismissible:
           true, // Set to false to prevent dismissing by tapping outside
-      builder: (context) {
-        loadingContext = context;
+      builder: (dialogContext) {
+        loadingContext = dialogContext;
         return Center(
           child: SizedBox(
             width: 200,
@@ -91,23 +117,23 @@ class AmityLoadingDialog {
               elevation: 0, // Remove shadow/elevation effect
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.6),
+                  color: appTheme.baseColorShade3.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CupertinoActivityIndicator(
-                      color: Colors.white,
+                    CupertinoActivityIndicator(
+                      color: appTheme.baseColor,
                       radius: 20,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      context.l10n.general_loading,
-                      style: const TextStyle(
+                      dialogContext.l10n.general_loading,
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: appTheme.baseColor,
                       ),
                     ),
                   ],
@@ -143,17 +169,17 @@ class AmityLoadingDialog {
 class AmitySuccessDialog {
   static Future<void> showTimedDialog(String text,
       {BuildContext? context}) async {
-    // if (context == null) {
-    //   print("Context is null, cannot show dialog");
-    //   return Future.value();
-    // }
+    final ctx = context ?? NavigationService.navigatorKey.currentContext!;
+    final appTheme = Provider.of<ConfigProvider>(ctx, listen: false).getTheme(null, null);
 
     showCupertinoDialog<void>(
-      context: context ?? NavigationService.navigatorKey.currentContext!,
+      context: ctx,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return TimedDialog(
           text: text,
+          backgroundColor: appTheme.backgroundColor,
+          textColor: appTheme.baseColor,
         );
       },
     );
@@ -173,30 +199,40 @@ class ConfirmationDialog {
     // Set default localized values
     final String leftBtnText = leftButtonText ?? context.l10n.general_cancel;
     final String rightBtnText = rightButtonText ?? context.l10n.general_confirm;
-    
+
+    // Get theme before showing dialog
+    final appTheme = Provider.of<ConfigProvider>(context, listen: false).getTheme(null, null);
+
     // Check the platform
     if (Platform.isAndroid) {
       // Android-specific code
       return showDialog<void>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext dialogContext) {
           return AlertDialog(
-            title: Text(title),
-            content: Text(detailText),
+            backgroundColor: appTheme.backgroundColor,
+            title: Text(
+              title,
+              style: TextStyle(color: appTheme.baseColor),
+            ),
+            content: Text(
+              detailText,
+              style: TextStyle(color: appTheme.baseColor),
+            ),
             actions: <Widget>[
               TextButton(
                 child: Text(leftBtnText),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(dialogContext).pop();
                 },
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                   onConfirm();
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: confrimColor, // Set the text color
+                  foregroundColor: confrimColor,
                 ),
                 child: Text(rightBtnText),
               ),
@@ -206,25 +242,34 @@ class ConfirmationDialog {
       );
     } else if (Platform.isIOS) {
       // iOS-specific code
+      final isDarkMode = appTheme.backgroundColor.computeLuminance() < 0.5;
       return showCupertinoDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext dialogContext) {
           return CupertinoTheme(
-            data: const CupertinoThemeData(brightness: Brightness.light),
+            data: CupertinoThemeData(
+              brightness: isDarkMode ? Brightness.dark : Brightness.light,
+            ),
             child: CupertinoAlertDialog(
-              title: Text(title),
-              content: Text(detailText),
+              title: Text(
+                title,
+                style: TextStyle(color: appTheme.baseColor),
+              ),
+              content: Text(
+                detailText,
+                style: TextStyle(color: appTheme.baseColor),
+              ),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text(leftBtnText),
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(dialogContext).pop();
                   },
                 ),
                 CupertinoDialogAction(
                   textStyle: TextStyle(color: confrimColor),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(dialogContext).pop();
                     onConfirm();
                   },
                   isDefaultAction: true,
@@ -256,42 +301,51 @@ class AmityAlertDialogWithThreeActions {
   }) async {
     // Set default localized values
     final String dismissBtnText = dismissText ?? context.l10n.general_cancel;
-    
+
+    // Get theme before showing dialog
+    final appTheme = Provider.of<ConfigProvider>(context, listen: false).getTheme(null, null);
+
     // Check the platform
     if (Platform.isAndroid) {
       // Android-specific code
       return showDialog<void>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext dialogContext) {
           return AlertDialog(
-            title: Text(title),
-            content: Text(detailText),
-            
+            backgroundColor: appTheme.backgroundColor,
+            title: Text(
+              title,
+              style: TextStyle(color: appTheme.baseColor),
+            ),
+            content: Text(
+              detailText,
+              style: TextStyle(color: appTheme.baseColor),
+            ),
             actions: <Widget>[
               TextButton(
                 child: Text(dismissBtnText),
                 onPressed: () {
                   onDismissRequest();
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(dialogContext).pop();
                 },
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                   actionOne();
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.red, // Set the text color
+                  foregroundColor: actionOneColor,
                 ),
                 child: Text(actionOneText),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                   actionTwo();
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.red, // Set the text color
+                  foregroundColor: actionTwoColor,
                 ),
                 child: Text(actionTwoText),
               ),
@@ -304,28 +358,37 @@ class AmityAlertDialogWithThreeActions {
       });
     } else if (Platform.isIOS) {
       // iOS-specific code
+      final isDarkMode = appTheme.backgroundColor.computeLuminance() < 0.5;
       return showCupertinoDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext dialogContext) {
           return CupertinoTheme(
-            data: const CupertinoThemeData(brightness: Brightness.light),
+            data: CupertinoThemeData(
+              brightness: isDarkMode ? Brightness.dark : Brightness.light,
+            ),
             child: CupertinoAlertDialog(
-              title: Text(title),
-              content: Text(detailText),
+              title: Text(
+                title,
+                style: TextStyle(color: appTheme.baseColor),
+              ),
+              content: Text(
+                detailText,
+                style: TextStyle(color: appTheme.baseColor),
+              ),
               actions: <Widget>[
                 CupertinoDialogAction(
-                  textStyle:  TextStyle(color: actionOneColor),
+                  textStyle: TextStyle(color: actionOneColor),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(dialogContext).pop();
                     actionOne();
                   },
                   isDefaultAction: true,
                   child: Text(actionOneText),
                 ),
                 CupertinoDialogAction(
-                  textStyle:  TextStyle(color: actionTwoColor ),
+                  textStyle: TextStyle(color: actionTwoColor),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(dialogContext).pop();
                     actionTwo();
                   },
                   isDefaultAction: true,
@@ -335,7 +398,7 @@ class AmityAlertDialogWithThreeActions {
                   child: Text(dismissBtnText),
                   onPressed: () {
                     onDismissRequest();
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(dialogContext).pop();
                   },
                 ),
               ],

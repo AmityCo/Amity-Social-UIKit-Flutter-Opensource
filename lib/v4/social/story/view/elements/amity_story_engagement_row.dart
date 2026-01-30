@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_community_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/bloc/view_story_bloc.dart';
@@ -8,19 +10,19 @@ import 'package:amity_uikit_beta_service/v4/social/story/view/elements/amity_sto
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AmityStoryEngagementRow extends StatelessWidget {
+class AmityStoryEngagementRow extends StatefulWidget {
   final String storyId;
   final AmityStory amityStory;
   final bool isCommunityJoined;
   final bool isAllowedComment;
-  int reachCount;
-  int commentCount;
-  int reactionCount;
-  bool isReactedByMe;
+  final int reachCount;
+  final int commentCount;
+  final int reactionCount;
+  final bool isReactedByMe;
   final bool isCreatedByMe;
   final bool hasModeratorRole;
 
-  AmityStoryEngagementRow({
+  const AmityStoryEngagementRow({
     super.key,
     required this.storyId,
     required this.isCommunityJoined,
@@ -35,6 +37,58 @@ class AmityStoryEngagementRow extends StatelessWidget {
   });
 
   @override
+  State<AmityStoryEngagementRow> createState() =>
+      _AmityStoryEngagementRowState();
+}
+
+class _AmityStoryEngagementRowState extends State<AmityStoryEngagementRow> {
+  Timer? _debounceTimer;
+  late bool _localIsReactedByMe;
+  late int _localReactionCount;
+  bool? _initialReactedByMe;
+
+  @override
+  void initState() {
+    super.initState();
+    _localIsReactedByMe = widget.isReactedByMe;
+    _localReactionCount = widget.reactionCount;
+    _initialReactedByMe = widget.isReactedByMe;
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onReactionTap(bool addReaction) {
+    setState(() {
+      if (addReaction) {
+        _localIsReactedByMe = true;
+        _localReactionCount++;
+      } else {
+        _localIsReactedByMe = false;
+        _localReactionCount--;
+      }
+    });
+
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      // Only dispatch event if the final state is different from initial
+      if (_localIsReactedByMe != _initialReactedByMe) {
+        if (_localIsReactedByMe) {
+          BlocProvider.of<ViewStoryBloc>(context)
+              .add(AddReactionEvent(storyId: widget.storyId));
+        } else {
+          BlocProvider.of<ViewStoryBloc>(context)
+              .add(RemoveReactionEvent(storyId: widget.storyId));
+        }
+        _initialReactedByMe = _localIsReactedByMe;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 60,
@@ -44,9 +98,9 @@ class AmityStoryEngagementRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          (hasModeratorRole || isCreatedByMe)
+          (widget.hasModeratorRole || widget.isCreatedByMe)
               ? AmityStoryViewCountElement(
-                  count: "$reachCount",
+                  count: "${widget.reachCount}",
                   onClick: () {},
                 )
               : Container(),
@@ -56,23 +110,20 @@ class AmityStoryEngagementRow extends StatelessWidget {
             children: [
               AmityStoryCommentCountElement(
                   onClick: () {
-                    BlocProvider.of<ViewStoryBloc>(context).add(ShoudPauseEvent(shouldPause: true));
-                    BlocProvider.of<StoryVideoPlayerBloc>(context).add(const PauseStoryVideoEvent());
-                    openCommentTraySheet(context, amityStory, isCommunityJoined, isAllowedComment);
+                    BlocProvider.of<ViewStoryBloc>(context)
+                        .add(ShoudPauseEvent(shouldPause: true));
+                    BlocProvider.of<StoryVideoPlayerBloc>(context)
+                        .add(const PauseStoryVideoEvent());
+                    openCommentTraySheet(context, widget.amityStory,
+                        widget.isCommunityJoined, widget.isAllowedComment);
                   },
-                  count: "$commentCount"),
+                  count: "${widget.commentCount}"),
               const SizedBox(width: 10),
               AmityStoryReactionCountElement(
-                count: "$reactionCount",
-                onClick: (addReaction) {
-                  if (addReaction) {
-                    BlocProvider.of<ViewStoryBloc>(context).add(AddReactionEvent(storyId: storyId));
-                  } else {
-                    BlocProvider.of<ViewStoryBloc>(context).add(RemoveReactionEvent(storyId: storyId));
-                  }
-                },
-                isReactedByMe: isReactedByMe,
-                isCommunityJoined: isCommunityJoined,
+                count: "$_localReactionCount",
+                onClick: _onReactionTap,
+                isReactedByMe: _localIsReactedByMe,
+                isCommunityJoined: widget.isCommunityJoined,
               ),
             ],
           )),
@@ -80,6 +131,4 @@ class AmityStoryEngagementRow extends StatelessWidget {
       ),
     );
   }
-
-  
 }

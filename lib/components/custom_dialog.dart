@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 
 class TimedDialog extends StatefulWidget {
   final String text;
-  const TimedDialog({super.key, required this.text});
+  final Color? backgroundColor;
+  final Color? textColor;
+  const TimedDialog({
+    super.key,
+    required this.text,
+    this.backgroundColor,
+    this.textColor,
+  });
 
   @override
   _TimedDialogState createState() => _TimedDialogState();
@@ -38,11 +45,13 @@ class _TimedDialogState extends State<TimedDialog>
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = widget.backgroundColor ?? Colors.grey.withOpacity(0.6);
+    final fgColor = widget.textColor ?? Colors.white;
     return Center(
       child: SizedBox(
         width: 200,
         child: Dialog(
-          backgroundColor: Colors.grey.withOpacity(0.6),
+          backgroundColor: bgColor,
           elevation: 0,
           child: Container(
             decoration: BoxDecoration(
@@ -52,17 +61,17 @@ class _TimedDialogState extends State<TimedDialog>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.check,
-                  color: Colors.white,
+                  color: fgColor,
                   size: 50,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   widget.text,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: fgColor,
                   ),
                 ),
               ],

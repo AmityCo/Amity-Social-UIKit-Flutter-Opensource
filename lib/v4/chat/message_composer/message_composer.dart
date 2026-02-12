@@ -55,11 +55,20 @@ class AmityMessageComposer extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
+    if (MessageComposerCache().shouldFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        focusNode.requestFocus();
+      });
+    }
     toastBloc = context.read<AmityToastBloc>();
     if (replyingMessage != null) {
-      // focusNode.requestFocus();
+      MessageComposerCache().requestFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        focusNode.requestFocus();
+      });
     }
     if (editingMessage != null) {
+      MessageComposerCache().requestFocus();
       final currentText = (editingMessage?.data as MessageTextData).text ?? "";
       // Check for mentions in the editing message
       try {
@@ -104,6 +113,10 @@ class AmityMessageComposer extends NewBaseComponent {
         controller.text = currentText;
       }
       // focusNode.requestFocus();
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        focusNode.requestFocus();
+      });
     } else {
       if (MessageComposerCache().savedText != "") {
         controller.text = MessageComposerCache().savedText;
@@ -248,7 +261,20 @@ class AmityMessageComposer extends NewBaseComponent {
                                       .add(MessageComposerMediaCollapsed());
                                 },
                                 onTapOutside: (event) {
+                                  final RenderBox? composerBox = composerKey.currentContext?.findRenderObject() as RenderBox?;
+                                  if (composerBox != null) {
+                                    
+                                    final localPos = composerBox.globalToLocal(event.position);
+                                    final isInsideComposer = localPos.dx >= 0 &&
+                                        localPos.dx <= composerBox.size.width &&
+                                        localPos.dy >= 0 &&
+                                        localPos.dy <= composerBox.size.height;
+                                    if (isInsideComposer) {                                     
+                                      return; // Tap is on send button or composer area, keep focus
+                                    }
+                                  }
                                   if (!controller.isMentioning()) {
+                                    MessageComposerCache().shouldFocus = false;
                                     FocusScope.of(context).unfocus();
                                   }
                                 },
@@ -334,6 +360,8 @@ class AmityMessageComposer extends NewBaseComponent {
                                 }
 
                                 controller.clear();
+                                // Signal that the next rebuild should re-focus
+                                MessageComposerCache().requestFocus();
                               }
                             },
                             child: Container(
@@ -679,8 +707,13 @@ class MessageComposerCache {
   factory MessageComposerCache() => _instance;
 
   String savedText = "";
+  bool shouldFocus = false;
 
   void updateText(String text) {
     savedText = text;
+  }
+
+  void requestFocus() {
+    shouldFocus = true;
   }
 }

@@ -324,19 +324,25 @@ class _AmityPostCameraScreenState extends State<AmityPostCameraScreen> {
                   ],
                 ),
               ),
-              SizedBox(
-                width: 70,
-                height: 70,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.cached,
-                    color: Colors.white, // Update icon color
+              if (!isRecording)
+                SizedBox(
+                  width: 70,
+                  height: 70,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.cached,
+                      color: Colors.white, // Update icon color
+                    ),
+                    onPressed: () {
+                      switchCamera(); // Call the switchCamera method
+                    },
                   ),
-                  onPressed: () {
-                    switchCamera(); // Call the switchCamera method
-                  },
+                )
+              else
+                const SizedBox(
+                  width: 70,
+                  height: 70,
                 ),
-              ),
             ],
           ),
         ],

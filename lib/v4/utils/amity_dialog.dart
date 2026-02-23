@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:amity_uikit_beta_service/components/custom_dialog.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class AmityV4Dialog {
   var isShowDialog = true;
@@ -102,25 +104,31 @@ class ConfirmationV4Dialog {
       return showDialog<void>(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(detailText),
-            actions: <Widget>[
-              TextButton(
-                child: Text(leftButtonText),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  onConfirm();
-                },
-                style: TextButton.styleFrom(foregroundColor: leftButtonColor),
-                child: Text(rightButtonText),
-              ),
-            ],
+          final appTheme = Provider.of<ConfigProvider>(context, listen: false)
+              .getTheme(null, null);
+          final isDarkMode = appTheme.backgroundColor.computeLuminance() < 0.5;
+          return Theme(
+            data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
+            child: AlertDialog(
+              title: Text(title),
+              content: Text(detailText),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(leftButtonText),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onConfirm();
+                  },
+                  style: TextButton.styleFrom(foregroundColor: leftButtonColor),
+                  child: Text(rightButtonText),
+                ),
+              ],
+            ),
           );
         },
       );

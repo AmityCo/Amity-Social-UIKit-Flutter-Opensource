@@ -27,8 +27,7 @@ class SocialHomePageConfigProviderWidget extends StatelessWidget {
 class NewsFeedComponentConfigProviderWidget extends StatelessWidget {
   final String pageId;
 
-  const NewsFeedComponentConfigProviderWidget(
-      {super.key, required this.pageId});
+  const NewsFeedComponentConfigProviderWidget({super.key, required this.pageId});
 
   @override
   Widget build(BuildContext context) {

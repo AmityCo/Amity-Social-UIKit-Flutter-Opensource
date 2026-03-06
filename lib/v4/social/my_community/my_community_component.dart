@@ -14,12 +14,9 @@ part 'my_community_elements.dart';
 part 'my_community_ui_ids.dart';
 
 class AmityMyCommunitiesComponent extends NewBaseComponent {
-  ScrollController scrollController = ScrollController();
+  final ScrollController scrollController = ScrollController();
   AmityMyCommunitiesComponent({Key? key, String? pageId})
-      : super(
-            key: key,
-            pageId: pageId,
-            componentId: AmityComponent.myCommunities.stringValue);
+      : super(key: key, pageId: pageId, componentId: AmityComponent.myCommunities.stringValue);
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -41,11 +38,8 @@ class AmityMyCommunitiesComponent extends NewBaseComponent {
                       height: 8,
                     ),
                     Expanded(
-                      child: communityList(
-                          context, scrollController, state.list, theme, () {
-                        context
-                            .read<MyCommunityBloc>()
-                            .add(MyCommunityEventLoadMore());
+                      child: communityList(context, scrollController, state.list, theme, () {
+                        context.read<MyCommunityBloc>().add(MyCommunityEventLoadMore());
                       }),
                     ),
                   ],

@@ -9,6 +9,6 @@ class AmityUserRelationshipPageBehavior {
   ) {
     context
         .read<NavigationProvider>()
-        .handleNavigation(context, event: NavigationEvent.showUserProfile, params: {'userId': userId});
+        .handleNavigation(context, event: AmityNavigationEvent.showUserProfile, params: {'userId': userId});
   }
 }

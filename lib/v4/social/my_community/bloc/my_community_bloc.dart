@@ -19,10 +19,7 @@ class MyCommunityBloc extends Bloc<MyCommunityEvent, MyCommunityState> {
         .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
         .getLiveCollection(pageSize: 20);
 
-    _subscription = communityLiveCollection
-        .getStreamController()
-        .stream
-        .listen((communities) async {
+    _subscription = communityLiveCollection.getStreamController().stream.listen((communities) async {
       if (communityLiveCollection.isFetching == true && communities.isEmpty) {
         add(MyCommunityEventLoading());
       } else if (communities.isNotEmpty) {

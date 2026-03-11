@@ -185,9 +185,8 @@ class AmityCommunitySettingPage extends NewBasePage {
   }
 
   void _goToEditProfilePage(BuildContext context) {
-    context
-        .read<NavigationProvider>()
-        .handleNavigation(context, event: NavigationEvent.showCommunityEdit, params: {'mode': EditMode(community)});
+    context.read<NavigationProvider>().handleNavigation(context,
+        event: AmityNavigationEvent.showCommunityEdit, params: {'mode': EditMode(community)});
   }
 
   void _goToCommunityMemberPage(BuildContext context) {

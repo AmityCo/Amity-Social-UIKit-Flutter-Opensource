@@ -33,10 +33,10 @@ class AmityMyCommunitiesComponent extends NewBaseComponent {
               return Expanded(
                 child: Column(
                   children: [
-                    Container(
-                      color: theme.baseColorShade4,
-                      height: 8,
-                    ),
+                    // Container(
+                    //   color: theme.baseColorShade4,
+                    //   height: 8,
+                    // ),
                     Expanded(
                       child: communityList(context, scrollController, state.list, theme, () {
                         context.read<MyCommunityBloc>().add(MyCommunityEventLoadMore());

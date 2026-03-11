@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/avatar_initials.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -8,8 +9,7 @@ import 'package:flutter_svg/svg.dart';
 class AmityMessageAvatar extends BaseElement {
   final AmityMessage? message;
   final bool isModerator;
-  final String avatarPlaceholder =
-      "assets/Icons/amity_ic_user_avatar_placeholder.svg";
+  final String avatarPlaceholder = "assets/Icons/amity_ic_user_avatar_placeholder.svg";
 
   late final String? avatarUrl;
   late final bool isDeletedUser;
@@ -47,8 +47,7 @@ class AmityMessageAvatar extends BaseElement {
             child: Image.network(
               avatarUrl!,
               fit: BoxFit.cover,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
+              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                 if (loadingProgress == null) {
                   return child;
                 } else {
@@ -58,15 +57,14 @@ class AmityMessageAvatar extends BaseElement {
                   );
                 }
               },
-              errorBuilder:
-                  (BuildContext context, Object error, StackTrace? stackTrace) {
-                return avatarCharacter();
+              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                return AvatarInitials(theme: theme, displayName: displayName, size: const Size(32, 32));
               },
             ),
           ),
         );
       } else {
-        avatarWidget = avatarCharacter();
+        avatarWidget = AvatarInitials(theme: theme, displayName: displayName, size: const Size(32, 32));
       }
     }
 
@@ -104,21 +102,5 @@ class AmityMessageAvatar extends BaseElement {
     }
 
     return avatarWidget;
-  }
-
-  Widget avatarCharacter() {
-    return Container(
-      width: 32,
-      height: 32,
-      decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-          child: Text(
-        displayName.isEmpty ? "" : displayName[0].toUpperCase(),
-        style: AmityTextStyle.custom(16, FontWeight.w400, Colors.white),
-      )),
-    );
   }
 }

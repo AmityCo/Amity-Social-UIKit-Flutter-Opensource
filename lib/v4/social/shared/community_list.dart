@@ -15,8 +15,7 @@ Widget communityList(
   void Function() loadMore,
 ) {
   scrollController.addListener(() {
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
+    if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
       loadMore();
     }
   });
@@ -31,7 +30,7 @@ Widget communityList(
         separatorBuilder: (context, index) {
           return Divider(
             color: theme.baseColorShade4,
-            thickness: 0.5,
+            thickness: 1.0,
             indent: 16,
             endIndent: 16,
             height: 25,
@@ -57,18 +56,15 @@ Widget communityList(
   );
 }
 
-Widget communityRow(
-    BuildContext context, AmityCommunity community, AmityThemeColor theme) {
-  var categoriesName =
-      community.categories?.map((category) => category?.name).toList();
+Widget communityRow(BuildContext context, AmityCommunity community, AmityThemeColor theme) {
+  var categoriesName = community.categories?.map((category) => category?.name).toList();
 
   return GestureDetector(
     behavior: HitTestBehavior.translucent,
     onTap: () {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) =>
-              AmityCommunityProfilePage(communityId: community.communityId!),
+          builder: (context) => AmityCommunityProfilePage(communityId: community.communityId!),
         ),
       );
     },
@@ -84,8 +80,7 @@ Widget communityRow(
             height: 80,
             child: CommunityImageAvatarElement(
                 avatarUrl: community.avatarImage?.fileUrl,
-                placeHolderPath:
-                    "assets/Icons/amity_ic_community_avatar_placeholder_rectangle.svg",
+                placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder_rectangle.svg",
                 elementId: AmityMyCommunityElement.communityAvatar.stringValue),
           ),
         ),
@@ -136,8 +131,7 @@ Widget communityRow(
   );
 }
 
-Widget communitySkeletonList(
-    AmityThemeColor theme, ConfigProvider configProvider) {
+Widget communitySkeletonList(AmityThemeColor theme, ConfigProvider configProvider) {
   return Container(
     decoration: BoxDecoration(color: theme.backgroundColor),
     child: Container(

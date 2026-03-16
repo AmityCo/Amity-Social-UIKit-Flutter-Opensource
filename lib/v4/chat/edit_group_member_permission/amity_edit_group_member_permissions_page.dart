@@ -77,7 +77,7 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
                   ),
                 ],
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
+                  icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),

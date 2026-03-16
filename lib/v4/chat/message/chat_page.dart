@@ -121,7 +121,7 @@ class AmityChatPage extends NewBasePage {
                       icon: SvgPicture.asset(
                         "assets/Icons/amity_ic_back_button.svg",
                         package: 'amity_uikit_beta_service',
-                        color: theme.secondaryColor,
+                        color: theme.baseColor,
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -191,7 +191,7 @@ class AmityChatPage extends NewBasePage {
                             width: 24,
                             height: 24,
                             colorFilter: ColorFilter.mode(
-                                theme.secondaryColor, BlendMode.srcIn),
+                                theme.baseColor, BlendMode.srcIn),
                           ),
                           onPressed: () {
                             HapticFeedback.heavyImpact();

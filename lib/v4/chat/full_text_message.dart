@@ -23,6 +23,7 @@ class FullTextScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.backgroundColor,
+        iconTheme: IconThemeData(color: theme.baseColor),
         scrolledUnderElevation: 1,
         centerTitle: displayName == "Replied message", //TODO Remove this condition when jump to replied message is implemented
         title: Text(displayName,

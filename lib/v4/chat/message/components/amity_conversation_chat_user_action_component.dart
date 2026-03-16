@@ -141,7 +141,9 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                               : 'assets/Icons/amity_ic_report_user_button.svg',
                           package: 'amity_uikit_beta_service',
                           width: 24,
-                          height: 24),
+                          height: 24,
+                          colorFilter:
+                              ColorFilter.mode(theme.baseColor, BlendMode.srcIn)),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

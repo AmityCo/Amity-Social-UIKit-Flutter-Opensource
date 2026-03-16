@@ -72,7 +72,7 @@ class AmityGroupMemberListPage extends NewBasePage {
                       style: AmityTextStyle.titleBold(theme.baseColor),
                     ),
                     leading: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
+                      icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -89,7 +89,7 @@ class AmityGroupMemberListPage extends NewBasePage {
                                     "assets/Icons/amity_ic_post_creation_button.svg",
                                     package: 'amity_uikit_beta_service',
                                     colorFilter: ColorFilter.mode(
-                                      theme.secondaryColor,
+                                      theme.baseColor,
                                       BlendMode.srcIn,
                                     ),
                                   ),

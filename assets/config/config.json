@@ -493,17 +493,17 @@
                     "highlight_color": "#1054DE"
                 },
                 "dark": {
-                    "primary_color": "#FF7500",
+                    "primary_color": "#1054DE",
                     "secondary_color": "#292B32",
-                    "base_color": "#292B32",
-                    "base_shade1_color": "#636878",
-                    "base_shade2_color": "#898E9E",
-                    "base_shade3_color": "#A5A9b5",
-                    "base_shade4_color": "#EBECEF",
+                    "base_color": "#EBECEF",
+                    "base_shade1_color": "#A5A9B5",
+                    "base_shade2_color": "#6E7487",
+                    "base_shade3_color": "#40434E",
+                    "base_shade4_color": "#292B32",
                     "alert_color": "#FA4D30",
-                    "background_color": "#FFFFFF",
-                    "base_inverse_color": "#000000",
-                    "highlight_color": "#FF7500"
+                    "background_color": "#191919",
+                    "base_inverse_color": "#FFFFFF",
+                    "highlight_color": "#1054DE"
                 }
             }
         },
@@ -523,17 +523,17 @@
                     "highlight_color": "#1054DE"
                 },
                 "dark": {
-                    "primary_color": "#10F4DE",
+                    "primary_color": "#1054DE",
                     "secondary_color": "#292B32",
-                    "base_color": "#292B32",
-                    "base_shade1_color": "#636878",
-                    "base_shade2_color": "#898E9E",
-                    "base_shade3_color": "#A5A9b5",
-                    "base_shade4_color": "#EBECEF",
+                    "base_color": "#EBECEF",
+                    "base_shade1_color": "#A5A9B5",
+                    "base_shade2_color": "#6E7487",
+                    "base_shade3_color": "#40434E",
+                    "base_shade4_color": "#292B32",
                     "alert_color": "#FA4D30",
-                    "background_color": "#FFFFFF",
-                    "base_inverse_color": "#000000",
-                    "highlight_color": "#10F4DE"
+                    "background_color": "#191919",
+                    "base_inverse_color": "#FFFFFF",
+                    "highlight_color": "#1054DE"
                 }
             },
             "left_bubble_color": "#EBECEF",

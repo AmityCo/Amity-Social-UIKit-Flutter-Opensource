@@ -102,7 +102,7 @@ class AmityGroupChatPage extends NewBasePage {
                         icon: SvgPicture.asset(
                           "assets/Icons/amity_ic_back_button.svg",
                           package: 'amity_uikit_beta_service',
-                          color: theme.secondaryColor,
+                          color: theme.baseColor,
                         ),
                         onPressed: () {
                           Navigator.of(context).pop();

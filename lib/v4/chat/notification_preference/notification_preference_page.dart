@@ -44,7 +44,7 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                     style: AmityTextStyle.titleBold(theme.baseColor),
                   ),
                   leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
+                    icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
                     onPressed: () => Navigator.pop(context),
                   ),
                   actions: [

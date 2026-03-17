@@ -94,29 +94,30 @@ class AmityCommunitySettingPage extends NewBasePage {
             if (state.shouldShowPostPermission || state.shouldShowStoryComments) _getDividerWidget(),
 
             // Leave Community
-            _getSettingDetailItemWidget(context.l10n.community_leave, null, onTap: () {
-              ConfirmationDialog().show(
-                  context: context,
-                  title: context.l10n.community_leave,
-                  detailText: context.l10n.community_leave_description,
-                  onConfirm: () {
-                    context.read<CommunitySettingPageBloc>().add(LeaveCommunityEvent(
-                        toastBloc: context.read<AmityToastBloc>(),
-                        context: context,
-                        onSuccess: () {
-                          // Navigate back to the social home page
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        },
-                        onFailure: () {
-                          AmityDialog().showAlertErrorDialog(
-                              title: context.l10n.error_leave_community,
-                              message: context.l10n.error_leave_community_description);
-                        }));
-                  });
-            }),
-
-            _getDividerWidget(),
+            if (state.shouldShowLeaveCommunity) ...[
+              _getSettingDetailItemWidget(context.l10n.community_leave, null, onTap: () {
+                ConfirmationDialog().show(
+                    context: context,
+                    title: context.l10n.community_leave,
+                    detailText: context.l10n.community_leave_description,
+                    onConfirm: () {
+                      context.read<CommunitySettingPageBloc>().add(LeaveCommunityEvent(
+                          toastBloc: context.read<AmityToastBloc>(),
+                          context: context,
+                          onSuccess: () {
+                            // Navigate back to the social home page
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          onFailure: () {
+                            AmityDialog().showAlertErrorDialog(
+                                title: context.l10n.error_leave_community,
+                                message: context.l10n.error_leave_community_description);
+                          }));
+                    });
+              }),
+              _getDividerWidget(),
+            ],
 
             // Close Community
             if (state.shouldShowCloseCommunity)

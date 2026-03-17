@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:equatable/equatable.dart';
 
 part 'my_community_events.dart';
@@ -19,7 +20,11 @@ class MyCommunityBloc extends Bloc<MyCommunityEvent, MyCommunityState> {
         .sortBy(AmityCommunitySortOption.DISPLAY_NAME)
         .getLiveCollection(pageSize: 20);
 
-    _subscription = communityLiveCollection.getStreamController().stream.listen((communities) async {
+    _subscription = communityLiveCollection
+        .getStreamController()
+        .stream
+        .throttleTime(const Duration(milliseconds: 200))
+        .listen((communities) async {
       if (communityLiveCollection.isFetching == true && communities.isEmpty) {
         add(MyCommunityEventLoading());
       } else if (communities.isNotEmpty) {

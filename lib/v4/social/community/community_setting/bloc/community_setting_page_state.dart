@@ -11,6 +11,7 @@ class CommunitySettingPageState extends Equatable {
   bool shouldShowPostPermission = false;
   bool shouldShowStoryComments = false;
   bool shouldShowCloseCommunity = false;
+  bool shouldShowLeaveCommunity = false;
 
   @override
   List<Object?> get props => [
@@ -20,7 +21,8 @@ class CommunitySettingPageState extends Equatable {
         isNotificationEnabled,
         shouldShowPostPermission,
         shouldShowStoryComments,
-        shouldShowCloseCommunity
+        shouldShowCloseCommunity,
+        shouldShowLeaveCommunity,
       ];
 
   CommunitySettingPageState copyWith({
@@ -31,20 +33,16 @@ class CommunitySettingPageState extends Equatable {
     bool? shouldShowPostPermission,
     bool? shouldShowStoryComments,
     bool? shouldShowCloseCommunity,
+    bool? shouldShowLeaveCommunity,
   }) {
     return CommunitySettingPageState()
       ..notificationSettings = notificationSettings ?? this.notificationSettings
-      ..shouldShowEditProfile =
-          shouldShowEditProfile ?? this.shouldShowEditProfile
-      ..shouldShowNotificationSetting =
-          shouldShowNotificationSetting ?? this.shouldShowNotificationSetting
-      ..isNotificationEnabled =
-          isNotificationEnabled ?? this.isNotificationEnabled
-      ..shouldShowPostPermission =
-          shouldShowPostPermission ?? this.shouldShowPostPermission
-      ..shouldShowStoryComments =
-          shouldShowStoryComments ?? this.shouldShowStoryComments
-      ..shouldShowCloseCommunity =
-          shouldShowCloseCommunity ?? this.shouldShowCloseCommunity;
+      ..shouldShowEditProfile = shouldShowEditProfile ?? this.shouldShowEditProfile
+      ..shouldShowNotificationSetting = shouldShowNotificationSetting ?? this.shouldShowNotificationSetting
+      ..isNotificationEnabled = isNotificationEnabled ?? this.isNotificationEnabled
+      ..shouldShowPostPermission = shouldShowPostPermission ?? this.shouldShowPostPermission
+      ..shouldShowStoryComments = shouldShowStoryComments ?? this.shouldShowStoryComments
+      ..shouldShowCloseCommunity = shouldShowCloseCommunity ?? this.shouldShowCloseCommunity
+      ..shouldShowLeaveCommunity = shouldShowLeaveCommunity ?? this.shouldShowLeaveCommunity;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/core/avatar_initials.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -18,8 +19,7 @@ class AmityUserAvatar extends BaseElement {
     required this.displayName,
     required this.isDeletedUser,
     this.avatarSize = const Size(40, 40),
-    this.avatarPlaceholder =
-        "assets/Icons/amity_ic_user_avatar_placeholder.svg",
+    this.avatarPlaceholder = "assets/Icons/amity_ic_user_avatar_placeholder.svg",
     this.characterTextStyle,
     super.key,
     super.pageId = "",
@@ -30,8 +30,7 @@ class AmityUserAvatar extends BaseElement {
   AmityUserAvatar.withChannelMember({
     AmityChannelMember? channelMember,
     this.avatarSize = const Size(40, 40),
-    this.avatarPlaceholder =
-        "assets/Icons/amity_ic_user_avatar_placeholder.svg",
+    this.avatarPlaceholder = "assets/Icons/amity_ic_user_avatar_placeholder.svg",
     this.characterTextStyle,
     super.key,
     super.pageId = "",
@@ -61,8 +60,7 @@ class AmityUserAvatar extends BaseElement {
             child: Image.network(
               avatarUrl!,
               fit: BoxFit.cover,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
+              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                 if (loadingProgress == null) {
                   return child;
                 } else {
@@ -72,33 +70,15 @@ class AmityUserAvatar extends BaseElement {
                   );
                 }
               },
-              errorBuilder:
-                  (BuildContext context, Object error, StackTrace? stackTrace) {
-                return avatarCharacter();
+              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                return AvatarInitials(theme: theme, displayName: displayName);
               },
             ),
           ),
         );
       } else {
-        return avatarCharacter();
+        return AvatarInitials(theme: theme, displayName: displayName);
       }
     }
-  }
-
-  Widget avatarCharacter() {
-    return Container(
-      height: avatarSize.height,
-      width: avatarSize.width,
-      decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-          child: Text(
-        displayName.isEmpty ? "" : displayName[0].toUpperCase(),
-        style: characterTextStyle ??
-            AmityTextStyle.custom(20, FontWeight.w400, Colors.white),
-      )),
-    );
   }
 }

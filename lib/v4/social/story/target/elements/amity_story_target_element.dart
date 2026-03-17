@@ -2,7 +2,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_gradient_ring_element.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/target/utils/amity_story_target_ext.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
@@ -23,7 +23,7 @@ class AmityStoryTargetElement extends BaseElement {
   List<Color> colors = [];
   bool showLoading = false;
   String? pageId;
-    String? componentId;
+  String? componentId;
 
   AmityStoryTargetElement({
     super.key,
@@ -39,27 +39,30 @@ class AmityStoryTargetElement extends BaseElement {
     required this.target,
     this.pageId,
     this.componentId,
-  }): super( pageId: pageId, componentId: componentId , elementId:"story_ring" );
+  }) : super(pageId: pageId, componentId: componentId, elementId: "story_ring");
 
   Widget getProfileIcon(AmityStoryTarget storyTarget) {
     if (storyTarget is AmityStoryTargetCommunity) {
       return storyTarget.community?.avatarImage != null
           ? ClipRRect(
               borderRadius: BorderRadius.circular(100),
-            child: AmityNetworkImage(
+              child: AmityNetworkImage(
                 imageUrl: storyTarget.community!.avatarImage!.fileUrl!,
                 placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
               ),
-          )
+            )
           : const AmityNetworkImage(
               imageUrl: "",
               placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
             );
     }
 
-    return const AmityNetworkImage(imageUrl: "", placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg");
+    return const AmityNetworkImage(
+      imageUrl: "",
+      placeHolderPath: "assets/Icons/amity_ic_community_avatar_placeholder.svg",
+    );
   }
-  
+
   @override
   Widget buildElement(BuildContext context) {
     String? badge;
@@ -97,8 +100,7 @@ class AmityStoryTargetElement extends BaseElement {
         showLoading = false;
         break;
     }
-    return
-    GestureDetector(
+    return GestureDetector(
       onTap: () {
         onClick(targetId, target);
       },
@@ -113,26 +115,24 @@ class AmityStoryTargetElement extends BaseElement {
               height: 49,
               child: Stack(
                 children: [
-                  ( showLoading) ? AmityStoryGradientRingElement(
-                    backgoundColor: theme.backgroundColor,
-                    colors: colors,
-                    isIndeterminate: true,
-                    child: SizedBox( width: 40 , height: 40 ,child: getProfileIcon(target)),
-                  ): AmityStoryGradientRingElement(
-                    colors: colors,
-                    backgoundColor: theme.backgroundColor,
-                    isIndeterminate: false,
-                    child: SizedBox( width: 40 , height: 40 ,child: getProfileIcon(target)),
-                  ),
+                  (showLoading)
+                      ? AmityStoryGradientRingElement(
+                          backgoundColor: theme.backgroundColor,
+                          colors: colors,
+                          isIndeterminate: true,
+                          child: SizedBox(width: 40, height: 40, child: getProfileIcon(target)),
+                        )
+                      : AmityStoryGradientRingElement(
+                          colors: colors,
+                          backgoundColor: theme.backgroundColor,
+                          isIndeterminate: false,
+                          child: SizedBox(width: 40, height: 40, child: getProfileIcon(target)),
+                        ),
                   badge != null
                       ? Positioned(
                           right: 0,
                           bottom: 0,
-                          child: SvgPicture.asset(
-                            badge,
-                            package: 'amity_uikit_beta_service',
-                            height: 14,
-                          ),
+                          child: SvgPicture.asset(badge, package: 'amity_uikit_beta_service', height: 14),
                         )
                       : const SizedBox(),
                 ],
@@ -150,16 +150,13 @@ class AmityStoryTargetElement extends BaseElement {
                     color: theme.baseColor,
                     package: 'amity_uikit_beta_service',
                   ),
-                if (!isPublicCommunity && !isCommunityTarget)
-                  const SizedBox(
-                    width: 4,
-                  ),
+                if (!isPublicCommunity && !isCommunityTarget) const SizedBox(width: 4),
                 Expanded(
                   child: Center(
                     child: Text(
                       isCommunityTarget ? context.l10n.general_story : communityDisplayName,
                       overflow: TextOverflow.ellipsis,
-                      style:  TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: theme.baseColor,
                         fontFamily: "SF Pro Text",
@@ -171,13 +168,12 @@ class AmityStoryTargetElement extends BaseElement {
                 // if (hasManageStoryPermission)
                 //   Icon(Icons.edit, size: 16, color: Colors.amber),
               ],
-            )
+            ),
           ],
         ),
       ),
     );
   }
 }
-
 
 // Provider.of<AmityUIConfiguration>(context).appColors.base

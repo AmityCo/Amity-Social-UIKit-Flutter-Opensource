@@ -2,17 +2,20 @@
     "preferred_theme": "default",
     "theme": {
         "light": {
-            "primary_color": "#1054DE",
+            "primary_color": "#000000",
             "secondary_color": "#292B32",
             "base_color": "#292B32",
             "base_shade1_color": "#636878",
             "base_shade2_color": "#898E9E",
             "base_shade3_color": "#A5A9b5",
-            "base_shade4_color": "#EBECEF",
-            "alert_color": "#FA4D30",
+            "base_shade4_color": "#E7E7E7",
+            "alert_color": "#ff3b30",
             "background_color": "#FFFFFF",
             "base_inverse_color": "#000000",
-            "highlight_color": "#1054DE"
+            "highlight_color": "#000000",
+            "avatar_background_color": "#000000",
+            "avatar_border_color": "#D9D9D9",
+            "avatar_text_color": "#FFFFFF"
         },
         "dark": {
             "primary_color": "#1054DE",
@@ -25,7 +28,10 @@
             "alert_color": "#FA4D30",
             "background_color": "#191919",
             "base_inverse_color": "#FFFFFF",
-            "highlight_color": "#1054DE"
+            "highlight_color": "#1054DE",
+            "avatar_background_color": "#0F1217",
+            "avatar_border_color": "#2E3742",
+            "avatar_text_color": "#FFFFFF"
         }
     },
     "excludes": [],
@@ -178,7 +184,7 @@
         "live_chat/*/*": {
             "theme": {
                 "light": {
-                    "primary_color": "#1054DE",
+                    "primary_color": "#000000",
                     "secondary_color": "#292B32",
                     "base_color": "#292B32",
                     "base_shade1_color": "#636878",
@@ -492,7 +498,7 @@
                     "background_shade_color": "#FFFFFF",
                     "highlight_color": "#1054DE"
                 },
-                "dark": {
+               "dark": {
                     "primary_color": "#1054DE",
                     "secondary_color": "#292B32",
                     "base_color": "#EBECEF",
@@ -522,7 +528,7 @@
                     "base_inverse_color": "#000000",
                     "highlight_color": "#1054DE"
                 },
-                "dark": {
+                 "dark": {
                     "primary_color": "#1054DE",
                     "secondary_color": "#292B32",
                     "base_color": "#EBECEF",

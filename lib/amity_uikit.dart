@@ -15,6 +15,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlin
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/utils/navigation_provider.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
@@ -68,18 +69,17 @@ class AmityUIKit {
     Stopwatch stopwatch = Stopwatch()..start();
     AmityRegionalHttpEndpoint? amityEndpoint;
     AmityRegionalMqttEndpoint? amityMqttEndpoint;
-    AmityUploadEndpoint? amityUploadEndpoint;    
+    AmityUploadEndpoint? amityUploadEndpoint;
 
     switch (region) {
       case AmityEndpointRegion.custom:
         if (customEndpoint != null &&
             customMqttEndpoint != null &&
-            customSocketEndpoint != null && customUploadEndpoint != null) {
+            customSocketEndpoint != null &&
+            customUploadEndpoint != null) {
           amityEndpoint = AmityRegionalHttpEndpoint.custom(customEndpoint);
-          amityMqttEndpoint =
-              AmityRegionalMqttEndpoint.custom(customMqttEndpoint);
-          amityUploadEndpoint =
-              AmityUploadEndpoint.custom(customUploadEndpoint);
+          amityMqttEndpoint = AmityRegionalMqttEndpoint.custom(customMqttEndpoint);
+          amityUploadEndpoint = AmityUploadEndpoint.custom(customUploadEndpoint);
         } else {
           log("please provide custom Endpoint");
         }
@@ -167,8 +167,7 @@ class AmityUIKit {
     log('registerDevice execution time: ${stopwatch.elapsedMilliseconds} ms');
   }
 
-  Future<void> registerNotification(
-      String fcmToken, Function(bool isSuccess, String? error) callback) async {
+  Future<void> registerNotification(String fcmToken, Function(bool isSuccess, String? error) callback) async {
     // example of getting token from firebase
     // FirebaseMessaging messaging = FirebaseMessaging.instance;
     // final fcmToken = await messaging.getToken();
@@ -182,8 +181,7 @@ class AmityUIKit {
     });
   }
 
-  void configAmityThemeColor(
-      BuildContext context, Function(AmityUIConfiguration config) config) {
+  void configAmityThemeColor(BuildContext context, Function(AmityUIConfiguration config) config) {
     var provider = Provider.of<AmityUIConfiguration>(context, listen: false);
     config(provider);
   }
@@ -204,9 +202,7 @@ class AmityUIKit {
 
   Future<void> joinInitialCommunity(List<String> communityIds) async {
     for (var i = 0; i < communityIds.length; i++) {
-      AmitySocialClient.newCommunityRepository()
-          .joinCommunity(communityIds[i])
-          .then((value) {
+      AmitySocialClient.newCommunityRepository().joinCommunity(communityIds[i]).then((value) {
         log("join community:${communityIds[i]} success");
       }).onError((error, stackTrace) {
         log(error.toString());
@@ -217,7 +213,9 @@ class AmityUIKit {
 
 class AmityUIKitProvider extends StatelessWidget {
   final Widget child;
-  const AmityUIKitProvider({Key? key, required this.child}) : super(key: key);
+  const AmityUIKitProvider({Key? key, required this.child, this.navigationProvider}) : super(key: key);
+
+  final NavigationProvider? navigationProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -226,108 +224,47 @@ class AmityUIKitProvider extends StatelessWidget {
         BlocProvider<GlobalFeedBloc>(create: (context) => GlobalFeedBloc()),
         BlocProvider<AmityToastBloc>(create: (context) => AmityToastBloc()),
         BlocProvider<SocialHomeBloc>(create: (context) => SocialHomeBloc()),
-        BlocProvider<CreateStoryPageBloc>(
-            create: (context) => CreateStoryPageBloc()),
+        BlocProvider<CreateStoryPageBloc>(create: (context) => CreateStoryPageBloc()),
         BlocProvider<HyperlinkBloc>(create: (context) => HyperlinkBloc()),
         BlocProvider<CreateStoryBloc>(create: (context) => CreateStoryBloc()),
-        BlocProvider<StoryVideoPlayerBloc>(
-            create: (context) => StoryVideoPlayerBloc()),
+        BlocProvider<StoryVideoPlayerBloc>(create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [
             ChangeNotifierProvider<ReplyVM>(create: ((context) => ReplyVM())),
-            ChangeNotifierProvider<SearchCommunityVM>(
-                create: ((context) => SearchCommunityVM())),
-            ChangeNotifierProvider<CompoentSizeVM>(
-                create: ((context) => CompoentSizeVM())),
+            ChangeNotifierProvider<SearchCommunityVM>(create: ((context) => SearchCommunityVM())),
+            ChangeNotifierProvider<CompoentSizeVM>(create: ((context) => CompoentSizeVM())),
             ChangeNotifierProvider<UserVM>(create: ((context) => UserVM())),
             ChangeNotifierProvider<AmityVM>(create: ((context) => AmityVM())),
             ChangeNotifierProvider<FeedVM>(create: ((context) => FeedVM())),
-            ChangeNotifierProvider<CommunityVM>(
-                create: ((context) => CommunityVM())),
+            ChangeNotifierProvider<CommunityVM>(create: ((context) => CommunityVM())),
             ChangeNotifierProvider<PostVM>(create: ((context) => PostVM())),
-            ChangeNotifierProvider<UserFeedVM>(
-                create: ((context) => UserFeedVM())),
-            ChangeNotifierProvider<ImagePickerVM>(
-                create: ((context) => ImagePickerVM())),
-            ChangeNotifierProvider<CreatePostVM>(
-                create: ((context) => CreatePostVM())),
-            ChangeNotifierProvider<CreatePostVMV2>(
-                create: ((context) => CreatePostVMV2())),
-            ChangeNotifierProvider<ChannelVM>(
-                create: ((context) => ChannelVM())),
-            ChangeNotifierProvider<AmityUIConfiguration>(
-                create: ((context) => AmityUIConfiguration())),
-            ChangeNotifierProvider<NotificationVM>(
-                create: ((context) => NotificationVM())),
-            ChangeNotifierProvider<CategoryVM>(
-                create: ((context) => CategoryVM())),
-            ChangeNotifierProvider<PendingVM>(
-                create: ((context) => PendingVM())),
-            ChangeNotifierProvider<MyCommunityVM>(
-                create: ((context) => MyCommunityVM())),
-            ChangeNotifierProvider<CommuFeedVM>(
-                create: ((context) => CommuFeedVM())),
-            ChangeNotifierProvider<ExplorePageVM>(
-                create: ((context) => ExplorePageVM())),
-            ChangeNotifierProvider<MemberManagementVM>(
-                create: ((context) => MemberManagementVM())),
-            ChangeNotifierProvider<MediaPickerVM>(
-                create: ((context) => MediaPickerVM())),
-            ChangeNotifierProvider<ChatRoomVM>(
-                create: ((context) => ChatRoomVM())),
+            ChangeNotifierProvider<UserFeedVM>(create: ((context) => UserFeedVM())),
+            ChangeNotifierProvider<ImagePickerVM>(create: ((context) => ImagePickerVM())),
+            ChangeNotifierProvider<CreatePostVM>(create: ((context) => CreatePostVM())),
+            ChangeNotifierProvider<CreatePostVMV2>(create: ((context) => CreatePostVMV2())),
+            ChangeNotifierProvider<ChannelVM>(create: ((context) => ChannelVM())),
+            ChangeNotifierProvider<AmityUIConfiguration>(create: ((context) => AmityUIConfiguration())),
+            ChangeNotifierProvider<NotificationVM>(create: ((context) => NotificationVM())),
+            ChangeNotifierProvider<CategoryVM>(create: ((context) => CategoryVM())),
+            ChangeNotifierProvider<PendingVM>(create: ((context) => PendingVM())),
+            ChangeNotifierProvider<MyCommunityVM>(create: ((context) => MyCommunityVM())),
+            ChangeNotifierProvider<CommuFeedVM>(create: ((context) => CommuFeedVM())),
+            ChangeNotifierProvider<ExplorePageVM>(create: ((context) => ExplorePageVM())),
+            ChangeNotifierProvider<MemberManagementVM>(create: ((context) => MemberManagementVM())),
+            ChangeNotifierProvider<MediaPickerVM>(create: ((context) => MediaPickerVM())),
+            ChangeNotifierProvider<ChatRoomVM>(create: ((context) => ChatRoomVM())),
+            ChangeNotifierProvider<NavigationProvider>(create: (context) => navigationProvider ?? NavigationProvider()),
             ChangeNotifierProvider<ConfigProvider>(
-                key: const ValueKey("global_config"),
-                create: (context) => ConfigProvider()),
+                key: const ValueKey("global_config"), create: (context) => ConfigProvider()),
           ],
         ),
       ],
       child: Builder(builder: (context) {
         return Consumer<ConfigProvider>(builder: (context, configProvider, _) {
           configProvider.loadConfig();
-          return MaterialApp(
-            theme: ThemeData(),
-            debugShowCheckedModeBanner: false,
-            navigatorKey: NavigationService.navigatorKey,
-            home: Builder(builder: (context2) {
-              return child;
-            }),
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en'),
-              Locale('pt'), // Base Portuguese locale
-              Locale('pt', 'BR'),  // Portuguese (Brazil)
-              Locale('es'),        // Base Spanish locale
-              Locale('es', 'CL'),  // Spanish (Chile)
-              Locale('es', 'CO'),  // Spanish (Colombia)
-              Locale('es', 'MX'),  // Spanish (Mexico)
-              Locale('es', 'PE'),  // Spanish (Peru)
-            ],
-            // Ensure the app uses the device locale by default
-            localeResolutionCallback: (deviceLocale, supportedLocales) {
-              if (deviceLocale != null) {
-                for (var locale in supportedLocales) {
-                  print ("deviceLocale: ${deviceLocale.languageCode}");
-                  print ("supportedLocales: $supportedLocales}");
-                  // Check for exact matches first
-                  if (locale.languageCode == deviceLocale.languageCode &&
-                      locale.countryCode == deviceLocale.countryCode) {
-                    return locale;
-                  }
-                  // Then check for language code matches
-                  if (locale.languageCode == deviceLocale.languageCode) {
-                    return locale;
-                  }
-                }
-              }
-              // Default to English if no match found
-              return const Locale('en');
-            },
-          );
+          return Builder(builder: (context2) {
+            return child;
+          });
         });
       }),
     );

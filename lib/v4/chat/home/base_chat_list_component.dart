@@ -6,6 +6,7 @@ import 'package:amity_uikit_beta_service/v4/chat/home/bloc/chat_list_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/avatar_initials.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/channel_avatar.dart';
@@ -22,11 +23,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class BaseChatListComponent extends NewBaseComponent {
   BaseChatListComponent(
-      {super.key,
-      super.pageId,
-      required super.componentId,
-      required this.chatListType,
-      this.channelTypes});
+      {super.key, super.pageId, required super.componentId, required this.chatListType, this.channelTypes});
 
   final scrollController = ScrollController();
   final ChatListType chatListType;
@@ -37,8 +34,7 @@ class BaseChatListComponent extends NewBaseComponent {
     return BlocBuilder<ChatListBloc, ChatListState>(
       builder: (context, state) {
         scrollController.addListener(() {
-          if (scrollController.position.pixels ==
-              scrollController.position.maxScrollExtent) {
+          if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
             context.read<ChatListBloc>().addEvent(ChatListLoadNextPage());
           }
         });
@@ -47,9 +43,7 @@ class BaseChatListComponent extends NewBaseComponent {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showArchiveErrorDialog(context, state.error?.title ?? context.l10n.general_error_title,
                 state.error?.message ?? context.l10n.general_error_message);
-            context
-                .read<ChatListBloc>()
-                .addEvent(ChatListEventResetDialogState());
+            context.read<ChatListBloc>().addEvent(ChatListEventResetDialogState());
           });
         }
 
@@ -60,9 +54,8 @@ class BaseChatListComponent extends NewBaseComponent {
             return ArchivedChatListEmptyState(theme: theme);
           } else {
             // Check if this is a group chat list (only COMMUNITY channels)
-            final bool isGroupChatList = channelTypes != null && 
-                channelTypes!.length == 1 && 
-                channelTypes!.contains(AmityChannelType.COMMUNITY);
+            final bool isGroupChatList =
+                channelTypes != null && channelTypes!.length == 1 && channelTypes!.contains(AmityChannelType.COMMUNITY);
             return ChatListEmptyState(
               theme: theme,
               isGroupChatList: isGroupChatList,
@@ -88,10 +81,7 @@ class BaseChatListComponent extends NewBaseComponent {
                       const SizedBox(width: 4),
                       Text(
                         context.l10n.chat_notifications_disabled,
-                        style: TextStyle(
-                            color: theme.baseColorShade1,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400),
+                        style: TextStyle(color: theme.baseColorShade1, fontSize: 13, fontWeight: FontWeight.w400),
                       ),
                     ],
                   ),
@@ -102,14 +92,12 @@ class BaseChatListComponent extends NewBaseComponent {
                   itemCount: state.channels.length,
                   itemBuilder: (context, index) {
                     final channel = state.channels[index];
-                    final channelMember = state
-                        .channelMembers[channel.channelId]; // Other participant
+                    final channelMember = state.channelMembers[channel.channelId]; // Other participant
 
                     return GestureDetector(
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
-                          if (channel.amityChannelType ==
-                              AmityChannelType.COMMUNITY) {
+                          if (channel.amityChannelType == AmityChannelType.COMMUNITY) {
                             Navigator.of(context)
                                 .push(
                               MaterialPageRoute(
@@ -118,23 +106,19 @@ class BaseChatListComponent extends NewBaseComponent {
                                       )),
                             )
                                 .then((value) {
-                              context
-                                  .read<AmityToastBloc>()
-                                  .add(AmityToastDismiss());
+                              context.read<AmityToastBloc>().add(AmityToastDismiss());
                             });
                           } else {
                             final channelId = channel.channelId;
                             final userId = channelMember?.userId;
-                            final displayName =
-                                channelMember?.user?.displayName;
+                            final displayName = channelMember?.user?.displayName;
                             final avatarUrl = channelMember?.user?.avatarUrl;
 
                             Navigator.of(context)
                                 .push(
                               MaterialPageRoute(
                                 builder: (context) => AmityChatPage(
-                                  key:
-                                      Key("${channelId ?? ""}_${userId ?? ""}"),
+                                  key: Key("${channelId ?? ""}_${userId ?? ""}"),
                                   channelId: channelId,
                                   userId: userId ?? "",
                                   userDisplayName: displayName ?? "",
@@ -143,14 +127,11 @@ class BaseChatListComponent extends NewBaseComponent {
                               ),
                             )
                                 .then((value) {
-                              context
-                                  .read<AmityToastBloc>()
-                                  .add(AmityToastDismiss());
+                              context.read<AmityToastBloc>().add(AmityToastDismiss());
                             });
                           }
                         },
-                        child: renderChatListItem(
-                            context, chatListType, channel, channelMember));
+                        child: renderChatListItem(context, chatListType, channel, channelMember));
                   },
                 ),
               ),
@@ -161,8 +142,7 @@ class BaseChatListComponent extends NewBaseComponent {
     );
   }
 
-  void _showArchiveErrorDialog(
-      BuildContext context, String errorTitle, String errorMessage) {
+  void _showArchiveErrorDialog(BuildContext context, String errorTitle, String errorMessage) {
     final localize = context.l10n;
     AmityV4Dialog().showAlertErrorDialog(
       title: errorTitle,
@@ -171,18 +151,14 @@ class BaseChatListComponent extends NewBaseComponent {
     );
   }
 
-  Widget renderChatListItem(BuildContext context, ChatListType chatListType,
-      AmityChannel channel, AmityChannelMember? channelMember) {
+  Widget renderChatListItem(
+      BuildContext context, ChatListType chatListType, AmityChannel channel, AmityChannelMember? channelMember) {
     // Enable archive functionality for both conversation and community channels
     if (chatListType == ChatListType.CONVERSATION) {
       return renderDismissibleListItem(
-          chatListType,
-          channel,
-          channelMember,
-          "assets/Icons/amity_ic_channel_archive.svg",
-          context.l10n.chat_archive, (direction) {
-        context.read<ChatListBloc>().addEvent(
-            ChatListEventChannelArchive(
+          chatListType, channel, channelMember, "assets/Icons/amity_ic_channel_archive.svg", context.l10n.chat_archive,
+          (direction) {
+        context.read<ChatListBloc>().addEvent(ChatListEventChannelArchive(
               channelId: channel.channelId!,
               successMessage: context.l10n.toast_chat_archived,
               errorMessage: context.l10n.toast_chat_archive_error,
@@ -191,14 +167,9 @@ class BaseChatListComponent extends NewBaseComponent {
             ));
       });
     } else if (chatListType == ChatListType.ARCHIVED) {
-      return renderDismissibleListItem(
-          chatListType,
-          channel,
-          channelMember,
-          "assets/Icons/amity_ic_channel_unarchive.svg",
-          context.l10n.chat_unarchive, (direction) {
-        context.read<ChatListBloc>().addEvent(
-            ChatListEventChannelUnarchive(
+      return renderDismissibleListItem(chatListType, channel, channelMember,
+          "assets/Icons/amity_ic_channel_unarchive.svg", context.l10n.chat_unarchive, (direction) {
+        context.read<ChatListBloc>().addEvent(ChatListEventChannelUnarchive(
               channelId: channel.channelId!,
               successMessage: context.l10n.toast_chat_unarchived,
               errorMessage: context.l10n.toast_chat_unarchive_error,
@@ -209,13 +180,8 @@ class BaseChatListComponent extends NewBaseComponent {
     }
   }
 
-  Widget renderDismissibleListItem(
-      ChatListType chatListType,
-      AmityChannel channel,
-      AmityChannelMember? channelMember,
-      String assetIcon,
-      String actionText,
-      void Function(DismissDirection)? onDismissed) {
+  Widget renderDismissibleListItem(ChatListType chatListType, AmityChannel channel, AmityChannelMember? channelMember,
+      String assetIcon, String actionText, void Function(DismissDirection)? onDismissed) {
     final channelId = channel.channelId;
     final userId = channelMember?.userId;
     return Dismissible(
@@ -287,7 +253,7 @@ class ChatListItem extends BaseElement {
 
     String? previewText;
     Widget? previewIcon;
-    
+
     // Use searchMessage if provided, otherwise fall back to channel preview
     if (searchMessage != null) {
       // Handle search message display
@@ -322,8 +288,7 @@ class ChatListItem extends BaseElement {
             height: 20,
             color: theme.baseColorShade2,
           );
-        } else if (messageData is MessageFileData ||
-            messageData is MessageAudioData) {
+        } else if (messageData is MessageFileData || messageData is MessageAudioData) {
           previewText = context.l10n.chat_message_no_preview;
         } else if (messageData is MessageCustomData) {
           previewText = messageData.rawData.toString();
@@ -364,8 +329,7 @@ class ChatListItem extends BaseElement {
             height: 20,
             color: theme.baseColorShade2,
           );
-        } else if (previewMessage is MessageFileData ||
-            previewMessage is MessageAudioData) {
+        } else if (previewMessage is MessageFileData || previewMessage is MessageAudioData) {
           // To be implement
           previewText = context.l10n.chat_message_no_preview;
         } else if (previewMessage is MessageCustomData) {
@@ -377,7 +341,7 @@ class ChatListItem extends BaseElement {
     }
     if (channel.amityChannelType == AmityChannelType.COMMUNITY) {
       String displayName = channel.displayName ?? "";
-      
+
       // Only highlight channel name if NOT in search message mode
       if (searchQuery.isNotEmpty && searchMessage == null && _hasExactWordMatch(displayName, searchQuery)) {
         displayNameWidget = Row(
@@ -418,9 +382,7 @@ class ChatListItem extends BaseElement {
     } else {
       var displayName = channelMember?.user?.displayName;
 
-      if (channelMember?.user?.isDeleted == true ||
-          displayName == null ||
-          displayName.isEmpty) {
+      if (channelMember?.user?.isDeleted == true || displayName == null || displayName.isEmpty) {
         displayName = context.l10n.user_profile_unknown_name;
       }
 
@@ -566,7 +528,7 @@ class ChatListItem extends BaseElement {
     final lowercaseText = text.toLowerCase();
     final lowercaseQuery = query.toLowerCase();
     List<int> matches = [];
-    
+
     for (int i = 0; i <= lowercaseText.length - lowercaseQuery.length; i++) {
       // Check if we found the query at position i
       if (lowercaseText.substring(i, i + lowercaseQuery.length) == lowercaseQuery) {
@@ -576,7 +538,7 @@ class ChatListItem extends BaseElement {
         }
       }
     }
-    
+
     return matches;
   }
 
@@ -592,25 +554,23 @@ class ChatListItem extends BaseElement {
     // Performance optimization: Estimate max characters that can fit in 2 lines
     // Assuming roughly 40 characters per line on average mobile screen
     const int maxCharsForTwoLines = 80;
-    
+
     // Truncate text if it's too long to prevent heavy processing
-    String searchableText = text.length > maxCharsForTwoLines 
-        ? text.substring(0, maxCharsForTwoLines) 
-        : text;
-    
+    String searchableText = text.length > maxCharsForTwoLines ? text.substring(0, maxCharsForTwoLines) : text;
+
     // Find all exact word matches
     final matches = _findExactWordMatches(searchableText, query);
-    
+
     if (matches.isEmpty) {
       return TextSpan(
         text: searchableText,
         style: AmityTextStyle.body(theme.baseColorShade2),
       );
     }
-    
+
     List<TextSpan> spans = [];
     int currentIndex = 0;
-    
+
     // Build spans with highlighted matches
     for (int matchIndex in matches) {
       // Add text before the match
@@ -620,16 +580,16 @@ class ChatListItem extends BaseElement {
           style: AmityTextStyle.body(theme.baseColorShade2),
         ));
       }
-      
+
       // Add the highlighted match
       spans.add(TextSpan(
         text: searchableText.substring(matchIndex, matchIndex + query.length),
         style: AmityTextStyle.bodyBold(theme.baseColor),
       ));
-      
+
       currentIndex = matchIndex + query.length;
     }
-    
+
     // Add remaining text after the last match
     if (currentIndex < searchableText.length) {
       spans.add(TextSpan(
@@ -637,7 +597,7 @@ class ChatListItem extends BaseElement {
         style: AmityTextStyle.body(theme.baseColorShade2),
       ));
     }
-    
+
     // If we truncated the original text, add ellipsis indication
     if (text.length > maxCharsForTwoLines) {
       spans.add(TextSpan(
@@ -645,7 +605,7 @@ class ChatListItem extends BaseElement {
         style: AmityTextStyle.body(theme.baseColorShade2),
       ));
     }
-    
+
     return TextSpan(children: spans);
   }
 
@@ -654,17 +614,17 @@ class ChatListItem extends BaseElement {
   TextSpan _buildHighlightedNameTextSpan(String text, String query) {
     // Find all exact word matches
     final matches = _findExactWordMatches(text, query);
-    
+
     if (matches.isEmpty) {
       return TextSpan(
         text: text,
         style: AmityTextStyle.titleBold(theme.baseColor),
       );
     }
-    
+
     List<TextSpan> spans = [];
     int currentIndex = 0;
-    
+
     // Build spans with highlighted matches
     for (int matchIndex in matches) {
       // Add text before the match
@@ -674,16 +634,16 @@ class ChatListItem extends BaseElement {
           style: AmityTextStyle.titleBold(theme.baseColor),
         ));
       }
-      
+
       // Add the highlighted match
       spans.add(TextSpan(
         text: text.substring(matchIndex, matchIndex + query.length),
         style: AmityTextStyle.titleBold(theme.primaryColor),
       ));
-      
+
       currentIndex = matchIndex + query.length;
     }
-    
+
     // Add remaining text after the last match
     if (currentIndex < text.length) {
       spans.add(TextSpan(
@@ -691,7 +651,7 @@ class ChatListItem extends BaseElement {
         style: AmityTextStyle.titleBold(theme.baseColor),
       ));
     }
-    
+
     return TextSpan(children: spans);
   }
 
@@ -744,8 +704,7 @@ class ChatListItem extends BaseElement {
 
 class AmityChatAvatar extends BaseElement {
   final AmityChannelMember? channelMember;
-  final String avatarPlaceholder =
-      "assets/Icons/amity_ic_user_avatar_placeholder.svg";
+  final String avatarPlaceholder = "assets/Icons/amity_ic_user_avatar_placeholder.svg";
 
   late final String? avatarUrl;
   late final bool isDeletedUser;
@@ -780,8 +739,7 @@ class AmityChatAvatar extends BaseElement {
             child: Image.network(
               avatarUrl!,
               fit: BoxFit.cover,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
+              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                 if (loadingProgress == null) {
                   return child;
                 } else {
@@ -791,33 +749,16 @@ class AmityChatAvatar extends BaseElement {
                   );
                 }
               },
-              errorBuilder:
-                  (BuildContext context, Object error, StackTrace? stackTrace) {
-                return avatarCharacter();
+              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                return AvatarInitials(theme: theme, displayName: displayName);
               },
             ),
           ),
         );
       } else {
-        return avatarCharacter();
+        return AvatarInitials(theme: theme, displayName: displayName);
       }
     }
-  }
-
-  Widget avatarCharacter() {
-    return Container(
-      height: 40,
-      width: 40,
-      decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-          child: Text(
-        displayName.isEmpty ? "" : displayName[0].toUpperCase(),
-        style: AmityTextStyle.custom(20, FontWeight.w400, Colors.white),
-      )),
-    );
   }
 }
 

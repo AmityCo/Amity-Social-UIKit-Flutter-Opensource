@@ -14,12 +14,9 @@ part 'my_community_elements.dart';
 part 'my_community_ui_ids.dart';
 
 class AmityMyCommunitiesComponent extends NewBaseComponent {
-  ScrollController scrollController = ScrollController();
+  final ScrollController scrollController = ScrollController();
   AmityMyCommunitiesComponent({Key? key, String? pageId})
-      : super(
-            key: key,
-            pageId: pageId,
-            componentId: AmityComponent.myCommunities.stringValue);
+      : super(key: key, pageId: pageId, componentId: AmityComponent.myCommunities.stringValue);
 
   @override
   Widget buildComponent(BuildContext context) {
@@ -33,24 +30,13 @@ class AmityMyCommunitiesComponent extends NewBaseComponent {
             if (state is MyCommunityLoading) {
               return communitySkeletonList(theme, configProvider);
             } else if (state is MyCommunityLoaded) {
-              return Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      color: theme.baseColorShade4,
-                      height: 8,
-                    ),
-                    Expanded(
-                      child: communityList(
-                          context, scrollController, state.list, theme, () {
-                        context
-                            .read<MyCommunityBloc>()
-                            .add(MyCommunityEventLoadMore());
-                      }),
-                    ),
-                  ],
+              return Column(children: [
+                Expanded(
+                  child: communityList(context, scrollController, state.list, theme, () {
+                    context.read<MyCommunityBloc>().add(MyCommunityEventLoadMore());
+                  }),
                 ),
-              );
+              ]);
             } else {
               return Container();
             }

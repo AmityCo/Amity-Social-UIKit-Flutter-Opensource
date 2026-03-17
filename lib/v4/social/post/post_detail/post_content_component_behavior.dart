@@ -2,8 +2,10 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/amity_community_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
+
+import 'package:amity_uikit_beta_service/v4/utils/navigation_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AmityPostContentComponentBehavior {
   void goToCommunityProfilePage(
@@ -24,14 +26,9 @@ class AmityPostContentComponentBehavior {
     BuildContext context,
     String userId,
   ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AmityUserProfilePage(
-          userId: userId,
-        ),
-      ),
-    );
+    context
+        .read<NavigationProvider>()
+        .handleNavigation(context, event: AmityNavigationEvent.showUserProfile, params: {'userId': userId});
   }
 
   void goToPostComposerPage(

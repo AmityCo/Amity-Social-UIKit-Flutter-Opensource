@@ -38,8 +38,7 @@ class AmityGroupMemberListPage extends NewBasePage {
   Widget buildPage(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final cubit = AmityGroupMemberListCubit(
-            channel: channel, toastBloc: context.read<AmityToastBloc>());
+        final cubit = AmityGroupMemberListCubit(channel: channel, toastBloc: context.read<AmityToastBloc>());
         return cubit;
       },
       child: BlocBuilder<AmityGroupMemberListCubit, AmityGroupMemberListState>(
@@ -48,15 +47,13 @@ class AmityGroupMemberListPage extends NewBasePage {
             length: 2,
             child: Builder(
               builder: (context) {
-                final TabController tabController =
-                    DefaultTabController.of(context);
+                final TabController tabController = DefaultTabController.of(context);
 
                 // Listen to tab changes
                 tabController.addListener(() {
                   if (!tabController.indexIsChanging) {
                     final cubit = context.read<AmityGroupMemberListCubit>();
-                    final newTab =
-                        tabController.index == 0 ? 'all' : 'moderators';
+                    final newTab = tabController.index == 0 ? 'all' : 'moderators';
                     cubit.changeTab(newTab);
                     // Clear search when switching tabs
                     textController.clear();
@@ -78,26 +75,26 @@ class AmityGroupMemberListPage extends NewBasePage {
                       },
                     ),
                     centerTitle: true,
-                    actions: state.isCurrentUserModerator
-                        ? [
-                            GestureDetector(
-                              onTap: () => _navigateToSelectUsers(context),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 16),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    "assets/Icons/amity_ic_post_creation_button.svg",
-                                    package: 'amity_uikit_beta_service',
-                                    colorFilter: ColorFilter.mode(
-                                      theme.baseColor,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        : [],
+                    //   actions: state.isCurrentUserModerator
+                    //       ? [
+                    //           GestureDetector(
+                    //             onTap: () => _navigateToSelectUsers(context),
+                    //             child: Padding(
+                    //               padding: const EdgeInsets.only(right: 16),
+                    //               child: Center(
+                    //                 child: SvgPicture.asset(
+                    //                   "assets/Icons/amity_ic_post_creation_button.svg",
+                    //                   package: 'amity_uikit_beta_service',
+                    //                   colorFilter: ColorFilter.mode(
+                    //                     theme.secondaryColor,
+                    //                     BlendMode.srcIn,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           )
+                    //         ]
+                    //       : [],
                   ),
                   body: Column(
                     children: [
@@ -126,10 +123,8 @@ class AmityGroupMemberListPage extends NewBasePage {
                       Expanded(
                         child: TabBarView(
                           children: [
-                            _buildTabContent(
-                                context, state, memberScrollController),
-                            _buildTabContent(
-                                context, state, moderatorScrollController),
+                            _buildTabContent(context, state, memberScrollController),
+                            _buildTabContent(context, state, moderatorScrollController),
                           ],
                         ),
                       ),
@@ -144,8 +139,7 @@ class AmityGroupMemberListPage extends NewBasePage {
     );
   }
 
-  Widget _buildTabContent(BuildContext context, AmityGroupMemberListState state,
-      ScrollController scrollController) {
+  Widget _buildTabContent(BuildContext context, AmityGroupMemberListState state, ScrollController scrollController) {
     return Column(
       children: [
         AmityTopSearchBarComponent(
@@ -166,8 +160,7 @@ class AmityGroupMemberListPage extends NewBasePage {
     );
   }
 
-  Widget _buildMembersList(BuildContext context,
-      AmityGroupMemberListState state, ScrollController scrollController) {
+  Widget _buildMembersList(BuildContext context, AmityGroupMemberListState state, ScrollController scrollController) {
     // Since the cubit already filters data based on activeTab, we just use state.members directly
     final filteredMembers = state.members;
 
@@ -188,8 +181,7 @@ class AmityGroupMemberListPage extends NewBasePage {
           SvgPicture.asset(
             'assets/Icons/amity_ic_search_not_found.svg',
             package: 'amity_uikit_beta_service',
-            colorFilter:
-                ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
             width: 47,
             height: 47,
           ),
@@ -208,8 +200,8 @@ class AmityGroupMemberListPage extends NewBasePage {
     );
   }
 
-  Widget _buildMembersListView(BuildContext context,
-      AmityGroupMemberListState state, ScrollController scrollController) {
+  Widget _buildMembersListView(
+      BuildContext context, AmityGroupMemberListState state, ScrollController scrollController) {
     final currentUserId = AmityCoreClient.getUserId();
 
     return groupUserList(
@@ -252,20 +244,19 @@ class AmityGroupMemberListPage extends NewBasePage {
 
     if (result != null && result is List<AmityUser> && context.mounted) {
       context.read<AmityGroupMemberListCubit>().addMembersToChannel(
-        result,
-        successMessageSingle: context.l10n.toast_member_added,
-        successMessageMultiple: context.l10n.toast_members_added,
-        errorMessageSingle: context.l10n.toast_member_add_error,
-        errorMessageMultiple: context.l10n.toast_members_add_error,
-      );
+            result,
+            successMessageSingle: context.l10n.toast_member_added,
+            successMessageMultiple: context.l10n.toast_members_added,
+            errorMessageSingle: context.l10n.toast_member_add_error,
+            errorMessageMultiple: context.l10n.toast_members_add_error,
+          );
     }
   }
 
   void _showMemberActions(BuildContext context, AmityUser user) {
     final state = context.read<AmityGroupMemberListCubit>().state;
     final cubit = context.read<AmityGroupMemberListCubit>();
-    final isUserModerator =
-        state.memberRoles[user.userId]?.contains('channel-moderator') ?? false;
+    final isUserModerator = state.memberRoles[user.userId]?.contains('channel-moderator') ?? false;
 
     showModalBottomSheet(
       context: context,
@@ -406,8 +397,7 @@ class AmityGroupMemberListPage extends NewBasePage {
     ConfirmationV4Dialog().show(
       context: context,
       title: 'Confirm mute',
-      detailText:
-          "Are you sure you want to mute this user? They will no longer be able to send or react to messages.",
+      detailText: "Are you sure you want to mute this user? They will no longer be able to send or react to messages.",
       leftButtonText: 'Cancel',
       rightButtonText: 'Mute',
       leftButtonColor: theme.alertColor,
@@ -428,8 +418,7 @@ class AmityGroupMemberListPage extends NewBasePage {
     ConfirmationV4Dialog().show(
       context: context,
       title: 'Confirm unmute',
-      detailText:
-          "Are you sure you want to unmute this user? They can now send or react to messages.",
+      detailText: "Are you sure you want to unmute this user? They can now send or react to messages.",
       leftButtonText: 'Cancel',
       rightButtonText: 'Unmute',
       onConfirm: () {

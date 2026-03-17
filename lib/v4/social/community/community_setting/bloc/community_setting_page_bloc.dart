@@ -10,15 +10,12 @@ import 'package:amity_sdk/amity_sdk.dart';
 part 'community_setting_page_events.dart';
 part 'community_setting_page_state.dart';
 
-class CommunitySettingPageBloc
-    extends Bloc<CommunitySettingPageEvent, CommunitySettingPageState> {
+class CommunitySettingPageBloc extends Bloc<CommunitySettingPageEvent, CommunitySettingPageState> {
   final AmityCommunity _community;
   late AmityCommunityNotification _communityNotification;
 
-  CommunitySettingPageBloc(this._community)
-      : super(CommunitySettingPageState()) {
-    bool hasCommunityEditPermission =
-        _community.hasPermission(AmityPermission.EDIT_COMMUNITY);
+  CommunitySettingPageBloc(this._community) : super(CommunitySettingPageState()) {
+    bool hasCommunityEditPermission = _community.hasPermission(AmityPermission.EDIT_COMMUNITY);
 
     // Check if the user has permission to edit the profile
     state.shouldShowEditProfile = hasCommunityEditPermission;
@@ -29,8 +26,9 @@ class CommunitySettingPageBloc
     // Check if the user has permission to delete the community
     state.shouldShowCloseCommunity = hasCommunityEditPermission;
 
-    _communityNotification =
-        AmityCommunityNotification(_community.communityId ?? "");
+    state.shouldShowLeaveCommunity = _community.isPublic == true;
+
+    _communityNotification = AmityCommunityNotification(_community.communityId ?? "");
 
     _communityNotification.getSettings().then((settings) {
       state.notificationSettings = settings;
@@ -55,37 +53,27 @@ class CommunitySettingPageBloc
 
     on<CommunityNotificationSettingPageLoadEvent>((event, emit) async {
       final settings = await _communityNotification.getSettings();
-      emit(state.copyWith(
-          notificationSettings: settings,
-          isNotificationEnabled: settings.isEnabled ?? false));
+      emit(state.copyWith(notificationSettings: settings, isNotificationEnabled: settings.isEnabled ?? false));
     });
 
     on<LeaveCommunityEvent>((event, emit) async {
-      AmitySocialClient.newCommunityRepository()
-          .leaveCommunity(_community.communityId ?? '')
-          .then((value) {
-        event.toastBloc.add(AmityToastShort(
-            message: event.context.l10n.community_leave_success_message,
-            icon: AmityToastIcon.success));
+      AmitySocialClient.newCommunityRepository().leaveCommunity(_community.communityId ?? '').then((value) {
+        event.toastBloc.add(
+            AmityToastShort(message: event.context.l10n.community_leave_success_message, icon: AmityToastIcon.success));
         event.onSuccess();
       }).onError((error, stackTrace) {
-        event.toastBloc.add(AmityToastShort(
-            message: event.context.l10n.community_leave_error_message));
+        event.toastBloc.add(AmityToastShort(message: event.context.l10n.community_leave_error_message));
         event.onFailure();
       });
     });
 
     on<CloseCommunityEvent>((event, emit) async {
-      AmitySocialClient.newCommunityRepository()
-          .deleteCommunity(_community.communityId ?? '')
-          .then((value) {
-        event.toastBloc.add(AmityToastShort(
-            message: event.context.l10n.community_close_success_message,
-            icon: AmityToastIcon.success));
+      AmitySocialClient.newCommunityRepository().deleteCommunity(_community.communityId ?? '').then((value) {
+        event.toastBloc.add(
+            AmityToastShort(message: event.context.l10n.community_close_success_message, icon: AmityToastIcon.success));
         event.onSuccess();
       }).onError((error, stackTrace) {
-        event.toastBloc.add(AmityToastShort(
-            message: event.context.l10n.community_close_error_message));
+        event.toastBloc.add(AmityToastShort(message: event.context.l10n.community_close_error_message));
         event.onFailure();
       });
     });

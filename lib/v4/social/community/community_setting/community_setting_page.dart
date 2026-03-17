@@ -9,6 +9,7 @@ import 'package:amity_uikit_beta_service/v4/social/community/community_setting/e
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/permission_setting/post/community_post_permission_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/permission_setting/story/community_story_setting_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/app_bar.dart';
+import 'package:amity_uikit_beta_service/v4/utils/navigation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +17,7 @@ import 'bloc/community_setting_page_bloc.dart';
 
 // ignore: must_be_immutable
 class AmityCommunitySettingPage extends NewBasePage {
-  AmityCommunitySettingPage({super.key, required this.community})
-      : super(pageId: 'community_setting_page');
+  AmityCommunitySettingPage({super.key, required this.community}) : super(pageId: 'community_setting_page');
 
   late AmityCommunity community;
 
@@ -37,8 +37,7 @@ class AmityCommunitySettingPage extends NewBasePage {
     return Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
-            title:
-                community.displayName ?? context.l10n.user_profile_unknown_name,
+            title: community.displayName ?? context.l10n.user_profile_unknown_name,
             configProvider: configProvider,
             theme: theme),
         body: ListView(
@@ -47,13 +46,13 @@ class AmityCommunitySettingPage extends NewBasePage {
             _getSectionTitleWidget(context.l10n.community_basic_info),
 
             if (state.shouldShowEditProfile)
-              CommunitySettingItem(context.l10n.profile_edit,
-                  'assets/Icons/amity_ic_edit_profile_setting.svg', onTap: () {
+              CommunitySettingItem(context.l10n.profile_edit, 'assets/Icons/amity_ic_edit_profile_setting.svg',
+                  onTap: () {
                 _goToEditProfilePage(context);
               }, pageId: pageId, componentId: '*', elementId: 'edit_profile'),
 
-            CommunitySettingItem(context.l10n.community_members,
-                'assets/Icons/amity_icon_member_setting.svg', onTap: () {
+            CommunitySettingItem(context.l10n.community_members, 'assets/Icons/amity_icon_member_setting.svg',
+                onTap: () {
               _goToCommunityMemberPage(context);
             }, pageId: pageId, componentId: '*', elementId: 'members'),
 
@@ -61,24 +60,14 @@ class AmityCommunitySettingPage extends NewBasePage {
               Stack(
                 alignment: Alignment.centerRight,
                 children: [
-                  CommunitySettingItem(context.l10n.settings_notifications,
-                      'assets/Icons/amity_ic_notification_setting.svg',
-                      onTap: () {
+                  CommunitySettingItem(
+                      context.l10n.settings_notifications, 'assets/Icons/amity_ic_notification_setting.svg', onTap: () {
                     _goToNotificationSettingPage(context, state);
-                  },
-                      pageId: pageId,
-                      componentId: '*',
-                      elementId: 'notifications'),
+                  }, pageId: pageId, componentId: '*', elementId: 'notifications'),
                   Positioned(
                     right: 45,
-                    child: Text(
-                        state.isNotificationEnabled
-                            ? context.l10n.general_on
-                            : context.l10n.general_off,
-                        style: TextStyle(
-                            color: theme.baseColorShade1,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400)),
+                    child: Text(state.isNotificationEnabled ? context.l10n.general_on : context.l10n.general_off,
+                        style: TextStyle(color: theme.baseColorShade1, fontSize: 15, fontWeight: FontWeight.w400)),
                   ),
                 ],
               ),
@@ -90,79 +79,69 @@ class AmityCommunitySettingPage extends NewBasePage {
               _getSectionTitleWidget(context.l10n.settings_permissions),
 
             if (state.shouldShowPostPermission)
-              CommunitySettingItem(context.l10n.community_post_permission,
-                  'assets/Icons/amity_ic_post_permission_setting.svg',
+              CommunitySettingItem(
+                  context.l10n.community_post_permission, 'assets/Icons/amity_ic_post_permission_setting.svg',
                   onTap: () {
                 _goToPostPermissionSettingPage(context);
-              },
-                  pageId: pageId,
-                  componentId: '*',
-                  elementId: 'post_permission'),
+              }, pageId: pageId, componentId: '*', elementId: 'post_permission'),
 
             if (state.shouldShowStoryComments)
-              CommunitySettingItem(context.l10n.community_story_comments,
-                  'assets/Icons/amity_ic_story_comment_setting.svg', onTap: () {
+              CommunitySettingItem(
+                  context.l10n.community_story_comments, 'assets/Icons/amity_ic_story_comment_setting.svg', onTap: () {
                 _goToStoryCommentSettingPage(context);
               }, pageId: pageId, componentId: '*', elementId: 'story_setting'),
 
-            if (state.shouldShowPostPermission || state.shouldShowStoryComments)
-              _getDividerWidget(),
+            if (state.shouldShowPostPermission || state.shouldShowStoryComments) _getDividerWidget(),
 
             // Leave Community
-            _getSettingDetailItemWidget(context.l10n.community_leave, null,
-                onTap: () {
-              ConfirmationDialog().show(
-                  context: context,
-                  title: context.l10n.community_leave,
-                  detailText: context.l10n.community_leave_description,
-                  onConfirm: () {
-                    context
-                        .read<CommunitySettingPageBloc>()
-                        .add(LeaveCommunityEvent(
-                            toastBloc: context.read<AmityToastBloc>(),
-                            context: context,
-                            onSuccess: () {
-                              // Navigate back to the social home page
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
-                            onFailure: () {
-                              AmityDialog().showAlertErrorDialog(
-                                  title: context.l10n.error_leave_community,
-                                  message: context
-                                      .l10n.error_leave_community_description);
-                            }));
-                  });
-            }),
-
-            _getDividerWidget(),
+            if (state.shouldShowLeaveCommunity) ...[
+              _getSettingDetailItemWidget(context.l10n.community_leave, null, onTap: () {
+                ConfirmationDialog().show(
+                    context: context,
+                    title: context.l10n.community_leave,
+                    detailText: context.l10n.community_leave_description,
+                    onConfirm: () {
+                      context.read<CommunitySettingPageBloc>().add(LeaveCommunityEvent(
+                          toastBloc: context.read<AmityToastBloc>(),
+                          context: context,
+                          onSuccess: () {
+                            // Navigate back to the social home page
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          onFailure: () {
+                            AmityDialog().showAlertErrorDialog(
+                                title: context.l10n.error_leave_community,
+                                message: context.l10n.error_leave_community_description);
+                          }));
+                    });
+              }),
+              _getDividerWidget(),
+            ],
 
             // Close Community
             if (state.shouldShowCloseCommunity)
               _getSettingDetailItemWidget(
-                  context.l10n.community_setting_close_label,
-                  context.l10n.community_setting_close_description, onTap: () {
+                  context.l10n.community_setting_close_label, context.l10n.community_setting_close_description,
+                  onTap: () {
                 ConfirmationDialog().show(
                     context: context,
                     title: context.l10n.community_close,
                     detailText: context.l10n.community_close_description,
                     onConfirm: () {
-                      context
-                          .read<CommunitySettingPageBloc>()
-                          .add(CloseCommunityEvent(
-                              toastBloc: context.read<AmityToastBloc>(),
-                              context: context,
-                              onSuccess: () {
-                                // Navigate back to the social home page
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                              onFailure: () {
-                                AmityDialog().showAlertErrorDialog(
-                                    title: context.l10n.error_close_community,
-                                    message: context.l10n
-                                        .error_close_community_description);
-                              }));
+                      context.read<CommunitySettingPageBloc>().add(CloseCommunityEvent(
+                          toastBloc: context.read<AmityToastBloc>(),
+                          context: context,
+                          onSuccess: () {
+                            // Navigate back to the social home page
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          onFailure: () {
+                            AmityDialog().showAlertErrorDialog(
+                                title: context.l10n.error_close_community,
+                                message: context.l10n.error_close_community_description);
+                          }));
                     });
               }),
 
@@ -174,34 +153,23 @@ class AmityCommunitySettingPage extends NewBasePage {
   Widget _getSectionTitleWidget(String title) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-        child: Text(title,
-            style: TextStyle(
-                color: theme.baseColor,
-                fontSize: 17,
-                fontWeight: FontWeight.w600)));
+        child: Text(title, style: TextStyle(color: theme.baseColor, fontSize: 17, fontWeight: FontWeight.w600)));
   }
 
-  Widget _getSettingDetailItemWidget(String title, String? detail,
-      {GestureTapCallback? onTap}) {
+  Widget _getSettingDetailItemWidget(String title, String? detail, {GestureTapCallback? onTap}) {
     return GestureDetector(
         onTap: onTap,
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(title,
-                    style: TextStyle(
-                        color: theme.alertColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600)),
+                title:
+                    Text(title, style: TextStyle(color: theme.alertColor, fontSize: 15, fontWeight: FontWeight.w600)),
                 subtitle: detail != null
                     ? Padding(
                         padding: const EdgeInsets.only(top: 4, bottom: 8),
                         child: Text(detail,
-                            style: TextStyle(
-                                color: theme.baseColorShade1,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400)))
+                            style: TextStyle(color: theme.baseColorShade1, fontSize: 13, fontWeight: FontWeight.w400)))
                     : null)));
   }
 
@@ -218,45 +186,36 @@ class AmityCommunitySettingPage extends NewBasePage {
   }
 
   void _goToEditProfilePage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) =>
-            AmityCommunitySetupPage(mode: EditMode(community))));
+    context.read<NavigationProvider>().handleNavigation(context,
+        event: AmityNavigationEvent.showCommunityEdit, params: {'mode': EditMode(community)});
   }
 
   void _goToCommunityMemberPage(BuildContext context) {
     if (community.communityId != null) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>
-              AmityCommunityMembershipPage(community: community)));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => AmityCommunityMembershipPage(community: community)));
     }
   }
 
-  void _goToNotificationSettingPage(
-      BuildContext context, CommunitySettingPageState state) async {
+  void _goToNotificationSettingPage(BuildContext context, CommunitySettingPageState state) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => AmityCommunityNotificationSettingPage(
-              community: community,
-              notificationSettings: state.notificationSettings)),
+              community: community, notificationSettings: state.notificationSettings)),
     );
-    context
-        .read<CommunitySettingPageBloc>()
-        .add(const CommunityNotificationSettingPageLoadEvent());
+    context.read<CommunitySettingPageBloc>().add(const CommunityNotificationSettingPageLoadEvent());
   }
 
   void _goToPostPermissionSettingPage(BuildContext context) {
     // Navigator.of(context).push(MaterialPageRoute(
     //     builder: (context) => PostReviewPage(community: community)));
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            AmityCommunityPostPermissionPage(community: community)));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => AmityCommunityPostPermissionPage(community: community)));
   }
 
   void _goToStoryCommentSettingPage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            AmityCommunityStorySettingPage(community: community)));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => AmityCommunityStorySettingPage(community: community)));
   }
 }

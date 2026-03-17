@@ -1,18 +1,14 @@
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
+import 'package:amity_uikit_beta_service/v4/utils/navigation_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AmityUserSearchResultBehavior {
   void goToUserProfilePage(
     BuildContext context,
     String userId,
   ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AmityUserProfilePage(
-          userId: userId,
-        ),
-      ),
-    );
+    context
+        .read<NavigationProvider>()
+        .handleNavigation(context, event: AmityNavigationEvent.showUserProfile, params: {'userId': userId});
   }
 }

@@ -34,8 +34,7 @@ class ConfigRepository {
       return {};
     }
 
-    final customizationConfig =
-        _config['customizations'] as Map<String, dynamic>? ?? {};
+    final customizationConfig = _config['customizations'] as Map<String, dynamic>? ?? {};
 
     if (customizationConfig.containsKey(configId)) {
       return customizationConfig[configId] as Map<String, dynamic>;
@@ -63,8 +62,7 @@ class ConfigRepository {
 
   Future<Map<String, dynamic>> _loadConfigFile(String fileName) async {
     try {
-      final jsonString = await rootBundle.loadString(
-          'packages/amity_uikit_beta_service/assets/config/$fileName.json');
+      final jsonString = await rootBundle.loadString('packages/amity_uikit_beta_service/assets/config/$fileName.json');
       return json.decode(jsonString);
     } catch (e) {
       return {};
@@ -74,8 +72,7 @@ class ConfigRepository {
 
 extension ThemeConfig on ConfigRepository {
   AmityThemeStyle _getCurrentThemeStyle() {
-    final systemStyle =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    final systemStyle = SchedulerBinding.instance.platformDispatcher.platformBrightness;
     final configStyle = _config['preferred_theme'] == 'dark'
         ? AmityThemeStyle.dark
         : _config['preferred_theme'] == 'light'
@@ -83,54 +80,41 @@ extension ThemeConfig on ConfigRepository {
             : AmityThemeStyle.system;
 
     final style = configStyle == AmityThemeStyle.system
-        ? (systemStyle == Brightness.light
-            ? AmityThemeStyle.light
-            : AmityThemeStyle.dark)
-        : (configStyle == AmityThemeStyle.light
-            ? AmityThemeStyle.light
-            : AmityThemeStyle.dark);
+        ? (systemStyle == Brightness.light ? AmityThemeStyle.light : AmityThemeStyle.dark)
+        : (configStyle == AmityThemeStyle.light ? AmityThemeStyle.light : AmityThemeStyle.dark);
     return style;
   }
 
   AmityThemeColor getTheme(String? configId) {
-    final fallbackTheme = _getCurrentThemeStyle() == AmityThemeStyle.light
-        ? lightTheme
-        : darkTheme;
-    final globalTheme =
-        _getGlobalTheme(_getCurrentThemeStyle(), fallbackTheme);
+    final fallbackTheme = _getCurrentThemeStyle() == AmityThemeStyle.light ? lightTheme : darkTheme;
+    final globalTheme = _getGlobalTheme(_getCurrentThemeStyle(), fallbackTheme);
 
     if (configId == null) {
       return _getThemeColor(globalTheme, fallbackTheme);
     }
 
-    final customizationConfig =
-        _config['customizations'] as Map<String, dynamic>?;
+    final customizationConfig = _config['customizations'] as Map<String, dynamic>?;
     final id = configId.split('/');
     if (id.length != 3) {
       return _getThemeColor(globalTheme, fallbackTheme);
     }
 
     final style = _getCurrentThemeStyle();
-    final pageTheme =
-        customizationConfig?['${id[0]}/*/*'] as Map<String, dynamic>?;
-    final componentTheme = customizationConfig?['*/${id[1]}/*']
-            as Map<String, dynamic>? ??
+    final pageTheme = customizationConfig?['${id[0]}/*/*'] as Map<String, dynamic>?;
+    final componentTheme = customizationConfig?['*/${id[1]}/*'] as Map<String, dynamic>? ??
         customizationConfig?['${id[0]}/${id[1]}/*'] as Map<String, dynamic>?;
 
     try {
       if (componentTheme != null) {
         final theme = _getThemeColor(
-            AmityTheme.fromJson(
-                componentTheme["theme"]?[style.toString().split('.').last], fallbackTheme),
+            AmityTheme.fromJson(componentTheme["theme"]?[style.toString().split('.').last], fallbackTheme),
             fallbackTheme);
         return theme;
       }
 
       if (pageTheme != null) {
         return _getThemeColor(
-            AmityTheme.fromJson(
-                pageTheme["theme"]?[style.toString().split('.').last], fallbackTheme),
-            fallbackTheme);
+            AmityTheme.fromJson(pageTheme["theme"]?[style.toString().split('.').last], fallbackTheme), fallbackTheme);
       }
     } catch (error) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -140,8 +124,7 @@ extension ThemeConfig on ConfigRepository {
   }
 
   AmityTheme? _getGlobalTheme(AmityThemeStyle style, AmityTheme fallbackTheme) {
-    final globalTheme = _config['theme']?[style.toString().split('.').last]
-        as Map<String, dynamic>?;
+    final globalTheme = _config['theme']?[style.toString().split('.').last] as Map<String, dynamic>?;
     if (globalTheme != null) {
       return AmityTheme.fromJson(globalTheme, fallbackTheme);
     }
@@ -157,19 +140,19 @@ extension ThemeConfig on ConfigRepository {
       baseColorShade2: theme?.baseColorShade2 ?? fallbackTheme.baseColorShade2,
       baseColorShade3: theme?.baseColorShade3 ?? fallbackTheme.baseColorShade3,
       baseColorShade4: theme?.baseColorShade4 ?? fallbackTheme.baseColorShade4,
+      avatarBackgroundColor: theme?.avatarBackgroundColor ?? fallbackTheme.avatarBackgroundColor,
+      avatarBorderColor: theme?.avatarBorderColor ?? fallbackTheme.avatarBorderColor,
+      avatarTextColor: theme?.avatarTextColor ?? fallbackTheme.avatarTextColor,
       alertColor: theme?.alertColor ?? fallbackTheme.alertColor,
       backgroundColor: theme?.backgroundColor ?? fallbackTheme.backgroundColor,
-      baseInverseColor:
-          theme?.baseInverseColor ?? fallbackTheme.baseInverseColor,
+      baseInverseColor: theme?.baseInverseColor ?? fallbackTheme.baseInverseColor,
       backgroundShade1Color: fallbackTheme.backgroundShade1Color,
       highlightColor: theme?.highlightColor ?? fallbackTheme.highlightColor,
     );
   }
 
   LinearGradient getShimmerGradient() {
-    final style = _getCurrentThemeStyle() == AmityThemeStyle.light
-        ? lightTheme
-        : darkTheme;
+    final style = _getCurrentThemeStyle() == AmityThemeStyle.light ? lightTheme : darkTheme;
     if (style == lightTheme) {
       return const LinearGradient(
         colors: [
@@ -234,9 +217,7 @@ extension MessageReactionConfig on ConfigRepository {
 
   AmityReactionType getReaction(String name) {
     return availableReactions[name] ??
-        AmityReactionType(
-            name: name,
-            imagePath: 'assets/Icons/amity_ic_reaction_not_found.svg');
+        AmityReactionType(name: name, imagePath: 'assets/Icons/amity_ic_reaction_not_found.svg');
   }
 }
 
@@ -249,8 +230,7 @@ class AmityChatUserActionType {
 
 extension ConversationChatUserActionConfig on ConfigRepository {
   Map<String, AmityChatUserActionType> get availableChatUserActions {
-    final actionsDict =
-        _config['conversation_chat_user_actions'] as List<dynamic>? ?? [];
+    final actionsDict = _config['conversation_chat_user_actions'] as List<dynamic>? ?? [];
 
     Map<String, AmityChatUserActionType> actionsMap = {};
     for (var item in actionsDict) {

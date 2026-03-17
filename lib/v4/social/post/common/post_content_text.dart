@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
-import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
+
+import 'package:amity_uikit_beta_service/v4/utils/navigation_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostContentText extends StatelessWidget {
   final AmityPost post;
@@ -38,10 +40,8 @@ class PostContentText extends StatelessWidget {
     List<AmityUserMentionMetadata>? mentionedUsers;
     if (post.metadata != null && post.metadata!['mentioned'] != null) {
       // Obtain the mention metadata from the post.
-      final mentionedGetter =
-          AmityMentionMetadataGetter(metadata: post.metadata!);
-      mentionedUsers =
-          mentionedGetter.getMentionedUsers();
+      final mentionedGetter = AmityMentionMetadataGetter(metadata: post.metadata!);
+      mentionedUsers = mentionedGetter.getMentionedUsers();
 
       // Sort mention metadata by starting index (if not already sorted).
       mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
@@ -52,17 +52,18 @@ class PostContentText extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ExpandableText(
-          text: textContent,
-          mentionedUsers: mentionedUsers,
-          style: normalStyle,
-          linkStyle: mentionStyle,
-          onMentionTap: (userId) => _goToUserProfilePage(context, userId),
-          ),
+        text: textContent,
+        mentionedUsers: mentionedUsers,
+        style: normalStyle,
+        linkStyle: mentionStyle,
+        onMentionTap: (userId) => _goToUserProfilePage(context, userId),
+      ),
     );
   }
 
   void _goToUserProfilePage(BuildContext context, String userId) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => AmityUserProfilePage(userId: userId)));
+    context
+        .read<NavigationProvider>()
+        .handleNavigation(context, event: AmityNavigationEvent.showUserProfile, params: {'userId': userId});
   }
 }

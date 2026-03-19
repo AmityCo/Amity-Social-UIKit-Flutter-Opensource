@@ -5,7 +5,7 @@ import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/community/bloc/community_feed_story_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/elements/amity_story_target_element.dart';
-import 'package:amity_uikit_beta_service/v4/social/story/target/utils%20/amity_story_target_ext.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/target/utils/amity_story_target_ext.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/amity_view_story_page.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';

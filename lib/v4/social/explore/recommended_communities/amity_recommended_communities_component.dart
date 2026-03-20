@@ -64,6 +64,9 @@ class AmityRecommendedCommunitiesComponent extends NewBaseComponent {
                         AmityRecommendedCommunityCard(
                       theme: theme,
                       community: state.communities[index],
+                      refreshController: context
+                          .read<RecommendedCommunitiesCubit>()
+                          .refreshController,
                       onJoinTap: () => context
                           .read<RecommendedCommunitiesCubit>()
                           .joinCommunity(state.communities[index].communityId!),
@@ -83,12 +86,14 @@ class AmityRecommendedCommunityCard extends StatelessWidget {
   final AmityThemeColor theme;
   final AmityCommunity community;
   final VoidCallback onJoinTap;
+  final ExploreComponentRefreshController? refreshController;
 
   const AmityRecommendedCommunityCard({
     Key? key,
     required this.theme,
     required this.community,
     required this.onJoinTap,
+    this.refreshController,
   }) : super(key: key);
 
   @override
@@ -102,7 +107,9 @@ class AmityRecommendedCommunityCard extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => AmityCommunityProfilePage(
-                    communityId: community.communityId ?? '')));
+                    communityId: community.communityId ?? ''))).then((_) {
+          refreshController?.notifyRefresh();
+        });
       },
       child: Container(
         width: 268,

@@ -208,12 +208,18 @@ class AmityGroupChatPage extends NewBasePage {
                                             message: firstItem));
                                   }
 
+                                  // After layout, detect first overflow and update stable state
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    if (!state.contentOverflowsScreen &&
+                                        state.scrollController.hasClients &&
+                                        state.scrollController.position.maxScrollExtent > 0) {
+                                      context.read<AmityGroupChatPageBloc>().add(const GroupChatPageContentOverflowChanged());
+                                    }
+                                  });
+
                                   final shouldUseReverse =
-                                      state.useReverseUI && state.messages.isNotEmpty &&
-                                          state.scrollController.hasClients &&
-                                          state.scrollController.position
-                                                  .maxScrollExtent >
-                                              0;
+                                      state.useReverseUI && state.contentOverflowsScreen;
+
                                   return ListView.builder(
                                     padding: const EdgeInsets.only(bottom: 8),
                                     controller: state.scrollController,
@@ -426,9 +432,7 @@ class AmityGroupChatPage extends NewBasePage {
   void _handleMessageVisibility(BuildContext context, GroupChatPageState state,
       AmityMessage message, int index, double visiblePercentage) {
     if (visiblePercentage >= 90) {
-      final shouldUseReverse = state.useReverseUI && state.messages.isNotEmpty &&
-          state.scrollController.hasClients &&
-          state.scrollController.position.maxScrollExtent > 0;
+      final shouldUseReverse = state.useReverseUI && state.contentOverflowsScreen;
           
       if (state.isLoadingToastDismissed) {
         // Stop any ongoing scrolling animation when the target message is found

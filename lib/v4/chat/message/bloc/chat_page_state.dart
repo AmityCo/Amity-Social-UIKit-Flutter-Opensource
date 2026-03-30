@@ -27,6 +27,7 @@ class ChatPageState extends Equatable {
   final String? aroundMessageId; // For jump to message functionality
   final int? bounceTargetIndex; // For bounce animation targeting
   final bool useReverseUI; // Controls scroll direction and message ordering
+  final bool contentOverflowsScreen; // True once content has exceeded screen height
 
   const ChatPageState({
     required this.channelId,
@@ -53,6 +54,7 @@ class ChatPageState extends Equatable {
     this.aroundMessageId,
     this.bounceTargetIndex,
     this.useReverseUI = true,
+    this.contentOverflowsScreen = false,
   });
 
   @override
@@ -80,6 +82,7 @@ class ChatPageState extends Equatable {
         aroundMessageId,
         bounceTargetIndex,
         useReverseUI,
+        contentOverflowsScreen,
       ];
 
   ChatPageState copyWith({
@@ -107,6 +110,7 @@ class ChatPageState extends Equatable {
     Object? aroundMessageId = _undefined,
     Object? bounceTargetIndex = _undefined,
     bool? useReverseUI,
+    bool? contentOverflowsScreen,
   }) {
     return ChatPageState(
       channelId: channelId ?? this.channelId,
@@ -143,6 +147,7 @@ class ChatPageState extends Equatable {
           ? this.bounceTargetIndex
           : bounceTargetIndex as int?,
       useReverseUI: useReverseUI ?? this.useReverseUI,
+      contentOverflowsScreen: contentOverflowsScreen ?? this.contentOverflowsScreen,
     );
   }
 }

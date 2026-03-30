@@ -552,6 +552,12 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
       emit(state.copyWith(bounceTargetIndex: null));
     });
 
+    on<ChatPageContentOverflowChanged>((event, emit) async {
+      if (!state.contentOverflowsScreen) {
+        emit(state.copyWith(contentOverflowsScreen: true));
+      }
+    });
+
     if (channelId != null && channelId.isNotEmpty) {
       addEvent(ChatPageSetAroundMessage(aroundMessageId: jumpToMessageId));
       

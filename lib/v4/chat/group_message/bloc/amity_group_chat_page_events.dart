@@ -258,3 +258,7 @@ class GroupChatPageSetShouldUseReverse extends GroupChatPageEvent {
   @override
   List<Object> get props => [shouldUseReverse ?? false];
 }
+
+class GroupChatPageContentOverflowChanged extends GroupChatPageEvent {
+  const GroupChatPageContentOverflowChanged();
+}

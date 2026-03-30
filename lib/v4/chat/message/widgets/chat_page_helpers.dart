@@ -342,7 +342,7 @@ extension ChatPageHelpers on AmityChatPage {
       {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
     state.scrollController
         .animateTo(
-      0.0,
+      (state.useReverseUI && state.contentOverflowsScreen) ? 0.0 : state.scrollController.position.maxScrollExtent,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
     )

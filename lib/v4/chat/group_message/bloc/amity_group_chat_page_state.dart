@@ -31,6 +31,7 @@ class GroupChatPageState extends Equatable {
   final bool shouldBounceMessage;
   final int? bounceMessageIndex;
   final bool? shouldUseReverse;
+  final bool contentOverflowsScreen; // True once content has exceeded screen height
 
   const GroupChatPageState({
     required this.channelId,
@@ -61,6 +62,7 @@ class GroupChatPageState extends Equatable {
     this.shouldBounceMessage = false,
     this.bounceMessageIndex,
     this.shouldUseReverse,
+    this.contentOverflowsScreen = false,
   });
 
   @override
@@ -92,6 +94,7 @@ class GroupChatPageState extends Equatable {
         shouldBounceMessage,
         bounceMessageIndex,
         shouldUseReverse,
+        contentOverflowsScreen,
       ];
 
   GroupChatPageState copyWith({
@@ -123,6 +126,7 @@ class GroupChatPageState extends Equatable {
     bool? shouldBounceMessage,
     Object? bounceMessageIndex = _undefined,
     Object? shouldUseReverse = _undefined,
+    bool? contentOverflowsScreen,
   }) {
     return GroupChatPageState(
       channelId: channelId ?? this.channelId,
@@ -168,6 +172,7 @@ class GroupChatPageState extends Equatable {
       shouldUseReverse: shouldUseReverse == _undefined
           ? this.shouldUseReverse
           : shouldUseReverse as bool?,
+      contentOverflowsScreen: contentOverflowsScreen ?? this.contentOverflowsScreen,
     );
   }
 }

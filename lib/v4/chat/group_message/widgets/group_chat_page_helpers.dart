@@ -319,7 +319,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
       {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
     state.scrollController
         .animateTo(
-      state.useReverseUI ? 0.0 : state.scrollController.position.maxScrollExtent,
+      state.useReverseUI && state.contentOverflowsScreen ? 0.0 : state.scrollController.position.maxScrollExtent,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
     )

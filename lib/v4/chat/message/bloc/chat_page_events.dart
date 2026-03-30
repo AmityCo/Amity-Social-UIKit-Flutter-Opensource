@@ -206,6 +206,10 @@ class ChatPageEventBlockUser extends ChatPageEvent {
   List<Object> get props => [isUserBlocked];
 }
 
+class ChatPageContentOverflowChanged extends ChatPageEvent {
+  const ChatPageContentOverflowChanged();
+}
+
 class ChatPageEventJumpToMessage extends ChatPageEvent {
   final String aroundMessageId;
 

@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 
 class AmityMessageCameraScreen extends StatefulWidget {
@@ -21,7 +23,8 @@ class AmityMessageCameraScreen extends StatefulWidget {
       _AmityMessageCameraScreenState(selectedFileType: selectedFileType);
 }
 
-class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen> {
+class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
+    with WidgetsBindingObserver {
   CameraController? controller;
   List<CameraDescription>? cameras;
   bool isVideoMode = false;
@@ -54,18 +57,81 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     initializeCamera();
   }
 
   Future<void> initializeCamera() async {
-    cameras = await availableCameras();
-    selectedCameraIndex = 0; // Start with the first camera
-    controller = CameraController(
-      cameras![selectedCameraIndex],
-      ResolutionPreset.high,
+    // Do NOT pre-check or request permission via permission_handler here.
+    //
+    // Rationale:
+    // On iOS, Camera only appears in the app's Settings page after
+    // AVCaptureDevice.requestAccess() has been called by the camera package.
+    // If we use permission_handler to request first, iOS never registers the
+    // Camera entry — so "Open Settings" takes the user to a page without Camera.
+    //
+    // Instead, let the camera package call availableCameras() / initialize()
+    // directly. On first run the native dialog appears. On denial it throws
+    // CameraException which we catch below to show the settings dialog.
+    try {
+      cameras = await availableCameras();
+      if (cameras == null || cameras!.isEmpty) {
+        if (mounted) Navigator.of(context).pop();
+        return;
+      }
+      selectedCameraIndex = 0;
+      controller = CameraController(
+        cameras![selectedCameraIndex],
+        ResolutionPreset.high,
+      );
+      await controller?.initialize();
+      if (mounted) setState(() {});
+    }     on CameraException catch (e) {
+      if (mounted) {
+        if (e.code == 'CameraAccessDenied' ||
+            e.code == 'CameraAccessDeniedWithoutPrompt' ||
+            e.code == 'CameraAccessRestricted') {
+          await _showCameraPermissionDialog();
+          if (mounted) Navigator.of(context).pop();
+        } else if (e.code == 'AudioAccessDenied' ||
+            e.code == 'AudioAccessDeniedWithoutPrompt' ||
+            e.code == 'AudioAccessRestricted') {
+          // Microphone denied — camera may still work for photos.
+          // Show dialog but stay on the camera screen (do NOT pop).
+          await _showMicrophonePermissionDialog();
+        } else {
+          Navigator.of(context).pop();
+        }
+      }
+    } catch (_) {
+      if (mounted) Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _showCameraPermissionDialog() async {
+    await PermissionAlertV4Dialog().show(
+      context: context,
+      title: context.l10n.permission_camera_title,
+      detailText: context.l10n.permission_camera_detail,
+      bottomButtonText: context.l10n.general_cancel,
+      topButtonText: context.l10n.permission_open_settings,
+      onTopButtonAction: () {
+        openAppSettings();
+      },
     );
-    await controller?.initialize();
-    setState(() {});
+  }
+
+  Future<void> _showMicrophonePermissionDialog() async {
+    await PermissionAlertV4Dialog().show(
+      context: context,
+      title: context.l10n.permission_microphone_title,
+      detailText: context.l10n.permission_microphone_detail,
+      bottomButtonText: context.l10n.general_cancel,
+      topButtonText: context.l10n.permission_open_settings,
+      onTopButtonAction: () {
+        openAppSettings();
+      },
+    );
   }
 
   Future<void> switchCamera() async {
@@ -93,14 +159,59 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller?.dispose();
     super.dispose();
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      // App truly backgrounded (not just a dialog/system overlay on top).
+      // Dispose camera to release hardware resources.
+      controller?.dispose();
+      controller = null;
+    } else if (state == AppLifecycleState.resumed) {
+      // Only reinitialize if camera was released (i.e. we went through paused).
+      if (controller == null) {
+        initializeCamera();
+      }
+    }
+    // Ignore AppLifecycleState.inactive — it fires when dialogs or system
+    // overlays appear on top of the app (e.g. our own permission dialog),
+    // which would cause a dispose→reinitialize loop.
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (controller == null || !controller!.value.isInitialized) {
-      return Container();
+      // Show a dark loading screen with a back button so the user is never
+      // stranded on a blank screen without a way to navigate back.
+      return SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              const Center(
+                  child: CircularProgressIndicator(color: Colors.white)),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, left: 8),
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: SvgPicture.asset(
+                      'assets/Icons/amity_ic_circular_back_button.svg',
+                      package: 'amity_uikit_beta_service',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     }
     if (result != null) {
       return SafeArea(

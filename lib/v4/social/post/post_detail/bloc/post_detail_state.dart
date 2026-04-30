@@ -44,3 +44,10 @@ class PostDetailStateError extends PostDetailState {
   @override
   List<Object?> get props => [message];
 }
+
+class PostDetailStateDeleted extends PostDetailState {
+  const PostDetailStateDeleted();
+
+  @override
+  List<Object?> get props => [];
+}

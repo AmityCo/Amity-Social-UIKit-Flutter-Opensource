@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/video_post_player/pager/video_post_player.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_video_thumbnail_cache.dart';
 import 'package:flutter/material.dart';
 
 class PostContentVideo extends StatelessWidget {
@@ -14,7 +17,15 @@ class PostContentVideo extends StatelessWidget {
     if (posts.isEmpty) return Container();
 
     Widget backgroundThumbnail(String fileUrl, int index,
-        {BorderRadius? borderRadius}) {
+        {BorderRadius? borderRadius, String? postId}) {
+      final hasNetworkUrl = fileUrl.isNotEmpty;
+      Uint8List? localThumbnail;
+      if (!hasNetworkUrl && postId != null) {
+        localThumbnail = PostVideoThumbnailCache.instance.get(postId);
+      } else if (hasNetworkUrl && postId != null) {
+        // Server thumbnail is available, clean up cache
+        PostVideoThumbnailCache.instance.remove(postId);
+      }
       return Padding(
         padding: const EdgeInsets.all(2.0),
         child: Stack(
@@ -23,10 +34,17 @@ class PostContentVideo extends StatelessWidget {
               decoration: BoxDecoration(
                 color: theme.baseColorShade4,
                 borderRadius: borderRadius,
-                image: DecorationImage(
-                  image: NetworkImage(fileUrl),
-                  fit: BoxFit.cover,
-                ),
+                image: hasNetworkUrl
+                    ? DecorationImage(
+                        image: NetworkImage(fileUrl),
+                        fit: BoxFit.cover,
+                      )
+                    : (localThumbnail != null
+                        ? DecorationImage(
+                            image: MemoryImage(localThumbnail),
+                            fit: BoxFit.cover,
+                          )
+                        : null),
               ),
             ),
             Align(
@@ -80,6 +98,7 @@ class PostContentVideo extends StatelessWidget {
           child: AspectRatio(
             aspectRatio: 1,
             child: backgroundThumbnail(getURL(posts[0].data!), 0,
+                postId: posts[0].postId,
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(8),
                     topRight: Radius.circular(8),
@@ -106,6 +125,7 @@ class PostContentVideo extends StatelessWidget {
                 );
               },
               child: backgroundThumbnail(getURL(posts[0].data!), 0,
+                  postId: posts[0].postId,
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(8),
                       bottomLeft: Radius.circular(8))),
@@ -124,6 +144,7 @@ class PostContentVideo extends StatelessWidget {
                 );
               },
               child: backgroundThumbnail(getURL(posts[1].data!), 1,
+                  postId: posts[1].postId,
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(8),
                     bottomRight: Radius.circular(8),
@@ -151,6 +172,7 @@ class PostContentVideo extends StatelessWidget {
                     );
                   },
                   child: backgroundThumbnail(getURL(posts[0].data!), 0,
+                      postId: posts[0].postId,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(8),
                         topRight: Radius.circular(8),
@@ -174,6 +196,7 @@ class PostContentVideo extends StatelessWidget {
                         );
                       },
                       child: backgroundThumbnail(getURL(posts[1].data!), 1,
+                          postId: posts[1].postId,
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(8),
                           )),
@@ -192,6 +215,7 @@ class PostContentVideo extends StatelessWidget {
                         );
                       },
                       child: backgroundThumbnail(getURL(posts[2].data!), 2,
+                          postId: posts[2].postId,
                           borderRadius: const BorderRadius.only(
                               bottomRight: Radius.circular(8))),
                     )),
@@ -221,6 +245,7 @@ class PostContentVideo extends StatelessWidget {
                   );
                 },
                 child: backgroundThumbnail(getURL(posts[0].data!), 0,
+                    postId: posts[0].postId,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(8),
                     )),
@@ -243,6 +268,7 @@ class PostContentVideo extends StatelessWidget {
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: backgroundThumbnail(getURL(posts[1].data!), 1,
+                            postId: posts[1].postId,
                             borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(8),
                             )),
@@ -264,7 +290,8 @@ class PostContentVideo extends StatelessWidget {
                       },
                       child: AspectRatio(
                         aspectRatio: 1,
-                        child: backgroundThumbnail(getURL(posts[2].data!), 2),
+                        child: backgroundThumbnail(getURL(posts[2].data!), 2,
+                            postId: posts[2].postId),
                       ),
                     ),
                   ),
@@ -284,6 +311,7 @@ class PostContentVideo extends StatelessWidget {
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: backgroundThumbnail(getURL(posts[3].data!), 3,
+                            postId: posts[3].postId,
                             borderRadius: const BorderRadius.only(
                                 bottomRight: Radius.circular(8))),
                       ),
@@ -314,6 +342,7 @@ class PostContentVideo extends StatelessWidget {
                   );
                 },
                 child: backgroundThumbnail(getURL(posts[0].data!), 0,
+                    postId: posts[0].postId,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(8),
                       topRight: Radius.circular(8),
@@ -337,6 +366,7 @@ class PostContentVideo extends StatelessWidget {
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: backgroundThumbnail(getURL(posts[1].data!), 1,
+                            postId: posts[1].postId,
                             borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(8),
                             )),
@@ -358,7 +388,8 @@ class PostContentVideo extends StatelessWidget {
                       },
                       child: AspectRatio(
                         aspectRatio: 1,
-                        child: backgroundThumbnail(getURL(posts[2].data!), 2),
+                        child: backgroundThumbnail(getURL(posts[2].data!), 2,
+                            postId: posts[2].postId),
                       ),
                     ),
                   ),
@@ -380,6 +411,7 @@ class PostContentVideo extends StatelessWidget {
                         child: Stack(
                           children: [
                             backgroundThumbnail(getURL(posts[3].data!), 3,
+                                postId: posts[3].postId,
                                 borderRadius: const BorderRadius.only(
                                     bottomRight: Radius.circular(8))),
                             // Black filter overlay

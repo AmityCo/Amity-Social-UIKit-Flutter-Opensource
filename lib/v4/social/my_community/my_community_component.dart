@@ -24,39 +24,35 @@ class AmityMyCommunitiesComponent extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     return BlocProvider(
-      create: (context) => MyCommunityBloc(),
-      child: Builder(builder: (context) {
-        context.read<MyCommunityBloc>().add(MyCommunityEventInitial());
-
-        return BlocBuilder<MyCommunityBloc, MyCommunityState>(
-          builder: (context, state) {
-            if (state is MyCommunityLoading) {
-              return communitySkeletonList(theme, configProvider);
-            } else if (state is MyCommunityLoaded) {
-              return Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      color: theme.baseColorShade4,
-                      height: 8,
-                    ),
-                    Expanded(
-                      child: communityList(
-                          context, scrollController, state.list, theme, () {
-                        context
-                            .read<MyCommunityBloc>()
-                            .add(MyCommunityEventLoadMore());
-                      }),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return Container();
-            }
-          },
-        );
-      }),
+      create: (context) => MyCommunityBloc()..add(MyCommunityEventInitial()),
+      child: BlocBuilder<MyCommunityBloc, MyCommunityState>(
+        builder: (context, state) {
+          if (state is MyCommunityLoading) {
+            return communitySkeletonList(theme, configProvider);
+          } else if (state is MyCommunityLoaded) {
+            return Expanded(
+              child: Column(
+                children: [
+                  Container(
+                    color: theme.baseColorShade4,
+                    height: 8,
+                  ),
+                  Expanded(
+                    child: communityList(
+                        context, scrollController, state.list, theme, () {
+                      context
+                          .read<MyCommunityBloc>()
+                          .add(MyCommunityEventLoadMore());
+                    }),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
   }
 }

@@ -799,6 +799,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Falha ao criar a publicação. Por favor, tente novamente.';
 
   @override
+  String get error_post_ban_word_found =>
+      'Your post wasn\'t posted because it contains a blocked word.';
+
+  @override
+  String get error_post_link_not_allowed =>
+      'Your post wasn\'t posted because it contains a link that\'s not allowed.';
+
+  @override
   String error_max_poll_characters(int maxQuestionLength) {
     return 'A pergunta da enquete não pode exceder $maxQuestionLength caracteres.';
   }

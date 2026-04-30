@@ -1365,6 +1365,18 @@ abstract class AppLocalizations {
   /// **'Failed to create post. Please try again.'**
   String get error_create_post;
 
+  /// Error message when post contains a banned word
+  ///
+  /// In en, this message translates to:
+  /// **'Your post wasn\'t posted because it contains a blocked word.'**
+  String get error_post_ban_word_found;
+
+  /// Error message when post contains a disallowed link
+  ///
+  /// In en, this message translates to:
+  /// **'Your post wasn\'t posted because it contains a link that\'s not allowed.'**
+  String get error_post_link_not_allowed;
+
   /// Error message when poll question exceeds maximum characters
   ///
   /// In en, this message translates to:

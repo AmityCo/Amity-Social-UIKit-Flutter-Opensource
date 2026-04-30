@@ -957,6 +957,14 @@
   "@error_create_post": {
     "description": "Error message when creating a post fails"
   },
+  "error_post_ban_word_found": "Your post wasn't posted because it contains a blocked word.",
+  "@error_post_ban_word_found": {
+    "description": "Error message when post contains a banned word"
+  },
+  "error_post_link_not_allowed": "Your post wasn't posted because it contains a link that's not allowed.",
+  "@error_post_link_not_allowed": {
+    "description": "Error message when post contains a disallowed link"
+  },
   "error_max_poll_characters": "Poll question cannot exceed {maxQuestionLength} characters.",
   "@error_max_poll_characters": {
     "description": "Error message when poll question exceeds maximum characters",

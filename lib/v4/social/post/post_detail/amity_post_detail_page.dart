@@ -9,6 +9,8 @@ import 'package:amity_uikit_beta_service/v4/social/comment/comment_item/comment_
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_list/comment_list_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/amity_post_content_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/common/post_action.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/bloc/post_detail_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
@@ -36,20 +38,29 @@ class AmityPostDetailPage extends NewBasePage {
   Widget buildPage(BuildContext context) {
     return BlocProvider(
       create: (context) => PostDetailBloc(postId: postId, post: post),
-      child: BlocBuilder<PostDetailBloc, PostDetailState>(
+      child: BlocConsumer<PostDetailBloc, PostDetailState>(
+          listenWhen: (previous, current) => current is PostDetailStateDeleted,
+          listener: (context, state) {
+            // Show "Post deleted" toast on the underlying screen then pop
+            context.read<AmityToastBloc>().add(AmityToastShort(
+                message: context.l10n.community_pending_post_delete_success,
+                icon: AmityToastIcon.success));
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (context.mounted) Navigator.pop(context);
+            });
+          },
           builder: (context, state) {
-        return Scaffold(
-          backgroundColor: theme.backgroundColor,
-          body: buildPostDetail(context, state),
-        );
-      }),
+            return Scaffold(
+              backgroundColor: theme.backgroundColor,
+              body: buildPostDetail(context, state),
+            );
+          }),
     );
   }
 
   Widget buildPostDetail(BuildContext context, PostDetailState state) {
     if (state is PostDetailStateInitial) {
-      context.read<PostDetailBloc>().add(
-          PostDetailLoad(postId: state.postId));
+      context.read<PostDetailBloc>().add(PostDetailLoad(postId: state.postId));
       return Container(
           padding: const EdgeInsets.only(top: 74),
           decoration: BoxDecoration(color: theme.backgroundColor),

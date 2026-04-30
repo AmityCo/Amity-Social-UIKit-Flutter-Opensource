@@ -24,7 +24,12 @@ class MyCommunityBloc extends Bloc<MyCommunityEvent, MyCommunityState> {
         .stream
         .listen((communities) async {
       if (communityLiveCollection.isFetching == true && communities.isEmpty) {
-        add(MyCommunityEventLoading());
+        if (state is MyCommunityLoaded) {
+          add(MyCommunityEventLoaded(
+              (state as MyCommunityLoaded).copyWith(isFetching: true)));
+        } else {
+          add(MyCommunityEventLoading());
+        }
       } else if (communities.isNotEmpty) {
         var state = MyCommunityLoaded(
           list: communities,
@@ -45,7 +50,6 @@ class MyCommunityBloc extends Bloc<MyCommunityEvent, MyCommunityState> {
 
     on<MyCommunityEventInitial>((event, emit) async {
       communityLiveCollection.reset();
-      communityLiveCollection.loadNext();
     });
 
     on<MyCommunityEventLoadMore>((event, emit) async {

@@ -12,6 +12,7 @@ import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_camer
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_file_picker.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_views.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_video_thumbnail_cache.dart';
 import 'package:amity_uikit_beta_service/v4/utils/CustomBottomSheet/custom_buttom_sheet.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
+import 'package:amity_uikit_beta_service/v4/utils/error_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/ui/mention/mention_text_editing_controller.dart';
@@ -246,7 +248,7 @@ class AmityPostComposerPage extends NewBasePage {
       isPostButtonEnabled = false;
       return;
     }
-    
+
     // For create mode, enable button if there's text or files
     if (options.mode == AmityPostComposerMode.create) {
       if (textController.text.isNotEmpty && selectedFiles.isEmpty) {
@@ -296,7 +298,7 @@ class AmityPostComposerPage extends NewBasePage {
         isPostButtonEnabled = true;
         return;
       }
-      
+
       // If text changed and files exist, ensure all files are ready
       if (isTextChanged && selectedFiles.isNotEmpty) {
         isPostButtonEnabled = isMediaReady;
@@ -311,11 +313,11 @@ class AmityPostComposerPage extends NewBasePage {
   void checkAllFilesAreUploaded(BuildContext context) {
     // Check if any file has an error
     bool hasAnyError = selectedFiles.values.any((file) => file.isError == true);
-    
+
     // Check if all files are uploaded
     bool isAllImageUploaded =
         selectedFiles.values.every((image) => image.isUploaded == true);
-    
+
     if (hasAnyError) {
       // If any file failed, media is not ready
       isMediaReady = false;
@@ -406,7 +408,7 @@ class AmityPostComposerPage extends NewBasePage {
     if (isPosting) {
       return;
     }
-    
+
     ConfirmationV4Dialog().show(
       context: context,
       title: context.l10n.post_discard,
@@ -466,6 +468,18 @@ class AmityPostComposerPage extends NewBasePage {
       }).onError((error, stackTrace) {
         // Re-enable button on error to allow retry
         isPosting = false;
+        if (error is AmityException) {
+          if (error.isAmityErrorWithCode(AmityErrorCode.BAN_WORD_FOUND)) {
+            _showToast(context, context.l10n.error_post_ban_word_found,
+                AmityToastIcon.warning);
+            return;
+          } else if (error
+              .isAmityErrorWithCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
+            _showToast(context, context.l10n.error_post_link_not_allowed,
+                AmityToastIcon.warning);
+            return;
+          }
+        }
         _showToast(
             context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
@@ -533,6 +547,18 @@ class AmityPostComposerPage extends NewBasePage {
       }).onError((error, stackTrace) {
         // Re-enable button on error to allow retry
         isPosting = false;
+        if (error is AmityException) {
+          if (error.isAmityErrorWithCode(AmityErrorCode.BAN_WORD_FOUND)) {
+            _showToast(context, context.l10n.error_post_ban_word_found,
+                AmityToastIcon.warning);
+            return;
+          } else if (error
+              .isAmityErrorWithCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
+            _showToast(context, context.l10n.error_post_link_not_allowed,
+                AmityToastIcon.warning);
+            return;
+          }
+        }
         _showToast(
             context, context.l10n.error_edit_post, AmityToastIcon.warning);
       });
@@ -594,12 +620,53 @@ class AmityPostComposerPage extends NewBasePage {
     }).onError((error, stackTrace) {
       // Re-enable button on error to allow retry
       isPosting = false;
-      _showToast(
-          context, context.l10n.error_create_post, AmityToastIcon.warning);
+
+      // Dismiss the loading toast first, then show the error toast in a new
+      // event loop tick. This is necessary because Flutter batches BlocBuilder
+      // setState calls within the same tick — if we dispatch Dismiss + Short
+      // synchronously, the widget only rebuilds once (with the Short state)
+      // while isToastVisible is still true, so the !isToastVisible guard
+      // blocks the error toast from showing.
+      context.read<AmityToastBloc>().add(AmityToastDismiss());
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (!context.mounted) return;
+        if (error is AmityException) {
+          if (error.isAmityErrorWithCode(AmityErrorCode.BAN_WORD_FOUND)) {
+            _showToast(context, context.l10n.error_post_ban_word_found,
+                AmityToastIcon.warning);
+            return;
+          } else if (error
+              .isAmityErrorWithCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
+            _showToast(context, context.l10n.error_post_link_not_allowed,
+                AmityToastIcon.warning);
+            return;
+          }
+        }
+        _showToast(
+            context, context.l10n.error_create_post, AmityToastIcon.warning);
+      });
     });
   }
 
   void _onPostSuccess(BuildContext context, AmityPost post) {
+    // Cache local video thumbnails for newly created video posts
+    // so the feed can show them before the server generates thumbnails.
+    if (selectedMediaType == FileType.video &&
+        post.children != null &&
+        post.children!.isNotEmpty) {
+      final thumbnailEntries =
+          selectedFiles.values.where((f) => f.videoThumbnail != null).toList();
+      for (var i = 0;
+          i < post.children!.length && i < thumbnailEntries.length;
+          i++) {
+        final childPostId = post.children![i].postId;
+        if (childPostId != null) {
+          PostVideoThumbnailCache.instance
+              .set(childPostId, thumbnailEntries[i].videoThumbnail!);
+        }
+      }
+    }
+
     var isPostReviewEnabled = false;
     var isModerator = false;
 

@@ -791,6 +791,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_create_post => 'Failed to create post. Please try again.';
 
   @override
+  String get error_post_ban_word_found =>
+      'Your post wasn\'t posted because it contains a blocked word.';
+
+  @override
+  String get error_post_link_not_allowed =>
+      'Your post wasn\'t posted because it contains a link that\'s not allowed.';
+
+  @override
   String error_max_poll_characters(int maxQuestionLength) {
     return 'Poll question cannot exceed $maxQuestionLength characters.';
   }

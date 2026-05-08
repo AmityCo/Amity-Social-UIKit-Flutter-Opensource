@@ -53,41 +53,49 @@ class MessageComposerBloc
       emit(state.copyWith(text: event.text));
     });
 
+    on<MessageComposerReplyChanged>((event, emit) {
+      emit(state.copyWith(replyTo: event.replyTo));
+    });
+
     on<MessageComposerCreateTextMessage>((event, emit) async {
+      final currentReplyTo = state.replyTo;
       MessageComposerCache().updateText("");
       emit(state.copyWith(
         text: "",
         replyTo: null,
       ));
       try {
-        final replyTo = this.replyTo;
-        if (replyTo != null) {
-          ParentMessageCache().addMessage(replyTo.messageId!, replyTo);
+        final parentId = event.parentId ?? currentReplyTo?.messageId;
+        if (currentReplyTo != null) {
+          ParentMessageCache()
+              .addMessage(currentReplyTo.messageId!, currentReplyTo);
         }
         // Create metadata for mentions if they exist
         Map<String, dynamic> metadata = {};
         if (event.mentionMetadataList.isNotEmpty) {
-          metadata = AmityMentionMetadataCreator(event.mentionMetadataList).create();
+          metadata =
+              AmityMentionMetadataCreator(event.mentionMetadataList).create();
         }
 
         final messageBuilder = AmityChatClient.newMessageRepository()
             .createMessage(subChannelId)
-            .parentId(replyTo?.messageId)
+            .parentId(parentId)
             .text(event.text.trim());
-        
+
         if (event.mentionMetadataList.isNotEmpty) {
           messageBuilder.metadata(metadata);
-          
+
           // Check if "@All" mention is present (exact match)
           bool hasAllMention = event.mentionUserIds.contains("all");
-          
+
           if (hasAllMention) {
             // Use mentionChannel for @All mentions
             messageBuilder.mentionChannel();
           }
-          
+
           // Always handle regular user mentions (excluding "all")
-          final regularUserIds = event.mentionUserIds.where((id) => id != "all").toList();
+          final regularUserIds =
+              event.mentionUserIds.where((id) => id != "all").toList();
           if (regularUserIds.isNotEmpty) {
             messageBuilder.mentionUsers(regularUserIds);
           }
@@ -127,56 +135,56 @@ class MessageComposerBloc
         try {
           originalMessage = await AmityChatClient.newMessageRepository()
               .getMessage(event.messageId);
-        } catch (e) {
-        }
-              
+        } catch (e) {}
+
         // Create metadata for mentions if they exist
         Map<String, dynamic> metadata = {};
-        
+
         // Only update the 'mentioned' part of metadata, preserve everything else
         if (originalMessage?.metadata != null) {
           // Copy all existing metadata
           metadata = Map<String, dynamic>.from(originalMessage!.metadata!);
-          
+
           // Check for any channel mentions in the original metadata
           if (metadata.containsKey('mentioned')) {
-            final List<dynamic> originalMentions = metadata['mentioned'] as List<dynamic>;
+            final List<dynamic> originalMentions =
+                metadata['mentioned'] as List<dynamic>;
             List<Map<String, dynamic>> channelMentions = [];
-            
+
             // Extract channel mentions to preserve them
             for (var mention in originalMentions) {
-              if (mention is Map<String, dynamic> && 
-                  mention.containsKey('type') && 
+              if (mention is Map<String, dynamic> &&
+                  mention.containsKey('type') &&
                   mention['type'] == 'channel') {
                 channelMentions.add(Map<String, dynamic>.from(mention));
               }
             }
-            
+
             // Store channel mentions for later
             if (channelMentions.isNotEmpty) {
               metadata['_channelMentions'] = channelMentions;
             }
           }
         }
-        
+
         // Update the 'mentioned' part with new user mentions
         List<dynamic> allMentions = [];
-        
+
         // Add user mentions if they exist
         if (event.mentionMetadataList.isNotEmpty) {
-          final mentionData = AmityMentionMetadataCreator(event.mentionMetadataList).create();
+          final mentionData =
+              AmityMentionMetadataCreator(event.mentionMetadataList).create();
           allMentions.addAll(mentionData['mentioned'] as List<dynamic>);
-          
         }
-        
+
         // Add back any channel mentions that were in the original message
         if (metadata.containsKey('_channelMentions')) {
-          final List<dynamic> channelMentions = metadata['_channelMentions'] as List<dynamic>;
+          final List<dynamic> channelMentions =
+              metadata['_channelMentions'] as List<dynamic>;
           allMentions.addAll(channelMentions);
           metadata.remove('_channelMentions'); // Remove temporary storage
-          
         }
-        
+
         // Update final metadata
         if (allMentions.isNotEmpty) {
           metadata['mentioned'] = allMentions;
@@ -184,14 +192,14 @@ class MessageComposerBloc
           // If no mentions in updated text, remove the mention metadata
           metadata.remove('mentioned');
         }
-        
+
         final messageBuilder = AmityChatClient.newMessageRepository()
             .editTextMessage(event.messageId)
             .text(event.text.trim());
-            
+
         // Always update metadata to either include mentions or remove them
         messageBuilder.metadata(metadata);
-        
+
         await messageBuilder.update();
       } catch (error) {
         if (error is AmityException) {
@@ -239,13 +247,14 @@ class MessageComposerBloc
             final imagePath = event.selectedMedia.path;
             final uri = Uri(path: imagePath);
             try {
-              final replyTo = this.replyTo;
-              if (replyTo != null) {
-                ParentMessageCache().addMessage(replyTo.messageId!, replyTo);
+              final currentReplyTo = state.replyTo;
+              if (currentReplyTo != null) {
+                ParentMessageCache()
+                    .addMessage(currentReplyTo.messageId!, currentReplyTo);
               }
               await AmityChatClient.newMessageRepository()
                   .createMessage(subChannelId)
-                  .parentId(state.replyTo?.messageId)
+                  .parentId(currentReplyTo?.messageId)
                   .image(uri)
                   .send();
             } catch (error) {
@@ -272,13 +281,14 @@ class MessageComposerBloc
               final videoPath = event.selectedMedia.path;
               final uri = Uri(path: videoPath);
               try {
-                final replyTo = this.replyTo;
-                if (replyTo != null) {
-                  ParentMessageCache().addMessage(replyTo.messageId!, replyTo);
+                final currentReplyTo = state.replyTo;
+                if (currentReplyTo != null) {
+                  ParentMessageCache()
+                      .addMessage(currentReplyTo.messageId!, currentReplyTo);
                 }
                 await AmityChatClient.newMessageRepository()
                     .createMessage(subChannelId)
-                    .parentId(state.replyTo?.messageId)
+                    .parentId(currentReplyTo?.messageId)
                     .video(uri)
                     .send();
               } catch (error) {

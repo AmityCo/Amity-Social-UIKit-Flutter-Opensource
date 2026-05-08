@@ -1,7 +1,8 @@
 part of 'message_composer_bloc.dart';
 
-class MessageComposerState extends Equatable {
+const _undefinedReplyTo = Object();
 
+class MessageComposerState extends Equatable {
   final TextEditingController controller;
   final ScrollController scrollController;
   final String text;
@@ -24,7 +25,7 @@ class MessageComposerState extends Equatable {
     TextEditingController? controller,
     ScrollController? scrollController,
     String? text,
-    AmityMessage? replyTo,
+    Object? replyTo = _undefinedReplyTo,
     bool? showMediaSection,
     String? appName,
   }) {
@@ -32,7 +33,9 @@ class MessageComposerState extends Equatable {
       controller: controller ?? this.controller,
       scrollController: scrollController ?? this.scrollController,
       text: text ?? this.text,
-      replyTo: replyTo ?? this.replyTo,
+      replyTo: replyTo == _undefinedReplyTo
+          ? this.replyTo
+          : replyTo as AmityMessage?,
       showMediaSection: showMediaSection ?? this.showMediaSection,
       appName: appName ?? this.appName,
     );

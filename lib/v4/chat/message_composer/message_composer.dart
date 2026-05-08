@@ -32,11 +32,11 @@ class AmityMessageComposer extends NewBaseComponent {
   ReplyingMesage? replyingMessage;
   AmityMessage? editingMessage;
 
-  final GlobalKey composerKey = GlobalKey();
+  late GlobalKey composerKey;
 
-  MentionTextEditingController controller = MentionTextEditingController();
-  ScrollController scrollController = ScrollController();
-  final focusNode = FocusNode();
+  late MentionTextEditingController controller;
+  late ScrollController scrollController;
+  late FocusNode focusNode;
   ImagePicker imagePicker = ImagePicker();
   Map<String, AmityFileInfoWithUploadStatus> selectedFiles = {};
   late AmityToastBloc toastBloc;
@@ -55,78 +55,22 @@ class AmityMessageComposer extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
-    if (MessageComposerCache().shouldFocus) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        focusNode.requestFocus();
-      });
-    }
     toastBloc = context.read<AmityToastBloc>();
-    if (replyingMessage != null) {
-      MessageComposerCache().requestFocus();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        focusNode.requestFocus();
-      });
-    }
-    if (editingMessage != null) {
-      MessageComposerCache().requestFocus();
-      final currentText = (editingMessage?.data as MessageTextData).text ?? "";
-      // Check for mentions in the editing message
-      try {
-        if (editingMessage!.metadata != null &&
-            editingMessage!.metadata!.containsKey('mentioned')) {
-          // Get mention metadata from message metadata
-          final mentionsData =
-              editingMessage!.metadata!['mentioned'] as List<dynamic>;
-          
-          List<AmityUserMentionMetadata> mentionMetadataList = [];
-          for (var mention in mentionsData) {
-            if (mention is Map<String, dynamic>) {
-              try {
-                // Extract mention data properly
-                final userId = mention['userId'] as String;
-                final index = mention['index'] as int;
-                final length = mention['length'] as int;
-                                
-                mentionMetadataList.add(AmityUserMentionMetadata(
-                  userId: userId,
-                  index: index,
-                  length: length,
-                ));
-              } catch (e) {
-              }
-            }
-          }
+    return _MessageComposerStateful(composer: this);
+  }
 
-          if (mentionMetadataList.isNotEmpty) {
-            // Populate the controller with text and mentions
-            controller.populate(currentText, mentionMetadataList);
-          } else {
-            // No valid mentions found
-            controller.text = currentText;
-          }
-        } else {
-          // No mentions, just set the text
-          controller.text = currentText;
-        }
-      } catch (e) {
-        // Fallback in case of any errors
-        controller.text = currentText;
-      }
-      // focusNode.requestFocus();
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        focusNode.requestFocus();
-      });
-    } else {
-      if (MessageComposerCache().savedText != "") {
-        controller.text = MessageComposerCache().savedText;
-        // focusNode.requestFocus();
-      }
-    }
+  Widget buildComposerContent(BuildContext context,
+      {required MentionTextEditingController controller,
+      required ScrollController scrollController,
+      required FocusNode focusNode,
+      required GlobalKey composerKey}) {
+    this.controller = controller;
+    this.scrollController = scrollController;
+    this.focusNode = focusNode;
+    this.composerKey = composerKey;
 
     return BlocProvider(
-      key: ValueKey(
-          "$subChannelId$avatarUrl${replyingMessage?.message.messageId ?? ""}}"),
+      key: ValueKey("$subChannelId$avatarUrl}"),
       create: (context) => MessageComposerBloc(
         subChannelId: subChannelId,
         controller: controller,
@@ -137,6 +81,18 @@ class AmityMessageComposer extends NewBaseComponent {
       ),
       child: BlocBuilder<MessageComposerBloc, MessageComposerState>(
         builder: (context, state) {
+          // Sync reply state from parent into BLoC
+          final expectedReplyTo = replyingMessage?.message;
+          if (state.replyTo != expectedReplyTo) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (context.mounted) {
+                context
+                    .read<MessageComposerBloc>()
+                    .add(MessageComposerReplyChanged(replyTo: expectedReplyTo));
+              }
+            });
+          }
+
           context
               .read<MessageComposerBloc>()
               .add(MessageComposerTextChange(text: controller.text));
@@ -261,15 +217,17 @@ class AmityMessageComposer extends NewBaseComponent {
                                       .add(MessageComposerMediaCollapsed());
                                 },
                                 onTapOutside: (event) {
-                                  final RenderBox? composerBox = composerKey.currentContext?.findRenderObject() as RenderBox?;
+                                  final RenderBox? composerBox = composerKey
+                                      .currentContext
+                                      ?.findRenderObject() as RenderBox?;
                                   if (composerBox != null) {
-                                    
-                                    final localPos = composerBox.globalToLocal(event.position);
+                                    final localPos = composerBox
+                                        .globalToLocal(event.position);
                                     final isInsideComposer = localPos.dx >= 0 &&
                                         localPos.dx <= composerBox.size.width &&
                                         localPos.dy >= 0 &&
                                         localPos.dy <= composerBox.size.height;
-                                    if (isInsideComposer) {                                     
+                                    if (isInsideComposer) {
                                       return; // Tap is on send button or composer area, keep focus
                                     }
                                   }
@@ -360,8 +318,8 @@ class AmityMessageComposer extends NewBaseComponent {
                                 }
 
                                 controller.clear();
-                                // Signal that the next rebuild should re-focus
-                                MessageComposerCache().requestFocus();
+                                // FocusNode persists across rebuilds, so just keep focus
+                                focusNode.requestFocus();
                               }
                             },
                             child: Container(
@@ -696,6 +654,137 @@ class AmityMessageComposer extends NewBaseComponent {
           )
         ],
       ),
+    );
+  }
+}
+
+class _MessageComposerStateful extends StatefulWidget {
+  final AmityMessageComposer composer;
+
+  const _MessageComposerStateful({required this.composer});
+
+  @override
+  State<_MessageComposerStateful> createState() =>
+      _MessageComposerStatefulState();
+}
+
+class _MessageComposerStatefulState extends State<_MessageComposerStateful> {
+  late MentionTextEditingController controller;
+  late ScrollController scrollController;
+  late FocusNode focusNode;
+  final GlobalKey composerKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    controller = MentionTextEditingController();
+    scrollController = ScrollController();
+    focusNode = FocusNode();
+
+    // Restore cached text if available
+    if (widget.composer.editingMessage != null) {
+      _populateEditingMessage(widget.composer.editingMessage!);
+      _requestFocusAfterBuild();
+    } else if (MessageComposerCache().savedText.isNotEmpty) {
+      controller.text = MessageComposerCache().savedText;
+    }
+
+    if (widget.composer.replyingMessage != null) {
+      _requestFocusAfterBuild();
+    }
+
+    if (MessageComposerCache().shouldFocus) {
+      _requestFocusAfterBuild();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _MessageComposerStateful oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final oldEditing = oldWidget.composer.editingMessage;
+    final newEditing = widget.composer.editingMessage;
+
+    // Entering edit mode
+    if (oldEditing == null && newEditing != null) {
+      _populateEditingMessage(newEditing);
+      _requestFocusAfterBuild();
+    }
+    // Leaving edit mode
+    if (oldEditing != null && newEditing == null) {
+      controller.clear();
+    }
+
+    // Entering reply mode
+    final oldReply = oldWidget.composer.replyingMessage;
+    final newReply = widget.composer.replyingMessage;
+    if (oldReply == null && newReply != null) {
+      _requestFocusAfterBuild();
+    }
+  }
+
+  void _populateEditingMessage(AmityMessage editingMessage) {
+    final currentText = (editingMessage.data as MessageTextData).text ?? "";
+    try {
+      if (editingMessage.metadata != null &&
+          editingMessage.metadata!.containsKey('mentioned')) {
+        final mentionsData =
+            editingMessage.metadata!['mentioned'] as List<dynamic>;
+
+        List<AmityUserMentionMetadata> mentionMetadataList = [];
+        for (var mention in mentionsData) {
+          if (mention is Map<String, dynamic>) {
+            try {
+              final userId = mention['userId'] as String;
+              final index = mention['index'] as int;
+              final length = mention['length'] as int;
+
+              mentionMetadataList.add(AmityUserMentionMetadata(
+                userId: userId,
+                index: index,
+                length: length,
+              ));
+            } catch (e) {}
+          }
+        }
+
+        if (mentionMetadataList.isNotEmpty) {
+          controller.populate(currentText, mentionMetadataList);
+        } else {
+          controller.text = currentText;
+        }
+      } else {
+        controller.text = currentText;
+      }
+    } catch (e) {
+      controller.text = currentText;
+    }
+  }
+
+  void _requestFocusAfterBuild() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        focusNode.requestFocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    scrollController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.composer.buildComposerContent(
+      context,
+      controller: controller,
+      scrollController: scrollController,
+      focusNode: focusNode,
+      composerKey: composerKey,
     );
   }
 }

@@ -23,11 +23,11 @@ class MessageComposerCreateTextMessage extends MessageComposerEvent {
   final List<String> mentionUserIds;
 
   const MessageComposerCreateTextMessage({
-    required this.text, 
-    this.parentId, 
-    this.mentionMetadataList = const [], 
+    required this.text,
+    this.parentId,
+    this.mentionMetadataList = const [],
     this.mentionUserIds = const []
-  });
+    });
 
   @override
   List<Object> get props => [text];
@@ -40,14 +40,23 @@ class MessageComposerUpdateTextMessage extends MessageComposerEvent {
   final List<String> mentionUserIds;
 
   const MessageComposerUpdateTextMessage({
-    required this.text, 
-    required this.messageId, 
-    this.mentionMetadataList = const [], 
+    required this.text,
+    required this.messageId,
+    this.mentionMetadataList = const [],
     this.mentionUserIds = const []
-  });
+    });
 
   @override
   List<Object> get props => [text, messageId];
+}
+
+class MessageComposerReplyChanged extends MessageComposerEvent {
+  final AmityMessage? replyTo;
+
+  const MessageComposerReplyChanged({required this.replyTo});
+
+  @override
+  List<Object> get props => [if (replyTo != null) replyTo!];
 }
 
 class MessageComposerMediaExpanded extends MessageComposerEvent {}

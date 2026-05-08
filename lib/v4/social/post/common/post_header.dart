@@ -190,11 +190,18 @@ class AmityPostHeader extends StatelessWidget {
               post: post, toastBloc: context.read<AmityToastBloc>()))
         };
 
-    onDelete() => {
-          context
-              .read<PostItemBloc>()
-              .add(PostItemDelete(post: post, action: action))
-        };
+    onDelete() {
+      AmitySocialClient.newPostRepository()
+          .deletePost(postId: post.postId!, hardDelete: true)
+          .then((value) {
+        context
+            .read<PostItemBloc>()
+            .add(PostItemDelete(post: post, action: action));
+      }).onError((error, stackTrace) {
+        _showToast(
+            context, context.l10n.error_delete_post, AmityToastIcon.warning);
+      });
+    }
 
     final reportOption = BottomSheetMenuOption(
         title: context.l10n.post_report,

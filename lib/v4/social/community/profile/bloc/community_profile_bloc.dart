@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:equatable/equatable.dart';
@@ -9,6 +11,9 @@ part 'community_profile_state.dart';
 
 class CommunityProfileBloc
     extends Bloc<CommunityProfileEvent, CommunityProfileState> {
+  PostLiveCollection? _pendingPostsLiveCollection;
+  StreamSubscription<List<AmityPost>>? _pendingPostsSubscription;
+
   CommunityProfileBloc(
     String communityId,
     ScrollController scrollController,
@@ -50,6 +55,10 @@ class CommunityProfileBloc
         final pendingPostCount = await community.getPostCount(AmityFeedType.REVIEWING);
         emit(state.copyWith(pendingPostCount: pendingPostCount));
       }
+    });
+
+    on<CommunityProfileEventPendingPostsObserved>((event, emit) async {
+      emit(state.copyWith(pendingPostCount: event.count));
     });
 
     on<CommunityProfileEventRefreshFromPendingPage>((event, emit) async {
@@ -102,6 +111,30 @@ class CommunityProfileBloc
         addEvent(CommunityProfileEventGetPendingPosts());
       });
 
+      // Real-time observer for pending (REVIEWING) posts in this community.
+      // We derive the banner count directly from the live collection's local
+      // page count. Using community.getPostCount() would read from the
+      // community-feed cache, which lags behind local create/delete actions
+      // until the server pushes the new count.
+      //
+      // The banner UI caps the displayed value at "10+", so first-page items
+      // (default page size) are sufficient.
+      _pendingPostsLiveCollection = AmitySocialClient.newPostRepository()
+          .getPosts()
+          .targetCommunity(communityId)
+          .feedType(AmityFeedType.REVIEWING)
+          .includeDeleted(false)
+          .getLiveCollection();
+
+      _pendingPostsSubscription = _pendingPostsLiveCollection!
+          .getStreamController()
+          .stream
+          .listen((posts) {
+        addEvent(CommunityProfileEventPendingPostsObserved(count: posts.length));
+      });
+
+      _pendingPostsLiveCollection!.loadNext();
+
       scrollController.addListener(() {
         if (state.scrollController.hasClients &&
             state.scrollController.offset > 115) {
@@ -111,5 +144,11 @@ class CommunityProfileBloc
         }
       });
     } catch (e) {}
+  }
+
+  @override
+  Future<void> close() {
+    _pendingPostsSubscription?.cancel();
+    return super.close();
   }
 }

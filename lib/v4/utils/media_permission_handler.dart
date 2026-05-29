@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
@@ -13,6 +14,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class MediaPermissionHandler {
   // Check and request permissions.
@@ -161,50 +163,52 @@ class MediaPermissionHandler {
     return null;
   }
 
-  Future<List<XFile>> pickImageAndVideo({limit = 10}) async {
-    final isAndroid13 = await _isAndroid13OrHigher();
-    
+  Future<List<XFile>> pickImageAndVideo({int limit = 10, AmityThemeColor? theme}) async {
+    final BuildContext? context = NavigationService.navigatorKey.currentContext;
+    if (context == null) return [];
 
-    if (isAndroid13) {
-      // Android 13+: Do NOT call PhotoManager.requestPermissionExtend() here.
-      // On Android 14+ with limited access, requestPermissionExtend() launches
-      // the system photo selection UI (asking user to pick which photos to
-      // grant), which then conflicts with the actual image picker that opens
-      // right after. The Android Photo Picker (ACTION_PICK_IMAGES) does NOT
-      // require READ_MEDIA_* permissions — it's a system component that grants
-      // temporary access to whatever the user selects. So skip permission
-      // checks entirely and launch the picker directly.
-      final ImagePicker picker = ImagePicker();
-      try {
-        // pickMultipleMedia supports both image and video.
-        // limit must be >= 2 for pickMultipleMedia; clamp if caller wants 1.
-        final int effectiveLimit = limit < 2 ? 2 : limit;
-        
-        final List<XFile> media = await picker.pickMultipleMedia(limit: effectiveLimit);
-        
-        // If caller asked for 1, return at most 1
-        if (limit == 1 && media.isNotEmpty) return [media.first];
-        return media;
-      } catch (e) {
-        
-        return [];
-      }
-    }
+    try {
+      // Build picker theme from UIKit AmityThemeColor if provided.
+      // Override iconTheme and textTheme so the check icon and selection
+      // index numbers (1,2,3) are always white — they sit on a colored
+      // circle background and must contrast against it regardless of
+      // whether the app is in light or dark mode.
+      final ThemeData? pickerTheme = theme != null
+          ? AssetPicker.themeData(theme.primaryColor,
+                  light: theme.backgroundColor.computeLuminance() > 0.5)
+              .copyWith(
+              iconTheme: const IconThemeData(color: Colors.white),
+              textTheme: Typography.material2021().white.copyWith(
+                    bodyLarge: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+            )
+          : null;
 
-    // Android 12 and below — need READ_EXTERNAL_STORAGE permission first
-    
-    if (await handleMediaPermissions()) {
-      final ImagePicker picker = ImagePicker();
-      try {
-        final int effectiveLimit = limit < 2 ? 2 : limit;
-        final List<XFile> media = await picker.pickMultipleMedia(limit: effectiveLimit);
-        if (limit == 1 && media.isNotEmpty) return [media.first];
-        return media;
-      } catch (e) {
-        return [];
+      final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+        context,
+        pickerConfig: AssetPickerConfig(
+          maxAssets: limit,
+          requestType: RequestType.common, // image + video
+          pickerTheme: pickerTheme,
+        ),
+      );
+
+      if (assets == null || assets.isEmpty) return [];
+
+      final List<XFile> files = [];
+      for (final asset in assets) {
+        final File? file = await asset.originFile;
+        if (file != null) {
+          files.add(XFile(file.path));
+        }
       }
+      return files;
+    } catch (e) {
+      return [];
     }
-    return [];
   }
 
   void _configureAndroidPhotoPicker(bool enabled) {

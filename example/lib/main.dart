@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
@@ -36,8 +37,24 @@ void main() async {
   // await Firebase.initializeApp(
   // options: DefaultFirebaseOptions.currentPlatform,
   // );
+
+  // Proxyman proxy — debug only.
+  // iOS Simulator: use 127.0.0.1. Physical device: use your Mac's local IP.
+//   assert(() {
+//     HttpOverrides.global = _ProxyHttpOverrides();
+//     return true;
+//   }());
+
   runApp(const MyApp());
 }
+
+// class _ProxyHttpOverrides extends HttpOverrides {
+//   @override
+//   HttpClient createHttpClient(SecurityContext? context) {
+//     return super.createHttpClient(context)
+//       ..findProxy = (Uri uri) => 'PROXY 192.168.1.35:9090';
+//   }
+// }
 
 final GlobalKey<NavigatorState> MyAppNavigatorKey = GlobalKey<NavigatorState>();
 

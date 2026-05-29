@@ -40,6 +40,15 @@ class CommunityProfileEventJoining extends CommunityProfileEvent {
 
 class CommunityProfileEventGetPendingPosts extends CommunityProfileEvent { }
 
+class CommunityProfileEventPendingPostsObserved extends CommunityProfileEvent {
+  final int count;
+
+  const CommunityProfileEventPendingPostsObserved({required this.count});
+
+  @override
+  List<Object> get props => [count];
+}
+
 class CommunityProfileEventRefreshFromPendingPage extends CommunityProfileEvent { }
 
 class CommunityProfileEventExpandDetail extends CommunityProfileEvent { }

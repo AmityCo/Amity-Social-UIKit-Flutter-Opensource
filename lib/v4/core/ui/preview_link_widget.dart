@@ -136,7 +136,8 @@ class _PreviewLinkWidgetState extends State<PreviewLinkWidget> {
     if (_metadata != null && _metadata!.image != null) {
       return Image.network(
         _metadata!.image!,
-        fit: BoxFit.contain,
+        width:double.infinity,
+        fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return _buildPlaceholderImage(false);
         },

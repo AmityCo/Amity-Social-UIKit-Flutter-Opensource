@@ -285,7 +285,9 @@ class AmityCommunityProfilePage extends NewBasePage {
               ),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.endFloat,
-              floatingActionButton: (state.isJoined)
+              floatingActionButton: (state.isJoined &&
+                      !(state.community?.onlyAdminCanPost == true &&
+                          !state.isModerator))
                   ? GestureDetector(
                       onTap: () {
                         showActions(context, state.canManageStory,

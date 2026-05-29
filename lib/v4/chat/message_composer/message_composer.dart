@@ -27,6 +27,7 @@ class AmityMessageComposer extends NewBaseComponent {
   final String? avatarUrl;
   final MessageComposerAction action;
   final bool enableMention;
+  final int mediaAttachmentLimit;
   AmityThemeColor? localTheme;
   FileType? selectedMediaType;
   ReplyingMesage? replyingMessage;
@@ -51,6 +52,7 @@ class AmityMessageComposer extends NewBaseComponent {
     required this.action,
     this.localTheme,
     this.enableMention = true,
+    this.mediaAttachmentLimit = 10,
   }) : super(componentId: "message_composer");
 
   @override
@@ -619,7 +621,7 @@ class AmityMessageComposer extends NewBaseComponent {
             "assets/Icons/amity_ic_image_button.svg",
             context.l10n.message_media,
             () {
-              pickMultipleFiles(context, appName, FileType.any);
+              pickMultipleFiles(context, appName, FileType.any, maxFiles: mediaAttachmentLimit);
             },
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/chat/full_text_message.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/amity_message_bubble.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/bloc/chat_page_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/chat/message/chat_loading_toast.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/components/amity_conversation_chat_user_action_component.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer_action.dart';
@@ -85,22 +86,25 @@ class AmityChatPage extends NewBasePage {
                 if (state.bounceTargetIndex != null && bounceAnimator != null) {
                   bounceAnimator!.animateItem(state.bounceTargetIndex!);
                 }
-              },
-              child: BlocBuilder<ChatPageBloc, ChatPageState>(
-                key: Key("${channelId ?? ""}_${userId ?? ""}"),
-                builder: (context, state) {
-                if (state is ChatPageStateInitial && !isJustCreated) {
-                  context.read<AmityToastBloc>().add(AmityToastLoading(
-                      message: context.l10n.chat_loading,
-                      icon: AmityToastIcon.loading,
-                      bottomPadding: toastBottomPadding));
-                }
-
-                if (!state.isFetching && state is! ChatPageStateInitial) {
+                // Dismiss the loading toast here (not in builder): the
+                // listener runs for every state, so the transient
+                // {not-Initial, isFetching:false} state is never coalesced
+                // away the way it is in BlocBuilder.builder.
+                if (shouldDismissChatLoadingToast(state)) {
                   context
                       .read<AmityToastBloc>()
                       .add(AmityToastDismissIfLoading());
                   _handleToastDismissal(context, state);
+                }
+              },
+              child: BlocBuilder<ChatPageBloc, ChatPageState>(
+                key: Key("${channelId ?? ""}_${userId ?? ""}"),
+                builder: (context, state) {
+                if (shouldShowChatLoadingToast(state, isJustCreated)) {
+                  context.read<AmityToastBloc>().add(AmityToastLoading(
+                      message: context.l10n.chat_loading,
+                      icon: AmityToastIcon.loading,
+                      bottomPadding: toastBottomPadding));
                 }
 
                 final isLoadingUserAvatar =

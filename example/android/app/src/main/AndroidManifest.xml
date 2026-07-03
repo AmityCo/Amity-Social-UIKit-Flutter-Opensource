@@ -65,5 +65,9 @@
     
     <!-- For Android 13+ photo picker -->
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
-    
+
+    <!-- For camera and video recording -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
 </manifest>

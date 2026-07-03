@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
@@ -14,7 +13,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class MediaPermissionHandler {
   // Check and request permissions.
@@ -163,49 +161,17 @@ class MediaPermissionHandler {
     return null;
   }
 
-  Future<List<XFile>> pickImageAndVideo({int limit = 10, AmityThemeColor? theme}) async {
-    final BuildContext? context = NavigationService.navigatorKey.currentContext;
-    if (context == null) return [];
-
+  Future<List<XFile>> pickImageAndVideo({int limit = 10}) async {
+    // Native Android system Photo Picker (SLE-736): labels follow the DEVICE
+    // locale (Portuguese for Smartfit — never Chinese), needs no runtime media
+    // permission on Android 13+, and shows a gallery grid with image + video.
+    // Not app-themeable — that's the deliberate trade for locale-correct labels.
     try {
-      // Build picker theme from UIKit AmityThemeColor if provided.
-      // Override iconTheme and textTheme so the check icon and selection
-      // index numbers (1,2,3) are always white — they sit on a colored
-      // circle background and must contrast against it regardless of
-      // whether the app is in light or dark mode.
-      final ThemeData? pickerTheme = theme != null
-          ? AssetPicker.themeData(theme.primaryColor,
-                  light: theme.backgroundColor.computeLuminance() > 0.5)
-              .copyWith(
-              iconTheme: const IconThemeData(color: Colors.white),
-              textTheme: Typography.material2021().white.copyWith(
-                    bodyLarge: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-            )
-          : null;
-
-      final List<AssetEntity>? assets = await AssetPicker.pickAssets(
-        context,
-        pickerConfig: AssetPickerConfig(
-          maxAssets: limit,
-          requestType: RequestType.common, // image + video
-          pickerTheme: pickerTheme,
-        ),
+      _configureAndroidPhotoPicker(true);
+      // pickMultipleMedia requires limit >= 2; clamp for single-select callers.
+      return await ImagePicker().pickMultipleMedia(
+        limit: limit < 2 ? 2 : limit,
       );
-
-      if (assets == null || assets.isEmpty) return [];
-
-      final List<XFile> files = [];
-      for (final asset in assets) {
-        final File? file = await asset.originFile;
-        if (file != null) {
-          files.add(XFile(file.path));
-        }
-      }
-      return files;
     } catch (e) {
       return [];
     }

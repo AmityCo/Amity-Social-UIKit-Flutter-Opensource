@@ -1,7 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/bloc/message_composer_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_composer.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
-import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/media_permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +11,8 @@ extension MessageComposerFilePicker on AmityMessageComposer {
       {int maxFiles = 10}) async {
     
     try {
-      final uiKitTheme = context.read<ConfigProvider>().getTheme(pageId, componentId);
       final handler = MediaPermissionHandler();
-      final files = await handler.pickImageAndVideo(limit: maxFiles, theme: uiKitTheme);
+      final files = await handler.pickImageAndVideo(limit: maxFiles);
 
       if (files.isNotEmpty) {
         for (final selectedMedia in files) {

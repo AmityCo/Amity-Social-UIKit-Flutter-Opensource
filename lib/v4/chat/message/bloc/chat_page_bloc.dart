@@ -347,9 +347,18 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
 
       final channelId = channel.channelId;
       if (channelId != null) {
-        initLiveCollection(channelId);
+        // Await init so the message-stream + loading-state listeners and the
+        // live collection's reactor are fully wired before the first page is
+        // loaded. Then load the first page directly WITHOUT reset(): reset()
+        // stops the reactor and forces an empty first-page query whose
+        // deletePagingIdByHash wipes paging-ids, which races the user's first
+        // optimistic send (the create flow drops them straight into a ready
+        // chat) and makes that message invisible until re-entry (PDT new-chat
+        // message-not-shown). Keeping the reactor alive lets the optimistic
+        // message keep its paging-id.
+        await initLiveCollection(channelId);
         addEvent(ChatPageEventChannelIdChanged(channelId));
-        addEvent(ChatPageEventRefresh());
+        liveCollection?.loadNext();
         addEvent(const ChatPageEventFetchMuteState());
       }
     });
@@ -508,12 +517,16 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
       addEvent(ChatPageSetAroundMessage(
           aroundMessageId: event.aroundMessageId));
 
-      // Reinitialize the live collection with the aroundMessageId
-      initLiveCollection(state.channelId,
+      // Reinitialize the live collection with the aroundMessageId. Await so the
+      // rebuilt collection + listeners are wired, then load the first page
+      // WITHOUT reset(): reset() stops the reactor and forces an empty-first-page
+      // paging-id wipe that can hide an in-flight optimistic send. Keeping the
+      // reactor alive avoids that race.
+      await initLiveCollection(state.channelId,
           aroundMessageId: event.aroundMessageId);
 
-      // Refresh to load messages around the target message
-      addEvent(ChatPageEventRefresh());
+      // Load messages around the target message.
+      liveCollection?.loadNext();
     });
 
     on<ChatPageSetAroundMessage>((event, emit) async {
@@ -561,9 +574,14 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     if (channelId != null && channelId.isNotEmpty) {
       addEvent(ChatPageSetAroundMessage(aroundMessageId: jumpToMessageId));
       
+      // initLiveCollection assigns liveCollection and attaches its listeners
+      // synchronously (before its first await) on a fresh open, so loadNext()
+      // below runs against the live collection. Load directly WITHOUT reset()
+      // so the reactor is never stopped (avoids the empty-first-page paging-id
+      // wipe racing an optimistic send).
       initLiveCollection(channelId, aroundMessageId: jumpToMessageId);
       addEvent(ChatPageEventChannelIdChanged(channelId));
-      addEvent(ChatPageEventRefresh());
+      liveCollection?.loadNext();
       addEvent(const ChatPageEventFetchMuteState());
     } else if (userId != null && userId.isNotEmpty) {
       addEvent(ChatPageEventCreateNewChannel(userId: userId));
@@ -628,6 +646,9 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
 
   @override
   Future<void> close() {
+    // PDT-3317: guarantee the global loading toast is dismissed when leaving
+    // the page so a stuck "loading" toast can never leak across the app.
+    toastBloc.add(AmityToastDismissIfLoading());
     _scrollController.dispose();
     subscription.cancel();
     _jumpToMessageTimeoutTimer?.cancel();
@@ -636,7 +657,34 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     return super.close();
   }
 
-  void initLiveCollection(String channelId, {String? aroundMessageId}) async {
+  /// Resolve the 1:1 header's other participant from the LOCAL cache only (no
+  /// network `getMembers()`). No-op once `state.channelMember` is set, so the
+  /// message-listener retry stops as soon as the header fills.
+  Future<void> _resolveHeaderFromCache(String channelId) async {
+    if (state.channelMember != null) return;
+    try {
+      final list = await AmityChatClient.newChannelRepository()
+          .membership(channelId)
+          .getMembersFromCache();
+      AmityChannelMember? otherMember;
+      for (final member in list) {
+        if (member.userId != AmityCoreClient.getUserId()) {
+          otherMember = member;
+          break;
+        }
+      }
+
+      if (otherMember?.user != null) {
+        addEvent(ChatPageHeaderEventChanged(channelMember: otherMember!));
+        // User will be updated in the HeaderEventChanged handler
+      }
+    } catch (_) {
+      // Cache not ready yet; a later collection emit retries.
+    }
+  }
+
+  Future<void> initLiveCollection(String channelId,
+      {String? aroundMessageId}) async {
     if (liveCollection != null) {
       liveCollection?.getStreamController().close();
       await liveCollection?.dispose();
@@ -657,25 +705,29 @@ class ChatPageBloc extends Bloc<ChatPageEvent, ChatPageState> {
     
     liveCollection = query.getLiveCollection();
 
-    final list = await AmityChatClient.newChannelRepository()
-        .membership(channelId)
-        .getMembersFromCache();
-    final otherMember = list
-        .firstWhere((element) => element.userId != AmityCoreClient.getUserId());
-
-    if (otherMember.user != null) {
-      addEvent(ChatPageHeaderEventChanged(channelMember: otherMember));
-      // User will be updated in the HeaderEventChanged handler
-    }
-
+    // Attach the message + loading-state listeners FIRST so the page can
+    // render and the loading state can reach `false` regardless of the
+    // member-cache lookup below. The lookup used an unguarded `firstWhere`
+    // that throws "Bad state: No element" when the member cache is empty or
+    // holds only the current user (a never-messaged contact whose channel
+    // exists with no messages). Because the throw happened before these
+    // listeners attached, the chat hung on loading.
     liveCollection?.getStreamController().stream.listen((event) {
       addEvent(
           ChatPageEventChanged(messages: event, isFetching: state.isFetching));
+      // Brand-new chat: member cache is empty at init, so the header starts
+      // blank. Retry the cache read on each emit until it resolves — no network
+      // getMembers(); no-op once state.channelMember is set.
+      if (state.channelMember == null) _resolveHeaderFromCache(channelId);
     });
 
     liveCollection?.observeLoadingState().listen((event) {
       addEvent(ChatPageEventLoadingStateUpdated(isFetching: event));
     });
+
+    // First attempt at init; may be empty for a just-created channel, in which
+    // case the message-listener retry above resolves it once the cache fills.
+    await _resolveHeaderFromCache(channelId);
 
     // Observe Network Connectivity status here
     subscription =

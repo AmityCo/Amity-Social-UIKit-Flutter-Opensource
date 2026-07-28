@@ -1,10 +1,36 @@
 import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/utils/theme_preference.dart';
 import 'package:flutter/material.dart';
 
 class ConfigProvider extends ChangeNotifier {
   final ConfigRepository _configRepository = ConfigRepository();
   bool _isConfigInitialized = false;
+
+  ConfigProvider() {
+    // Applies the theme pushed by the host app before this provider was created
+    // and starts listening for runtime theme changes.
+    _onPreferredThemeChanged();
+    AmityThemePreference.notifier.addListener(_onPreferredThemeChanged);
+  }
+
+  void _onPreferredThemeChanged() {
+    _configRepository.setPreferredTheme(AmityThemePreference.notifier.value);
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    AmityThemePreference.notifier.removeListener(_onPreferredThemeChanged);
+    super.dispose();
+  }
+
+  /// Changes the SDK's preferred theme at runtime (`'light'`, `'dark'`,
+  /// `'system'`, or `null`) and re-renders the screens.
+  void setPreferredTheme(String? preferredTheme) {
+    _configRepository.setPreferredTheme(preferredTheme);
+    notifyListeners();
+  }
 
   Future<void> loadConfig() async {
     if (!_isConfigInitialized) {
@@ -12,6 +38,14 @@ class ConfigProvider extends ChangeNotifier {
       notifyListeners();
       _isConfigInitialized = true;
     }
+  }
+
+  bool isChatUserActionEnabled(String actionName) {
+    return _configRepository.isChatUserActionEnabled(actionName);
+  }
+
+  bool hasAnyEnabledChatUserAction() {
+    return _configRepository.hasAnyEnabledChatUserAction();
   }
 
   Map<String, dynamic> getConfig(String configId) {

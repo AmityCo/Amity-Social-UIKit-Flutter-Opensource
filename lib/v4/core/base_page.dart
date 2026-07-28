@@ -26,9 +26,9 @@ abstract class NewBasePage extends StatelessWidget {
 
   NewBasePage({super.key, required this.pageId});
 
-  late final ConfigProvider configProvider;
-  late final AmityThemeColor theme;
-  late final AmityUIConfig uiConfig;
+  late ConfigProvider configProvider;
+  late AmityThemeColor theme;
+  late AmityUIConfig uiConfig;
 
   Widget buildPage(BuildContext context);
 
@@ -36,11 +36,9 @@ abstract class NewBasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ConfigProvider>(
       builder: (context, provider, child) {
-        if (!isInitialized()) {
-          configProvider = provider;
-          theme = configProvider.getTheme(pageId, '');
-          uiConfig = configProvider.getUIConfig(pageId, null, null);
-        }
+        configProvider = provider;
+        theme = configProvider.getTheme(pageId, '');
+        uiConfig = configProvider.getUIConfig(pageId, null, null);
         return Theme(
             data: Theme.of(context).copyWith(
                 textSelectionTheme: TextSelectionThemeData(
@@ -51,28 +49,6 @@ abstract class NewBasePage extends StatelessWidget {
             child: buildPage(context));
       },
     );
-    // return ChangeNotifierProvider<ConfigProvider>(
-    //   create: (_) {
-    //     configProvider.loadConfig();
-    //     return configProvider;
-    //   },
-    //   child: Consumer<ConfigProvider>(
-    //     builder: (context, configProvider, child) {
-    //       return buildPage(context);
-    //     },
-    //   ),
-    // );
-  }
-
-  bool isInitialized() {
-    try {
-      configProvider;
-      theme;
-      uiConfig;
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 }
 

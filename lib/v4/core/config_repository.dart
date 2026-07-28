@@ -6,15 +6,16 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 class ConfigRepository {
-  static final ConfigRepository _instance = ConfigRepository._internal();
+  ConfigRepository();
 
-  factory ConfigRepository() => _instance;
-
-  ConfigRepository._internal();
-
-  late Map<String, dynamic> _config;
-  late Set<String> excludedList;
+  Map<String, dynamic> _config = {};
+  Set<String> excludedList = {};
   bool _isConfigInitialized = false;
+
+  /// Preferred theme set by the host app at runtime. Takes precedence over the
+  /// `preferred_theme` value from `config.json`. `null` keeps the value from the
+  /// configuration file.
+  String? _preferredThemeOverride;
 
   Future<void> loadConfig() async {
     if (!_isConfigInitialized) {
@@ -22,6 +23,13 @@ class ConfigRepository {
       excludedList = Set<String>.from(_config['excludes'] ?? []);
       _isConfigInitialized = true;
     }
+  }
+
+  /// Changes the preferred theme at runtime. Accepts `'light'`, `'dark'`,
+  /// `'system'`, or `null` (reverts to the value from `config.json`). Stored
+  /// separately so it persists across a potential config reload.
+  void setPreferredTheme(String? preferredTheme) {
+    _preferredThemeOverride = preferredTheme;
   }
 
   Map<String, dynamic> getFeatureFlags() {
@@ -76,9 +84,11 @@ extension ThemeConfig on ConfigRepository {
   AmityThemeStyle _getCurrentThemeStyle() {
     final systemStyle =
         SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    final configStyle = _config['preferred_theme'] == 'dark'
+    final preferredTheme =
+        _preferredThemeOverride ?? _config['preferred_theme'];
+    final configStyle = _preferredThemeOverride == 'dark'
         ? AmityThemeStyle.dark
-        : _config['preferred_theme'] == 'light'
+        : preferredTheme == 'light'
             ? AmityThemeStyle.light
             : AmityThemeStyle.system;
 
@@ -96,8 +106,7 @@ extension ThemeConfig on ConfigRepository {
     final fallbackTheme = _getCurrentThemeStyle() == AmityThemeStyle.light
         ? lightTheme
         : darkTheme;
-    final globalTheme =
-        _getGlobalTheme(_getCurrentThemeStyle(), fallbackTheme);
+    final globalTheme = _getGlobalTheme(_getCurrentThemeStyle(), fallbackTheme);
 
     if (configId == null) {
       return _getThemeColor(globalTheme, fallbackTheme);
@@ -121,7 +130,8 @@ extension ThemeConfig on ConfigRepository {
       if (componentTheme != null) {
         final theme = _getThemeColor(
             AmityTheme.fromJson(
-                componentTheme["theme"]?[style.toString().split('.').last], fallbackTheme),
+                componentTheme["theme"]?[style.toString().split('.').last],
+                fallbackTheme),
             fallbackTheme);
         return theme;
       }
@@ -129,7 +139,8 @@ extension ThemeConfig on ConfigRepository {
       if (pageTheme != null) {
         return _getThemeColor(
             AmityTheme.fromJson(
-                pageTheme["theme"]?[style.toString().split('.').last], fallbackTheme),
+                pageTheme["theme"]?[style.toString().split('.').last],
+                fallbackTheme),
             fallbackTheme);
       }
     } catch (error) {
@@ -257,7 +268,8 @@ extension ConversationChatUserActionConfig on ConfigRepository {
       String name = item['name'] ?? '';
       bool enabled = item['enabled'] ?? true;
       if (name.isNotEmpty) {
-        actionsMap[name] = AmityChatUserActionType(name: name, enabled: enabled);
+        actionsMap[name] =
+            AmityChatUserActionType(name: name, enabled: enabled);
       }
     }
     return actionsMap;

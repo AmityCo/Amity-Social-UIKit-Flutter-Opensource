@@ -8,9 +8,9 @@ abstract class BaseElement extends StatelessWidget {
   final String? componentId;
   final String elementId;
 
-  late final AmityThemeColor theme;
-  late final ConfigProvider configProvider;
-  late final AmityUIConfig uiConfig;
+  late AmityThemeColor theme;
+  late ConfigProvider configProvider;
+  late AmityUIConfig uiConfig;
 
   BaseElement(
       {super.key, this.pageId, this.componentId, required this.elementId});

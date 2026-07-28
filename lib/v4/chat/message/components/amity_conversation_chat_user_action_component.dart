@@ -1,7 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
-import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,11 +25,9 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
-    final configRepo = ConfigRepository();
-    final showMute = configRepo.isChatUserActionEnabled('mute');
-    final showReport = configRepo.isChatUserActionEnabled('report');
-    final showBlock = configRepo.isChatUserActionEnabled('block');
-
+    final showMute = configProvider.isChatUserActionEnabled('mute');
+    final showReport = configProvider.isChatUserActionEnabled('report');
+    final showBlock = configProvider.isChatUserActionEnabled('block');
 
     return Container(
       padding:
@@ -142,8 +139,8 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                           package: 'amity_uikit_beta_service',
                           width: 24,
                           height: 24,
-                          colorFilter:
-                              ColorFilter.mode(theme.baseColor, BlendMode.srcIn)),
+                          colorFilter: ColorFilter.mode(
+                              theme.baseColor, BlendMode.srcIn)),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

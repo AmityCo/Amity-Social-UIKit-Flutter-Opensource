@@ -4,11 +4,10 @@ extension ChatPageHelpers on AmityChatPage {
   void _showChatUserActionBottomSheet(
       BuildContext context, ChatPageState state) {
     final chatPageBloc = context.read<ChatPageBloc>();
-    final configRepo = ConfigRepository();
 
-    final showMute = configRepo.isChatUserActionEnabled('mute');
-    final showReport = configRepo.isChatUserActionEnabled('report');
-    final showBlock = configRepo.isChatUserActionEnabled('block');
+    final showMute = configProvider.isChatUserActionEnabled('mute');
+    final showReport = configProvider.isChatUserActionEnabled('report');
+    final showBlock = configProvider.isChatUserActionEnabled('block');
 
     if (!showMute && !showReport && !showBlock) {
       return;
@@ -342,7 +341,9 @@ extension ChatPageHelpers on AmityChatPage {
       {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
     state.scrollController
         .animateTo(
-      (state.useReverseUI && state.contentOverflowsScreen) ? 0.0 : state.scrollController.position.maxScrollExtent,
+      (state.useReverseUI && state.contentOverflowsScreen)
+          ? 0.0
+          : state.scrollController.position.maxScrollExtent,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
     )

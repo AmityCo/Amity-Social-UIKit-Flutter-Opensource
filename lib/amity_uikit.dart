@@ -15,6 +15,7 @@ import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlin
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/utils/theme_preference.dart';
 import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
 import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
@@ -57,6 +58,13 @@ enum AmityEndpointRegion {
 class AmityUIKit {
   static List<CameraDescription> cameras = <CameraDescription>[];
 
+  /// Sets the SDK screens' theme at runtime. Accepts `'light'`, `'dark'`,
+  /// `'system'`, or `null` (uses the value from `config.json`). The host app
+  /// should call this method whenever the app's theme changes.
+  static void setPreferredTheme(String? preferredTheme) {
+    AmityThemePreference.set(preferredTheme);
+  }
+
   Future<void> setup({
     required String apikey,
     required AmityEndpointRegion region,
@@ -68,13 +76,14 @@ class AmityUIKit {
     Stopwatch stopwatch = Stopwatch()..start();
     AmityRegionalHttpEndpoint? amityEndpoint;
     AmityRegionalMqttEndpoint? amityMqttEndpoint;
-    AmityUploadEndpoint? amityUploadEndpoint;    
+    AmityUploadEndpoint? amityUploadEndpoint;
 
     switch (region) {
       case AmityEndpointRegion.custom:
         if (customEndpoint != null &&
             customMqttEndpoint != null &&
-            customSocketEndpoint != null && customUploadEndpoint != null) {
+            customSocketEndpoint != null &&
+            customUploadEndpoint != null) {
           amityEndpoint = AmityRegionalHttpEndpoint.custom(customEndpoint);
           amityMqttEndpoint =
               AmityRegionalMqttEndpoint.custom(customMqttEndpoint);
@@ -300,19 +309,19 @@ class AmityUIKitProvider extends StatelessWidget {
             supportedLocales: const [
               Locale('en'),
               Locale('pt'), // Base Portuguese locale
-              Locale('pt', 'BR'),  // Portuguese (Brazil)
-              Locale('es'),        // Base Spanish locale
-              Locale('es', 'CL'),  // Spanish (Chile)
-              Locale('es', 'CO'),  // Spanish (Colombia)
-              Locale('es', 'MX'),  // Spanish (Mexico)
-              Locale('es', 'PE'),  // Spanish (Peru)
+              Locale('pt', 'BR'), // Portuguese (Brazil)
+              Locale('es'), // Base Spanish locale
+              Locale('es', 'CL'), // Spanish (Chile)
+              Locale('es', 'CO'), // Spanish (Colombia)
+              Locale('es', 'MX'), // Spanish (Mexico)
+              Locale('es', 'PE'), // Spanish (Peru)
             ],
             // Ensure the app uses the device locale by default
             localeResolutionCallback: (deviceLocale, supportedLocales) {
               if (deviceLocale != null) {
                 for (var locale in supportedLocales) {
-                  print ("deviceLocale: ${deviceLocale.languageCode}");
-                  print ("supportedLocales: $supportedLocales}");
+                  print("deviceLocale: ${deviceLocale.languageCode}");
+                  print("supportedLocales: $supportedLocales}");
                   // Check for exact matches first
                   if (locale.languageCode == deviceLocale.languageCode &&
                       locale.countryCode == deviceLocale.countryCode) {

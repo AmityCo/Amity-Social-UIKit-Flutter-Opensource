@@ -31,9 +31,24 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<CameraDescription> camera = <CameraDescription>[];
+
+const _preferredThemePrefKey = 'preferredTheme';
+
+Future<void> _restorePreferredTheme() async {
+  final prefs = await SharedPreferences.getInstance();
+  final saved = prefs.getString(_preferredThemePrefKey);
+  if (saved != null) {
+    AmityUIKit().setPreferredTheme(
+        AmityThemeStyle.values.asNameMap()[saved] ?? AmityThemeStyle.system);
+  }
+}
+
 void main() async {
   ///Step 1: Initialize amity SDK with the following function
   WidgetsFlutterBinding.ensureInitialized();
+
+  await _restorePreferredTheme();
+
   // await Firebase.initializeApp(
   // options: DefaultFirebaseOptions.currentPlatform,
   // );
@@ -484,9 +499,36 @@ class _UserListPageState extends State<UserListPage> {
   }
 }
 
-class SecondPage extends StatelessWidget {
+class SecondPage extends StatefulWidget {
   const SecondPage({super.key, required this.username});
   final String username;
+
+  @override
+  State<SecondPage> createState() => _SecondPageState();
+}
+
+class _SecondPageState extends State<SecondPage> {
+  AmityThemeStyle _theme = AmityThemeStyle.system;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      final saved = prefs.getString(_preferredThemePrefKey);
+      if (saved != null && mounted) {
+        setState(() => _theme =
+            AmityThemeStyle.values.asNameMap()[saved] ?? AmityThemeStyle.system);
+      }
+    });
+  }
+
+  Future<void> _setTheme(AmityThemeStyle style) async {
+    setState(() => _theme = style);
+    AmityUIKit().setPreferredTheme(style);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_preferredThemePrefKey, style.name);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -500,7 +542,7 @@ class SecondPage extends StatelessWidget {
             );
           },
         ),
-        title: Text('Welcome, $username'),
+        title: Text('Welcome, ${widget.username}'),
       ),
       body: Center(
         child: Column(
@@ -510,7 +552,8 @@ class SecondPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SocialPage(username: username),
+                    builder: (context) =>
+                        SocialPage(username: widget.username),
                   ),
                 );
               },
@@ -520,11 +563,25 @@ class SecondPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ChatPage(username: username),
+                    builder: (context) => ChatPage(username: widget.username),
                   ),
                 );
               },
               child: const Text('Chat'),
+            ),
+            const SizedBox(height: 24),
+            const Text('Theme'),
+            SegmentedButton<AmityThemeStyle>(
+              segments: const [
+                ButtonSegment(
+                    value: AmityThemeStyle.light, label: Text('Light')),
+                ButtonSegment(
+                    value: AmityThemeStyle.dark, label: Text('Dark')),
+                ButtonSegment(
+                    value: AmityThemeStyle.system, label: Text('Default')),
+              ],
+              selected: {_theme},
+              onSelectionChanged: (selection) => _setTheme(selection.first),
             ),
           ],
         ),

@@ -7,6 +7,9 @@ import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
 import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
+import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme.dart'
+    show AmityThemeStyle;
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
@@ -46,6 +49,8 @@ import 'viewmodel/user_viewmodel.dart';
 
 export 'package:amity_sdk/src/domain/model/session/session_state.dart';
 export 'package:amity_sdk/src/core/enum/http_end_point.dart';
+export 'package:amity_uikit_beta_service/v4/core/theme.dart'
+    show AmityThemeStyle;
 
 enum AmityEndpointRegion {
   sg,
@@ -56,6 +61,15 @@ enum AmityEndpointRegion {
 
 class AmityUIKit {
   static List<CameraDescription> cameras = <CameraDescription>[];
+
+  /// Switches the UIKit theme at runtime, effective immediately.
+  ///
+  /// [AmityThemeStyle.light] / [AmityThemeStyle.dark] force a style;
+  /// [AmityThemeStyle.system] follows the device dark-mode setting.
+  /// Overrides `preferred_theme` from config.json until the app restarts.
+  void setPreferredTheme(AmityThemeStyle style) {
+    ConfigRepository().setPreferredTheme(style);
+  }
 
   Future<void> setup({
     required String apikey,

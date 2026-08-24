@@ -6,6 +6,18 @@ class ConfigProvider extends ChangeNotifier {
   final ConfigRepository _configRepository = ConfigRepository();
   bool _isConfigInitialized = false;
 
+  ConfigProvider() {
+    // Every base page/component/element watches this provider, so forwarding
+    // the repository's theme change here re-themes the whole UIKit tree.
+    _configRepository.preferredThemeNotifier.addListener(notifyListeners);
+  }
+
+  @override
+  void dispose() {
+    _configRepository.preferredThemeNotifier.removeListener(notifyListeners);
+    super.dispose();
+  }
+
   Future<void> loadConfig() async {
     if (!_isConfigInitialized) {
       await _configRepository.loadConfig();

@@ -16,6 +16,18 @@ class ConfigRepository {
   late Set<String> excludedList;
   bool _isConfigInitialized = false;
 
+  /// Preferred theme set at runtime via [setPreferredTheme]. Takes precedence
+  /// over `preferred_theme` from config.json; null means the config value.
+  /// A ValueNotifier so [ConfigProvider] can rebuild the UIKit tree on change.
+  final ValueNotifier<AmityThemeStyle?> preferredThemeNotifier =
+      ValueNotifier(null);
+
+  /// Changes the effective UIKit theme at runtime, effective immediately.
+  /// [AmityThemeStyle.system] follows the device dark-mode setting.
+  void setPreferredTheme(AmityThemeStyle style) {
+    preferredThemeNotifier.value = style;
+  }
+
   Future<void> loadConfig() async {
     if (!_isConfigInitialized) {
       _config = await _loadConfigFile('config');
@@ -76,11 +88,12 @@ extension ThemeConfig on ConfigRepository {
   AmityThemeStyle _getCurrentThemeStyle() {
     final systemStyle =
         SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    final configStyle = _config['preferred_theme'] == 'dark'
-        ? AmityThemeStyle.dark
-        : _config['preferred_theme'] == 'light'
-            ? AmityThemeStyle.light
-            : AmityThemeStyle.system;
+    final configStyle = preferredThemeNotifier.value ??
+        (_config['preferred_theme'] == 'dark'
+            ? AmityThemeStyle.dark
+            : _config['preferred_theme'] == 'light'
+                ? AmityThemeStyle.light
+                : AmityThemeStyle.system);
 
     final style = configStyle == AmityThemeStyle.system
         ? (systemStyle == Brightness.light

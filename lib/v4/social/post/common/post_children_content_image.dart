@@ -49,12 +49,7 @@ class PostContentImage extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => ImagePostViewer(
-                  posts: posts,
-                  initialIndex: 0,
-                ),
-              ),
+              ImagePostViewer.route(posts: posts, initialIndex: 0),
             );
           },
           child: backgroundImage(getURL(posts[0].data!), 0,
@@ -72,12 +67,7 @@ class PostContentImage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ImagePostViewer(
-                    posts: posts,
-                    initialIndex: 0,
-                  ),
-                ),
+                ImagePostViewer.route(posts: posts, initialIndex: 0),
               );
             },
             child: backgroundImage(getURL(posts[0].data!), 0,
@@ -90,12 +80,7 @@ class PostContentImage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ImagePostViewer(
-                    posts: posts,
-                    initialIndex: 1,
-                  ),
-                ),
+                ImagePostViewer.route(posts: posts, initialIndex: 1),
               );
             },
             child: backgroundImage(getURL(posts[1].data!), 1,
@@ -117,12 +102,7 @@ class PostContentImage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ImagePostViewer(
-                      posts: posts,
-                      initialIndex: 0,
-                    ),
-                  ),
+                  ImagePostViewer.route(posts: posts, initialIndex: 0),
                 );
               },
               child: backgroundImage(getURL(posts[0].data!), 0,
@@ -138,12 +118,7 @@ class PostContentImage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ImagePostViewer(
-                            posts: posts,
-                            initialIndex: 1,
-                          ),
-                        ),
+                        ImagePostViewer.route(posts: posts, initialIndex: 1),
                       );
                     },
                     child: backgroundImage(getURL(posts[1].data!), 1,
@@ -155,12 +130,7 @@ class PostContentImage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ImagePostViewer(
-                            posts: posts,
-                            initialIndex: 2,
-                          ),
-                        ),
+                        ImagePostViewer.route(posts: posts, initialIndex: 2),
                       );
                     },
                     child: backgroundImage(getURL(posts[2].data!), 2,
@@ -185,12 +155,7 @@ class PostContentImage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ImagePostViewer(
-                      posts: posts,
-                      initialIndex: 0,
-                    ),
-                  ),
+                  ImagePostViewer.route(posts: posts, initialIndex: 0),
                 );
               },
               child: backgroundImage(getURL(posts[0].data!), 0,
@@ -205,12 +170,7 @@ class PostContentImage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ImagePostViewer(
-                            posts: posts,
-                            initialIndex: 1,
-                          ),
-                        ),
+                        ImagePostViewer.route(posts: posts, initialIndex: 1),
                       );
                     },
                     child: AspectRatio(
@@ -226,12 +186,7 @@ class PostContentImage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ImagePostViewer(
-                            posts: posts,
-                            initialIndex: 2,
-                          ),
-                        ),
+                        ImagePostViewer.route(posts: posts, initialIndex: 2),
                       );
                     },
                     child: AspectRatio(
@@ -245,12 +200,7 @@ class PostContentImage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ImagePostViewer(
-                            posts: posts,
-                            initialIndex: 3,
-                          ),
-                        ),
+                        ImagePostViewer.route(posts: posts, initialIndex: 3),
                       );
                     },
                     child: AspectRatio(
@@ -285,12 +235,7 @@ class PostContentImage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => ImagePostViewer(
-                        posts: posts,
-                        initialIndex: 0,
-                      ),
-                    ),
+                    ImagePostViewer.route(posts: posts, initialIndex: 0),
                   );
                 },
                 child: backgroundImage(getURL(posts[0].data!), 0,
@@ -305,12 +250,7 @@ class PostContentImage extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ImagePostViewer(
-                              posts: posts,
-                              initialIndex: 1,
-                            ),
-                          ),
+                          ImagePostViewer.route(posts: posts, initialIndex: 1),
                         );
                       },
                       child: AspectRatio(
@@ -327,12 +267,7 @@ class PostContentImage extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ImagePostViewer(
-                              posts: posts,
-                              initialIndex: 2,
-                            ),
-                          ),
+                          ImagePostViewer.route(posts: posts, initialIndex: 2),
                         );
                       },
                       child: AspectRatio(
@@ -346,12 +281,7 @@ class PostContentImage extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ImagePostViewer(
-                              posts: posts,
-                              initialIndex: 3,
-                            ),
-                          ),
+                          ImagePostViewer.route(posts: posts, initialIndex: 3),
                         );
                       },
                       child: AspectRatio(

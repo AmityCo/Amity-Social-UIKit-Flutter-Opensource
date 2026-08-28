@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/expandable_text.dart';
@@ -9,7 +7,13 @@ import 'package:flutter/material.dart';
 class PostContentText extends StatelessWidget {
   final AmityPost post;
   final AmityThemeColor theme;
-  const PostContentText({super.key, required this.post, required this.theme});
+  final String? highlightKeyword;
+  const PostContentText({
+    super.key,
+    required this.post,
+    required this.theme,
+    this.highlightKeyword,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,6 @@ class PostContentText extends StatelessWidget {
       mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
     }
 
-    // Return a RichText widget with the computed spans.
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -56,6 +59,11 @@ class PostContentText extends StatelessWidget {
           mentionedUsers: mentionedUsers,
           style: normalStyle,
           linkStyle: mentionStyle,
+          highlightKeyword: highlightKeyword,
+          highlightStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            backgroundColor: theme.highlightColor.withOpacity(0.15),
+          ),
           onMentionTap: (userId) => _goToUserProfilePage(context, userId),
           ),
     );

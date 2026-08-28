@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
-import 'package:amity_uikit_beta_service/utils/processed_text_cache.dart';
+import 'package:amity_uikit_beta_service/v4/utils/processed_text_cache.dart';
 import 'package:amity_uikit_beta_service/v4/chat/group_message/bloc/amity_group_chat_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/components/message_report_component.dart';

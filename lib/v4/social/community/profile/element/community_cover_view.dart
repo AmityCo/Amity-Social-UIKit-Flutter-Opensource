@@ -5,7 +5,6 @@ import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_setting/community_setting_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/profile/component/community_header_component.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/community_setting/setting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 

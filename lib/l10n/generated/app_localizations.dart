@@ -129,11 +129,17 @@ abstract class AppLocalizations {
   /// **'My Communities'**
   String get tab_my_communities;
 
-  /// Hint text for the search communities and users field on the homepage
+  /// Hint text for the global search field (Posts tab)
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get global_search_hint;
+
+  /// Hint text for the search field when on Communities or Users tab
   ///
   /// In en, this message translates to:
   /// **'Search community and user'**
-  String get global_search_hint;
+  String get search_community_user_hint;
 
   /// Hint text for searching my communities
   ///
@@ -158,6 +164,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Users'**
   String get title_users;
+
+  /// Title for the posts search tab
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get title_posts;
 
   /// Label for the cancel button
   ///
@@ -228,13 +240,13 @@ abstract class AppLocalizations {
   /// Confirmation message for deleting a post
   ///
   /// In en, this message translates to:
-  /// **'This post will be permanently deleted.'**
+  /// **'This post will be permanently deleted. You\'ll no longer see and find this post.'**
   String get post_delete_description;
 
   /// Confirmation title for deleting a post
   ///
   /// In en, this message translates to:
-  /// **'Delete Post?'**
+  /// **'Delete this post?'**
   String get post_delete_confirmation;
 
   /// Confirmation description for deleting a post
@@ -315,10 +327,16 @@ abstract class AppLocalizations {
   /// **'Close poll'**
   String get poll_close;
 
-  /// Description for closed poll
+  /// Title for close poll confirmation dialog
   ///
   /// In en, this message translates to:
-  /// **'This poll is closed. You can no longer vote.'**
+  /// **'Close poll?'**
+  String get poll_close_confirm_title;
+
+  /// Message for close poll confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'The poll duration you\'ve set will be ignored and your poll will be closed immediately.'**
   String get poll_close_description;
 
   /// Label for vote button
@@ -612,7 +630,7 @@ abstract class AppLocalizations {
   /// Confirmation message for leaving a community
   ///
   /// In en, this message translates to:
-  /// **'Leave the community. You will no longer be able to post and interact in this community.'**
+  /// **'You will no longer be able to post and interact in this community.'**
   String get community_leave_description;
 
   /// Label for create community button
@@ -954,13 +972,13 @@ abstract class AppLocalizations {
   /// Label for moderators-only permission option
   ///
   /// In en, this message translates to:
-  /// **'Only moderators'**
+  /// **'Only moderator'**
   String get settings_only_moderators;
 
-  /// Label for only admins can post setting
+  /// Label for off setting
   ///
   /// In en, this message translates to:
-  /// **'Only admins can post'**
+  /// **'Off'**
   String get settings_only_admins;
 
   /// Label for privacy settings
@@ -1562,6 +1580,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can control who can create posts in your community.'**
   String get community_post_permission_description_label;
+
+  /// Label for everyone can post permission option
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone can post'**
+  String get permission_everyone_can_post;
+
+  /// Label for admin review post permission option
+  ///
+  /// In en, this message translates to:
+  /// **'Admin review post'**
+  String get permission_admin_review_post;
+
+  /// Label for only admins can post permission option
+  ///
+  /// In en, this message translates to:
+  /// **'Only admins can post'**
+  String get permission_only_admins_can_post;
+
+  /// Toast shown when a non-member taps react/comment on a post
+  ///
+  /// In en, this message translates to:
+  /// **'Join community to interact.'**
+  String get post_join_community_to_interact;
 
   /// label for post item bottom text for non members
   ///

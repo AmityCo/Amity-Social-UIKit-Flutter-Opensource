@@ -27,6 +27,12 @@ class CommunityProfileState extends Equatable {
   final bool canManageStory;
   final bool isDetailExpanded;
 
+  /// Effective story-create permission for this community, applying the same
+  /// rule as the other story-create affordances:
+  /// `(allowAllUserToCreateStory || hasManageStoryPermission) && isJoined`.
+  bool get canCreateStory => canCreateStoryInCommunity(
+      hasManageStoryPermission: canManageStory, isJoined: isJoined);
+
   @override
   List<Object?> get props => [communityId, community, scrollController, isExpanded, pendingPostCount, selectedIndex, isJoined, isModerator, canManageStory, isDetailExpanded];
 

@@ -28,16 +28,34 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera to take photos.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app requires always access to your location for background location tracking.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires access to your location to improve the user experience.</string>
+	<!-- Location usage-description strings removed: the UIKit uses no location APIs, and a background-location declaration with no matching usage is an App Store review trigger. -->
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires access to the microphone for audio recording.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need to save images to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to the photo library to select photos.</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>flutter</string>
+					<key>UISceneDelegateClassName</key>
+					<string>FlutterSceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

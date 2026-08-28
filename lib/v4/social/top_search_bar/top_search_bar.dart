@@ -27,40 +27,37 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
       valueListenable: textcontroller,
       builder: (context, value, child) {
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
             children: [
               Expanded(
             child: TextField(
               controller: textcontroller,
-              style: TextStyle(
-                  color: theme.baseColor,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
+              style: AmityTextStyle.body(theme.baseColor),
               decoration: InputDecoration(
-                prefixIcon: Container(
-                  width: 20,
-                  height: 20,
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, right: 8, left: 12),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 8.0),
                   child: SvgPicture.asset(
                     'assets/Icons/amity_ic_navigation_search.svg',
                     package: 'amity_uikit_beta_service',
+                    fit: BoxFit.contain,
+                    width: 20,
+                    height: 20,
                     colorFilter: ColorFilter.mode(
                       theme.baseColorShade2,
                       BlendMode.srcIn,
                     ),
                   ),
                 ),
-                hintText: hintText,
-                hintStyle: TextStyle(
-                  color: theme.baseColorShade2,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 40,
+                  maxWidth: 40,
+                  minHeight: 0,
                 ),
+                hintText: hintText,
+                hintStyle: AmityTextStyle.body(theme.baseColorShade2),
                 filled: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                contentPadding: const EdgeInsets.only(top: 4, bottom: 4, right: 12),
                 fillColor: theme.baseColorShade4,
                 focusColor: Colors.white,
                 enabledBorder: OutlineInputBorder(

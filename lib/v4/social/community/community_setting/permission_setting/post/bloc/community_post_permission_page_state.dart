@@ -1,19 +1,19 @@
 part of 'community_post_permission_page_bloc.dart';
 
 class CommunityPostPermissionPageState extends Equatable {
-  final RadioButtonSetting postPermissionSetting;
-  final RadioButtonSetting initialPostPermissionSetting;
+  final PostPermissionSetting postPermissionSetting;
+  final PostPermissionSetting initialPostPermissionSetting;
   final bool settingsChanged;
 
   CommunityPostPermissionPageState({
-    this.postPermissionSetting = RadioButtonSetting.everyone,
-    this.initialPostPermissionSetting = RadioButtonSetting.everyone,
+    this.postPermissionSetting = PostPermissionSetting.everyoneCanPost,
+    this.initialPostPermissionSetting = PostPermissionSetting.everyoneCanPost,
     this.settingsChanged = false,
   });
 
   CommunityPostPermissionPageState copyWith({
-    RadioButtonSetting? postPermissionSetting,
-    RadioButtonSetting? initialPostPermissionSetting,
+    PostPermissionSetting? postPermissionSetting,
+    PostPermissionSetting? initialPostPermissionSetting,
     bool? settingsChanged,
   }) {
     return CommunityPostPermissionPageState(

@@ -71,7 +71,6 @@ class AmityChatHomePage extends NewBasePage {
                           ],
                         ),
                       ),
-                      AmityToast(pageId: pageId, elementId: "toast"),
                     ],
                   );
                 },

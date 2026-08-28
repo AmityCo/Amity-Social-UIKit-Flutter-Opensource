@@ -18,6 +18,9 @@ class AmityUserSearchResultComponent extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
+    if (!viewModel.hasSearched) {
+      return const SizedBox.expand();
+    }
     if (viewModel.users.isEmpty) {
       if (viewModel.isUsersFetching) {
         return userSkeletonList(theme, configProvider);

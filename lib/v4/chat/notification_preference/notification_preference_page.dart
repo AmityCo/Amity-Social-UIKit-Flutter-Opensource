@@ -27,7 +27,6 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
         BlocProvider(
             create: (context) =>
                 NotificationPreferenceCubit(channel: channel)),
-        BlocProvider(create: (context) => AmityToastBloc()),
       ],
       child:
           BlocBuilder<NotificationPreferenceCubit, NotificationPreferenceState>(
@@ -111,7 +110,6 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                   ],
                 ),
               ),
-              AmityToast(elementId: 'notification_toast'),
             ],
           );
         },

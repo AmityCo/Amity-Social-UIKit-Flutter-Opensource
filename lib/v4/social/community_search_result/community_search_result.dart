@@ -17,6 +17,9 @@ class AmityCommunitySearchResultComponent extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
+    if (!viewModel.hasSearched) {
+      return const SizedBox.expand();
+    }
     if (viewModel.communities.isEmpty) {
       if (viewModel.isCommunitiesFetching) {
         return Container(

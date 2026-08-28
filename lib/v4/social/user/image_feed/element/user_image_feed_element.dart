@@ -1,6 +1,6 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
-import 'package:amity_uikit_beta_service/v4/core/single_image_viewer.dart';
+import 'package:amity_uikit_beta_service/v4/core/image_viewer.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -21,12 +21,7 @@ class UserImageFeedElement extends BaseElement {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => SingleImagePostViewer(
-                  post: post,
-                  theme: theme
-                ),
-              ),
+              ImagePostViewer.route(posts: [post], initialIndex: 0),
             );
           },
           child: Container(

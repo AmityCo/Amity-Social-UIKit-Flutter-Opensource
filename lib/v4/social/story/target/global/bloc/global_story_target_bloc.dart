@@ -24,7 +24,7 @@ class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTarg
         }
 
       });
-      liveCollection.getFirstPageRequest();
+      liveCollection.loadNext();
     });
 
     on<GlobalStoryTargetsFetched>((event, emit) {

@@ -16,6 +16,7 @@ class AmityPostContentComponent extends NewBaseComponent {
   bool? hideMenu;
   final bool hideTarget;
   final AmityPostAction? action;
+  final String? highlightKeyword;
 
   AmityPostContentComponent({
     super.key,
@@ -27,6 +28,7 @@ class AmityPostContentComponent extends NewBaseComponent {
     this.hideTarget = false,
     super.componentId = "post_content_component",
     this.action,
+    this.highlightKeyword,
   });
 
   @override
@@ -43,6 +45,7 @@ class AmityPostContentComponent extends NewBaseComponent {
         hideMenu: hideMenu ?? false,
         hideTarget: hideTarget,
         action: action,
+        highlightKeyword: highlightKeyword,
       );
     } else {
       return PostDetail(
@@ -52,6 +55,7 @@ class AmityPostContentComponent extends NewBaseComponent {
         hideMenu: hideMenu ?? false,
         hideTarget: hideTarget,
         action: action,
+        highlightKeyword: highlightKeyword,
       );
     }
   }

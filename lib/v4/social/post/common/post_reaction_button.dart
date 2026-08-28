@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/common/post_membership.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostReactionButton extends StatelessWidget {
   final AmityPost post;
@@ -55,6 +59,12 @@ class PostReactionButton extends StatelessWidget {
     }
     return GestureDetector(
       onTap: () {
+        if (isNonMemberCommunityPost(post)) {
+          context.read<AmityToastBloc>().add(AmityToastShort(
+              message: context.l10n.post_join_community_to_interact,
+              icon: AmityToastIcon.warning));
+          return;
+        }
         if (!isReacting) {
           if (post.myReactions?.isNotEmpty ?? false) {
             action.onRemoveReaction("like");

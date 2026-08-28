@@ -32,13 +32,22 @@ dependencies:
   shared_preferences: ^2.2.2
   google_fonts: ^4.0.4
   flutter_colorpicker: ^1.0.3
-  camera: ^0.11.0+1
+  camera: ^0.12.0+1
   http: ^1.1.0
-  package_info_plus: ^8.0.2  # Override to fix Kotlin compilation
+  package_info_plus: ^10.1.0  # Override to fix Kotlin compilation
+  image_picker_android: ^0.8.12+22
+  image_picker_platform_interface: ^2.10.1
 
   # firebase_messaging: ^14.7.9
   # firebase_core: ^2.24.2
 
+
+dependency_overrides:
+  # dio >=5.10.0 adds DioExceptionType.transformTimeout, which the internal
+  # SDK's dio_error_extension.dart switch does not cover yet (fix exists but
+  # is not on the SDK's develop branch). Drop this once the SDK adds a
+  # default arm to that switch.
+  dio: 5.9.2
 
 dev_dependencies:
   integration_test:
@@ -51,7 +60,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -21,7 +21,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tab_my_communities => 'My Communities';
 
   @override
-  String get global_search_hint => 'Search community and user';
+  String get global_search_hint => 'Search';
+
+  @override
+  String get search_community_user_hint => 'Search community and user';
 
   @override
   String get search_my_community_hint => 'Search my community';
@@ -34,6 +37,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get title_users => 'Users';
+
+  @override
+  String get title_posts => 'Posts';
 
   @override
   String get general_cancel => 'Cancel';
@@ -70,10 +76,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get post_delete_description =>
-      'This post will be permanently deleted.';
+      'This post will be permanently deleted. You\'ll no longer see and find this post.';
 
   @override
-  String get post_delete_confirmation => 'Delete Post?';
+  String get post_delete_confirmation => 'Delete this post?';
 
   @override
   String get post_delete_confirmation_description =>
@@ -118,8 +124,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get poll_close => 'Close poll';
 
   @override
+  String get poll_close_confirm_title => 'Close poll?';
+
+  @override
   String get poll_close_description =>
-      'This poll is closed. You can no longer vote.';
+      'The poll duration you\'ve set will be ignored and your poll will be closed immediately.';
 
   @override
   String get poll_vote => 'Vote';
@@ -313,7 +322,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get community_leave_description =>
-      'Leave the community. You will no longer be able to post and interact in this community.';
+      'You will no longer be able to post and interact in this community.';
 
   @override
   String get community_create => 'Create Community';
@@ -522,10 +531,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_everyone => 'Everyone';
 
   @override
-  String get settings_only_moderators => 'Only moderators';
+  String get settings_only_moderators => 'Only moderator';
 
   @override
-  String get settings_only_admins => 'Only admins can post';
+  String get settings_only_admins => 'Off';
 
   @override
   String get settings_privacy => 'Privacy';
@@ -900,6 +909,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get community_post_permission_description_label =>
       'You can control who can create posts in your community.';
+
+  @override
+  String get permission_everyone_can_post => 'Everyone can post';
+
+  @override
+  String get permission_admin_review_post => 'Admin review post';
+
+  @override
+  String get permission_only_admins_can_post => 'Only admins can post';
+
+  @override
+  String get post_join_community_to_interact => 'Join community to interact.';
 
   @override
   String get post_item_bottom_nonmember_label =>

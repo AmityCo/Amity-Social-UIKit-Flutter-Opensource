@@ -9,6 +9,11 @@ class CheckMangeStoryPermissionEvent extends CommunityFeedStoryEvent {
   CheckMangeStoryPermissionEvent({required this.communityId});
 }
 
+class StorySettingsUpdated extends CommunityFeedStoryEvent {
+  final bool allowAllUserToCreateStory;
+  StorySettingsUpdated({required this.allowAllUserToCreateStory});
+}
+
 class ObserveStoryTargetEvent extends CommunityFeedStoryEvent {
   String communityId;
   ObserveStoryTargetEvent({required this.communityId});

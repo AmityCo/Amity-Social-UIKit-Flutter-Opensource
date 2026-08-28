@@ -285,6 +285,12 @@ class _AmityViewCommunityStoryPageBuilderState extends State<AmityViewCommunityS
                     BlocProvider.of<ViewStoryBloc>(context).add(
                       NewCurrentStory(currentStroy: state.stories![_currentPage]),
                     );
+                    // Mark the story that just became current (first display) as seen.
+                    // This listener only runs once per JumpToUnSeenState emission, so it
+                    // fires once per story becoming current here, not on every rebuild.
+                    BlocProvider.of<ViewStoryBloc>(context).add(
+                      MarkStoryAsViewedEvent(story: state.stories![_currentPage]),
+                    );
                   }
                 });
               }
@@ -348,6 +354,11 @@ class _AmityViewCommunityStoryPageBuilderState extends State<AmityViewCommunityS
                                 ? PageView.builder(
                                     onPageChanged: ((value) {
                                       BlocProvider.of<ViewStoryBloc>(context).add(NewCurrentStory(currentStroy: stories[value]));
+                                      // Mark the newly-current story (swiped to) as seen.
+                                      // onPageChanged only fires when the PageView's page actually
+                                      // changes, so this fires once per story becoming current,
+                                      // not on every widget rebuild.
+                                      BlocProvider.of<ViewStoryBloc>(context).add(MarkStoryAsViewedEvent(story: stories[value]));
                                       // Preload adjacent pages on page change
                                       Future.microtask(() => _preloadAdjacentPages());
                                     }),
@@ -422,7 +433,8 @@ class _AmityViewCommunityStoryPageBuilderState extends State<AmityViewCommunityS
                                                         throw Exception('Could not launch $url');
                                                       }
                                                     } else {
-                                                      final Uri url = Uri.parse("http://${hyperLink.url}");
+                                                      // Default scheme-less links to HTTPS, not cleartext HTTP (Play/ATS secure-transport policy).
+                                                      final Uri url = Uri.parse("https://${hyperLink.url}");
                                                       if (!await launchUrl(url)) {
                                                         throw Exception('Could not launch $url');
                                                       }

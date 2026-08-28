@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:amity_uikit_beta_service/components/custom_user_avatar.dart';
+import 'package:amity_uikit_beta_service/v4/core/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:camera/camera.dart';

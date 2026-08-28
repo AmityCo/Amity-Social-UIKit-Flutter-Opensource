@@ -9,7 +9,7 @@ class CommunityPostPermissionPageEvent extends Equatable {
 
 class CommunityPostPermissionSettingChangedEvent
     extends CommunityPostPermissionPageEvent {
-  final RadioButtonSetting postPermissionSetting;
+  final PostPermissionSetting postPermissionSetting;
 
   CommunityPostPermissionSettingChangedEvent({
     required this.postPermissionSetting,

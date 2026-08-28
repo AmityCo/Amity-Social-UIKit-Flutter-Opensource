@@ -2,7 +2,8 @@
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_target_selection_page/post_target_selection_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/story_target_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/target/story_target_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/utils/story_creation_rule.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -101,7 +102,7 @@ class AmityCreatePostMenuComponent extends NewBaseComponent {
       );
     }
 
-    if (featureConfig.story.createEnabled) {
+    if (featureConfig.story.createEnabled && canCreateStoryFromSocialHome()) {
       menuItems.add(
         PopupMenuItem<int>(
           value: 2,

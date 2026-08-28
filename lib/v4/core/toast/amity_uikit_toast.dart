@@ -9,13 +9,35 @@ import 'package:provider/provider.dart';
 
 enum AmityToastIcon { success, warning, loading }
 
+/// Marks a subtree that already has a live toast host, so nested hosts stay
+/// inert and only the outermost one drives the snackbar.
+class _AmityToastHostScope extends InheritedWidget {
+  const _AmityToastHostScope({required super.child});
+
+  static bool hasHost(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_AmityToastHostScope>() != null;
+
+  @override
+  bool updateShouldNotify(_AmityToastHostScope oldWidget) => false;
+}
+
 class AmityToast extends StatefulWidget {
   final String? pageId;
   final String? componentId;
   final String elementId;
 
+  /// When provided, this acts as a layout-neutral host: [child] is returned
+  /// unchanged and the toast is driven from the side. Mounted once per page or
+  /// component by the base classes. When null the widget renders nothing, which
+  /// is the older "drop it in a Column" usage.
+  final Widget? child;
+
   const AmityToast(
-      {super.key, this.pageId, this.componentId, required this.elementId});
+      {super.key,
+      this.pageId,
+      this.componentId,
+      required this.elementId,
+      this.child});
 
   @override
   State<AmityToast> createState() => _AmityToastState();
@@ -26,7 +48,6 @@ class _AmityToastState extends State<AmityToast> {
   late final ConfigProvider configProvider;
   late final AmityUIConfig uiConfig;
 
-  bool isToastVisible = false;
 
   @override
   void didChangeDependencies() {
@@ -39,18 +60,35 @@ class _AmityToastState extends State<AmityToast> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AmityToastBloc, AmityToastState>(
-        builder: (context, state) {
-      return renderToast(context, state);
-    });
+    final content = widget.child ?? Container();
+    // An outer host is already listening; do not double-drive the snackbar.
+    if (_AmityToastHostScope.hasHost(context)) return content;
+
+    AmityToastBloc? bloc;
+    try {
+      bloc = BlocProvider.of<AmityToastBloc>(context);
+    } catch (_) {
+      // No toast bloc in scope (page used without AmityUIKitProvider).
+      return content;
+    }
+
+    return _AmityToastHostScope(
+      child: BlocListener<AmityToastBloc, AmityToastState>(
+        bloc: bloc,
+        listener: handleToastState,
+        child: content,
+      ),
+    );
   }
 
-  Widget renderToast(BuildContext context, AmityToastState state) {
+  void handleToastState(BuildContext context, AmityToastState state) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return; // Check if widget is still mounted
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      if (messenger == null) return;
 
-      if (state.style == AmityToastStyle.short && !isToastVisible) {
-        ScaffoldMessenger.of(context)
+      if (state.style == AmityToastStyle.short) {
+        messenger
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
             content: renderToastContent(
@@ -71,14 +109,8 @@ class _AmityToastState extends State<AmityToast> {
             }),
           ));
 
-        isToastVisible = true;
       } else if (state.style == AmityToastStyle.loading) {
-        if (isToastVisible) {
-          // If a toast is already visible, do not show another one
-          return;
-        }
-
-        ScaffoldMessenger.of(context)
+        messenger
           ..clearSnackBars()
           ..showSnackBar(SnackBar(
             content: renderToastContent(
@@ -89,14 +121,10 @@ class _AmityToastState extends State<AmityToast> {
             backgroundColor: const Color(0x00000000),
             duration: const Duration(days: 1),
           ));
-
-        isToastVisible = true;
       } else {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        isToastVisible = false;
+        messenger.hideCurrentSnackBar();
       }
     });
-    return Container();
   }
 
   Widget renderToastContent(

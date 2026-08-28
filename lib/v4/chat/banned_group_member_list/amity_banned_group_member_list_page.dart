@@ -90,7 +90,6 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
               ),
                 ),
                 // Add the toast widget to show notifications
-                AmityToast(pageId: pageId, elementId: 'group_banned_users_toast'),
               ],
             );
           },

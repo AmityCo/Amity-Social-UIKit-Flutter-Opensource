@@ -21,6 +21,15 @@ class ViewStoryState extends Equatable {
     required this.hasManageStoryPermission,
   });
 
+  /// Effective story-create permission, applying the same rule as the other
+  /// story-create affordances:
+  /// `(allowAllUserToCreateStory || hasManageStoryPermission) && isJoined`.
+  /// Distinct from [hasManageStoryPermission], which stays the raw moderation
+  /// permission used to gate deleting someone else's story.
+  bool get canCreateStory => canCreateStoryInCommunity(
+      hasManageStoryPermission: hasManageStoryPermission,
+      isJoined: (community?.isJoined ?? isCommunityJoined) ?? false);
+
   @override
   List<Object> get props => [
         stories ?? [],

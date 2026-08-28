@@ -1,7 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/video_post_player/pager/bloc/video_post_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
-import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
+import 'package:amity_uikit_beta_service/v4/core/configuration_viewmodel.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -118,7 +118,7 @@ class VideoPostPlayerBuilder extends StatelessWidget {
                       autoInitialize: true,
                       aspectRatio: state.videoController!.value.aspectRatio,
                       autoPlay: autoPlay,
-                      looping: true,
+                      looping: false,
                     ),
                   );
                 }

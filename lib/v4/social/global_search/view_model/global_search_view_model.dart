@@ -11,6 +11,12 @@ class AmityGlobalSearchViewModel {
   List<AmityUser> users = [];
   bool isUsersFetching = false;
 
+  List<AmityPost> posts = [];
+  bool isPostsFetching = false;
+  String postSearchKeyword = '';
+
+  bool hasSearched = false;
+
   void Function()? onLoadMore;
 
   AmityGlobalSearchViewModel({
@@ -35,10 +41,24 @@ class AmityGlobalSearchViewModel {
     isUsersFetching = isFetching;
     onLoadMore = loadMore;
   }
+
+  void updatePostModel(
+      {required List<AmityPost> posts,
+      required bool isFetching,
+      required void Function() loadMore,
+      String? searchKeyword}) {
+    this.posts = posts;
+    isPostsFetching = isFetching;
+    onLoadMore = loadMore;
+    if (searchKeyword != null) {
+      postSearchKeyword = searchKeyword;
+    }
+  }
 }
 
 enum AmityGlobalSearchType {
   community,
   myCommunity,
   user,
+  post,
 }

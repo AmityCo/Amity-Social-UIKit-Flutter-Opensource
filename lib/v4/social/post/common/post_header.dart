@@ -13,7 +13,7 @@ import 'package:amity_uikit_beta_service/v4/social/post/featured_badge.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_model.dart';
 import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_composer_page.dart';
-import 'package:amity_uikit_beta_service/viewmodel/edit_post_viewmodel.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/edit_post_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -105,19 +105,16 @@ class AmityPostHeader extends StatelessWidget {
                     post: post, theme: theme, hideTarget: hideTarget)),
             if (category == AmityPostCategory.pin ||
                 category == AmityPostCategory.announcementAndPin) ...[
-              Container(
-                  width: 33,
-                  height: 33,
-                  padding: const EdgeInsets.only(
-                      top: 4, left: 2, right: 2, bottom: 8),
-                  child: SizedBox(
-                      width: 20,
-                      child: SvgPicture.asset(
+                  Container(
+                    width: 32,
+                    height: 32,
+                    child: SvgPicture.asset(
                         'assets/Icons/amity_ic_pin_badge.svg',
                         package: 'amity_uikit_beta_service',
-                        width: 20,
-                        height: 20,
-                      )))
+                        width: 22,
+                        height: 22,
+                      )
+                    ),
             ],
             GestureDetector(
               onTap: () => showPostAction(context, post),
@@ -197,6 +194,8 @@ class AmityPostHeader extends StatelessWidget {
         context
             .read<PostItemBloc>()
             .add(PostItemDelete(post: post, action: action));
+        _showToast(context, context.l10n.community_pending_post_delete_success,
+            AmityToastIcon.success);
       }).onError((error, stackTrace) {
         _showToast(
             context, context.l10n.error_delete_post, AmityToastIcon.warning);
@@ -229,7 +228,7 @@ class AmityPostHeader extends StatelessWidget {
 
           showConfirmationAlert(
               context,
-              context.l10n.post_delete,
+              context.l10n.post_delete_confirmation,
               context.l10n.post_delete_description,
               context.l10n.general_delete,
               onDelete);
@@ -279,7 +278,8 @@ class AmityPostHeader extends StatelessWidget {
         context
             .read<PostItemBloc>()
             .add(PostItemDelete(post: post, action: action));
-        //success
+        _showToast(context, localizations.community_pending_post_delete_success,
+            AmityToastIcon.success);
       }).onError((error, stackTrace) {
         _showToast(
             context, localizations.error_delete_post, AmityToastIcon.warning);
@@ -317,7 +317,7 @@ class AmityPostHeader extends StatelessWidget {
 
           showConfirmationAlert(
               context,
-              context.l10n.post_delete,
+              context.l10n.post_delete_confirmation,
               context.l10n.post_delete_description,
               context.l10n.general_delete,
               onDelete);
@@ -340,7 +340,7 @@ class AmityPostHeader extends StatelessWidget {
 
             showConfirmationAlert(
                 context,
-                localizations.poll_close,
+                localizations.poll_close_confirm_title,
                 localizations.poll_close_description,
                 localizations.poll_close, () {
               onClosePoll(pollId);

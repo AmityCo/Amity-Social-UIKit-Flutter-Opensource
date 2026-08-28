@@ -129,7 +129,7 @@ class UserImageFeedComponent extends NewBaseComponent {
     switch (type) {
       case UserFeedEmptyStateType.empty:
         return UserFeedEmptyStateInfo(context.l10n.feed_no_photos, "",
-            "assets/Icons/amity_ic_feed_empty.svg");
+            "assets/Icons/amity_ic_image_feed_empty.svg");
       case UserFeedEmptyStateType.blocked:
         return UserFeedEmptyStateInfo(
             context.l10n.user_feed_blocked_title,

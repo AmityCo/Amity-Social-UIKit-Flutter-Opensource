@@ -1,4 +1,4 @@
-import 'package:amity_uikit_beta_service/utils/processed_text_cache.dart';
+import 'package:amity_uikit_beta_service/v4/utils/processed_text_cache.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/utils/message_color.dart';

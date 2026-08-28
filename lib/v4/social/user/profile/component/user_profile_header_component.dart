@@ -254,33 +254,35 @@ class AmityUserProfileHeaderComponent extends NewBaseComponent {
                             state: UserProfileHeaderState.followRequest,
                             text: context.l10n.user_follow,
                             tapAction: () {
+                              final localize = context.l10n;
                               profileBloc
                                   .addEvent(UserProfileUserModerationEvent(
                                 action: UserModerationAction.follow,
                                 userId: user?.userId ?? "",
                                 toastBloc: toastBloc,
-                                successMessage:
-                                    context.l10n.user_follow_success,
-                                errorMessage: context.l10n.user_follow_error,
+                                successMessage: localize.user_follow_success,
+                                errorMessage: localize.user_follow_error,
                                 onError: () {
                                   // Need to show popup when user who has been already blocked tries to follow that user.
+                                  if (!context.mounted) return;
                                   showDialog(
                                       context: context,
-                                      builder: (context) {
+                                      builder: (dialogContext) {
                                         return CupertinoAlertDialog(
-                                          title: Text(context
-                                              .l10n.user_follow_unable_title),
-                                          content: Text(context.l10n
+                                          title: Text(localize
+                                              .user_follow_unable_title),
+                                          content: Text(localize
                                               .user_follow_unable_description),
                                           actions: [
                                             CupertinoDialogAction(
                                               child: Text(
-                                                context.l10n.general_ok,
+                                                localize.general_ok,
                                                 style: AmityTextStyle.body(
                                                     theme.highlightColor),
                                               ),
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                Navigator.of(dialogContext)
+                                                    .pop();
                                               },
                                             ),
                                           ],

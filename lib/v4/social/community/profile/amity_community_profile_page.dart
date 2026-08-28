@@ -47,19 +47,6 @@ class AmityCommunityProfilePage extends NewBasePage {
       child: Builder(builder: (context) {
         return BlocBuilder<CommunityProfileBloc, CommunityProfileState>(
           builder: (context, state) {
-            state.scrollController.addListener(() {
-              if (state.scrollController.hasClients &&
-                  state.scrollController.offset > 330) {
-                context
-                    .read<CommunityProfileBloc>()
-                    .add(CommunityProfileEventCollapsed());
-              } else {
-                context
-                    .read<CommunityProfileBloc>()
-                    .add(CommunityProfileEventExpanded());
-              }
-            });
-
             final featureConfig = configProvider.getFeatureConfig();
 
             return Scaffold(
@@ -290,7 +277,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                           !state.isModerator))
                   ? GestureDetector(
                       onTap: () {
-                        showActions(context, state.canManageStory,
+                        showActions(context, state.canCreateStory,
                             state.community, state.isModerator);
                       },
                       child: Container(
@@ -347,7 +334,7 @@ class AmityCommunityProfilePage extends NewBasePage {
     );
   }
 
-  void showActions(BuildContext context, bool canManageStory,
+  void showActions(BuildContext context, bool canCreateStory,
       AmityCommunity? community, bool isModerator) {
     final postOption = BottomSheetMenuOption(
         title: context.l10n.general_post,
@@ -430,7 +417,7 @@ class AmityCommunityProfilePage extends NewBasePage {
       userActions.add(postOption);
     }
 
-    if (featureConfig.story.createEnabled && canManageStory) {
+    if (featureConfig.story.createEnabled && canCreateStory) {
       userActions.add(storyOption);
     }
 
@@ -444,7 +431,7 @@ class AmityCommunityProfilePage extends NewBasePage {
   void showCommunityProfileAction(
     BuildContext context,
     AmityThemeColor theme,
-    bool canManageStory,
+    bool canCreateStory,
     AmityCommunity? community,
     bool isModerator,
   ) {
@@ -567,7 +554,7 @@ class AmityCommunityProfilePage extends NewBasePage {
                     ),
                   ),
                 ),
-                if (canManageStory)
+                if (canCreateStory)
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);

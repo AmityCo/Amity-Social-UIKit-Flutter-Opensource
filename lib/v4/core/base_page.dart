@@ -2,6 +2,7 @@ import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 
 class BasePage extends StatelessWidget {
   final Widget? child;
@@ -48,7 +49,8 @@ abstract class NewBasePage extends StatelessWidget {
               selectionColor: theme.primaryColor.withOpacity(0.3),
               selectionHandleColor: theme.primaryColor,
             )),
-            child: buildPage(context));
+            child: AmityToast(
+                pageId: pageId, elementId: 'toast', child: buildPage(context)));
       },
     );
     // return ChangeNotifierProvider<ConfigProvider>(

@@ -599,9 +599,7 @@ class _MentionTextFieldState extends State<MentionTextField>
           _overlayEntry = _createOverlayEntry();
           Overlay.of(context).insert(_overlayEntry!);
         } else {
-          _overlayEntry!.remove();
-          _overlayEntry = _createOverlayEntry();
-          Overlay.of(context).insert(_overlayEntry!);
+          _overlayEntry!.markNeedsBuild();
         }
         return;
       } else {
@@ -632,22 +630,12 @@ class _MentionTextFieldState extends State<MentionTextField>
       _cancelNoMatchTimer();
     }
 
-    // ALWAYS recreate the overlay when data changes to ensure it has the latest data.
-    // 
-    // Why not use markNeedsBuild()?
-    // - markNeedsBuild() works for LAYOUT changes (keyboard, positioning)
-    // - But for DATA changes, the builder function captures old variables (closure)
-    // - Example: If _amityUsers was [] when overlay created, markNeedsBuild() still shows []
-    // 
-    // Performance note:
-    // - Recreating overlay causes brief flicker, but necessary for data updates
-    // - This only happens when search results change, not on every keystroke (debounced)
-    // - The flicker is acceptable tradeoff for showing correct results
-    if (_overlayEntry != null) {
-      _overlayEntry!.remove();
+    if (_overlayEntry == null) {
+      _overlayEntry = _createOverlayEntry();
+      Overlay.of(context).insert(_overlayEntry!);
+    } else {
+      _overlayEntry!.markNeedsBuild();
     }
-    _overlayEntry = _createOverlayEntry();
-    Overlay.of(context).insert(_overlayEntry!);
   }
 
   void _removeOverlay() {
@@ -680,127 +668,67 @@ class _MentionTextFieldState extends State<MentionTextField>
   }
 
   OverlayEntry _createOverlayEntry() {
-    // Determine which mode we're in
-    final bool useCommunityMode =
-        widget.communityId != null && !_communityIsPublic;
-    final bool useChannelMode = widget.channelId != null;
-
-    // Get base item count (actual search results)
-    final int baseItemCount =
-        useCommunityMode ? _communityMembers.length : _amityUsers.length;
-
-    // For channel mode, handle @All display logic
-    final int itemCount;
-    if (useChannelMode) {
-      final String searchText = _mentionController.getSearchText();
-      final bool isEmptySearch = searchText.trim().isEmpty;
-      
-      if (isEmptySearch && _shouldShowMentionAll()) {
-        // Just @ symbol - show @All + all users
-        itemCount = baseItemCount + 1;
-      } else {
-        // Has search text - show only search results (no @All)
-        itemCount = baseItemCount;
-      }
-    } else {
-      itemCount = baseItemCount; // No @All for non-channel modes
-    }
-
-    if (itemCount == 0) {
-      return OverlayEntry(builder: (context) => const SizedBox.shrink());
-    }
-
-    // Compute maximum allowed height from suggestionMaxRow
-    final double maxAllowedHeight = widget.suggestionMaxRow * _rowHeight;
-    final double dynamicHeight = itemCount * _rowHeight;
-    final double containerHeight =
-        dynamicHeight < maxAllowedHeight ? dynamicHeight : maxAllowedHeight;
-
-    // Build the suggestion list overlay using the subwidget
-    Widget suggestionList = SuggestionListOverlay(
-      itemCount: itemCount,
-      rowHeight: _rowHeight,
-      suggestionMaxRow: widget.suggestionMaxRow,
-      scrollController: _listScrollController,
-      backgroundColor: widget.theme.backgroundColor,
-      borderRadius: BorderRadius.circular(12.0),
-      itemBuilder: (context, index) {
+    if (widget.suggestionDisplayMode == SuggestionDisplayMode.inline) {
+      return OverlayEntry(builder: (overlayContext) {
+        final bool useCommunityMode = widget.communityId != null && !_communityIsPublic;
         final bool useChannelMode = widget.channelId != null;
+        final int baseItemCount = useCommunityMode ? _communityMembers.length : _amityUsers.length;
 
+        final int itemCount;
         if (useChannelMode) {
           final String searchText = _mentionController.getSearchText();
-          final bool isEmptySearch = searchText.trim().isEmpty;
-          
-          // For channel mode with empty search, show @All first, then users
-          if (isEmptySearch && _shouldShowMentionAll()) {
-            if (index == 0) {
-              return _buildAllMentionRow();
-            }
-            // Adjust index for users (subtract 1 because @All took first position)
-            final adjustedIndex = index - 1;
-            if (adjustedIndex >= _amityUsers.length) return const SizedBox.shrink();
-            return _buildUserRow(_amityUsers[adjustedIndex]);
-          }
-          
-          // For channel mode with search text, show only search results (no @All)
-          if (!isEmptySearch) {
-            if (index >= _amityUsers.length) return const SizedBox.shrink();
-            return _buildUserRow(_amityUsers[index]);
-          }
-          
-          return const SizedBox.shrink();
-        }
-
-        if (useCommunityMode) {
-          // Community mode - show community members
-          if (index >= _communityMembers.length)
-            return const SizedBox.shrink();
-          return _buildMemberRow(_communityMembers[index]);
+          itemCount = (searchText.trim().isEmpty && _shouldShowMentionAll())
+              ? baseItemCount + 1
+              : baseItemCount;
         } else {
-          // Default mode - show users
-          if (index >= _amityUsers.length)
-            return const SizedBox.shrink();
-          return _buildUserRow(_amityUsers[index]);
+          itemCount = baseItemCount;
         }
-      },
-    );
 
-    if (widget.suggestionDisplayMode == SuggestionDisplayMode.inline) {
-      final RenderBox renderBox = context.findRenderObject() as RenderBox;
-      final position = renderBox.localToGlobal(Offset.zero);
-      final size = renderBox.size;
-      final mediaQuery = MediaQuery.of(context);
-      final screenSize = mediaQuery.size;
-      // Use fixed horizontal margins (8.0 on each side) like bottom mode.
-      const double horizontalMargin = 8.0;
-      final double availableWidth = screenSize.width - (horizontalMargin * 2);
-      final double topPosition =
-          (screenSize.height - (position.dy + size.height + containerHeight) <
-                  0)
-              ? position.dy - containerHeight - 2
-              : position.dy + size.height;
-      return OverlayEntry(
-        builder: (context) => Material(
-          color: Colors.transparent, // Transparent material to capture taps
+        if (itemCount == 0) return const SizedBox.shrink();
+
+        final double maxAllowedHeight = widget.suggestionMaxRow * _rowHeight;
+        final double dynamicHeight = itemCount * _rowHeight;
+        final double containerHeight = dynamicHeight < maxAllowedHeight ? dynamicHeight : maxAllowedHeight;
+
+        final Widget suggestionList = SuggestionListOverlay(
+          itemCount: itemCount,
+          rowHeight: _rowHeight,
+          suggestionMaxRow: widget.suggestionMaxRow,
+          scrollController: _listScrollController,
+          backgroundColor: widget.theme.backgroundColor,
+          borderRadius: BorderRadius.circular(12.0),
+          itemBuilder: (ctx, index) => _buildItem(index, useCommunityMode, useChannelMode),
+        );
+
+        final RenderBox renderBox = context.findRenderObject() as RenderBox;
+        final position = renderBox.localToGlobal(Offset.zero);
+        final size = renderBox.size;
+        final screenSize = MediaQuery.of(overlayContext).size;
+        const double horizontalMargin = 8.0;
+        final double availableWidth = screenSize.width - (horizontalMargin * 2);
+        final double topPosition =
+            (screenSize.height - (position.dy + size.height + containerHeight) < 0)
+                ? position.dy - containerHeight - 2
+                : position.dy + size.height;
+
+        return Material(
+          color: Colors.transparent,
           child: GestureDetector(
-            behavior:
-                HitTestBehavior.opaque, // Changed to opaque to capture all taps
+            behavior: HitTestBehavior.opaque,
             onTap: () {
               _mentionController.dismissCurrentMention();
               _removeOverlay();
             },
-            child: Container(
-              width: MediaQuery.of(context).size.width, // Full screen width
-              height: MediaQuery.of(context).size.height, // Full screen height
-              color: Colors.transparent, // Transparent container
+            child: SizedBox(
+              width: screenSize.width,
+              height: screenSize.height,
               child: Stack(
                 children: [
                   Positioned(
                     left: horizontalMargin,
                     top: topPosition,
                     child: GestureDetector(
-                      // This prevents taps on the suggestion list from dismissing
-                      onTap: () {/* Do nothing, preventing tap propagation */},
+                      onTap: () {},
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           maxWidth: availableWidth,
@@ -825,30 +753,59 @@ class _MentionTextFieldState extends State<MentionTextField>
               ),
             ),
           ),
-        ),
-      );
+        );
+      });
     } else {
-      final window = WidgetsBinding.instance.window;
-      final keyboardHeight = window.viewInsets.bottom / window.devicePixelRatio;
-      final basePadding = (keyboardHeight > 0)
-          ? widget.suggestionOverlayBottomPaddingWhenKeyboardOpen
-          : widget.suggestionOverlayBottomPaddingWhenKeyboardClosed;
-      final bottomOffset = basePadding + keyboardHeight;
-      return OverlayEntry(
-        builder: (context) => Material(
-          color: Colors.transparent, // Transparent material to capture taps
-          child: GestureDetector(
-            behavior:
-                HitTestBehavior.opaque, // Changed to opaque to capture all taps
-            onTap: () {
+      return OverlayEntry(builder: (overlayContext) {
+        final bool useCommunityMode = widget.communityId != null && !_communityIsPublic;
+        final bool useChannelMode = widget.channelId != null;
+        final int baseItemCount = useCommunityMode ? _communityMembers.length : _amityUsers.length;
 
+        final int itemCount;
+        if (useChannelMode) {
+          final String searchText = _mentionController.getSearchText();
+          itemCount = (searchText.trim().isEmpty && _shouldShowMentionAll())
+              ? baseItemCount + 1
+              : baseItemCount;
+        } else {
+          itemCount = baseItemCount;
+        }
+
+        if (itemCount == 0) return const SizedBox.shrink();
+
+        final double maxAllowedHeight = widget.suggestionMaxRow * _rowHeight;
+        final double dynamicHeight = itemCount * _rowHeight;
+        final double containerHeight = dynamicHeight < maxAllowedHeight ? dynamicHeight : maxAllowedHeight;
+
+        final Widget suggestionList = SuggestionListOverlay(
+          itemCount: itemCount,
+          rowHeight: _rowHeight,
+          suggestionMaxRow: widget.suggestionMaxRow,
+          scrollController: _listScrollController,
+          backgroundColor: widget.theme.backgroundColor,
+          borderRadius: BorderRadius.circular(12.0),
+          itemBuilder: (ctx, index) => _buildItem(index, useCommunityMode, useChannelMode),
+        );
+
+        final window = WidgetsBinding.instance.window;
+        final keyboardHeight = window.viewInsets.bottom / window.devicePixelRatio;
+        final basePadding = (keyboardHeight > 0)
+            ? widget.suggestionOverlayBottomPaddingWhenKeyboardOpen
+            : widget.suggestionOverlayBottomPaddingWhenKeyboardClosed;
+        final bottomOffset = basePadding + keyboardHeight;
+        final screenSize = MediaQuery.of(overlayContext).size;
+
+        return Material(
+          color: Colors.transparent,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
               _mentionController.dismissCurrentMention();
               _removeOverlay();
             },
-            child: Container(
-              width: MediaQuery.of(context).size.width, // Full screen width
-              height: MediaQuery.of(context).size.height, // Full screen height
-              color: Colors.transparent, // Transparent container
+            child: SizedBox(
+              width: screenSize.width,
+              height: screenSize.height,
               child: Stack(
                 children: [
                   Positioned(
@@ -856,8 +813,7 @@ class _MentionTextFieldState extends State<MentionTextField>
                     right: 8.0,
                     bottom: bottomOffset,
                     child: GestureDetector(
-                      // This prevents taps on the suggestion list from dismissing
-                      onTap: () {/* Do nothing, preventing tap propagation */},
+                      onTap: () {},
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
@@ -872,8 +828,7 @@ class _MentionTextFieldState extends State<MentionTextField>
                               decoration: BoxDecoration(
                                 color: widget.theme.backgroundColor,
                                 borderRadius: BorderRadius.circular(12.0),
-                                border: Border.all(
-                                    color: Colors.grey.withOpacity(0.2)),
+                                border: Border.all(color: Colors.grey.withOpacity(0.2)),
                               ),
                               child: suggestionList,
                             ),
@@ -891,9 +846,33 @@ class _MentionTextFieldState extends State<MentionTextField>
               ),
             ),
           ),
-        ),
-      );
+        );
+      });
     }
+  }
+
+  Widget _buildItem(int index, bool useCommunityMode, bool useChannelMode) {
+    if (useChannelMode) {
+      final String searchText = _mentionController.getSearchText();
+      final bool isEmptySearch = searchText.trim().isEmpty;
+      if (isEmptySearch && _shouldShowMentionAll()) {
+        if (index == 0) return _buildAllMentionRow();
+        final adjustedIndex = index - 1;
+        if (adjustedIndex >= _amityUsers.length) return const SizedBox.shrink();
+        return _buildUserRow(_amityUsers[adjustedIndex]);
+      }
+      if (!isEmptySearch) {
+        if (index >= _amityUsers.length) return const SizedBox.shrink();
+        return _buildUserRow(_amityUsers[index]);
+      }
+      return const SizedBox.shrink();
+    }
+    if (useCommunityMode) {
+      if (index >= _communityMembers.length) return const SizedBox.shrink();
+      return _buildMemberRow(_communityMembers[index]);
+    }
+    if (index >= _amityUsers.length) return const SizedBox.shrink();
+    return _buildUserRow(_amityUsers[index]);
   }
 
   // Widget to build the @All mention row at the top of the suggestion list when in channel mode

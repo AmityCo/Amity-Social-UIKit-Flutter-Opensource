@@ -65,10 +65,11 @@ class PostDisplayName extends StatelessWidget {
                       child: Row(
                         children: [
                           Flexible(child: PostTarget(context, post.target!)),
-                          if ((post.target as CommunityTarget)
-                                  .targetCommunity
-                                  ?.isOfficial ==
-                              true)
+                          if (post.target is CommunityTarget &&
+                              (post.target as CommunityTarget)
+                                      .targetCommunity
+                                      ?.isOfficial ==
+                                  true)
                             verifiedBadge(),
                         ],
                       ),

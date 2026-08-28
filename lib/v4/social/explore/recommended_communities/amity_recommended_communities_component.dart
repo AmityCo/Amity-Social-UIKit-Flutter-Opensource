@@ -55,7 +55,7 @@ class AmityRecommendedCommunitiesComponent extends NewBaseComponent {
                       style: AmityTextStyle.titleBold(theme.baseColor)),
                 ),
                 SizedBox(
-                  height: 219,
+                  height: 221,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 16),

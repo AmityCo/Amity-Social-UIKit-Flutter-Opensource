@@ -154,17 +154,20 @@ class AmityStoryTargetElement extends BaseElement {
                   const SizedBox(
                     width: 4,
                   ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      isCommunityTarget ? context.l10n.general_story : communityDisplayName,
-                      overflow: TextOverflow.ellipsis,
-                      style:  TextStyle(
-                        fontSize: 13,
-                        color: theme.baseColor,
-                        fontFamily: "SF Pro Text",
-                        fontWeight: FontWeight.w500,
-                      ),
+                // Flexible, not Expanded: Expanded made this cell take all the
+                // remaining width and the inner Center then centred the name
+                // inside it, pushing it away from the lock. Sizing to content
+                // lets the row's mainAxisAlignment centre icon+name as a group,
+                // matching iOS (HStack(spacing: 0)).
+                Flexible(
+                  child: Text(
+                    isCommunityTarget ? context.l10n.general_story : communityDisplayName,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: theme.baseColor,
+                      fontFamily: "SF Pro Text",
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),

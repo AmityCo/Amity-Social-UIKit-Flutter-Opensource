@@ -6,7 +6,6 @@ import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bl
 import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/user_relationship_manager.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
-import 'package:amity_uikit_beta_service/v4/utils/error_util.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,15 +114,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
             // Query updated follow info again.
             setupFollowInfo(userId);
           }, onError: (error) {
-            if (error != null && error is AmityException) {
-              if (error.isAmityErrorWithCode(
-                  AmityErrorCode.NO_USER_ACCESS_PERMISSION)) {
-                event.onError();
-              }
-            } else {
-              toast.add(AmityToastShort(
-                  message: event.errorMessage, icon: AmityToastIcon.warning));
-            }
+            event.onError();
           });
           break;
       }

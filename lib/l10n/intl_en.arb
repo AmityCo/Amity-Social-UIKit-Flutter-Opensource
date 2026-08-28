@@ -17,9 +17,13 @@
     "description": "Label for the my communities tab in the main navigation"
   },
 
-  "global_search_hint": "Search community and user",
+  "global_search_hint": "Search",
   "@global_search_hint": {
-    "description": "Hint text for the search communities and users field on the homepage"
+    "description": "Hint text for the global search field (Posts tab)"
+  },
+  "search_community_user_hint": "Search community and user",
+  "@search_community_user_hint": {
+    "description": "Hint text for the search field when on Communities or Users tab"
   },
   "search_my_community_hint": "Search my community",
   "@search_my_community_hint": {
@@ -36,6 +40,10 @@
   "title_users":"Users",
   "@title_users": {
     "description": "Title for the users section"
+  },
+  "title_posts":"Posts",
+  "@title_posts": {
+    "description": "Title for the posts search tab"
   },
   "general_cancel": "Cancel",
   "@general_cancel": {
@@ -82,11 +90,11 @@
   "@post_delete": {
     "description": "Label for delete post button"
   },
-  "post_delete_description": "This post will be permanently deleted.",
+  "post_delete_description": "This post will be permanently deleted. You'll no longer see and find this post.",
   "@post_delete_description": {
     "description": "Confirmation message for deleting a post"
   },
-  "post_delete_confirmation": "Delete Post?",
+  "post_delete_confirmation": "Delete this post?",
   "@post_delete_confirmation": {
     "description": "Confirmation title for deleting a post"
   },
@@ -142,9 +150,13 @@
   "@poll_close": {
     "description": "Label for close poll button"
   },
-  "poll_close_description": "This poll is closed. You can no longer vote.",
+  "poll_close_confirm_title": "Close poll?",
+  "@poll_close_confirm_title": {
+    "description": "Title for close poll confirmation dialog"
+  },
+  "poll_close_description": "The poll duration you've set will be ignored and your poll will be closed immediately.",
   "@poll_close_description": {
-    "description": "Description for closed poll"
+    "description": "Message for close poll confirmation dialog"
   },
   "poll_vote": "Vote",
   "@poll_vote": {
@@ -386,7 +398,7 @@
   "@community_leave": {
     "description": "Label for leave community button"
   },
-  "community_leave_description": "Leave the community. You will no longer be able to post and interact in this community.",
+  "community_leave_description": "You will no longer be able to post and interact in this community.",
   "@community_leave_description": {
     "description": "Confirmation message for leaving a community"
   },
@@ -638,13 +650,13 @@
   "@settings_everyone": {
     "description": "Label for everyone settings"
   },
-  "settings_only_moderators": "Only moderators",
+  "settings_only_moderators": "Only moderator",
   "@settings_only_moderators": {
     "description": "Label for only moderators settings"
   },
-  "settings_only_admins": "Only admins can post",
+  "settings_only_admins": "Off",
   "@settings_only_admins": {
-    "description": "Label for only admins can post setting"
+    "description": "Label for off setting"
   },
   "settings_privacy": "Privacy",
   "@settings_privacy": {
@@ -1098,6 +1110,22 @@
   "community_post_permission_description_label": "You can control who can create posts in your community.",
   "@community_post_permission_description_label": {
     "description": "label for post permissions page description"
+  },
+  "permission_everyone_can_post": "Everyone can post",
+  "@permission_everyone_can_post": {
+    "description": "Label for everyone can post permission option"
+  },
+  "permission_admin_review_post": "Admin review post",
+  "@permission_admin_review_post": {
+    "description": "Label for admin review post permission option"
+  },
+  "permission_only_admins_can_post": "Only admins can post",
+  "@permission_only_admins_can_post": {
+    "description": "Label for only admins can post permission option"
+  },
+  "post_join_community_to_interact": "Join community to interact.",
+  "@post_join_community_to_interact": {
+    "description": "Toast shown when a non-member taps react/comment on a post"
   },
   "post_item_bottom_nonmember_label": "Join community to interact with all posts",
   "@post_item_bottom_nonmember_label": {
@@ -2048,7 +2076,7 @@
   "@settings_everyone_desc": {
     "description": "Description for everyone messaging permission"
   },
-  "settings_only_moderators": "Only moderators",
+  "settings_only_moderators": "Only moderator",
   "@settings_only_moderators": {
     "description": "Label for moderators-only permission option"
   },

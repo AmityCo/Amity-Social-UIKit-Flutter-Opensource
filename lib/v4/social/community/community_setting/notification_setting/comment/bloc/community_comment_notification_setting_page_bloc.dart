@@ -76,6 +76,9 @@ class CommunityCommentNotificationSettingPageBloc extends Bloc<
         event.toastBloc.add(const AmityToastShort(
             message: "Successfully updated community profile!", icon: AmityToastIcon.success));
         event.onSuccess();
+      }).catchError((_) {
+        event.toastBloc.add(const AmityToastShort(
+            message: "Failed to update community profile", icon: AmityToastIcon.warning));
       });
     });
   }

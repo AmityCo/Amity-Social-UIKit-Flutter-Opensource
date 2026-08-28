@@ -72,7 +72,11 @@ class _CameraPreviewBuilderState extends State<CameraPreviewBuilder>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+    // Lock the camera screen to portrait so the live preview stays fixed on
+    // device rotation (matches native UIKit: Android activity is portrait-locked,
+    // iOS disables camera orientation response). Restored in dispose().
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     // Initialize camera via Bloc
     context.read<CameraPermissionBloc>().add(
       InitializeCameraRequested(isVideoMode: widget.isVideoMode)
@@ -93,6 +97,8 @@ class _CameraPreviewBuilderState extends State<CameraPreviewBuilder>
     videoController?.dispose();
     animController.dispose();
     timer?.cancel();
+    // Restore orientations when leaving the camera screen.
+    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     super.dispose();
   }
 

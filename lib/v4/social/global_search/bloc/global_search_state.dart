@@ -22,20 +22,38 @@ class GlobalSearchLoaded extends GlobalSearchState {
   final List<AmityCommunity> communities;
   final bool isFetching;
 
-  const GlobalSearchLoaded(this.communities, this.isFetching);
+  final String searchText;
+
+  const GlobalSearchLoaded(this.communities, this.isFetching,
+      [this.searchText = '']);
 
   @override
-  List<Object> get props => [communities, isFetching];
+  List<Object> get props => [communities, isFetching, searchText];
 }
 
 class GlobalUserSearchLoaded extends GlobalSearchState {
   final List<AmityUser> users;
   final bool isFetching;
 
-  const GlobalUserSearchLoaded(this.users, this.isFetching);
+  final String searchText;
+
+  const GlobalUserSearchLoaded(this.users, this.isFetching,
+      [this.searchText = '']);
 
   @override
-  List<Object> get props => [users, isFetching];
+  List<Object> get props => [users, isFetching, searchText];
 }
 
 class GlobalSearchLoading extends GlobalSearchState {}
+
+class GlobalPostSearchLoaded extends GlobalSearchState {
+  final List<AmityPost> posts;
+  final bool isFetching;
+  final String searchText;
+
+  const GlobalPostSearchLoaded(this.posts, this.isFetching,
+      [this.searchText = '']);
+
+  @override
+  List<Object> get props => [posts, isFetching, searchText];
+}

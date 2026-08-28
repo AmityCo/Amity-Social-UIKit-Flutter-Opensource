@@ -5,50 +5,30 @@ import 'dart:developer';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/uikit_behavior.dart';
 import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
-import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/parent_message_cache.dart';
 import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
+import 'package:amity_uikit_beta_service/v4/core/configuration_viewmodel.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart'
     show AmityThemeStyle;
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/bloc/global_feed_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_viewmodel.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/create/bloc/create_story_page_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/hyperlink/bloc/hyperlink_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/view/components/story_video_player/bloc/story_video_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/create_story/bloc/create_story_bloc.dart';
-import 'package:amity_uikit_beta_service/viewmodel/category_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/chat_room_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/community_feed_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/community_member_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/component_size_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/create_postV2_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/explore_page_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/media_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/my_community_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/notification_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/pending_request_viewmodel.dart';
-import 'package:amity_uikit_beta_service/viewmodel/reply_viewmodel.dart';
+import 'package:amity_uikit_beta_service/v4/utils/navigation_key.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'viewmodel/amity_viewmodel.dart';
-import 'viewmodel/channel_list_viewmodel.dart';
-import 'viewmodel/community_viewmodel.dart';
-import 'viewmodel/configuration_viewmodel.dart';
-import 'viewmodel/create_post_viewmodel.dart';
-import 'viewmodel/custom_image_picker.dart';
-import 'viewmodel/feed_viewmodel.dart';
-import 'viewmodel/post_viewmodel.dart';
-import 'viewmodel/user_feed_viewmodel.dart';
-import 'viewmodel/user_viewmodel.dart';
-
 export 'package:amity_sdk/src/domain/model/session/session_state.dart';
 export 'package:amity_sdk/src/core/enum/http_end_point.dart';
+export 'package:amity_uikit_beta_service/v4/core/configuration_viewmodel.dart';
 export 'package:amity_uikit_beta_service/v4/core/theme.dart'
     show AmityThemeStyle;
 
@@ -145,10 +125,23 @@ class AmityUIKit {
       String? authToken,
       Function(bool isSuccess, String? error)? callback}) async {
     Stopwatch stopwatch = Stopwatch()..start();
-    await Provider.of<AmityVM>(context, listen: false)
-        .login(userID: userId, displayName: displayName, authToken: authToken)
-        .then((value) async {
+    var loginBuilder = AmityCoreClient.login(userId,
+        sessionHandler: (AccessTokenRenewal renewal) {
+      renewal.renew();
+    });
+    if (authToken != null) {
+      loginBuilder = loginBuilder.authToken(authToken);
+    }
+    if (displayName != null) {
+      loginBuilder = loginBuilder.displayName(displayName);
+    }
+    await loginBuilder.submit().then((value) async {
       log("login success");
+
+      AmitySocialClient.fetchStorySettings().catchError((error) {
+        log("fetchStorySettings failed: $error");
+        return AmityStorySettings(allowAllUserToCreateStory: false);
+      });
 
       // await Provider.of<UserVM>(context, listen: false)
       //     .initAccessToken()
@@ -248,47 +241,10 @@ class AmityUIKitProvider extends StatelessWidget {
             create: (context) => StoryVideoPlayerBloc()),
         MultiProvider(
           providers: [
-            ChangeNotifierProvider<ReplyVM>(create: ((context) => ReplyVM())),
-            ChangeNotifierProvider<SearchCommunityVM>(
-                create: ((context) => SearchCommunityVM())),
-            ChangeNotifierProvider<CompoentSizeVM>(
-                create: ((context) => CompoentSizeVM())),
-            ChangeNotifierProvider<UserVM>(create: ((context) => UserVM())),
-            ChangeNotifierProvider<AmityVM>(create: ((context) => AmityVM())),
-            ChangeNotifierProvider<FeedVM>(create: ((context) => FeedVM())),
-            ChangeNotifierProvider<CommunityVM>(
-                create: ((context) => CommunityVM())),
-            ChangeNotifierProvider<PostVM>(create: ((context) => PostVM())),
-            ChangeNotifierProvider<UserFeedVM>(
-                create: ((context) => UserFeedVM())),
-            ChangeNotifierProvider<ImagePickerVM>(
-                create: ((context) => ImagePickerVM())),
-            ChangeNotifierProvider<CreatePostVM>(
-                create: ((context) => CreatePostVM())),
-            ChangeNotifierProvider<CreatePostVMV2>(
-                create: ((context) => CreatePostVMV2())),
-            ChangeNotifierProvider<ChannelVM>(
-                create: ((context) => ChannelVM())),
             ChangeNotifierProvider<AmityUIConfiguration>(
                 create: ((context) => AmityUIConfiguration())),
-            ChangeNotifierProvider<NotificationVM>(
-                create: ((context) => NotificationVM())),
-            ChangeNotifierProvider<CategoryVM>(
-                create: ((context) => CategoryVM())),
-            ChangeNotifierProvider<PendingVM>(
-                create: ((context) => PendingVM())),
             ChangeNotifierProvider<MyCommunityVM>(
                 create: ((context) => MyCommunityVM())),
-            ChangeNotifierProvider<CommuFeedVM>(
-                create: ((context) => CommuFeedVM())),
-            ChangeNotifierProvider<ExplorePageVM>(
-                create: ((context) => ExplorePageVM())),
-            ChangeNotifierProvider<MemberManagementVM>(
-                create: ((context) => MemberManagementVM())),
-            ChangeNotifierProvider<MediaPickerVM>(
-                create: ((context) => MediaPickerVM())),
-            ChangeNotifierProvider<ChatRoomVM>(
-                create: ((context) => ChatRoomVM())),
             ChangeNotifierProvider<ConfigProvider>(
                 key: const ValueKey("global_config"),
                 create: (context) => ConfigProvider()),

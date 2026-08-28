@@ -1,4 +1,4 @@
-import 'package:amity_uikit_beta_service/utils/processed_text_cache.dart';
+import 'package:amity_uikit_beta_service/v4/utils/processed_text_cache.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:any_link_preview/any_link_preview.dart';

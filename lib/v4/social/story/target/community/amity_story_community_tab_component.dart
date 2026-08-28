@@ -96,11 +96,10 @@ class _AmityStoryCommunityTabBuilderState
       },
       child: BlocBuilder<CommunityFeedStoryBloc, CommunityFeedStoryState>(
         builder: (context, state) {
-          // Trigger global refresh when stories are empty
-          // This ensures the feed reflects the current state after story deletion/expiration
-          if (!_hasRefreshedOnEmpty && 
-              !state.isLoading && 
-              (state.stories == null || state.stories!.isEmpty)) {
+          if (!_hasRefreshedOnEmpty &&
+              !state.isLoading &&
+              state.stories != null &&
+              state.stories!.isEmpty) {
             _hasRefreshedOnEmpty = true;
             // Use post-frame callback to avoid setState during build
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -149,7 +148,22 @@ class _AmityStoryCommunityTabBuilderState
           }
 
           if (state.community != null) {
-            if (!state.haveStoryPermission &&
+            // Only hide the ring once the permission check has had a fair
+            // chance to settle (see CommunityFeedStoryState.permissionResolved).
+            // A raw `!canCreateStory` here would hide the ring for a member
+            // who does have MANAGE_COMMUNITY_STORY (or is covered by
+            // allowAllUserToCreateStory) whenever the member/permission cache
+            // simply hadn't warmed up yet - the flaky-ring bug. Once
+            // permission is confirmed (true or settled false) and there are
+            // still no stories, non-members / members without permission
+            // correctly see nothing.
+            //
+            // canCreateStory folds in allowAllUserToCreateStory (PDT-3801) on
+            // top of the MANAGE_COMMUNITY_STORY check, while still requiring
+            // community membership (isJoined) so non-members are never
+            // granted the create affordance regardless of either flag.
+            if (!state.canCreateStory &&
+                state.permissionResolved &&
                 (state.stories == null || state.stories!.isEmpty)) {
               return const SizedBox(
                 width: 0,
@@ -172,11 +186,11 @@ class _AmityStoryCommunityTabBuilderState
                 ringUiState: state.storyTarget!.toRingUiState(),
                 isPublicCommunity: state.community!.isPublic ?? false,
                 isOfficialCommunity: state.community!.isOfficial ?? false,
-                hasManageStoryPermission: state.haveStoryPermission,
+                hasManageStoryPermission: state.canCreateStory,
                 targetId: state.community!.communityId!,
                 target: state.storyTarget!,
                 onClick: (targetId, storyTarget) {
-                  if (state.haveStoryPermission &&
+                  if (state.canCreateStory &&
                       isStoryCreationEnabled &&
                       (state.stories == null ||
                           state.stories?.isEmpty == true)) {

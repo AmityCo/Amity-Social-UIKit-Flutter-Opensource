@@ -5,11 +5,19 @@ import 'dart:math';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/utils/story_creation_rule.dart';
 
 part 'view_story_event.dart';
 part 'view_story_state.dart';
 
 class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
+  /// The jump to the first unseen segment must happen once per target. Landing
+  /// on a story marks it seen, which makes the live collection re-emit; without
+  /// this latch each emission would recompute "first unseen" -- now the next
+  /// story -- and walk the viewer all the way to the last segment.
+  /// Mirrors Android's `isMovedToUnseenStory`.
+  bool _hasJumpedToUnseen = false;
+
   late StoryLiveCollection storyLiveCollection;
     AmityStorySortingOrder _sortOption = AmityStorySortingOrder.FIRST_CREATED;
     StreamSubscription<List<AmityStory>>? _subscription;
@@ -293,6 +301,11 @@ class ViewStoryBloc extends Bloc<ViewStoryEvent, ViewStoryState> {
         if (event.stories.isEmpty) {
           return;
         }
+
+        if (_hasJumpedToUnseen) {
+          return;
+        }
+        _hasJumpedToUnseen = true;
 
         final firstUnseenIndex = state.stories?.indexWhere((element) => element.isSeen() == false);
         if (firstUnseenIndex != null && firstUnseenIndex != -1) {

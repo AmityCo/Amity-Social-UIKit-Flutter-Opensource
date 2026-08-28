@@ -535,7 +535,6 @@ class AmityChatPage extends NewBasePage {
             ),
           ),
         ),
-          AmityToast(pageId: pageId, elementId: "toast"),
         ],
       ),
     );

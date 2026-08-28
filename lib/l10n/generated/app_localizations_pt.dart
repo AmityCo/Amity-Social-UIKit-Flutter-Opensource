@@ -24,6 +24,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get global_search_hint => 'Pesquisar comunidade e usuário';
 
   @override
+  String get search_community_user_hint => 'Search community and user';
+
+  @override
   String get search_my_community_hint => 'Pesquisar minha comunidade';
 
   @override
@@ -34,6 +37,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get title_users => 'Usuários';
+
+  @override
+  String get title_posts => 'Posts';
 
   @override
   String get general_cancel => 'Cancelar';
@@ -116,6 +122,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get poll_close => 'Fechar enquete';
+
+  @override
+  String get poll_close_confirm_title => 'Close poll?';
 
   @override
   String get poll_close_description =>
@@ -909,6 +918,18 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get community_post_permission_description_label =>
       'Você pode controlar quem pode criar publicações em sua comunidade.';
+
+  @override
+  String get permission_everyone_can_post => 'Everyone can post';
+
+  @override
+  String get permission_admin_review_post => 'Admin review post';
+
+  @override
+  String get permission_only_admins_can_post => 'Only admins can post';
+
+  @override
+  String get post_join_community_to_interact => 'Join community to interact.';
 
   @override
   String get post_item_bottom_nonmember_label =>

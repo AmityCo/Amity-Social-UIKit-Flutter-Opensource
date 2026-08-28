@@ -96,6 +96,9 @@ class AmityPostDetailPage extends NewBasePage {
       communityId = target.targetCommunityId;
       log("communityId: $communityId");
     }
+    // Non-members get the engagement bar with a toast on tap (native parity),
+    // but no comment composer -- Android gates AmityCommentComposerBar the same way.
+    final bool hideInteraction = hideMenu || !isJoinedCommunity;
     return Column(
       children: [
         Expanded(
@@ -143,7 +146,7 @@ class AmityPostDetailPage extends NewBasePage {
             ],
           ),
         ),
-        if (!hideMenu) ...[
+        if (!hideInteraction) ...[
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(

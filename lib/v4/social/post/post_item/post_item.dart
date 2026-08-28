@@ -11,7 +11,6 @@ import 'package:amity_uikit_beta_service/v4/social/post/common/post_header.dart'
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/amity_post_detail_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/bloc/post_item_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom.dart';
-import 'package:amity_uikit_beta_service/v4/social/post/post_item/post_item_bottom_nonmember.dart';
 import 'package:amity_uikit_beta_service/v4/utils/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +24,7 @@ class PostItem extends NewBaseComponent {
   final bool hideMenu;
   final bool hideTarget;
   final AmityPostAction? action;
+  final String? highlightKeyword;
 
   PostItem({
     Key? key,
@@ -34,6 +34,7 @@ class PostItem extends NewBaseComponent {
     required this.hideMenu,
     required this.hideTarget,
     this.action,
+    this.highlightKeyword,
   }) : super(key: key, pageId: pageId, componentId: "post_item_component");
 
   @override
@@ -134,13 +135,12 @@ class PostItem extends NewBaseComponent {
               child:
                   getChildrenPostContent(context, post, hideMenu, goToDetail),
             ),
-            hideMenu
-                ? PostBottomNonMember()
-                : getPostBottom(
-                    post: post,
-                    action: postAction,
-                    isReacting: isReacting,
-                  ),
+            getPostBottom(
+              post: post,
+              action: postAction,
+              isReacting: isReacting,
+              onCommentTap: goToDetail,
+            ),
           ],
         ),
       ),
@@ -178,7 +178,6 @@ class PostItem extends NewBaseComponent {
       mentionedUsers.sort((a, b) => a.index.compareTo(b.index));
     }
 
-    // Return a RichText widget with the computed spans.
     return Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -188,6 +187,11 @@ class PostItem extends NewBaseComponent {
             maxLines: 8,
             style: normalStyle,
             linkStyle: mentionStyle,
+            highlightKeyword: highlightKeyword,
+            highlightStyle: TextStyle(
+              fontWeight: FontWeight.w600,
+              backgroundColor: theme.highlightColor.withOpacity(0.15),
+            ),
             onMentionTap: (userId) => _goToUserProfilePage(context, userId)
             ));
   }
@@ -236,13 +240,15 @@ class PostItem extends NewBaseComponent {
   Widget getPostBottom(
       {required AmityPost post,
       required AmityPostAction action,
-      bool isReacting = false}) {
+      bool isReacting = false,
+      VoidCallback? onCommentTap}) {
     return PostItemBottom(
       post: post,
       action: action,
       isReacting: isReacting,
       componentId: '',
       isOptimisticUi: false,
+      onCommentTap: onCommentTap,
     );
   }
 

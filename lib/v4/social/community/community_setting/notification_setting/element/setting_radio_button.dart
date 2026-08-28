@@ -81,29 +81,33 @@ class SettingRadioButtonWidget extends StatelessWidget {
     required T groupValue,
     required void Function(T?) onChanged,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 14,
-            color: theme.baseColor,
-          ),
-        ),
-        SizedBox(
-          width: 25,
-          height: 30,
-          child: Center(
-            child: Radio(
-              value: value,
-              groupValue: groupValue,
-              onChanged: onChanged,
-              activeColor: theme.primaryColor,
+    return GestureDetector(
+      onTap: () => onChanged(value),
+      behavior: HitTestBehavior.opaque,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              color: theme.baseColor,
             ),
           ),
-        )
-      ],
+          SizedBox(
+            width: 25,
+            height: 30,
+            child: Center(
+              child: Radio(
+                value: value,
+                groupValue: groupValue,
+                onChanged: onChanged,
+                activeColor: theme.primaryColor,
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

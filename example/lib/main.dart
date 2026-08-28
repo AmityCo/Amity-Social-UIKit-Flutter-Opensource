@@ -4,30 +4,30 @@ import 'dart:io';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
-import 'package:amity_uikit_beta_service/components/alert_dialog.dart';
-import 'package:amity_uikit_beta_service/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_home_page.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/alert_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/social/comment/comment_tray_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_creation/community_setup_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/community/community_membership/community_membership_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/globalfeed/global_feed_component_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/my_community/my_community_component.dart';
+import 'package:amity_uikit_beta_service/v4/social/newsfeed/amity_news_feed_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/post/post_detail/post_content_component_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/post_target_selection_page/post_target_selection_page.dart';
+import 'package:amity_uikit_beta_service/v4/social/social_home_page/social_home_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/pending_requests/user_pending_follow_request_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/social/user/follow/user_relationship_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/social/user/profile/amity_user_profile_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/user_search_result/user_search_result_behavior.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/explore_page.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/my_community_feed.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/post_target_page.dart';
-import 'package:amity_uikit_beta_service/view/social/global_feed.dart';
-import 'package:amity_uikit_beta_service/view/user/user_profile_v2.dart';
-import 'package:amity_uikit_beta_service/viewmodel/configuration_viewmodel.dart';
+import 'package:amity_uikit_beta_service/v4/utils/navigation_key.dart';
 import 'package:amity_uikit_beta_service_example/sample_v4.dart';
-import 'package:amity_uikit_beta_service_example/social_v4_compatible.dart';
 import 'package:amity_uikit_beta_service_example/splash_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<CameraDescription> camera = <CameraDescription>[];
@@ -48,6 +48,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await _restorePreferredTheme();
+
+  // Enable native Android Photo Picker (Android 14+).
+  // This makes pickMultipleMedia() open the system photo picker instead of
+  // the file browser, which respects partial/limited media access correctly.
+  final ImagePickerPlatform instance = ImagePickerPlatform.instance;
+  if (instance is ImagePickerAndroid) {
+    instance.useAndroidPhotoPicker = true;
+    debugPrint('[ImagePicker] instance is ImagePickerAndroid: true'); // DEBUG_REMOVE
+    debugPrint('[ImagePicker] useAndroidPhotoPicker: ${instance.useAndroidPhotoPicker}'); // DEBUG_REMOVE
+  }
 
   // await Firebase.initializeApp(
   // options: DefaultFirebaseOptions.currentPlatform,
@@ -418,7 +428,7 @@ class _UserListPageState extends State<UserListPage> {
                     );
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
-                          const Scaffold(body: CommunityPage()),
+                          Scaffold(body: AmitySocialHomePage()),
                     ));
                   },
                   onTap: () async {
@@ -742,10 +752,9 @@ class SocialPage extends StatelessWidget {
               onTap: () {
                 // Navigate or perform action based on 'Global Feed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(
-                      body: GlobalFeedScreen(
-                          //isCustomPostRanking: true,
-                          )),
+                  builder: (context) => Scaffold(
+                      body: AmityNewsFeedComponent()),
+                      //
                 ));
               },
             ),
@@ -754,9 +763,8 @@ class SocialPage extends StatelessWidget {
               onTap: () {
                 // Navigate or perform action based on 'User Profile' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => UserProfileScreen(
-                          amityUserId: username,
-                          amityUser: null,
+                    builder: (context) => AmityUserProfilePage(
+                          userId: username,
                         )));
               },
             ),
@@ -772,7 +780,7 @@ class SocialPage extends StatelessWidget {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
-                      const Scaffold(body: CreateCommunityPage()),
+                      AmityCommunitySetupPage(mode: const CreateMode()),
                 ));
               },
             ),
@@ -781,7 +789,7 @@ class SocialPage extends StatelessWidget {
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(body: PostToPage()),
+                  builder: (context) => Scaffold(body: AmityPostTargetSelectionPage()),
                 ));
               },
             ),
@@ -791,10 +799,8 @@ class SocialPage extends StatelessWidget {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const Scaffold(
-                      body: MyCommunityPage(
-                        canCreateCommunity: false,
-                      ),
+                    builder: (context) => Scaffold(
+                      body: AmityMyCommunitiesComponent(),
                     ),
                   ),
                 );
@@ -805,7 +811,7 @@ class SocialPage extends StatelessWidget {
               onTap: () {
                 // Navigate or perform action based on 'Newsfeed' tap
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Scaffold(body: CommunityPage()),
+                  builder: (context) => Scaffold(body: AmitySocialHomePage()),
                 ));
               },
             ),
@@ -818,15 +824,7 @@ class SocialPage extends StatelessWidget {
                 ));
               },
             ),
-            ListTile(
-              title: const Text('Community v4 compatible'),
-              onTap: () {
-                // Navigate or perform action based on 'Global Feed' tap
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const AmitySocialV4Compatible(),
-                ));
-              },
-            ),
+
           ],
         ),
       ),

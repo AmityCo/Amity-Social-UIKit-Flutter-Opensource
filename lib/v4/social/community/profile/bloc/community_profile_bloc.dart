@@ -5,6 +5,7 @@ import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/social/story/utils/story_creation_rule.dart';
 
 part 'community_profile_events.dart';
 part 'community_profile_state.dart';
@@ -35,26 +36,26 @@ class CommunityProfileBloc
             false;
         emit(state.copyWith(
             community: event.community,
-            isJoined: event.community.isJoined,
+            isJoined: isModerator ? true : (event.community.isJoined ?? state.isJoined),
             isModerator: isModerator,
             canManageStory: canManageStory));
       }
     });
 
+    // Only emit on an actual change. The scroll listener below fires on every
+    // scroll notification, and re-emitting the same isExpanded value swaps the
+    // header slivers, which changes the scroll extent, which fires the listener
+    // again — the flashing loop.
     on<CommunityProfileEventExpanded>((event, emit) async {
-      emit(state.copyWith(isExpanded: true));
+      if (!state.isExpanded) emit(state.copyWith(isExpanded: true));
     });
 
     on<CommunityProfileEventCollapsed>((event, emit) async {
-      emit(state.copyWith(isExpanded: false));
+      if (state.isExpanded) emit(state.copyWith(isExpanded: false));
     });
 
     on<CommunityProfileEventGetPendingPosts>((event, emit) async {
-      final community = state.community;
-      if (community != null) {
-        final pendingPostCount = await community.getPostCount(AmityFeedType.REVIEWING);
-        emit(state.copyWith(pendingPostCount: pendingPostCount));
-      }
+      _refreshPendingPosts();
     });
 
     on<CommunityProfileEventPendingPostsObserved>((event, emit) async {
@@ -62,19 +63,7 @@ class CommunityProfileBloc
     });
 
     on<CommunityProfileEventRefreshFromPendingPage>((event, emit) async {
-      final community = state.community;
-      if (community != null) {
-        try {
-          final updatedCommunity =
-              await AmitySocialClient.newCommunityRepository()
-                  .getCommunity(state.communityId);
-          final pendingPostCount =
-              await updatedCommunity.getPostCount(AmityFeedType.REVIEWING);
-          emit(state.copyWith(pendingPostCount: pendingPostCount));
-        } catch (e) {
-          print("Error fetching pending post count: $e");
-        }
-      }
+      _refreshPendingPosts();
     });
 
     on<CommunityProfileEventTabSelected>((event, emit) async {
@@ -135,15 +124,25 @@ class CommunityProfileBloc
 
       _pendingPostsLiveCollection!.loadNext();
 
+      // Sole owner of the collapse threshold. The page used to register a second
+      // listener with a different threshold (330) on every rebuild; between the
+      // two thresholds they emitted contradictory events on every notification.
       scrollController.addListener(() {
         if (state.scrollController.hasClients &&
-            state.scrollController.offset > 115) {
+            state.scrollController.offset > 330) {
           addEvent(CommunityProfileEventCollapsed());
         } else {
           addEvent(CommunityProfileEventExpanded());
         }
       });
     } catch (e) {}
+  }
+
+  void _refreshPendingPosts() {
+    final collection = _pendingPostsLiveCollection;
+    if (collection == null) return;
+    collection.reset();
+    collection.loadNext();
   }
 
   @override

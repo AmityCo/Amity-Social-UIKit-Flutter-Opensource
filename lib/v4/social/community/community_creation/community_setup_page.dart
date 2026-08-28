@@ -80,7 +80,16 @@ class AmityCommunitySetupPage extends NewBasePage {
   }
 
   Widget _getPageWidget(BuildContext context, CommunitySetupPageState state) {
-    return Scaffold(
+    final hasUnsavedChanges = _hasUnsavedChanges(state);
+    return PopScope(
+      // Nothing entered or changed: let the OS pop, so back is immediate and
+      // Android's predictive-back animation runs. Native gates the discard
+      // dialog the same way (iOS isExistingDataChanged, Android BackHandler).
+      canPop: !hasUnsavedChanges,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _backAction(context, state);
+      },
+      child: Scaffold(
         backgroundColor: theme.backgroundColor,
         appBar: AmityAppBar(
           title: mode is CreateMode
@@ -89,7 +98,7 @@ class AmityCommunitySetupPage extends NewBasePage {
           configProvider: configProvider,
           theme: theme,
           leadingButton: GestureDetector(
-              onTap: () => _backAction(context),
+              onTap: () => _backAction(context, state),
               child: Center(
                 child: SvgPicture.asset(
                   'assets/Icons/amity_ic_close_button.svg',
@@ -171,7 +180,9 @@ class AmityCommunitySetupPage extends NewBasePage {
                 else
                   _getSaveButtonWidget(context, state)
               ],
-            )));
+            )),
+      ),
+    );
   }
 
   Widget _getProfileAvatarWidget(
@@ -297,6 +308,11 @@ class AmityCommunitySetupPage extends NewBasePage {
           spacing: 14,
           runSpacing: 14,
           children: [
+            GestureDetector(
+                onTap: () {
+                  _goToMemberPage(context, state);
+                },
+                child: _addMemberButtonWidget(context)),
             for (var member in state.communityMembers)
               GestureDetector(
                 onTap: () {
@@ -306,11 +322,6 @@ class AmityCommunitySetupPage extends NewBasePage {
                 },
                 child: _userItemWidget(context, member),
               ),
-            GestureDetector(
-                onTap: () {
-                  _goToMemberPage(context, state);
-                },
-                child: _addMemberButtonWidget(context))
           ],
         )
       ],
@@ -750,7 +761,48 @@ class AmityCommunitySetupPage extends NewBasePage {
             context: context));
   }
 
-  void _backAction(BuildContext context) {
+  /// Whether the form differs from where it started: an empty form in create
+  /// mode, or the community's current values in edit mode.
+  ///
+  /// Deliberately derived from state rather than reusing
+  /// [CommunitySetupPageState.hasExistingDataChanged], which each change event
+  /// overwrites for its own field only -- editing the name and then restoring
+  /// the privacy value resets that flag to false while the name is still
+  /// changed, and the add/remove member events never touch it.
+  bool _hasUnsavedChanges(CommunitySetupPageState state) {
+    if (state.pickedImage != null) return true;
+
+    final existing = community;
+    if (existing == null) {
+      return state.communityName.isNotEmpty ||
+          state.communityDescription.isNotEmpty ||
+          state.communityCategories.isNotEmpty ||
+          state.communityMembers.isNotEmpty ||
+          state.communityPrivacy != CommunityPrivacy.public;
+    }
+
+    final existingPrivacy = (existing.isPublic ?? true)
+        ? CommunityPrivacy.public
+        : CommunityPrivacy.private;
+    final existingCategoryIds =
+        (existing.categories ?? []).map((e) => e?.categoryId).toSet();
+    final currentCategoryIds = state.communityCategories
+        .map((e) => e.category?.categoryId)
+        .toSet();
+
+    return state.communityName != (existing.displayName ?? '') ||
+        state.communityDescription != (existing.description ?? '') ||
+        state.communityPrivacy != existingPrivacy ||
+        !existingCategoryIds.containsAll(currentCategoryIds) ||
+        !currentCategoryIds.containsAll(existingCategoryIds);
+  }
+
+  void _backAction(BuildContext context, CommunitySetupPageState state) {
+    // Nothing to discard -- close immediately, matching native.
+    if (!_hasUnsavedChanges(state)) {
+      Navigator.pop(context);
+      return;
+    }
     ConfirmationV4Dialog().show(
         context: context,
         title: context.l10n.community_discard_confirmation,

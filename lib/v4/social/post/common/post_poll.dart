@@ -334,6 +334,7 @@ class PollOptions extends StatelessWidget {
               final isSelected = selectedIndices.contains(index);
 
               return GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: canVote
                     ? () {
                         final newIndices = List<int>.from(selectedIndices);
@@ -347,7 +348,7 @@ class PollOptions extends StatelessWidget {
                         }
                         selectedIndicesNotifier.value = newIndices;
                       }
-                    : null, // Disable interaction if `canVote` is false
+                    : () {}, // Absorb tap so it doesn't bubble to post navigation
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 4),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -385,46 +386,22 @@ class PollOptions extends StatelessWidget {
                         ),
                       ),
                       if (poll.answerType == AmityPollAnswerType.SINGLE)
-                        Radio(
-                          visualDensity: const VisualDensity(
-                              horizontal: VisualDensity.minimumDensity,
-                              vertical: VisualDensity.minimumDensity),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          value: index,
-                          groupValue: selectedIndices.isNotEmpty
-                              ? selectedIndices.first
-                              : null,
-                          onChanged: canVote
-                              ? (_) {
-                                  final newIndices = [index];
-                                  selectedIndicesNotifier.value = newIndices;
-                                }
-                              : null, // Disable if `canVote` is false
-                          activeColor: theme.primaryColor,
+                        // Custom single-choice indicator to match the design:
+                        // a filled circle with a white center dot when selected
+                        // and a grey ring when unselected. Tap handling is
+                        // provided by the surrounding GestureDetector.
+                        AmityRadio(
+                          isSelected: isSelected,
+                          theme: theme,
                         ),
                       if (poll.answerType == AmityPollAnswerType.MULTIPLE)
-                        Checkbox(
-                          visualDensity: const VisualDensity(
-                              horizontal: VisualDensity.minimumDensity,
-                              vertical: VisualDensity.minimumDensity),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          value: isSelected,
-                          onChanged: canVote
-                              ? (_) {
-                                  final newIndices =
-                                      List<int>.from(selectedIndices);
-                                  isSelected
-                                      ? newIndices.remove(index)
-                                      : newIndices.add(index);
-                                  selectedIndicesNotifier.value = newIndices;
-                                }
-                              : null, // Disable if `canVote` is false
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          activeColor: theme.primaryColor,
+                        // Custom multi-choice indicator to match the design:
+                        // a filled circle with a white check when selected and
+                        // a grey ring when unselected. Tap handling is provided
+                        // by the surrounding GestureDetector.
+                        AmityCheckbox(
+                          isSelected: isSelected,
+                          theme: theme,
                         ),
                     ],
                   ),
@@ -460,6 +437,99 @@ class PollOptions extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Custom circular checkbox indicator.
+///
+/// Replaces Flutter's Material [Checkbox] so the selected state matches the
+/// design: a solid [AmityThemeColor.primaryColor] circle with a white check,
+/// and an unselected grey ring. Display-only — the caller is responsible for
+/// toggling selection (e.g. via a surrounding `GestureDetector`).
+class AmityCheckbox extends StatelessWidget {
+  final bool isSelected;
+  final AmityThemeColor theme;
+
+  const AmityCheckbox({
+    Key? key,
+    required this.isSelected,
+    required this.theme,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isSelected ? theme.primaryColor : Colors.transparent,
+        border: isSelected
+            ? null
+            : Border.all(
+                color: theme.baseColorShade3,
+                width: 2,
+              ),
+      ),
+      child: isSelected
+          ? const Center(
+              child: Icon(
+                Icons.check,
+                size: 14,
+                color: Colors.white,
+              ),
+            )
+          : null,
+    );
+  }
+}
+
+/// Custom circular radio indicator.
+///
+/// Replaces Flutter's Material [Radio] so the selected state matches the
+/// design: a solid [AmityThemeColor.primaryColor] circle with a white center
+/// dot, and an unselected grey ring. Display-only — the caller is responsible
+/// for updating selection (e.g. via a surrounding `GestureDetector`).
+class AmityRadio extends StatelessWidget {
+  final bool isSelected;
+  final AmityThemeColor theme;
+
+  const AmityRadio({
+    Key? key,
+    required this.isSelected,
+    required this.theme,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isSelected ? theme.primaryColor : Colors.transparent,
+        border: isSelected
+            ? null
+            : Border.all(
+                color: theme.baseColorShade3,
+                width: 2,
+              ),
+      ),
+      child: isSelected
+          ? const Center(
+              child: SizedBox(
+                width: 8,
+                height: 8,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 }

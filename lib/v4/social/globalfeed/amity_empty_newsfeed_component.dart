@@ -1,7 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/social/community/community_creation/community_setup_page.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/social_home_page/bloc/social_home_event.dart';
-import 'package:amity_uikit_beta_service/view/UIKit/social/create_community_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -129,7 +129,7 @@ class AmityEmptyNewsFeedComponent extends NewBaseComponent {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
-                                  const CreateCommunityPage()));
+                                  AmityCommunitySetupPage(mode: const CreateMode())));
                         },
                         child: Container(
                           width: 220,

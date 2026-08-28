@@ -6,6 +6,10 @@ import 'package:amity_uikit_beta_service/v4/social/post/common/post_reaction_but
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:amity_uikit_beta_service/v4/social/post/common/post_membership.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
+import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostItemBottom extends NewBaseComponent {
   final AmityPost post;
@@ -13,6 +17,7 @@ class PostItemBottom extends NewBaseComponent {
   final bool isReacting;
   final bool hideReactionCount;
   final bool isOptimisticUi;
+  final VoidCallback? onCommentTap;
 
   PostItemBottom({
     Key? key,
@@ -23,6 +28,7 @@ class PostItemBottom extends NewBaseComponent {
     String? pageId,
     required String componentId,
     required this.isOptimisticUi,
+    this.onCommentTap,
   }) : super(key: key, pageId: pageId, componentId: componentId);
 
   @override
@@ -61,6 +67,21 @@ class PostItemBottom extends NewBaseComponent {
   }
 
   Widget getCommentButton(BuildContext context, bool hideCommentCount) {
+    return GestureDetector(
+      onTap: () {
+        if (isNonMemberCommunityPost(post)) {
+          context.read<AmityToastBloc>().add(AmityToastShort(
+              message: context.l10n.post_join_community_to_interact,
+              icon: AmityToastIcon.warning));
+          return;
+        }
+        onCommentTap?.call();
+      },
+      child: _commentButtonContent(context, hideCommentCount),
+    );
+  }
+
+  Widget _commentButtonContent(BuildContext context, bool hideCommentCount) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,

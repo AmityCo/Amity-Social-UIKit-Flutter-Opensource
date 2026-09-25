@@ -9,7 +9,7 @@ import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_compos
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/channel_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
@@ -95,40 +95,26 @@ class AmityGroupChatPage extends NewBasePage {
 
                   final newMessage = state.newMessage;
                   return Scaffold(
+                    // Same as the 1-1 chat page: the keyboard strip is the
+                    // Scaffold's, so without this it shows Material's white
+                    // scaffold colour behind the keyboard's rounded corners.
+                    backgroundColor:
+                        token(AmityColorToken.surfacePageBackgroundDefault),
                     appBar: AppBar(
                       titleSpacing: -5,
-                      surfaceTintColor: theme.backgroundColor,
+                      surfaceTintColor: token(AmityColorToken.surfacePageBackgroundDefault),
                       leading: IconButton(
                         icon: SvgPicture.asset(
                           "assets/Icons/amity_ic_back_button.svg",
                           package: 'amity_uikit_beta_service',
-                          color: theme.baseColor,
+                          color: token(AmityColorToken.iconIconButtonGhostSecondaryDefault),
                         ),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
                       title: GestureDetector(
-                        onTap: () async {
-                          final channel = state.channel;
-                          if (channel != null) {
-                            final updatedChannel = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AmityGroupSettingPage(
-                                  channel: channel,
-                                  isModerator: state.isModerator,
-                                ),
-                              ),
-                            );
-
-                            if (updatedChannel is AmityChannel) {
-                              context.read<AmityGroupChatPageBloc>().add(
-                                  GroupChatPageHeaderEventChanged(
-                                      channel: updatedChannel));
-                            }
-                          }
-                        },
+                        onTap: () => _openGroupSettings(context, state),
                         child: Row(
                           children: [
                             AmityChannelAvatar.withChannel(
@@ -141,8 +127,10 @@ class AmityGroupChatPage extends NewBasePage {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(state.channelDisplayName ?? "",
-                                      style: AmityTextStyle.titleBold(
-                                          theme.baseColor)),
+                                      style: AmityTextStyle.custom(
+                                          15,
+                                          FontWeight.w700,
+                                          token(AmityColorToken.textListHeaderDefaultDefault))),
                                   Visibility(
                                     visible: !state.isConnected,
                                     child: Row(
@@ -157,7 +145,7 @@ class AmityGroupChatPage extends NewBasePage {
                                           context.l10n.chat_waiting_for_network,
                                           style: TextStyle(
                                             fontSize: 13,
-                                            color: theme.baseColorShade1,
+                                            color: token(AmityColorToken.textListTextDescriptionDefaultDefault),
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
@@ -171,18 +159,33 @@ class AmityGroupChatPage extends NewBasePage {
                           ],
                         ),
                       ),
-                      backgroundColor: theme.backgroundColor,
+                      actions: [
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/Icons/amity_ic_three_dot_vertical.svg',
+                            package: 'amity_uikit_beta_service',
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(
+                                token(AmityColorToken
+                                    .iconIconButtonGhostSecondaryDefault),
+                                BlendMode.srcIn),
+                          ),
+                          onPressed: () => _openGroupSettings(context, state),
+                        ),
+                      ],
+                      backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                       elevation: 0,
                       bottom: PreferredSize(
                         preferredSize: const Size.fromHeight(0),
                         child: Container(
                           height: 1,
-                          color: theme.baseColorShade4,
+                          color: token(AmityColorToken.lineDividerPostDefault),
                         ),
                       ),
                     ),
                     body: Container(
-                      color: theme.backgroundColor,
+                      color: token(AmityColorToken.surfacePageBackgroundDefault),
                       child: Column(
                         children: [
                           Visibility(
@@ -300,7 +303,7 @@ class AmityGroupChatPage extends NewBasePage {
                                                 horizontal: 8.0,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: theme.backgroundColor,
+                                                color: token(AmityColorToken.surfaceDateAndTimeDateSeparatorDefault),
                                                 borderRadius:
                                                     BorderRadius.circular(16),
                                                 boxShadow: [
@@ -316,7 +319,7 @@ class AmityGroupChatPage extends NewBasePage {
                                                 item.date ?? "",
                                                 style: TextStyle(
                                                     color:
-                                                        theme.baseColorShade1,
+                                                        token(AmityColorToken.textListTextDescriptionDefaultDefault),
                                                     fontWeight: FontWeight.w400,
                                                     fontSize: 13),
                                               ),
@@ -350,6 +353,27 @@ class AmityGroupChatPage extends NewBasePage {
         ],
       ),
     );
+  }
+
+  Future<void> _openGroupSettings(
+      BuildContext context, GroupChatPageState state) async {
+    final channel = state.channel;
+    if (channel == null) return;
+
+    final bloc = context.read<AmityGroupChatPageBloc>();
+    final updatedChannel = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AmityGroupSettingPage(
+          channel: channel,
+          isModerator: state.isModerator,
+        ),
+      ),
+    );
+
+    if (updatedChannel is AmityChannel) {
+      bloc.add(GroupChatPageHeaderEventChanged(channel: updatedChannel));
+    }
   }
 
   Widget _buildMessageComposer(BuildContext context, GroupChatPageState state) {
@@ -415,12 +439,12 @@ class AmityGroupChatPage extends NewBasePage {
           padding:
               const EdgeInsets.only(bottom: 12, top: 12, left: 16, right: 16),
           decoration: BoxDecoration(
-            color: theme.backgroundShade1Color,
+            color: token(AmityColorToken.surfaceBannerSubdueGeneral),
           ),
           child: Center(
             child: Text(
               message,
-              style: AmityTextStyle.caption(theme.baseColorShade1),
+              style: AmityTextStyle.caption(token(AmityColorToken.textListTextDescriptionDefaultDefault)),
               textAlign: TextAlign.center,
             ),
           ),

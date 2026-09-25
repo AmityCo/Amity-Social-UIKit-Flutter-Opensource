@@ -20,13 +20,13 @@ extension ImageMessageWidget on MessageBubbleView {
           if (isUser &&
               message.createdAt != null &&
               message.syncState == AmityMessageSyncState.SYNCED) ...[
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
             const SizedBox(width: 8),
           ],
           if (isUser &&
               message.syncState != AmityMessageSyncState.SYNCED &&
               message.syncState != AmityMessageSyncState.FAILED) ...[
-            _buildSideTextWidget(context.l10n.message_sending),
+            _buildSideTextWidget(context, context.l10n.message_sending),
             const SizedBox(width: 8),
           ],
           if (!isUser) ...[
@@ -42,16 +42,7 @@ extension ImageMessageWidget on MessageBubbleView {
                   onTap: () {
                     _showActionSheet(context);
                   },
-                  child: SvgPicture.asset(
-                    'assets/Icons/amity_ic_error_message.svg',
-                    package: 'amity_uikit_beta_service',
-                    width: 16,
-                    height: 16,
-                    colorFilter: ColorFilter.mode(
-                      theme.baseColorShade2,
-                      BlendMode.srcIn,
-                    ),
-                  ),
+                  child: const AmityMessageErrorBadge(),
                 ),
               ),
             ),
@@ -99,14 +90,14 @@ extension ImageMessageWidget on MessageBubbleView {
               ),
               if (message.syncState != AmityMessageSyncState.SYNCED &&
                   message.syncState != AmityMessageSyncState.FAILED)
-                _buildUploadingIndicator(),
+                _buildUploadingIndicator(context),
               if (message.syncState == AmityMessageSyncState.UPLOADING)
                 _buildCancelDownloadButton(),
             ],
           ),
           if (!isUser && message.createdAt != null) ...[
             const SizedBox(width: 8),
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
           ],
         ],
       ),
@@ -125,7 +116,6 @@ extension ImageMessageWidget on MessageBubbleView {
     Color initialColor = isUser
         ? messageColor.rightBubbleDefault
         : messageColor.leftBubbleDefault;
-    bool onLongPress = false;
 
     return StatefulBuilder(
       builder: (context, setState) {
@@ -139,7 +129,6 @@ extension ImageMessageWidget on MessageBubbleView {
             }
             HapticFeedback.heavyImpact();
             setState(() {
-              onLongPress = true;
               initialColor = isUser
                   ? messageColor.rightBubblePressed
                   : messageColor.leftBubblePressed;
@@ -169,7 +158,6 @@ extension ImageMessageWidget on MessageBubbleView {
                 message, state, reactions);
 
             setState(() {
-              onLongPress = false;
               initialColor = isUser
                   ? messageColor.rightBubbleDefault
                   : messageColor.leftBubbleDefault;
@@ -225,8 +213,6 @@ extension ImageMessageWidget on MessageBubbleView {
                     child: Stack(
                       children: [
                         snapshot.data!.image,
-                        if (shouldShowOverlay || onLongPress)
-                          _buildMediaOverlay(),
                       ],
                     ),
                   ),
@@ -270,8 +256,6 @@ extension ImageMessageWidget on MessageBubbleView {
                     child: Stack(
                       children: [
                         locaImage,
-                        if (shouldShowOverlay || onLongPress)
-                          _buildMediaOverlay(),
                       ],
                     ),
                   ),
@@ -288,7 +272,7 @@ extension ImageMessageWidget on MessageBubbleView {
                     240,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: theme.baseColorShade4,
+                  color: context.amityToken(AmityColorToken.lineDividerContentDefault),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -296,8 +280,11 @@ extension ImageMessageWidget on MessageBubbleView {
                   width: 40,
                   height: 40,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
-                    backgroundColor: Colors.white.withOpacity(0.8),
+                    color: context.amityToken(
+                        AmityColorToken.iconLoadersUploadControllerDefault),
+                    backgroundColor: context.amityToken(
+                            AmityColorToken.iconLoadersUploadControllerDefault)
+                        .withOpacity(0.8),
                     strokeWidth: 2,
                   ),
                 ),

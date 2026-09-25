@@ -1,6 +1,9 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_banner.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
@@ -74,7 +77,7 @@ class MessageReportView extends StatelessWidget {
     }
   }
 
-  Widget _buildReportReasonItem(AmityContentFlagReason reason,
+  Widget _buildReportReasonItem(BuildContext context, AmityContentFlagReason reason,
       AmityContentFlagReason? selectedReason, AmityMessageReportCubit cubit) {
     final isSelected = selectedReason == reason;
     final isOthersOption = reason.type == AmityContentFlagReasonType.OTHERS;
@@ -90,51 +93,63 @@ class MessageReportView extends StatelessWidget {
           cubit.selectReason(reason);
         }
       },
+      // List atom row as Android's AmityMessageReportPage draws it: 52 tall,
+      // 16 side inset, SemiBold 15 label on Text/List/Header/Default/Default.
+      // The Selection stays in the trailing slot per the
+      // AmityChatContentReportPage spec (Android puts it leading — its own
+      // deviation from the Figma, not copied here).
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: [
             Expanded(
               child: Text(
                 reason.description,
-                style: AmityTextStyle.body(theme.baseColor),
+                style: AmityTextStyle.bodyBold(context
+                    .amityToken(AmityColorToken.textListHeaderDefaultDefault)),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             if (isOthersOption)
               SvgPicture.asset(
                 'assets/Icons/amity_ic_right_arrow_no_body.svg',
                 package: 'amity_uikit_beta_service',
-                width: 20,
-                height: 20,
+                width: 24,
+                height: 24,
                 colorFilter: ColorFilter.mode(
-                  theme.baseColorShade1,
+                  context.amityToken(AmityColorToken.iconListLeadingDefaultDefault),
                   BlendMode.srcIn,
                 ),
               )
             else
-              // Radio button for other options
+              // Selection atom, radio: 20 circle, 2 ring, 8 dot.
               Container(
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        isSelected ? theme.primaryColor : theme.baseColorShade3,
-                    width: 2,
-                  ),
-                  color: isSelected ? theme.primaryColor : Colors.transparent,
+                  border: isSelected
+                      ? null
+                      : Border.all(
+                          color: context.amityToken(AmityColorToken
+                              .borderSelectionRadioAtomicInactiveDefault),
+                          width: 2,
+                        ),
+                  color: context.amityToken(isSelected
+                      ? AmityColorToken.surfaceSelectionRadioAtomicActiveDefault
+                      : AmityColorToken.surfaceSelectionRadioAtomicInactiveDefault),
                 ),
                 child: isSelected
                     ? Center(
                         child: Container(
                           width: 8,
                           height: 8,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white,
+                            color: context.amityToken(
+                                AmityColorToken.iconSelectionRadioAtomicDefault),
                           ),
                         ),
                       )
@@ -155,20 +170,28 @@ class MessageReportView extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<AmityMessageReportCubit>();
 
-          return Container(
+          // The reason list is Expanded so the Submit footer pins to the
+          // bottom edge, which needs a bounded height from the presenter (see
+          // message_popup.dart). Fail loudly rather than with a RenderFlex
+          // trace if a new caller forgets.
+          return LayoutBuilder(builder: (context, constraints) {
+            assert(constraints.hasBoundedHeight,
+                'AmityMessageReportComponent must be given a bounded height '
+                '(e.g. SizedBox.expand in a full-height modal sheet).');
+            return Container(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).padding.bottom + 16,
               top: 16,
             ),
             decoration: BoxDecoration(
-              color: theme.backgroundColor,
+              color: context.amityToken(AmityColorToken.surfaceSheetsBackgroundGeneral),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 // Handle bar
                 Container(
@@ -179,7 +202,7 @@ class MessageReportView extends StatelessWidget {
                     right: 16,
                   ),
                   decoration: ShapeDecoration(
-                    color: theme.baseColorShade3,
+                    color: context.amityToken(AmityColorToken.textSheetsHeaderTextDescriptionDefault),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -187,71 +210,43 @@ class MessageReportView extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Header
-                Container(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          'Report reason',
-                          style: AmityTextStyle.titleBold(theme.baseColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          if (onCancel != null) {
-                            onCancel!();
-                          }
-                        },
-                        child: SvgPicture.asset(
-                          'assets/Icons/amity_ic_close_button.svg',
-                          package: 'amity_uikit_beta_service',
-                          width: 24,
-                          height: 24,
-                          colorFilter: ColorFilter.mode(
-                            theme.baseColor,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                    ],
+                // Sheet header: title only. The spec sets L Action = R Action =
+                // None (the sheet dismisses by handle / back), which is also
+                // the Figma; Android's back chevron exists because it is a page.
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    context.l10n.chat_report_title,
+                    style: AmityTextStyle.titleBold(context
+                        .amityToken(AmityColorToken.textSheetsHeaderTitleDefault)),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 13),
-                Container(height: 1, color: theme.baseColorShade4),
-                const SizedBox(height: 12),
+                Container(
+                    height: 1,
+                    color: context.amityToken(AmityColorToken.lineDividerPostDefault)),
 
-                // Description
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                  ),
-                  child: Text(
-                    'Tell us why you\'re reporting this message. Your report will be reviewed by our moderators and kept confidential.',
-                    style: AmityTextStyle.caption(theme.baseColorShade1),
-                    textAlign: TextAlign.start,
-                  ),
+                // Description as the Banner atom (Default hierarchy), as on Android.
+                AmityBanner(
+                  hierarchy: AmityBannerHierarchy.defaultHierarchy,
+                  description: context.l10n.chat_report_description,
                 ),
-                const SizedBox(height: 12),
 
-                // Report reasons list
-                Flexible(
+                // Report reasons list. Expanded (not Flexible) so the list
+                // absorbs the sheet's spare height and the divider + Submit
+                // below it stay pinned to the bottom edge, as on Android.
+                Expanded(
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
                         // Existing report reason items
                         ...reasonMap.values.map((reason) {
-                          return _buildReportReasonItem(
-                              reason, state.selectedReason, cubit);
+                          return _buildReportReasonItem(context, reason,
+                              state.selectedReason, cubit);
                         }).toList(),
                         _buildReportReasonItem(
+                            context,
                             AmityContentFlagReason.others(''),
                             state.selectedReason,
                             cubit),
@@ -259,10 +254,13 @@ class MessageReportView extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(height: 1, color: theme.baseColorShade4),
+                Container(
+                    height: 1,
+                    color: context.amityToken(AmityColorToken.lineDividerPostDefault)),
 
                 Container(
                   width: double.infinity,
+                  height: 40 + 32, // MainButton Lg (40) inside the 16 footer inset
                   padding: const EdgeInsets.all(16.0),
                   child: ElevatedButton(
                     onPressed: state.selectedReason != null
@@ -288,25 +286,30 @@ class MessageReportView extends StatelessWidget {
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: state.selectedReason != null
-                          ? theme.primaryColor
-                          : theme.primaryColor
-                              .blend(ColorBlendingOption.shade2),
+                          ? context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryEnabled)
+                          : context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryDisabled),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       disabledBackgroundColor:
-                          theme.primaryColor.blend(ColorBlendingOption.shade2),
+                          context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryDisabled),
                     ),
                     child: Text(
-                      'Submit',
-                      style: AmityTextStyle.bodyBold(Colors.white),
+                      context.l10n.chat_report_submit,
+                      style: AmityTextStyle.bodyBold(context.amityToken(
+                          state.selectedReason != null
+                              ? AmityColorToken
+                                  .textMainButtonDefaultFilledPrimaryEnabled
+                              : AmityColorToken
+                                  .textMainButtonDefaultFilledPrimaryDisabled)),
                     ),
                   ),
                 ),
               ],
             ),
           );
+          });
         },
       ),
     );

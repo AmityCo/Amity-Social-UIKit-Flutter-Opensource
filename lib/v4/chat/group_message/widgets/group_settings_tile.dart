@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 
 class GroupSettingsTile extends StatelessWidget {
   final String title;
@@ -33,17 +35,17 @@ class GroupSettingsTile extends StatelessWidget {
           children: [
             // Leading icon
             Container(
-              width: 24,
-              height: 24,
-              padding: const EdgeInsets.all(2),
+              width: 32,
+              height: 32,
+              padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: iconBackgroundColor ?? theme.baseColorShade4,
-                borderRadius: BorderRadius.circular(4),
+                color: iconBackgroundColor ?? context.amityToken(AmityColorToken.lineDividerContentDefault),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: SvgPicture.asset(
                 iconAsset,
                 package: 'amity_uikit_beta_service',
-                color: theme.baseColor,
+                color: context.amityToken(AmityColorToken.textListHeaderDefaultDefault),
               ),
             ),
 
@@ -53,7 +55,7 @@ class GroupSettingsTile extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: AmityTextStyle.body(theme.baseColor),
+                style: AmityTextStyle.body(context.amityToken(AmityColorToken.textListHeaderDefaultDefault)),
               ),
             ),
             const SizedBox(width: 8),
@@ -62,7 +64,7 @@ class GroupSettingsTile extends StatelessWidget {
             if (trailingText != null) ...[
               Text(
                 trailingText!,
-                style: AmityTextStyle.body(theme.baseColorShade1),
+                style: AmityTextStyle.body(context.amityToken(AmityColorToken.textListTrailingTextGeneral)),
               ),
               const SizedBox(width: 8),
             ],
@@ -73,9 +75,9 @@ class GroupSettingsTile extends StatelessWidget {
                   SvgPicture.asset(
                     'assets/Icons/amity_ic_seemore_arrow.svg',
                     package: 'amity_uikit_beta_service',
-                    color: theme.baseColorShade1,
-                    width: 16,
-                    height: 16,
+                    color: context.amityToken(AmityColorToken.iconListLeadingDefaultDefault),
+                    width: 24,
+                    height: 24,
                   ),
             ),
           ],

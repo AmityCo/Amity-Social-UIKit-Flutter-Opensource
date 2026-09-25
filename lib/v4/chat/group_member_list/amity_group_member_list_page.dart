@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:equatable/equatable.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 
 part 'amity_group_member_list_state.dart';
 part 'amity_group_member_list_cubit.dart';
@@ -64,15 +65,15 @@ class AmityGroupMemberListPage extends NewBasePage {
                 });
 
                 return Scaffold(
-                  backgroundColor: theme.backgroundColor,
+                  backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                   appBar: AppBar(
-                    backgroundColor: theme.backgroundColor,
+                    backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                     title: Text(
                       context.l10n.community_all_members,
-                      style: AmityTextStyle.titleBold(theme.baseColor),
+                      style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                     ),
                     leading: IconButton(
-                      icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
+                      icon: Icon(Icons.arrow_back_ios, color: token(AmityColorToken.textListHeaderDefaultDefault)),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -89,7 +90,7 @@ class AmityGroupMemberListPage extends NewBasePage {
                                     "assets/Icons/amity_ic_post_creation_button.svg",
                                     package: 'amity_uikit_beta_service',
                                     colorFilter: ColorFilter.mode(
-                                      theme.baseColor,
+                                      token(AmityColorToken.textListHeaderDefaultDefault),
                                       BlendMode.srcIn,
                                     ),
                                   ),
@@ -101,27 +102,39 @@ class AmityGroupMemberListPage extends NewBasePage {
                   ),
                   body: Column(
                     children: [
-                      TabBar(
-                        isScrollable: true,
-                        tabAlignment: TabAlignment.start,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        labelColor: theme.primaryColor,
-                        labelStyle: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
+                      SizedBox(
+                        height: 56,
+                        child: TabBar(
+                          isScrollable: true,
+                          tabAlignment: TabAlignment.start,
+                          indicatorSize: TabBarIndicatorSize.label,
+                          // 6 + 10 label padding puts the first tab at the
+                          // 16 pt container inset, and leaves a 20 pt gap.
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          labelPadding:
+                              const EdgeInsets.symmetric(horizontal: 10),
+                          labelColor:
+                              token(AmityColorToken.textTabUnderlinedActive),
+                          labelStyle: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          unselectedLabelColor:
+                              token(AmityColorToken.textTabUnderlinedDefault),
+                          unselectedLabelStyle: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          indicatorColor:
+                              token(AmityColorToken.lineTabUnderlinedActive),
+                          dividerColor:
+                              token(AmityColorToken.lineDividerPostDefault),
+                          dividerHeight: 1.0,
+                          tabs: [
+                            Tab(text: context.l10n.community_members),
+                            Tab(text: context.l10n.community_moderators),
+                          ],
                         ),
-                        unselectedLabelColor: theme.baseColorShade2,
-                        unselectedLabelStyle: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        indicatorColor: theme.primaryColor,
-                        dividerColor: theme.baseColorShade4,
-                        dividerHeight: 1.0,
-                        tabs: [
-                          Tab(text: context.l10n.community_members),
-                          Tab(text: context.l10n.community_moderators),
-                        ],
                       ),
                       Expanded(
                         child: TabBarView(
@@ -186,18 +199,18 @@ class AmityGroupMemberListPage extends NewBasePage {
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            'assets/Icons/amity_ic_search_not_found.svg',
+            'assets/Icons/amity_ic_search_cross_l.svg',
             package: 'amity_uikit_beta_service',
             colorFilter:
-                ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
-            width: 47,
-            height: 47,
+                ColorFilter.mode(token(AmityColorToken.iconEmptyStateIconDefault), BlendMode.srcIn),
+            width: 64,
+            height: 64,
           ),
           const SizedBox(height: 10),
           Text(
             context.l10n.search_no_members_found,
             style: TextStyle(
-              color: theme.baseColorShade3,
+              color: token(AmityColorToken.textBaseSubdue),
               fontWeight: FontWeight.w600,
               fontSize: 17,
             ),
@@ -309,7 +322,7 @@ class AmityGroupMemberListPage extends NewBasePage {
       title: context.l10n.moderator_promotion_title,
       detailText: context.l10n.moderator_promotion_description,
       leftButtonText: context.l10n.general_cancel,
-      leftButtonColor: theme.primaryColor,
+      leftButtonColor: token(AmityColorToken.textBaseHighlight),
       rightButtonText: context.l10n.moderator_promote_button,
       onConfirm: () {
         cubit.addModerator(
@@ -347,7 +360,7 @@ class AmityGroupMemberListPage extends NewBasePage {
       detailText: context.l10n.member_removal_confirm_description,
       leftButtonText: context.l10n.general_cancel,
       rightButtonText: context.l10n.member_remove_button,
-      leftButtonColor: theme.alertColor,
+      leftButtonColor: token(AmityColorToken.textBaseAlert),
       onConfirm: () {
         cubit.removeMember(
           user.userId!,
@@ -410,7 +423,7 @@ class AmityGroupMemberListPage extends NewBasePage {
           "Are you sure you want to mute this user? They will no longer be able to send or react to messages.",
       leftButtonText: 'Cancel',
       rightButtonText: 'Mute',
-      leftButtonColor: theme.alertColor,
+      leftButtonColor: token(AmityColorToken.textBaseAlert),
       onConfirm: () {
         cubit.toggleMuteUser(
           user.userId!,

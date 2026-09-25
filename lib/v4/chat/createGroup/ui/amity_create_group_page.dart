@@ -1,7 +1,9 @@
 import 'package:amity_uikit_beta_service/v4/chat/group_message/amity_group_chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_banner.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
@@ -32,9 +34,9 @@ class AmityCreateGroupChatPage extends NewBasePage {
   }) : super(key: key, pageId: 'create_group_chat_page');
 
   final TextEditingController _groupNameController = TextEditingController();
-  // Define ValueNotifier for selected privacy option
-  final ValueNotifier<String> _selectedNotifier =
-      ValueNotifier<String>('Public');
+  // Privacy selection is keyed on the value, not the label: the labels are
+  // localized, so a title-keyed state never matches outside English.
+  final ValueNotifier<bool> _isPublicNotifier = ValueNotifier<bool>(true);
   final ScrollController _selectedUsersController = ScrollController();
   // Add state variable for selected image
   final ValueNotifier<String?> _selectedImagePath =
@@ -92,11 +94,14 @@ class AmityCreateGroupChatPage extends NewBasePage {
         },
         builder: (context, state) {
           return Scaffold(
+            // Without this the area below the member grid falls back to
+            // Material's light scaffold colour on a dark page.
+            backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
             appBar: AppBar(
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
               title: Text(
                 context.l10n.chat_create_title,
-                style: AmityTextStyle.titleBold(theme.baseColor),
+                style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
               ),
               automaticallyImplyLeading: false, // Remove default back button
 
@@ -106,6 +111,9 @@ class AmityCreateGroupChatPage extends NewBasePage {
                   package: 'amity_uikit_beta_service',
                   width: 24,
                   height: 24,
+                  colorFilter: ColorFilter.mode(
+                      token(AmityColorToken.iconIconButtonGhostSecondaryDefault),
+                      BlendMode.srcIn),
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -116,7 +124,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                   onPressed: () async {
                     // Call create group function
                     final cubit = context.read<AmityCreateGroupCubit>();
-                    final isPublic = _selectedNotifier.value == context.l10n.chat_privacy_public;
+                    final isPublic = _isPublicNotifier.value;
 
                     // Get the image path from the notifier
                     final imagePath = _selectedImagePath.value;
@@ -146,13 +154,14 @@ class AmityCreateGroupChatPage extends NewBasePage {
                   },
                   child: Text(
                     context.l10n.chat_create_button,
-                    style: AmityTextStyle.body(theme.primaryColor),
+                    style: AmityTextStyle.body(token(
+                        AmityColorToken.textMainButtonDefaultGhostPrimaryEnabled)),
                   ),
                 ),
               ],
             ),
             body: Container(
-              color: theme.backgroundColor,
+              color: token(AmityColorToken.surfacePageBackgroundDefault),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,8 +190,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                               width: 120,
                                               height: 120,
                                               decoration: BoxDecoration(
-                                                color: theme.primaryColor.blend(
-                                                    ColorBlendingOption.shade2),
+                                                color: token(AmityColorToken.surfaceAvatarProfileDefault),
                                                 borderRadius:
                                                     BorderRadius.circular(24),
                                                 image: imagePath != null
@@ -199,8 +207,10 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                                         'assets/Icons/amity_ic_group_chat_avatar_placeholder.svg',
                                                         package:
                                                             'amity_uikit_beta_service',
-                                                        width: 40,
-                                                        height: 40,
+                                                        width: 64,
+                                                        height: 64,
+                                                        color: token(AmityColorToken
+                                                            .iconAvatarDefault),
                                                       ),
                                                     )
                                                   : null,
@@ -210,19 +220,20 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                               width: 120,
                                               height: 120,
                                               decoration: BoxDecoration(
-                                                color: Colors.black
-                                                    .withOpacity(0.3),
+                                                color: token(AmityColorToken
+                                                    .surfaceMediaOverlayTransparentBlack),
                                                 borderRadius:
                                                     BorderRadius.circular(24),
                                               ),
                                               child: Center(
                                                 child: SvgPicture.asset(
-                                                  'assets/Icons/amity_ic_camera.svg',
+                                                  'assets/Icons/amity_ic_camera_r.svg',
                                                   package:
                                                       'amity_uikit_beta_service',
-                                                  width: 32,
-                                                  height: 28,
-                                                  color: Colors.white,
+                                                  width: 64,
+                                                  height: 64,
+                                                  color: token(AmityColorToken
+                                                      .iconAvatarDefault),
                                                 ),
                                               ),
                                             ),
@@ -249,12 +260,13 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                         TextSpan(
                                           text: context.l10n.chat_group_name_label,
                                           style: AmityTextStyle.titleBold(
-                                              theme.baseColor),
+                                              token(AmityColorToken.textListHeaderDefaultDefault)),
                                         ),
                                         TextSpan(
                                           text: ' ${context.l10n.chat_group_name_optional}',
-                                          style: AmityTextStyle.caption(
-                                              theme.baseColorShade3),
+                                          style: AmityTextStyle.caption(token(
+                                              AmityColorToken
+                                                  .textInputTextInputIndicatorDefault)),
                                         ),
                                       ],
                                     ),
@@ -267,7 +279,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                         style: AmityTextStyle.caption(
                                           count > 100
                                               ? Colors.red
-                                              : theme.baseColorShade1,
+                                              : token(AmityColorToken.textListTextDescriptionDefaultDefault),
                                         ),
                                       );
                                     },
@@ -277,27 +289,33 @@ class AmityCreateGroupChatPage extends NewBasePage {
                               const SizedBox(height: 4),
                               TextField(
                                 controller: _groupNameController,
+                                keyboardAppearance: context.amityBrightness,
                                 decoration: InputDecoration(
                                   hintText: context.l10n.chat_group_name_placeholder,
-                                  hintStyle: AmityTextStyle.body(
-                                      theme.baseColorShade3),
+                                  hintStyle: AmityTextStyle.body(token(
+                                      AmityColorToken
+                                          .textInputTextInputPlaceholderEnabled)),
                                   contentPadding: EdgeInsets.only(bottom: 8),
                                   border: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.grey.shade300),
+                                    borderSide: BorderSide(
+                                        color: token(AmityColorToken
+                                            .lineInputTextInputUnderlinedDefault)),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.grey.shade300),
+                                    borderSide: BorderSide(
+                                        color: token(AmityColorToken
+                                            .lineInputTextInputUnderlinedDefault)),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: theme.primaryColor),
+                                        BorderSide(
+                                        color: token(AmityColorToken
+                                            .lineInputTextInputUnderlinedDefault)),
                                   ),
                                   counterText: '', // Hide the default counter
                                 ),
                                 maxLength: 100, // Still enforce the limit
-                                style: AmityTextStyle.body(theme.baseColor),
+                                style: AmityTextStyle.body(token(AmityColorToken.textListHeaderDefaultDefault)),
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
                                 textInputAction: TextInputAction.newline,
@@ -313,26 +331,28 @@ class AmityCreateGroupChatPage extends NewBasePage {
                           const SizedBox(height: 24),
 
                           Text(context.l10n.settings_privacy,
-                              style: AmityTextStyle.titleBold(theme.baseColor)),
+                              style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault))),
                           const SizedBox(height: 4),
-                          ValueListenableBuilder<String>(
-                              valueListenable: _selectedNotifier,
-                              builder: (context, selected, _) {
+                          ValueListenableBuilder<bool>(
+                              valueListenable: _isPublicNotifier,
+                              builder: (context, isPublic, _) {
                                 return Column(
                                   children: [
                                     _buildOption(
                                       title: context.l10n.chat_privacy_public,
                                       description: context.l10n.chat_privacy_public_desc,
                                       iconPath:
-                                          'assets/Icons/amity_ic_create_group_public_button.svg',
-                                      selected: selected,
+                                          'assets/Icons/amity_ic_earth_africa_s.svg',
+                                      value: true,
+                                      selected: isPublic,
                                     ),
                                     _buildOption(
                                       title: context.l10n.chat_privacy_private,
                                       description: context.l10n.chat_privacy_private_desc,
                                       iconPath:
-                                          'assets/Icons/amity_ic_create_group_private_button.svg',
-                                      selected: selected,
+                                          'assets/Icons/amity_ic_lock_keyhole_r.svg',
+                                      value: false,
+                                      selected: isPublic,
                                     ),
                                   ],
                                 );
@@ -340,14 +360,8 @@ class AmityCreateGroupChatPage extends NewBasePage {
                         ],
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: theme.backgroundShade1Color,
-                      ),
-                      child: Text(
-                          context.l10n.chat_privacy_warning,
-                          style: AmityTextStyle.caption(theme.baseColorShade1)),
+                    AmityBanner(
+                      description: context.l10n.chat_privacy_warning,
                     ),
 
                     // Selected Users Grid List
@@ -362,7 +376,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                                   left: 16.0, top: 8.0, bottom: 4.0),
                               child: Text(context.l10n.chat_member_label,
                                   style: AmityTextStyle.titleBold(
-                                      theme.baseColor)),
+                                      token(AmityColorToken.textListHeaderDefaultDefault))),
                             ),
                             // Remove height constraint to allow all users to be visible
                             gridUserList(
@@ -419,24 +433,25 @@ class AmityCreateGroupChatPage extends NewBasePage {
     required String title,
     required String description,
     required String iconPath, // Changed from IconData to String for SVG path
-    required String selected,
+    required bool value,
+    required bool selected,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
       child: InkWell(
         onTap: () {
-          _selectedNotifier.value = title;
+          _isPublicNotifier.value = value;
         },
         borderRadius: BorderRadius.circular(8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Replace Icon with SVG with background
+            // Featured Icon: tinted 40 disc with a 24 glyph, same as Android.
             Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: theme.baseColorShade4,
+                color: token(AmityColorToken.surfaceFeaturedIconTinted),
                 borderRadius: BorderRadius.circular(90),
               ),
               child: Center(
@@ -445,6 +460,9 @@ class AmityCreateGroupChatPage extends NewBasePage {
                   package: 'amity_uikit_beta_service',
                   width: 24,
                   height: 24,
+                  colorFilter: ColorFilter.mode(
+                      token(AmityColorToken.iconFeaturedIconTinted),
+                      BlendMode.srcIn),
                 ),
               ),
             ),
@@ -453,23 +471,31 @@ class AmityCreateGroupChatPage extends NewBasePage {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AmityTextStyle.bodyBold(theme.baseColor)),
+                  Text(title, style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault))),
                   const SizedBox(height: 2),
                   Text(
                     description,
-                    style: AmityTextStyle.caption(theme.baseColorShade1),
+                    style: AmityTextStyle.caption(token(AmityColorToken.textListTextDescriptionDefaultDefault)),
                   ),
                 ],
               ),
             ),
             SizedBox(width: 12),
-            Radio<String>(
-              value: title,
+            Radio<bool>(
+              value: value,
               groupValue: selected,
-              activeColor: theme.primaryColor,
-              onChanged: (value) {
-                if (value != null) {
-                  _selectedNotifier.value = value;
+              // Material derives the unselected ring from the colour scheme,
+              // which UIKit never configures — bind both states explicitly.
+              fillColor: MaterialStateProperty.resolveWith(
+                (states) => states.contains(MaterialState.selected)
+                    ? token(AmityColorToken
+                        .surfaceSelectionRadioAtomicActiveDefault)
+                    : token(AmityColorToken
+                        .borderSelectionRadioAtomicInactiveDefault),
+              ),
+              onChanged: (selection) {
+                if (selection != null) {
+                  _isPublicNotifier.value = selection;
                 }
               },
             ),
@@ -511,7 +537,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
             topRight: Radius.circular(20),
           ),
         ),
-        backgroundColor: theme.backgroundColor,
+        backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
         builder: (_) {
           return SizedBox(
             height: 200,
@@ -530,7 +556,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
                         width: 36,
                         height: 4,
                         decoration: ShapeDecoration(
-                          color: theme.baseColorShade3,
+                          color: token(AmityColorToken.textBaseSubdue),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -579,7 +605,7 @@ class AmityCreateGroupChatPage extends NewBasePage {
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: theme.baseColor,
+            color: token(AmityColorToken.textListHeaderDefaultDefault),
           ),
         ),
       ),

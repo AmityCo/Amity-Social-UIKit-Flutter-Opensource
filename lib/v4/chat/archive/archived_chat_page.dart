@@ -7,6 +7,7 @@ import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 
 class AmityArchivedChatPage extends NewBasePage {
   AmityArchivedChatPage({super.key}) : super(pageId: 'archived_chat_page');
@@ -18,7 +19,7 @@ class AmityArchivedChatPage extends NewBasePage {
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: ArchivedChatPageNavigationBar(),
       ),
-      backgroundColor: theme.backgroundColor,
+      backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
       body: ArchivedChatListComponent(),
     );
   }
@@ -37,7 +38,8 @@ class ArchivedChatPageNavigationBar extends NewBaseComponent {
           return AppBar(
             automaticallyImplyLeading: false,
             titleSpacing: 4,
-            title: Text(context.l10n.chat_archived_title, style: AmityTextStyle.headline(theme.baseColor)),
+            title: Text(context.l10n.chat_archived_title, style: AmityTextStyle.titleBold(
+                    token(AmityColorToken.textSheetsHeaderTitleDefault))),
             centerTitle: true,
             leadingWidth: 65,
             leading: Padding(
@@ -46,14 +48,14 @@ class ArchivedChatPageNavigationBar extends NewBaseComponent {
                 icon: SvgPicture.asset(
                   "assets/Icons/amity_ic_back_button.svg",
                   package: 'amity_uikit_beta_service',
-                  color: theme.baseColor,
+                  color: token(AmityColorToken.iconIconButtonGhostSecondaryDefault),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
             ),
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
             elevation: 0,
             actions: const [],
             iconTheme: const IconThemeData(color: Colors.black),

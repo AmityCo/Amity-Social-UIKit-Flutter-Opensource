@@ -1,7 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -32,9 +32,24 @@ class AmityMessageAvatar extends BaseElement {
     Widget avatarWidget;
 
     if (isDeletedUser) {
-      avatarWidget = SvgPicture.asset(
-        "assets/Icons/amity_ic_chat_deleted_user_avatar.svg",
-        package: 'amity_uikit_beta_service',
+      // Same Avatar-atom treatment as the chat list row, at the bubble's 32.
+      avatarWidget = Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: token(AmityColorToken.surfaceAvatarProfileDefault),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            "assets/Icons/amity_ic_user_s.svg",
+            package: 'amity_uikit_beta_service',
+            width: 20,
+            height: 20,
+            colorFilter: ColorFilter.mode(
+                token(AmityColorToken.iconAvatarDefault), BlendMode.srcIn),
+          ),
+        ),
       );
     } else {
       final isAvatarAvailable = avatarUrl != null && avatarUrl!.isNotEmpty;
@@ -86,7 +101,8 @@ class AmityMessageAvatar extends BaseElement {
                 height: 16,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: theme.primaryColor.blend(ColorBlendingOption.shade3),
+                  color: token(
+                      AmityColorToken.surfaceBadgeSemanticBadgeUserStatusModerator),
                 ),
                 child: Center(
                   child: SvgPicture.asset(
@@ -94,6 +110,17 @@ class AmityMessageAvatar extends BaseElement {
                     package: 'amity_uikit_beta_service',
                     width: 12,
                     height: 12,
+                    // The disc above flips (#DDDEF8 light -> #3B41EC dark) but
+                    // the glyph was never tinted, so it kept the asset's baked
+                    // #1054DE. On the pale light disc that reads; on the blue
+                    // dark disc it is the same blue, and the badge collapses
+                    // to a solid dot. The paired Icon token flips to white for
+                    // exactly this reason.
+                    colorFilter: ColorFilter.mode(
+                      token(AmityColorToken
+                          .iconBadgeSemanticBadgeUserStatusModeratorDefault),
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),
@@ -111,7 +138,11 @@ class AmityMessageAvatar extends BaseElement {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
+        // An avatar disc, not a disabled button. The two are near-neighbours in
+        // light — pale blue either way — so this survived review; in dark the
+        // button token goes to full-saturation primary and the chat-room
+        // avatars stop matching the ones in the channel list.
+        color: token(AmityColorToken.surfaceAvatarProfileDefault),
         shape: BoxShape.circle,
       ),
       child: Center(

@@ -525,7 +525,7 @@
   "@message_typing": {
     "description": "Label for typing indicator"
   },
-  "message_placeholder": "Type a message...",
+  "message_placeholder": "Write a message",
   "@message_placeholder": {
     "description": "Placeholder for message input"
   },
@@ -1303,7 +1303,7 @@
   "@timestamp_just_now": {
     "description": "Timestamp text for content posted just now in social feeds"
   },
-  "timestamp_now": "now",
+  "timestamp_now": "Now",
   "@timestamp_now": {
     "description": "Timestamp text for content posted just now in chat"
   },
@@ -1652,7 +1652,7 @@
   "@chat_blocked_message": {
     "description": "Message shown when user is blocked and cannot send messages"
   },
-  "chat_notifications_disabled": "You have disabled notifications for chat",
+  "chat_notifications_disabled": "Push notifications have been disabled by admin",
   "@chat_notifications_disabled": {
     "description": "Message shown when chat notifications are disabled"
   },
@@ -1680,7 +1680,7 @@
   "@general_search_hint": {
     "description": "Hint text for search input fields"
   },
-  "chat_archived_empty_title": "No archived chats",
+  "chat_archived_empty_title": "No archived chat",
   "@chat_archived_empty_title": {
     "description": "Empty state title for archived chats list"
   },
@@ -2040,7 +2040,7 @@
   "@notification_subscribe_mode_desc": {
     "description": "Description for subscribe notification mode"
   },
-  "notification_preference_title": "Notification Preference",
+  "notification_preference_title": "Notifications",
   "@notification_preference_title": {
     "description": "Title for notification preference page"
   },
@@ -2304,8 +2304,34 @@
   "@reaction_tap_to_remove": {
     "description": "Hint text shown to user on their own reaction to indicate they can tap to remove it"
   },
+  "reaction_no_reactions_yet": "No reactions yet",
+  "@reaction_no_reactions_yet": {
+    "description": "Title of the reaction list empty state"
+  },
+  "reaction_be_first_to_react": "Be the first to react to this {referenceType}!",
+  "@reaction_be_first_to_react": {
+    "description": "Description of the reaction list empty state",
+    "placeholders": {
+      "referenceType": {
+        "type": "String",
+        "example": "message"
+      }
+    }
+  },
   "image_load_error": "Couldn't load image. Please try again.",
   "@image_load_error": {
     "description": "Error message shown when an image fails to load"
+  },
+  "chat_report_title": "Report reason",
+  "@chat_report_title": {
+    "description": "Title of the report-message reason sheet (Android: amity_chat_report_title)"
+  },
+  "chat_report_description": "Tell us why you're reporting this message. Your report will be reviewed by our moderators and kept confidential.",
+  "@chat_report_description": {
+    "description": "Banner under the report-message sheet title (Android: amity_chat_report_description)"
+  },
+  "chat_report_submit": "Submit",
+  "@chat_report_submit": {
+    "description": "Submit button on the report-message sheet (Android: amity_chat_report_submit)"
   }
 }

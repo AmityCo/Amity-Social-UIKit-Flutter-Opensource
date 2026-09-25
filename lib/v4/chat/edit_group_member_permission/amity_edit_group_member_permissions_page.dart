@@ -1,5 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_selection.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +32,14 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
           final hasChanges = initialPermission != state.messagingPermission;
 
           return Scaffold(
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
               appBar: AppBar(
-                backgroundColor: theme.backgroundColor,
-                title: Text(context.l10n.chat_member_permissions_title),
+                backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
+                title: Text(
+                  context.l10n.chat_member_permissions_title,
+                  style: AmityTextStyle.titleBold(
+                      token(AmityColorToken.textSheetsHeaderTitleDefault)),
+                ),
                 actions: [
                   TextButton(
                     onPressed: hasChanges
@@ -69,15 +75,14 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
                       context.l10n.general_save,
                       style: TextStyle(
                         color: hasChanges
-                            ? theme.primaryColor
-                            : theme.primaryColor
-                                .blend(ColorBlendingOption.shade2),
+                            ? token(AmityColorToken.textMainButtonDefaultGhostPrimaryEnabled)
+                            : token(AmityColorToken.textMainButtonDefaultGhostPrimaryDisabled),
                       ),
                     ),
                   ),
                 ],
                 leading: IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
+                  icon: Icon(Icons.arrow_back_ios, color: token(AmityColorToken.textListHeaderDefaultDefault)),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -90,16 +95,14 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
   Widget _buildContent(
       BuildContext context, AmityGroupMemberPermissionsState state) {
     return Container(
-      color: theme.backgroundColor,
+      color: token(AmityColorToken.surfacePageBackgroundDefault),
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
           Text(
             context.l10n.settings_messaging,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AmityTextStyle.titleBold(
+                token(AmityColorToken.textListHeaderDefaultDefault)),
           ),
           const SizedBox(height: 16),
           _buildPermissionOption(
@@ -149,26 +152,26 @@ class AmityEditGroupMemberPermissionsPage extends NewBasePage {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
+                    style: AmityTextStyle.bodyBold(
+                        token(AmityColorToken.textListHeaderDefaultDefault)),
                   ),
                   Text(
                     description,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
+                    style: AmityTextStyle.caption(token(
+                        AmityColorToken.textListTextDescriptionDefaultDefault)),
                   ),
                 ],
               ),
             ),
-            Radio<MessagingPermission>(
-              value: value,
-              groupValue: currentPermission,
-              onChanged: (val) => onChanged(val!),
-              activeColor: Colors.blue,
+            // Material's Radio only took activeColor here, so the unselected
+            // ring fell back to ThemeData.unselectedWidgetColor — black54 from
+            // the light default, all but invisible on the dark page — and the
+            // selected one drew Material's ring-plus-dot instead of the
+            // design's filled disc with a white centre dot (PDT-4908). The
+            // Selection atom spec is authoritative for both states.
+            AmityRadioSelection(
+              isSelected: currentPermission == value,
+              onTap: () => onChanged(value),
             ),
           ],
         ),

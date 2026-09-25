@@ -4,6 +4,7 @@ import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 
 class AmityGroupMemberActionComponent extends NewBaseComponent {
   final AmityUser user;
@@ -39,7 +40,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 32),
       decoration: BoxDecoration(
-        color: theme.backgroundColor,
+        color: token(AmityColorToken.surfaceSheetsBackgroundGeneral),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -51,18 +52,18 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
           // Handle bar at the top
           Container(
             width: double.infinity,
-            height: 36,
-            padding: const EdgeInsets.only(top: 12, bottom: 20),
+            height: 28,
+            padding: const EdgeInsets.only(top: 12, bottom: 12),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 36,
+                  width: 37,
                   height: 4,
                   decoration: ShapeDecoration(
-                    color: theme.baseColorShade3,
+                    color: token(AmityColorToken.surfaceSheetsHandleDefault),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -85,7 +86,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
               child: Container(
                 width: double.infinity,
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -99,13 +100,13 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                         width: 24,
                         height: 24,
                         colorFilter:
-                            ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                            ColorFilter.mode(token(AmityColorToken.iconListLeadingDefaultDefault), BlendMode.srcIn),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Text(
                       context.l10n.chat_unban_user,
-                      style: AmityTextStyle.bodyBold(theme.baseColor),
+                      style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                     ),
                   ],
                 ),
@@ -124,7 +125,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                 child: Container(
                   width: double.infinity,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -138,15 +139,15 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                           width: 24,
                           height: 24,
                           colorFilter: ColorFilter.mode(
-                              theme.baseColor, BlendMode.srcIn),
+                              token(AmityColorToken.iconListLeadingDefaultDefault), BlendMode.srcIn),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       Text(
                         isSelectedUserModerator
                             ? context.l10n.chat_demote_moderator
                             : context.l10n.chat_promote_moderator,
-                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                        style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                     ],
                   ),
@@ -164,7 +165,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                 child: Container(
                   width: double.infinity,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -180,13 +181,13 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                           width: 24,
                           height: 24,
                           colorFilter: ColorFilter.mode(
-                              theme.baseColor, BlendMode.srcIn),
+                              token(AmityColorToken.iconListLeadingDefaultDefault), BlendMode.srcIn),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       Text(
                         isMuted ? context.l10n.chat_unmute_user : context.l10n.chat_mute_user,
-                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                        style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                     ],
                   ),
@@ -205,7 +206,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
               child: Container(
                 width: double.infinity,
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -221,12 +222,15 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                         package: 'amity_uikit_beta_service',
                         width: 24,
                         height: 24,
+                        // The asset bakes a near-black fill, invisible on the dark sheet.
+                        colorFilter: ColorFilter.mode(
+                            token(AmityColorToken.iconListLeadingDefaultDefault), BlendMode.srcIn),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Text(
                       user.isFlaggedByMe ? context.l10n.user_unreport : context.l10n.user_report,
-                      style: AmityTextStyle.bodyBold(theme.baseColor),
+                      style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                     ),
                   ],
                 ),
@@ -246,7 +250,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                 child: Container(
                   width: double.infinity,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -260,13 +264,13 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                           width: 24,
                           height: 24,
                           colorFilter: ColorFilter.mode(
-                              theme.baseColor, BlendMode.srcIn),
+                              token(AmityColorToken.iconListLeadingDefaultDefault), BlendMode.srcIn),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       Text(
                         context.l10n.chat_ban_user,
-                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                        style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                     ],
                   ),
@@ -284,7 +288,7 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                 child: Container(
                   width: double.infinity,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -297,14 +301,20 @@ class AmityGroupMemberActionComponent extends NewBaseComponent {
                           package: 'amity_uikit_beta_service',
                           width: 24,
                           height: 24,
+                          // Destructive list row: icon and label follow the
+                          // List/Leading + List/Header grammar, same as
+                          // AmityGroupMemberListPage.kt:507-508.
                           colorFilter: ColorFilter.mode(
-                              theme.alertColor, BlendMode.srcIn),
+                              token(AmityColorToken
+                                  .iconListLeadingDestructiveDefault),
+                              BlendMode.srcIn),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       Text(
                         context.l10n.chat_remove_member,
-                        style: AmityTextStyle.bodyBold(theme.alertColor),
+                        style: AmityTextStyle.bodyBold(token(
+                            AmityColorToken.textListHeaderDestructiveDefault)),
                       ),
                     ],
                   ),

@@ -1,7 +1,8 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_banner.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
@@ -35,15 +36,18 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
           return Stack(
             children: [
               Scaffold(
-                backgroundColor: theme.backgroundColor,
+                backgroundColor: token(AmityColorToken.surfaceListDefaultDefault),
                 appBar: AppBar(
-                  backgroundColor: theme.backgroundColor,
+                  backgroundColor: token(AmityColorToken.surfaceListDefaultDefault),
                   title: Text(
                     context.l10n.notification_preference_title,
-                    style: AmityTextStyle.titleBold(theme.baseColor),
+                    style: AmityTextStyle.titleBold(
+                        token(AmityColorToken.textSheetsHeaderTitleDefault)),
                   ),
                   leading: IconButton(
-                    icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
+                    icon: Icon(Icons.arrow_back_ios,
+                        color: token(AmityColorToken
+                            .iconIconButtonGhostSecondaryDefault)),
                     onPressed: () => Navigator.pop(context),
                   ),
                   actions: [
@@ -69,9 +73,8 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                         context.l10n.general_save,
                         style: AmityTextStyle.body(
                           state.hasChanges
-                              ? theme.primaryColor
-                              : theme.primaryColor
-                                  .blend(ColorBlendingOption.shade2),
+                              ? token(AmityColorToken.textMainButtonDefaultGhostPrimaryEnabled)
+                              : token(AmityColorToken.textMainButtonDefaultGhostPrimaryDisabled),
                         ),
                       ),
                     ),
@@ -81,16 +84,11 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (channel.notificationMode == NotificationMode.silent)
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: theme.backgroundShade1Color,
-                        ),
-                        child: Text(
+                      AmityBanner(
+                        hierarchy: AmityBannerHierarchy.subdue,
+                        centered: true,
+                        description:
                             context.l10n.notification_disabled_by_moderator,
-                            style:
-                                AmityTextStyle.caption(theme.baseColorShade3)),
                       ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -137,13 +135,15 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                 Text(
                   title,
                   style: AmityTextStyle.bodyBold(
-                      isSilent ? theme.baseColorShade3 : theme.baseColor),
+                      token(isSilent
+                          ? AmityColorToken.textListHeaderDefaultDisabled
+                          : AmityColorToken.textListHeaderDefaultDefault)),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   description,
                   style: AmityTextStyle.caption(
-                      isSilent ? theme.baseColorShade3 : theme.baseColorShade1),
+                      token(AmityColorToken.textListTextDescriptionDefaultDefault)),
                 ),
               ],
             ),
@@ -156,16 +156,26 @@ class AmityGroupNotificationPreferencePage extends NewBasePage {
                 return Colors.transparent;
               },
             ),
-            activeColor: isSilent
-                ? theme.primaryColor.blend(ColorBlendingOption.shade3)
-                : theme.primaryColor,
-            inactiveTrackColor: isSilent
-                ? theme.baseColorShade4
-                : theme.baseColorShade3,
-            activeTrackColor: isSilent
-                ? theme.primaryColor.blend(ColorBlendingOption.shade3)
-                : theme.primaryColor,
-            thumbColor: MaterialStateProperty.all(Colors.white),
+            // isSilent disables the toggle, so it takes the Toggle family's
+            // Disabled states — not a hover, which cannot happen on touch.
+            activeColor: token(isSilent
+                ? AmityColorToken.surfaceToggleBackgroundActiveDisabled
+                : AmityColorToken.surfaceToggleBackgroundActiveEnabled),
+            inactiveTrackColor: token(isSilent
+                ? AmityColorToken.surfaceToggleBackgroundInactiveDisabled
+                : AmityColorToken.surfaceToggleBackgroundInactiveEnabled),
+            activeTrackColor: token(isSilent
+                ? AmityColorToken.surfaceToggleBackgroundActiveDisabled
+                : AmityColorToken.surfaceToggleBackgroundActiveEnabled),
+            // The thumb has its own on/off axis, so it must be picked from both
+            // the value and the disabled state, not from the state alone.
+            thumbColor: MaterialStateProperty.all(token(value
+                ? (isSilent
+                    ? AmityColorToken.surfaceToggleThumbActiveDisabled
+                    : AmityColorToken.surfaceToggleThumbActiveEnabled)
+                : (isSilent
+                    ? AmityColorToken.surfaceToggleThumbInactiveDisabled
+                    : AmityColorToken.surfaceToggleThumbInactiveEnabled))),
           ),
         ],
       ),

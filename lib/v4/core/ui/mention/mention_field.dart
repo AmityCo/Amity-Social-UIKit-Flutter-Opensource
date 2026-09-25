@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_dismiss_button.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:amity_uikit_beta_service/v4/utils/user_image.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/l10n/generated/app_localizations.dart';
@@ -68,7 +71,6 @@ class _SuggestionListOverlayState extends State<SuggestionListOverlay> {
       decoration: BoxDecoration(
         color: widget.backgroundColor,
         borderRadius: widget.borderRadius,
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
       ),
       child: ClipRRect(
         borderRadius: widget.borderRadius,
@@ -135,6 +137,7 @@ class MentionTextField extends StatefulWidget {
     this.onTapOutside,
     this.cursorColor,
     this.enableMention = true,
+    this.keyboardAppearance,
   }) : super(key: key);
 
   final AmityThemeColor theme;
@@ -165,6 +168,13 @@ class MentionTextField extends StatefulWidget {
       onTapOutside; // Called when user taps outside the text field
   final Color? cursorColor; // Color of the text cursor
   final bool enableMention; // Enable/disable mention functionality
+
+  /// iOS keyboard appearance, supplied by the caller.
+  ///
+  /// Resolved at the call site rather than here: this widget is shared with
+  /// Social, which has not migrated to the semantic tokens, so it must not
+  /// reach for the UIKit's palette itself.
+  final Brightness? keyboardAppearance;
 
   @override
   State<MentionTextField> createState() => _MentionTextFieldState();
@@ -643,30 +653,6 @@ class _MentionTextFieldState extends State<MentionTextField>
     _overlayEntry = null;
   }
 
-  Widget _buildDismissButton() {
-    return SizedBox(
-      width: 24,
-      height: 24,
-      child: Material(
-        elevation: 3,
-        shape: const CircleBorder(),
-        child: IconButton(
-          onPressed: () {
-            _mentionController.dismissCurrentMention();
-            _removeOverlay();
-          },
-          iconSize: 24,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          icon: SvgPicture.asset(
-            'assets/Icons/amity_ic_close_viewer.svg',
-            package: 'amity_uikit_beta_service',
-          ),
-        ),
-      ),
-    );
-  }
-
   OverlayEntry _createOverlayEntry() {
     if (widget.suggestionDisplayMode == SuggestionDisplayMode.inline) {
       return OverlayEntry(builder: (overlayContext) {
@@ -695,7 +681,12 @@ class _MentionTextFieldState extends State<MentionTextField>
           rowHeight: _rowHeight,
           suggestionMaxRow: widget.suggestionMaxRow,
           scrollController: _listScrollController,
-          backgroundColor: widget.theme.backgroundColor,
+          // The design draws this as a Popover, not as the page: 359x112,
+          // radius 12, Surface/Popover/Background/Default (#292B32 dark).
+          // The flat theme's page colour is #191919 — the very colour of the
+          // chat behind it, so the panel had no edge at all (PDT-5126 case 1).
+          backgroundColor: context
+              .amityToken(AmityColorToken.surfacePopoverBackgroundDefault),
           borderRadius: BorderRadius.circular(12.0),
           itemBuilder: (ctx, index) => _buildItem(index, useCommunityMode, useChannelMode),
         );
@@ -746,8 +737,13 @@ class _MentionTextFieldState extends State<MentionTextField>
                   ),
                   Positioned(
                     right: 2,
-                    top: topPosition - 6,
-                    child: _buildDismissButton(),
+                    top: topPosition - 8,
+                    child: AmityMentionDismissButton(
+                      onTap: () {
+                        _mentionController.dismissCurrentMention();
+                        _removeOverlay();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -782,7 +778,12 @@ class _MentionTextFieldState extends State<MentionTextField>
           rowHeight: _rowHeight,
           suggestionMaxRow: widget.suggestionMaxRow,
           scrollController: _listScrollController,
-          backgroundColor: widget.theme.backgroundColor,
+          // The design draws this as a Popover, not as the page: 359x112,
+          // radius 12, Surface/Popover/Background/Default (#292B32 dark).
+          // The flat theme's page colour is #191919 — the very colour of the
+          // chat behind it, so the panel had no edge at all (PDT-5126 case 1).
+          backgroundColor: context
+              .amityToken(AmityColorToken.surfacePopoverBackgroundDefault),
           borderRadius: BorderRadius.circular(12.0),
           itemBuilder: (ctx, index) => _buildItem(index, useCommunityMode, useChannelMode),
         );
@@ -826,17 +827,24 @@ class _MentionTextFieldState extends State<MentionTextField>
                             child: Container(
                               height: containerHeight,
                               decoration: BoxDecoration(
-                                color: widget.theme.backgroundColor,
+                                // Same Popover surface as above; this is the
+                                // same component, only placed inline.
+                                color: context.amityToken(AmityColorToken
+                                    .surfacePopoverBackgroundDefault),
                                 borderRadius: BorderRadius.circular(12.0),
-                                border: Border.all(color: Colors.grey.withOpacity(0.2)),
                               ),
                               child: suggestionList,
                             ),
                           ),
                           Positioned(
-                            top: -6,
+                            top: -8,
                             right: -4,
-                            child: _buildDismissButton(),
+                            child: AmityMentionDismissButton(
+                      onTap: () {
+                        _mentionController.dismissCurrentMention();
+                        _removeOverlay();
+                      },
+                    ),
                           ),
                         ],
                       ),
@@ -884,9 +892,13 @@ class _MentionTextFieldState extends State<MentionTextField>
         width: double.infinity,
         height: _rowHeight,
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        // Both rows sit on the same row surface — the spec gives the @All row
+        // no fill of its own, only the featured icon and trailing label set it
+        // apart. It previously painted primaryColor at 5%, which composited to
+        // #272D3B over the popover and read as a highlight the design has not
+        // got (AmityMentionPicker/v2: "two rows sit on a shared row surface").
         decoration: BoxDecoration(
-          // Highlight the @All option with a subtle background color
-          color: widget.theme.primaryColor.withOpacity(0.05),
+          color: context.amityToken(AmityColorToken.surfacePopoverListsDefault),
         ),
         child: Row(
           children: [
@@ -894,18 +906,38 @@ class _MentionTextFieldState extends State<MentionTextField>
               padding: const EdgeInsets.all(4),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(32),
+                // 32 disc on Surface/FeaturedIcon/Solid holding the 24 at-s
+                // glyph in Icon/FeaturedIcon/Solid (AmityMentionPicker/v2).
+                // Both colours were hardcoded — primaryColor and Colors.white —
+                // which resolve to the same pixels today only because the
+                // surface token happens to key off primary_color; a customer
+                // theming the featured icon alone would have been ignored here
+                // and honoured on Android.
+                //
+                // The asset matters as much as the box. at-s.svg is a 24
+                // viewBox whose ink spans 3..21, i.e. 18 units with 3 units of
+                // padding built in, so at 24 it fills 18/32 of the disc — what
+                // Figma and Android show. The old amity_ic_mention_all.svg is a
+                // different, tight-cropped glyph on a 16x15 viewBox with no
+                // padding: at 16 it filled 16/32, and drawing it at 24 filled
+                // 24/32 and looked even tighter than before. Vendored from
+                // cleverden uikit/assets/icons/at-s.svg, byte for byte.
                 child: Container(
                   width: 32,
                   height: 32,
-                  color: widget.theme.primaryColor,
+                  color: context
+                      .amityToken(AmityColorToken.surfaceFeaturedIconSolid),
                   alignment: Alignment.center,
                   child: SvgPicture.asset(
-                    'assets/Icons/amity_ic_mention_all.svg',
+                    'assets/Icons/amity_ic_at_s.svg',
                     package: 'amity_uikit_beta_service',
-                    width: 16,
-                    height: 16,
-                    colorFilter:
-                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    width: 24,
+                    height: 24,
+                    colorFilter: ColorFilter.mode(
+                      context
+                          .amityToken(AmityColorToken.iconFeaturedIconSolid),
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),
@@ -915,14 +947,24 @@ class _MentionTextFieldState extends State<MentionTextField>
               "All",
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: AmityTextStyle.captionBold(widget.theme.baseColor),
+              style: AmityTextStyle.captionBold(
+                context.amityToken(AmityColorToken.textListHeaderDefaultDefault),
+              ),
             ),
             const Spacer(),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: Text(
                 "Notify everyone",
-                style: AmityTextStyle.caption(widget.theme.baseColorShade3),
+                // Text/List/Trailing/Text/General. This was theme.baseColorShade3
+                // = #40434E against the popover's #292B32 — all but invisible,
+                // which is what QA reported. The token resolves to
+                // neutral_grey_shade2_color (#A5A9B5), which is what Android
+                // renders through the same token.
+                style: AmityTextStyle.caption(
+                  context
+                      .amityToken(AmityColorToken.textListTrailingTextGeneral),
+                ),
               ),
             ),
           ],
@@ -939,6 +981,13 @@ class _MentionTextFieldState extends State<MentionTextField>
         width: double.infinity,
         height: _rowHeight,
         padding: const EdgeInsets.symmetric(horizontal: 9.0),
+        // Same row surface as the @All row. These rendered correctly while
+        // transparent only because Lists/Default and Background/Default happen
+        // to resolve to the same value today; binding it makes that a contract
+        // rather than a coincidence, and matches Android's shared row.
+        decoration: BoxDecoration(
+          color: context.amityToken(AmityColorToken.surfacePopoverListsDefault),
+        ),
         child: Row(
           children: [
             Container(
@@ -965,7 +1014,10 @@ class _MentionTextFieldState extends State<MentionTextField>
                       _getUserDisplayName(user, context),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: AmityTextStyle.captionBold(widget.theme.baseColor),
+                      style: AmityTextStyle.captionBold(
+                        context.amityToken(
+                            AmityColorToken.textListHeaderDefaultDefault),
+                      ),
                     ),
                   ),
                   if (user.isBrand ?? false) brandBadge(),
@@ -997,6 +1049,13 @@ class _MentionTextFieldState extends State<MentionTextField>
         width: double.infinity,
         height: _rowHeight,
         padding: const EdgeInsets.symmetric(horizontal: 9.0),
+        // Same row surface as the @All row. These rendered correctly while
+        // transparent only because Lists/Default and Background/Default happen
+        // to resolve to the same value today; binding it makes that a contract
+        // rather than a coincidence, and matches Android's shared row.
+        decoration: BoxDecoration(
+          color: context.amityToken(AmityColorToken.surfacePopoverListsDefault),
+        ),
         child: Row(
           children: [
             Container(
@@ -1020,7 +1079,10 @@ class _MentionTextFieldState extends State<MentionTextField>
                 _getUserDisplayName(user, context),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: AmityTextStyle.captionBold(widget.theme.baseColor),
+                style: AmityTextStyle.captionBold(
+                  context.amityToken(
+                      AmityColorToken.textListHeaderDefaultDefault),
+                ),
               ),
             ),
           ],
@@ -1104,6 +1166,7 @@ class _MentionTextFieldState extends State<MentionTextField>
       controller: _mentionController,
       focusNode: _focusNode,
       scrollController: widget.scrollController,
+      keyboardAppearance: widget.keyboardAppearance,
       keyboardType: widget.keyboardType,
       maxLines: widget.maxLines,
       minLines: widget.minLines,

@@ -2,6 +2,8 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
@@ -602,15 +604,22 @@ Widget addUserItem(
                       padding: const EdgeInsets.all(8),
                       width: 40,
                       height: 40,
+                      // Filled/Secondary icon button, per the Button atom —
+                      // the flat baseColorShade4 read as a black hole in dark.
                       decoration: BoxDecoration(
-                        color: theme.baseColorShade4,
+                        color: context.amityToken(AmityColorToken
+                            .surfaceIconButtonFilledSecondaryEnabled),
                         shape: BoxShape.circle,
                       ),
                       child: SvgPicture.asset(
-                        'assets/Icons/amity_ic_create_group_add_member_button.svg',
+                        'assets/Icons/amity_ic_plus_r.svg',
                         package: 'amity_uikit_beta_service',
                         width: 24,
                         height: 24,
+                        colorFilter: ColorFilter.mode(
+                            context.amityToken(AmityColorToken
+                                .iconIconButtonFilledSecondaryDefault),
+                            BlendMode.srcIn),
                       ),
                     ),
                   ),

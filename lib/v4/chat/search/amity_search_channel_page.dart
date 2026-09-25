@@ -1,6 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/chat/search/bloc/amity_search_channel_cubit.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
@@ -9,7 +10,6 @@ import 'package:amity_uikit_beta_service/v4/chat/search/widgets/search_channel_r
 import 'package:flutter/material.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:amity_uikit_beta_service/v4/chat/home/chat_list_skeleton.dart';
 
 class AmitySearchChannelPage extends NewBasePage {
@@ -48,7 +48,7 @@ class AmitySearchChannelPage extends NewBasePage {
         return DefaultTabController(
           length: 2,
           child: Scaffold(
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
             body: SafeArea(
               child: Column(
                 children: [
@@ -69,12 +69,12 @@ class AmitySearchChannelPage extends NewBasePage {
                         isScrollable: true,
                         tabAlignment: TabAlignment.start,
                         indicatorSize: TabBarIndicatorSize.label,
-                        labelColor: theme.primaryColor,
-                        labelStyle: AmityTextStyle.titleBold(theme.primaryColor),
-                        unselectedLabelColor: theme.baseColorShade2,
-                        unselectedLabelStyle: AmityTextStyle.titleBold(theme.baseColorShade2),
-                        indicatorColor: theme.primaryColor,
-                        dividerColor: theme.baseColorShade4,
+                        labelColor: token(AmityColorToken.textTabUnderlinedActive),
+                        labelStyle: AmityTextStyle.titleBold(token(AmityColorToken.textTabUnderlinedActive)),
+                        unselectedLabelColor: token(AmityColorToken.textTabUnderlinedDefault),
+                        unselectedLabelStyle: AmityTextStyle.titleBold(token(AmityColorToken.textTabUnderlinedDefault)),
+                        indicatorColor: token(AmityColorToken.lineTabUnderlinedActive),
+                        dividerColor: token(AmityColorToken.lineDividerContentDefault),
                         dividerHeight: 1.0,
                         splashFactory: NoSplash.splashFactory,
                         overlayColor: MaterialStateProperty.all(Colors.transparent),
@@ -98,53 +98,23 @@ class AmitySearchChannelPage extends NewBasePage {
                         }
 
                         if (state.query.length < 3 && state.channels.isEmpty) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/Icons/amity_ic_start_search_chat.svg',
-                                  package: 'amity_uikit_beta_service',
-                                  width: 60,
-                                  height: 60,
-                                  colorFilter: ColorFilter.mode(
-                                    theme.secondaryColor.blend(ColorBlendingOption.shade4),
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  context.l10n.search_minimum_chars,
-                                  style: AmityTextStyle.title(theme.baseColorShade3),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
+                          return AmityEmptyState(
+                            variant: AmityEmptyStateVariant.icon,
+                            asset: 'assets/Icons/amity_ic_start_search_chat.svg',
+                            title: context.l10n.search_minimum_chars,
                           );
                         }
 
                         if (state.channels.isEmpty && state.query.length >= 3) {
-                          return Container(
-                            margin: const EdgeInsets.only(top: 114),
-                            child: Column(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/Icons/amity_ic_search_chat_error.svg',
-                                  package: 'amity_uikit_beta_service',
-                                  width: 60,
-                                  height: 60,
-                                  colorFilter: ColorFilter.mode(
-                                    theme.secondaryColor
-                                        .blend(ColorBlendingOption.shade4),
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  context.l10n.search_no_results,
-                                  style: AmityTextStyle.titleBold(theme.baseColorShade3),
-                                ),
-                              ],
+                          return Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 114),
+                              child: AmityEmptyState(
+                                variant: AmityEmptyStateVariant.icon,
+                                asset: 'assets/Icons/amity_ic_search_chat_error.svg',
+                                title: context.l10n.search_no_results,
+                              ),
                             ),
                           );
                         }

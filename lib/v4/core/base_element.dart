@@ -1,3 +1,4 @@
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,9 @@ abstract class BaseElement extends StatelessWidget {
   final String? componentId;
   final String elementId;
 
-  late final AmityThemeColor theme;
-  late final ConfigProvider configProvider;
-  late final AmityUIConfig uiConfig;
+  late AmityThemeColor theme;
+  late ConfigProvider configProvider;
+  late AmityUIConfig uiConfig;
 
   BaseElement(
       {super.key, this.pageId, this.componentId, required this.elementId});
@@ -24,4 +25,8 @@ abstract class BaseElement extends StatelessWidget {
   }
 
   Widget buildElement(BuildContext context);
+
+  /// Resolve a semantic colour token at this element's full scope.
+  Color token(AmityColorToken t) => configProvider.token(t,
+      pageId: pageId, componentId: componentId, elementId: elementId);
 }

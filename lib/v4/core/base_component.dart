@@ -1,4 +1,5 @@
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,21 +25,19 @@ class BaseComponent extends StatelessWidget {
 abstract class NewBaseComponent extends StatelessWidget {
   final String? pageId;
   final String componentId;
-  late final AmityThemeColor theme;
-  late final ConfigProvider configProvider;
-  late final Map<String, dynamic> config;
-  late final AmityUIConfig uiConfig;
+  late AmityThemeColor theme;
+  late ConfigProvider configProvider;
+  late Map<String, dynamic> config;
+  late AmityUIConfig uiConfig;
 
   NewBaseComponent({super.key, this.pageId, required this.componentId});
 
   @override
   Widget build(BuildContext context) {
-    if (!isInitialized()) {
-      configProvider = context.watch<ConfigProvider>();
-      theme = configProvider.getTheme(pageId, componentId);
-      config = configProvider.getMapConfig(pageId, componentId, null);
-      uiConfig = configProvider.getUIConfig(pageId, componentId, null);
-    }
+    configProvider = context.watch<ConfigProvider>();
+    theme = configProvider.getTheme(pageId, componentId);
+    config = configProvider.getMapConfig(pageId, componentId, null);
+    uiConfig = configProvider.getUIConfig(pageId, componentId, null);
     return Theme(
         data: Theme.of(context).copyWith(
             textSelectionTheme: TextSelectionThemeData(
@@ -55,15 +54,9 @@ abstract class NewBaseComponent extends StatelessWidget {
 
   Widget buildComponent(BuildContext context);
 
-  bool isInitialized() {
-    try {
-      configProvider;
-      theme;
-      config;
-      uiConfig;
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  /// Resolve a semantic colour token at this component's scope. Pass
+  /// [elementId] from an element-level widget so an element-scoped
+  /// customization can win over a component-scoped one.
+  Color token(AmityColorToken t, {String? elementId}) => configProvider.token(t,
+      pageId: pageId, componentId: componentId, elementId: elementId);
 }

@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:async';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 
 part 'amity_group_setting_cubit.dart';
 part 'amity_group_setting_state.dart';
@@ -38,19 +39,27 @@ class AmityGroupSettingPage extends NewBasePage {
       child: BlocBuilder<AmityGroupSettingCubit, AmityGroupSettingState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
             appBar: AppBar(
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
+              centerTitle: true,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(1),
+                child: Container(
+                  height: 1,
+                  color: token(AmityColorToken.lineDividerPostDefault),
+                ),
+              ),
               title: Text(
                 state.channel.displayName ?? context.l10n.settings_group_settings,
-                style: AmityTextStyle.titleBold(theme.baseColor),
+                style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
               ),
               leading: IconButton(
                 icon: SvgPicture.asset(
                   'assets/Icons/amity_ic_back_button.svg',
                   package: 'amity_uikit_beta_service',
                   colorFilter:
-                      ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                      ColorFilter.mode(token(AmityColorToken.textListHeaderDefaultDefault), BlendMode.srcIn),
                 ),
                 onPressed: () {
                   // Return the updated channel when navigating back
@@ -74,7 +83,7 @@ class AmityGroupSettingPage extends NewBasePage {
                       const SizedBox(height: 40),
                       Text(
                         context.l10n.settings_group_settings_section,
-                        style: AmityTextStyle.titleBold(theme.baseColor),
+                        style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                       const SizedBox(height: 4),
                       // Only show group profile editing for moderators
@@ -219,14 +228,14 @@ class AmityGroupSettingPage extends NewBasePage {
                         ),
 
                       // Personal notification preferences for all users
-                      Container(height: 1, color: theme.baseColorShade4),
+                      Container(height: 1, color: token(AmityColorToken.lineDividerPostDefault)),
                       const SizedBox(height: 24),
                       Text(
                         context.l10n.settings_your_preferences,
-                        style: AmityTextStyle.titleBold(theme.baseColor),
+                        style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                       GroupSettingsTile(
-                        title: context.l10n.general_notifications_lowercase,
+                        title: context.l10n.settings_notifications,
                         iconAsset:
                             'assets/Icons/amity_ic_edit_group_notification_button.svg',
                         theme: theme,
@@ -254,7 +263,11 @@ class AmityGroupSettingPage extends NewBasePage {
                       GestureDetector(
                         child: Text(
                           context.l10n.chat_leave_group,
-                          style: AmityTextStyle.bodyBold(theme.alertColor),
+                          // A destructive row in a settings list, not a generic
+                          // alert. Android binds the list-row grammar here
+                          // (AmityGroupSettingPage.kt:278).
+                          style: AmityTextStyle.bodyBold(
+                              token(AmityColorToken.textListHeaderDestructiveDefault)),
                         ),
                         onTap: () async {
                           // Check if user is a moderator and get moderator count

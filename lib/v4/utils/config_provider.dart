@@ -1,20 +1,40 @@
 import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ConfigProvider extends ChangeNotifier {
   final ConfigRepository _configRepository = ConfigRepository();
   bool _isConfigInitialized = false;
+  bool _disposed = false;
 
+  // Trunk's typed setPreferredTheme is the single writer; this forwards the
+  // repository's change to every base page/component/element that watches this
+  // provider, re-theming the whole UIKit tree.
   ConfigProvider() {
-    // Every base page/component/element watches this provider, so forwarding
-    // the repository's theme change here re-themes the whole UIKit tree.
-    _configRepository.preferredThemeNotifier.addListener(notifyListeners);
+    _configRepository.preferredThemeNotifier
+        .addListener(_onPreferredThemeChanged);
+  }
+
+  void _onPreferredThemeChanged() {
+    // The host may well push a theme from inside its own build (a themed
+    // wrapper widget, say); notifying during a build trips markNeedsBuild().
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (!_disposed) notifyListeners();
+      });
+    } else {
+      notifyListeners();
+    }
   }
 
   @override
   void dispose() {
-    _configRepository.preferredThemeNotifier.removeListener(notifyListeners);
+    _disposed = true;
+    _configRepository.preferredThemeNotifier
+        .removeListener(_onPreferredThemeChanged);
     super.dispose();
   }
 
@@ -24,6 +44,14 @@ class ConfigProvider extends ChangeNotifier {
       notifyListeners();
       _isConfigInitialized = true;
     }
+  }
+
+  bool isChatUserActionEnabled(String actionName) {
+    return _configRepository.isChatUserActionEnabled(actionName);
+  }
+
+  bool hasAnyEnabledChatUserAction() {
+    return _configRepository.hasAnyEnabledChatUserAction();
   }
 
   Map<String, dynamic> getConfig(String configId) {
@@ -59,6 +87,23 @@ class ConfigProvider extends ChangeNotifier {
     String configId = '${getId(pageId)}/${getId(componentId)}/*';
     final theme = _configRepository.getTheme(configId);
     return theme;
+  }
+
+  /// Resolve a semantic colour token at the given scope. Unlike [getTheme],
+  /// which stops at the component, this carries the element too — the token
+  /// cascade has a level for it.
+  /// See [ConfigRepository.isDarkTheme] — for asset swaps, not colours.
+  bool get isDarkTheme => _configRepository.isDarkTheme;
+
+  Color token(
+    AmityColorToken token, {
+    String? pageId,
+    String? componentId,
+    String? elementId,
+  }) {
+    final scopeId =
+        '${getId(pageId)}/${getId(componentId)}/${getId(elementId)}';
+    return _configRepository.resolveToken(scopeId, token);
   }
 
   String getId(String? id) {

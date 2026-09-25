@@ -2,6 +2,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/social/reaction/bloc/reaction_list_bloc.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/utils/compact_string_converter.dart';
@@ -84,6 +85,7 @@ class AmityReactionList extends NewBaseComponent {
   // Build appropriate list view based on state
   Widget _buildListBasedOnState(BuildContext context, ReactionListState state) {
     if (state is ReactionListLoaded) {
+      if (state.list.isEmpty) return _buildEmptyState(context);
       return _buildReactionListView(context, state.list);
     } else if (state is ReactionListFiltering ||
         (state is ReactionListLoading && state.reactionMap != null)) {
@@ -210,7 +212,8 @@ class AmityReactionList extends NewBaseComponent {
       return Container();
     }
 
-    if (reactionMap.isNotEmpty) {
+    if (reactionMap.isNotEmpty ||
+        referenceType == AmityReactionReferenceType.MESSAGE) {
       return _buildMessageReactionTabs(reactionMap);
     } else if ((referenceType == AmityReactionReferenceType.POST ||
             referenceType == AmityReactionReferenceType.COMMENT) &&
@@ -353,6 +356,23 @@ class AmityReactionList extends NewBaseComponent {
     }
 
     tabsData.addAll(reactionTabs);
+
+    // Nothing left on the message: the header keeps a single "All 0" tab rather
+    // than disappearing, which is both the design (Figma 10848:54974) and what
+    // Android does (generateReactionTabs falls back to listOf(ReactionTab("All",
+    // reactionCount))). PDT-5145.
+    if (tabsData.isEmpty) {
+      return [
+        {
+          'type': 'all',
+          'count': 0,
+          'name': 'All',
+          'imagePath': null,
+          'reactionName': null,
+        }
+      ];
+    }
+
     return tabsData;
   }
 
@@ -424,6 +444,20 @@ class AmityReactionList extends NewBaseComponent {
           children: List.generate(count, (_) => skeletonItem()),
         ),
       ),
+    );
+  }
+
+  /// Shown once the collection has settled on nothing — the last reaction was
+  /// removed, or the message never had one. Before PDT-5145 an empty result
+  /// left the skeleton on screen forever, because a settled empty collection
+  /// has nothing further to emit.
+  Widget _buildEmptyState(BuildContext context) {
+    return AmityEmptyState(
+      variant: AmityEmptyStateVariant.icon,
+      asset: 'assets/Icons/amity_ic_smile_plus_r.svg',
+      title: context.l10n.reaction_no_reactions_yet,
+      // `.value` is already the lowercase enum name — "message" / "post".
+      description: context.l10n.reaction_be_first_to_react(referenceType.value),
     );
   }
 

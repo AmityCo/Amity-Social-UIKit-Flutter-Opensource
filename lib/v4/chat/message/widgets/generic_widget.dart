@@ -4,8 +4,9 @@ extension GenericWidget on MessageBubbleView {
   Widget _buildFailToSendText(BuildContext context) {
     return Text(
       context.l10n.message_failed_to_send,
-      style: const TextStyle(
-        color: Color(0xFFFA4D30),
+      style: TextStyle(
+        color: context
+            .amityToken(AmityColorToken.textChatBubbleOutboundHelperTextDefault),
         fontSize: 10,
         fontWeight: FontWeight.w400,
       ),
@@ -40,9 +41,9 @@ extension GenericWidget on MessageBubbleView {
                 package: 'amity_uikit_beta_service',
                 width: 16,
                 height: 14,
-                color: isUser
-                    ? messageColor.rightBubbleDefault
-                    : messageColor.leftBubbleDefault.darken(25),
+                color: token(isUser
+                    ? AmityColorToken.iconChatBubbleOutboundMessagesDeleted
+                    : AmityColorToken.iconChatBubbleInboundMessagesDeleted),
               ),
               const SizedBox(
                 width: 4,
@@ -50,9 +51,9 @@ extension GenericWidget on MessageBubbleView {
               Text(
                 context.l10n.message_deleted,
                 style: TextStyle(
-                  color: isUser
-                      ? messageColor.rightBubbleDefault
-                      : messageColor.leftBubbleDefault.darken(25),
+                  color: token(isUser
+                      ? AmityColorToken.textChatBubbleOutboundMessagesDeleted
+                      : AmityColorToken.textChatBubbleInboundMessagesDeleted),
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                 ),
@@ -64,19 +65,17 @@ extension GenericWidget on MessageBubbleView {
     );
   }
 
-  Widget _buildDateWidget(DateTime timestamp) {
-    return _buildSideTextWidget(_formatTime(message.createdAt!));
+  Widget _buildDateWidget(BuildContext context, DateTime timestamp) {
+    return _buildSideTextWidget(context, _formatTime(message.createdAt!));
   }
 
-  Widget _buildSideTextWidget(String text) {
+  Widget _buildSideTextWidget(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
-        style: TextStyle(
-            color: theme.baseColorShade2,
-            fontSize: 10,
-            fontWeight: FontWeight.w400),
+        style: AmityTextStyle.caption(
+            context.amityToken(AmityColorToken.textTimestampDefault)),
       ),
     );
   }
@@ -105,13 +104,15 @@ extension GenericWidget on MessageBubbleView {
     return "${timestamp.toLocal().hour}:${timestamp.toLocal().minute.toString().padLeft(2, '0')}";
   }
 
-  Widget _buildUploadingIndicator() {
+  Widget _buildUploadingIndicator(BuildContext context) {
     return SizedBox(
       width: 38,
       height: 38,
       child: CircularProgressIndicator(
-        color: Colors.white,
-        backgroundColor: Colors.white.withOpacity(0.8),
+        color: context.amityToken(AmityColorToken.iconLoadersUploadControllerDefault),
+        backgroundColor:
+            context.amityToken(AmityColorToken.iconLoadersUploadControllerDefault)
+                .withOpacity(0.8),
         strokeWidth: 2,
       ),
     );

@@ -15,6 +15,8 @@ import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 
 class SearchChannelResults extends StatelessWidget {
   final List<AmityChannel> channels;
@@ -141,7 +143,8 @@ class SearchChannelResults extends StatelessWidget {
         return false;
       },
       background: Container(
-        color: theme.baseColorShade2,
+        color: context.amityToken(
+            AmityColorToken.surfaceSquareButtonDefaultSecondaryDefault),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         child: Column(
@@ -152,15 +155,17 @@ class SearchChannelResults extends StatelessWidget {
               package: 'amity_uikit_beta_service',
               width: 28,
               height: 28,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
+              colorFilter: ColorFilter.mode(
+                context.amityToken(
+                    AmityColorToken.iconSquareButtonDefaultSecondaryDefault),
                 BlendMode.srcIn,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               actionText,
-              style: AmityTextStyle.captionBold(Colors.white),
+              style: AmityTextStyle.captionBold(context.amityToken(
+                  AmityColorToken.textSquareButtonDefaultSecondaryDefault)),
             ),
           ],
         ),
@@ -171,6 +176,7 @@ class SearchChannelResults extends StatelessWidget {
         child: ChatListItem(
           channel: channel,
           channelMember: channelMember,
+          isMemberResolved: channelMembers.containsKey(channel.channelId),
           searchQuery: searchQuery,
           isArchived: archivedChannelIds.contains(channel.channelId ?? ''),
           searchMessage: activeTab == SearchTab.message 
@@ -216,9 +222,10 @@ class SearchChannelResults extends StatelessWidget {
           if (state.showArchiveErrorDialog) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               AmityV4Dialog().showAlertErrorDialog(
-                title: state.errorTitle ?? 'Error',
-                message: state.errorMessage ?? 'An error occurred',
-                closeText: 'OK',
+                title: state.errorTitle ?? context.l10n.general_error_title,
+                message:
+                    state.errorMessage ?? context.l10n.general_error_message,
+                closeText: context.l10n.general_ok,
               );
               context.read<ChatSearchArchiveCubit>().resetDialogState();
             });
@@ -259,7 +266,7 @@ class SearchChannelResults extends StatelessWidget {
                     channel,
                     channelMember,
                     "assets/Icons/amity_ic_channel_unarchive.svg",
-                    "Unarchive",
+                    context.l10n.chat_unarchive,
                     (direction) {
                       // Prevent multiple simultaneous operations
                       if (state.isArchiving) return;
@@ -287,7 +294,7 @@ class SearchChannelResults extends StatelessWidget {
                     channel,
                     channelMember,
                     "assets/Icons/amity_ic_channel_archive.svg",
-                    "Archive",
+                    context.l10n.chat_archive,
                     (direction) {
                       // Prevent multiple simultaneous operations
                       if (state.isArchiving) return;
@@ -318,6 +325,8 @@ class SearchChannelResults extends StatelessWidget {
                   child: ChatListItem(
                     channel: channel,
                     channelMember: channelMember,
+                    isMemberResolved:
+                        channelMembers.containsKey(channel.channelId),
                     searchQuery: searchQuery,
                     isArchived:
                         archivedChannelIds.contains(channel.channelId ?? ''),

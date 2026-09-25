@@ -11,6 +11,8 @@ import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/single_video_player/pager/video_message_player.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_field.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/mention/mention_text_editing_controller.dart';
@@ -100,6 +102,16 @@ class AmityMessageComposer extends NewBaseComponent {
               .add(MessageComposerTextChange(text: controller.text));
           return Column(
             children: [
+              // The divider belongs above the whole composer block, reply panel
+              // included: Android orders it divider -> reply preview -> input
+              // row (AmityMessageComposer.kt), and the Figma reply-bar frame
+              // draws it there. It used to be the input row's own top border,
+              // which put the line *below* the reply panel (PDT-5046). The
+              // colour is unchanged — it was never the problem.
+              Container(
+                height: 1,
+                color: token(AmityColorToken.lineDividerPostDefault),
+              ),
               if (editingMessage != null)
                 renderEditPanel(context, editingMessage, state),
               if (state.replyTo != null)
@@ -114,6 +126,36 @@ class AmityMessageComposer extends NewBaseComponent {
       ),
     );
   }
+
+  /// A 32dp filled icon button: tokenised disc, tinted glyph.
+  ///
+  /// Android draws these with `AmityButton(variant = ICON, style = FILLED)`,
+  /// which resolves `Surface/IconButton/Filled/<hierarchy>/Enabled` for the
+  /// disc and `Icon/IconButton/Filled/<hierarchy>/Default` for the glyph
+  /// (AmityButton.kt:290-294). Flutter's old assets drew the disc *inside* the
+  /// SVG, so it stayed light-mode grey on a dark composer with no fill to
+  /// re-colour. The glyphs here are Android's own, converted from its vector
+  /// drawables — the path grammar is shared, so it is a container swap.
+  Widget _composerIconButton({
+    required String glyph,
+    required Color surface,
+    required Color tint,
+    double size = 32,
+  }) =>
+      Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(color: surface, shape: BoxShape.circle),
+        child: Center(
+          child: SvgPicture.asset(
+            glyph,
+            package: 'amity_uikit_beta_service',
+            width: size * 0.625,
+            height: size * 0.625,
+            colorFilter: ColorFilter.mode(tint, BlendMode.srcIn),
+          ),
+        ),
+      );
 
   Widget renderComposer(
       BuildContext context, MessageComposerState state, String subChannelId) {
@@ -135,14 +177,14 @@ class AmityMessageComposer extends NewBaseComponent {
       children: [
         Container(
           key: composerKey,
+          // No top border here: the divider is drawn once above the whole
+          // composer block in buildComposerContent, so a reply panel sits below
+          // the line rather than above it.
           decoration: BoxDecoration(
-            color: theme.backgroundColor,
-            border: Border(
-              top: BorderSide(width: 1, color: theme.baseColorShade4),
-            ),
+            color: token(AmityColorToken.surfacePageBackgroundDefault),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -166,15 +208,14 @@ class AmityMessageComposer extends NewBaseComponent {
                                   .add(MessageComposerMediaExpanded());
                             }
                           },
-                          child: SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: SvgPicture.asset(
-                              (state.showMediaSection)
-                                  ? "assets/Icons/amity_ic_close_message_media_section.svg"
-                                  : "assets/Icons/amity_ic_open_message_media_section.svg",
-                              package: 'amity_uikit_beta_service',
-                            ),
+                          child: _composerIconButton(
+                            glyph: (state.showMediaSection)
+                                ? 'assets/Icons/amity_ic_cross_r.svg'
+                                : 'assets/Icons/amity_ic_plus_r.svg',
+                            surface: token(AmityColorToken
+                                .surfaceIconButtonFilledSecondaryEnabled),
+                            tint: token(AmityColorToken
+                                .iconIconButtonFilledSecondaryDefault),
                           ),
                         ),
                       ),
@@ -185,108 +226,149 @@ class AmityMessageComposer extends NewBaseComponent {
                         // alignment: Alignment.centerLeft,
                         // padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: ShapeDecoration(
-                          color: theme.baseColorShade4,
+                          color: token(AmityColorToken.surfaceInputBoxedInputDefault),
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(color: theme.backgroundColor),
-                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                                color: token(AmityColorToken
+                                    .surfacePageBackgroundDefault)),
+                            borderRadius: BorderRadius.circular(24),
                           ),
                         ),
                         child: MediaQuery.removePadding(
                           context: context,
                           removeTop: true,
                           removeBottom: true,
-                          child: Scrollbar(
-                            controller: scrollController,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                focusNode.requestFocus();
-                              },
-                              child: MentionTextField(
-                                theme: theme,
-                                controller: controller,
-                                scrollController: scrollController,
-                                focusNode: focusNode,
-                                channelId: subChannelId,
-                                enableMention: enableMention,
-                                suggestionOverlayBottomPaddingWhenKeyboardOpen:
-                                    80.0,
-                                suggestionOverlayBottomPaddingWhenKeyboardClosed:
-                                    80.0,
+                          // No colors-v2 token backs the Figma "Scroll Bar"
+                          // layer, so each framework picks the thumb colour
+                          // itself, and both pick a light-mode one over the
+                          // dark compose box (PDT-5100 case 1). Material reads
+                          // the light ThemeData the UIKit hands MaterialApp;
+                          // `Scrollbar` on iOS is a CupertinoScrollbar, which
+                          // resolves its thumb against the *system* brightness
+                          // and ignores ScrollbarThemeData altogether. Raw is
+                          // the only one of the three that takes a colour, so
+                          // it is the only fix that holds on both platforms;
+                          // Metrics are the design's, read off the Figma
+                          // "Scroll Bar" layer (10848:54585): 4 wide, radius
+                          // 10, right edge 4 from the boxed input's border,
+                          // track running the input's vertical content band —
+                          // which is the same 14 as the contentPadding below.
+                          // The margins are not decoration: the input's border
+                          // radius is 24, so a bar sitting closer than ~11 to
+                          // the border rides over the corner arc, which is
+                          // what Raw's own 0/0 margins did. Colour is the
+                          // compose box's placeholder grey, the same value in
+                          // both modes, and identical to the layer's own fill
+                          // (rgb(137,142,158)) — decision recorded in the
+                          // cleverden spec
+                          // (UIKIT/components/AmityMessageComposer/v2.md).
+                          child: RawScrollbar(
+                              thumbColor: token(AmityColorToken
+                                  .textInputTextInputPlaceholderEnabled),
+                              thickness: 4,
+                              radius: const Radius.circular(10),
+                              mainAxisMargin: 14,
+                              crossAxisMargin: 4,
+                              minThumbLength: 36,
+                              controller: scrollController,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
                                 onTap: () {
-                                  context
-                                      .read<MessageComposerBloc>()
-                                      .add(MessageComposerMediaCollapsed());
+                                  focusNode.requestFocus();
                                 },
-                                onTapOutside: (event) {
-                                  final RenderBox? composerBox = composerKey
-                                      .currentContext
-                                      ?.findRenderObject() as RenderBox?;
-                                  if (composerBox != null) {
-                                    final localPos = composerBox
-                                        .globalToLocal(event.position);
-                                    final isInsideComposer = localPos.dx >= 0 &&
-                                        localPos.dx <= composerBox.size.width &&
-                                        localPos.dy >= 0 &&
-                                        localPos.dy <= composerBox.size.height;
-                                    if (isInsideComposer) {
-                                      return; // Tap is on send button or composer area, keep focus
+                                child: MentionTextField(
+                                  theme: theme,
+                                  // The iOS keyboard is system chrome: without
+                                  // this it stays light over the dark composer.
+                                  keyboardAppearance: context.amityBrightness,
+                                  controller: controller,
+                                  scrollController: scrollController,
+                                  focusNode: focusNode,
+                                  channelId: subChannelId,
+                                  enableMention: enableMention,
+                                  suggestionOverlayBottomPaddingWhenKeyboardOpen:
+                                      80.0,
+                                  suggestionOverlayBottomPaddingWhenKeyboardClosed:
+                                      80.0,
+                                  onTap: () {
+                                    context
+                                        .read<MessageComposerBloc>()
+                                        .add(MessageComposerMediaCollapsed());
+                                  },
+                                  onTapOutside: (event) {
+                                    final RenderBox? composerBox = composerKey
+                                        .currentContext
+                                        ?.findRenderObject() as RenderBox?;
+                                    if (composerBox != null) {
+                                      final localPos = composerBox
+                                          .globalToLocal(event.position);
+                                      final isInsideComposer = localPos.dx >= 0 &&
+                                          localPos.dx <= composerBox.size.width &&
+                                          localPos.dy >= 0 &&
+                                          localPos.dy <= composerBox.size.height;
+                                      if (isInsideComposer) {
+                                        return; // Tap is on send button or composer area, keep focus
+                                      }
                                     }
-                                  }
-                                  if (!controller.isMentioning()) {
-                                    MessageComposerCache().shouldFocus = false;
-                                    FocusScope.of(context).unfocus();
-                                  }
-                                },
-                                cursorColor: theme.primaryColor,
-                                onChanged: (value) {
-                                  context.read<MessageComposerBloc>().add(
-                                      MessageComposerTextChange(text: value));
-                                  FocusScope.of(context)
-                                      .requestFocus(focusNode);
-                                  context
-                                      .read<MessageComposerBloc>()
-                                      .add(MessageComposerMediaCollapsed());
-                                },
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                minLines: 1,
-                                textAlignVertical: TextAlignVertical.bottom,
-                                suggestionMaxRow: 2,
-                                suggestionDisplayMode:
-                                    SuggestionDisplayMode.bottom,
-                                mentionContentType: MentionContentType.general,
-                                style: TextStyle(
-                                  color: theme.baseColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: -0.24,
-                                ),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  hintText: context.l10n.message_placeholder,
-                                  border: InputBorder.none,
-                                  prefixIconColor: theme.primaryColor,
-                                  suffixIconColor: theme.primaryColor,
-                                  hoverColor: theme.primaryColor,
-                                  hintStyle: TextStyle(
-                                    color: theme.baseColorShade2,
+                                    if (!controller.isMentioning()) {
+                                      MessageComposerCache().shouldFocus = false;
+                                      FocusScope.of(context).unfocus();
+                                    }
+                                  },
+                                  cursorColor: token(AmityColorToken
+                                      .textInputTextInputTextCursorDefault),
+                                  onChanged: (value) {
+                                    context.read<MessageComposerBloc>().add(
+                                        MessageComposerTextChange(text: value));
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+                                    context
+                                        .read<MessageComposerBloc>()
+                                        .add(MessageComposerMediaCollapsed());
+                                  },
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  minLines: 1,
+                                  textAlignVertical: TextAlignVertical.bottom,
+                                  suggestionMaxRow: 2,
+                                  suggestionDisplayMode:
+                                      SuggestionDisplayMode.bottom,
+                                  mentionContentType: MentionContentType.general,
+                                  style: TextStyle(
+                                    color: token(AmityColorToken
+                                        .textInputTextInputPlaceholderEnabledFilled),
                                     fontSize: 15,
                                     fontWeight: FontWeight.w400,
                                     letterSpacing: -0.24,
                                   ),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 14),
+                                    hintText: context.l10n.message_placeholder,
+                                    border: InputBorder.none,
+                                    prefixIconColor:
+                                        token(AmityColorToken.iconInputTextInputDefault),
+                                    suffixIconColor:
+                                        token(AmityColorToken.iconInputTextInputDefault),
+                                    hoverColor:
+                                        token(AmityColorToken.iconInputTextInputDefault),
+                                    hintStyle: TextStyle(
+                                      color: token(AmityColorToken
+                                          .textInputTextInputPlaceholderEnabled),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      letterSpacing: -0.24,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
                         ),
                       ),
                     ),
-                    if (!state.showMediaSection)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
@@ -327,22 +409,28 @@ class AmityMessageComposer extends NewBaseComponent {
                             child: Container(
                               padding:
                                   const EdgeInsets.only(bottom: 6, left: 12),
-                              child: SizedBox(
-                                width: 32,
-                                height: 32,
-                                child: (isSendable)
-                                    ? SvgPicture.asset(
-                                        "assets/Icons/amity_ic_sent_message_button_disable.svg",
-                                        package: 'amity_uikit_beta_service',
-                                      )
-                                    : SvgPicture.asset(
-                                        "assets/Icons/amity_ic_sent_message_button.svg",
-                                        colorFilter: ColorFilter.mode(
-                                          theme.primaryColor,
-                                          BlendMode.srcIn,
-                                        ),
-                                        package: 'amity_uikit_beta_service',
-                                      ),
+                              // `isSendable` reads inverted upstream — it is true
+                              // when there is nothing to send. Naming it here
+                              // rather than renaming the field, which the tap
+                              // handler above also reads.
+                              //
+                              // Nothing to send switches the whole *hierarchy*
+                              // to Secondary, not just the state to Disabled:
+                              // `hierarchy = if (enabled) PRIMARY else SECONDARY`
+                              // (AmityMessageComposer.kt:373). Primary/Disabled
+                              // is a dim blue; Android draws a grey disc.
+                              child: _composerIconButton(
+                                glyph: 'assets/Icons/amity_ic_arrow_up_r.svg',
+                                surface: token(isSendable
+                                    ? AmityColorToken
+                                        .surfaceIconButtonFilledSecondaryDisabled
+                                    : AmityColorToken
+                                        .surfaceIconButtonFilledPrimaryEnabled),
+                                tint: token(isSendable
+                                    ? AmityColorToken
+                                        .iconIconButtonFilledSecondaryDisabled
+                                    : AmityColorToken
+                                        .iconIconButtonFilledPrimaryDefault),
                               ),
                             ),
                           ),
@@ -361,13 +449,48 @@ class AmityMessageComposer extends NewBaseComponent {
     );
   }
 
+  Widget renderSendButton({required bool disabled}) {
+    return SizedBox(
+      width: 32,
+      height: 32,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // The arrow is knocked out of the disc asset, so the glyph colour has
+          // to be painted behind it and show through the cut-out.
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: token(disabled
+                  ? AmityColorToken.iconIconButtonFilledSecondaryDisabled
+                  : AmityColorToken.iconIconButtonFilledPrimaryDefault),
+            ),
+          ),
+          SvgPicture.asset(
+            "assets/Icons/amity_ic_sent_message_button.svg",
+            colorFilter: ColorFilter.mode(
+              token(disabled
+                  ? AmityColorToken.surfaceIconButtonFilledSecondaryDisabled
+                  : AmityColorToken.surfaceIconButtonFilledPrimaryEnabled),
+              BlendMode.srcIn,
+            ),
+            package: 'amity_uikit_beta_service',
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget renderEditPanel(
       BuildContext context, AmityMessage? message, MessageComposerState state) {
     return Container(
       width: double.infinity,
-      height: 48,
-      padding: const EdgeInsets.only(top: 10, left: 16, right: 12, bottom: 10),
-      decoration: BoxDecoration(color: theme.baseColorShade4),
+      height: 58,
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      decoration: BoxDecoration(
+          color: token(AmityColorToken.surfaceBannerSubdueGeneral)),
       child: Row(
         children: [
           Expanded(
@@ -380,7 +503,8 @@ class AmityMessageComposer extends NewBaseComponent {
                     children: [
                       TextSpan(
                         text: context.l10n.message_editing_message,
-                        style: AmityTextStyle.captionBold(theme.baseColor),
+                        style: AmityTextStyle.captionBold(
+                            token(AmityColorToken.textBannerSubdueOverlineGeneral)),
                       ),
                     ],
                   ),
@@ -391,7 +515,7 @@ class AmityMessageComposer extends NewBaseComponent {
             ),
           ),
           const SizedBox(
-            width: 12,
+            width: 16,
           ),
           GestureDetector(
             onTap: () {
@@ -399,10 +523,14 @@ class AmityMessageComposer extends NewBaseComponent {
               action.onDissmiss();
             },
             child: SizedBox(
-              width: 20,
-              height: 20,
+              width: 16,
+              height: 16,
               child: SvgPicture.asset(
                 "assets/Icons/amity_ic_gray_close.svg",
+                colorFilter: ColorFilter.mode(
+                  token(AmityColorToken.iconIconButtonGhostSecondaryDefault),
+                  BlendMode.srcIn,
+                ),
                 package: 'amity_uikit_beta_service',
               ),
             ),
@@ -425,19 +553,19 @@ class AmityMessageComposer extends NewBaseComponent {
         children: [
           Image(
             image: replyingMessage!.previewImage!.image,
-            width: 38,
-            height: 38,
+            width: 32,
+            height: 32,
             fit: BoxFit.cover,
           ),
           if (message.data is MessageVideoData) ...[
             Container(
-              width: 38,
-              height: 38,
+              width: 32,
+              height: 32,
               color: Colors.black.withAlpha((0.4 * 255).toInt()),
             ),
             SizedBox(
-              width: 14,
-              height: 14,
+              width: 16,
+              height: 16,
               child: SvgPicture.asset(
                 'assets/Icons/amity_ic_video_reply_play.svg',
                 package: 'amity_uikit_beta_service',
@@ -493,9 +621,9 @@ class AmityMessageComposer extends NewBaseComponent {
       child: Container(
         width: double.infinity,
         height: 62,
-        padding:
-            const EdgeInsets.only(top: 10, left: 16, right: 12, bottom: 10),
-        decoration: BoxDecoration(color: theme.baseColorShade4),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: token(AmityColorToken.surfaceBannerSubdueGeneral)),
         child: Row(
           children: [
             Expanded(
@@ -509,7 +637,8 @@ class AmityMessageComposer extends NewBaseComponent {
                         TextSpan(
                           text:
                               context.l10n.message_replying_to(userDisplayName),
-                          style: AmityTextStyle.captionBold(theme.baseColor),
+                          style: AmityTextStyle.captionBold(
+                            token(AmityColorToken.textBannerSubdueOverlineGeneral)),
                         ),
                       ],
                     ),
@@ -523,7 +652,8 @@ class AmityMessageComposer extends NewBaseComponent {
                           TextSpan(
                             text: (message.data as MessageTextData).text,
                             style:
-                                AmityTextStyle.caption(theme.baseColorShade1),
+                                AmityTextStyle.caption(token(AmityColorToken
+                                    .textBannerSubdueTextDescriptionGeneral)),
                           ),
                         ],
                       ),
@@ -540,7 +670,8 @@ class AmityMessageComposer extends NewBaseComponent {
                                     ?.toString() ??
                                 "",
                             style:
-                                AmityTextStyle.caption(theme.baseColorShade1),
+                                AmityTextStyle.caption(token(AmityColorToken
+                                    .textBannerSubdueTextDescriptionGeneral)),
                           ),
                         ],
                       ),
@@ -552,7 +683,8 @@ class AmityMessageComposer extends NewBaseComponent {
                       children: [
                         Text(
                           context.l10n.general_photo,
-                          style: AmityTextStyle.caption(theme.baseColorShade1),
+                          style: AmityTextStyle.caption(token(AmityColorToken
+                                    .textBannerSubdueTextDescriptionGeneral)),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -561,7 +693,8 @@ class AmityMessageComposer extends NewBaseComponent {
                   if (message.data is MessageVideoData)
                     Text(
                       context.l10n.general_video,
-                      style: AmityTextStyle.caption(theme.baseColorShade1),
+                      style: AmityTextStyle.caption(token(AmityColorToken
+                                    .textBannerSubdueTextDescriptionGeneral)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -577,17 +710,21 @@ class AmityMessageComposer extends NewBaseComponent {
               const SizedBox(width: 8),
             ],
             const SizedBox(
-              width: 12,
+              width: 16,
             ),
             GestureDetector(
               onTap: () {
                 action.onDissmiss();
               },
               child: SizedBox(
-                width: 20,
-                height: 20,
+                width: 16,
+                height: 16,
                 child: SvgPicture.asset(
                   "assets/Icons/amity_ic_gray_close.svg",
+                  colorFilter: ColorFilter.mode(
+                    token(AmityColorToken.iconIconButtonGhostSecondaryDefault),
+                    BlendMode.srcIn,
+                  ),
                   package: 'amity_uikit_beta_service',
                 ),
               ),
@@ -601,24 +738,25 @@ class AmityMessageComposer extends NewBaseComponent {
   Widget renderMediaSection(BuildContext context, String appName) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(color: theme.backgroundColor),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+          color: token(AmityColorToken.surfaceSheetsBackgroundGeneral)),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           renderMediaButton(
-            "assets/Icons/amity_ic_camera_button.svg",
+            "assets/Icons/amity_ic_camera_r.svg",
             context.l10n.general_camera,
             () {
               onCameraTap(context);
             },
           ),
           const SizedBox(
-            width: 72,
+            width: 56,
           ),
           renderMediaButton(
-            "assets/Icons/amity_ic_image_button.svg",
+            "assets/Icons/amity_ic_image_r.svg",
             context.l10n.message_media,
             () {
               pickMultipleFiles(context, appName, FileType.any, maxFiles: mediaAttachmentLimit);
@@ -636,19 +774,25 @@ class AmityMessageComposer extends NewBaseComponent {
       },
       child: Column(
         children: [
-          SizedBox(
-            width: 40,
-            height: 40,
-            child: SvgPicture.asset(
-              assetPath,
-              package: 'amity_uikit_beta_service',
-            ),
+          // Same AmityButton(ICON/FILLED/SECONDARY) grammar as the composer's
+          // own +/x, at SIZE40 (AmityMessageComposer.kt:489-496) — so the disc
+          // is a token and only the glyph lives in the asset. The old
+          // amity_ic_*_button.svg files baked the disc in, which is why these
+          // two stayed light-grey on a dark sheet and their glyphs never
+          // flipped: both modes measured #292B32 on device.
+          _composerIconButton(
+            glyph: assetPath,
+            size: 40,
+            surface:
+                token(AmityColorToken.surfaceIconButtonFilledSecondaryEnabled),
+            tint: token(AmityColorToken.iconIconButtonFilledSecondaryDefault),
           ),
+          const SizedBox(height: 4),
           Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: theme.baseColorShade1,
+              color: token(AmityColorToken.textIconButtonLabelGeneral),
               fontSize: 13,
               fontWeight: FontWeight.w400,
               letterSpacing: -0.10,

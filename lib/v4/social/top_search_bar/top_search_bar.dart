@@ -1,6 +1,8 @@
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -33,6 +35,11 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
               Expanded(
             child: TextField(
               controller: textcontroller,
+              // iOS renders the keyboard itself and defaults it to light;
+              // Flutter only honours this on iOS, so without it the search
+              // field opened a light keyboard under the dark page
+              // (PDT-5150, same class as PDT-5022).
+              keyboardAppearance: context.amityBrightness,
               style: AmityTextStyle.body(theme.baseColor),
               decoration: InputDecoration(
                 prefixIcon: Padding(
@@ -119,7 +126,12 @@ class AmityTopSearchBarComponent extends NewBaseComponent {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     context.l10n.general_cancel,
-                    style: AmityTextStyle.body(theme.primaryColor),
+                    // Design binds the ghost main-button label
+                    // (Text/MainButton/Default/Ghost/Primary/Enabled =
+                    // #4A82F2 via primary_shade1_color); the flat theme's
+                    // primary is #1054DE, the deeper fill colour (PDT-5150).
+                    style: AmityTextStyle.body(context.amityToken(
+                        AmityColorToken.textMainButtonDefaultGhostPrimaryEnabled)),
                   ),
                 ),
               )

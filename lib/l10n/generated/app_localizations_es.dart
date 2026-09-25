@@ -1860,8 +1860,26 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reaction_tap_to_remove => 'Toca para eliminar reacción';
 
   @override
+  String get reaction_no_reactions_yet => 'No reactions yet';
+
+  @override
+  String reaction_be_first_to_react(String referenceType) {
+    return 'Be the first to react to this $referenceType!';
+  }
+
+  @override
   String get image_load_error =>
       'No se pudo cargar la imagen. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get chat_report_title => 'Report reason';
+
+  @override
+  String get chat_report_description =>
+      'Tell us why you\'re reporting this message. Your report will be reviewed by our moderators and kept confidential.';
+
+  @override
+  String get chat_report_submit => 'Submit';
 }
 
 /// The translations for Spanish Castilian, as used in Chile (`es_CL`).

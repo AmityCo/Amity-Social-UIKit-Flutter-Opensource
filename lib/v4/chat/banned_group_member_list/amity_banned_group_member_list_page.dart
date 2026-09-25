@@ -15,6 +15,7 @@ import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:equatable/equatable.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 
 part 'amity_banned_group_member_list_state.dart';
 part 'amity_banned_group_member_list_cubit.dart';
@@ -25,7 +26,7 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
   AmityBannedGroupMemberListPage({
     Key? key,
     required this.channel,
-  }) : super(key: key, pageId: 'bannedd_group_member_list_page');
+  }) : super(key: key, pageId: 'banned_group_member_list_page');
 
   final ScrollController scrollController = ScrollController();
   final ScrollController horizontalScrollController = ScrollController();
@@ -50,18 +51,18 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
             return Stack(
               children: [
                 Scaffold(
-                  backgroundColor: theme.backgroundColor,
+                  backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
               appBar: AppBar(
-                backgroundColor: theme.backgroundColor,
+                backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                 title: Text(
                   context.l10n.settings_banned_users,
-                  style: AmityTextStyle.titleBold(theme.baseColor),
+                  style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(
                     'assets/Icons/amity_ic_back_button.svg',
                     package: 'amity_uikit_beta_service',
-                    colorFilter: ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(token(AmityColorToken.textListHeaderDefaultDefault), BlendMode.srcIn),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -117,14 +118,14 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
             'assets/Icons/amity_ic_banned_member_not_found.svg',
             package: 'amity_uikit_beta_service',
             colorFilter:
-                ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
+                ColorFilter.mode(token(AmityColorToken.iconEmptyStateIconDefault), BlendMode.srcIn),
             width: 60,
             height: 60,
           ),
           const SizedBox(height: 8),
           Text(
             context.l10n.banned_users_empty_state,
-            style: AmityTextStyle.titleBold(theme.baseColorShade3),
+            style: AmityTextStyle.titleBold(token(AmityColorToken.textEmptyStateTitleDefault)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -207,7 +208,7 @@ class AmityBannedGroupMemberListPage extends NewBasePage {
       title: context.l10n.user_unban_confirm_title,
       detailText: context.l10n.user_unban_confirm_description,
       leftButtonText: context.l10n.general_cancel,
-      leftButtonColor: theme.primaryColor,
+      leftButtonColor: token(AmityColorToken.textBaseHighlight),
       rightButtonText: context.l10n.user_unban_button,
       onConfirm: () {
         cubit.unbanUser(

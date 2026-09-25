@@ -35,14 +35,14 @@ class ReactionBubble extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
           decoration: BoxDecoration(
             color: containMyReations
-                ? theme.highlightColor
-                : theme.backgroundColor, // bubble background color
+                ? context.amityToken(AmityColorToken.surfaceReactionsReactionCountActive)
+                : context.amityToken(AmityColorToken.surfaceReactionsReactionCountDefault),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
                 color: containMyReations
-                    ? theme.backgroundColor
-                    : theme.baseColorShade4),
-            // border: Border.all(color: containMyReations ? theme.alertColor : theme.alertColor),
+                    ? context.amityToken(AmityColorToken.borderReactionReactionCountActive)
+                    : context.amityToken(AmityColorToken.borderReactionReactionCountDefault)),
+            // border: Border.all(color: containMyReations ? context.amityToken(AmityColorToken.textBaseAlert) : context.amityToken(AmityColorToken.textBaseAlert)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -62,7 +62,7 @@ class ReactionBubble extends StatelessWidget {
                         padding: const EdgeInsets.all(1),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: theme.backgroundColor,
+                          color: context.amityToken(AmityColorToken.surfaceReactionsReactionPopoverFilledDefault),
                         ),
                         child: SvgPicture.asset(
                           reactions[index] ?? "",
@@ -78,8 +78,8 @@ class ReactionBubble extends StatelessWidget {
               Text(
                 totalReactionCount.formattedCompactString(),
                 style: AmityTextStyle.captionBold(containMyReations
-                    ? theme.backgroundColor
-                    : theme.baseColor),
+                    ? context.amityToken(AmityColorToken.textReactionsChatReactionCountActive)
+                    : context.amityToken(AmityColorToken.textReactionsChatReactionCountDefault)),
               ),
             ],
           ),

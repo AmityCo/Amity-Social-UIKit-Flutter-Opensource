@@ -4,11 +4,13 @@ import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/shared/user/user_list.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 
 class AmityChannelCreateConversationPage extends NewBasePage {
   AmityChannelCreateConversationPage({Key? key})
@@ -30,12 +32,12 @@ class AmityChannelCreateConversationPage extends NewBasePage {
             ChannelCreateConversationState>(
           builder: (context, state) {
             return Scaffold(
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
               appBar: AppBar(
-                backgroundColor: theme.backgroundColor,
+                backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                 title: Text(
                   context.l10n.chat_new_conversation,
-                  style: AmityTextStyle.titleBold(theme.baseColor),
+                  style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(
@@ -44,7 +46,7 @@ class AmityChannelCreateConversationPage extends NewBasePage {
                     width: 24,
                     height: 24,
                     colorFilter:
-                        ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                        ColorFilter.mode(token(AmityColorToken.textListHeaderDefaultDefault), BlendMode.srcIn),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -87,30 +89,14 @@ class AmityChannelCreateConversationPage extends NewBasePage {
         if (state.list.isEmpty) {
             final isInitialSearch = state.searchText.isNotEmpty && state.searchText.length < 3;
             
-            return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-              SvgPicture.asset(
-                isInitialSearch
+            return AmityEmptyState(
+              variant: AmityEmptyStateVariant.icon,
+              asset: isInitialSearch
                   ? 'assets/Icons/amity_ic_search_user.svg'
-                  : 'assets/Icons/amity_ic_search_not_found.svg',
-                package: 'amity_uikit_beta_service',
-                colorFilter:
-                  ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
-                width: 47,
-                height: 47,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                isInitialSearch
+                  : 'assets/Icons/amity_ic_search_cross_l.svg',
+              title: isInitialSearch
                   ? context.l10n.search_minimum_characters
                   : context.l10n.search_no_results,
-                style: AmityTextStyle.body(theme.baseColorShade2),
-                textAlign: TextAlign.center,
-              ),
-              ],
-            ),
             );
         } else {
           return userList(

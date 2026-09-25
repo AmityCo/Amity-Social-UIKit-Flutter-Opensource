@@ -11,7 +11,7 @@ import 'package:amity_uikit_beta_service/v4/chat/message_composer/message_compos
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
@@ -118,14 +118,21 @@ class AmityChatPage extends NewBasePage {
 
                 final newMessage = state.newMessage;
                 return Scaffold(
+                  // The body paints its own dark container, but the strip the
+                  // keyboard sits over belongs to the Scaffold, which without
+                  // this falls back to Material's white scaffoldBackgroundColor
+                  // — visible as white behind the iOS keyboard's rounded top
+                  // corners (PDT-5022 follow-up).
+                  backgroundColor:
+                      token(AmityColorToken.surfacePageBackgroundDefault),
                   appBar: AppBar(
                     titleSpacing: -5,
-                    surfaceTintColor: theme.backgroundColor,
+                    surfaceTintColor: token(AmityColorToken.surfacePageBackgroundDefault),
                     leading: IconButton(
                       icon: SvgPicture.asset(
                         "assets/Icons/amity_ic_back_button.svg",
                         package: 'amity_uikit_beta_service',
-                        color: theme.baseColor,
+                        color: token(AmityColorToken.textListHeaderDefaultDefault),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -154,10 +161,13 @@ class AmityChatPage extends NewBasePage {
                               children: [
                                 Text(
                                   state.userDisplayName ?? "",
-                                  style: TextStyle(
-                                    color: theme.baseColor,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w600,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AmityTextStyle.custom(
+                                    15,
+                                    FontWeight.w700,
+                                    token(AmityColorToken
+                                        .textListHeaderDefaultDefault),
                                   ),
                                 ),
                                 Visibility(
@@ -173,7 +183,7 @@ class AmityChatPage extends NewBasePage {
                                         context.l10n.chat_waiting_for_network,
                                         style: TextStyle(
                                           fontSize: 13,
-                                          color: theme.baseColorShade1,
+                                          color: token(AmityColorToken.textListTextDescriptionDefaultDefault),
                                           fontWeight: FontWeight.w400,
                                         ),
                                       ),
@@ -195,7 +205,7 @@ class AmityChatPage extends NewBasePage {
                             width: 24,
                             height: 24,
                             colorFilter: ColorFilter.mode(
-                                theme.baseColor, BlendMode.srcIn),
+                                token(AmityColorToken.textListHeaderDefaultDefault), BlendMode.srcIn),
                           ),
                           onPressed: () {
                             HapticFeedback.heavyImpact();
@@ -205,18 +215,18 @@ class AmityChatPage extends NewBasePage {
                         const SizedBox(width: 8),
                       ]
                     ],
-                    backgroundColor: theme.backgroundColor,
+                    backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                     elevation: 0,
                     bottom: PreferredSize(
                       preferredSize: const Size.fromHeight(0),
                       child: Container(
                         height: 1,
-                        color: theme.baseColorShade4,
+                        color: token(AmityColorToken.lineDividerPostDefault),
                       ),
                     ),
                   ),
                   body: Container(
-                    color: theme.backgroundColor,
+                    color: token(AmityColorToken.surfacePageBackgroundDefault),
                     child: Column(
                       children: [
                         Visibility(
@@ -440,7 +450,8 @@ class AmityChatPage extends NewBasePage {
                                               horizontal: 8.0,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: theme.backgroundColor,
+                                              color: token(AmityColorToken
+                                                  .surfaceDateAndTimeDateSeparatorDefault),
                                               borderRadius:
                                                   BorderRadius.circular(16),
                                               boxShadow: [
@@ -455,7 +466,7 @@ class AmityChatPage extends NewBasePage {
                                             child: Text(
                                               item.date ?? "",
                                               style: TextStyle(
-                                                  color: theme.baseColorShade1,
+                                                  color: token(AmityColorToken.textListTextDescriptionDefaultDefault),
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 13),
                                             ),
@@ -488,13 +499,13 @@ class AmityChatPage extends NewBasePage {
                                   left: 16.0,
                                   right: 16.0),
                               decoration: BoxDecoration(
-                                color: theme.backgroundShade1Color,
+                                color: token(AmityColorToken.surfaceBannerSubdueGeneral),
                               ),
                               child: Center(
                                 child: Text(
                                   context.l10n.chat_blocked_message,
                                   style: AmityTextStyle.caption(
-                                      theme.baseColorShade1),
+                                      token(AmityColorToken.textListTextDescriptionDefaultDefault)),
                                   textAlign: TextAlign.center,
                                 ),
                               ),

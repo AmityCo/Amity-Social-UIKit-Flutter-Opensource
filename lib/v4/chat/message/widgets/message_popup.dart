@@ -14,6 +14,40 @@ class ReactionItem {
   });
 }
 
+/// An action row of the message popover. Presses fill the row with the popover
+/// list Hover surface instead of the generic Material ripple.
+class _ActionMenuItem<T> extends PopupMenuItem<T> {
+  /// Resolved by the caller: the menu route sits outside the bubble's token
+  /// scope, so it cannot resolve the token itself.
+  final Color hoverColor;
+
+  const _ActionMenuItem({
+    required this.hoverColor,
+    super.value,
+    super.padding,
+    required super.child,
+  });
+
+  @override
+  PopupMenuItemState<T, _ActionMenuItem<T>> createState() =>
+      _ActionMenuItemState<T>();
+}
+
+class _ActionMenuItemState<T>
+    extends PopupMenuItemState<T, _ActionMenuItem<T>> {
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        highlightColor: widget.hoverColor,
+        hoverColor: widget.hoverColor,
+        splashFactory: NoSplash.splashFactory,
+      ),
+      child: Builder(builder: (innerContext) => super.build(innerContext)),
+    );
+  }
+}
+
 class ReactionRow extends StatefulWidget {
   final List<ReactionItem> reactions;
   final Function(AmityReactionType, bool) onReactionSelected;
@@ -96,13 +130,27 @@ class _ReactionRowState extends State<ReactionRow> {
               alignment: Alignment.center,
               clipBehavior: Clip.none,
               children: [
+                // The disc marks the reaction *you* already left, and nothing
+                // else. The item under the finger gets the scale-and-lift below
+                // instead — Android states this as a product decision in
+                // AmityReaction.kt:533 ("shows ONLY for the self-reacted item")
+                // and we were drawing it for both (PDT-5023).
+                //
+                // Sizes follow Android, which is where the design's numbers
+                // land unambiguously: the popover slot — and so the disc — is
+                // 40, and 32 is the *icon* inside it (AmityReaction.kt:225-226,
+                // an Image of PopoverItemRestingIconSize with 4 padding). The
+                // Figma node named "reaction state 32x32" is that icon frame,
+                // not the disc; reading it as the disc left a 1 ring around a
+                // 30 glyph, i.e. no visible marker at all.
                 if (reactionItem.isSelected)
                   Container(
-                    width: 42,
-                    height: 42,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: widget.theme.baseColorShade4,
+                      color: context.amityToken(AmityColorToken
+                          .surfaceReactionsReactionPopoverReactionStateActive),
                     ),
                   ),
                 if (active)
@@ -147,8 +195,10 @@ class _ReactionRowState extends State<ReactionRow> {
                   child: SvgPicture.asset(
                     reactionItem.reaction.imagePath,
                     package: 'amity_uikit_beta_service',
-                    width: active ? 36 : 30,
-                    height: active ? 36 : 30,
+                    // Resting 32 = Android's PopoverItemRestingIconSize, which
+                    // leaves the 4 ring of disc that makes the marker visible.
+                    width: active ? 36 : 32,
+                    height: active ? 36 : 32,
                   ),
                 ),
               ],
@@ -223,7 +273,8 @@ extension MessagePopup on MessageBubbleView {
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 decoration: BoxDecoration(
-                  color: theme.backgroundColor,
+                  color: token(AmityColorToken
+                      .surfaceReactionsReactionPopoverFilledDefault),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Row(
@@ -306,7 +357,7 @@ extension MessagePopup on MessageBubbleView {
 
       // Calculate more accurate menu item count based on message type and ownership
       const menuItemHeight = 48.0;
-      const menuPadding = 8.0;
+      const menuPadding = 16.0;
 
       int itemCount = 0;
 
@@ -364,43 +415,47 @@ extension MessagePopup on MessageBubbleView {
         );
       }
 
-      final result = await showMenu(
+      final hoverColor = token(AmityColorToken.surfacePopoverListsHover);
+
+      final result = await showMenu<String>(
         context: context,
-        surfaceTintColor: theme.backgroundColor,
-        color: theme.backgroundColor,
+        surfaceTintColor: token(AmityColorToken.surfacePopoverBackgroundDefault),
+        color: token(AmityColorToken.surfacePopoverBackgroundDefault),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
         ),
         elevation: 6,
         shadowColor: Colors.black.withOpacity(0.4),
-        menuPadding: const EdgeInsets.symmetric(vertical: 4),
+        menuPadding: const EdgeInsets.symmetric(vertical: 8),
         position: position,
         items: isCurrentUserMuted
           ? [
               // If current user is muted, only show copy option and delete for own messages
               if (message.data is MessageTextData ||
                   message.data is MessageCustomData)
-                PopupMenuItem(
+                _ActionMenuItem(
                   value: 'copy',
+                  padding: EdgeInsets.zero,
+                  hoverColor: hoverColor,
                   child: Container(
-                    height: 44,
+                    height: 48,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_message_copy.svg',
                           package: 'amity_uikit_beta_service',
-                          width: 20,
-                          height: 18,
-                          color: theme.baseColor,
+                          width: 24,
+                          height: 24,
+                          color: token(AmityColorToken.iconListLeadingDefaultDefault),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 8),
                         Text(
                           context.l10n.general_copy,
                           style: TextStyle(
-                              color: theme.baseColor,
+                              color: token(AmityColorToken.textListHeaderDefaultDefault),
                               fontSize: 15,
                               fontWeight: FontWeight.w400),
                         ),
@@ -409,27 +464,29 @@ extension MessagePopup on MessageBubbleView {
                   ),
                 ),
               if (isUser)
-                PopupMenuItem(
+                _ActionMenuItem(
                   value: 'delete',
+                  padding: EdgeInsets.zero,
+                  hoverColor: hoverColor,
                   child: Container(
-                    height: 44,
+                    height: 48,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_deleted_message.svg',
                           package: 'amity_uikit_beta_service',
-                          width: 20,
-                          height: 18,
-                          color: theme.alertColor,
+                          width: 24,
+                          height: 24,
+                          color: token(AmityColorToken.iconListLeadingDestructiveDefault),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 8),
                         Text(
                           context.l10n.general_delete,
                           style: TextStyle(
-                            color: theme.alertColor,
+                            color: token(AmityColorToken.textListHeaderDestructiveDefault),
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
                           ),
@@ -443,27 +500,29 @@ extension MessagePopup on MessageBubbleView {
               // Normal menu options for non-muted users
               if (message.syncState == AmityMessageSyncState.SYNCED) ...[
                 if (isUser && message.type == AmityMessageDataType.TEXT)
-                  PopupMenuItem(
+                  _ActionMenuItem(
                     value: 'edit',
+                    padding: EdgeInsets.zero,
+                    hoverColor: hoverColor,
                     child: Container(
-                      height: 44,
+                      height: 48,
                       padding:
-                          const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset(
                             'assets/Icons/amity_ic_edit_button.svg',
                             package: 'amity_uikit_beta_service',
-                            width: 20,
-                            height: 18,
-                            color: theme.baseColor,
+                            width: 24,
+                            height: 24,
+                            color: token(AmityColorToken.iconListLeadingDefaultDefault),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 8),
                           Text(
                             context.l10n.general_edit,
                             style: TextStyle(
-                                color: theme.baseColor,
+                                color: token(AmityColorToken.textListHeaderDefaultDefault),
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400),
                           ),
@@ -471,27 +530,29 @@ extension MessagePopup on MessageBubbleView {
                       ),
                     ),
                   ),
-                PopupMenuItem(
+                _ActionMenuItem(
                   value: 'reply',
+                  padding: EdgeInsets.zero,
+                  hoverColor: hoverColor,
                   child: Container(
-                    height: 44,
+                    height: 48,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_reply_button.svg',
                           package: 'amity_uikit_beta_service',
-                          width: 20,
-                          height: 18,
-                          color: theme.baseColor,
+                          width: 24,
+                          height: 24,
+                          color: token(AmityColorToken.iconListLeadingDefaultDefault),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 8),
                         Text(
                           context.l10n.comment_reply,
                           style: TextStyle(
-                              color: theme.baseColor,
+                              color: token(AmityColorToken.textListHeaderDefaultDefault),
                               fontSize: 15,
                               fontWeight: FontWeight.w400),
                         ),
@@ -501,27 +562,29 @@ extension MessagePopup on MessageBubbleView {
                 ),
                 if ((message.data is MessageImageData ||
                     message.data is MessageVideoData))
-                  PopupMenuItem(
+                  _ActionMenuItem(
                     value: 'save',
+                    padding: EdgeInsets.zero,
+                    hoverColor: hoverColor,
                     child: Container(
-                      height: 44,
+                      height: 48,
                       padding:
-                          const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset(
                             'assets/Icons/amity_ic_save_image.svg',
                             package: 'amity_uikit_beta_service',
-                            width: 20,
-                            height: 18,
-                            color: theme.baseColor,
+                            width: 24,
+                            height: 24,
+                            color: token(AmityColorToken.iconListLeadingDefaultDefault),
                           ),
-                          const SizedBox(width: 13),
+                          const SizedBox(width: 8),
                           Text(
                             context.l10n.general_save,
                             style: TextStyle(
-                                color: theme.baseColor,
+                                color: token(AmityColorToken.textListHeaderDefaultDefault),
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400),
                           ),
@@ -532,27 +595,29 @@ extension MessagePopup on MessageBubbleView {
               ],
               if (message.data is MessageTextData ||
                   message.data is MessageCustomData)
-                PopupMenuItem(
+                _ActionMenuItem(
                   value: 'copy',
+                  padding: EdgeInsets.zero,
+                  hoverColor: hoverColor,
                   child: Container(
-                    height: 44,
+                    height: 48,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_message_copy.svg',
                           package: 'amity_uikit_beta_service',
-                          width: 20,
-                          height: 18,
-                          color: theme.baseColor,
+                          width: 24,
+                          height: 24,
+                          color: token(AmityColorToken.iconListLeadingDefaultDefault),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 8),
                         Text(
                           context.l10n.general_copy,
                           style: TextStyle(
-                              color: theme.baseColor,
+                              color: token(AmityColorToken.textListHeaderDefaultDefault),
                               fontSize: 15,
                               fontWeight: FontWeight.w400),
                         ),
@@ -561,13 +626,15 @@ extension MessagePopup on MessageBubbleView {
                   ),
                 ),
               if (!isUser)
-                PopupMenuItem(
+                _ActionMenuItem(
                   value: message.isFlaggedByMe == true ? 'unreport' : 'report',
+                  padding: EdgeInsets.zero,
+                  hoverColor: hoverColor,
                   child: Container(
                     // width: 100,
-                    height: 44,
+                    height: 48,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Row(
                       children: [
                         SvgPicture.asset(
@@ -575,16 +642,21 @@ extension MessagePopup on MessageBubbleView {
                               ? 'assets/Icons/amity_ic_unreport_user_button.svg'
                               : 'assets/Icons/amity_ic_report_user_button.svg',
                           package: 'amity_uikit_beta_service',
-                          width: 20,
-                          height: 18,
+                          width: 24,
+                          height: 24,
+                          // Every other row in this menu tints its glyph; this
+                          // one did not, so it fell back to the asset's own
+                          // dark fill and disappeared in dark mode.
+                          color:
+                              token(AmityColorToken.iconListLeadingDefaultDefault),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 8),
                         Text(
                           message.isFlaggedByMe == true 
                               ? context.l10n.message_unreport
                               : context.l10n.message_report,
                           style: TextStyle(
-                            color: theme.baseColor,
+                            color: token(AmityColorToken.textListHeaderDefaultDefault),
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
                           ),
@@ -594,27 +666,29 @@ extension MessagePopup on MessageBubbleView {
                   ),
                 ),
               if (isUser)
-                PopupMenuItem(
+                _ActionMenuItem(
                   value: 'delete',
+                  padding: EdgeInsets.zero,
+                  hoverColor: hoverColor,
                   child: Container(
-                    height: 44,
+                    height: 48,
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/Icons/amity_ic_deleted_message.svg',
                           package: 'amity_uikit_beta_service',
-                          width: 20,
-                          height: 18,
-                          color: theme.alertColor,
+                          width: 24,
+                          height: 24,
+                          color: token(AmityColorToken.iconListLeadingDestructiveDefault),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 8),
                         Text(
                           context.l10n.general_delete,
                           style: TextStyle(
-                            color: theme.alertColor,
+                            color: token(AmityColorToken.textListHeaderDestructiveDefault),
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
                           ),
@@ -699,13 +773,21 @@ extension MessagePopup on MessageBubbleView {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      // A full-height sheet (Figma: 764 of 812) that stops under the status
+      // bar, so the component's Submit footer pins to the bottom edge instead
+      // of trailing the reason list. useSafeArea is the inset source that is
+      // right on every device; the page's MediaQuery padding is already
+      // consumed by the Scaffold above and reads 0 here.
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (modalContext) {
-        return AmityMessageReportComponent(
-          message: message,
-          onCancel: () {
-            Navigator.pop(modalContext);
-          },
+        return SizedBox.expand(
+          child: AmityMessageReportComponent(
+            message: message,
+            onCancel: () {
+              Navigator.pop(modalContext);
+            },
+          ),
         );
       },
     );

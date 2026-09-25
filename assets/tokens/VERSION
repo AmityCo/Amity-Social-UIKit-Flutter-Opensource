@@ -1,0 +1,45 @@
+# Provenance of amity-uikit-design-tokens.json
+#
+# Source of truth is cleverden, not another platform. The table and the Dart
+# token model are both emitted there and pushed here by a sync script:
+#
+#   cd <cleverden>
+#   node scripts/uikit-build-token-model.mjs        # regenerates the four models
+#   node scripts/sync-flutter-tokens.mjs            # dry-run: what would change
+#   node scripts/sync-flutter-tokens.mjs --apply    # write
+#
+#   AMITY_FLUTTER_UIKIT=<path to this repo> is needed unless the script's
+#   default checkout path happens to be yours.
+#
+# Do NOT copy these from the Android repo. That is what this file used to
+# record, and it was the wrong shape even though every value was right: Android
+# is a consumer of the same generator, so vendoring from it made a consumer the
+# de-facto source. A token change reached Android by running a script and
+# reached Flutter only if somebody remembered. The Dart emit and the sync script
+# remove the detour (cleverden 06c6161f, 2026-08-11).
+#
+# kAmityThemeDefaults is derived by the sync from the config that actually
+# lands here — post-merge — so app-only theme keys survive. Deriving it from
+# the source-of-truth config instead would silently drop toast_background_color,
+# and nothing would notice until a host shipped a stale config and backfilled
+# into the hole.
+#
+# sha256 of the vendored table, to check the copy without any other repo:
+#   0bf676635310c4f3...  (shasum -a 256 assets/tokens/amity-uikit-design-tokens.json)
+
+source_repo:   AmityCo/cleverden
+source_path:   uikit/amity-uikit-design-tokens.json
+source_ref:    feat/figma-extract-pipeline
+source_commit: 06c6161fdc158d7989ee990c82cdd447250537b0
+source_date:   2026-08-11
+schema:        3
+aliases:       55
+semantic:      723
+
+# Also synced from that commit:
+#   uikit/generated/amity_color_token.dart -> lib/v4/core/theme/amity_color_token.dart
+#   uikit/amity-uikit-config.json          -> assets/config/config.json (theme block merged)
+#
+# The design system's conformance vectors for this table live at
+# colors-v2/config-resolution-testvectors.json and are vendored into
+# test/fixtures/upstream/ — see test/v4/core/theme/upstream_conformance_test.dart.

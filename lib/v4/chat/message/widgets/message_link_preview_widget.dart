@@ -2,10 +2,13 @@ import 'package:amity_uikit_beta_service/v4/utils/processed_text_cache.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:amity_uikit_beta_service/v4/utils/message_color.dart';
+import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -192,7 +195,6 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
     // Calculate dimensions
     final screenWidth = MediaQuery.of(context).size.width;
     final bubbleWidth = screenWidth * 0.6; // Bubble is 60% of screen width
-    final imageWidth = bubbleWidth * 0.4; // Image is 40% of bubble width
 
     return GestureDetector(
       onTap: widget.onTap ?? _launchUrl,
@@ -211,8 +213,8 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
           children: [
             if (_metadata?.image != null)
               Container(
-                color: Colors.white,
-                width: imageWidth,
+                color: context.amityToken(AmityColorToken.surfaceMediaImageLoading),
+                width: _mediaHalfSize,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
@@ -220,44 +222,21 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
                   ),
                   child: Image.network(
                     _metadata!.image!,
-                    height: 96,
-                    fit: BoxFit
-                        .fitWidth, // Changed from cover to fill to stretch the image
+                    width: _mediaHalfSize,
+                    height: _mediaHalfSize,
+                    fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      // Show error icon instead of hiding the image section
-                      return Container(
-                        height: 96,
-                        width: imageWidth,
-                        color: widget.isUserMessage
-                            ? widget.theme.primaryColor
-                                .blend(ColorBlendingOption.shade1)
-                            : widget.theme.backgroundShade1Color,
-                        child: Center(
-                          child: SvgPicture.asset(
-                            'assets/Icons/amity_ic_message_preview_link_error.svg',
-                            width: 18,
-                            height: 18,
-                            package: 'amity_uikit_beta_service',
-                            color: widget.isUserMessage
-                                ? widget.theme.primaryColor
-                                    .blend(ColorBlendingOption.shade2)
-                                : widget.theme.baseColorShade3,
-                          ),
-                        ),
-                      );
+                      // Broken media falls back to the same placeholder half as
+                      // the unavailable card.
+                      return _brokenMediaHalf(context);
                     },
                   ),
                 ),
               ),
             Expanded(
               child: Container(
-                height: 96,
-                color: widget.messageColor != null
-                    ? (widget.isUserMessage
-                        ? widget.messageColor!.rightBubblePreviewLinkColor
-                            .withOpacity(0.15)
-                        : widget.messageColor!.leftBubblePreviewLinkColor)
-                    : Colors.white,
+                height: _mediaHalfSize,
+                color: _infoPaneColor(context),
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,9 +248,7 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
                         child: Text(
                           _metadata!.title!,
                           style: AmityTextStyle.captionBold(
-                            widget.isUserMessage
-                                ? Colors.white
-                                : widget.theme.baseColor,
+                            context.amityToken(AmityColorToken.textCardPreviewLinkTitleDefault),
                           ),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -283,9 +260,7 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
                     Text(
                       _getDisplayHost(_url!),
                       style: AmityTextStyle.captionSmall(
-                        widget.isUserMessage
-                            ? Colors.white
-                            : widget.theme.baseColor,
+                        context.amityToken(AmityColorToken.textCardPreviewLinkDomainDefault),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -301,78 +276,76 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
   }
 
   Widget _simpleSkeletonLoadingWidget() {
-    // Calculate dimensions for skeleton
     final screenWidth = MediaQuery.of(context).size.width;
     final bubbleWidth = screenWidth * 0.6; // Bubble is 60% of screen width
-    final imageWidth = bubbleWidth * 0.4; // Image is 40% of bubble width
 
+    // Only the two bars shimmer. The panes behind them are static, which is
+    // the whole point of this state: Android says it outright in
+    // AmityChatLinkPreview.kt:241 — the info pane is "the
+    // Surface/Card/PreviewLink/Skeleton pane with two shimmer bars ... NOT a
+    // solid block".
+    //
+    // This used to wrap the entire card in Shimmer and put ShimmerLoading on
+    // both panes. ShimmerLoading shader-masks its child, so the gradient
+    // painted over everything — and the gradient itself was flat, because it
+    // interpolated Surface/Card/PreviewLink/Default to
+    // Surface/Card/PreviewLink/Skeleton and both resolve to the same
+    // #636878. The result was one uniform slab with no bars and no sweep,
+    // which is what QA saw (PDT-5146).
     return Shimmer(
-      linearGradient: LinearGradient(
-        colors: [
-          widget.isUserMessage
-              ? widget.theme.primaryColor.blend(ColorBlendingOption.shade1)
-              : widget.theme.backgroundShade1Color,
-          widget.isUserMessage
-              ? widget.theme.primaryColor.blend(ColorBlendingOption.shade2)
-              : widget.theme.backgroundShade1Color
-                  .blend(ColorBlendingOption.shade2),
-          widget.isUserMessage
-              ? widget.theme.primaryColor.blend(ColorBlendingOption.shade1)
-              : widget.theme.backgroundShade1Color,
-        ],
-        stops: const [
-          0.1,
-          0.3,
-          0.4,
-        ],
-        begin: Alignment(-1.0, -0.3),
-        end: Alignment(1.0, 0.3),
-      ),
+      linearGradient: ConfigRepository().getShimmerGradient(),
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: bubbleWidth, // Use calculated bubble width
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          // No background color here - we'll set it separately for each section
-        ),
+        constraints: BoxConstraints(maxWidth: bubbleWidth),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         clipBehavior: Clip.antiAlias,
         child: Row(
           children: [
-            ShimmerLoading(
-              isLoading: true,
-              child: Container(
-                height: 96,
-                width: imageWidth, // Using calculated 40% of bubble width
-                color: widget.isUserMessage
-                    ? widget.theme.primaryColor
-                        .blend(ColorBlendingOption.shade1)
-                    : widget.theme.backgroundShade1Color,
-              ),
+            // Media half: the media-loading surface with the spinner over it,
+            // no shimmer mask (Android: "no extra overlay").
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  height: _mediaHalfSize,
+                  width: _mediaHalfSize,
+                  color: context
+                      .amityToken(AmityColorToken.surfaceMediaImageLoading),
+                ),
+                // Chat-local media spinner (deliberately not the brand loader);
+                // colors-v2 carries no semantic token for it yet.
+                const SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                    backgroundColor: Color(0x33FFFFFF),
+                  ),
+                ),
+              ],
             ),
+            // Info pane: static skeleton surface carrying the two bars.
             Expanded(
               child: Container(
-                height: 96,
-                color: widget.messageColor != null
-                    ? (widget.isUserMessage
-                        ? widget.messageColor!.rightBubblePreviewLinkColor
-                            .withOpacity(0.15)
-                        : widget.messageColor!.leftBubblePreviewLinkColor)
-                    : Colors.white,
-                padding: const EdgeInsets.all(10),
+                height: _mediaHalfSize,
+                color: context.amityToken(
+                    AmityColorToken.surfaceCardPreviewLinkSkeleton),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // 80x8 and 54x8 at r12, Surface/SkeletonEffect/Default —
+                    // Android's numbers (AmityChatLinkPreview.kt:253-271).
                     ShimmerLoading(
                       isLoading: true,
                       child: SkeletonText(
                         width: 80,
                         height: 8,
-                        color: widget.isUserMessage
-                            ? widget.theme.primaryColor
-                                .blend(ColorBlendingOption.shade1)
-                            : widget.theme.baseColorShade4,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(12)),
+                        color: context.amityToken(
+                            AmityColorToken.surfaceSkeletonEffectDefault),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -381,10 +354,10 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
                       child: SkeletonText(
                         width: 54,
                         height: 8,
-                        color: widget.isUserMessage
-                            ? widget.theme.primaryColor
-                                .blend(ColorBlendingOption.shade1)
-                            : widget.theme.baseColorShade4,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(12)),
+                        color: context.amityToken(
+                            AmityColorToken.surfaceSkeletonEffectDefault),
                       ),
                     ),
                   ],
@@ -401,7 +374,6 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
   Widget _buildFallbackPreview() {
     final screenWidth = MediaQuery.of(context).size.width;
     final bubbleWidth = screenWidth * 0.6; // Bubble is 60% of screen width
-    final imageWidth = bubbleWidth * 0.4; // Image is 40% of bubble width
 
     return GestureDetector(
       onTap: widget.onTap ?? _launchUrl,
@@ -416,34 +388,11 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
         child: Row(
           children: [
             // Image placeholder with error icon
-            Container(
-              height: 96,
-              width: imageWidth,
-              color: widget.isUserMessage
-                  ? widget.theme.primaryColor.blend(ColorBlendingOption.shade1)
-                  : widget.theme.backgroundShade1Color,
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/Icons/amity_ic_message_preview_link_error.svg',
-                  width: 18,
-                  height: 18,
-                  package: 'amity_uikit_beta_service',
-                  color: widget.isUserMessage
-                      ? widget.theme.primaryColor
-                          .blend(ColorBlendingOption.shade2)
-                      : widget.theme.baseColorShade3,
-                ),
-              ),
-            ),
+            _brokenMediaHalf(context),
             Expanded(
               child: Container(
-                height: 96,
-                color: widget.messageColor != null
-                    ? (widget.isUserMessage
-                        ? widget.messageColor!.rightBubblePreviewLinkColor
-                            .withOpacity(0.15)
-                        : widget.messageColor!.leftBubblePreviewLinkColor)
-                    : Colors.white,
+                height: _mediaHalfSize,
+                color: _infoPaneColor(context),
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -453,9 +402,7 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
                       child: Text(
                         "Preview not available",
                         style: AmityTextStyle.captionBold(
-                          widget.isUserMessage
-                              ? Colors.white
-                              : widget.theme.baseColor,
+                          context.amityToken(AmityColorToken.textCardPreviewLinkTitleDefault),
                         ),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -465,9 +412,7 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
                     Text(
                       "No display data",
                       style: AmityTextStyle.captionSmall(
-                        widget.isUserMessage
-                            ? Colors.white
-                            : widget.theme.baseColor.withOpacity(0.8),
+                        context.amityToken(AmityColorToken.textCardPreviewLinkDomainDefault),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -477,6 +422,37 @@ class _MessageLinkPreviewWidgetState extends State<MessageLinkPreviewWidget> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// The card is a square media half beside an equally tall info pane.
+  static const double _mediaHalfSize = 113;
+
+  /// One info-pane surface for both directions; the direction only decides which
+  /// config override key can replace it.
+  Color _infoPaneColor(BuildContext context) {
+    final override = widget.isUserMessage
+        ? widget.messageColor?.rightBubblePreviewLinkColor
+        : widget.messageColor?.leftBubblePreviewLinkColor;
+    return override ??
+        context.amityToken(AmityColorToken.surfaceCardPreviewLinkDefault);
+  }
+
+  /// Placeholder media half shared by the broken-image and unavailable cards.
+  Widget _brokenMediaHalf(BuildContext context) {
+    return Container(
+      height: _mediaHalfSize,
+      width: _mediaHalfSize,
+      color: context.amityToken(AmityColorToken.surfaceMediaImageBroken),
+      child: Center(
+        child: SvgPicture.asset(
+          'assets/Icons/amity_ic_message_preview_link_error.svg',
+          width: 40,
+          height: 40,
+          package: 'amity_uikit_beta_service',
+          color: context.amityToken(AmityColorToken.iconMediaImageBroken),
         ),
       ),
     );

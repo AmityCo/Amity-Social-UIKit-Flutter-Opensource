@@ -428,7 +428,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get message_typing => 'is typing...';
 
   @override
-  String get message_placeholder => 'Type a message...';
+  String get message_placeholder => 'Write a message';
 
   @override
   String get message_deleted => 'This message was deleted';
@@ -1068,7 +1068,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timestamp_just_now => 'Just now';
 
   @override
-  String get timestamp_now => 'now';
+  String get timestamp_now => 'Now';
 
   @override
   String get chat_notification_turn_on => 'Turn on notifications';
@@ -1334,7 +1334,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chat_notifications_disabled =>
-      'You have disabled notifications for chat';
+      'Push notifications have been disabled by admin';
 
   @override
   String get chat_archive => 'Archive';
@@ -1356,7 +1356,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get general_search_hint => 'Search';
 
   @override
-  String get chat_archived_empty_title => 'No archived chats';
+  String get chat_archived_empty_title => 'No archived chat';
 
   @override
   String get chat_archived_title => 'Archived chats';
@@ -1632,7 +1632,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'All members have the option to receive notifications, but they need to enable them. By default, notifications are turned off for each member.';
 
   @override
-  String get notification_preference_title => 'Notification Preference';
+  String get notification_preference_title => 'Notifications';
 
   @override
   String get notification_allow_notifications => 'Allow notifications';
@@ -1839,5 +1839,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reaction_tap_to_remove => 'Tap to remove reaction';
 
   @override
+  String get reaction_no_reactions_yet => 'No reactions yet';
+
+  @override
+  String reaction_be_first_to_react(String referenceType) {
+    return 'Be the first to react to this $referenceType!';
+  }
+
+  @override
   String get image_load_error => 'Couldn\'t load image. Please try again.';
+
+  @override
+  String get chat_report_title => 'Report reason';
+
+  @override
+  String get chat_report_description =>
+      'Tell us why you\'re reporting this message. Your report will be reviewed by our moderators and kept confidential.';
+
+  @override
+  String get chat_report_submit => 'Submit';
 }

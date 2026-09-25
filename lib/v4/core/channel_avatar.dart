@@ -4,6 +4,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -112,7 +113,7 @@ class AmityChannelAvatar extends BaseElement {
       height: avatarSize.height,
       width: avatarSize.width,
       decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
+        color: token(AmityColorToken.surfaceAvatarProfileDefault),
         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
       ),
       child: Center(
@@ -121,6 +122,8 @@ class AmityChannelAvatar extends BaseElement {
           package: 'amity_uikit_beta_service',
           height: placeholderSize.height,
           width: placeholderSize.width,
+          colorFilter: ColorFilter.mode(
+              token(AmityColorToken.iconAvatarDefault), BlendMode.srcIn),
         ),
       ),
     );
@@ -132,17 +135,17 @@ class AmityChannelAvatar extends BaseElement {
       height: 16,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
+        color: token(AmityColorToken.surfaceBadgeSemanticBadgeChatPrivate),
         shape: BoxShape.circle,
         border: Border.all(
-          color: theme.backgroundColor,
+          color: token(AmityColorToken.borderAvatarIndicatorDefault),
           width: 1,
         ),
       ),
       child: SvgPicture.asset(
         "assets/Icons/amity_ic_private_community_channel.svg",
         package: 'amity_uikit_beta_service',
-        color: theme.backgroundColor,
+        color: token(AmityColorToken.iconBadgeSemanticBadgeChatPrivateDefault),
       ),
     );
   }

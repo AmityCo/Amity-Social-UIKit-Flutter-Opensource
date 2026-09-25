@@ -48,6 +48,19 @@ class ChannelCreateConversationBloc extends Bloc<ChannelCreateConversationEvent,
 
     on<SearchUsersEvent>((event, emit) async {
       searchText = event.searchText;
+      final keyword = event.searchText.trim();
+      // Below the 3-character minimum nothing is queried; the empty result is
+      // what drives the initial-prompt state.
+      if (keyword.isNotEmpty && keyword.length < 3) {
+        _subscription.cancel();
+        emit(ChannelCreateConversationLoaded(
+          list: const [],
+          hasMoreItems: false,
+          isFetching: false,
+          searchText: searchText,
+        ));
+        return;
+      }
       queryUser(event.searchText);
     });
 

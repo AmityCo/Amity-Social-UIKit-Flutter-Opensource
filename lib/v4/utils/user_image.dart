@@ -1,6 +1,9 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:flutter/material.dart';
 
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
+
 import '../core/theme.dart';
 
 class AmityUserImage extends StatelessWidget {
@@ -30,9 +33,13 @@ class AmityUserImage extends StatelessWidget {
     return 10; // default case
   }
 
-  Widget _buildPlaceholder() {
+  Widget _buildPlaceholder(BuildContext context) {
     return Container(
-      color: theme.primaryColor.blend(ColorBlendingOption.shade2),
+      // Same disc as AmityUserAvatar / AmityChannelAvatar, so it resolves the
+      // same token. A computed shade cannot: every rung of the primary ramp is
+      // one hex across both modes, and the flip lives in the token pointing at
+      // shade2 on light and shade1 on dark.
+      color: context.amityToken(AmityColorToken.surfaceAvatarProfileDefault),
       child: Center(
         child: Text(
           displayName.trim().isNotEmpty ? displayName.trim()[0].toUpperCase() : '?',
@@ -57,16 +64,16 @@ class AmityUserImage extends StatelessWidget {
           if (loadingProgress == null) {
             return child;
           } else {
-            return _buildPlaceholder();
+            return _buildPlaceholder(context);
           }
         },
         errorBuilder:
             (BuildContext context, Object error, StackTrace? stackTrace) {
-          return _buildPlaceholder();
+          return _buildPlaceholder(context);
         },
       );
     } else {
-      return _buildPlaceholder();
+      return _buildPlaceholder(context);
     }
   }
 }

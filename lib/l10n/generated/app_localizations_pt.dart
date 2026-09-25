@@ -1860,8 +1860,26 @@ class AppLocalizationsPt extends AppLocalizations {
   String get reaction_tap_to_remove => 'Toque para remover reação';
 
   @override
+  String get reaction_no_reactions_yet => 'No reactions yet';
+
+  @override
+  String reaction_be_first_to_react(String referenceType) {
+    return 'Be the first to react to this $referenceType!';
+  }
+
+  @override
   String get image_load_error =>
       'Não foi possível carregar a imagem. Por favor, tente novamente.';
+
+  @override
+  String get chat_report_title => 'Report reason';
+
+  @override
+  String get chat_report_description =>
+      'Tell us why you\'re reporting this message. Your report will be reviewed by our moderators and kept confidential.';
+
+  @override
+  String get chat_report_submit => 'Submit';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

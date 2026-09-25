@@ -22,13 +22,13 @@ extension VideoMessageWidget on MessageBubbleView {
           if (isUser &&
               message.createdAt != null &&
               message.syncState == AmityMessageSyncState.SYNCED) ...[
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
             const SizedBox(width: 8),
           ],
           if (isUser &&
               message.syncState != AmityMessageSyncState.SYNCED &&
               message.syncState != AmityMessageSyncState.FAILED) ...[
-            _buildSideTextWidget(context.l10n.message_sending),
+            _buildSideTextWidget(context, context.l10n.message_sending),
             const SizedBox(width: 8),
           ],
           if (!isUser) ...[
@@ -45,16 +45,7 @@ extension VideoMessageWidget on MessageBubbleView {
                   onTap: () {
                     _showActionSheet(context);
                   },
-                  child: SvgPicture.asset(
-                    'assets/Icons/amity_ic_error_message.svg',
-                    package: 'amity_uikit_beta_service',
-                    width: 16,
-                    height: 16,
-                    colorFilter: ColorFilter.mode(
-                      theme.baseColorShade2,
-                      BlendMode.srcIn,
-                    ),
-                  ),
+                  child: const AmityMessageErrorBadge(),
                 ),
               ),
             ),
@@ -96,7 +87,7 @@ extension VideoMessageWidget on MessageBubbleView {
               ),
               if (message.syncState != AmityMessageSyncState.SYNCED &&
                   message.syncState != AmityMessageSyncState.FAILED)
-                _buildUploadingIndicator(),
+                _buildUploadingIndicator(context),
               if (message.syncState == AmityMessageSyncState.UPLOADING)
                 _buildCancelDownloadButton(),
               if (message.syncState == AmityMessageSyncState.SYNCED)
@@ -127,7 +118,7 @@ extension VideoMessageWidget on MessageBubbleView {
           ),
           if (!isUser && message.createdAt != null) ...[
             const SizedBox(width: 8),
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
           ],
         ],
       ),

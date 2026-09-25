@@ -11,17 +11,17 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: theme.backgroundColor.blend(ColorBlendingOption.shade1),
-          boxShadow: const [
+          color: token(AmityColorToken.surfaceSheetsBackgroundGeneral),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x1A292B32),
+              color: token(AmityColorToken.lineDividerContentDefault),
               blurRadius: 2,
               offset: Offset(0, 1),
               spreadRadius: 1,
             ),
           ],
           border: Border.all(
-            color: theme.baseColor.withOpacity(0.1),
+            color: token(AmityColorToken.textListHeaderDefaultDefault).withOpacity(0.1),
             width: 1,
           ),
         ),
@@ -63,9 +63,8 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                                 ? Text(
                                     (message.data as MessageTextData).text ??
                                         "",
-                                    style: AmityTextStyle.body(theme
-                                        .secondaryColor
-                                        .blend(ColorBlendingOption.shade2)),
+                                    style: AmityTextStyle.body(token(AmityColorToken
+                                        .textListTextDescriptionDefaultDefault)),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   )
@@ -73,9 +72,8 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                                     ? Text(
                                         (message.data as MessageCustomData).rawData?.toString() ??
                                             "",
-                                        style: AmityTextStyle.body(theme
-                                            .secondaryColor
-                                            .blend(ColorBlendingOption.shade2)),
+                                        style: AmityTextStyle.body(token(AmityColorToken
+                                        .textListTextDescriptionDefaultDefault)),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       )
@@ -83,9 +81,8 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                                         message.data is MessageImageData
                                             ? context.l10n.chat_message_photo
                                             : context.l10n.chat_message_video,
-                                        style: AmityTextStyle.body(theme
-                                            .secondaryColor
-                                            .blend(ColorBlendingOption.shade2)),
+                                        style: AmityTextStyle.body(token(AmityColorToken
+                                        .textListTextDescriptionDefaultDefault)),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                   ),
@@ -103,10 +100,9 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: SvgPicture.asset(
-                            'assets/Icons/amity_ic_down_arrow.svg',
+                            'assets/Icons/amity_ic_chevron_down.svg',
                             package: 'amity_uikit_beta_service',
-                            color: theme.secondaryColor
-                                .blend(ColorBlendingOption.shade1),
+                            color: token(AmityColorToken.textListSubheadDefaultDefault),
                             width: 10,
                             height: 10,
                           ),
@@ -123,7 +119,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Material(
-              color: theme.secondaryColor.withOpacity(0.05),
+              color: token(AmityColorToken.textListHeaderDefaultDefault).withOpacity(0.05),
               child: InkWell(
                   onTap: () => _scrollToBottom(state,
                       shouldAnimated: true,
@@ -146,7 +142,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
         height: 28,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          color: theme.baseColorShade4,
+          color: token(AmityColorToken.lineDividerContentDefault),
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
@@ -182,9 +178,9 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
             height: 28,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => Container(
-              color: theme.baseColorShade4,
+              color: token(AmityColorToken.lineDividerContentDefault),
               child: Icon(Icons.video_file,
-                  color: theme.baseColorShade2, size: 18),
+                  color: token(AmityColorToken.textListSubheadDefaultDefault), size: 18),
             ),
           ),
           Positioned.fill(
@@ -218,7 +214,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
       height: 28,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: theme.baseColorShade4,
+        color: token(AmityColorToken.lineDividerContentDefault),
       ),
       clipBehavior: Clip.antiAlias,
       child: fileUrl.isNotEmpty || filePath != null
@@ -228,14 +224,14 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
               height: 28,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
-                color: theme.baseColorShade4,
+                color: token(AmityColorToken.lineDividerContentDefault),
                 child:
-                    Icon(Icons.image, color: theme.baseColorShade2, size: 18),
+                    Icon(Icons.image, color: token(AmityColorToken.textListSubheadDefaultDefault), size: 18),
               ),
             )
           : Container(
-              color: theme.baseColorShade4,
-              child: Icon(Icons.image, color: theme.baseColorShade2, size: 18),
+              color: token(AmityColorToken.lineDividerContentDefault),
+              child: Icon(Icons.image, color: token(AmityColorToken.textListSubheadDefaultDefault), size: 18),
             ),
     );
   }
@@ -249,10 +245,14 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
         height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: theme.backgroundColor.blend(ColorBlendingOption.shade1),
-          boxShadow: const [
+          // Same filled/secondary icon button the 1-1 chat and Android use
+          // (AmityButton ICON/FILLED/SECONDARY). This was the sheet background,
+          // so the group chat's button was #191919 on a #191919 page — a disc
+          // you could only see by its 1px ring (PDT-5046).
+          color: token(AmityColorToken.surfaceIconButtonFilledSecondaryEnabled),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x1A292B32),
+              color: token(AmityColorToken.lineDividerContentDefault),
               blurRadius: 2,
               offset: Offset(0, 1),
               spreadRadius: 1,
@@ -278,10 +278,15 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
                 width: 40,
                 child: Center(
                   child: SvgPicture.asset(
-                    'assets/Icons/amity_ic_down_arrow.svg',
+                    'assets/Icons/amity_ic_chevron_down.svg',
                     package: 'amity_uikit_beta_service',
-                    color:
-                        theme.secondaryColor.blend(ColorBlendingOption.shade1),
+                    // Explicit 24: Android pins the 40 icon button to a 24
+                    // glyph with an 8 inset, and leaving it unset made the
+                    // glyph size an accident of the asset's own viewBox.
+                    width: 24,
+                    height: 24,
+                    color: token(
+                        AmityColorToken.iconIconButtonFilledSecondaryDefault),
                   ),
                 ),
               ),
@@ -293,7 +298,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: theme.baseColor.withOpacity(0.1),
+                color: token(AmityColorToken.textListHeaderDefaultDefault).withOpacity(0.1),
                 width: 1,
               ),
             ),
@@ -302,7 +307,7 @@ extension GroupChatPageHelpers on AmityGroupChatPage {
         Positioned.fill(
           child: ClipOval(
             child: Material(
-              color: theme.secondaryColor.withOpacity(0.05),
+              color: token(AmityColorToken.textListHeaderDefaultDefault).withOpacity(0.05),
               child: InkWell(
                 onTap: () => _scrollToBottom(state),
               ),

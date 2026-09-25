@@ -42,6 +42,7 @@ dependencies:
   # firebase_core: ^2.24.2
 
 
+
 dependency_overrides:
   # dio >=5.10.0 adds DioExceptionType.transformTimeout, which the internal
   # SDK's dio_error_extension.dart switch does not cover yet (fix exists but

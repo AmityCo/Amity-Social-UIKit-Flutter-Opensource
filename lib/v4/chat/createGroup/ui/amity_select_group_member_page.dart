@@ -3,7 +3,8 @@ import 'package:amity_uikit_beta_service/v4/chat/createGroup/ui/amity_create_gro
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/shared/user/user_list.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/atoms/amity_empty_state.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
@@ -68,12 +69,12 @@ class AmitySelectGroupMemberPage extends NewBasePage {
         return BlocBuilder<AmitySelectGroupMemberCubit, AmitySelectGroupMemberState>(
           builder: (context, state) {
             return Scaffold(
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
               appBar: AppBar(
-                backgroundColor: theme.backgroundColor,
+                backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                 title: Text(
                   context.l10n.chat_select_member_title,
-                  style: AmityTextStyle.titleBold(theme.baseColor),
+                  style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(
@@ -82,7 +83,7 @@ class AmitySelectGroupMemberPage extends NewBasePage {
                     width: 24,
                     height: 24,
                     colorFilter:
-                        ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                        ColorFilter.mode(token(AmityColorToken.textListHeaderDefaultDefault), BlendMode.srcIn),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -126,8 +127,8 @@ class AmitySelectGroupMemberPage extends NewBasePage {
                     child: Text(
                       context.l10n.general_next,
                       style: AmityTextStyle.body(state.selectedUsers.isEmpty
-                          ? theme.primaryColor.blend(ColorBlendingOption.shade2)
-                          : theme.primaryColor),
+                          ? token(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryDisabled)
+                          : token(AmityColorToken.textBaseHighlight)),
                     ),
                   ),
                 ],
@@ -166,7 +167,7 @@ class AmitySelectGroupMemberPage extends NewBasePage {
                     ),
                     Container(
                       height: 1,
-                      color: theme.baseColorShade4,
+                      color: token(AmityColorToken.lineDividerContentDefault),
                     ),
                   ],
                   Expanded(child: userContainer(context, state))
@@ -186,30 +187,12 @@ class AmitySelectGroupMemberPage extends NewBasePage {
       return Container();
     } else {
       if (state.users.isEmpty) {
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                'assets/Icons/amity_ic_search_not_found.svg',
-                package: 'amity_uikit_beta_service',
-                colorFilter:
-                    ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
-                width: 47,
-                height: 47,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                context.l10n.search_no_results,
-                style: TextStyle(
-                  color: theme.baseColorShade3,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 17,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        // EmptyState atom, icon variant: 64 `search-cross-l` on
+        // `Icon/EmptyState/Icon/Default` — the light-weight glyph Android draws.
+        return AmityEmptyState(
+          variant: AmityEmptyStateVariant.icon,
+          asset: 'assets/Icons/amity_ic_search_cross_l.svg',
+          title: context.l10n.search_no_results,
         );
       } else {
         return multiSelectUserList(

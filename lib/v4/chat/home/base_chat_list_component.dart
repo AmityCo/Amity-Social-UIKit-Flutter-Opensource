@@ -10,7 +10,7 @@ import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/channel_avatar.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
@@ -73,7 +73,7 @@ class BaseChatListComponent extends NewBaseComponent {
             children: [
               if (!state.isPushNotificationEnabled)
                 Container(
-                  color: theme.backgroundShade1Color,
+                  color: token(AmityColorToken.surfaceBannerSubdueGeneral),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -84,12 +84,14 @@ class BaseChatListComponent extends NewBaseComponent {
                         package: 'amity_uikit_beta_service',
                         width: 12,
                         height: 12,
+                        color: token(AmityColorToken.iconListHeaderGeneral),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         context.l10n.chat_notifications_disabled,
                         style: TextStyle(
-                            color: theme.baseColorShade1,
+                            color: token(AmityColorToken
+                                .textBannerSubdueTextDescriptionGeneral),
                             fontSize: 13,
                             fontWeight: FontWeight.w400),
                       ),
@@ -150,7 +152,9 @@ class BaseChatListComponent extends NewBaseComponent {
                           }
                         },
                         child: renderChatListItem(
-                            context, chatListType, channel, channelMember));
+                            context, chatListType, channel, channelMember,
+                            isMemberResolved: state.channelMembers
+                                .containsKey(channel.channelId)));
                   },
                 ),
               ),
@@ -172,13 +176,15 @@ class BaseChatListComponent extends NewBaseComponent {
   }
 
   Widget renderChatListItem(BuildContext context, ChatListType chatListType,
-      AmityChannel channel, AmityChannelMember? channelMember) {
+      AmityChannel channel, AmityChannelMember? channelMember,
+      {bool isMemberResolved = true}) {
     // Enable archive functionality for both conversation and community channels
     if (chatListType == ChatListType.CONVERSATION) {
       return renderDismissibleListItem(
           chatListType,
           channel,
           channelMember,
+          isMemberResolved,
           "assets/Icons/amity_ic_channel_archive.svg",
           context.l10n.chat_archive, (direction) {
         context.read<ChatListBloc>().addEvent(
@@ -195,6 +201,7 @@ class BaseChatListComponent extends NewBaseComponent {
           chatListType,
           channel,
           channelMember,
+          isMemberResolved,
           "assets/Icons/amity_ic_channel_unarchive.svg",
           context.l10n.chat_unarchive, (direction) {
         context.read<ChatListBloc>().addEvent(
@@ -205,7 +212,10 @@ class BaseChatListComponent extends NewBaseComponent {
             ));
       });
     } else {
-      return ChatListItem(channel: channel, channelMember: channelMember);
+      return ChatListItem(
+          channel: channel,
+          channelMember: channelMember,
+          isMemberResolved: isMemberResolved);
     }
   }
 
@@ -213,6 +223,7 @@ class BaseChatListComponent extends NewBaseComponent {
       ChatListType chatListType,
       AmityChannel channel,
       AmityChannelMember? channelMember,
+      bool isMemberResolved,
       String assetIcon,
       String actionText,
       void Function(DismissDirection)? onDismissed) {
@@ -229,7 +240,8 @@ class BaseChatListComponent extends NewBaseComponent {
         },
         background: Builder(builder: (context) {
           return Container(
-            color: theme.baseColorShade2,
+            color: token(
+                AmityColorToken.surfaceSquareButtonDefaultSecondaryDefault),
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: Column(
@@ -240,27 +252,55 @@ class BaseChatListComponent extends NewBaseComponent {
                   package: 'amity_uikit_beta_service',
                   width: 28,
                   height: 28,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
+                  colorFilter: ColorFilter.mode(
+                    token(AmityColorToken
+                        .iconSquareButtonDefaultSecondaryDefault),
                     BlendMode.srcIn,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   actionText,
-                  style: AmityTextStyle.captionBold(Colors.white),
+                  style: AmityTextStyle.captionBold(token(
+                      AmityColorToken.textSquareButtonDefaultSecondaryDefault)),
                 ),
               ],
             ),
           );
         }),
-        child: ChatListItem(channel: channel, channelMember: channelMember));
+        child: ChatListItem(
+            channel: channel,
+            channelMember: channelMember,
+            isMemberResolved: isMemberResolved));
   }
+}
+
+/// Start offsets of [query] in [text]: case-insensitive, anywhere in the text,
+/// non-overlapping — the rule Android's `AmityChatListItem` highlights with,
+/// so a search for "test" also emphasises "re**test**". Applies to both the
+/// message preview and the channel/user name (the old word-start rule left
+/// most real hits un-highlighted). Empty query matches nothing.
+List<int> findCaseInsensitiveMatches(String text, String query) {
+  final lowercaseText = text.toLowerCase();
+  final lowercaseQuery = query.toLowerCase();
+  if (lowercaseQuery.isEmpty) return const [];
+  final matches = <int>[];
+  var i = lowercaseText.indexOf(lowercaseQuery);
+  while (i != -1) {
+    matches.add(i);
+    i = lowercaseText.indexOf(lowercaseQuery, i + lowercaseQuery.length);
+  }
+  return matches;
 }
 
 class ChatListItem extends BaseElement {
   final AmityChannel channel;
   final AmityChannelMember? channelMember; // Other member
+
+  /// Whether the caller has finished looking the counterpart up. The bloc fills
+  /// its member map lazily, so a null [channelMember] means "not loaded yet"
+  /// until this is true — and only then does null mean "nobody is left".
+  final bool isMemberResolved;
   final String searchQuery;
   final bool isArchived;
   final AmityMessage? searchMessage; // Optional message to override channel preview
@@ -271,6 +311,7 @@ class ChatListItem extends BaseElement {
     String? componentId,
     required this.channel,
     required this.channelMember,
+    this.isMemberResolved = true,
     this.searchQuery = "",
     this.isArchived = false,
     this.searchMessage,
@@ -280,6 +321,15 @@ class ChatListItem extends BaseElement {
           componentId: componentId,
           elementId: 'chat-list-item',
         );
+
+  /// The 1-1 counterpart is gone: their user record is flagged deleted, the
+  /// membership is, or — once the lookup has resolved — there is no other
+  /// member at all. Never true while the lookup is still pending.
+  bool get _isCounterpartDeleted =>
+      isMemberResolved &&
+      (channelMember == null ||
+          channelMember!.isDeleted == true ||
+          channelMember!.user?.isDeleted == true);
 
   @override
   Widget buildElement(BuildContext context) {
@@ -298,7 +348,7 @@ class ChatListItem extends BaseElement {
           package: 'amity_uikit_beta_service',
           width: 18,
           height: 18,
-          color: theme.baseColorShade2,
+          color: token(AmityColorToken.iconListDescriptionGeneral),
         );
       } else {
         final messageData = searchMessage!.data;
@@ -311,7 +361,7 @@ class ChatListItem extends BaseElement {
             package: 'amity_uikit_beta_service',
             width: 18,
             height: 20,
-            color: theme.baseColorShade2,
+            color: token(AmityColorToken.iconListDescriptionGeneral),
           );
         } else if (messageData is MessageVideoData) {
           previewText = context.l10n.chat_message_video_sent;
@@ -320,7 +370,7 @@ class ChatListItem extends BaseElement {
             package: 'amity_uikit_beta_service',
             width: 18,
             height: 20,
-            color: theme.baseColorShade2,
+            color: token(AmityColorToken.iconListDescriptionGeneral),
           );
         } else if (messageData is MessageFileData ||
             messageData is MessageAudioData) {
@@ -340,7 +390,7 @@ class ChatListItem extends BaseElement {
           package: 'amity_uikit_beta_service',
           width: 18,
           height: 18,
-          color: theme.baseColorShade2,
+          color: token(AmityColorToken.iconListDescriptionGeneral),
         );
       } else {
         final previewMessage = channel.messagePreview?.data;
@@ -353,7 +403,7 @@ class ChatListItem extends BaseElement {
             package: 'amity_uikit_beta_service',
             width: 18,
             height: 20,
-            color: theme.baseColorShade2,
+            color: token(AmityColorToken.iconListDescriptionGeneral),
           );
         } else if (previewMessage is MessageVideoData) {
           previewText = context.l10n.chat_message_video;
@@ -362,7 +412,7 @@ class ChatListItem extends BaseElement {
             package: 'amity_uikit_beta_service',
             width: 18,
             height: 20,
-            color: theme.baseColorShade2,
+            color: token(AmityColorToken.iconListDescriptionGeneral),
           );
         } else if (previewMessage is MessageFileData ||
             previewMessage is MessageAudioData) {
@@ -392,7 +442,8 @@ class ChatListItem extends BaseElement {
             const SizedBox(width: 2),
             Text(
               "(${(channel.memberCount ?? 0).formattedCompactString()})",
-              style: AmityTextStyle.caption(theme.baseColorShade2),
+              style: AmityTextStyle.caption(
+                  token(AmityColorToken.textListSubheadDefaultDefault)),
             ),
           ],
         );
@@ -402,7 +453,8 @@ class ChatListItem extends BaseElement {
             Flexible(
               child: Text(
                 displayName,
-                style: AmityTextStyle.titleBold(theme.baseColor),
+                style: AmityTextStyle.titleBold(
+                    token(AmityColorToken.textListHeaderDefaultDefault)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -410,7 +462,8 @@ class ChatListItem extends BaseElement {
             const SizedBox(width: 2),
             Text(
               "(${(channel.memberCount ?? 0).formattedCompactString()})",
-              style: AmityTextStyle.caption(theme.baseColorShade2),
+              style: AmityTextStyle.caption(
+                  token(AmityColorToken.textListSubheadDefaultDefault)),
             ),
           ],
         );
@@ -418,10 +471,15 @@ class ChatListItem extends BaseElement {
     } else {
       var displayName = channelMember?.user?.displayName;
 
-      if (channelMember?.user?.isDeleted == true ||
-          displayName == null ||
-          displayName.isEmpty) {
-        displayName = context.l10n.user_profile_unknown_name;
+      if (_isCounterpartDeleted) {
+        displayName = context.l10n.user_profile_deleted_name;
+      } else if (displayName == null || displayName.isEmpty) {
+        // Android's fallback while there is no member to name: the channel's
+        // own display name, then the generic placeholder.
+        final channelName = channel.displayName;
+        displayName = (channelName != null && channelName.isNotEmpty)
+            ? channelName
+            : context.l10n.user_profile_unknown_name;
       }
 
       // Only highlight channel name if NOT in search message mode
@@ -434,15 +492,24 @@ class ChatListItem extends BaseElement {
       } else {
         displayNameWidget = Text(
           displayName,
-          style: AmityTextStyle.titleBold(theme.baseColor),
+          style: AmityTextStyle.titleBold(
+                    token(AmityColorToken.textListHeaderDefaultDefault)),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         );
       }
     }
 
+    // A message-search result is a shorter, single-line row than the chat-list row.
+    final isSearchResult = searchMessage != null;
+
     return Container(
-      height: 82,
+      // A minimum, not a fixed height: the trailing column's fallback font
+      // metrics can run a pixel over 46, which a fixed 62 turned into a
+      // RenderFlex overflow on every search-result row.
+      constraints: BoxConstraints(minHeight: isSearchResult ? 62 : 82),
+      // Opaque row surface, so the swipe action stays hidden behind the row.
+      color: token(AmityColorToken.surfaceListDefaultDefault),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -455,8 +522,10 @@ class ChatListItem extends BaseElement {
               showPrivateBadge: (channel.isPublic == false),
             )
           else
-            AmityChatAvatar(channelMember: channelMember),
-          const SizedBox(width: 12),
+            AmityChatAvatar(
+                channelMember: channelMember,
+                isDeleted: _isCounterpartDeleted),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,6 +535,7 @@ class ChatListItem extends BaseElement {
                     Expanded(child: displayNameWidget),
                   ],
                 ),
+                const SizedBox(height: 2),
                 Row(
                   children: [
                     if (previewIcon != null) ...[
@@ -480,13 +550,18 @@ class ChatListItem extends BaseElement {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: isSearchResult ? 8 : 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(channel.lastActivity?.toChatTimestamp(context) ?? "",
-                  style: AmityTextStyle.caption(theme.baseColorShade2)),
-              const SizedBox(height: 10),
+                  style: AmityTextStyle.caption(
+                      token(AmityColorToken.textListTrailingSubtextDefault))),
+              SizedBox(height: isSearchResult ? 4 : 10),
+              if (isSearchResult)
+                // The badge slot stays empty on a search result, but the layout keeps its space.
+                const SizedBox(width: 52, height: 24)
+              else
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -494,7 +569,8 @@ class ChatListItem extends BaseElement {
                     Container(
                       padding: const EdgeInsets.only(left: 4, right: 6, top: 3.5, bottom: 3.5),
                       decoration: BoxDecoration(
-                        color: theme.baseColorShade4,
+                        color: token(
+                            AmityColorToken.surfaceBadgeSemanticBadgeChatArchived),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -506,14 +582,16 @@ class ChatListItem extends BaseElement {
                             width: 12,
                             height: 12,
                             colorFilter: ColorFilter.mode(
-                              theme.baseColorShade1,
+                              token(AmityColorToken
+                                  .iconBadgeSemanticBadgeChatArchivedDefault),
                               BlendMode.srcIn,
                             ),
                           ),
                           const SizedBox(width: 1),
                           Text(
                             context.l10n.chat_archived_label,
-                            style: AmityTextStyle.captionSmall(theme.baseColorShade1),
+                            style: AmityTextStyle.captionSmall(token(
+                                AmityColorToken.textBadgeSemanticBadgeChatArchivedDefault)),
                           ),
                         ],
                       ),
@@ -534,12 +612,21 @@ class ChatListItem extends BaseElement {
     );
   }
 
+  /// The un-matched part of a preview — search result or plain row — stays
+  /// Regular on the Default token; only the matched runs carry the Highlight
+  /// token's bolder weight (see [_buildHighlightedTextSpan]). Styling the whole
+  /// snippet as Highlight made the match indistinguishable from its context.
+  TextStyle _previewStyle() => AmityTextStyle.body(
+      token(AmityColorToken.textListTextDescriptionDefaultDefault));
+
   Widget _buildPreviewText(String? previewText) {
+    final maxPreviewLines = searchMessage != null ? 1 : 2;
+
     if (previewText == null || previewText.isEmpty) {
       return Text(
         "",
-        style: AmityTextStyle.body(theme.baseColorShade2),
-        maxLines: 2,
+        style: _previewStyle(),
+        maxLines: maxPreviewLines,
         overflow: TextOverflow.ellipsis,
       );
     }
@@ -547,38 +634,22 @@ class ChatListItem extends BaseElement {
     // If we have a search query and this is from a search message, highlight it
     if (searchQuery.isNotEmpty && searchMessage != null && _hasExactWordMatch(previewText, searchQuery)) {
       return RichText(
-        maxLines: 2,
+        maxLines: maxPreviewLines,
         overflow: TextOverflow.ellipsis,
         text: _buildHighlightedTextSpan(previewText, searchQuery),
       );
     } else {
       return Text(
         previewText,
-        style: AmityTextStyle.body(theme.baseColorShade2),
-        maxLines: 2,
+        style: _previewStyle(),
+        maxLines: maxPreviewLines,
         overflow: TextOverflow.ellipsis,
       );
     }
   }
 
-  /// Helper method to find exact word match positions (must start with query)
-  List<int> _findExactWordMatches(String text, String query) {
-    final lowercaseText = text.toLowerCase();
-    final lowercaseQuery = query.toLowerCase();
-    List<int> matches = [];
-    
-    for (int i = 0; i <= lowercaseText.length - lowercaseQuery.length; i++) {
-      // Check if we found the query at position i
-      if (lowercaseText.substring(i, i + lowercaseQuery.length) == lowercaseQuery) {
-        // Check if it's at the start of text or preceded by a space
-        if (i == 0 || text[i - 1] == ' ') {
-          matches.add(i);
-        }
-      }
-    }
-    
-    return matches;
-  }
+  List<int> _findExactWordMatches(String text, String query) =>
+      findCaseInsensitiveMatches(text, query);
 
   /// Helper method to check if text contains exact word matches
   bool _hasExactWordMatch(String text, String query) {
@@ -604,7 +675,7 @@ class ChatListItem extends BaseElement {
     if (matches.isEmpty) {
       return TextSpan(
         text: searchableText,
-        style: AmityTextStyle.body(theme.baseColorShade2),
+        style: _previewStyle(),
       );
     }
     
@@ -617,14 +688,15 @@ class ChatListItem extends BaseElement {
       if (matchIndex > currentIndex) {
         spans.add(TextSpan(
           text: searchableText.substring(currentIndex, matchIndex),
-          style: AmityTextStyle.body(theme.baseColorShade2),
+          style: _previewStyle(),
         ));
       }
       
       // Add the highlighted match
       spans.add(TextSpan(
         text: searchableText.substring(matchIndex, matchIndex + query.length),
-        style: AmityTextStyle.bodyBold(theme.baseColor),
+        style: AmityTextStyle.bodyBold(
+            token(AmityColorToken.textListTextDescriptionDefaultHighlight)),
       ));
       
       currentIndex = matchIndex + query.length;
@@ -634,7 +706,7 @@ class ChatListItem extends BaseElement {
     if (currentIndex < searchableText.length) {
       spans.add(TextSpan(
         text: searchableText.substring(currentIndex),
-        style: AmityTextStyle.body(theme.baseColorShade2),
+        style: _previewStyle(),
       ));
     }
     
@@ -642,7 +714,7 @@ class ChatListItem extends BaseElement {
     if (text.length > maxCharsForTwoLines) {
       spans.add(TextSpan(
         text: "...",
-        style: AmityTextStyle.body(theme.baseColorShade2),
+        style: _previewStyle(),
       ));
     }
     
@@ -658,7 +730,8 @@ class ChatListItem extends BaseElement {
     if (matches.isEmpty) {
       return TextSpan(
         text: text,
-        style: AmityTextStyle.titleBold(theme.baseColor),
+        style: AmityTextStyle.titleBold(
+                    token(AmityColorToken.textListHeaderDefaultDefault)),
       );
     }
     
@@ -671,14 +744,16 @@ class ChatListItem extends BaseElement {
       if (matchIndex > currentIndex) {
         spans.add(TextSpan(
           text: text.substring(currentIndex, matchIndex),
-          style: AmityTextStyle.titleBold(theme.baseColor),
+          style: AmityTextStyle.titleBold(
+                    token(AmityColorToken.textListHeaderDefaultDefault)),
         ));
       }
       
       // Add the highlighted match
       spans.add(TextSpan(
         text: text.substring(matchIndex, matchIndex + query.length),
-        style: AmityTextStyle.titleBold(theme.primaryColor),
+        style: AmityTextStyle.titleBold(
+            token(AmityColorToken.textListHeaderDefaultHighlight)),
       ));
       
       currentIndex = matchIndex + query.length;
@@ -688,7 +763,8 @@ class ChatListItem extends BaseElement {
     if (currentIndex < text.length) {
       spans.add(TextSpan(
         text: text.substring(currentIndex),
-        style: AmityTextStyle.titleBold(theme.baseColor),
+        style: AmityTextStyle.titleBold(
+                    token(AmityColorToken.textListHeaderDefaultDefault)),
       ));
     }
     
@@ -700,7 +776,7 @@ class ChatListItem extends BaseElement {
       width: 24,
       height: 24,
       decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade3),
+        color: token(AmityColorToken.surfaceBadgeSemanticBadgeChatMention),
         shape: BoxShape.circle,
       ),
       child: Center(
@@ -709,7 +785,8 @@ class ChatListItem extends BaseElement {
           package: 'amity_uikit_beta_service',
           width: 14,
           height: 14,
-          color: theme.primaryColor,
+          color:
+              token(AmityColorToken.iconBadgeSemanticBadgeChatMentionDefault),
         ),
       ),
     );
@@ -727,16 +804,19 @@ class ChatListItem extends BaseElement {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
       decoration: BoxDecoration(
-        color: theme.alertColor,
+        // The unread count is a notification badge, not a generic atomic one.
+        // Android binds Surface/Badge/SemanticBadge/General/Notification here
+        // (AmityChatListItem.kt: AmityBadgePreset(GENERAL, "Notification")),
+        // which follows alert_color; the atomic tier follows primary_color, so
+        // the badge came out blue instead of red.
+        color: token(
+            AmityColorToken.surfaceBadgeSemanticBadgeGeneralNotification),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         unreadCount > 99 ? '99+' : unreadCount.toString(),
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
+        style: AmityTextStyle.caption(token(
+            AmityColorToken.textBadgeSemanticBadgeGeneralDefaultDefault)),
       ),
     );
   }
@@ -753,28 +833,70 @@ class AmityChatAvatar extends BaseElement {
 
   AmityChatAvatar(
       {required this.channelMember,
+      required bool isDeleted,
       super.key,
       super.pageId = "",
       super.componentId = "",
       super.elementId = "chat-avatar"}) {
     avatarUrl = channelMember?.user?.avatarUrl;
-    isDeletedUser = channelMember?.isDeleted ?? true;
+    // Decided by the row, which knows whether the member lookup has resolved;
+    // `channelMember?.isDeleted ?? true` here drew every not-yet-loaded row
+    // as a deleted user.
+    isDeletedUser = isDeleted;
     displayName = channelMember?.user?.displayName ?? "";
+  }
+
+  bool get _isModerator {
+    final roles = channelMember?.roles?.roles ?? const <String>[];
+    return roles.contains('moderator') ||
+        roles.contains('community-moderator') ||
+        roles.contains('channel-moderator');
   }
 
   @override
   Widget buildElement(BuildContext context) {
+    Widget avatarWidget;
+
     if (isDeletedUser) {
-      return SvgPicture.asset(
-        "assets/Icons/amity_ic_chat_deleted_user_avatar.svg",
-        package: 'amity_uikit_beta_service',
+      // Avatar atom, Icon type: `Surface/Avatar/Profile/Default` disc with the
+      // solid `user-s` glyph on `Icon/Avatar/Default` — solid weight is what
+      // marks deletion apart from the regular no-photo fallback.
+      avatarWidget = Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: token(AmityColorToken.surfaceAvatarProfileDefault),
+          border: Border.all(
+            color: token(AmityColorToken.borderAvatarProfileDefault),
+            width: 2,
+          ),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            "assets/Icons/amity_ic_user_s.svg",
+            package: 'amity_uikit_beta_service',
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+                token(AmityColorToken.iconAvatarDefault), BlendMode.srcIn),
+          ),
+        ),
       );
     } else {
       final isAvatarAvailable = avatarUrl != null && avatarUrl!.isNotEmpty;
       if (isAvatarAvailable) {
-        return SizedBox(
+        avatarWidget = Container(
           width: 40,
           height: 40,
+          // The profile ring is drawn over the photo edge so the avatar keeps its 40 pt slot.
+          foregroundDecoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: token(AmityColorToken.borderAvatarProfileDefault),
+              width: 2,
+            ),
+          ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.network(
@@ -799,9 +921,54 @@ class AmityChatAvatar extends BaseElement {
           ),
         );
       } else {
-        return avatarCharacter();
+        avatarWidget = avatarCharacter();
       }
     }
+
+    if (!_isModerator) {
+      return avatarWidget;
+    }
+
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          avatarWidget,
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: token(AmityColorToken
+                    .surfaceBadgeSemanticBadgeUserStatusModerator),
+                border: Border.all(
+                  color: token(AmityColorToken.borderAvatarProfileDefault),
+                  width: 1,
+                ),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/Icons/amity_ic_community_moderator.svg',
+                  package: 'amity_uikit_beta_service',
+                  width: 12,
+                  height: 12,
+                  colorFilter: ColorFilter.mode(
+                    token(AmityColorToken
+                        .iconBadgeSemanticBadgeUserStatusModeratorDefault),
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget avatarCharacter() {
@@ -809,8 +976,12 @@ class AmityChatAvatar extends BaseElement {
       height: 40,
       width: 40,
       decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
+        color: token(AmityColorToken.surfaceAvatarProfileDefault),
         shape: BoxShape.circle,
+        border: Border.all(
+          color: token(AmityColorToken.borderAvatarProfileDefault),
+          width: 2,
+        ),
       ),
       child: Center(
           child: Text(

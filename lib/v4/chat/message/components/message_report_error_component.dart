@@ -1,5 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -22,7 +24,7 @@ class MessageReportErrorView extends StatelessWidget {
         top: 16,
       ),
       decoration: BoxDecoration(
-        color: theme.backgroundColor,
+        color: context.amityToken(AmityColorToken.surfaceSheetsBackgroundGeneral),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -36,7 +38,7 @@ class MessageReportErrorView extends StatelessWidget {
             width: 36,
             height: 4,
             decoration: ShapeDecoration(
-              color: theme.baseColorShade3,
+              color: context.amityToken(AmityColorToken.textSheetsHeaderTextDescriptionDefault),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -57,20 +59,20 @@ class MessageReportErrorView extends StatelessWidget {
                     height: 41,
                     package: 'amity_uikit_beta_service',
                     colorFilter: ColorFilter.mode(
-                      theme.baseColorShade2,
+                      context.amityToken(AmityColorToken.textInputTextInputPlaceholderEnabled),
                       BlendMode.srcIn,
                     ),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'Something went wrong',
-                    style: AmityTextStyle.headline(theme.baseColorShade3),
+                    style: AmityTextStyle.headline(context.amityToken(AmityColorToken.textSheetsHeaderTextDescriptionDefault)),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'The message you\'re looking for is unavailable.',
-                    style: AmityTextStyle.body(theme.baseColorShade3),
+                    style: AmityTextStyle.body(context.amityToken(AmityColorToken.textSheetsHeaderTextDescriptionDefault)),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
@@ -78,7 +80,7 @@ class MessageReportErrorView extends StatelessWidget {
               ),
             ),
           ),
-          Container(height: 1, color: theme.baseColorShade4),
+          Container(height: 1, color: context.amityToken(AmityColorToken.lineDividerContentDefault)),
 
           Container(
             width: double.infinity,
@@ -86,13 +88,13 @@ class MessageReportErrorView extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onCancel,
               style: ElevatedButton.styleFrom(
-                backgroundColor: theme.primaryColor,
+                backgroundColor: context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryEnabled),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 disabledBackgroundColor:
-                    theme.primaryColor.blend(ColorBlendingOption.shade2),
+                    context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryDisabled),
               ),
               child: Text(
                 'Close',

@@ -2,7 +2,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/shared/user/user_list.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/social/top_search_bar/top_search_bar.dart';
 import 'package:amity_uikit_beta_service/v4/utils/debouncer.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'amity_add_group_member_cubit.dart';
+
+/// Shared chat search threshold: below this the prompt state shows instead of a query.
+const int _minimumSearchLength = 3;
 
 class AmityAddGroupMemberPage extends NewBasePage {
   AmityAddGroupMemberPage({
@@ -31,18 +34,15 @@ class AmityAddGroupMemberPage extends NewBasePage {
         return cubit;
       },
       child: Builder(builder: (context) {
-        // Initialize user list
-        context.read<AmityAddGroupMemberCubit>().queryUser('');
-
         return BlocBuilder<AmityAddGroupMemberCubit, AmityAddGroupMemberState>(
           builder: (context, state) {
             return Scaffold(
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
               appBar: AppBar(
-                backgroundColor: theme.backgroundColor,
+                backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
                 title: Text(
                   context.l10n.chat_add_member,
-                  style: AmityTextStyle.titleBold(theme.baseColor),
+                  style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                 ),
                 leading: IconButton(
                   icon: SvgPicture.asset(
@@ -51,13 +51,30 @@ class AmityAddGroupMemberPage extends NewBasePage {
                     width: 24,
                     height: 24,
                     colorFilter:
-                        ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                        ColorFilter.mode(token(AmityColorToken.textListHeaderDefaultDefault), BlendMode.srcIn),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
                 centerTitle: true,
+                actions: [
+                  TextButton(
+                    onPressed: state.selectedUsers.isNotEmpty
+                        ? () {
+                            Navigator.pop(context, state.selectedUsers);
+                          }
+                        : null,
+                    child: Text(
+                      context.l10n.general_add,
+                      style: AmityTextStyle.body(
+                        state.selectedUsers.isNotEmpty
+                            ? token(AmityColorToken.textMainButtonDefaultGhostPrimaryEnabled)
+                            : token(AmityColorToken.textMainButtonDefaultGhostPrimaryDisabled),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               body: SafeArea(
                 child: Column(
@@ -67,6 +84,9 @@ class AmityAddGroupMemberPage extends NewBasePage {
                       textcontroller: textcontroller,
                       hintText: context.l10n.general_search_hint,
                       onTextChanged: (value) {
+                        // Below the minimum keyword length the prompt state shows
+                        // instead of a live query, so don't hit the SDK at all.
+                        if (value.trim().length < _minimumSearchLength) return;
                         _debouncer.run(() {
                           context.read<AmityAddGroupMemberCubit>().queryUser(value);
                         });
@@ -85,44 +105,24 @@ class AmityAddGroupMemberPage extends NewBasePage {
                             // No need to load more for selected users
                           },
                           onTap: (user) {
-                            AmityChatClient.newChannelRepository()
-                                .addMembers(channel.channelId!, [user.userId!]);
+                            // The chip's close badge deselects the user; membership
+                            // is only submitted once the header action confirms.
+                            context
+                                .read<AmityAddGroupMemberCubit>()
+                                .updateSelectedUsers(user);
                           },
                         ),
                       ),
                       Container(
                         height: 1,
-                        color: theme.baseColorShade4,
+                        color: token(AmityColorToken.lineDividerPostDefault),
                       ),
                     ],
-                    Expanded(child: userContainer(context, state)),
-                    Container(
-                      height: 1,
-                      color: theme.baseColorShade4,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButton(
-                        onPressed: state.selectedUsers.isNotEmpty 
-                            ? () {
-                                Navigator.pop(context, state.selectedUsers);
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: state.selectedUsers.isNotEmpty 
-                            ? theme.primaryColor
-                            : theme.primaryColor.blend(ColorBlendingOption.shade2),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          disabledBackgroundColor: theme.primaryColor.blend(ColorBlendingOption.shade2),
-                        ),
-                        child: Text(
-                          context.l10n.chat_add_member,
-                          style: AmityTextStyle.bodyBold(Colors.white),
-                        ),
+                    Expanded(
+                      child: ValueListenableBuilder<TextEditingValue>(
+                        valueListenable: textcontroller,
+                        builder: (context, value, _) =>
+                            userContainer(context, state),
                       ),
                     ),
                   ],
@@ -136,10 +136,20 @@ class AmityAddGroupMemberPage extends NewBasePage {
   }
 
   Widget userContainer(BuildContext context, AmityAddGroupMemberState state) {
+    if (textcontroller.text.trim().length < _minimumSearchLength) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            context.l10n.search_minimum_chars,
+            textAlign: TextAlign.center,
+            style: AmityTextStyle.bodyBold(token(AmityColorToken.textBaseSubdue)),
+          ),
+        ),
+      );
+    }
     if (state.isFetching == true && state.users.isEmpty) {
       return userSkeletonList(theme, configProvider, itemCount: 10);
-    } else if (state.isFetching == false && state.users.isEmpty) {
-      return Container();
     } else {
       if (state.users.isEmpty) {
         return Center(
@@ -147,18 +157,18 @@ class AmityAddGroupMemberPage extends NewBasePage {
             mainAxisSize: MainAxisSize.min,
             children: [
               SvgPicture.asset(
-                'assets/Icons/amity_ic_search_not_found.svg',
+                'assets/Icons/amity_ic_search_cross_l.svg',
                 package: 'amity_uikit_beta_service',
                 colorFilter:
-                    ColorFilter.mode(theme.baseColorShade4, BlendMode.srcIn),
-                width: 47,
-                height: 47,
+                    ColorFilter.mode(token(AmityColorToken.iconEmptyStateIconDefault), BlendMode.srcIn),
+                width: 64,
+                height: 64,
               ),
               const SizedBox(height: 10),
               Text(
                 'No results found',
                 style: TextStyle(
-                  color: theme.baseColorShade3,
+                  color: token(AmityColorToken.textBaseSubdue),
                   fontWeight: FontWeight.w600,
                   fontSize: 17,
                 ),

@@ -51,7 +51,7 @@ extension TextMessageWidget on MessageBubbleView {
           if (isUser &&
               message.createdAt != null &&
               message.syncState == AmityMessageSyncState.SYNCED) ...[
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
             const SizedBox(width: 8),
           ],
           if (!isUser) ...[
@@ -61,7 +61,7 @@ extension TextMessageWidget on MessageBubbleView {
           if (isUser &&
               message.syncState != AmityMessageSyncState.SYNCED &&
               message.syncState != AmityMessageSyncState.FAILED) ...[
-            _buildSideTextWidget(context.l10n.message_sending),
+            _buildSideTextWidget(context, context.l10n.message_sending),
             const SizedBox(width: 8),
           ],
           if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
@@ -71,13 +71,7 @@ extension TextMessageWidget on MessageBubbleView {
                 onTap: () {
                   _showActionSheet(context);
                 },
-                child: SvgPicture.asset(
-                  'assets/Icons/amity_ic_error_message.svg',
-                  package: 'amity_uikit_beta_service',
-                  width: 16,
-                  height: 16,
-                  color: theme.baseColorShade2,
-                ),
+                child: const AmityMessageErrorBadge(),
               ),
             ),
             const SizedBox(width: 8),
@@ -86,7 +80,7 @@ extension TextMessageWidget on MessageBubbleView {
           _buildTextWidget(context, text, isUser, state),
           if (!isUser && message.createdAt != null) ...[
             const SizedBox(width: 8),
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
           ],
         ],
       ),
@@ -118,7 +112,7 @@ extension TextMessageWidget on MessageBubbleView {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                maxLines: urls.isNotEmpty ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+                maxLines: 10,
                 ellipsis: '...',
                 textDirection: TextDirection.ltr,
               )..layout(maxWidth: constraints.maxWidth);
@@ -189,9 +183,9 @@ extension TextMessageWidget on MessageBubbleView {
                             // Check if there are mentions in the message
                             (message.metadata != null &&
                                     message.metadata!['mentioned'] != null)
-                                ? _buildMentionText(text, isUser, context, hasLinks: urls.isNotEmpty)
+                                ? _buildMentionText(text, isUser, context)
                                 : RichText(
-                                    maxLines: urls.isNotEmpty ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+                                    maxLines: 10,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.left, // Ensure text is always left-aligned
                                     text: TextSpan(
@@ -225,11 +219,16 @@ extension TextMessageWidget on MessageBubbleView {
                                     : Alignment.centerLeft,
                                 child: Text(
                                   context.l10n.general_edited,
+                                  // The label sits on the bubble, so it follows the bubble's own
+                                  // token rather than a generic subdued text colour: the peer one
+                                  // has to lighten in dark mode and the previous binding did not,
+                                  // leaving dark grey on a dark bubble.
                                   style: AmityTextStyle.caption(message.userId ==
                                           AmityCoreClient.getUserId()
-                                      ? theme.primaryColor
-                                          .blend(ColorBlendingOption.shade2)
-                                      : theme.baseColorShade1),
+                                      ? token(AmityColorToken
+                                          .textChatBubbleOutboundEditedLabelDefault)
+                                      : token(AmityColorToken
+                                          .textChatBubbleInboundEditedLabelDefault)),
                                 ),
                               ),
                             ]
@@ -240,8 +239,13 @@ extension TextMessageWidget on MessageBubbleView {
                         Column(
                           children: [
                             Container(
-                              color:
-                                  messageColor.bubbleDivider.withOpacity(0.4),
+                              // The outbound bubble is primary-blue, so the
+                              // inbound grey rule is barely visible on it —
+                              // Android gives that side its own token.
+                              color: (isUser
+                                      ? messageColor.outboundBubbleDivider
+                                      : messageColor.bubbleDivider)
+                                  .withOpacity(0.4),
                               height: 1.0,
                               // width: constraints.maxWidth,
                             ),
@@ -279,9 +283,9 @@ extension TextMessageWidget on MessageBubbleView {
                                         colorFilter: ColorFilter.mode(
                                           isUser
                                               ? messageColor
-                                                  .rightBubbleSubtleText
+                                                  .rightBubbleSeeMoreIcon
                                               : messageColor
-                                                  .leftBubbleSubtleText,
+                                                  .leftBubbleSeeMoreIcon,
                                           BlendMode.srcIn,
                                         ),
                                       ),
@@ -311,7 +315,9 @@ extension TextMessageWidget on MessageBubbleView {
         return TextSpan(
           text: element.text,
           style: AmityTextStyle.body(
-            isUser ? messageColor.rightBubbleText : theme.highlightColor,
+            isUser
+            ? messageColor.rightBubbleText
+            : token(AmityColorToken.textChatBubbleInboundLinkDefault),
           ).copyWith(decoration: TextDecoration.underline),
           recognizer: TapGestureRecognizer()
             ..onTap = () => _onOpenLink(element),
@@ -337,12 +343,12 @@ extension TextMessageWidget on MessageBubbleView {
     }
   }
 
-  Widget _buildMentionText(String text, bool isUser, BuildContext context, {bool hasLinks = false}) {
+  Widget _buildMentionText(String text, bool isUser, BuildContext context) {
     try {
       
       if (message.metadata == null || !message.metadata!.containsKey('mentioned')) {
         return RichText(
-          maxLines: hasLinks ? 5 : 10,
+          maxLines: 10,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
           text: TextSpan(
@@ -377,7 +383,7 @@ extension TextMessageWidget on MessageBubbleView {
       
       if (allMentions.isEmpty) {
         return RichText(
-          maxLines: hasLinks ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+          maxLines: 10,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left, // Ensure text is always left-aligned
           text: TextSpan(
@@ -394,7 +400,9 @@ extension TextMessageWidget on MessageBubbleView {
       );
 
       final mentionStyle = AmityTextStyle.bodyBold(
-        isUser ? messageColor.rightBubbleText : theme.primaryColor,
+        isUser
+            ? messageColor.rightBubbleText
+            : token(AmityColorToken.textChatBubbleInboundMentionedDefault),
       );
 
       // Use the ExpandableText widget to handle mentions
@@ -403,7 +411,7 @@ extension TextMessageWidget on MessageBubbleView {
         key: ValueKey('mention_${message.messageId}_${message.editedAt?.millisecondsSinceEpoch}'),
         text: text,
         mentionedUsers: allMentions,
-        maxLines: hasLinks ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+        maxLines: 10,
         style: normalStyle,
         linkStyle: mentionStyle,
       );
@@ -411,7 +419,7 @@ extension TextMessageWidget on MessageBubbleView {
       debugPrint('Error building mention text: $e');
       // Fallback to regular text display if there's an error
       return RichText(
-        maxLines: hasLinks ? 5 : 10, // Use 5 lines if message contains link, 10 otherwise
+        maxLines: 10,
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.left, // Ensure text is always left-aligned
         text: TextSpan(

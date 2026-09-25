@@ -78,6 +78,15 @@ class AmityDialog {
                 ),
                 actions: <Widget>[
                   TextButton(
+                    // Unstyled, a TextButton takes its label colour from the
+                    // ambient ThemeData, which the UIKit leaves at Material's
+                    // light default — so every Android confirmation popup drew
+                    // its buttons in the light theme's primary over the dark
+                    // dialog (PDT-5100 case 4, Android row). Android UIKit
+                    // paints confirm with colors.primary and dismiss with
+                    // colors.baseShade1 (AmityAlertDialog.kt:34-35).
+                    style: TextButton.styleFrom(
+                        foregroundColor: appTheme.primaryColor),
                     child: Text(localize.general_ok),
                     onPressed: () {
                       Navigator.of(dialogContext).pop();
@@ -223,6 +232,9 @@ class ConfirmationDialog {
             ),
             actions: <Widget>[
               TextButton(
+                // Dismiss side, Android parity: colors.baseShade1.
+                style:
+                    TextButton.styleFrom(foregroundColor: appTheme.baseColorShade1),
                 child: Text(leftBtnText),
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
@@ -325,6 +337,9 @@ class AmityAlertDialogWithThreeActions {
             ),
             actions: <Widget>[
               TextButton(
+                // Dismiss side, Android parity: colors.baseShade1.
+                style:
+                    TextButton.styleFrom(foregroundColor: appTheme.baseColorShade1),
                 child: Text(dismissBtnText),
                 onPressed: () {
                   onDismissRequest();

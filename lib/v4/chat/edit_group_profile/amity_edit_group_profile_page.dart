@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
@@ -33,8 +34,19 @@ class AmityEditGroupProfilePage extends NewBasePage {
         children: [
           Scaffold(
             appBar: AppBar(
-              backgroundColor: theme.backgroundColor,
-              title: Text(context.l10n.chat_group_profile_title),
+              backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
+              title: Text(
+                context.l10n.chat_group_profile_title,
+                style: AmityTextStyle.titleBold(
+                    token(AmityColorToken.textSheetsHeaderTitleDefault)),
+              ),
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(1),
+                child: Container(
+                  height: 1,
+                  color: token(AmityColorToken.lineDividerPostDefault),
+                ),
+              ),
               actions: [
                 BlocBuilder<AmityEditGroupProfileCubit, AmityEditGroupProfileState>(
                   builder: (context, state) {
@@ -50,9 +62,8 @@ class AmityEditGroupProfilePage extends NewBasePage {
                         context.l10n.general_save,
                         style: TextStyle(
                           color: hasChanged
-                              ? theme.primaryColor
-                              : theme.primaryColor
-                                  .blend(ColorBlendingOption.shade2),
+                              ? token(AmityColorToken.textMainButtonDefaultGhostPrimaryEnabled)
+                              : token(AmityColorToken.textMainButtonDefaultGhostPrimaryDisabled),
                         ),
                       ),
                     );
@@ -60,7 +71,15 @@ class AmityEditGroupProfilePage extends NewBasePage {
                 ),
               ],
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
+                icon: SvgPicture.asset(
+                  'assets/Icons/amity_ic_close_button.svg',
+                  package: 'amity_uikit_beta_service',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                      token(AmityColorToken.iconIconButtonGhostSecondaryDefault),
+                      BlendMode.srcIn),
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
             ),
@@ -70,7 +89,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is AmityEditGroupProfileLoaded) {
                   return Container(
-                    color: theme.backgroundColor,
+                    color: token(AmityColorToken.surfacePageBackgroundDefault),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -97,8 +116,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                             width: 120,
                                             height: 120,
                                             decoration: BoxDecoration(
-                                              color: theme.primaryColor.blend(
-                                                  ColorBlendingOption.shade2),
+                                              color: token(AmityColorToken.surfaceAvatarProfileDefault),
                                               borderRadius:
                                                   BorderRadius.circular(24),
                                               image: (state.selectedImagePath !=
@@ -143,8 +161,12 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                                       'assets/Icons/amity_ic_group_chat_avatar_placeholder.svg',
                                                       package:
                                                           'amity_uikit_beta_service',
-                                                      width: 40,
-                                                      height: 40,
+                                                      width: 64,
+                                                      height: 64,
+                                                      colorFilter: ColorFilter.mode(
+                                                          token(AmityColorToken
+                                                              .iconAvatarDefault),
+                                                          BlendMode.srcIn),
                                                     ),
                                                   )
                                                 : null,
@@ -154,18 +176,21 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                             width: 120,
                                             height: 120,
                                             decoration: BoxDecoration(
-                                              color:
-                                                  Colors.black.withOpacity(0.3),
+                                              color: token(AmityColorToken
+                                                  .surfaceMediaOverlayTransparentBlack),
                                               borderRadius:
                                                   BorderRadius.circular(24),
                                             ),
                                             child: Center(
                                               child: SvgPicture.asset(
-                                                'assets/Icons/amity_ic_camera.svg',
+                                                'assets/Icons/amity_ic_camera_r.svg',
                                                 package: 'amity_uikit_beta_service',
-                                                width: 32,
-                                                height: 28,
-                                                color: Colors.white,
+                                                width: 64,
+                                                height: 64,
+                                                colorFilter: ColorFilter.mode(
+                                                    token(AmityColorToken
+                                                        .iconAvatarDefault),
+                                                    BlendMode.srcIn),
                                               ),
                                             ),
                                           ),
@@ -174,7 +199,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                     );
                                   },
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 40),
                               ],
                             ),
                           ),
@@ -193,12 +218,12 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                         TextSpan(
                                           text: context.l10n.chat_group_name_label,
                                           style: AmityTextStyle.titleBold(
-                                              theme.baseColor),
+                                              token(AmityColorToken.textListHeaderDefaultDefault)),
                                         ),
                                         TextSpan(
                                           text: ' ${context.l10n.chat_group_name_required}',
                                           style: AmityTextStyle.caption(
-                                              theme.baseColorShade3),
+                                              token(AmityColorToken.textInputTextInputIndicatorDefault)),
                                         ),
                                       ],
                                     ),
@@ -214,44 +239,48 @@ class AmityEditGroupProfilePage extends NewBasePage {
                                         style: AmityTextStyle.caption(
                                           count > 100
                                               ? Colors.red
-                                              : theme.baseColorShade2,
+                                              : token(AmityColorToken.textInputTextInputTextCountDefault),
                                         ),
                                       );
                                     },
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 4),
                               TextField(
                                 controller: context
                                     .read<AmityEditGroupProfileCubit>()
                                     .nameController,
+                                keyboardAppearance: context.amityBrightness,
                                 decoration: InputDecoration(
                                   hintText: context.l10n.chat_group_name_hint,
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade400,
-                                    fontSize: 18,
-                                  ),
+                                  hintStyle: AmityTextStyle.body(token(
+                                      AmityColorToken
+                                          .textInputTextInputPlaceholderEnabledFilled)),
                                   contentPadding: EdgeInsets.only(bottom: 8),
                                   border: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.grey.shade300),
+                                    borderSide: BorderSide(
+                                        color: token(AmityColorToken
+                                            .lineInputTextInputUnderlinedDefault)),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.grey.shade300),
+                                    borderSide: BorderSide(
+                                        color: token(AmityColorToken
+                                            .lineInputTextInputUnderlinedDefault)),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: theme.primaryColor),
+                                        BorderSide(
+                                        color: token(AmityColorToken
+                                            .lineInputTextInputUnderlinedDefault)),
                                   ),
                                   counterText: '', // Hide the default counter
                                 ),
                                 maxLength: 100, // Still enforce the limit
-                                style: AmityTextStyle.body(theme.baseColor),
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null, // Allow unlimited lines
-                                textInputAction: TextInputAction.newline,
+                                style: AmityTextStyle.body(token(AmityColorToken.textListHeaderDefaultDefault)),
+                                keyboardType: TextInputType.text,
+                                maxLines: 1,
+                                textInputAction: TextInputAction.done,
                                 buildCounter: (context,
                                     {required currentLength,
                                     required isFocused,
@@ -279,6 +308,8 @@ class AmityEditGroupProfilePage extends NewBasePage {
   // Save group profile method moved from AppBar action
   void _saveGroupProfile(BuildContext context, AmityEditGroupProfileLoaded state) {
     final cubit = BlocProvider.of<AmityEditGroupProfileCubit>(context);
+    // The upload callbacks fire after the page may be gone, so resolve strings now.
+    final l10n = context.l10n;
 
     if (state.selectedImagePath != null) {
       final file = File(state.selectedImagePath!);
@@ -324,8 +355,8 @@ class AmityEditGroupProfilePage extends NewBasePage {
             if (errorData != null) {
               final int? uploadErrorCode = errorData["detail"]?["error"]?["code"];
               if (uploadErrorCode == 403) {
-                errorTitle = "Inappropriate Content";
-                errorMessage = "Inappropriate image. Please choose a different image to upload.";
+                errorTitle = l10n.profile_edit_inappropriate_image_title;
+                errorMessage = l10n.profile_edit_inappropriate_image_description;
               }
             }
             
@@ -333,7 +364,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
             AmityV4Dialog().showAlertErrorDialog(
               title: errorTitle,
               message: errorMessage,
-              closeText: 'OK',
+              closeText: l10n.general_ok,
             );
           },
           cancel: () {
@@ -383,7 +414,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
             topRight: Radius.circular(20),
           ),
         ),
-        backgroundColor: theme.backgroundColor,
+        backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
         builder: (_) {
           return SizedBox(
             height: 200,
@@ -402,7 +433,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                         width: 36,
                         height: 4,
                         decoration: ShapeDecoration(
-                          color: theme.baseColorShade3,
+                          color: token(AmityColorToken.textBaseSubdue),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -413,7 +444,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                 ),
                 _buildListTile(
                   assetPath: 'assets/Icons/amity_ic_camera_button.svg',
-                  title: 'Camera',
+                  title: context.l10n.general_camera,
                   onTap: () {
                     Navigator.pop(context);
                     _goToCameraPage(context);
@@ -421,7 +452,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
                 ),
                 _buildListTile(
                     assetPath: 'assets/Icons/amity_ic_image_button.svg',
-                    title: 'Photo',
+                    title: context.l10n.general_photo,
                     onTap: () {
                       Navigator.pop(context);
                       _pickImage(context);
@@ -451,7 +482,7 @@ class AmityEditGroupProfilePage extends NewBasePage {
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: theme.baseColor,
+            color: token(AmityColorToken.textListHeaderDefaultDefault),
           ),
         ),
       ),

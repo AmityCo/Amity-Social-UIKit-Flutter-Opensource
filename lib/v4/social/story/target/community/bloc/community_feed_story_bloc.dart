@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/utils/story_create_permission.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/utils/story_creation_rule.dart';
@@ -22,7 +23,7 @@ class CommunityFeedStoryBloc
   // cause this to re-check indefinitely even while permission stays false.
   static const int _maxPermissionRecheckCount = 4;
   CommunityFeedStoryBloc() : super(CommunityFeedStoryState()) {
-    on<CheckMangeStoryPermissionEvent>((event, emit) {
+    on<CheckMangeStoryPermissionEvent>((event, emit) async {
       // This is a synchronous, local-cache read (see
       // CommunityMemberPermissionCheckUsecase): if the member/permission
       // entity for this community hasn't been cached yet, it resolves to
@@ -35,17 +36,25 @@ class CommunityFeedStoryBloc
           AmityCoreClient.hasPermission(AmityPermission.MANAGE_COMMUNITY_STORY)
               .atCommunity(event.communityId)
               .check();
-      // Network-level story settings are also a local cache read (warmed at
-      // session establish) that can be cold on the very first check, so it
-      // rides along on the same re-check cadence/loop-guard as the
-      // permission check above rather than needing its own event stream.
-      var allowAllUserToCreateStory =
-          AmitySocialClient.getStorySettings()?.allowAllUserToCreateStory ??
-              false;
-      emit(state.copywith(
-          haveStoryPermission: canManageStories,
-          allowAllUserToCreateStory: allowAllUserToCreateStory,
-          permissionCheckCount: state.permissionCheckCount + 1));
+      // Emit the permission reading straight away: it is the cheap local
+      // answer, and a member who already has MANAGE_COMMUNITY_STORY should
+      // not wait on the network round-trip below to see the affordance.
+      // permissionCheckCount is deliberately NOT bumped here - this check
+      // only counts as "done" once the network setting has settled too.
+      emit(state.copywith(haveStoryPermission: canManageStories));
+
+      // The network-level setting is fetched once per session and cached by
+      // StoryCreatePermission (the SDK exposes no observable for it), so this
+      // await is a no-op after the first call. It rides on the same re-check
+      // cadence/loop-guard as the permission check above rather than needing
+      // its own event stream.
+      final allowAllUserToCreateStory =
+          await StoryCreatePermission.allowAllUsers();
+      if (!isClosed) {
+        emit(state.copywith(
+            allowAllUserToCreateStory: allowAllUserToCreateStory,
+            permissionCheckCount: state.permissionCheckCount + 1));
+      }
     });
 
     on<StorySettingsUpdated>((event, emit) {
@@ -108,6 +117,9 @@ class CommunityFeedStoryBloc
           add(SubscribeToCommunityEvent(community: storyTarget.community!));
           emit(state.copywith(isEventSubscribed: true, isLoading: false));
         }
+        // canCreateStory is derived from community.isJoined + the two
+        // permission flags (see CommunityFeedStoryState), so setting the
+        // community here is what updates it - there is nothing to pass.
         emit(state.copywith(
             storyTarget: event.storyTarget,
             community: storyTarget.community,

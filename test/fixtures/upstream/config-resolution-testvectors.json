@@ -1,0 +1,335 @@
+{
+  "schema_version": 3,
+  "note": "Runner semantics: start from uikit/amity-uikit-config.json, deep-merge `configOverrides` on top (plain objects merge recursively key-by-key; arrays and scalars REPLACE wholesale — no concatenation), then resolve `token` for `scope`+`mode` using the schema_version 3 chain: semantic[token][mode] -> ref \"{AliasName}\"(@alpha:x)? or hex literal -> alias[AliasName] must be strictly \"{theme.<key>}\" -> resolve theme key through the per-scope cascade (exact \"page/component/element\" -> \"*/component/*\" -> \"page/*/*\" -> global theme.<mode>.<key>), each theme-block reading validated as strict 6/8-digit hex (a value present but not valid hex is skipped, falling through to the next cascade level) -> apply @alpha if present (overwrites any existing alpha byte, clamping alpha to [0,1] with a console.warn if out of range) -> hex is always uppercased. Missing at any step (absent token, unparseable ref, absent/malformed alias, or theme key missing at every cascade level including global) yields {value:\"#FF00FF\", source:\"missing\"}. The table is uikit/amity-uikit-design-tokens.json verbatim, EXCEPT vectors carrying the optional `tableOverrides` field: deep-merge it into the table the same way (used only to inject synthetic semantic cells for the unknown-alias and out-of-range-@alpha cases, which the shipping table cannot legally contain). Compare BOTH expected.value and expected.source. Sources: \"literal\" | \"theme:<key>@global\" | \"theme:<key>@scope:<matchedPattern>\" | \"missing\".",
+  "vectors": [
+    {
+      "name": "global-light-ordinary",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": null,
+      "expected": {
+        "value": "#1054DE",
+        "source": "theme:primary_color@global"
+      }
+    },
+    {
+      "name": "global-dark-ordinary",
+      "scope": "random_page/foo/bar",
+      "mode": "dark",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": null,
+      "expected": {
+        "value": "#1054DE",
+        "source": "theme:primary_color@global"
+      }
+    },
+    {
+      "name": "alias-lands-on-new-key",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Border/MainButton/Default/Filled/Primary/Disabled",
+      "configOverrides": null,
+      "expected": {
+        "value": "#D9E5FC",
+        "source": "theme:primary_shade3_color@global"
+      }
+    },
+    {
+      "name": "alias-lands-on-existing-key",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": null,
+      "expected": {
+        "value": "#1054DE",
+        "source": "theme:primary_color@global"
+      }
+    },
+    {
+      "name": "scope-override-recolors-token",
+      "scope": "live_chat/some_component/some_element",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": {
+        "customizations": {
+          "live_chat/*/*": {
+            "theme": {
+              "light": {
+                "primary_color": "#D00000"
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "value": "#D00000",
+        "source": "theme:primary_color@scope:live_chat/*/*"
+      }
+    },
+    {
+      "name": "scope-override-of-new-key",
+      "scope": "live_chat/some_component/some_element",
+      "mode": "light",
+      "token": "Border/MainButton/Default/Filled/Primary/Disabled",
+      "configOverrides": {
+        "customizations": {
+          "live_chat/*/*": {
+            "theme": {
+              "light": {
+                "primary_shade3_color": "#123456"
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "value": "#123456",
+        "source": "theme:primary_shade3_color@scope:live_chat/*/*"
+      }
+    },
+    {
+      "name": "wildcard-component-beats-page-and-global",
+      "scope": "some_page/message_composer/some_el",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": {
+        "customizations": {
+          "*/message_composer/*": {
+            "theme": {
+              "light": {
+                "primary_color": "#111111"
+              }
+            }
+          },
+          "some_page/*/*": {
+            "theme": {
+              "light": {
+                "primary_color": "#999999"
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "value": "#111111",
+        "source": "theme:primary_color@scope:*/message_composer/*"
+      }
+    },
+    {
+      "name": "wildcard-page-applies-when-no-component-match",
+      "scope": "some_page/unrelated_component/some_el",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": {
+        "customizations": {
+          "some_page/*/*": {
+            "theme": {
+              "light": {
+                "primary_color": "#222222"
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "value": "#222222",
+        "source": "theme:primary_color@scope:some_page/*/*"
+      }
+    },
+    {
+      "name": "wildcard-exact-beats-component-and-page",
+      "scope": "some_page/message_composer/some_el",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": {
+        "customizations": {
+          "some_page/message_composer/some_el": {
+            "theme": {
+              "light": {
+                "primary_color": "#333333"
+              }
+            }
+          },
+          "*/message_composer/*": {
+            "theme": {
+              "light": {
+                "primary_color": "#444444"
+              }
+            }
+          },
+          "some_page/*/*": {
+            "theme": {
+              "light": {
+                "primary_color": "#555555"
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "value": "#333333",
+        "source": "theme:primary_color@scope:some_page/message_composer/some_el"
+      }
+    },
+    {
+      "name": "primary-shade4-designed-value",
+      "scope": "chat_page/some_component/some_el",
+      "mode": "light",
+      "token": "Surface/ChatBubble/Message/Outbound/Pressed",
+      "configOverrides": null,
+      "expected": {
+        "value": "#1A4499",
+        "source": "theme:primary_shade4_color@global"
+      }
+    },
+    {
+      "name": "alpha-modifier-produces-8-digit-hex",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Border/MainButton/Default/Inverse/Secondary/Disabled",
+      "configOverrides": null,
+      "expected": {
+        "value": "#0000004D",
+        "source": "theme:transparent_black_shade1_color@global"
+      }
+    },
+    {
+      "name": "transparent-white-alias-alpha-8digit",
+      "scope": "random_page/foo/bar",
+      "mode": "dark",
+      "token": "Surface/MainButton/Default/Inverse/Primary/Hover",
+      "configOverrides": null,
+      "expected": {
+        "value": "#FFFFFF1A",
+        "source": "theme:transparent_white_shade2_color@global"
+      }
+    },
+    {
+      "name": "literal-hex-cell",
+      "scope": "random_page/foo/bar",
+      "mode": "dark",
+      "token": "Border/SideNavigation/Default",
+      "configOverrides": null,
+      "expected": {
+        "value": "#FFFFFF",
+        "source": "literal"
+      }
+    },
+    {
+      "name": "atomic-name-alias-black-black",
+      "scope": "random_page/foo/bar",
+      "mode": "dark",
+      "token": "Surface/ChatBubble/Reply/Message/Failed",
+      "configOverrides": null,
+      "expected": {
+        "value": "#000000",
+        "source": "theme:black_color@global"
+      }
+    },
+    {
+      "name": "unknown-token-path",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Nonexistent/Token/Path",
+      "configOverrides": null,
+      "expected": {
+        "value": "#FF00FF",
+        "source": "missing"
+      }
+    },
+    {
+      "name": "unknown-alias-referenced-by-semantic-ref",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Test/Unknown/Alias",
+      "configOverrides": null,
+      "expected": {
+        "value": "#FF00FF",
+        "source": "missing"
+      },
+      "tableOverrides": {
+        "semantic": {
+          "Test/Unknown/Alias": {
+            "light": "{Nonexistent/Alias/Name}",
+            "dark": "{Nonexistent/Alias/Name}"
+          }
+        }
+      }
+    },
+    {
+      "name": "bad-hex-in-scope-override-falls-through",
+      "scope": "bad_hex_scope/x/y",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": {
+        "customizations": {
+          "bad_hex_scope/*/*": {
+            "theme": {
+              "light": {
+                "primary_color": "#GGGGGG"
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "value": "#1054DE",
+        "source": "theme:primary_color@global"
+      }
+    },
+    {
+      "name": "bad-hex-in-global-theme-is-missing",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": {
+        "theme": {
+          "light": {
+            "primary_color": "#GGGGGG"
+          }
+        }
+      },
+      "expected": {
+        "value": "#FF00FF",
+        "source": "missing"
+      }
+    },
+    {
+      "name": "alpha-out-of-range-clamps-to-opaque",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Test/AlphaOutOfRange",
+      "configOverrides": null,
+      "expected": {
+        "value": "#1054DEFF",
+        "source": "theme:primary_color@global"
+      },
+      "tableOverrides": {
+        "semantic": {
+          "Test/AlphaOutOfRange": {
+            "light": "{Primary/500}@alpha:5",
+            "dark": "{Primary/500}@alpha:5"
+          }
+        }
+      }
+    },
+    {
+      "name": "mixed-case-theme-value-uppercased",
+      "scope": "random_page/foo/bar",
+      "mode": "light",
+      "token": "Surface/Tab/Pill/Active",
+      "configOverrides": {
+        "theme": {
+          "light": {
+            "primary_color": "#a5a9b5"
+          }
+        }
+      },
+      "expected": {
+        "value": "#A5A9B5",
+        "source": "theme:primary_color@global"
+      }
+    }
+  ]
+}

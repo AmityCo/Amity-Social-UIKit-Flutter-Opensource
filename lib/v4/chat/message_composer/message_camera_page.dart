@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:amity_uikit_beta_service/v4/core/custom_user_avatar.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
+import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
@@ -189,11 +192,16 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
       // stranded on a blank screen without a way to navigate back.
       return SafeArea(
         child: Scaffold(
+          // The viewfinder backdrop is a fixed black by design — it is the
+          // absence of an image, not a themed surface, so it must not follow
+          // light/dark.
           backgroundColor: Colors.black,
           body: Stack(
             children: [
-              const Center(
-                  child: CircularProgressIndicator(color: Colors.white)),
+              Center(
+                  child: CircularProgressIndicator(
+                      color: context.amityToken(
+                          AmityColorToken.surfaceLoadersSpinnerSecondaryIcon))),
               Padding(
                 padding: const EdgeInsets.only(top: 8, left: 8),
                 child: GestureDetector(
@@ -234,8 +242,11 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
                       Expanded(
                         child: Container(
                           color: Colors.black,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: context.amityToken(AmityColorToken
+                                  .surfaceLoadersSpinnerSecondaryIcon),
+                            ),
                           ),
                         ),
                       ),
@@ -322,7 +333,8 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
         children: [
           IconButton(
             icon: Icon(isFlashMode ? Icons.flash_on : Icons.flash_off,
-                color: Colors.white),
+                color: context.amityToken(
+                    AmityColorToken.iconIconButtonTransparentPrimaryDefault)),
             onPressed: () {
               controller?.setFlashMode(isFlashMode
                   ? FlashMode.off
@@ -335,13 +347,20 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
           if (isVideoMode)
             Container(
               decoration: BoxDecoration(
-                color: isRecording ? Colors.red : Colors.black.withOpacity(0.5),
+                // The palette has no camera-record red: every red surface token
+                // shifts to maroon or grey in dark mode, which would read wrong
+                // over a viewfinder that is neither light nor dark.
+                color: isRecording
+                    ? Colors.red
+                    : context.amityToken(
+                        AmityColorToken.surfaceMediaOverlayTransparentBlack),
                 borderRadius: BorderRadius.circular(5),
               ),
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               child: Text(
                 elapsedTime,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+                style: AmityTextStyle.body(
+                    context.amityToken(AmityColorToken.textBaseInverse)),
               ),
             ),
         ],
@@ -350,11 +369,14 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
   }
 
   Widget _buildBottomBar() {
+    final captureColor = context
+        .amityToken(AmityColorToken.surfaceActionButtonsCaptureButtonGeneral);
     Color buttonColor;
     if (!isVideoMode) {
-      buttonColor = Colors.white;
+      buttonColor = captureColor;
     } else {
       if (isRecording) {
+        // The disc goes dark while recording so the red stop square reads.
         buttonColor = Colors.black;
       } else {
         buttonColor = Colors.red;
@@ -376,7 +398,9 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
                 },
                 child: Text(
                   context.l10n.general_cancel,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color: context
+                          .amityToken(AmityColorToken.textBaseInverse)),
                 ),
               ),
               GestureDetector(
@@ -420,7 +444,9 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
                       height: 70,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white,
+                        color: captureColor,
+                        // The separating rings stay black in both modes so the
+                        // shutter keeps its edge over a bright viewfinder.
                         border: Border.all(
                           color: Colors.black,
                           width: 3,
@@ -453,9 +479,10 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
                 width: 70,
                 height: 70,
                 child: IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.cached,
-                    color: Colors.white, // Update icon color
+                    color: context.amityToken(AmityColorToken
+                        .iconIconButtonTransparentPrimaryDefault),
                   ),
                   onPressed: () {
                     switchCamera(); // Call the switchCamera method
@@ -485,7 +512,11 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
               child: Text(
                 context.l10n.general_video.toUpperCase(),
                 style: TextStyle(
-                  color: isVideoMode ? Colors.yellow : Colors.white,
+                  // Nothing in the palette carries an on-viewfinder "active"
+                  // accent, so only the inactive label binds.
+                  color: isVideoMode
+                      ? Colors.yellow
+                      : context.amityToken(AmityColorToken.textBaseInverse),
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
@@ -502,7 +533,9 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
             child: Text(
               context.l10n.general_photo.toUpperCase(),
               style: TextStyle(
-                color: !isVideoMode ? Colors.yellow : Colors.white,
+                color: !isVideoMode
+                    ? Colors.yellow
+                    : context.amityToken(AmityColorToken.textBaseInverse),
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -581,6 +614,9 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
                     padding: const EdgeInsets.only(
                         top: 6, left: 4, right: 16, bottom: 6),
                     decoration: ShapeDecoration(
+                      // A chip floating on the captured media: it stays light
+                      // in both modes, and no opaque on-media surface token
+                      // exists to carry that.
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
@@ -613,12 +649,8 @@ class _AmityMessageCameraScreenState extends State<AmityMessageCameraScreen>
                             children: [
                               Text(
                                 context.l10n.message_send,
-                                style: TextStyle(
-                                  color: Color(0xFF292B32),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: -0.24,
-                                ),
+                                style: AmityTextStyle.bodyBold(context
+                                    .amityToken(AmityColorToken.textBaseDefault)),
                               ),
                             ],
                           ),

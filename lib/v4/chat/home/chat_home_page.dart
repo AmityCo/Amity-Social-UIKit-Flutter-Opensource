@@ -11,7 +11,7 @@ import 'package:amity_uikit_beta_service/v4/core/Network/network_connectivity_bl
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,7 +53,8 @@ class AmityChatHomePage extends NewBasePage {
                           preferredSize: const Size.fromHeight(kToolbarHeight),
                           child: ChatHomePageNavigationBar(),
                         ),
-                        backgroundColor: theme.backgroundColor,
+                        backgroundColor:
+                            token(AmityColorToken.surfacePageBackgroundDefault),
                         body: Column(
                           children: [
                             _ChatTabs(),
@@ -98,7 +99,7 @@ class _ChatTabs extends NewBaseComponent {
       builder: (context, _) {
         return Container(
           alignment: AlignmentDirectional.centerStart,
-          color: theme.backgroundColor,
+          color: token(AmityColorToken.surfacePageBackgroundDefault),
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -141,17 +142,21 @@ class _ChatTabs extends NewBaseComponent {
         child: ElevatedButton(
           onPressed: () => tabController.animateTo(index),
           style: ButtonStyle(
-            foregroundColor: WidgetStateProperty.all(
-                isSelected ? Colors.white : theme.baseColorShade1),
-            backgroundColor: WidgetStateProperty.all(
-                isSelected ? theme.primaryColor : Colors.transparent),
+            foregroundColor: WidgetStateProperty.all(token(isSelected
+                ? AmityColorToken.textTabPillActive
+                : AmityColorToken.textTabPillDefault)),
+            backgroundColor: WidgetStateProperty.all(token(isSelected
+                ? AmityColorToken.surfaceTabPillActive
+                : AmityColorToken.surfaceTabPillDefault)),
             // overlayColor: WidgetStateProperty.all(Colors.transparent),
             splashFactory: NoSplash.splashFactory,
             shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
             )),
             side: WidgetStateProperty.all(BorderSide(
-              color: isSelected ? theme.primaryColor : theme.baseColorShade4,
+              color: token(isSelected
+                  ? AmityColorToken.borderTabPillActive
+                  : AmityColorToken.borderTabPillDefault),
               width: 1.0,
             )),
             elevation: WidgetStateProperty.all(0),
@@ -197,7 +202,8 @@ class ChatHomePageNavigationBar extends NewBaseComponent {
                   ),
                   const SizedBox(width: 4),
                   Text(context.l10n.chat_waiting_for_network,
-                      style: AmityTextStyle.caption(theme.baseColorShade1)),
+                      style: AmityTextStyle.caption(
+                          token(AmityColorToken.textBaseSubdue))),
                 ],
               ),
             ),
@@ -209,15 +215,20 @@ class ChatHomePageNavigationBar extends NewBaseComponent {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Text/Base/Default is #2E2E2E in BOTH modes, so it vanished
+                  // into the dark page background. The page title is a list
+                  // header and flips (AmityChatHomePage.kt:315).
                   Text(context.l10n.chat_title,
-                      style: AmityTextStyle.headline(theme.baseColor)),
+                      style: AmityTextStyle.headline(token(
+                          AmityColorToken.textListHeaderDefaultDefault))),
                 ],
               ),
             ),
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: token(AmityColorToken.surfacePageBackgroundDefault),
             elevation: 0,
             actions: [AmityCreateChatMenuComponent(), AmityChatMenuComponent()],
-            iconTheme: const IconThemeData(color: Colors.black),
+            iconTheme: IconThemeData(
+                color: token(AmityColorToken.iconIconButtonGhostSecondaryDefault)),
           );
         },
       ),
@@ -238,7 +249,8 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: theme.secondaryColor.blend(ColorBlendingOption.shade4),
+            color: token(
+                AmityColorToken.surfaceIconButtonFilledSecondaryEnabled),
             shape: BoxShape.circle,
           ),
           child: IconButton(
@@ -247,7 +259,8 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
               "assets/Icons/amity_ic_search_chat_button.svg",
               package: 'amity_uikit_beta_service',
               colorFilter: ColorFilter.mode(
-                theme.secondaryColor,
+                token(AmityColorToken
+                    .iconIconButtonFilledSecondaryDefault),
                 BlendMode.srcIn,
               ),
               width: 24,
@@ -269,12 +282,14 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: theme.secondaryColor.blend(ColorBlendingOption.shade4),
+            color: token(
+                AmityColorToken.surfaceIconButtonFilledSecondaryEnabled),
             shape: BoxShape.circle,
           ),
           child: PopupMenuButton<int>(
-            color: theme.backgroundColor,
-            surfaceTintColor: theme.backgroundColor,
+            color: token(AmityColorToken.surfacePopoverBackgroundDefault),
+            surfaceTintColor:
+                token(AmityColorToken.surfacePopoverBackgroundDefault),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -284,7 +299,8 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
               "assets/Icons/amity_ic_post_creation_button.svg",
               package: 'amity_uikit_beta_service',
               colorFilter: ColorFilter.mode(
-                theme.secondaryColor,
+                token(AmityColorToken
+                    .iconIconButtonFilledSecondaryDefault),
                 BlendMode.srcIn,
               ),
             ),
@@ -306,19 +322,22 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+              // Popover atom rows: 56 tall, 16 side padding, 24 glyph, flush.
               PopupMenuItem<int>(
                 value: 1,
+                height: 56,
                 padding: EdgeInsets.zero,
                 child: getMenu(
                     text: context.l10n.chat_direct_chat,
-                    iconPath: "amity_ic_chat_create_button.svg"),
+                    iconPath: "amity_ic_user_plus_r.svg"),
               ),
               PopupMenuItem<int>(
                 value: 2,
+                height: 56,
                 padding: EdgeInsets.zero,
                 child: getMenu(
                     text: context.l10n.chat_group_chat,
-                    iconPath: "amity_ic_create_group_chat_button.svg"),
+                    iconPath: "amity_ic_user_group_r.svg"),
               ),
             ],
           ),
@@ -329,8 +348,11 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
   }
 
   Widget getMenu({required String text, required String iconPath}) {
+    // Popover atom row: 240 wide, 16 side inset, 24 glyph on
+    // `Icon/List/Leading/Default/Default`, Regular label on
+    // `Text/List/Header/Default/Default` — same as Android's AmityPopover.
     return SizedBox(
-      width: 200,
+      width: 240,
       child: Row(
         children: [
           Padding(
@@ -338,16 +360,20 @@ class AmityCreateChatMenuComponent extends NewBaseComponent {
             child: SvgPicture.asset(
               "assets/Icons/$iconPath",
               package: 'amity_uikit_beta_service',
-              width: 20,
-              height: 20,
+              width: 24,
+              height: 24,
               colorFilter:
-                  ColorFilter.mode(theme.secondaryColor, BlendMode.srcIn),
+                  ColorFilter.mode(
+                      token(AmityColorToken.iconListLeadingDefaultDefault),
+                      BlendMode.srcIn),
             ),
           ),
           const SizedBox(
             width: 8,
           ),
-          Text(text, style: AmityTextStyle.bodyBold(theme.baseColor)),
+          Text(text,
+              style: AmityTextStyle.body(
+                  token(AmityColorToken.textListHeaderDefaultDefault))),
         ],
       ),
     );
@@ -366,20 +392,30 @@ class AmityChatMenuComponent extends NewBaseComponent {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: theme.secondaryColor.blend(ColorBlendingOption.shade4),
+            color: token(
+                AmityColorToken.surfaceIconButtonFilledSecondaryEnabled),
             shape: BoxShape.circle,
           ),
           child: PopupMenuButton<int>(
-            color: theme.backgroundColor,
-            surfaceTintColor: theme.backgroundColor,
+            color: token(AmityColorToken.surfacePopoverBackgroundDefault),
+            surfaceTintColor:
+                token(AmityColorToken.surfacePopoverBackgroundDefault),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
             elevation: 3,
             offset: const Offset(0, 36),
+            // Monochrome glyph: the containing circle is the token-filled
+            // button, so the asset must not bake its own disc.
             icon: SvgPicture.asset(
-              "assets/Icons/amity_ic_chat_home_option.svg",
+              "assets/Icons/amity_ic_three_dot_vertical.svg",
               package: 'amity_uikit_beta_service',
+              colorFilter: ColorFilter.mode(
+                token(AmityColorToken.iconIconButtonFilledSecondaryDefault),
+                BlendMode.srcIn,
+              ),
+              width: 24,
+              height: 24,
             ),
             padding: const EdgeInsets.all(5),
             onSelected: (int result) {
@@ -408,8 +444,11 @@ class AmityChatMenuComponent extends NewBaseComponent {
   }
 
   Widget getMenu({required String text, required String iconPath}) {
+    // Popover atom row: 240 wide, 16 side inset, 24 glyph on
+    // `Icon/List/Leading/Default/Default`, Regular label on
+    // `Text/List/Header/Default/Default` — same as Android's AmityPopover.
     return SizedBox(
-      width: 200,
+      width: 240,
       child: Row(
         children: [
           Padding(
@@ -417,16 +456,20 @@ class AmityChatMenuComponent extends NewBaseComponent {
             child: SvgPicture.asset(
               "assets/Icons/$iconPath",
               package: 'amity_uikit_beta_service',
-              width: 20,
-              height: 20,
+              width: 24,
+              height: 24,
               colorFilter:
-                  ColorFilter.mode(theme.secondaryColor, BlendMode.srcIn),
+                  ColorFilter.mode(
+                      token(AmityColorToken.iconListLeadingDefaultDefault),
+                      BlendMode.srcIn),
             ),
           ),
           const SizedBox(
             width: 8,
           ),
-          Text(text, style: AmityTextStyle.bodyBold(theme.baseColor)),
+          Text(text,
+              style: AmityTextStyle.body(
+                  token(AmityColorToken.textListHeaderDefaultDefault))),
         ],
       ),
     );

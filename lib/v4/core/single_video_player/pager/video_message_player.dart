@@ -4,6 +4,7 @@ import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/single_video_player/pager/bloc/video_message_player_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/media_viewer_close_button.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/media_permission_handler.dart';
 import 'package:chewie/chewie.dart';
@@ -161,14 +162,11 @@ class AmityVideoPlayerBuilder with ChangeNotifier {
                     width: double.infinity,
                     padding: EdgeInsets.only(left: 16, top: Platform.isIOS ? 30 : 0),
                     alignment: Alignment.topLeft,
+                    // Same as the image viewer: the old asset baked an
+                    // 80%-opaque white disc, the design draws the glyph on the
+                    // Transparent/Primary surface (PDT-5123).
                     child: IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/Icons/amity_ic_close_viewer.svg',
-                        package: 'amity_uikit_beta_service',
-                        width: 32,
-                        height: 32,
-                      ),
-                      color: Colors.white,
+                      icon: const AmityMediaViewerCloseButton(),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),

@@ -17,8 +17,11 @@ import 'package:amity_uikit_beta_service/v4/chat/message/widgets/message_link_pr
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
 import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/single_video_player/pager/video_message_player.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/message_error_badge.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/core/ui/animation/bounce_animator.dart';
@@ -84,9 +87,11 @@ class MessageBubbleView extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
-    if (!isColorInitialized()) {
-      messageColor = MessageColor(theme: theme, config: config);
-    }
+    // Rebuilt every build, not cached behind isColorInitialized(): the colours
+    // are now resolved tokens, and a token resolves per mode, so a cached
+    // MessageColor would freeze the bubble on whichever theme was live at first
+    // build. Resolution is memoized in ConfigRepository, so this is cheap.
+    messageColor = MessageColor(config: config, token: token);
     final isUser = message.userId == AmityCoreClient.getUserId();
 
     return BlocProvider(
@@ -158,8 +163,9 @@ class MessageBubbleView extends NewBaseComponent {
                           ),
                           child: Text(
                             message.user?.displayName ?? "",
-                            style: AmityTextStyle.captionBold(
-                                theme.baseColorShade1),
+                            style: AmityTextStyle.captionBold(token(
+                                AmityColorToken
+                                    .textChatBubbleInboundHeaderUserNameDefault)),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -209,7 +215,7 @@ class MessageBubbleView extends NewBaseComponent {
     return Container(
       constraints: const BoxConstraints.expand(),
       decoration: BoxDecoration(
-        color: theme.baseColor.withOpacity(0.4),
+        color: token(AmityColorToken.surfaceMediaOverlayTransparentBlack),
       ),
       child: const SizedBox(),
     );
@@ -253,7 +259,7 @@ class MessageBubbleView extends NewBaseComponent {
           if (isUser &&
               message.createdAt != null &&
               message.syncState == AmityMessageSyncState.SYNCED) ...[
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
             const SizedBox(width: 8),
           ],
           if (!isUser) ...[
@@ -263,7 +269,7 @@ class MessageBubbleView extends NewBaseComponent {
           if (isUser &&
               message.syncState != AmityMessageSyncState.SYNCED &&
               message.syncState != AmityMessageSyncState.FAILED) ...[
-            _buildSideTextWidget(context.l10n.message_sending),
+            _buildSideTextWidget(context, context.l10n.message_sending),
             const SizedBox(width: 8),
           ],
           if (message.syncState == AmityMessageSyncState.FAILED && isUser) ...[
@@ -273,13 +279,7 @@ class MessageBubbleView extends NewBaseComponent {
                 onTap: () {
                   _showActionSheet(context);
                 },
-                child: SvgPicture.asset(
-                  'assets/Icons/amity_ic_error_message.svg',
-                  package: 'amity_uikit_beta_service',
-                  width: 16,
-                  height: 16,
-                  color: theme.baseColorShade2,
-                ),
+                child: const AmityMessageErrorBadge(),
               ),
             ),
             const SizedBox(width: 8),
@@ -348,7 +348,7 @@ class MessageBubbleView extends NewBaseComponent {
           ),
           if (!isUser && message.createdAt != null) ...[
             const SizedBox(width: 8),
-            _buildDateWidget(message.createdAt!),
+            _buildDateWidget(context, message.createdAt!),
           ],
         ],
       ),
@@ -356,9 +356,17 @@ class MessageBubbleView extends NewBaseComponent {
   }
 
   void _showActionSheet(BuildContext context) {
+    // CupertinoActionSheet paints its own surface from CupertinoTheme, which
+    // the UIKit never sets — so the sheet came up light over the dark chat and
+    // its token-coloured labels (white in dark) were unreadable on it. Same
+    // wrapper alert_dialog.dart already uses for its CupertinoAlertDialogs.
+    final brightness =
+        configProvider.isDarkTheme ? Brightness.dark : Brightness.light;
     showCupertinoModalPopup<void>(
       context: context,
-      builder: (BuildContext builderContext) => CupertinoActionSheet(
+      builder: (BuildContext builderContext) => CupertinoTheme(
+        data: CupertinoThemeData(brightness: brightness),
+        child: CupertinoActionSheet(
         title: Text(
           context.l10n.message_not_sent,
           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
@@ -371,8 +379,8 @@ class MessageBubbleView extends NewBaseComponent {
             },
             child: Text(
               context.l10n.message_resend,
-              style: const TextStyle(
-                  color: Color(0xff007AFF),
+              style: TextStyle(
+                  color: token(AmityColorToken.textListHeaderDefaultDefault),
                   fontSize: 17,
                   fontWeight: FontWeight.w400),
             ),
@@ -385,8 +393,8 @@ class MessageBubbleView extends NewBaseComponent {
             },
             child: Text(
               context.l10n.general_delete,
-              style: const TextStyle(
-                  color: Color(0xffFF3B30),
+              style: TextStyle(
+                  color: token(AmityColorToken.textListHeaderDestructiveDefault),
                   fontSize: 17,
                   fontWeight: FontWeight.w400),
             ),
@@ -398,23 +406,16 @@ class MessageBubbleView extends NewBaseComponent {
             },
             child: Text(
               context.l10n.general_cancel,
-              style: const TextStyle(
-                  color: Color(0xff007AFF),
+              style: TextStyle(
+                  color: token(AmityColorToken.textListHeaderDefaultDefault),
                   fontSize: 17,
                   fontWeight: FontWeight.w600),
             )),
+        ),
       ),
     );
   }
 
-  bool isColorInitialized() {
-    try {
-      messageColor;
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 
   void showReactionsBottomSheet(BuildContext context) {
     showModalBottomSheet(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/utils/bloc_extension.dart';
+import 'package:amity_uikit_beta_service/v4/utils/story_create_permission.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,14 +30,24 @@ class CommunityProfileBloc
                     .atCommunity(communityId)
                     .check() ??
                 false;
-        final canManageStory = AmityCoreClient.hasPermission(
+        final hasManageStoryPermission = AmityCoreClient.hasPermission(
                     AmityPermission.MANAGE_COMMUNITY_STORY)
                 .atCommunity(event.community.communityId!)
                 .check() ??
             false;
+        final isJoined = isModerator
+            ? true
+            : (event.community.isJoined ?? state.isJoined);
+        // Matches Android/iOS: (allowAllUserToCreateStory ||
+        // MANAGE_COMMUNITY_STORY) && isJoined.
+        final canManageStory = await StoryCreatePermission.check(
+          hasManageStoryPermission: hasManageStoryPermission,
+          isJoined: isJoined,
+        );
+        if (isClosed) return;
         emit(state.copyWith(
             community: event.community,
-            isJoined: isModerator ? true : (event.community.isJoined ?? state.isJoined),
+            isJoined: isJoined,
             isModerator: isModerator,
             canManageStory: canManageStory));
       }

@@ -1,10 +1,10 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
-import 'package:amity_uikit_beta_service/v4/core/config_repository.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 
 class AmityConversationChatUserActionComponent extends NewBaseComponent {
   final AmityUser user;
@@ -26,17 +26,15 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
 
   @override
   Widget buildComponent(BuildContext context) {
-    final configRepo = ConfigRepository();
-    final showMute = configRepo.isChatUserActionEnabled('mute');
-    final showReport = configRepo.isChatUserActionEnabled('report');
-    final showBlock = configRepo.isChatUserActionEnabled('block');
-
+    final showMute = configProvider.isChatUserActionEnabled('mute');
+    final showReport = configProvider.isChatUserActionEnabled('report');
+    final showBlock = configProvider.isChatUserActionEnabled('block');
 
     return Container(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 32),
       decoration: BoxDecoration(
-        color: theme.backgroundColor,
+        color: token(AmityColorToken.surfaceSheetsBackgroundGeneral),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -47,18 +45,18 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
         children: <Widget>[
           Container(
             width: double.infinity,
-            height: 36,
-            padding: const EdgeInsets.only(top: 12, bottom: 20),
+            height: 28,
+            padding: const EdgeInsets.only(top: 12, bottom: 12),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 36,
+                  width: 37,
                   height: 4,
                   decoration: ShapeDecoration(
-                    color: theme.baseColorShade3,
+                    color: token(AmityColorToken.surfaceSheetsHandleDefault),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -79,8 +77,9 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
               },
               child: Container(
                 width: double.infinity,
+                color: token(AmityColorToken.surfaceListDefaultDefault),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -97,16 +96,17 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                         width: 24,
                         height: 24,
                         colorFilter:
-                            ColorFilter.mode(theme.baseColor, BlendMode.srcIn),
+                            ColorFilter.mode(token(AmityColorToken.iconListLeadingDefaultDefault), BlendMode.srcIn),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
+                        // Action label, not the post-action toast copy.
                         isMute
-                            ? context.l10n.notification_turn_on_success
-                            : context.l10n.notification_turn_off_success,
-                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                            ? context.l10n.chat_notification_turn_on
+                            : context.l10n.chat_notification_turn_off,
+                        style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                     ),
                   ],
@@ -125,8 +125,9 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
               },
               child: Container(
                 width: double.infinity,
+                color: token(AmityColorToken.surfaceListDefaultDefault),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -142,16 +143,16 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                           package: 'amity_uikit_beta_service',
                           width: 24,
                           height: 24,
-                          colorFilter:
-                              ColorFilter.mode(theme.baseColor, BlendMode.srcIn)),
+                          colorFilter: ColorFilter.mode(
+                              token(AmityColorToken.iconListLeadingDefaultDefault), BlendMode.srcIn)),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         user.isFlaggedByMe
                             ? context.l10n.user_unreport
                             : context.l10n.user_report,
-                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                        style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                     ),
                   ],
@@ -170,8 +171,9 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
               },
               child: Container(
                 width: double.infinity,
+                color: token(AmityColorToken.surfaceListDefaultDefault),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -186,18 +188,18 @@ class AmityConversationChatUserActionComponent extends NewBaseComponent {
                         width: 24,
                         height: 24,
                         colorFilter: ColorFilter.mode(
-                          theme.baseColor,
+                          token(AmityColorToken.iconListLeadingDefaultDefault),
                           BlendMode.srcIn,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         isUserBlocked
                             ? context.l10n.user_unblock
                             : context.l10n.user_block,
-                        style: AmityTextStyle.bodyBold(theme.baseColor),
+                        style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                       ),
                     ),
                   ],

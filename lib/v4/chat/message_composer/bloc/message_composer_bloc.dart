@@ -106,7 +106,7 @@ class MessageComposerBloc
           if (error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
             toastBloc.add(const AmityToastShort(
                 message:
-                    "Your message contains inappropriate word. Please review and delete it."));
+                    "Your message wasn't sent as it contains an inappropriate word."));
           } else if (error.code == error.getErrorCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
             toastBloc.add(const AmityToastShort(
                 message:
@@ -206,7 +206,7 @@ class MessageComposerBloc
           if (error.code == error.getErrorCode(AmityErrorCode.BAN_WORD_FOUND)) {
             toastBloc.add(const AmityToastShort(
                 message:
-                    "Your message contains inappropriate word. Please review and delete it."));
+                    "Your message wasn't sent as it contains an inappropriate word."));
           } else if (error.code == error.getErrorCode(AmityErrorCode.LINK_NOT_IN_WHITELIST)) {
             toastBloc.add(const AmityToastShort(
                 message:

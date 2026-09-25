@@ -1,6 +1,8 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_token_context.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/chat/message/components/bloc/amity_message_report_reason_cubit.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
@@ -24,14 +26,24 @@ class MessageReportReasonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Read the strings here, not inside `create`. `context.l10n` is
+    // AppLocalizations.of(context), which registers an InheritedWidget
+    // dependency — legal in build, fatal in a provider's create callback,
+    // where Flutter throws "Tried to listen to an InheritedWidget in a
+    // life-cycle that will never be called again" and the sheet red-screens
+    // instead of opening. That is what it did on open, which is also why the
+    // colours this ticket is about could not be seen.
+    final successMessage = context.l10n.toast_message_reported;
+    final errorMessage = context.l10n.toast_message_report_error;
+
     return BlocProvider(
-      create: (context) => AmityMessageReportReasonCubit(
+      create: (providerContext) => AmityMessageReportReasonCubit(
         message: message,
         onCancel: onCancel,
         onBack: onBack,
-        toastBloc: context.read<AmityToastBloc>(),
-        successMessage: context.l10n.toast_message_reported,
-        errorMessage: context.l10n.toast_message_report_error,
+        toastBloc: providerContext.read<AmityToastBloc>(),
+        successMessage: successMessage,
+        errorMessage: errorMessage,
       ),
       child: _MessageReportOthersView(theme: theme),
     );
@@ -58,7 +70,7 @@ class _MessageReportOthersView extends StatelessWidget {
             top: 16,
           ),
           decoration: BoxDecoration(
-            color: theme.backgroundColor,
+            color: context.amityToken(AmityColorToken.surfaceSheetsBackgroundGeneral),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -74,7 +86,7 @@ class _MessageReportOthersView extends StatelessWidget {
                   width: 36,
                   height: 4,
                   decoration: ShapeDecoration(
-                    color: theme.baseColorShade3,
+                    color: context.amityToken(AmityColorToken.textSheetsHeaderTextDescriptionDefault),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -100,7 +112,7 @@ class _MessageReportOthersView extends StatelessWidget {
                         width: 20,
                         height: 20,
                         colorFilter: ColorFilter.mode(
-                          theme.baseColor,
+                          context.amityToken(AmityColorToken.textSheetsHeaderTitleDefault),
                           BlendMode.srcIn,
                         ),
                       ),
@@ -109,7 +121,7 @@ class _MessageReportOthersView extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Others',
-                        style: AmityTextStyle.titleBold(theme.baseColor),
+                        style: AmityTextStyle.titleBold(context.amityToken(AmityColorToken.textSheetsHeaderTitleDefault)),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -125,7 +137,7 @@ class _MessageReportOthersView extends StatelessWidget {
                         width: 24,
                         height: 24,
                         colorFilter: ColorFilter.mode(
-                          theme.baseColor,
+                          context.amityToken(AmityColorToken.textSheetsHeaderTitleDefault),
                           BlendMode.srcIn,
                         ),
                       ),
@@ -134,7 +146,7 @@ class _MessageReportOthersView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 13),
-              Container(height: 1, color: theme.baseColorShade4),
+              Container(height: 1, color: context.amityToken(AmityColorToken.lineDividerContentDefault)),
 
               const SizedBox(height: 24),
 
@@ -146,17 +158,22 @@ class _MessageReportOthersView extends StatelessWidget {
                   children: [
                     Text(
                       'Describe your reason',
-                      style: AmityTextStyle.titleBold(theme.baseColor),
+                      style: AmityTextStyle.titleBold(context.amityToken(AmityColorToken.textSheetsHeaderTitleDefault)),
                     ),
                     const SizedBox(width: 4),
                     Text(
+                      // Design binds the Input *Indicator* token here
+                      // (#A5A9B5); Sheets/Header/TextDescription resolves to
+                      // white_color in dark, so this read as pure white
+                      // (PDT-5100 case 3).
                       '(Optional)',
-                      style: AmityTextStyle.caption(theme.baseColorShade3),
+                      style: AmityTextStyle.caption(context.amityToken(
+                          AmityColorToken.textInputTextInputIndicatorDefault)),
                     ),
                     const Spacer(),
                     Text(
                       '${state.characterCount}/300',
-                      style: AmityTextStyle.caption(theme.baseColorShade1),
+                      style: AmityTextStyle.caption(context.amityToken(AmityColorToken.textInputTextInputTextCountDefault)),
                     ),
                   ],
                 ),
@@ -169,23 +186,27 @@ class _MessageReportOthersView extends StatelessWidget {
                 child: TextField(
                   controller: cubit.textController,
                   focusNode: cubit.focusNode,
+                  keyboardAppearance: context.amityBrightness,
                   decoration: InputDecoration(
                     hintText: context.l10n.message_report_details_hint,
-                    hintStyle: AmityTextStyle.body(theme.baseColorShade3),
+                    // Same mis-binding as the (Optional) label above: the
+                    // placeholder is an Input token, not a Sheets one.
+                    hintStyle: AmityTextStyle.body(context.amityToken(
+                        AmityColorToken.textInputTextInputPlaceholderEnabled)),
                     contentPadding: EdgeInsets.only(bottom: 8),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: theme.baseColorShade4),
+                      borderSide: BorderSide(color: context.amityToken(AmityColorToken.lineDividerContentDefault)),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: theme.baseColorShade4),
+                      borderSide: BorderSide(color: context.amityToken(AmityColorToken.lineDividerContentDefault)),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: theme.baseColorShade4),
+                      borderSide: BorderSide(color: context.amityToken(AmityColorToken.lineDividerContentDefault)),
                     ),
                     counterText: '', // Hide the default counter
                   ),
                   maxLength: 300, // Still enforce the limit
-                  style: AmityTextStyle.body(theme.baseColor),
+                  style: AmityTextStyle.body(context.amityToken(AmityColorToken.textSheetsHeaderTitleDefault)),
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   textInputAction: TextInputAction.newline,
@@ -208,14 +229,14 @@ class _MessageReportOthersView extends StatelessWidget {
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: state.isSubmitEnabled
-                        ? theme.primaryColor
-                        : theme.primaryColor.blend(ColorBlendingOption.shade2),
+                        ? context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryEnabled)
+                        : context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryDisabled),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     disabledBackgroundColor:
-                        theme.primaryColor.blend(ColorBlendingOption.shade2),
+                        context.amityToken(AmityColorToken.surfaceMainButtonDefaultFilledPrimaryDisabled),
                   ),
                   child: state.isSubmitting
                       ? SizedBox(

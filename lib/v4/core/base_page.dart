@@ -1,4 +1,5 @@
 import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,9 +28,9 @@ abstract class NewBasePage extends StatelessWidget {
 
   NewBasePage({super.key, required this.pageId});
 
-  late final ConfigProvider configProvider;
-  late final AmityThemeColor theme;
-  late final AmityUIConfig uiConfig;
+  late ConfigProvider configProvider;
+  late AmityThemeColor theme;
+  late AmityUIConfig uiConfig;
 
   Widget buildPage(BuildContext context);
 
@@ -37,11 +38,9 @@ abstract class NewBasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ConfigProvider>(
       builder: (context, provider, child) {
-        if (!isInitialized()) {
-          configProvider = provider;
-          theme = configProvider.getTheme(pageId, '');
-          uiConfig = configProvider.getUIConfig(pageId, null, null);
-        }
+        configProvider = provider;
+        theme = configProvider.getTheme(pageId, '');
+        uiConfig = configProvider.getUIConfig(pageId, null, null);
         return Theme(
             data: Theme.of(context).copyWith(
                 textSelectionTheme: TextSelectionThemeData(
@@ -53,29 +52,13 @@ abstract class NewBasePage extends StatelessWidget {
                 pageId: pageId, elementId: 'toast', child: buildPage(context)));
       },
     );
-    // return ChangeNotifierProvider<ConfigProvider>(
-    //   create: (_) {
-    //     configProvider.loadConfig();
-    //     return configProvider;
-    //   },
-    //   child: Consumer<ConfigProvider>(
-    //     builder: (context, configProvider, child) {
-    //       return buildPage(context);
-    //     },
-    //   ),
-    // );
   }
 
-  bool isInitialized() {
-    try {
-      configProvider;
-      theme;
-      uiConfig;
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  /// Resolve a semantic colour token at this page's scope. Pass [componentId] /
+  /// [elementId] from deeper widgets so a more specific customization can win.
+  Color token(AmityColorToken t, {String? componentId, String? elementId}) =>
+      configProvider.token(t,
+          pageId: pageId, componentId: componentId, elementId: elementId);
 }
 
 enum AmityPage { socialHomePage }

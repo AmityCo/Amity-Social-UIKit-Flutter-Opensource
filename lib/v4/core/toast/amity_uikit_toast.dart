@@ -1,7 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/utils/rotating_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,16 +44,21 @@ class AmityToast extends StatefulWidget {
 }
 
 class _AmityToastState extends State<AmityToast> {
-  late final AmityThemeColor theme;
   late final ConfigProvider configProvider;
   late final AmityUIConfig uiConfig;
 
+  /// The toast is the Toast atom: `Surface/CustomToast/Default/Default` pill,
+  /// `Text/CustomToast/Default` label, `Icon/CustomToast/Default` glyph — one
+  /// mode-invariant dark pill floating over whatever content is beneath.
+  Color _tok(AmityColorToken t) => configProvider.token(t,
+      pageId: widget.pageId,
+      componentId: widget.componentId,
+      elementId: widget.elementId);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     configProvider = context.watch<ConfigProvider>();
-    theme = configProvider.getTheme(widget.pageId, widget.componentId);
     uiConfig = configProvider.getUIConfig(
         widget.pageId, widget.componentId, widget.elementId);
   }
@@ -148,7 +153,7 @@ class _AmityToastState extends State<AmityToast> {
           width: double.infinity,
           clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
-            color: theme.secondaryColor,
+            color: _tok(AmityColorToken.surfaceCustomToastDefaultDefault),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             shadows: const [
@@ -180,9 +185,10 @@ class _AmityToastState extends State<AmityToast> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          backgroundColor: Colors.white.withOpacity(0.5),
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                          backgroundColor: _tok(AmityColorToken.iconCustomToastDefault)
+                              .withOpacity(0.5),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              _tok(AmityColorToken.surfaceLoadersSpinnerPrimaryIcon)),
                         ),
                       )
                     : SizedBox(
@@ -202,7 +208,8 @@ class _AmityToastState extends State<AmityToast> {
                     message,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AmityTextStyle.body(Colors.white),
+                    style: AmityTextStyle.body(
+                        _tok(AmityColorToken.textCustomToastDefault)),
                   ),
                 ),
               ),

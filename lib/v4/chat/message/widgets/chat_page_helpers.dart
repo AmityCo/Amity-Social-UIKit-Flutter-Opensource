@@ -4,11 +4,10 @@ extension ChatPageHelpers on AmityChatPage {
   void _showChatUserActionBottomSheet(
       BuildContext context, ChatPageState state) {
     final chatPageBloc = context.read<ChatPageBloc>();
-    final configRepo = ConfigRepository();
 
-    final showMute = configRepo.isChatUserActionEnabled('mute');
-    final showReport = configRepo.isChatUserActionEnabled('report');
-    final showBlock = configRepo.isChatUserActionEnabled('block');
+    final showMute = configProvider.isChatUserActionEnabled('mute');
+    final showReport = configProvider.isChatUserActionEnabled('report');
+    final showBlock = configProvider.isChatUserActionEnabled('block');
 
     if (!showMute && !showReport && !showBlock) {
       return;
@@ -69,7 +68,7 @@ extension ChatPageHelpers on AmityChatPage {
       detailText: context.l10n.chat_block_user_description(displayName),
       leftButtonText: context.l10n.general_cancel,
       rightButtonText: context.l10n.user_block,
-      leftButtonColor: theme.alertColor,
+      leftButtonColor: token(AmityColorToken.textAlertDialogBodyDefault),
       onConfirm: onConfirm,
     );
   }
@@ -82,7 +81,7 @@ extension ChatPageHelpers on AmityChatPage {
       detailText: context.l10n.chat_unblock_user_description(displayName),
       leftButtonText: context.l10n.general_cancel,
       rightButtonText: context.l10n.user_unblock,
-      leftButtonColor: theme.alertColor,
+      leftButtonColor: token(AmityColorToken.textAlertDialogBodyDefault),
       onConfirm: onConfirm,
     );
   }
@@ -128,19 +127,15 @@ extension ChatPageHelpers on AmityChatPage {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: theme.backgroundColor.blend(ColorBlendingOption.shade1),
-          boxShadow: const [
+          color: token(AmityColorToken.surfaceBannerSubdueGeneral),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x1A292B32),
+              color: token(AmityColorToken.lineDividerContentDefault),
               blurRadius: 2,
               offset: Offset(0, 1),
               spreadRadius: 1,
             ),
           ],
-          border: Border.all(
-            color: theme.baseColor.withOpacity(0.1),
-            width: 1,
-          ),
         ),
         child: _buildNewMessageContent(context, state, newMessage),
       ),
@@ -157,10 +152,10 @@ extension ChatPageHelpers on AmityChatPage {
         height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: theme.backgroundColor.blend(ColorBlendingOption.shade1),
-          boxShadow: const [
+          color: token(AmityColorToken.surfaceIconButtonFilledSecondaryEnabled),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x1A292B32),
+              color: token(AmityColorToken.lineDividerContentDefault),
               blurRadius: 2,
               offset: Offset(0, 1),
               spreadRadius: 1,
@@ -209,9 +204,8 @@ extension ChatPageHelpers on AmityChatPage {
                                 ? Text(
                                     (message.data as MessageTextData).text ??
                                         "",
-                                    style: AmityTextStyle.body(theme
-                                        .secondaryColor
-                                        .blend(ColorBlendingOption.shade2)),
+                                    style: AmityTextStyle.body(token(AmityColorToken
+                                        .textBannerSubdueHeaderGeneral)),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   )
@@ -221,9 +215,8 @@ extension ChatPageHelpers on AmityChatPage {
                                                 .rawData
                                                 ?.toString() ??
                                             "",
-                                        style: AmityTextStyle.body(theme
-                                            .secondaryColor
-                                            .blend(ColorBlendingOption.shade2)),
+                                        style: AmityTextStyle.body(token(AmityColorToken
+                                        .textBannerSubdueHeaderGeneral)),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       )
@@ -231,9 +224,8 @@ extension ChatPageHelpers on AmityChatPage {
                                         message.data is MessageImageData
                                             ? context.l10n.chat_message_photo
                                             : context.l10n.chat_message_video,
-                                        style: AmityTextStyle.body(theme
-                                            .secondaryColor
-                                            .blend(ColorBlendingOption.shade2)),
+                                        style: AmityTextStyle.body(token(AmityColorToken
+                                        .textBannerSubdueHeaderGeneral)),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -251,12 +243,12 @@ extension ChatPageHelpers on AmityChatPage {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: SvgPicture.asset(
-                            'assets/Icons/amity_ic_down_arrow.svg',
+                            'assets/Icons/amity_ic_chevron_down.svg',
                             package: 'amity_uikit_beta_service',
-                            color: theme.secondaryColor
-                                .blend(ColorBlendingOption.shade1),
-                            width: 10,
-                            height: 10,
+                            color: token(AmityColorToken
+                                .iconIconButtonGhostSecondaryDefault),
+                            width: 20,
+                            height: 20,
                           ),
                         ),
                       ],
@@ -264,22 +256,6 @@ extension ChatPageHelpers on AmityChatPage {
                   ],
                 ),
               ),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Material(
-              color: theme.secondaryColor.withOpacity(0.05),
-              child: InkWell(
-                  onTap: () => _scrollToBottom(state,
-                      shouldAnimated: true,
-                      millisecBeforeAnimated:
-                          (message.data is MessageTextData ||
-                                  message.data is MessageCustomData)
-                              ? 50
-                              : 300)),
             ),
           ),
         ),
@@ -302,33 +278,14 @@ extension ChatPageHelpers on AmityChatPage {
                 width: 40,
                 child: Center(
                   child: SvgPicture.asset(
-                    'assets/Icons/amity_ic_down_arrow.svg',
+                    'assets/Icons/amity_ic_chevron_down.svg',
                     package: 'amity_uikit_beta_service',
-                    color:
-                        theme.secondaryColor.blend(ColorBlendingOption.shade1),
+                    color: token(AmityColorToken
+                        .iconIconButtonFilledSecondaryDefault),
+                    width: 24,
+                    height: 24,
                   ),
                 ),
-              ),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: theme.baseColor.withOpacity(0.1),
-                width: 1,
-              ),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: ClipOval(
-            child: Material(
-              color: theme.secondaryColor.withOpacity(0.05),
-              child: InkWell(
-                onTap: () => _scrollToBottom(state),
               ),
             ),
           ),
@@ -342,7 +299,9 @@ extension ChatPageHelpers on AmityChatPage {
       {shouldAnimated = false, int millisecBeforeAnimated = 0}) {
     state.scrollController
         .animateTo(
-      (state.useReverseUI && state.contentOverflowsScreen) ? 0.0 : state.scrollController.position.maxScrollExtent,
+      (state.useReverseUI && state.contentOverflowsScreen)
+          ? 0.0
+          : state.scrollController.position.maxScrollExtent,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
     )
@@ -371,7 +330,7 @@ extension ChatPageHelpers on AmityChatPage {
       height: 28,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: theme.baseColorShade4,
+        color: token(AmityColorToken.surfaceMediaImageLoading),
       ),
       clipBehavior: Clip.antiAlias,
       child: fileUrl.isNotEmpty || filePath != null
@@ -381,14 +340,18 @@ extension ChatPageHelpers on AmityChatPage {
               height: 28,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
-                color: theme.baseColorShade4,
+                color: token(AmityColorToken.surfaceMediaImageLoading),
                 child:
-                    Icon(Icons.image, color: theme.baseColorShade2, size: 18),
+                    Icon(Icons.image,
+                        color: token(AmityColorToken.iconMediaImageBroken),
+                        size: 18),
               ),
             )
           : Container(
-              color: theme.baseColorShade4,
-              child: Icon(Icons.image, color: theme.baseColorShade2, size: 18),
+              color: token(AmityColorToken.surfaceMediaImageLoading),
+              child: Icon(Icons.image,
+                        color: token(AmityColorToken.iconMediaImageBroken),
+                        size: 18),
             ),
     );
   }
@@ -404,7 +367,7 @@ extension ChatPageHelpers on AmityChatPage {
         height: 28,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          color: theme.baseColorShade4,
+          color: token(AmityColorToken.surfaceMediaImageLoading),
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
@@ -440,25 +403,33 @@ extension ChatPageHelpers on AmityChatPage {
             height: 28,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => Container(
-              color: theme.baseColorShade4,
+              color: token(AmityColorToken.surfaceMediaImageLoading),
               child: Icon(Icons.video_file,
-                  color: theme.baseColorShade2, size: 18),
+                  color: token(AmityColorToken.iconMediaImageBroken),
+                  size: 18),
             ),
           ),
-          Positioned.fill(
+          // The scrim is the play button's own circular surface, not a tint
+          // over the whole thumbnail.
+          Center(
             child: Container(
+              width: 20,
+              height: 20,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
+                shape: BoxShape.circle,
+                color: token(
+                    AmityColorToken.surfaceIconButtonTransparentPrimaryEnabled),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: SvgPicture.asset(
-              'assets/Icons/amity_ic_video_reply_play.svg',
-              package: 'amity_uikit_beta_service',
-              width: 16,
-              height: 16,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/Icons/amity_ic_video_reply_play.svg',
+                  package: 'amity_uikit_beta_service',
+                  color: token(AmityColorToken
+                      .iconIconButtonTransparentPrimaryDefault),
+                  width: 16,
+                  height: 16,
+                ),
+              ),
             ),
           )
         ],

@@ -1,4 +1,5 @@
 import 'package:amity_uikit_beta_service/v4/core/base_component.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/v4/utils/shimmer_widget.dart';
 import 'package:amity_uikit_beta_service/v4/utils/skeleton.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,8 @@ class ChatListSkeletonLoadingView extends NewBaseComponent {
   @override
   Widget buildComponent(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: theme.backgroundColor),
+      decoration: BoxDecoration(
+          color: token(AmityColorToken.surfaceListSkeletonSkeleton)),
       margin: const EdgeInsets.only(top: 8),
       child: Column(
         children: [
@@ -39,19 +41,12 @@ class ChatListSkeletonLoadingView extends NewBaseComponent {
     return ShimmerLoading(
       isLoading: true,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 21),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: const Row(
           children: [
             SkeletonImage(width: 40, height: 40, borderRadius: 20),
             SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SkeletonText(width: 140, height: 10),
-                SizedBox(height: 12),
-                SkeletonText(width: 200, height: 10),
-              ],
-            ),
+            SkeletonText(width: 140, height: 10),
           ],
         ),
       ),

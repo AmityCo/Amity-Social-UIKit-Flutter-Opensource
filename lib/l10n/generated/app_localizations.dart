@@ -786,7 +786,7 @@ abstract class AppLocalizations {
   /// Placeholder for message input
   ///
   /// In en, this message translates to:
-  /// **'Type a message...'**
+  /// **'Write a message'**
   String get message_placeholder;
 
   /// Text shown for deleted messages
@@ -1872,7 +1872,7 @@ abstract class AppLocalizations {
   /// Timestamp text for content posted just now in chat
   ///
   /// In en, this message translates to:
-  /// **'now'**
+  /// **'Now'**
   String get timestamp_now;
 
   /// Text for turning on chat notifications
@@ -2328,7 +2328,7 @@ abstract class AppLocalizations {
   /// Message shown when chat notifications are disabled
   ///
   /// In en, this message translates to:
-  /// **'You have disabled notifications for chat'**
+  /// **'Push notifications have been disabled by admin'**
   String get chat_notifications_disabled;
 
   /// Action text for archiving a chat
@@ -2370,7 +2370,7 @@ abstract class AppLocalizations {
   /// Empty state title for archived chats list
   ///
   /// In en, this message translates to:
-  /// **'No archived chats'**
+  /// **'No archived chat'**
   String get chat_archived_empty_title;
 
   /// Title for archived chats page
@@ -2880,7 +2880,7 @@ abstract class AppLocalizations {
   /// Title for notification preference page
   ///
   /// In en, this message translates to:
-  /// **'Notification Preference'**
+  /// **'Notifications'**
   String get notification_preference_title;
 
   /// Label for allow notifications toggle
@@ -3255,11 +3255,41 @@ abstract class AppLocalizations {
   /// **'Tap to remove reaction'**
   String get reaction_tap_to_remove;
 
+  /// Title of the reaction list empty state
+  ///
+  /// In en, this message translates to:
+  /// **'No reactions yet'**
+  String get reaction_no_reactions_yet;
+
+  /// Description of the reaction list empty state
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first to react to this {referenceType}!'**
+  String reaction_be_first_to_react(String referenceType);
+
   /// Error message shown when an image fails to load
   ///
   /// In en, this message translates to:
   /// **'Couldn\'t load image. Please try again.'**
   String get image_load_error;
+
+  /// Title of the report-message reason sheet (Android: amity_chat_report_title)
+  ///
+  /// In en, this message translates to:
+  /// **'Report reason'**
+  String get chat_report_title;
+
+  /// Banner under the report-message sheet title (Android: amity_chat_report_description)
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us why you\'re reporting this message. Your report will be reviewed by our moderators and kept confidential.'**
+  String get chat_report_description;
+
+  /// Submit button on the report-message sheet (Android: amity_chat_report_submit)
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get chat_report_submit;
 }
 
 class _AppLocalizationsDelegate

@@ -72,7 +72,7 @@ extension ParentMessageWidget on MessageBubbleView {
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                        theme.secondaryColor.withAlpha(60)),
+                        token(AmityColorToken.surfaceChatBubbleReplyOverlayDefault)),
                   ),
                 ),
               ],
@@ -89,7 +89,8 @@ extension ParentMessageWidget on MessageBubbleView {
                   package: 'amity_uikit_beta_service',
                   width: 16,
                   height: 12,
-                  color: theme.baseColorShade1,
+                  color: token(
+                      AmityColorToken.iconChatBubbleInboundHeaderRepliedToDefault),
                 ),
                 const SizedBox(
                   width: 4,
@@ -99,10 +100,12 @@ extension ParentMessageWidget on MessageBubbleView {
                       message.userId == AmityCoreClient.getUserId()
                           ? context.l10n.message_reply_you_to_deleted
                           : context.l10n.message_reply_to_deleted,
-                      style: AmityTextStyle.caption(theme.baseColorShade1))
+                      style: AmityTextStyle.caption(token(AmityColorToken
+                          .textChatBubbleInboundHeaderRepliedToDefault)))
                 else
                   Text(_getReplyText(message, parentMessage, context),
-                      style: AmityTextStyle.caption(theme.baseColorShade1)),
+                      style: AmityTextStyle.caption(token(AmityColorToken
+                          .textChatBubbleInboundHeaderRepliedToDefault))),
               ],
             ),
             const SizedBox(
@@ -158,7 +161,7 @@ extension ParentMessageWidget on MessageBubbleView {
                               vertical: 4, horizontal: 8),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: theme.baseColorShade4,
+                              color: token(AmityColorToken.surfaceChatBubbleReplyMessageDefault),
                               width: 1.0,
                             ),
                             borderRadius: BorderRadius.circular(20),
@@ -171,7 +174,7 @@ extension ParentMessageWidget on MessageBubbleView {
                                 package: 'amity_uikit_beta_service',
                                 width: 16,
                                 height: 14,
-                                color: theme.baseColorShade2,
+                                color: token(AmityColorToken.iconMediaImageBroken),
                               ),
                               const SizedBox(
                                 width: 4,
@@ -179,7 +182,7 @@ extension ParentMessageWidget on MessageBubbleView {
                               Text(
                                 context.l10n.message_deleted,
                                 style: AmityTextStyle.caption(
-                                    theme.baseColorShade2),
+                                    token(AmityColorToken.iconMediaImageBroken)),
                               ),
                             ],
                           ),
@@ -196,7 +199,7 @@ extension ParentMessageWidget on MessageBubbleView {
                               return TextSpan(
                                 text: element.text,
                                 style: TextStyle(
-                                  color: theme.highlightColor,
+                                  color: token(AmityColorToken.textChatBubbleInboundLinkDefault),
                                   decoration: TextDecoration.underline,
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.w400,
@@ -205,7 +208,8 @@ extension ParentMessageWidget on MessageBubbleView {
                             } else {
                               return TextSpan(
                                 text: element.text,
-                                style: AmityTextStyle.body(theme.baseColor),
+                                style: AmityTextStyle.body(token(
+                                    AmityColorToken.textChatBubbleInboundMessagesDefault)),
                               );
                             }
                           }).toList();
@@ -233,7 +237,7 @@ extension ParentMessageWidget on MessageBubbleView {
                               return TextSpan(
                                 text: element.text,
                                 style: TextStyle(
-                                  color: theme.highlightColor,
+                                  color: token(AmityColorToken.textChatBubbleInboundLinkDefault),
                                   decoration: TextDecoration.underline,
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.w400,
@@ -242,7 +246,8 @@ extension ParentMessageWidget on MessageBubbleView {
                             } else {
                               return TextSpan(
                                 text: element.text,
-                                style: AmityTextStyle.body(theme.baseColor),
+                                style: AmityTextStyle.body(token(
+                                    AmityColorToken.textChatBubbleInboundMessagesDefault)),
                               );
                             }
                           }).toList();
@@ -346,7 +351,7 @@ extension ParentMessageWidget on MessageBubbleView {
                                     228,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  color: theme.baseColorShade4,
+                                  color: token(AmityColorToken.surfaceChatBubbleReplyMessageDefault),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 clipBehavior: Clip.antiAlias,
@@ -414,7 +419,8 @@ extension ParentMessageWidget on MessageBubbleView {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withAlpha((255.0 * 0.6).round()),
+                        color: token(AmityColorToken
+                            .surfaceChatBubbleReplyOverlayDefault),
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
@@ -502,7 +508,7 @@ extension ParentMessageWidget on MessageBubbleView {
       width: cache?.width ?? 228,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: theme.baseColorShade4,
+        color: token(AmityColorToken.surfaceChatBubbleReplyMessageDefault),
         borderRadius: BorderRadius.circular(20),
       ),
       clipBehavior: Clip.antiAlias,

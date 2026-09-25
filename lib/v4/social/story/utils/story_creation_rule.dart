@@ -1,14 +1,17 @@
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/v4/utils/story_create_permission.dart';
 
 /// Gating rules for the story-create affordances, kept in one place so every
 /// entry point agrees. Mirrors Android, which applies the same rule at each of
 /// its five call sites.
 
 /// The network-level "allow all users to create stories" setting.
+///
+/// Read through [StoryCreatePermission], which caches it for the session: the
+/// SDK ref this branch pins exposes only the async `getSocialSettings()`.
 bool isAllowAllUserToCreateStory() {
   if (!AmityCoreClient.isUserLoggedIn()) return false;
-  return AmitySocialClient.getStorySettings()?.allowAllUserToCreateStory ??
-      false;
+  return StoryCreatePermission.allowAllUsersNow;
 }
 
 /// Community-scoped rule:

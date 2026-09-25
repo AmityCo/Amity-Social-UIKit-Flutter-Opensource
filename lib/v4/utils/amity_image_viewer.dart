@@ -1,5 +1,6 @@
 import 'package:amity_uikit_beta_service/v4/chat/message/chat_page.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/amity_uikit_toast.dart';
+import 'package:amity_uikit_beta_service/v4/core/ui/media_viewer_close_button.dart';
 import 'package:amity_uikit_beta_service/v4/core/toast/bloc/amity_uikit_toast_bloc.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
@@ -123,14 +124,14 @@ class _AmityImageViewerState extends State<AmityImageViewer> {
               Container(
                 alignment: Alignment.topLeft,
                 padding: const EdgeInsets.only(left: 16),
+                // amity_ic_close_viewer bakes an 80%-opaque *white* disc into
+                // the asset, which is the visible button QA reported. The
+                // design draws a 32 Icon Button on the Transparent/Primary
+                // surface with a 24 cross-r glyph, which on the player's black
+                // canvas reads as no background at all (PDT-5123). The asset
+                // is left alone because five social surfaces still use it.
                 child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/Icons/amity_ic_close_viewer.svg',
-                    package: 'amity_uikit_beta_service',
-                    width: 32,
-                    height: 32,
-                  ),
-                  color: Colors.white,
+                  icon: const AmityMediaViewerCloseButton(),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),

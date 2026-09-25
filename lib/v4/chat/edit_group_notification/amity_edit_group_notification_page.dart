@@ -1,7 +1,7 @@
 import 'package:amity_uikit_beta_service/v4/core/base_page.dart';
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:amity_uikit_beta_service/l10n/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,12 +24,12 @@ class AmityEditGroupNotificationPage extends NewBasePage {
           final cubit = BlocProvider.of<AmityGroupNotificationCubit>(context);
 
           return Scaffold(
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: token(AmityColorToken.surfaceSheetsBackgroundGeneral),
             appBar: AppBar(
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: token(AmityColorToken.surfaceSheetsBackgroundGeneral),
               title: Text(
                 context.l10n.settings_group_notifications,
-                style: AmityTextStyle.titleBold(theme.baseColor),
+                style: AmityTextStyle.titleBold(token(AmityColorToken.textListHeaderDefaultDefault)),
               ),
               actions: [
                 TextButton(
@@ -55,51 +55,46 @@ class AmityEditGroupNotificationPage extends NewBasePage {
                     context.l10n.general_save,
                     style: AmityTextStyle.body(
                       state.hasChanges
-                          ? theme.primaryColor
-                          : theme.primaryColor
-                              .blend(ColorBlendingOption.shade2),
+                          ? token(AmityColorToken.textMainButtonDefaultGhostPrimaryEnabled)
+                          : token(AmityColorToken.textMainButtonDefaultGhostPrimaryDisabled),
                     ),
                   ),
                 ),
               ],
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: theme.baseColor),
+                icon: Icon(Icons.arrow_back_ios, color: token(AmityColorToken.textListHeaderDefaultDefault)),
                 onPressed: () => Navigator.pop(context),
               ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildNotificationOption(
-                    context: context,
-                    title: context.l10n.notification_default_mode,
-                    description: context.l10n.notification_default_mode_desc,
-                    value: NotificationMode.defaultMode,
-                    groupMode: state.selectedMode,
-                    onChanged: cubit.setNotificationMode,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildNotificationOption(
-                    context: context,
-                    title: context.l10n.notification_silent_mode,
-                    description: context.l10n.notification_silent_mode_desc,
-                    value: NotificationMode.silent,
-                    groupMode: state.selectedMode,
-                    onChanged: cubit.setNotificationMode,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildNotificationOption(
-                    context: context,
-                    title: context.l10n.notification_subscribe_mode,
-                    description: context.l10n.notification_subscribe_mode_desc,
-                    value: NotificationMode.subscribe,
-                    groupMode: state.selectedMode,
-                    onChanged: cubit.setNotificationMode,
-                  ),
-                ],
-              ),
+            // Rows are full-bleed and flush; the 16 inset lives inside each row.
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildNotificationOption(
+                  context: context,
+                  title: context.l10n.notification_default_mode,
+                  description: context.l10n.notification_default_mode_desc,
+                  value: NotificationMode.defaultMode,
+                  groupMode: state.selectedMode,
+                  onChanged: cubit.setNotificationMode,
+                ),
+                _buildNotificationOption(
+                  context: context,
+                  title: context.l10n.notification_silent_mode,
+                  description: context.l10n.notification_silent_mode_desc,
+                  value: NotificationMode.silent,
+                  groupMode: state.selectedMode,
+                  onChanged: cubit.setNotificationMode,
+                ),
+                _buildNotificationOption(
+                  context: context,
+                  title: context.l10n.notification_subscribe_mode,
+                  description: context.l10n.notification_subscribe_mode_desc,
+                  value: NotificationMode.subscribe,
+                  groupMode: state.selectedMode,
+                  onChanged: cubit.setNotificationMode,
+                ),
+              ],
             ),
           );
         },
@@ -118,7 +113,7 @@ class AmityEditGroupNotificationPage extends NewBasePage {
     return InkWell(
       onTap: () => onChanged(value),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -128,24 +123,56 @@ class AmityEditGroupNotificationPage extends NewBasePage {
                 children: [
                   Text(
                     title,
-                    style: AmityTextStyle.bodyBold(theme.baseColor),
+                    style: AmityTextStyle.bodyBold(token(AmityColorToken.textListHeaderDefaultDefault)),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     description,
-                    style: AmityTextStyle.caption(theme.baseColorShade1),
+                    style: AmityTextStyle.caption(token(AmityColorToken.textListTextDescriptionDefaultDefault)),
                   ),
                 ],
               ),
             ),
-            Radio<NotificationMode>(
-              value: value,
-              groupValue: groupMode,
-              onChanged: (val) => onChanged(val!),
-              activeColor: theme.primaryColor,
-            ),
+            _buildRadio(selected: value == groupMode),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Selection/Radio: a 24x24 hit frame around a 20x20 circle. Active is a
+  /// filled disc with an 8x8 dot; Inactive is an empty circle with a 2px ring.
+  /// The whole row is the tap target, so this control is presentational.
+  Widget _buildRadio({required bool selected}) {
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: Container(
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: selected
+              ? token(AmityColorToken.surfaceSelectionRadioAtomicActiveDefault)
+              : token(AmityColorToken.surfaceSelectionRadioAtomicInactiveDefault),
+          border: selected
+              ? null
+              : Border.all(
+                  color: token(AmityColorToken.borderSelectionRadioAtomicInactiveDefault),
+                  width: 2,
+                ),
+        ),
+        child: selected
+            ? Center(
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: token(AmityColorToken.iconSelectionRadioAtomicDefault),
+                  ),
+                ),
+              )
+            : null,
       ),
     );
   }

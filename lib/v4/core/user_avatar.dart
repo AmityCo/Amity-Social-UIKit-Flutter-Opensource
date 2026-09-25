@@ -1,7 +1,7 @@
 import 'package:amity_sdk/amity_sdk.dart';
 import 'package:amity_uikit_beta_service/v4/core/base_element.dart';
 import 'package:amity_uikit_beta_service/v4/core/styles.dart';
-import 'package:amity_uikit_beta_service/v4/core/theme.dart';
+import 'package:amity_uikit_beta_service/v4/core/theme/amity_color_token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -90,7 +90,13 @@ class AmityUserAvatar extends BaseElement {
       height: avatarSize.height,
       width: avatarSize.width,
       decoration: BoxDecoration(
-        color: theme.primaryColor.blend(ColorBlendingOption.shade2),
+        // Every rung of the primary ramp is the same hex in both modes, so a
+        // computed shade cannot flip. The avatar's flip lives in the token,
+        // which points at a *different rung* per mode — shade2 on light,
+        // shade1 on dark. blend() always lands on shade2, and does not even
+        // reproduce the configured one (#C0D3FA computed vs #A9C4F9 in the
+        // palette), so this was off from Android in light too.
+        color: token(AmityColorToken.surfaceAvatarProfileDefault),
         shape: BoxShape.circle,
       ),
       child: Center(
